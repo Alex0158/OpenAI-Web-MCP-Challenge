@@ -266,6 +266,7 @@ test("SIGKILL after Receiver delivery commit preserves DELIVERED and causes no r
 
 test("two independent approval processes converge on one enrollment and one retry result", async () => {
   const targets = paths();
+  const children = [];
   try {
     const correlationId = "corr_h2_process_concurrency";
     const challenge = await createPending(targets, correlationId);
@@ -275,8 +276,12 @@ test("two independent approval processes converge on one enrollment and one retr
       H2_CORRELATION_ID: correlationId,
       H2_WAIT_FOR_GO: "true",
     };
-    const children = [forkChild(targets, overrides), forkChild(targets, overrides)];
-    await Promise.all(children.map((child) => waitForMessage(child, "ready")));
+    const firstChild = forkChild(targets, overrides);
+    children.push(firstChild);
+    await waitForMessage(firstChild, "ready");
+    const secondChild = forkChild(targets, overrides);
+    children.push(secondChild);
+    await waitForMessage(secondChild, "ready");
     const results = children.map((child) => waitForMessage(child, "result"));
     for (const child of children) child.send({ type: "go" });
     const messages = await Promise.all(results);
@@ -289,6 +294,10 @@ test("two independent approval processes converge on one enrollment and one retr
     assert.equal(reopened.database.prepare("SELECT count(*) AS count FROM heartbeat_receipt_outbox").get().count, 1);
     close(reopened);
   } finally {
+    for (const child of children) {
+      if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL");
+    }
+    await Promise.all(children.map((child) => waitForExit(child).catch(() => null)));
     fs.rmSync(targets.root, { recursive: true, force: true });
   }
 });
