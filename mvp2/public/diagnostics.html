@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TenderRelay · Continuation diagnostics</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <script type="module" src="/assets/diagnostics.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/tenders/TENDER-102">
+        <span class="brand-mark">TR</span>
+        <span>TenderRelay</span>
+        <small>diagnostics</small>
+      </a>
+      <nav>
+        <a href="/tenders/TENDER-102">Applicant</a>
+        <a href="/reviewer/tenders/TENDER-102">Reviewer</a>
+      </nav>
+    </header>
+    <main class="shell">
+      <section class="hero compact-hero">
+        <div>
+          <p class="eyebrow">Machine-verifiable evidence</p>
+          <h1>Continuation diagnostics</h1>
+          <p class="lede">Control-plane evidence for the kill test. This is supporting proof, not the product hero.</p>
+        </div>
+        <button id="resetTest" class="button muted">Reset local test</button>
+      </section>
+      <section id="diagnosticCards" class="diagnostic-grid"></section>
+      <section class="card">
+        <div class="card-heading">
+          <div><p class="eyebrow">Audit trail</p><h2>All recorded events</h2></div>
+          <span id="lastUpdated" class="subtle">—</span>
+        </div>
+        <div id="diagnosticAudit" class="diagnostic-log"></div>
+      </section>
+    </main>
+  </body>
+</html>
+

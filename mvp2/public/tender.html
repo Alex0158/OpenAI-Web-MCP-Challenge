@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TenderRelay · Applicant workspace</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <script type="module" src="/assets/tender.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/tenders/TENDER-102">
+        <span class="brand-mark">TR</span>
+        <span>TenderRelay</span>
+        <small>kill test</small>
+      </a>
+      <nav>
+        <a href="/reviewer/tenders/TENDER-102">Reviewer</a>
+        <a href="/diagnostics/continuation">Diagnostics</a>
+      </nav>
+    </header>
+
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Applicant workspace · TENDER-102</p>
+          <h1>Northbridge Community Services Platform</h1>
+          <p class="lede">
+            One visible artifact, two WebMCP stages, and a controlled return after the page turn ends.
+          </p>
+        </div>
+        <div class="hero-status">
+          <span id="statusBadge" class="status-badge">Loading…</span>
+          <span id="versionBadge" class="version-badge">v—</span>
+        </div>
+      </section>
+
+      <section class="proof-strip" aria-label="Kill test proof">
+        <div><span>1</span><strong>Enroll</strong><small>Manifest + grant</small></div>
+        <div><span>2</span><strong>Wait</strong><small>Page turn may end</small></div>
+        <div><span>3</span><strong>Return</strong><small>New stage tools</small></div>
+        <div id="siteToolsState" class="tool-indicator">Site Tools: detecting</div>
+      </section>
+
+      <section class="grid two-columns">
+        <article class="card">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">Authoritative requirements</p>
+              <h2>Buyer brief</h2>
+            </div>
+            <span class="risk-tag low">Read</span>
+          </div>
+          <ol id="requirements" class="requirements"></ol>
+          <div class="meta-row">
+            <span>Buyer</span><strong id="buyer">—</strong>
+          </div>
+          <div class="meta-row">
+            <span>Deadline</span><strong id="deadline">—</strong>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">Shared visible artifact</p>
+              <h2 id="draftTitle">Bid response</h2>
+            </div>
+            <span class="risk-tag medium">Draft</span>
+          </div>
+          <label class="field-label" for="responseDraft">Response</label>
+          <textarea id="responseDraft" rows="10"></textarea>
+          <div class="button-row">
+            <button id="saveDraft" class="button secondary">Save visible draft</button>
+            <button id="submitBid" class="button primary">Approve & submit bid</button>
+          </div>
+          <p id="draftMessage" class="inline-message" aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section id="clarificationPanel" class="card accent-card" hidden>
+        <div class="card-heading">
+          <div>
+            <p class="eyebrow">Re-entry stage</p>
+            <h2>Clarification requested</h2>
+          </div>
+          <span class="risk-tag high">Human approval later</span>
+        </div>
+        <blockquote id="clarificationFeedback"></blockquote>
+        <label class="field-label" for="clarificationDraft">Agent-prepared response</label>
+        <textarea id="clarificationDraft" rows="7" placeholder="The resumed Agent will update this through a second-stage Site Tool."></textarea>
+        <div class="button-row">
+          <button id="saveClarification" class="button secondary">Save clarification draft</button>
+          <button class="button muted" disabled>Final submission requires human approval</button>
+        </div>
+        <p id="clarificationMessage" class="inline-message" aria-live="polite"></p>
+      </section>
+
+      <section class="grid two-columns lower-grid">
+        <article class="card">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">WebMCP-initiated contract</p>
+              <h2>Re-entry permission</h2>
+            </div>
+            <span id="grantStatus" class="status-dot">Not attached</span>
+          </div>
+          <div class="permission-row">
+            <div>
+              <strong>Clarification requested</strong>
+              <p>Read current feedback and prepare a draft only.</p>
+            </div>
+            <span class="check">✓</span>
+          </div>
+          <ul class="compact-list">
+            <li>Maximum runs: 3</li>
+            <li>Expires after 24 hours</li>
+            <li>No arbitrary event prompt</li>
+            <li>Submission remains human-controlled</li>
+          </ul>
+          <button id="attachGrant" class="button contract">Attach scoped grant</button>
+          <p id="grantId" class="mono subtle">No opaque grant attached</p>
+        </article>
+
+        <article class="card">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">Evidence trail</p>
+              <h2>Recent activity</h2>
+            </div>
+            <a class="text-link" href="/diagnostics/continuation">Full diagnostics →</a>
+          </div>
+          <ol id="auditTrail" class="timeline"></ol>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
+

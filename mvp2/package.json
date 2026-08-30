@@ -1,0 +1,14 @@
+{
+  "name": "tenderrelay-kill-test",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A two-stage WebMCP re-entry kill test for TenderRelay.",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

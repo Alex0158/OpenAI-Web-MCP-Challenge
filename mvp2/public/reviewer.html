@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TenderRelay · Reviewer portal</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <script type="module" src="/assets/reviewer.js"></script>
+  </head>
+  <body class="reviewer-body">
+    <header class="topbar reviewer-topbar">
+      <a class="brand" href="/tenders/TENDER-102">
+        <span class="brand-mark">TR</span>
+        <span>TenderRelay</span>
+        <small>reviewer</small>
+      </a>
+      <nav>
+        <a href="/tenders/TENDER-102">Applicant</a>
+        <a href="/diagnostics/continuation">Diagnostics</a>
+      </nav>
+    </header>
+
+    <main class="shell narrow-shell">
+      <section class="hero compact-hero">
+        <div>
+          <p class="eyebrow">Independent reviewer portal</p>
+          <h1>Review TENDER-102</h1>
+          <p class="lede">This action changes authoritative backend state before emitting a typed event.</p>
+        </div>
+        <div class="hero-status">
+          <span id="reviewStatus" class="status-badge">Loading…</span>
+          <span id="reviewVersion" class="version-badge">v—</span>
+        </div>
+      </section>
+
+      <section class="card instruction-card">
+        <span class="step-number">Final kill-test step</span>
+        <h2>Request clarification only after the Codex turn has ended</h2>
+        <p>
+          Clicking once will commit <code>UNDER_REVIEW → CHANGES_REQUESTED</code>, sign and verify the event,
+          then queue a fixed re-entry message to the bound Codex task. It does not send the feedback as Agent authority.
+        </p>
+      </section>
+
+      <section class="grid two-columns">
+        <article class="card">
+          <p class="eyebrow">Submitted response</p>
+          <h2>Applicant bid</h2>
+          <div id="submittedBid" class="document-preview">No submitted bid yet.</div>
+        </article>
+
+        <article class="card">
+          <p class="eyebrow">Authoritative transition</p>
+          <h2>Clarification request</h2>
+          <label class="field-label" for="reviewFeedback">Reviewer feedback</label>
+          <textarea id="reviewFeedback" rows="8">Please confirm whether Net-30 payment terms are included and identify the evidence supporting your proposed incident response commitment.</textarea>
+          <button id="requestClarification" class="button danger wide">Request clarification & trigger re-entry</button>
+          <p id="reviewMessage" class="inline-message" aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section id="eventProof" class="card proof-card" hidden>
+        <p class="eyebrow">Continuation proof</p>
+        <h2>Event accepted</h2>
+        <dl class="proof-list">
+          <div><dt>Signature</dt><dd id="proofSignature">—</dd></div>
+          <div><dt>Gateway</dt><dd id="proofGateway">—</dd></div>
+          <div><dt>Receiver</dt><dd id="proofReceiver">—</dd></div>
+          <div><dt>Event ID</dt><dd id="proofEvent" class="mono">—</dd></div>
+        </dl>
+      </section>
+    </main>
+  </body>
+</html>
+
