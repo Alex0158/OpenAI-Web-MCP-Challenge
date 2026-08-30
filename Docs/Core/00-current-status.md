@@ -150,15 +150,23 @@ burden, and expected net value from measured inputs. It identifies continuous sp
 as structurally weak while preserving short bounded windows as a candidate demo transport.
 
 Eddie's parallel `codex/mvp2-tenderrelay` branch has now been reviewed without merging it.
-Its five tests pass and its applicant/reviewer UI, visible shared artifact, stage-derived Site
-Tools, and demo choreography are useful Host-Adapter references. Its integrated Gateway,
-boolean approval, JSON persistence, synchronous direct queue, diagnostics, and unfrozen live
-claims are weaker than MVP1's authority, durability, replay, and evidence contracts. A local
-Q0 probe observed that `codex queue` exists and can enqueue for one unloaded persistent task,
-but did not awaken that task or regain Browser/WebMCP during the initial observation window or
-a later status-and-history recheck; a spawned sub-agent target was rejected. No self-contained
-Q0 trace or evidence package is stored in the repository. Preserve MVP2 on its contributor
-branch and import only selected assets after the applicable app or adapter decision. See
+Its current modularized tip passes 18 deterministic tests in total; the dedicated
+cross-domain conformance command runs eight of them. It adds strict protocol schemas and
+validators, Host and Agent Adapter seams, a Host
+SDK, a second-domain fixture, and state-derived Site Tool lifecycle alongside the useful
+applicant/reviewer UI, visible artifact, and demo choreography. It fixes the earlier reviewed
+snapshot's exact-schema, Grant-scope, replay-conflict, artifact-revision, untrusted-content,
+and Agent-callable submission defects. It still uses a raw process-global Desktop task
+binding, an incompatible wire contract, caller-asserted consent, local JSON persistence,
+synchronous direct queue without durable effect acknowledgement, optimistic diagnostics, and
+unfrozen live claims. Those remain weaker than MVP1's context authority, activation,
+transactional durability, delivery/effect, and evidence contracts. A local Q0 probe observed
+that `codex queue` exists and can enqueue for one unloaded persistent task, but did not awaken
+that task or regain Browser/WebMCP during the initial observation window or a later
+status-and-history recheck; a spawned sub-agent target was rejected. No self-contained Q0
+trace or evidence package is stored in the repository. Preserve MVP2 on its contributor branch
+and import only selected assets after the applicable app, mechanism/protocol, or adapter
+decision. See
 [Research 17](../Research/17-mvp1-mvp2-comparative-integration-review.md).
 
 This closes the frozen P0 **technical-composability** question in one controlled, same-user
