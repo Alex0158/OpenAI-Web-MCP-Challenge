@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://webmcp-continuation.example/schemas/continuation-manifest-v0.1.json",
+  "title": "WebMCP Continuation Re-entry Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "version",
+    "manifestId",
+    "issuedAt",
+    "origin",
+    "workflow",
+    "reentryPoints",
+    "signature"
+  ],
+  "properties": {
+    "type": { "const": "webmcp.reentry_manifest" },
+    "version": { "const": "0.1" },
+    "manifestId": { "type": "string", "minLength": 1 },
+    "issuedAt": { "type": "string", "format": "date-time" },
+    "origin": { "type": "string", "format": "uri" },
+    "workflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "currentState", "stateVersion"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "type": { "type": "string", "minLength": 1 },
+        "currentState": { "type": "string", "minLength": 1 },
+        "stateVersion": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "reentryPoints": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/reentryPoint" }
+    },
+    "signature": { "$ref": "#/$defs/signature" }
+  },
+  "$defs": {
+    "reentryPoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eventType",
+        "title",
+        "description",
+        "resumeUrl",
+        "reentryGoal",
+        "permittedReadTools",
+        "permittedWriteTools",
+        "requiredToolOrder",
+        "actionsRequiringHumanApproval",
+        "defaultLimits"
+      ],
+      "properties": {
+        "eventType": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "resumeUrl": { "type": "string", "format": "uri" },
+        "reentryGoal": { "type": "string", "minLength": 1 },
+        "permittedReadTools": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "permittedWriteTools": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "requiredToolOrder": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "actionsRequiringHumanApproval": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "defaultLimits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "maximumExecutions",
+            "minimumIntervalSeconds",
+            "expiresAt"
+          ],
+          "properties": {
+            "maximumExecutions": { "type": "integer", "minimum": 1 },
+            "minimumIntervalSeconds": { "type": "integer", "minimum": 0 },
+            "expiresAt": { "type": "string", "format": "date-time" }
+          }
+        }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "value"],
+      "properties": {
+        "algorithm": { "const": "HMAC-SHA256" },
+        "keyId": { "type": "string", "minLength": 1 },
+        "value": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

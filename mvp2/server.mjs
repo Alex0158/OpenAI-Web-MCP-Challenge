@@ -1,146 +1,82 @@
-import { spawn } from "node:child_process";
-import {
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  renameSync,
-  writeFileSync,
-} from "node:fs";
-import { createHash } from "node:crypto";
+import { existsSync, readFileSync } from "node:fs";
 import { createServer } from "node:http";
 import { dirname, extname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { CodexDesktopDemoAdapter } from "./lib/adapters/codex-desktop-demo.mjs";
 import {
-  acceptAtGateway,
-  attachGrant,
-  createInitialState,
-  getReentryManifest,
-  publicState,
-  requestClarificationTransition,
-  signEvent,
-  submitBid,
-  threadBindingHash,
-  updateBidDraft,
-  updateClarificationDraft,
+  CLARIFICATION_EVENT,
   WORKFLOW_ID,
-} from "./lib/core.mjs";
+} from "./lib/apps/tenderrelay/domain.mjs";
+import { TenderRelayHostAdapter } from "./lib/apps/tenderrelay/host-adapter.mjs";
+import { DryRunAgentAdapter } from "./lib/infrastructure/agent-adapter.mjs";
+import { ContinuationApplication } from "./lib/infrastructure/continuation-application.mjs";
+import { ContinuationHostSdk } from "./lib/infrastructure/host-sdk.mjs";
+import { ReceiverCore } from "./lib/infrastructure/receiver-core.mjs";
+import { JsonFileStateStore } from "./lib/infrastructure/state-store.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const publicDir = join(root, "public");
 const stateFile =
-  process.env.TENDERRELAY_STATE_FILE ?? join(root, ".tenderrelay", "state.json");
+  process.env.CONTINUATION_STATE_FILE ??
+  process.env.TENDERRELAY_STATE_FILE ??
+  join(root, ".tenderrelay", "state.json");
 const port = Number(process.env.PORT ?? 43118);
 const host = process.env.HOST ?? "127.0.0.1";
 const origin = `http://${host}:${port}`;
-const eventSecret =
-  process.env.TENDERRELAY_EVENT_SECRET ?? "local-kill-test-secret-change-me";
-const receiverMode = process.env.TENDERRELAY_RECEIVER_MODE ?? "dry-run";
-const threadId = process.env.TENDERRELAY_THREAD_ID ?? "";
+const fallbackSigningSecret = "local-kill-test-secret-change-me";
+const signingSecret =
+  process.env.CONTINUATION_EVENT_SECRET ??
+  process.env.TENDERRELAY_EVENT_SECRET ??
+  fallbackSigningSecret;
+const signingKeyId = process.env.CONTINUATION_KEY_ID ?? "local-kill-test-key";
+const receiverMode =
+  process.env.CONTINUATION_RECEIVER_MODE ??
+  process.env.TENDERRELAY_RECEIVER_MODE ??
+  "dry-run";
+const threadId =
+  process.env.CONTINUATION_CONTEXT_ID ??
+  process.env.TENDERRELAY_THREAD_ID ??
+  "";
 const bundledCodex = "/Applications/ChatGPT.app/Contents/Resources/codex";
 const codexBinary =
+  process.env.CONTINUATION_CODEX_BIN ??
   process.env.TENDERRELAY_CODEX_BIN ??
   (existsSync(bundledCodex) ? bundledCodex : "codex");
 
-let state = loadState();
-
-function loadState() {
-  if (!existsSync(stateFile)) return createInitialState();
-  return JSON.parse(readFileSync(stateFile, "utf8"));
+if (
+  process.env.CONTINUATION_PUBLIC_MODE === "true" &&
+  signingSecret === fallbackSigningSecret
+) {
+  throw new Error(
+    "CONTINUATION_EVENT_SECRET must be configured when CONTINUATION_PUBLIC_MODE=true",
+  );
 }
 
-function persistState() {
-  mkdirSync(dirname(stateFile), { recursive: true });
-  const temporary = `${stateFile}.tmp`;
-  writeFileSync(temporary, `${JSON.stringify(state, null, 2)}\n`, "utf8");
-  renameSync(temporary, stateFile);
-}
-
-function addAudit(action, details = {}) {
-  state.audit.push({
-    id: cryptoRandomId(),
-    action,
-    details,
-    stateVersion: state.stateVersion,
-    createdAt: new Date().toISOString(),
-  });
-}
-
-function cryptoRandomId() {
-  return createHash("sha256")
-    .update(`${Date.now()}:${Math.random()}`)
-    .digest("hex")
-    .slice(0, 24);
-}
-
-function fixedReentryMessage(event) {
-  return [
-    "TenderRelay authorized re-entry event.",
-    `Event type: ${event.eventType}.`,
-    `Workflow: ${event.workflowId}.`,
-    `Expected state version: ${event.stateVersion}.`,
-    `Open the exact canonical URL ${event.resumeUrl} in the Codex in-app browser.`,
-    "Use genuine page Site Tools only: first get_current_tender_state, then read_clarification_request, then update_clarification_draft.",
-    "Prepare a concise response grounded in the current page feedback. Do not call the REST API directly and do not submit the clarification.",
-    "After updating the visible draft, report whether canonical URL opening and second-stage Site Tool invocation succeeded.",
-  ].join(" ");
-}
-
-function runProcess(command, args) {
-  return new Promise((resolve, reject) => {
-    const child = spawn(command, args, {
-      cwd: root,
-      env: process.env,
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    let stdout = "";
-    let stderr = "";
-    child.stdout.on("data", (chunk) => {
-      stdout += chunk.toString();
-    });
-    child.stderr.on("data", (chunk) => {
-      stderr += chunk.toString();
-    });
-    child.once("error", reject);
-    child.once("close", (code) => {
-      if (code === 0) {
-        resolve({ stdout: stdout.trim(), stderr: stderr.trim() });
-      } else {
-        reject(
-          new Error(
-            `Receiver command exited ${code}: ${stderr.trim() || stdout.trim()}`,
-          ),
-        );
-      }
-    });
-  });
-}
-
-async function deliverToReceiver(event) {
-  const message = fixedReentryMessage(event);
-  if (receiverMode !== "live") {
-    return {
-      status: "dry_run",
-      message,
-      threadBindingHash: threadBindingHash(threadId),
-    };
-  }
-  if (!threadId) {
-    throw new Error("TENDERRELAY_THREAD_ID is required in live Receiver mode");
-  }
-
-  const result = await runProcess(codexBinary, [
-    "queue",
-    "--thread",
-    threadId,
-    "--message",
-    message,
-  ]);
-  return {
-    status: "queued",
-    threadBindingHash: threadBindingHash(threadId),
-    receiverOutput: result.stdout.slice(0, 500),
-  };
-}
+const hostSdk = new ContinuationHostSdk({
+  origin,
+  signingSecret,
+  keyId: signingKeyId,
+});
+const hostAdapter = new TenderRelayHostAdapter({ hostSdk });
+const agentAdapter =
+  receiverMode === "live"
+    ? new CodexDesktopDemoAdapter({
+        threadId,
+        codexBinary,
+        cwd: root,
+      })
+    : new DryRunAgentAdapter({ contextBinding: threadId });
+const receiver = new ReceiverCore({
+  adapter: agentAdapter,
+  expectedOrigin: origin,
+  keyResolver: ({ keyId }) => (keyId === signingKeyId ? signingSecret : null),
+});
+const application = new ContinuationApplication({
+  hostAdapter,
+  receiver,
+  stateStore: new JsonFileStateStore(stateFile),
+});
+const siteToolEvidence = inspectTenderSiteToolBoundary();
 
 function json(res, status, body) {
   const payload = JSON.stringify(body);
@@ -198,10 +134,11 @@ async function route(req, res) {
   const method = req.method ?? "GET";
 
   if (method === "GET" && url.pathname === "/health") {
+    const state = application.publicState();
     json(res, 200, {
       ok: true,
-      receiverMode,
-      hasThreadBinding: Boolean(threadId),
+      hostAdapter: hostAdapter.id,
+      agentAdapter: agentAdapter.describe(),
       workflowStatus: state.status,
       stateVersion: state.stateVersion,
     });
@@ -209,62 +146,63 @@ async function route(req, res) {
   }
 
   if (method === "GET" && url.pathname === "/api/state") {
-    json(res, 200, publicState(state));
+    json(res, 200, application.publicState());
     return;
   }
 
   if (method === "GET" && url.pathname === "/api/reentry-manifest") {
-    json(res, 200, getReentryManifest(state, origin));
+    json(res, 200, application.manifest());
     return;
   }
 
   if (method === "GET" && url.pathname === "/api/diagnostics") {
     json(res, 200, {
-      workflowId: state.workflowId,
-      status: state.status,
-      stateVersion: state.stateVersion,
-      receiver: {
-        mode: receiverMode,
-        configured: receiverMode !== "live" || Boolean(threadId),
-        threadBindingHash: threadBindingHash(threadId),
-      },
-      grant: state.grant,
-      events: state.events,
-      runs: state.runs,
-      audit: state.audit,
+      ...application.diagnostics(),
+      siteToolEvidence,
     });
     return;
   }
 
   if (method === "POST" && url.pathname === "/api/bid/draft") {
     const body = await readJson(req);
-    updateBidDraft(state, body.response);
-    persistState();
-    json(res, 200, publicState(state));
+    application.mutateHost((state) => hostAdapter.updateBidDraft(state, body));
+    json(res, 200, application.publicState());
     return;
   }
 
   if (method === "POST" && url.pathname === "/api/grants/attach") {
     const body = await readJson(req);
-    const grant = attachGrant(state, body);
-    persistState();
-    json(res, 200, { grant, state: publicState(state) });
+    const result = application.activateGrant(CLARIFICATION_EVENT, {
+      humanApproved: body.humanApproved,
+    });
+    json(res, 200, {
+      grant: result.binding,
+      manifest: result.manifest,
+      state: result.state,
+    });
     return;
   }
 
   if (method === "POST" && url.pathname === "/api/bid/submit") {
     const body = await readJson(req);
-    submitBid(state, body);
-    persistState();
-    json(res, 200, publicState(state));
+    application.mutateHost((state) => hostAdapter.submitBid(state, body));
+    json(res, 200, application.publicState());
     return;
   }
 
   if (method === "POST" && url.pathname === "/api/clarification/draft") {
     const body = await readJson(req);
-    updateClarificationDraft(state, body.response);
-    persistState();
-    json(res, 200, publicState(state));
+    application.mutateHost((state) =>
+      hostAdapter.updateClarificationDraft(state, body),
+    );
+    json(res, 200, application.publicState());
+    return;
+  }
+
+  if (method === "POST" && url.pathname === "/api/continuations/events") {
+    const body = await readJson(req);
+    const result = await application.acceptAndContinue(body.event ?? body);
+    json(res, result.delivery.status === "failed" ? 502 : 202, result);
     return;
   }
 
@@ -273,64 +211,28 @@ async function route(req, res) {
     url.pathname === "/api/reviewer/request-clarification"
   ) {
     const body = await readJson(req);
-    const unsignedEvent = requestClarificationTransition(state, {
-      origin,
-      feedback:
-        body.feedback ??
-        "Please confirm whether Net-30 payment terms are included and identify the evidence supporting your proposed incident response commitment.",
-    });
-    const event = signEvent(unsignedEvent, eventSecret);
-    const gateway = acceptAtGateway(state, event, eventSecret);
-    persistState();
-
-    let delivery;
-    try {
-      delivery = await deliverToReceiver(event);
-      state.runs.push({
-        runId: `run_${cryptoRandomId()}`,
-        eventId: event.eventId,
-        status: delivery.status,
-        threadBindingHash: delivery.threadBindingHash,
-        queuedAt: new Date().toISOString(),
-        resumeUrl: event.resumeUrl,
+    const transition = (state) =>
+      hostAdapter.requestClarification(state, {
+        feedback:
+          body.feedback ??
+          "Please confirm whether Net-30 payment terms are included and identify the evidence supporting your proposed incident response commitment.",
+        expectedStateVersion: body.expectedStateVersion,
       });
-      state.events.at(-1).deliveryStatus = delivery.status;
-      addAudit("agent.reentry_queued", {
-        eventId: event.eventId,
-        deliveryStatus: delivery.status,
+    if (url.searchParams.get("dispatch") === "external") {
+      const result = application.commitHostTransition(transition);
+      json(res, 202, {
+        ...result,
+        delivery: { status: "awaiting_external_sender" },
       });
-      persistState();
-    } catch (error) {
-      delivery = { status: "failed", error: error.message };
-      state.runs.push({
-        runId: `run_${cryptoRandomId()}`,
-        eventId: event.eventId,
-        status: "failed",
-        error: error.message,
-        queuedAt: new Date().toISOString(),
-        resumeUrl: event.resumeUrl,
-      });
-      state.events.at(-1).deliveryStatus = "failed";
-      addAudit("agent.reentry_failed", {
-        eventId: event.eventId,
-        error: error.message,
-      });
-      persistState();
+    } else {
+      const result = await application.transitionAndContinue(transition);
+      json(res, result.delivery.status === "failed" ? 502 : 202, result);
     }
-
-    json(res, delivery.status === "failed" ? 502 : 202, {
-      event,
-      gateway,
-      delivery,
-      state: publicState(state),
-    });
     return;
   }
 
   if (method === "POST" && url.pathname === "/api/test/reset") {
-    state = createInitialState();
-    persistState();
-    json(res, 200, publicState(state));
+    json(res, 200, application.reset());
     return;
   }
 
@@ -362,23 +264,41 @@ async function route(req, res) {
   text(res, 404, "Not found");
 }
 
+function inspectTenderSiteToolBoundary() {
+  const source = readFileSync(join(publicDir, "tender.js"), "utf8");
+  const forbiddenNames = [
+    "attach_continuation_grant",
+    "submit_approved_bid",
+    "submit_approved_clarification",
+  ];
+  const exposedNames = forbiddenNames.filter((name) =>
+    new RegExp(`name:\\s*["']${name}["']`).test(source),
+  );
+  return {
+    checkedSurface: "public/tender.js",
+    forbiddenNames,
+    exposedNames,
+    consequentialSubmissionUnavailable: exposedNames.length === 0,
+  };
+}
+
 export function startServer() {
   const server = createServer((req, res) => {
     route(req, res).catch((error) => {
       console.error(error);
       if (!res.headersSent) {
-        json(res, 400, { ok: false, error: error.message });
+        json(res, error.statusCode ?? 400, { ok: false, error: error.message });
       } else {
         res.end();
       }
     });
   });
   server.listen(port, host, () => {
-    persistState();
-    console.log(`TenderRelay kill test: ${origin}/tenders/${WORKFLOW_ID}`);
+    application.persist();
+    console.log(`TenderRelay Host Adapter: ${origin}/tenders/${WORKFLOW_ID}`);
     console.log(`Reviewer trigger: ${origin}/reviewer/tenders/${WORKFLOW_ID}`);
-    console.log(`Receiver mode: ${receiverMode}`);
-    console.log(`Thread binding configured: ${Boolean(threadId)}`);
+    console.log(`Receiver adapter: ${agentAdapter.id} (${receiverMode})`);
+    console.log(`Agent context binding configured: ${Boolean(threadId)}`);
   });
   return server;
 }
@@ -386,4 +306,3 @@ export function startServer() {
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   startServer();
 }
-

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://webmcp-continuation.example/schemas/continuation-event-v0.1.json",
+  "title": "WebMCP Continuation Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "version",
+    "eventId",
+    "grantId",
+    "manifestId",
+    "origin",
+    "workflowId",
+    "eventType",
+    "stateVersion",
+    "occurredAt",
+    "resumeUrl",
+    "nonce",
+    "idempotencyKey",
+    "signature"
+  ],
+  "properties": {
+    "type": { "const": "workflow.continuation_event" },
+    "version": { "const": "0.1" },
+    "eventId": { "type": "string", "minLength": 1 },
+    "grantId": { "type": "string", "minLength": 1 },
+    "manifestId": { "type": "string", "minLength": 1 },
+    "origin": { "type": "string", "format": "uri" },
+    "workflowId": { "type": "string", "minLength": 1 },
+    "eventType": { "type": "string", "minLength": 1 },
+    "stateVersion": { "type": "integer", "minimum": 1 },
+    "occurredAt": { "type": "string", "format": "date-time" },
+    "resumeUrl": { "type": "string", "format": "uri" },
+    "nonce": { "type": "string", "minLength": 1 },
+    "idempotencyKey": { "type": "string", "minLength": 1 },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "value"],
+      "properties": {
+        "algorithm": { "const": "HMAC-SHA256" },
+        "keyId": { "type": "string", "minLength": 1 },
+        "value": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

@@ -1,4 +1,5 @@
 const $ = (selector) => document.querySelector(selector);
+let currentState = null;
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
@@ -12,6 +13,7 @@ async function api(path, options = {}) {
 
 async function refresh() {
   const state = await api("/api/state");
+  currentState = state;
   $("#reviewStatus").textContent = state.status;
   $("#reviewStatus").dataset.status = state.status;
   $("#reviewVersion").textContent = `state v${state.stateVersion}`;
@@ -29,7 +31,10 @@ $("#requestClarification").addEventListener("click", async () => {
   try {
     const result = await api("/api/reviewer/request-clarification", {
       method: "POST",
-      body: JSON.stringify({ feedback: $("#reviewFeedback").value }),
+      body: JSON.stringify({
+        feedback: $("#reviewFeedback").value,
+        expectedStateVersion: currentState.stateVersion,
+      }),
     });
     $("#eventProof").hidden = false;
     $("#proofSignature").textContent = result.event.signature.algorithm + " verified";
@@ -52,4 +57,3 @@ refresh().catch((error) => {
   $("#reviewMessage").textContent = error.message;
 });
 setInterval(() => refresh().catch(() => {}), 2000);
-

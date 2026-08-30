@@ -1,0 +1,63 @@
+{
+  "version": "0.1",
+  "secret": "conformance-secret-not-for-production",
+  "manifest": {
+    "type": "webmcp.reentry_manifest",
+    "version": "0.1",
+    "manifestId": "rm_vector_1",
+    "issuedAt": "2030-01-01T00:00:00.000Z",
+    "origin": "https://host.example",
+    "workflow": {
+      "id": "WORK-1",
+      "type": "example_workflow",
+      "currentState": "WAITING",
+      "stateVersion": 1
+    },
+    "reentryPoints": [
+      {
+        "eventType": "work.ready",
+        "title": "Work ready",
+        "description": "Return to continue the visible work item.",
+        "resumeUrl": "https://host.example/work/WORK-1",
+        "reentryGoal": "Read fresh state and update the visible draft.",
+        "permittedReadTools": ["get_current_work_state"],
+        "permittedWriteTools": ["update_work_draft"],
+        "requiredToolOrder": [
+          "get_current_work_state",
+          "update_work_draft"
+        ],
+        "actionsRequiringHumanApproval": ["submit_work"],
+        "defaultLimits": {
+          "maximumExecutions": 1,
+          "minimumIntervalSeconds": 0,
+          "expiresAt": "2030-01-02T00:00:00.000Z"
+        }
+      }
+    ],
+    "signature": {
+      "algorithm": "HMAC-SHA256",
+      "keyId": "conformance-key",
+      "value": "2eFQqhOZ91ZmJK16fnKB0SbSP0IAgXvgIlipEEivLEk"
+    }
+  },
+  "event": {
+    "type": "workflow.continuation_event",
+    "version": "0.1",
+    "eventId": "evt_vector_1",
+    "grantId": "cg_vector_1",
+    "manifestId": "rm_vector_1",
+    "origin": "https://host.example",
+    "workflowId": "WORK-1",
+    "eventType": "work.ready",
+    "stateVersion": 2,
+    "occurredAt": "2030-01-01T01:00:00.000Z",
+    "resumeUrl": "https://host.example/work/WORK-1",
+    "nonce": "nonce-vector-1",
+    "idempotencyKey": "WORK-1:2:work.ready",
+    "signature": {
+      "algorithm": "HMAC-SHA256",
+      "keyId": "conformance-key",
+      "value": "tCaoa-qjuOo0QtIKgh555wKg7vzA4LQFApgR_3uNwMY"
+    }
+  }
+}

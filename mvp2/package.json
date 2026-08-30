@@ -1,12 +1,22 @@
 {
-  "name": "tenderrelay-kill-test",
-  "version": "0.1.0",
+  "name": "webmcp-continuation-mvp2",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "A two-stage WebMCP re-entry kill test for TenderRelay.",
+  "description": "Composable WebMCP continuation infrastructure with replaceable Host and Agent adapters.",
+  "exports": {
+    ".": "./lib/core.mjs",
+    "./protocol": "./lib/infrastructure/protocol.mjs",
+    "./host-sdk": "./lib/infrastructure/host-sdk.mjs",
+    "./receiver-core": "./lib/infrastructure/receiver-core.mjs",
+    "./agent-adapter": "./lib/infrastructure/agent-adapter.mjs",
+    "./application": "./lib/infrastructure/continuation-application.mjs",
+    "./state-store": "./lib/infrastructure/state-store.mjs"
+  },
   "scripts": {
     "start": "node server.mjs",
-    "test": "node --test"
+    "test": "node --test",
+    "test:conformance": "node --test test/infrastructure.test.mjs test/modularity.test.mjs"
   },
   "engines": {
     "node": ">=20"

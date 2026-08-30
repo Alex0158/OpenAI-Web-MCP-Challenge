@@ -261,23 +261,25 @@ been frozen into an evidence package equivalent to MVP1's correlated artifacts.
 - **INFERENCE:** The application is a useful template for how a selected domain should map
   its state, event, artifact, Site Tools, and approval boundary onto the mechanism.
 
-### 5.4 MVP2 weaknesses and risks
+### 5.4 MVP2 residual weaknesses and risks after modular extraction
 
-- **VERIFIED:** Domain, workflow ID, event type, origin, and tool names are hardcoded around
-  TenderRelay.
-- **VERIFIED:** Host domain state, Gateway logic, Grant records, Receiver delivery, and audit
-  records are colocated in one server and JSON state file.
+- **VERIFIED:** Tender-specific identifiers and tools are now isolated in a Host Adapter,
+  but the reference deployment still colocates Host, Receiver, and adapter processes on one
+  machine and persists them in one namespaced JSON aggregate.
 - **VERIFIED:** The live adapter receives a raw task ID from a Receiver-process environment
   variable and directly invokes `codex queue --thread`.
 - **VERIFIED:** The current Host receives an opaque Grant handle, but MVP2 does not implement
   the stronger Receiver-owned context capture and consent lifecycle of MVP1.
-- **VERIFIED:** MVP2 has basic replay protection but not MVP1's durable run reservation,
-  compare-and-swap coverage, enrollment outbox, acknowledgement recovery, or separate
+- **VERIFIED:** MVP2 now has strict signatures, time and scope checks, replay-safe run
+  reservation, a Host event intent, and artifact revision guards, but not MVP1's SQLite
+  durability, compare-and-swap breadth, acknowledgement-loss recovery, or separate durable
   destination tests.
-- **VERIFIED:** MVP2 has five tests, compared with MVP1's much broader 88-test suite.
-- **VERIFIED:** The initial stage currently exposes `submit_approved_bid` as a Site Tool.
-  Passing `approved=true` is a guard, but it is not proof that an authenticated human
-  personally performed the consequential approval.
+- **VERIFIED:** MVP2 now has 18 deterministic scenario and conformance tests, compared with
+  MVP1's broader 88-test suite.
+- **VERIFIED:** Grant activation and initial submission have been removed from the Site Tool
+  surface, but the synthetic human UI is not an authenticated production consent service.
+- **VERIFIED:** A separate local process sent a signed event through the generic HTTP
+  Receiver ingress without importing Receiver internals.
 - **UNKNOWN:** The direct queue path is undocumented as a stable public OpenAI platform
   contract and has not been tested across accounts, machines, app restart, or judge
   environments.
@@ -295,18 +297,18 @@ not become the protocol authority or production Receiver core.
 |---|---|---|---|
 | Primary purpose | Domain-neutral technical validation | Product-shaped vertical slice | Keep both purposes explicit |
 | Host domain | Generic workflow fixture | Tender clarification | Selected hero app remains open |
-| Business state | Durable SQLite fixture with revision controls | Local JSON state with state version | Host Adapter owns domain state; production-like demo uses durable DB |
-| Manifest | Signed, validated, versioned P0 offer | Scoped local Tender Manifest | MVP1 protocol model |
-| Consent | Receiver-owned challenge and decision | In-page Grant attachment | MVP1 Receiver-owned model |
+| Business state | Durable SQLite fixture with revision controls | Namespaced local JSON state with state and artifact revisions | Host Adapter owns domain state; production-like demo uses durable DB |
+| Manifest | Signed, validated, versioned P0 offer | Strict signed v0.1 Host offer | Align both protocol models through conformance vectors |
+| Consent | Receiver-owned challenge and decision | Receiver gate invoked by synthetic human UI | MVP1 Receiver-owned model |
 | Context binding | Private managed context and opaque binding | Raw task ID only in Receiver environment; Host sees opaque Grant handle | MVP1 adapter contract plus MVP2 UI wording |
-| Event validation | Authentication, scope, canonical URL, state, run and replay controls | HMAC, scope, state, expiry, run and replay checks | MVP1 validation core |
-| Delivery | Fixture, App Server, private Desktop relay, Desktop task, and heartbeat experiments | Direct local `codex queue` | Adapter interface; retain direct queue only as bounded demo adapter |
-| Durability | SQLite, outboxes, CAS, crash tests | JSON file, synchronous flow | MVP1 core |
-| WebMCP lifecycle | Generic Stage-A/Stage-B plus lifecycle probe | Domain-specific state-derived tools using `AbortSignal` | Shared lifecycle helper informed by both |
+| Event validation | Authentication, scope, canonical URL, state, run and replay controls | Strict HMAC schema, scope, state, URL, expiry, time window, run and replay checks | Align with MVP1 validation core |
+| Delivery | Fixture, App Server, private Desktop relay, Desktop task, and heartbeat experiments | Replaceable adapter; local `codex queue` implementation | Retain direct queue only as bounded demo adapter |
+| Durability | SQLite, outboxes, CAS, crash tests | Atomic JSON aggregate, Host intent, run reservation; no acknowledgement recovery | MVP1 core |
+| WebMCP lifecycle | Generic Stage-A/Stage-B plus lifecycle probe | Shared stage registry plus Host-specific tools | Shared lifecycle helper informed by both |
 | Human experience | Technical fixture | Strong applicant/reviewer/diagnostics UI | MVP2 pattern or selected hero app |
-| Human boundary | Uncommitted artifact and absent commit tool | No clarification submit tool; initial submit tool still exposed | Consequential action should remain human UI-only |
+| Human boundary | Uncommitted artifact and absent commit tool | Grant, bid submission, and clarification submission absent from Site Tools | Consequential action remains human UI-only |
 | Observability | Detailed trace and evidence packages | Simple visual PASS/WAIT diagnostics | Correlate shared IDs; show MVP2-style summary over MVP1 trace |
-| Tests | 88 current deterministic tests | 5 focused tests | Reuse MVP1 conformance suite; retain scenario tests |
+| Tests | 88 current deterministic tests | 18 scenario and conformance tests | Reuse MVP1 conformance suite; retain scenario tests |
 | Judge clarity | Low to medium without explanation | High | Hero app based on MVP2 pattern |
 | Public reproducibility | Not yet proven | Not yet proven | Highest-priority release gate |
 
@@ -468,6 +470,32 @@ proving user value.
 
 This is safer than copying MVP1 internals into MVP2 or rewriting MVP1 around TenderRelay.
 
+### 8.3 MVP2 modular implementation follow-through
+
+The current MVP2 branch now implements the first shared seam described above without moving
+or rewriting MVP1:
+
+- `mvp2/lib/infrastructure/` contains the strict signed protocol, Host SDK, Receiver Core,
+  application composition boundary, state-store contract, and Agent Adapter contract.
+- `mvp2/lib/apps/tenderrelay/` contains TenderRelay-only workflow state, transitions,
+  manifest profile, canonical URL, and artifact rules.
+- `mvp2/lib/adapters/codex-desktop-demo.mjs` isolates private local `codex queue` delivery
+  behind the Agent Adapter interface.
+- `mvp2/public/webmcp-stage-tools.js` provides reusable AbortSignal-based stage replacement;
+  Tender-specific tool definitions remain in `mvp2/public/tender.js`.
+- `POST /api/continuations/events` is a domain-neutral signed-event ingress, and
+  `mvp2/examples/external-backend-simulator.mjs` crosses it from a separate process without
+  importing Receiver internals; the deferred path persists the Host event intent before
+  network delivery.
+- `mvp2/examples/incident-response-host.mjs` proves that a different workflow, event,
+  canonical URL, tools, and artifact can use the same SDK, Receiver, store, and Agent
+  adapter composition.
+- The deterministic tests now cover both the Tender scenario and reusable conformance seams.
+
+This is an implementation of the report's incremental modularity recommendation, not a
+claim that MVP1's stronger durability evidence has been replaced. The next integration step
+remains aligning this interface with MVP1's durable Receiver and conformance fixtures.
+
 ## 9. Protocol proposal scope
 
 The public deliverable can credibly be called an **open protocol proposal and reference
@@ -544,15 +572,15 @@ the event means now.
 
 | MVP2 surface | Current location | Long-term responsibility |
 |---|---|---|
-| Tender state and bid/clarification artifacts | `mvp2/lib/core.mjs` | Tender Host Adapter only |
-| Re-entry Manifest construction | `mvp2/lib/core.mjs` | Host SDK using shared protocol schema |
-| Grant creation and run limits | `mvp2/lib/core.mjs` | Receiver Core |
-| Event signature and acceptance | `mvp2/lib/core.mjs` | Shared protocol and Receiver Core |
-| Direct Codex queue | `mvp2/server.mjs` | `codex-desktop-demo` Agent adapter |
-| State-derived Site Tool registration | `mvp2/public/tender.js` | Host app using a shared lifecycle helper |
+| Tender state and bid/clarification artifacts | `mvp2/lib/apps/tenderrelay/domain.mjs` | Tender Host Adapter only |
+| Re-entry Manifest construction | `mvp2/lib/apps/tenderrelay/host-adapter.mjs` through `host-sdk.mjs` | Host SDK using shared protocol schema |
+| Grant creation and run limits | `mvp2/lib/infrastructure/receiver-core.mjs` | Receiver Core |
+| Event signature and acceptance | `mvp2/lib/infrastructure/protocol.mjs` and `receiver-core.mjs` | Shared protocol and Receiver Core |
+| Direct Codex queue | `mvp2/lib/adapters/codex-desktop-demo.mjs` | `codex-desktop-demo` Agent adapter |
+| State-derived Site Tool registration | `mvp2/public/tender.js` plus `webmcp-stage-tools.js` | Host app using a shared lifecycle helper |
 | Reviewer state transition | `mvp2/public/reviewer.js` plus server | Tender Host domain transition and outbox intent |
 | PASS/WAIT diagnostics | `mvp2/public/diagnostics.*` | Judge-facing projection over correlated shared trace |
-| Five focused tests | `mvp2/test/core.test.mjs` | Tender scenario tests plus shared conformance suite |
+| Scenario and conformance tests | `mvp2/test/` | Tender scenario tests plus shared conformance suite |
 
 ## 11. Trust, safety, and reliability recommendations
 
@@ -571,22 +599,24 @@ the event means now.
 
 ### 11.2 Improve in MVP2 or the selected hero app
 
-- Remove the initial `submit_approved_bid` Site Tool or replace it with a draft/stage action;
-  require the consequential transition through an authenticated human UI control.
-- Set the challenge Grant to one accepted run unless the scenario requires another bounded
-  number and demonstrates why.
-- Validate an expected artifact revision on every draft mutation, not only workflow state.
-- Commit the Host transition and outbox intent atomically in durable storage.
-- Do not use the Host-facing Grant record as the private Agent-context mapping.
-- Separate issuer credentials, Receiver-client credentials, Host user identity, and Agent
-  adapter credentials.
-- Keep development fallback secrets visibly non-production and reject them in any public
-  deployment mode.
-- Add revocation and expiry behavior to the visible user experience.
-- Ensure the final human approval checks the exact artifact revision that the person
-  reviewed.
-- Treat reviewer, webhook, email, ticket, and document text as untrusted content even after
-  event authentication.
+- **IMPLEMENTED IN THE REFERENCE SLICE:** Remove `submit_approved_bid` and Grant activation
+  from Site Tools; consequential transition now exists only in the synthetic human UI.
+- **IMPLEMENTED:** Set the challenge Grant to one accepted run.
+- **IMPLEMENTED:** Validate expected state and artifact revisions on draft mutations.
+- **PARTIAL:** Persist Host transition, event intent, and inline Receiver reservation
+  atomically in the JSON aggregate; production storage and crash/acknowledgement recovery
+  remain open.
+- **IMPLEMENTED AT THE CODE BOUNDARY:** Keep the Host-facing binding separate from Agent
+  adapter context configuration; stronger managed-context capture still belongs to MVP1.
+- **REMAINING:** Separate issuer credentials, Receiver-client credentials, Host user
+  identity, and Agent adapter credentials for deployment.
+- **IMPLEMENTED FOR THE REFERENCE SERVER:** Keep the development fallback secret visibly
+  non-production and reject it when `CONTINUATION_PUBLIC_MODE=true`; deployed secret storage
+  and rotation remain open.
+- **REMAINING:** Add revocation and expiry behavior to the visible user experience.
+- **REMAINING:** Ensure final human approval checks the exact artifact revision reviewed.
+- **IMPLEMENTED FOR REVIEWER FEEDBACK:** Mark reviewer text as untrusted; extend the same
+  treatment to webhook, email, ticket, and document inputs in the selected app.
 
 ### 11.3 Failure modes required for judge hardening
 
