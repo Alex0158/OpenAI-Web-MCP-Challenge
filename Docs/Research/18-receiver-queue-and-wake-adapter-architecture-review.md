@@ -34,9 +34,9 @@ The transport question is now narrower than “can an Agent be triggered?” Cod
 documents exact `thread/resume` followed by `turn/start`, and the Workspace Agents API documents
 server-side triggers with durable queueing, idempotency, and stable conversation keys. Later cold
 and warm probes rejected standalone App Server as a current-build bridge into a Desktop Browser:
-the App-Server-owned thread had no `iab`, while exact warm resume returned an active-writer
-rejection for the supplied task. The warm public JSON does not independently prove writer
-ownership or priming.
+the cold Browser selector returned `iab-unavailable` before page access, without identifying the
+absent precondition, while exact warm resume returned an active-writer rejection for the supplied
+task. The warm public JSON does not independently prove writer ownership or priming.
 Workspace Agents remain a distinct hosted candidate, but their Browser and genuine page-bound
 WebMCP join are unverified. The remaining seam is supported transport-to-Browser/WebMCP join, not
 the existence of every possible Agent trigger.

@@ -162,10 +162,11 @@ for a conforming backend to send a Receiver event.
 - H1 Scheduled pull completed one bounded event-gated continuation and remains a
   current-build compatibility adapter, not the core event truth or a production default.
 - H2 proves durable enrollment dispatch only to a synthetic idempotent destination.
-- The standalone App Server Desktop route failed both tested current-build joins: a cold
-  App-Server-owned thread had no `iab`, and the exact task supplied by the controlled warm
-  priming step returned an active-writer rejection. The warm public JSON does not independently
-  prove writer ownership or priming.
+- The standalone App Server Desktop route failed both tested current-build joins: the cold
+  thread's Browser selector returned `iab-unavailable` before page access, without identifying
+  the absent precondition, and the exact task supplied by the controlled warm priming step
+  returned an active-writer rejection. The warm public JSON does not independently prove writer
+  ownership or priming.
 - Workspace Agents document supported external triggers, durable queueing, idempotent retry,
   and stable conversation keys, but do not document a Browser or genuine page-bound WebMCP
   surface for API-triggered runs. This remains an unverified hosted topology.

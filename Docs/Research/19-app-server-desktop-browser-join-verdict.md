@@ -118,7 +118,8 @@ Neither tested standalone App Server Desktop join succeeded on the current build
 ```text
 App Server owns the thread
 -> exact resume works
--> no matching Desktop iab exists
+-> Browser selector returns iab-unavailable before page access
+-> absent Browser or session precondition is not identified
 
 Controller supplies the exact task from Desktop priming
 -> standalone App Server receives active-writer rejection

@@ -196,10 +196,11 @@ current evidence supports bounded additive mechanism and service-contract claims
 general claim of production-safe enrollment, durable external Agent delivery, supported
 wake, or distributed exactly-once effects.
 
-The standalone App Server is also not a current Desktop wake path: an App-Server-owned
-thread had no built-in Browser backend, while exact warm resume returned an active-writer
-rejection for the supplied task. The warm public JSON does not independently prove writer
-ownership or the primed Browser state. Neither failure is repaired
+The standalone App Server is also not a current Desktop wake path: the cold thread's Browser
+selector returned `iab-unavailable` before page access, without identifying the absent
+precondition, while exact warm resume returned an active-writer rejection for the supplied
+task. The warm public JSON does not independently prove writer ownership or the primed Browser
+state. Neither failure is repaired
 by weakening the Browser requirement or substituting another execution surface.
 
 ## 11. Transactional delivery
