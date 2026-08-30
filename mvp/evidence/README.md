@@ -100,3 +100,11 @@ the explicit `desktop-task` route and genuine page-bound Browser observations.
   fourteen synthetic records are retained in the adjacent JSONL file and were removed only
   from the mutable P0 trace, leaving the original thirteen P0 records unchanged. The worker
   trace-isolation regression test now prevents recurrence. This is not H2 acceptance evidence.
+- [`d4-h2b-first-formal-no-event-inconclusive-2026-08-30.md`](d4-h2b-first-formal-no-event-inconclusive-2026-08-30.md)
+  preserves the first formal D4 no-event attempt as `INCONCLUSIVE`. Normal quit reached zero
+  Desktop main/current-tree processes, but an unrelated detached P0 relay was misclassified as
+  lifecycle state, so the helper did not relaunch. A delayed turn later failed closed with no
+  Site Tool or workflow effect. Thirteen focused lifecycle/contamination controls, thirteen
+  automation-history scanner controls, and the 114-test full suite pass after the harness
+  correction. The scanner correctly refuses to certify this attempt because the observed contract
+  drifted and the current automation row is absent; no valid D4 arm has completed.

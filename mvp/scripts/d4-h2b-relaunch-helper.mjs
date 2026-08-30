@@ -5,6 +5,14 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath } from "node:url";
+import {
+  chatGptCoreAppServerProcesses,
+  chatGptLifecycleProcesses,
+  chatGptMainProcesses,
+  d4ContaminatingProcessSnapshot,
+  desktopLifecycleSnapshot,
+  sameProcessIdentity as sameIdentity,
+} from "./d4-desktop-process-lifecycle.mjs";
 
 const execFileAsync = promisify(execFile);
 const scriptsDirectory = path.dirname(fileURLToPath(import.meta.url));
@@ -50,6 +58,7 @@ if (!fs.existsSync(observerPath) || !fs.existsSync(databasePath)) {
 }
 if (fs.existsSync(logPath)) throw new Error("D4/H2b relaunch helper log already exists");
 const privateReceipt = readPrivateReceipt();
+let processContaminationLatch = null;
 
 if (process.ppid !== 1) {
   record("helper_invalid_parent", {
@@ -66,15 +75,26 @@ if (ownAncestry.some((row) => row.command.includes("/ChatGPT.app/Contents/"))) {
   throw new Error("D4/H2b relaunch helper must run outside the ChatGPT process tree");
 }
 const startupMainProcesses = chatGptMainProcesses(startupProcesses);
-if (startupMainProcesses.length !== 1) {
+const startupCoreAppServerProcesses = chatGptCoreAppServerProcesses(startupProcesses);
+if (
+  startupMainProcesses.length !== 1 ||
+  startupCoreAppServerProcesses.length !== 1
+) {
   record("helper_invalid_app_baseline", {
     chatgpt_main_process_count: startupMainProcesses.length,
+    chatgpt_core_app_server_process_count: startupCoreAppServerProcesses.length,
   });
-  throw new Error("D4/H2b relaunch helper requires one running Desktop app at startup");
+  throw new Error(
+    "D4/H2b relaunch helper requires one Desktop main and core app-server at startup",
+  );
 }
 const startupMainIdentity = startupMainProcesses[0];
-const startupOwnedIdentities = chatGptOwnedProcesses(startupProcesses)
+const startupLifecycleIdentities = chatGptLifecycleProcesses(startupProcesses)
   .map((row) => ({ pid: row.pid, started_at: row.startedAt }));
+const contaminatingProcesses = assertNoProcessContamination(
+  startupProcesses,
+  "startup_preflight",
+);
 
 const receiverPreflight = await receiverServicePreflight(startupProcesses);
 if (
@@ -153,7 +173,8 @@ record("helper_started", {
     pid: startupMainIdentity.pid,
     started_at: startupMainIdentity.startedAt,
   },
-  startup_owned_process_count: startupOwnedIdentities.length,
+  startup_lifecycle_process_count: startupLifecycleIdentities.length,
+  process_contamination_preflight: contaminatingProcesses,
   schedule,
   receiver_preflight: receiverPreflight,
   receiver: before,
@@ -168,24 +189,34 @@ const appAbsent = await waitForObserverEvent(
     priorMainIdentity: startupMainIdentity,
   },
 );
-record("old_app_absence_observed", {
-  restart_cycle: restartCycle,
-  observer_observed_at: appAbsent.observed_at,
-});
-
-const closedAfterObserver = desktopClosedSnapshot(
-  await processTable(),
-  startupOwnedIdentities,
+const rowsAfterObserver = await processTable();
+const processContaminationAfterObserver = assertNoProcessContamination(
+  rowsAfterObserver,
+  "closure_acceptance",
+);
+const closedAfterObserver = desktopLifecycleSnapshot(
+  rowsAfterObserver,
+  startupLifecycleIdentities,
 );
 if (!closedAfterObserver.closed) {
   record("desktop_not_closed_after_observer_event", closedAfterObserver);
   throw new Error("D4/H2b Desktop was not fully closed after the observer absence event");
 }
+record("old_app_absence_observed", {
+  restart_cycle: restartCycle,
+  observer_observed_at: appAbsent.observed_at,
+  process_contamination: processContaminationAfterObserver,
+});
 
 if (eventArm) {
-  const closedBeforeTrigger = desktopClosedSnapshot(
-    await processTable(),
-    startupOwnedIdentities,
+  const rowsBeforeTrigger = await processTable();
+  const processContaminationBeforeTrigger = assertNoProcessContamination(
+    rowsBeforeTrigger,
+    "before_trigger",
+  );
+  const closedBeforeTrigger = desktopLifecycleSnapshot(
+    rowsBeforeTrigger,
+    startupLifecycleIdentities,
   );
   if (!closedBeforeTrigger.closed) {
     record("event_trigger_aborted_desktop_open", closedBeforeTrigger);
@@ -210,9 +241,14 @@ if (eventArm) {
     throw new Error("D4/H2b event helper command failed closed");
   }
   const result = JSON.parse(stdout);
-  const closedAfterTrigger = desktopClosedSnapshot(
-    await processTable(),
-    startupOwnedIdentities,
+  const rowsAfterTrigger = await processTable();
+  const processContaminationAfterTrigger = assertNoProcessContamination(
+    rowsAfterTrigger,
+    "after_trigger",
+  );
+  const closedAfterTrigger = desktopLifecycleSnapshot(
+    rowsAfterTrigger,
+    startupLifecycleIdentities,
   );
   const afterTrigger = receiverSnapshot();
   if (
@@ -231,6 +267,8 @@ if (eventArm) {
     delivery_status: result.delivery.status,
     desktop_closed_before_trigger: closedBeforeTrigger,
     desktop_closed_after_trigger: closedAfterTrigger,
+    process_contamination_before_trigger: processContaminationBeforeTrigger,
+    process_contamination_after_trigger: processContaminationAfterTrigger,
     receiver: afterTrigger,
   });
 }
@@ -274,9 +312,14 @@ if (
   throw new Error("D4/H2b Receiver became unavailable before relaunch");
 }
 
-const closedBeforeRelaunch = desktopClosedSnapshot(
-  await processTable(),
-  startupOwnedIdentities,
+const rowsBeforeRelaunch = await processTable();
+const processContaminationBeforeRelaunch = assertNoProcessContamination(
+  rowsBeforeRelaunch,
+  "before_relaunch",
+);
+const closedBeforeRelaunch = desktopLifecycleSnapshot(
+  rowsBeforeRelaunch,
+  startupLifecycleIdentities,
 );
 if (!closedBeforeRelaunch.closed) {
   record("relaunch_aborted_desktop_open", closedBeforeRelaunch);
@@ -288,6 +331,7 @@ record("launchservices_relaunch_requested", {
   restart_cycle: restartCycle,
   target_argument_supplied: false,
   desktop_closed_immediately_before_request: closedBeforeRelaunch,
+  process_contamination: processContaminationBeforeRelaunch,
   schedule: scheduleBeforeRelaunch,
 });
 await execFileAsync("/usr/bin/open", ["-a", "ChatGPT"]);
@@ -311,6 +355,16 @@ const runtimeReady = await waitForObserverEvent(
   120_000,
   { notBefore: appStarted.observed_at },
 );
+const runtimeReadyRows = await processTable();
+const processContaminationAtRuntimeReady = assertNoProcessContamination(
+  runtimeReadyRows,
+  "runtime_ready_acceptance",
+);
+const runtimeMultiplicityAtRuntimeReady = assertDesktopRuntimeMultiplicity(
+  runtimeReadyRows,
+  "runtime_ready_acceptance",
+  startupMainIdentity,
+);
 const finalSchedule = readSchedule();
 const runtimeReadyBeforeDue = finalSchedule.next_run_at
   ? Date.parse(finalSchedule.next_run_at) - Date.parse(runtimeReady.observed_at) >= 2 * 60 * 1000
@@ -320,8 +374,76 @@ record("replacement_app_observed", {
   observer_observed_at: appStarted.observed_at,
   runtime_ready_observed_at: runtimeReady.observed_at,
   replacement_started_before_due: runtimeReadyBeforeDue,
+  process_contamination: processContaminationAtRuntimeReady,
+  desktop_runtime_multiplicity: runtimeMultiplicityAtRuntimeReady,
   schedule: finalSchedule,
 });
+
+function assertNoProcessContamination(rows, checkpoint) {
+  const currentSnapshot = d4ContaminatingProcessSnapshot(rows);
+  const observerLatch = readObserverProcessContaminationLatch();
+  if (
+    processContaminationLatch === null &&
+    (!currentSnapshot.clean || observerLatch !== null)
+  ) {
+    processContaminationLatch = {
+      observed_at: observerLatch?.observed_at ?? new Date().toISOString(),
+      detected_by: observerLatch ? "observer" : "helper",
+      first_helper_checkpoint: checkpoint,
+      current_snapshot: currentSnapshot,
+      observer_event_observed_at: observerLatch?.observed_at ?? null,
+    };
+    record("helper_process_contamination_latched", processContaminationLatch);
+  }
+  if (processContaminationLatch !== null) {
+    throw new Error(
+      `D4/H2b helper rejected process contamination at ${checkpoint}`,
+    );
+  }
+  return currentSnapshot;
+}
+
+function assertDesktopRuntimeMultiplicity(rows, checkpoint, priorMainIdentity) {
+  const mainProcesses = chatGptMainProcesses(rows);
+  const coreAppServerProcesses = chatGptCoreAppServerProcesses(rows);
+  const replacementIdentityValid =
+    mainProcesses.length === 1 &&
+    !sameIdentity(mainProcesses[0], priorMainIdentity);
+  const snapshot = {
+    exact_single_replacement_runtime:
+      replacementIdentityValid && coreAppServerProcesses.length === 1,
+    chatgpt_main_process_count: mainProcesses.length,
+    chatgpt_core_app_server_process_count: coreAppServerProcesses.length,
+    replacement_main_identity_valid: replacementIdentityValid,
+  };
+  if (!snapshot.exact_single_replacement_runtime) {
+    record("helper_desktop_runtime_multiplicity_rejected", {
+      checkpoint,
+      ...snapshot,
+    });
+    throw new Error(
+      `D4/H2b helper rejected Desktop runtime multiplicity at ${checkpoint}`,
+    );
+  }
+  return snapshot;
+}
+
+function readObserverProcessContaminationLatch() {
+  if (!fs.existsSync(observerPath)) return null;
+  for (const line of fs.readFileSync(observerPath, "utf8").split("\n")) {
+    if (line.length === 0) continue;
+    try {
+      const entry = JSON.parse(line);
+      if (entry.event === "observer_process_contamination_latched") return entry;
+    } catch {
+      return {
+        observed_at: null,
+        observer_log_parse_error: true,
+      };
+    }
+  }
+  return null;
+}
 if (!runtimeReadyBeforeDue) {
   record("arm_inconclusive_due_to_late_runtime", {
     restart_cycle: restartCycle,
@@ -456,6 +578,10 @@ async function waitForObserverEvent(
 ) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
+    assertNoProcessContamination(
+      await processTable(),
+      `waiting_for_${event}`,
+    );
     const entries = fs.readFileSync(observerPath, "utf8").split("\n").filter(Boolean)
       .flatMap((line) => {
         try {
@@ -474,7 +600,13 @@ async function waitForObserverEvent(
           sameIdentity(entry.details?.prior_main_process ?? {}, priorMainIdentity)
         ),
     );
-    if (match) return match;
+    if (match) {
+      assertNoProcessContamination(
+        await processTable(),
+        `accepting_${event}`,
+      );
+      return match;
+    }
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   throw new Error(`Timed out waiting for observer event ${event} in restart cycle ${cycle}`);
@@ -504,53 +636,6 @@ function processAncestry(rows, startPid) {
   }
   if (current) ancestry.push(current);
   return ancestry;
-}
-
-function chatGptMainProcesses(rows) {
-  return rows.filter(
-    (row) => row.command.startsWith("/Applications/ChatGPT.app/Contents/MacOS/ChatGPT"),
-  );
-}
-
-function chatGptOwnedProcesses(rows) {
-  const owned = new Set(chatGptMainProcesses(rows).map((row) => row.pid));
-  let changed = true;
-  while (changed) {
-    changed = false;
-    for (const row of rows) {
-      if (owned.has(row.ppid) && !owned.has(row.pid)) {
-        owned.add(row.pid);
-        changed = true;
-      }
-    }
-  }
-  return rows.filter((row) => owned.has(row.pid));
-}
-
-function sameIdentity(left, right) {
-  return (
-    left?.pid === right?.pid &&
-    (left?.startedAt ?? left?.started_at) === (right?.startedAt ?? right?.started_at)
-  );
-}
-
-function desktopClosedSnapshot(rows, startupOwned) {
-  const liveStartupOwnedCount = startupOwned.filter(
-    (identity) => rows.some((row) => sameIdentity(row, identity)),
-  ).length;
-  const chatGptBundleProcessCount = rows.filter(
-    (row) => row.command.includes("/ChatGPT.app/Contents/"),
-  ).length;
-  const chatGptMainProcessCount = chatGptMainProcesses(rows).length;
-  return {
-    closed:
-      chatGptMainProcessCount === 0 &&
-      chatGptBundleProcessCount === 0 &&
-      liveStartupOwnedCount === 0,
-    chatgpt_main_process_count: chatGptMainProcessCount,
-    chatgpt_bundle_process_count: chatGptBundleProcessCount,
-    live_startup_owned_process_count: liveStartupOwnedCount,
-  };
 }
 
 async function receiverServicePreflight(rows) {

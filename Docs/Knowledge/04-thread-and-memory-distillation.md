@@ -55,7 +55,8 @@ The following statements appeared in earlier thread summaries and must not be re
 current truth:
 
 1. **“80/80 tests passing.”** This was an intermediate count. The current full suite is
-   88/88 after H2; P0, H1, and H2 counts must still be named by scope.
+   114/114 after the D4 harness hardening; P0, H1, H2, and intermediate D4 counts must still be
+   named by scope.
 2. **“The workspace is not a Git repository.”** That described the pre-initialization parent
    workspace. The shareable Git boundary is now `WebMCP_Challenge/`.
 3. **“WebRTC Receiver.”** That belongs to the Signal Rescue candidate. The current MVP uses
@@ -81,4 +82,3 @@ Promote a thread or Memory insight only when it has an owning repository artifac
 
 Until then, keep it in Level 3 or Level 4 and do not let repetition in chat inflate its
 authority.
-

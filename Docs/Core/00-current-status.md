@@ -84,21 +84,31 @@ activation remains fenced until durable receipt delivery and exact Host binding.
 process termination tests cover each material commit boundary, and two independent approval
 processes converge on one enrollment. Sealed receipt ciphertext is purged after durable
 acknowledgement, and H2 status and trace surfaces redact private authority data. The focused
-H2 suite passes 30 tests and the current full suite passes 88 tests. This is a synthetic
+H2 suite passes 30 tests and the current full suite passes 114 tests, including ten D4 lifecycle
+classifications, three contamination-latch controls, and thirteen automation-history scanner
+controls.
+This is a synthetic
 service-contract pass: the one-shot worker is not a supervised daemon, and no real Desktop
 destination, hosted transport, production key lifecycle, identity boundary, or distributed
 exactly-once claim has been proven. See the
 [H2 verdict](../../mvp/evidence/h2-durable-enrollment-service-contract-2026-08-30-verdict.md).
 
-A bounded D4/H2b Desktop-restart-with-independent-Receiver harness is now prepared. Its scripts pass syntax checks,
-the existing 88-test mechanism suite remains green as a regression control, fail-closed
-rehearsals completed, and the private-evidence scanner passed against a rehearsal candidate.
-The external `launchd` observer correlates process replacement, Receiver ownership, one-shot
-scheduler attempts, and a strict accepted heartbeat envelope without publishing private task
-or Grant authority. This is harness-readiness evidence only: D4 has no dedicated automated
-test suite, and neither the formal no-event restart arm nor the formal event restart arm has
-run, so full Desktop restart continuity remains unknown. See the
-[D4/H2b runbook](../../mvp/D4_H2B_RUNBOOK.md).
+A first formal D4/H2b no-event attempt is preserved as `INCONCLUSIVE`. Normal `Cmd-Q` produced
+an observer snapshot with zero Desktop main processes and zero processes in the then-current
+main-process tree, but the harness had classified an unrelated long-lived P0 relay as a Desktop
+lifecycle process. The helper therefore timed out without requesting automatic relaunch, and the
+operator manually reopened the app only as post-failure recovery. The observer also latched a
+temporary prompt-contract violation even though the eventual heartbeat envelope matched the
+original pinned prompt. Three controller pause updates then reported success without changing the
+persisted active schedule; the delayed turn ran after the Receiver had been stopped, reached no
+Site Tool, and created no Receiver or Host effect. The event arm was not run. Observer and helper
+now share a semantic lifecycle classifier, continuously latch that P0 relay as contamination, and
+pass thirteen focused process controls plus thirteen automation-history scanner controls in the
+114-test full suite. The hardened scanner correctly refuses to certify this historical attempt
+because its automation contract drifted and its row was later deleted. Full Desktop restart
+continuity remains unknown until a fresh valid no-event arm and then event arm complete.
+See the [inconclusive attempt](../../mvp/evidence/d4-h2b-first-formal-no-event-inconclusive-2026-08-30.md)
+and [D4/H2b runbook](../../mvp/D4_H2B_RUNBOOK.md).
 
 A domain-neutral exact-task-versus-capsule method calibration then completed eight no-retry
 structured CLI runs. Its frozen verdict is `REVISE_PROTOCOL`, not a continuity-value result:
@@ -236,7 +246,7 @@ hosted, cross-user, or clean-room judge-reproducible.
 | TenderRelay dossier and diagram preserved | **VERIFIED** | Byte-identical immutable snapshots |
 | Tender is only a reference scenario | **DECIDED** | ADR-0002 |
 | WebMCP can expose page-native structured tools | **VERIFIED IN P0** | Genuine Stage-A and Stage-B page-bound discovery and invocation occurred in the clean run |
-| Grants, signed events, replay control, and bounded trace are implementable | **P0 VERIFIED** | P0 source, the frozen 37-test P0 report, the current 88-test full suite, the frozen clean correlated package, and the post-fix rehearsal; production durability remains deferred |
+| Grants, signed events, replay control, and bounded trace are implementable | **P0 VERIFIED** | P0 source, the frozen 37-test P0 report, the current 114-test full suite, the frozen clean correlated package, and the post-fix rehearsal; production durability remains deferred |
 | Receiver-owned consent and private exact-task binding | **VERIFIED FOR Q2** | Explicit user-authorized Receiver approval, one active Grant, one private task binding, one opaque host binding, and same-task receipt delivery |
 | Managed Agent context can be resumed from a signed event | **VERIFIED FOR Q3, BOUNDED** | App Server independently proves persisted exact-thread resume; the clean Desktop run proves one deduplicated same-task event delivery but not crash-recoverable production exactly-once semantics |
 | Desktop task-control can wake the same test task and open the canonical page | **VERIFIED IN CURRENT DESKTOP** | The clean event appeared in the bound task and opened the exact canonical page through the private current-build bridge |
@@ -251,7 +261,7 @@ hosted, cross-user, or clean-room judge-reproducible.
 | Scheduled pull can enforce an authenticated event gate and one idempotent Host effect | **H1 VERIFIED IN CURRENT CLIENT** | The [H1 verdict](../../mvp/evidence/h1-event-gated-scheduled-reentry-2026-08-30-verdict.md) proves no-event stopping, pending-event persistence across Receiver restart, fresh genuine Inbox and Host Site Tools, acknowledgement-loss retry, exact event replay, and one uncommitted artifact effect |
 | Scheduled re-entry can recover from loss of its task-scoped Node Browser kernel | **H2A VERIFIED IN CURRENT CLIENT** | The [H2a verdict](../../mvp/evidence/h2a-cold-browser-runtime-reentry-2026-08-30-verdict.md) proves same-turn Browser runtime reconstruction and a genuine no-event Inbox call after the old kernel was terminated; the Desktop app itself remained running |
 | Crash-recoverable enrollment service contract | **H2 VERIFIED IN SYNTHETIC SERVICE HARNESS** | The [H2 verdict](../../mvp/evidence/h2-durable-enrollment-service-contract-2026-08-30-verdict.md) proves atomic enrollment, an at-least-once outbox with an idempotent durable destination, crash recovery at four process boundaries, concurrent approval convergence, activation fencing, sealed-receipt purge, and redaction; no real Agent destination or production daemon is claimed |
-| Full Desktop restart with independent Receiver validation harness | **READY; FORMAL ARMS NOT RUN** | The [D4/H2b runbook](../../mvp/D4_H2B_RUNBOOK.md) and bounded scripts provide external process, Receiver, scheduler-attempt, strict-rollout-envelope, replay, and redaction controls; rehearsals proved fail-closed setup and timing behavior, not restart continuity |
+| Full Desktop restart with independent Receiver validation harness | **FIRST NO-EVENT ATTEMPT INCONCLUSIVE; HARNESS REPAIRED; VALID ARMS NOT COMPLETED** | The [first formal attempt](../../mvp/evidence/d4-h2b-first-formal-no-event-inconclusive-2026-08-30.md) proved normal app closure but exposed an over-broad lifecycle classifier and a persisted-schedule discrepancy; no Site Tool or workflow effect occurred. The repaired [D4/H2b runbook](../../mvp/D4_H2B_RUNBOOK.md) still requires a fresh valid no-event arm before the event arm |
 | Same artifact stops at human boundary | **VERIFIED FOR Q5** | Revision 1 continued to revision 2; commit remained false and unavailable as a Site Tool |
 | Exact thread adds value beyond structured continuation memory | **UNKNOWN** | Requires the controlled comparison in Research/06 |
 | Demo app meets a real user need | **UNKNOWN** | Domain and user not selected |
@@ -295,13 +305,15 @@ See [Official Rules research](../01-official-rules.md) and
 2. Preserve C1 as a verified same-environment clean Agent-context result without promoting it
    to account, workspace, machine, public-deployment, or judge portability. Preserve M1 as
    one bounded run per documented eligible model without claiming parity.
-3. Run the prepared paired
+3. Complete one valid paired
    [D4 Desktop-restart-with-independent-Receiver experiment](../../mvp/D4_H2B_RUNBOOK.md) as the
-   next app-neutral Desktop-lifecycle kill test. Its local harness and fail-closed rehearsals are
-   ready, but neither formal arm has run. Use a new process identity, a no-event arm, an event arm,
-   genuine page-bound Site Tools, an external durable observer, replay controls, and no due
-   opportunity while Desktop is closed. Keep the Receiver available throughout; Receiver restart
-   is covered by H1/H2. Treat any pass as current-build compatibility evidence only.
+   next app-neutral Desktop-lifecycle kill test. The first formal no-event attempt was
+   `INCONCLUSIVE` because the old harness treated an unrelated persistent P0 relay as Desktop
+   lifecycle state; the event arm did not run. Stop that relay, use a fresh disposable target and
+   one-shot, require the target not to manage its automation, and rerun the repaired no-event arm
+   first. Continue to the event arm only after a valid no-event pass. Keep the Receiver available
+   throughout; Receiver restart is covered by H1/H2. Treat any pass as current-build compatibility
+   evidence only.
 4. Discuss and select the product layer and demo application with Eddy using observed
    workflow evidence plus explicit product, WebMCP, execution, judgeability, and
    watch-window economics gates.

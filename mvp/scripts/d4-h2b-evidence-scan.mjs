@@ -4,7 +4,230 @@ import { createHash } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath } from "node:url";
 
-const scriptsDirectory = path.dirname(fileURLToPath(import.meta.url));
+const modulePath = fileURLToPath(import.meta.url);
+const expectedPromptForbiddenKeys = [
+  "absolute_url",
+  "event_id",
+  "grant_id",
+  "inbox_bearer",
+  "opaque_binding",
+  "receipt_field_name",
+  "site_tool_name",
+  "workflow_id",
+];
+const expectedExactReceiptMatchKeys = [
+  "authorized_event_type",
+  "canonical_url",
+  "receiver_inbox_url",
+  "workflow_id",
+];
+
+export function validateAutomationObservationHistory({
+  entries,
+  expectedAutomationIdSha256,
+  expectedTargetThreadSha256,
+  expectedPromptSha256,
+  expectedArmCount,
+}) {
+  if (
+    !isSha256(expectedAutomationIdSha256) ||
+    !isSha256(expectedTargetThreadSha256) ||
+    !isSha256(expectedPromptSha256) ||
+    !Number.isInteger(expectedArmCount) ||
+    expectedArmCount < 1 ||
+    expectedArmCount > 3
+  ) {
+    throw new Error("The D4/H2b expected automation history contract is invalid");
+  }
+  if (!Array.isArray(entries) || entries.length === 0) {
+    throw new Error("The D4/H2b observer history is empty or invalid");
+  }
+
+  let observerStartCount = 0;
+  let stateSnapshotCount = 0;
+  let armStartedCount = 0;
+  let armClosedCount = 0;
+  let armActive = false;
+  let previousObservedAt = Number.NEGATIVE_INFINITY;
+
+  for (const entry of entries) {
+    if (
+      !entry ||
+      typeof entry !== "object" ||
+      Array.isArray(entry) ||
+      typeof entry.event !== "string"
+    ) {
+      throw new Error("The D4/H2b observer history contains an invalid entry");
+    }
+    const observedAt = Date.parse(entry.observed_at);
+    if (!Number.isFinite(observedAt) || observedAt < previousObservedAt) {
+      throw new Error("The D4/H2b observer history timestamps are invalid");
+    }
+    previousObservedAt = observedAt;
+
+    if (entry.event === "observer_started") {
+      observerStartCount += 1;
+      validateAutomationSnapshot(entry.details?.automation_preflight, {
+        expectedAutomationIdSha256,
+        expectedTargetThreadSha256,
+        expectedPromptSha256,
+      });
+      continue;
+    }
+
+    if (entry.event === "automation_state_change") {
+      stateSnapshotCount += 1;
+      if (entry.details?.present === false) {
+        throw new Error("The D4/H2b automation disappeared during observed history");
+      }
+      validateAutomationSnapshot(entry.details, {
+        expectedAutomationIdSha256,
+        expectedTargetThreadSha256,
+        expectedPromptSha256,
+      });
+      continue;
+    }
+
+    if (entry.event === "automation_arm_started") {
+      if (armActive) {
+        throw new Error("The D4/H2b observer history contains overlapping automation arms");
+      }
+      armStartedCount += 1;
+      armActive = true;
+      if (
+        entry.details?.initial_preflight_valid !== true ||
+        entry.details?.configuration_matches_database !== true ||
+        entry.details?.initial_next_run_was_future !== true
+      ) {
+        throw new Error("The D4/H2b automation arm started without a valid contract");
+      }
+      continue;
+    }
+
+    if (entry.event === "automation_arm_closed") {
+      if (!armActive) {
+        throw new Error("The D4/H2b observer history closed an unknown automation arm");
+      }
+      armClosedCount += 1;
+      armActive = false;
+      if (
+        entry.details?.automation_contract_violation_count !== 0 ||
+        entry.details?.observer_error_count !== 0 ||
+        entry.details?.observer_polling_gap_count !== 0 ||
+        entry.details?.process_contamination_violation_count !== 0 ||
+        entry.details?.process_contamination_preserved !== true ||
+        entry.details?.desktop_runtime_multiplicity_violation_count !== 0 ||
+        entry.details?.desktop_runtime_multiplicity_preserved !== true ||
+        entry.details?.configuration_matches_database !== true ||
+        entry.details?.private_automation_contract_matches !== true ||
+        entry.details?.pass_candidate !== true
+      ) {
+        throw new Error("The D4/H2b closed automation arm contains invalid history");
+      }
+      continue;
+    }
+
+    if (
+      entry.event === "automation_arm_contract_violation" ||
+      entry.event === "observer_error" ||
+      entry.event === "observer_polling_gap" ||
+      entry.event === "automation_arm_observer_polling_gap" ||
+      entry.event === "observer_process_contamination_latched" ||
+      entry.event === "desktop_closure_rejected_process_contamination" ||
+      entry.event === "observer_desktop_runtime_multiplicity_latched"
+    ) {
+      throw new Error("The D4/H2b observer history contains a fail-closed event");
+    }
+  }
+
+  if (
+    entries[0]?.event !== "observer_started" ||
+    observerStartCount !== 1 ||
+    stateSnapshotCount === 0 ||
+    armStartedCount !== expectedArmCount ||
+    armClosedCount !== expectedArmCount ||
+    armActive
+  ) {
+    throw new Error("The D4/H2b observer history is incomplete");
+  }
+
+  return {
+    observer_start_count: observerStartCount,
+    state_snapshot_count: stateSnapshotCount,
+    arm_started_count: armStartedCount,
+    arm_closed_count: armClosedCount,
+  };
+}
+
+export function validateCurrentAutomationRow({
+  automation,
+  expectedPrompt,
+  expectedTargetThreadId,
+}) {
+  if (!automation) {
+    throw new Error("The D4/H2b current automation row is missing");
+  }
+  if (
+    typeof automation.prompt !== "string" ||
+    automation.prompt.length === 0 ||
+    typeof automation.target_thread_id !== "string" ||
+    automation.target_thread_id.length === 0 ||
+    automation.kind !== "heartbeat" ||
+    automation.status !== "PAUSED" ||
+    automation.next_run_at !== null
+  ) {
+    throw new Error("The D4/H2b current automation row is not safely paused");
+  }
+  if (
+    automation.prompt !== expectedPrompt ||
+    automation.target_thread_id !== expectedTargetThreadId
+  ) {
+    throw new Error("The D4/H2b current automation drifted from the pinned private contract");
+  }
+}
+
+function validateAutomationSnapshot(snapshot, {
+  expectedAutomationIdSha256,
+  expectedTargetThreadSha256,
+  expectedPromptSha256,
+}) {
+  const forbiddenFlags = snapshot?.prompt_audit?.forbidden;
+  const receiptMatchFlags = snapshot?.prompt_audit?.exact_receipt_value_matches;
+  if (
+    snapshot?.present !== true ||
+    snapshot.automation_id_sha256 !== expectedAutomationIdSha256 ||
+    snapshot.target_thread_sha256 !== expectedTargetThreadSha256 ||
+    snapshot.prompt_audit?.sha256 !== expectedPromptSha256 ||
+    snapshot.prompt_audit?.forbidden_count !== 0 ||
+    !exactFalseFlagMap(forbiddenFlags, expectedPromptForbiddenKeys) ||
+    !exactFalseFlagMap(receiptMatchFlags, expectedExactReceiptMatchKeys) ||
+    snapshot.kind !== "heartbeat" ||
+    snapshot.other_active_count !== 0 ||
+    snapshot.configuration_matches_database !== true
+  ) {
+    throw new Error("The D4/H2b observer recorded automation contract drift");
+  }
+}
+
+function exactFalseFlagMap(value, expectedKeys) {
+  return Boolean(
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    Object.keys(value).sort().join("\0") === [...expectedKeys].sort().join("\0") &&
+    Object.values(value).every((flag) => flag === false),
+  );
+}
+
+function isSha256(value) {
+  return typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
+}
+
+const isMain = Boolean(process.argv[1]) && path.resolve(process.argv[1]) === modulePath;
+
+if (isMain) {
+try {
+const scriptsDirectory = path.dirname(modulePath);
 const mvpRoot = path.resolve(scriptsDirectory, "..");
 const repositoryRoot = path.resolve(mvpRoot, "..");
 const runId = process.env.WEBMCP_D4_RUN_ID;
@@ -15,6 +238,10 @@ const automationDatabasePath = process.env.WEBMCP_D4_AUTOMATION_DATABASE
   ? path.resolve(process.env.WEBMCP_D4_AUTOMATION_DATABASE)
   : null;
 const automationId = process.env.WEBMCP_D4_AUTOMATION_ID;
+const expectedArmCount = Number.parseInt(
+  process.env.WEBMCP_D4_EXPECTED_ARM_COUNT ?? "",
+  10,
+);
 
 if (!runId || !/^[a-z0-9][a-z0-9-]{6,46}[a-z0-9]$/.test(runId)) {
   throw new Error("WEBMCP_D4_RUN_ID must be a lowercase alphanumeric slug of 8-48 characters");
@@ -33,11 +260,15 @@ if (
 if (!automationDatabasePath || !fs.existsSync(automationDatabasePath) || !automationId) {
   throw new Error("The D4/H2b evidence scan requires the private automation database and ID");
 }
+if (!Number.isInteger(expectedArmCount) || expectedArmCount < 1 || expectedArmCount > 3) {
+  throw new Error("WEBMCP_D4_EXPECTED_ARM_COUNT must be an integer from 1 to 3");
+}
 
 const runtimeDirectory = path.join(mvpRoot, "var", "d4-h2b", runId);
 const receiverDatabasePath = path.join(runtimeDirectory, "runtime.sqlite");
 const receiptPath = path.join(runtimeDirectory, "bounded-receipt.json");
 const secretsPath = path.join(runtimeDirectory, "runtime-secrets.json");
+const observerPath = path.join(runtimeDirectory, "observer.jsonl");
 const privateAutomationContractPath = path.join(
   runtimeDirectory,
   "private-automation-contract.json",
@@ -46,6 +277,7 @@ for (const privatePath of [
   receiverDatabasePath,
   receiptPath,
   secretsPath,
+  observerPath,
   privateAutomationContractPath,
 ]) {
   if (!fs.existsSync(privatePath)) throw new Error("D4/H2b private evidence set is incomplete");
@@ -85,6 +317,29 @@ if (
   throw new Error("The D4/H2b pinned private automation contract is invalid");
 }
 
+const observerEntries = fs.readFileSync(observerPath, "utf8").split("\n")
+  .filter(Boolean)
+  .map((line) => JSON.parse(line));
+const observerStart = observerEntries.find((entry) => entry.event === "observer_started");
+const observerAutomation = observerStart?.details?.automation_preflight;
+if (
+  observerAutomation?.present !== true ||
+  observerAutomation.configuration_matches_database !== true ||
+  observerAutomation.automation_id_sha256 !== digest(automationId) ||
+  observerAutomation.target_thread_sha256 !== privateAutomationContract.target_thread_sha256 ||
+  observerAutomation.prompt_audit?.sha256 !== privateAutomationContract.prompt_sha256 ||
+  observerAutomation.prompt_audit?.forbidden_count !== 0
+) {
+  throw new Error("The D4/H2b observer did not freeze the expected automation contract");
+}
+const automationHistory = validateAutomationObservationHistory({
+  entries: observerEntries,
+  expectedAutomationIdSha256: digest(automationId),
+  expectedTargetThreadSha256: privateAutomationContract.target_thread_sha256,
+  expectedPromptSha256: privateAutomationContract.prompt_sha256,
+  expectedArmCount,
+});
+
 const sensitiveValues = new Set();
 const sensitiveClasses = new Set();
 const receipt = JSON.parse(fs.readFileSync(receiptPath, "utf8"));
@@ -104,22 +359,14 @@ for (const value of Object.values(secrets)) addSensitive(value, "runtime_secret"
 const automationDatabase = new DatabaseSync(automationDatabasePath, { readOnly: true });
 try {
   const automation = automationDatabase.prepare(`
-    SELECT prompt, target_thread_id FROM automations WHERE id = ?
+    SELECT prompt, target_thread_id, kind, status, next_run_at
+    FROM automations WHERE id = ?
   `).get(automationId);
-  if (
-    typeof automation?.prompt !== "string" ||
-    automation.prompt.length === 0 ||
-    typeof automation?.target_thread_id !== "string" ||
-    automation.target_thread_id.length === 0
-  ) {
-    throw new Error("D4/H2b automation prompt or target is missing");
-  }
-  if (
-    automation.prompt !== privateAutomationContract.prompt ||
-    automation.target_thread_id !== privateAutomationContract.target_thread_id
-  ) {
-    throw new Error("The D4/H2b current automation drifted from the pinned private contract");
-  }
+  validateCurrentAutomationRow({
+    automation,
+    expectedPrompt: privateAutomationContract.prompt,
+    expectedTargetThreadId: privateAutomationContract.target_thread_id,
+  });
 } finally {
   automationDatabase.close();
 }
@@ -274,6 +521,10 @@ const result = {
   sensitive_value_count_checked: sensitiveValues.size,
   sensitive_class_count_checked: sensitiveClasses.size,
   pattern_canary_count_checked: Object.keys(patternCanaries).length,
+  automation_row_present: true,
+  automation_observation_history_validated: true,
+  automation_observation_snapshot_count: automationHistory.state_snapshot_count,
+  expected_automation_arm_count: expectedArmCount,
   candidate_bytes: Buffer.byteLength(candidate),
 };
 process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
@@ -337,4 +588,9 @@ function addSensitive(value, sensitiveClass = null) {
 
 function digest(value) {
   return createHash("sha256").update(value).digest("hex");
+}
+} catch {
+  process.stderr.write(`${JSON.stringify({ safe: false })}\n`);
+  process.exitCode = 1;
+}
 }

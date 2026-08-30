@@ -5,6 +5,16 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath } from "node:url";
+import {
+  chatGptCoreAppServerProcesses,
+  chatGptLifecycleProcesses,
+  chatGptMainProcesses,
+  d4ContaminatingProcessSnapshot,
+  desktopLifecycleSnapshot,
+  extendTrackedLifecycleIdentities,
+  lifecycleIdentityMap,
+  sameProcessIdentity as sameIdentity,
+} from "./d4-desktop-process-lifecycle.mjs";
 
 const execFileAsync = promisify(execFile);
 const scriptsDirectory = path.dirname(fileURLToPath(import.meta.url));
@@ -62,6 +72,9 @@ let pausedHeartbeatBaseline = null;
 let pausedAutomationBaseline = null;
 let heartbeatTurnScanCache = null;
 let lastObserverPollStartedAt = null;
+let processContaminationLatch = null;
+let desktopRuntimeMultiplicityLatch = null;
+let contaminatedClosureRejectionRecorded = false;
 const observerErrors = [];
 
 const appVersion = await chatGptVersion();
@@ -85,16 +98,29 @@ if (process.ppid !== 1) {
   throw new Error("D4/H2b observer must be directly owned by launchd");
 }
 
+const contaminatingProcesses = d4ContaminatingProcessSnapshot(startupProcesses);
+if (!contaminatingProcesses.clean) {
+  record("observer_invalid_process_contamination", contaminatingProcesses);
+  throw new Error("D4/H2b observer requires unrelated P0 relay infrastructure to be stopped");
+}
+
 const baselineProcesses = chatGptProcessSnapshot(startupProcesses);
-if (baselineProcesses.main_processes.length !== 1) {
+if (
+  baselineProcesses.main_processes.length !== 1 ||
+  baselineProcesses.app_server_processes.length !== 1
+) {
   record("observer_invalid_baseline", {
     chatgpt_main_process_count: baselineProcesses.main_processes.length,
+    chatgpt_core_app_server_process_count:
+      baselineProcesses.app_server_processes.length,
   });
-  throw new Error("D4/H2b observer requires exactly one ChatGPT main process at startup");
+  throw new Error(
+    "D4/H2b observer requires exactly one Desktop main and core app-server at startup",
+  );
 }
 const baselineMainIdentity = baselineProcesses.main_processes[0];
 let trackedMainIdentity = baselineMainIdentity;
-let trackedIdentities = identityMap(baselineProcesses.owned_processes);
+let trackedIdentities = lifecycleIdentityMap(chatGptLifecycleProcesses(startupProcesses));
 let waitingForReplacement = false;
 let restartCycle = 0;
 let runtimeReadyCycle = 0;
@@ -172,7 +198,8 @@ record("observer_started", {
   chatgpt_ancestor_detected: false,
   database_present: true,
   baseline_main_process: baselineMainIdentity,
-  baseline_owned_process_count: trackedIdentities.size,
+  baseline_lifecycle_process_count: trackedIdentities.size,
+  process_contamination_preflight: contaminatingProcesses,
   app_version: appVersion,
   receiver_preflight: initialReceiverEvidence,
   automation_preflight: initialAutomation,
@@ -203,32 +230,53 @@ while (!fs.existsSync(stopPath)) {
   lastObserverPollStartedAt = pollStartedAt;
   try {
     const currentRows = await processTable();
+    observeProcessContamination(currentRows);
     const processes = chatGptProcessSnapshot(currentRows);
+    observeDesktopRuntimeMultiplicity(processes);
     const processKey = JSON.stringify(processes);
     if (processKey !== priorProcessKey) {
       priorProcessKey = processKey;
       record("chatgpt_process_change", processes);
     }
 
-    if (!waitingForReplacement) extendTrackedIdentities(currentRows, trackedIdentities);
+    if (!waitingForReplacement) {
+      extendTrackedLifecycleIdentities(currentRows, trackedIdentities);
+    }
+    const desktopLifecycle = desktopLifecycleSnapshot(currentRows, trackedIdentities);
     if (
       !waitingForReplacement &&
-      [...trackedIdentities.values()].every(
-        (identity) => !currentRows.some((row) => sameIdentity(row, identity)),
-      )
+      desktopLifecycle.closed &&
+      processContaminationLatch === null
     ) {
       restartCycle += 1;
       waitingForReplacement = true;
       record("old_app_processes_all_absent", {
         restart_cycle: restartCycle,
         prior_main_process: trackedMainIdentity,
-        tracked_owned_process_count: trackedIdentities.size,
+        tracked_lifecycle_process_count: trackedIdentities.size,
+        desktop_lifecycle: desktopLifecycle,
       });
     }
-    if (waitingForReplacement) {
-      const replacement = processes.main_processes.find(
-        (candidate) => !sameIdentity(candidate, trackedMainIdentity),
-      );
+    if (
+      !waitingForReplacement &&
+      desktopLifecycle.closed &&
+      processContaminationLatch !== null &&
+      !contaminatedClosureRejectionRecorded
+    ) {
+      contaminatedClosureRejectionRecorded = true;
+      record("desktop_closure_rejected_process_contamination", {
+        process_contamination_latch: processContaminationLatch,
+        desktop_lifecycle: desktopLifecycle,
+      });
+    }
+    if (
+      waitingForReplacement &&
+      desktopRuntimeMultiplicityLatch === null &&
+      processes.main_processes.length === 1
+    ) {
+      const replacement = !sameIdentity(processes.main_processes[0], trackedMainIdentity)
+        ? processes.main_processes[0]
+        : null;
       if (replacement) {
         record("new_app_process_started", {
           restart_cycle: restartCycle,
@@ -238,18 +286,22 @@ while (!fs.existsSync(stopPath)) {
           app_version: appVersion,
         });
         trackedMainIdentity = replacement;
-        trackedIdentities = identityMap(processes.owned_processes);
+        trackedIdentities = lifecycleIdentityMap(chatGptLifecycleProcesses(currentRows));
         waitingForReplacement = false;
       }
     }
     if (
       restartCycle > runtimeReadyCycle &&
       !waitingForReplacement &&
+      desktopRuntimeMultiplicityLatch === null &&
+      processes.main_processes.length === 1 &&
+      sameIdentity(processes.main_processes[0], trackedMainIdentity) &&
       processes.app_server_processes.length === 1
     ) {
       runtimeReadyCycle = restartCycle;
       record("replacement_app_runtime_ready", {
         restart_cycle: restartCycle,
+        main_process: processes.main_processes[0],
         app_server_process: processes.app_server_processes[0],
         app_version: appVersion,
       });
@@ -309,12 +361,55 @@ record("observer_stopped", {
   active_automation_arm: activeAutomationArm
     ? automationArmEvidence(activeAutomationArm, activeAutomationArm.latestHeartbeatSnapshot)
     : null,
+  process_contamination_latch: processContaminationLatch,
+  desktop_runtime_multiplicity_latch: desktopRuntimeMultiplicityLatch,
 });
 
+function observeProcessContamination(rows) {
+  const snapshot = d4ContaminatingProcessSnapshot(rows);
+  if (snapshot.clean || processContaminationLatch !== null) return snapshot;
+
+  processContaminationLatch = {
+    observed_at: new Date().toISOString(),
+    ...snapshot,
+  };
+  if (activeAutomationArm) {
+    activeAutomationArm.processContaminationViolationCount += 1;
+    activeAutomationArm.processContaminationObservedAt =
+      processContaminationLatch.observed_at;
+  }
+  record("observer_process_contamination_latched", {
+    ...processContaminationLatch,
+    active_automation_arm_sequence: activeAutomationArm?.sequence ?? null,
+  });
+  return snapshot;
+}
+
+function observeDesktopRuntimeMultiplicity(snapshot) {
+  const validMaximum =
+    snapshot.main_processes.length <= 1 &&
+    snapshot.app_server_processes.length <= 1;
+  if (validMaximum || desktopRuntimeMultiplicityLatch !== null) return snapshot;
+
+  desktopRuntimeMultiplicityLatch = {
+    observed_at: new Date().toISOString(),
+    chatgpt_main_process_count: snapshot.main_processes.length,
+    chatgpt_core_app_server_process_count: snapshot.app_server_processes.length,
+  };
+  if (activeAutomationArm) {
+    activeAutomationArm.desktopRuntimeMultiplicityViolationCount += 1;
+    activeAutomationArm.desktopRuntimeMultiplicityObservedAt =
+      desktopRuntimeMultiplicityLatch.observed_at;
+  }
+  record("observer_desktop_runtime_multiplicity_latched", {
+    ...desktopRuntimeMultiplicityLatch,
+    active_automation_arm_sequence: activeAutomationArm?.sequence ?? null,
+  });
+  return snapshot;
+}
+
 function chatGptProcessSnapshot(rows) {
-  const main = rows.filter(
-    (row) => row.command.startsWith("/Applications/ChatGPT.app/Contents/MacOS/ChatGPT"),
-  );
+  const main = chatGptMainProcesses(rows);
   const descendants = new Set(main.map((row) => row.pid));
   let changed = true;
   while (changed) {
@@ -336,48 +431,11 @@ function chatGptProcessSnapshot(rows) {
       started_at: row.startedAt,
       executable: path.basename(row.executable),
     })).sort((a, b) => a.pid - b.pid),
-    app_server_processes: rows.filter(
-      (row) =>
-        descendants.has(row.pid) &&
-        row.command.startsWith("/Applications/ChatGPT.app/Contents/Resources/codex ") &&
-        row.command.includes(" app-server "),
-    ).map((row) => ({ pid: row.pid, ppid: row.ppid, started_at: row.startedAt })),
+    // Count every live Desktop core app-server, including an old instance
+    // reparented outside the current main-process tree during restart.
+    app_server_processes: chatGptCoreAppServerProcesses(rows)
+      .map((row) => ({ pid: row.pid, ppid: row.ppid, started_at: row.startedAt })),
   };
-}
-
-function sameIdentity(row, identity) {
-  const rowStartedAt = row.startedAt ?? row.started_at;
-  return row.pid === identity.pid && rowStartedAt === identity.started_at;
-}
-
-function identityMap(rows) {
-  return new Map(rows.map((row) => {
-    const identity = { pid: row.pid, started_at: row.startedAt ?? row.started_at };
-    return [identityKey(identity), identity];
-  }));
-}
-
-function identityKey(identity) {
-  return `${identity.pid}:${identity.startedAt ?? identity.started_at}`;
-}
-
-function extendTrackedIdentities(rows, tracked) {
-  const trackedValues = [...tracked.values()];
-  const liveTrackedPids = new Set(rows
-    .filter((row) => trackedValues.some((identity) => sameIdentity(row, identity)))
-    .map((row) => row.pid));
-  let changed = true;
-  while (changed) {
-    changed = false;
-    for (const row of rows) {
-      const key = identityKey(row);
-      if (liveTrackedPids.has(row.ppid) && !tracked.has(key)) {
-        tracked.set(key, { pid: row.pid, started_at: row.startedAt });
-        liveTrackedPids.add(row.pid);
-        changed = true;
-      }
-    }
-  }
 }
 
 async function processTable() {
@@ -860,6 +918,8 @@ function observeAutomationArm(snapshot, heartbeatTurns, receiverSnapshot) {
     nextRunIsFuture &&
     activationObservedPromptly &&
     activationWindowObserverErrorCount === 0 &&
+    processContaminationLatch === null &&
+    desktopRuntimeMultiplicityLatch === null &&
     snapshot.configuration_matches_database === true &&
     automationSnapshotMatchesPrivateContract(snapshot) &&
     receiverMatchesExperimentContract(receiverSnapshot);
@@ -885,6 +945,12 @@ function observeAutomationArm(snapshot, heartbeatTurns, receiverSnapshot) {
       receiverContinuityViolationObserved: false,
       heartbeatSourceViolationCount: 0,
       heartbeatSourceViolationObserved: false,
+      processContaminationViolationCount: processContaminationLatch ? 1 : 0,
+      processContaminationObservedAt: processContaminationLatch?.observed_at ?? null,
+      desktopRuntimeMultiplicityViolationCount:
+        desktopRuntimeMultiplicityLatch ? 1 : 0,
+      desktopRuntimeMultiplicityObservedAt:
+        desktopRuntimeMultiplicityLatch?.observed_at ?? null,
       initialActivationPreflightValid: cleanActivationPreflight,
       activationObservationDelayMs,
       activationObservedPromptly,
@@ -918,6 +984,9 @@ function observeAutomationArm(snapshot, heartbeatTurns, receiverSnapshot) {
         activationWindowObserverErrorCount,
       initial_next_run_was_future: nextRunIsFuture,
       initial_preflight_valid: cleanActivationPreflight,
+      process_contamination_preserved: processContaminationLatch === null,
+      desktop_runtime_multiplicity_preserved:
+        desktopRuntimeMultiplicityLatch === null,
       configuration_matches_database:
         snapshot.configuration_matches_database === true,
       receiver_matches_experiment_contract:
@@ -1110,6 +1179,15 @@ function automationArmEvidence(arm, heartbeatTurns, automationSnapshot) {
     receiver_continuity_violation_count: arm.receiverContinuityViolationCount,
     receiver_continuity_preserved: arm.receiverContinuityViolationCount === 0,
     heartbeat_source_violation_count: arm.heartbeatSourceViolationCount,
+    process_contamination_violation_count: arm.processContaminationViolationCount,
+    process_contamination_preserved: arm.processContaminationViolationCount === 0,
+    process_contamination_observed_at: arm.processContaminationObservedAt,
+    desktop_runtime_multiplicity_violation_count:
+      arm.desktopRuntimeMultiplicityViolationCount,
+    desktop_runtime_multiplicity_preserved:
+      arm.desktopRuntimeMultiplicityViolationCount === 0,
+    desktop_runtime_multiplicity_observed_at:
+      arm.desktopRuntimeMultiplicityObservedAt,
     baseline_strict_heartbeat_envelope_count: arm.baselineStrictEnvelopeCount,
     baseline_accepted_strict_heartbeat_turn_count: arm.baselineAcceptedTurnCount,
     new_strict_heartbeat_envelope_count: newStrictEnvelopes.length,
@@ -1134,6 +1212,8 @@ function automationArmEvidence(arm, heartbeatTurns, automationSnapshot) {
       arm.automationContractViolationCount === 0 &&
       arm.receiverContinuityViolationCount === 0 &&
       arm.heartbeatSourceViolationCount === 0 &&
+      arm.processContaminationViolationCount === 0 &&
+      arm.desktopRuntimeMultiplicityViolationCount === 0 &&
       exactlyOneStrictEnvelope &&
       exactlyOneAcceptedTurn &&
       correlationMatches &&

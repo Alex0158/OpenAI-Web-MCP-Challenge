@@ -153,7 +153,8 @@ Grant, Inbox, and outbox; a sealed receipt can be redispatched with a stable dis
 idempotent separate durable destination tolerates acknowledgement loss; and activation is
 fenced until receipt delivery and exact binding acknowledgement. Real `SIGKILL` tests and
 independent approval processes prove recovery and convergence. The current full suite passes
-88 tests.
+114 tests, including the later D4 lifecycle, contamination-latch, and automation-history scanner
+controls.
 
 The remaining question is whether the selected real destination can implement the same
 durable acknowledgement and idempotency contract. H2 uses a synthetic SQLite destination

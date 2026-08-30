@@ -7,7 +7,9 @@ remains available and, for the event arm, retains one bounded event, a normal Co
 and relaunch can resume the same bound task, reacquire a fresh Browser/WebMCP surface, and stop
 at the human boundary. The Receiver is intentionally not restarted during D4.
 
-D4 restarts the Codex Desktop application and its owned task/runtime processes only. It does not
+D4 restarts the Codex Desktop application and its semantic lifecycle processes only. These are the
+main process, Electron framework helpers, and Codex app-server/control processes, not every
+operating-system descendant ever launched by a task. It does not
 test Receiver restart or crash recovery, execution while Desktop is closed, missed-run catch-up,
 machine restart, sleep/offline behavior, another account or workspace, public platform support,
 or production availability. Receiver durability is covered by H1/H2; missed-run behavior is a
@@ -23,6 +25,15 @@ and stop before `COMMIT_ARTIFACT`.
 
 - The Receiver, observer, and relaunch helper are independently supervised by `launchd` and run
   outside the ChatGPT process tree.
+- Observer and helper share one semantic lifecycle classifier. A surviving old app-server,
+  Electron helper, or control host blocks closure; detached Node, shell, relay, and tool workloads
+  do not become Desktop lifecycle processes merely because they were once descendants.
+- Only explicitly reviewed bundled workload signatures are excluded from lifecycle ownership.
+  Unknown ChatGPT-bundle executables fail closed. Observer and helper continuously check and
+  sticky-latch the known P0 relay as experiment contamination.
+- Baseline and replacement readiness each require exactly one Desktop main process and exactly
+  one core app-server. Any duplicate main or core app-server is sticky-latched and invalidates
+  the arm even if the extra process later disappears.
 - The Receiver remains running and owns the isolated durable state throughout both arms.
 - Only the Codex Desktop application is quit and relaunched; the target task is not manually
   opened after relaunch.
@@ -76,6 +87,9 @@ published platform guarantee.
 - Use a new disposable Desktop task. Store the private receipt there once; never put it in the
   heartbeat prompt, repository, public evidence, or operator chat output.
 - Keep every unrelated automation paused and every unrelated Agent task idle.
+- Stop the unrelated P0 `codex-app-tools-relay` before observer or helper startup. Both preflights
+  reject it explicitly, and both components continue checking and latching it throughout the run,
+  so prior experiment infrastructure cannot contaminate D4.
 - Do not use the automation's manual **Run now** control before or during an arm. The current
   rollout record has no persisted discriminator between scheduled and manual dispatch, so any
   manual run invalidates the experiment even when its timestamp is after the one-shot due time.
@@ -99,7 +113,8 @@ task. Keep it `PAUSED` until an arm is explicitly ready. Do not edit its TOML or
 directly. Keep the automation ID, target task identity, fixed prompt, TOML path, and database path
 private. Fixture preparation freezes the original raw prompt, target task, and target rollout in a
 mode-`0600` ignored private contract file. The observer pins its digests, and the derivative scanner
-uses the frozen raw values rather than mutable post-run automation state.
+uses the frozen raw values plus every retained automation observation and the live current row.
+Keep the paused automation row present and unchanged until the evidence scan completes.
 
 The fixed prompt must be trigger-only: it may tell the target to process the D4 heartbeat from the
 validated bounded receipt already stored in that task, but it must not contain an absolute URL,
@@ -108,7 +123,8 @@ opaque binding, or Site Tool name. The restricted receipt fields are `receiver_i
 `canonical_url`, `workflow_id`, and `authorized_event_type`, plus their exact values. The observer
 binds each accepted scheduler envelope to the exact private automation ID, fixed prompt, target
 rollout, and turn context. Changing the prompt or target after the observer starts invalidates the
-experiment.
+experiment. The prompt must also state that the target must not create, update, pause, or delete
+automations; automation lifecycle remains owned by the external controller.
 
 ## Prepare the isolated fixture
 
@@ -153,9 +169,14 @@ and zero events, runs, deliveries, and effects. The observer must prove:
    is at least four minutes away.
 4. The operator presses normal `Cmd-Q`. Record this as a human-operated lifecycle action; do not
    claim it was performed by Computer Use.
-5. The external observer must prove every tracked old app identity is absent. The helper then uses
-   LaunchServices to relaunch ChatGPT without a task or URL argument.
-6. The observer must prove a replacement main process at least two minutes before `next_run_at`.
+5. The external observer must prove every tracked old semantic lifecycle identity is absent and no
+   current lifecycle process remains. The helper then uses LaunchServices to relaunch ChatGPT
+   without a task or URL argument.
+   If no automatic relaunch occurs within 130 seconds of `Cmd-Q`, manually reopen the app only as
+   recovery and classify the arm as `INCONCLUSIVE`; do not continue that arm.
+6. The observer must prove exactly one replacement main process and exactly one core app-server
+   at least two minutes before `next_run_at`; the helper independently rechecks both counts and
+   the replacement main identity before accepting readiness.
 7. Do not manually open the target task. Require one scheduled turn to rediscover the fresh Inbox
    Site Tool, return `pending: false`, avoid the Host, and make no state change.
 8. Pause the heartbeat and verify `next_run_at = NULL`.
@@ -168,9 +189,9 @@ do not describe this procedural control as machine-observed UI evidence.
 
 1. Re-arm the same heartbeat with a new future one-shot `DTSTART`.
 2. Bootstrap the event relaunch helper, then have the operator press normal `Cmd-Q` again.
-3. Only after the observer proves every old app identity absent, the external helper accepts exactly
-   one authenticated event while the Receiver remains available. It must prove one pending event,
-   run, and delivery, with zero effects and artifact revision 1.
+3. Only after the observer proves every old semantic lifecycle identity absent, the external helper
+   accepts exactly one authenticated event while the Receiver remains available. It must prove one
+   pending event, run, and delivery, with zero effects and artifact revision 1.
 4. The helper relaunches ChatGPT through LaunchServices with no target task or URL argument.
 5. The scheduled target task must use genuine page-bound Inbox and Host Site Tools, read fresh
    authority, continue once, acknowledge once, and stop before `COMMIT_ARTIFACT`.
@@ -190,7 +211,7 @@ Preserve the private database, receipt, secrets, frozen automation contract, run
 observer log, relaunch-helper logs, and scheduler snapshots. Preserve a no-manual-**Run now**
 attestation for every scheduled D4 turn, including the final no-event control. For each restart
 arm, also preserve an attestation that nobody manually opened or navigated to the target task.
-Publish only a redacted
+Keep the paused automation row present until the scanner completes. Publish only a redacted
 derivative containing those attestations, process lifecycle times, digests, one-shot due/run times,
 Site Tool provenance, state/count transitions, replay outcome, tests, and a `PASS`, `FAIL`, or
 `INCONCLUSIVE` verdict. Label both attestations as operator-reported rather than machine-observed.
@@ -207,11 +228,17 @@ derivative supplied only through the command environment:
 export WEBMCP_D4_RUN_ID='replace-with-the-same-private-run-id'
 export WEBMCP_D4_AUTOMATION_DATABASE='replace-with-private-automation-sqlite'
 export WEBMCP_D4_AUTOMATION_ID='replace-with-private-automation-id'
+export WEBMCP_D4_EXPECTED_ARM_COUNT='3'
 export WEBMCP_D4_DERIVATIVE='replace-with-repository-public-evidence-candidate'
 npm run scan:d4:evidence
 ```
 
-Require `safe: true`, zero exact forbidden matches, and zero pattern hits. The scanner reports only
-counts and booleans; it never prints a matched private value. The isolated numeric loopback port is
-non-authority and may appear in the derivative, but every complete private URL containing it must
-remain redacted.
+Require `safe: true`, zero exact forbidden matches, zero pattern hits, a present current automation
+row, and a valid complete observation history containing exactly the supplied number of fully
+closed pass-candidate arms. Use `3` for the final package: no-event restart, event restart, and the
+final no-event control. The scanner reports only counts and booleans; it
+never prints a matched private value. The isolated numeric loopback port is non-authority and may
+appear in the derivative, but every complete private URL containing it must remain redacted. Any
+recorded contract drift, observer error, polling gap, missing current row, or incomplete arm fails
+closed. An explicit target-side deletion trace can explain why a row disappeared, but it cannot
+restore scanner certification.

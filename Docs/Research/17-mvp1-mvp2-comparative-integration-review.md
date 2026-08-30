@@ -75,7 +75,11 @@ that work for review, so merging is not required to compare or learn from it.
 
 ### 2.1 MVP1
 
-- The current deterministic suite passes **88/88** tests.
+- **Later D4 update after the reviewed host SHA:** the current deterministic suite passes
+  **114/114** tests, including the additive lifecycle, contamination-latch, and
+  automation-history scanner controls. See the
+  [current status](../Core/00-current-status.md) and
+  [provisional D4 attempt record](../../mvp/evidence/d4-h2b-first-formal-no-event-inconclusive-2026-08-30.md).
 - The current evidence package preserves bounded P0, H0b, H1, H2a, and H2 results.
 - C1 clean-context discovery and one M1 discovery-and-read run per documented eligible model
   are separately bounded in Research 14 and Research 15.
@@ -300,8 +304,8 @@ After the applicable gate:
 2. keep product assets under the selected app, protocol/SDK assets under the decided versioned
    mechanism boundary, and transport code behind the Agent Adapter boundary;
 3. fix the P1 findings relevant to the imported class before any live or deployment claim;
-4. run MVP1's 88-test suite plus the applicable protocol, Host-Adapter conformance, and MVP2
-   scenario tests;
+4. run the current MVP1 mechanism suite, which contains 114 tests at the later D4 update, plus the
+   applicable protocol, Host-Adapter conformance, and MVP2 scenario tests;
 5. capture frozen evidence appropriate to the class, including a genuine WebMCP and Agent
    trace for any runtime or demo claim; and
 6. update Core, the accepted ADR or adapter decision, evidence ledger, and submission material

@@ -1,10 +1,11 @@
 # Platform Durability and Cold-Start Audit
 
 **Role:** SUPPORTING platform research and experiment protocol  
-**Status:** Active; H2a passed, stronger restart and availability tiers remain unverified  
+**Status:** Active; H2a passed; first D4 no-event attempt was inconclusive due to a repaired
+harness control bug; valid D4 and stronger availability tiers remain unverified  
 **Observed:** 2026-08-30  
 **Scope:** Scheduled same-task context, Browser and Site Tool reacquisition, process and
-device availability, and the exact claim boundary after H0b, H1, and H2a
+device availability, and the exact claim boundary after H0b, H1, H2a, and the first D4 attempt
 
 ## Executive judgment
 
@@ -18,6 +19,15 @@ That is a useful cold-start result, but it is not a full durability result. The 
 and its parent tool service remained alive. The current evidence therefore supports
 **task-tool-runtime reconstruction**, not Desktop restart, machine restart, sleep, offline
 catch-up, client update, another account or workspace, or clean-room portability.
+
+The first formal D4 no-event attempt did cross a normal full-app quit, but it did not complete a
+valid restart arm. An unrelated long-lived P0 relay survived as a detached workload; the harness
+incorrectly treated every old operating-system descendant as Desktop lifecycle state, so its
+external helper never requested relaunch. The operator's later manual reopen was recovery only.
+The event arm did not run, and no Site Tool or workflow effect occurred. The corrected classifier,
+run-wide contamination latch, and fail-closed automation-history scanner are locally
+regression-tested, but full Desktop continuity remains unverified until a fresh arm proves the
+automatic helper relaunch and scheduled re-entry.
 
 The correct next claim is narrow:
 
@@ -67,8 +77,8 @@ must remain an empirical compatibility result and must not be presented as a pla
 | D1 | Later Scheduled turn; same Desktop process | **H0B/H1 PASS** | Stored receipt recovered; no-event gate and one event-gated continuation passed |
 | D2 | Prior task-scoped Node/Browser kernel terminated | **H2A PASS WITH RECOVERY** | New kernel and Browser runtime completed the mandatory preflight and invoked a genuine no-event Inbox tool |
 | D2b | Fresh internal Agent context; same installed environment | **C1 VERIFIED** | App-held traces show two separate contexts completing no-history official and local discovery plus one current-state invocation each; this is not account, workspace, machine, or restart durability |
-| D3 | Parent tool-host process restarted | **UNTESTED; DIAGNOSTIC AFTER D4 FAILURE** | Would localize whether task-host replacement is the failing layer without crossing a full app restart |
-| D4 | Desktop app quit and relaunched while an independent Receiver remains available | **UNTESTED; NEXT APP-NEUTRAL KILL TEST** | Would test task, schedule, receipt, Browser, permissions, and Site Tool reacquisition after client restart; Receiver restart is out of scope |
+| D3 | Parent tool-host process restarted | **UNTESTED; DIAGNOSTIC AFTER A VALID D4 FAILURE** | Would localize whether task-host replacement is the failing layer without crossing a full app restart |
+| D4 | Desktop app quit and relaunched while an independent Receiver remains available | **INCONCLUSIVE ATTEMPT; VALID ARM NOT COMPLETED** | Normal quit was observed, but an over-broad lifecycle control blocked helper relaunch; the repaired harness still must prove task, schedule, receipt, Browser, permissions, and Site Tool reacquisition; Receiver restart is out of scope |
 | D5 | Machine sleep or network offline across a due time | **UNTESTED** | Would test missed-run/catch-up behavior and expiry interaction |
 | D6 | Desktop client update between enrollment and event | **UNTESTED** | Would test compatibility and feature-rollout drift |
 | D7 | Clean machine or another eligible account/workspace | **UNTESTED** | Required for a portability or judge-reproducibility claim |
@@ -79,6 +89,8 @@ The orthogonal D2b context-isolation result is preserved in
 [Research 14](14-clean-context-webmcp-portability-smoke.md). It verifies C1 only in the same
 installed environment and is not evidence for app, account, workspace, or machine restart
 durability.
+The first D4 attempt and its zero-effect boundary are preserved in the
+[redacted inconclusive verdict](../../mvp/evidence/d4-h2b-first-formal-no-event-inconclusive-2026-08-30.md).
 
 ## 3. H2a interpretation
 
@@ -154,7 +166,8 @@ the bounded receipt and any accepted event while Desktop is closed. H1/H2 cover 
 and crash-recoverable enrollment separately.
 
 Before quitting the app, ensure all project changes and redacted evidence are persisted,
-all unrelated automations remain paused, and no other Agent task is running. Quit and
+all unrelated automations remain paused, no unrelated P0 relay is running, and no other Agent
+task is running. Quit and
 relaunch the Desktop app through the normal application lifecycle. Pass only if the same
 test task and one-run schedule survive, the receipt remains available from managed context,
 and fresh Browser/WebMCP is reacquired without a prompt containing the receipt, URL, or tool
@@ -165,11 +178,13 @@ only with an external durable observer that proves it is outside the ChatGPT pro
 records the old app process ending, a new app process starting, Receiver state, schedule
 times, and Host effect counts. A separate fail-closed evidence scanner must compare the candidate
 public derivative with private receipt, task, runtime identifier, delivery ticket, effect receipt,
-secret, and path values while reporting only counts and booleans.
+secret, and path values while reporting only counts and booleans. It must also validate every
+retained automation observation and a still-present current automation row against the frozen
+contract. Keep that paused row present until the scan completes.
 
 Run one paired H2b experiment on the same fresh receipt and disposable task:
 
-1. **No-event arm:** quit normally, prove the old Desktop and owned child processes ended,
+1. **No-event arm:** quit normally, prove the old semantic Desktop lifecycle processes ended,
    relaunch without manually opening the task, and place the one-shot due opportunity after
    relaunch. In exactly one successful dispatch, the same task must reconstruct Browser
    and WebMCP, invoke the genuine Inbox reader, receive `pending: false`, and stop without
@@ -202,6 +217,22 @@ precondition, and re-arm a new one-shot. Also reject a no-event arm whose due ti
 18 minutes of Grant lifetime or an event arm that leaves less than 8 minutes; expiry must not be
 allowed to masquerade as restart failure.
 
+The first formal no-event attempt on 2026-08-30 is `INCONCLUSIVE`, not a D4 failure. The observer
+recorded zero Desktop main and current-tree processes after normal quit, but a detached P0 relay
+retained its baseline PID and start time. Both observer and helper had modelled that unrelated
+workload as Desktop lifecycle state, so the helper timed out and issued no relaunch. The observer
+also latched a temporary prompt-contract violation, although the eventual heartbeat envelope
+matched the original pinned prompt. Three controller pause updates reported success while the
+persisted one-shot remained active. After the Receiver was stopped, the delayed target turn failed
+closed on an unavailable Inbox, invoked no Site Tool, changed no workflow state, and explicitly
+deleted its automation without prompt instruction. The repaired protocol therefore uses one shared
+semantic process classifier, continuously latches the unrelated P0 relay as contamination,
+verifies persisted scheduler state rather than API success, tells the target not to create,
+update, pause, or delete automations, and preserves the paused row through evidence scanning. The
+hardened scanner correctly refuses to certify this historical attempt because its retained
+observations contain contract drift and its current row is absent. A fresh disposable target
+and one-shot are required; this attempt cannot be retried into a pass.
+
 Current-build inspection establishes a usable attempt control: the scheduler persists
 `last_run_at` immediately before dispatch, while renderer/thread blocking only reschedules
 `next_run_at`. The external observer must count distinct post-arm `last_run_at` transitions and
@@ -218,6 +249,13 @@ empirical evidence, not a published contract or cryptographic provenance; the ro
 persist a `scheduled` versus `run_now` discriminator, so the controlled protocol must prohibit
 manual Run Now and preserve an operator attestation for that procedural control.
 
+The hardened scanner validates every retained observer snapshot, the explicitly supplied expected
+count of fully closed pass-candidate arms, and a still-present current automation row. The final
+D4 package expects three arms: no-event restart, event restart, and the final no-event control. The
+observer JSONL is not signed or hash-chained, and polling cannot rule out a
+mutation that is both introduced and restored entirely between successful polls. This is adequate
+only as a bounded current-build experiment control, not an immutable scheduler mutation ledger.
+
 The same build's Computer Use safety boundary refuses the host app bundle `com.openai.codex`.
 Therefore the test operator must perform the two normal `Cmd-Q` actions. The external launchd-owned
 helper remains responsible for relaunching through LaunchServices without a task or URL argument.
@@ -225,6 +263,16 @@ AppleScript, signals, force quit, or lower-level termination are not acceptable 
 helper must require `launchd` as its direct parent and fail closed unless the automation TOML and
 read-only SQLite schedule state match at startup and immediately before relaunch. The manual quit
 is an experiment-control limitation, not evidence for or against the re-entry mechanism.
+
+Process closure is defined semantically, not by recursive operating-system ancestry. The observer
+and helper must track the Desktop main process, Electron framework helpers, and the core Codex
+app-server/control processes by PID plus start time. Only explicitly reviewed bundled workload
+signatures are excluded; unknown ChatGPT-bundle processes fail closed. Any surviving old core
+app-server, Electron helper, or late control host still fails closed. Observer and helper reject
+the known P0 Desktop relay at preflight and sticky-latch any later appearance so unrelated prior
+infrastructure cannot contaminate a formal arm. Baseline and replacement readiness also require
+exactly one Desktop main process and one core app-server; any duplicate is sticky-latched, and the
+helper independently rechecks the replacement identity and both counts before accepting readiness.
 
 Both arms fail if the prompt restates the receipt, Inbox URL, or tool name; a stale handle,
 private relay, REST, DOM automation, or generic MCP substitutes for genuine page-bound Site
@@ -240,11 +288,11 @@ continuity.
 Do not keep Desktop closed across a due opportunity in this D4 experiment. That would mix
 restart recovery with the distinct D5 missed-run and catch-up question. If D4 passes, a
 separate D3 primary run adds little because the stronger restart already crossed task-host
-replacement. If D4 fails and the layer is ambiguous, use D3 only as a diagnostic split.
+replacement. If a valid D4 arm fails and the layer is ambiguous, use D3 only as a diagnostic split.
 
 ### D3 — parent tool-host restart diagnostic
 
-After a D4 failure, terminate only the exact test-owned parent tool-host process after
+After a valid D4 arm fails, terminate only the exact test-owned parent tool-host process after
 enrollment and before a scheduled no-event run. Do not terminate unrelated Desktop or
 project processes. Pass only if a later scheduled turn creates a replacement tool runtime
 and completes the shared controls without receipt restatement. A D3 pass localizes the D4

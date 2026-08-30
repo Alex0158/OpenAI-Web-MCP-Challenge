@@ -13,7 +13,8 @@ the same bound task, the event-opened canonical page genuinely rediscovered and 
 Stage-B Site Tool, and the same artifact stopped uncommitted at the human boundary. Exact
 replay created no second event, run, or write. The frozen P0 contract scope had 37 tests
 before the additive H1 work; the historical combined P0 and H1 suite passed 59 tests, and
-the current full suite including the additive H2 spike passes 88 tests. The
+the current full suite including the additive H2 spike plus hardened D4 lifecycle,
+contamination-latch, and automation-history scanner controls passes 114 tests. The
 frozen clean-run package retains its historical 23-test result. A separate post-fix runbook rehearsal repeated the complete chain
 after correcting long-task relay response compaction.
 
@@ -68,10 +69,17 @@ next app-neutral Desktop-lifecycle experiment. Its bounded harness uses a `launc
 Receiver, observer, and relaunch helpers; keeps the Receiver available while only the Desktop
 app is restarted; correlates process replacement with a one-shot scheduler attempt and strict
 accepted heartbeat envelope; and scans any public derivative for private authority. Its scripts
-pass syntax checks, local fail-closed rehearsals completed, the existing 88-test mechanism suite
-remains green as a regression control, and the scanner passed one rehearsal candidate. D4 has no
-dedicated automated test suite, and the formal no-event and event restart arms have not run. No
-full Desktop restart continuity claim is made.
+pass syntax checks, and local fail-closed rehearsals have completed. An earlier scanner revision passed
+one clean rehearsal candidate, but that is not certification under the hardened history,
+current-row, and expected-arm gates. The first formal no-event attempt is
+preserved as `INCONCLUSIVE`: normal quit reached zero Desktop main/current-tree processes, but an
+unrelated detached P0 relay was misclassified as lifecycle state, so the helper never requested
+automatic relaunch. A delayed turn later failed closed with no Site Tool or workflow effect. The
+shared lifecycle classifier and contamination latch now pass thirteen focused process controls;
+thirteen scanner-history controls also pass. The hardened scanner rejects this historical attempt
+because its automation contract drifted and its row was later deleted. No valid no-event arm or
+event arm has completed. No full Desktop restart continuity claim is made. See the
+[provisional attempt record](evidence/d4-h2b-first-formal-no-event-inconclusive-2026-08-30.md).
 
 This is a controlled, same-user, current-build P0 technical-feasibility result. The Desktop
 join in the frozen P0 run used an undocumented local relay and is not a supported production
