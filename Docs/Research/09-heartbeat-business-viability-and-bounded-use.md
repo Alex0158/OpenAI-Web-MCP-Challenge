@@ -45,6 +45,10 @@ The correct near-term position is therefore:
 - The official documents do not publish an unattended Browser/Site Tool compatibility
   guarantee, per-run schedule cost, exact schedule-latency service level, retry/catch-up
   semantics, or a per-task concurrency ceiling.
+- [Official pricing and usage](https://learn.chatgpt.com/docs/pricing) states that ChatGPT
+  Work and Codex share usage. Current local-message estimates per five-hour window vary by
+  model and task complexity: Sol `10–100` and Terra `25–200` for Plus and Business. These are
+  not Scheduled Task per-run prices or guaranteed capacities.
 
 ### Current-build empirical facts
 
@@ -66,30 +70,41 @@ The correct near-term position is therefore:
 
 ## 2. Polling economics
 
-For a cadence of `T` minutes and a watch window of `H` minutes, the approximate maximum
-number of scheduled checks is:
+For a cadence of `T` minutes and a watch window of `H` minutes that is an exact multiple of
+that cadence, the nominal number of due opportunities is:
 
 ~~~text
-checks = ceil(H / T)
+nominal due opportunities = H / T
 ~~~
 
-For continuous operation, the upper-bound schedule counts are:
+For continuous operation, the nominal cadence rates are:
 
-| Cadence | Checks per day | Checks per 30 days | Maximum added detection delay | Mean added delay under uniform event timing |
+| Cadence | Nominal due opportunities per day | Nominal due opportunities per 30 days | Ideal cadence-only maximum delay | Ideal cadence-only mean delay under uniform event timing |
 |---|---:|---:|---:|---:|
 | 1 minute | 1,440 | 43,200 | about 1 minute | about 30 seconds |
 | 5 minutes | 288 | 8,640 | about 5 minutes | about 2.5 minutes |
 | 10 minutes | 144 | 4,320 | about 10 minutes | about 5 minutes |
 | 15 minutes | 96 | 2,880 | about 15 minutes | about 7.5 minutes |
+| 60 minutes | 24 | 720 | about 60 minutes | about 30 minutes |
 
-These are task-run counts, not billed-token estimates. Current official documentation does
-not supply enough information to convert them into a reliable monetary cost. Every H1 run
-must therefore record actual no-event runs, model usage when available, Browser launches,
-wall-clock latency, and time-to-pause rather than inventing a unit price.
+These are nominal due opportunities, not guaranteed executed task-run counts or billed-token
+estimates. A non-divisible window needs an explicit terminal-check and expiry policy. Actual
+event-to-observation latency also includes scheduler jitter, missed or coalesced runs, Agent
+startup, Browser/WebMCP preflight, navigation, and tool execution. Current official
+documentation does not supply enough information to convert the table into a reliable
+monetary cost or latency SLA. Every H1 run must therefore record actual no-event runs, model
+usage when available, Browser launches, scheduled and actual start times, wall-clock
+latency, and time-to-pause rather than inventing a unit price or treating cadence as an SLA.
 
 Continuous one-minute polling is commercially weak for sparse events: one useful event may
 be surrounded by thousands of no-op Agent turns. A bounded ten-minute watch at one-minute
 cadence, by contrast, has at most ten checks and is defensible as a feasibility experiment.
+
+The first-principles watch-window equations, shared-usage stress table, value model, and hard
+transport falsifiers are maintained in
+[Research 16](16-scheduled-pull-unit-economics-and-transport-kill-model.md). Its key
+discipline is to charge every no-event window and lifecycle burden to the transport rather
+than reporting only the successful continuation.
 
 ## 3. Where the route can be viable
 

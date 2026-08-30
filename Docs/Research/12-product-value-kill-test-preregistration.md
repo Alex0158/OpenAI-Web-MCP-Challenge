@@ -137,6 +137,10 @@ event-to-reviewable latency, tokens, Browser opens, Site Tool calls, no-op polls
 and `CostPerSafeSuccess`. Also record enrollment and Grant-review time, setup or pairing
 time, no-op monitoring work, revocation, and failure-recovery effort. Report
 `TotalLifecycleBurdenPerUsefulContinuation`; event-to-decision time alone is insufficient.
+For a Scheduled-pull arm, use the full watch-window equations in
+[Research 16](16-scheduled-pull-unit-economics-and-transport-kill-model.md) and report
+`UsagePerSafeSuccess` plus `ExpectedNetValuePerWatch`; positive-event-only accounting is a
+protocol failure.
 If participant burden permits, use the official six-dimension
 [NASA Task Load Index](https://www.nasa.gov/human-systems-integration-division/nasa-task-load-index-tlx/)
 after each condition rather than an invented workload scale.
