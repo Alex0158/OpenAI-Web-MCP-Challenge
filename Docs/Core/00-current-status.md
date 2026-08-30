@@ -139,6 +139,18 @@ therefore derives no-op load, useful-run ratio, latency, usage per safe success,
 burden, and expected net value from measured inputs. It identifies continuous sparse polling
 as structurally weak while preserving short bounded windows as a candidate demo transport.
 
+Eddie's parallel `codex/mvp2-tenderrelay` branch has now been reviewed without merging it.
+Its five tests pass and its applicant/reviewer UI, visible shared artifact, stage-derived Site
+Tools, and demo choreography are useful Host-Adapter references. Its integrated Gateway,
+boolean approval, JSON persistence, synchronous direct queue, diagnostics, and unfrozen live
+claims are weaker than MVP1's authority, durability, replay, and evidence contracts. A local
+Q0 probe observed that `codex queue` exists and can enqueue for one unloaded persistent task,
+but did not awaken that task or regain Browser/WebMCP during the initial observation window or
+a later status-and-history recheck; a spawned sub-agent target was rejected. No self-contained
+Q0 trace or evidence package is stored in the repository. Preserve MVP2 on its contributor
+branch and import only selected assets after the applicable app or adapter decision. See
+[Research 17](../Research/17-mvp1-mvp2-comparative-integration-review.md).
+
 This closes the frozen P0 **technical-composability** question in one controlled, same-user
 local environment. It does not close the production architecture: the historical P0 join
 used an undocumented local bridge, while H1's scheduled route remains current-build

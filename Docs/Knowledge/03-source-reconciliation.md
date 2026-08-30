@@ -37,7 +37,7 @@ control the result.
 | `Docs/Research/13` plus `Experiments/continuity-calibration/` | Frozen protocol plus result | 2–3 | Method calibration and its `REVISE_PROTOCOL` verdict | Do not edit frozen inputs after results. Point current claims to the verdict and require actual runtime traces in a new app-specific protocol. |
 | `Docs/Research/14–15` plus clean-context/model experiments | Current bounded evidence | 2 | C1 and M1 same-environment smokes | Retain as bounded evidence; do not promote to public portability or model parity. |
 | `Docs/Research/16` plus transport calculator | Active model | 3, with measured sub-results at 2 | Watch-window economics and transport falsifiers | Retain as a model; replace illustrative inputs with selected-app measurements before a transport ADR. |
-| `Docs/Research/17-mvp1-mvp2-comparative-integration-review.md` | Collaborator working-tree review | 2–3 pending owner validation | MVP1/MVP2 mechanism comparison, selective-reuse map, and a bounded direct-queue probe | Preserve the draft and its provenance. It is not shipped evidence or an accepted merge decision while uncommitted; after owner validation, link it into the canonical map and reconcile any changed Core claims. |
+| `Docs/Research/17-mvp1-mvp2-comparative-integration-review.md` | SUPPORTING bounded branch review | 2–3 | MVP1/MVP2 mechanism comparison, selective-reuse map, and a local direct-queue observation | Retain with its evidence boundaries. It is not an app selection, transport decision, complete-branch merge authorization, or self-contained Q0 evidence package. |
 | `mvp/src/`, `mvp/public/`, `mvp/test/`, runbooks | Implementation surface | 2 for observed behavior | The code and tests that implement the current fixture | Retain as source. Current behavior must reconcile with Core and evidence; local state under `mvp/var/` remains private. |
 | `mvp/evidence/` | Frozen redacted evidence | 2 | P0/H0b/H1/H2a/H2 verdicts and bounded diagnostics | Retain frozen packages. Keep mutable traces and raw identifiers out of public commits. |
 | `References/WebMCP/` | Primary-source snapshots | 2–4 | Dated WebMCP/Chrome/OpenAI source captures | Retain snapshots; refresh volatile facts from official sources before release decisions. |
@@ -53,7 +53,7 @@ control the result.
 | Conflict | Resolution | Current authority |
 |---|---|---|
 | **WebRTC versus WebMCP.** Early ideation and Signal Rescue used WebRTC language; the current MVP code and evidence use WebMCP page tools, local HTTP, HMAC-signed events, and adapters. | Treat WebRTC as a historical candidate domain/transport idea. Do not describe the current Receiver as WebRTC-based unless a future implementation proves that claim. | [K21](02-high-value-register.md); current source and Core design |
-| **MVP1 versus MVP2.** A current collaborator review favors MVP2's product-shaped flow but finds authority, replay, durability, human-approval, and evidence gaps in its integrated core. | Keep MVP1 as the shared mechanism baseline and preserve MVP2 as a pending contributor reference. Import only selected UI/adapter assets after app or adapter approval; do not merge the complete branch on the review alone. | [K37](02-high-value-register.md); working-tree Research 17 draft |
+| **MVP1 versus MVP2.** A bounded branch review favors MVP2's product-shaped flow but finds authority, replay, durability, human-approval, and evidence gaps in its integrated core. | Keep MVP1 as the shared mechanism baseline and preserve MVP2 as a contributor reference. Import only selected UI/adapter assets after app or adapter approval; do not merge the complete branch on the review alone. | [K37](02-high-value-register.md); [Research 17](../Research/17-mvp1-mvp2-comparative-integration-review.md) |
 | **80/80 versus 88/88 tests.** An earlier MVP summary reported 80/80. H2 later added the current full-suite count. | Keep historical counts in their evidence context; use 88/88 only for the current full suite and 30/30 for focused H2. | [current status](../Core/00-current-status.md), [H2 verdict](../../mvp/evidence/h2-durable-enrollment-service-contract-2026-08-30-verdict.md) |
 | **37, 23, 59, and 88 test counts.** These numbers refer to different scopes: P0 component/contract tests, frozen clean-run snapshots, combined P0+H1 history, and the current full suite. | Never present them as one cumulative claim. Name the suite and date whenever a count is reported. | [P0 evidence](../../mvp/evidence/README.md), [current status](../Core/00-current-status.md) |
 | **Direct event wake versus scheduled pull.** P0 used a private current-build Desktop bridge; H0b/H1 used same-task scheduled turns. | Report them as separate adapter paths. Event acceptance is not the same as direct wake. | [ADR-0004](../Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md), [Research 07](../Research/07-supported-reentry-transport-and-heartbeat-spike.md) |
@@ -77,18 +77,21 @@ control the result.
 4. Keep the exact staged-content audit and secret/redaction gate for every collaborator
    commit; never label dirty, mutable, or private runtime state as shipped evidence.
 
+### High — complete before app selection
+
+1. Run D4/H2b full-Desktop restart once under the documented external-observer protocol.
+
 ### High — perform after app selection and before transport commitment
 
-1. Validate and commit the collaborator-owned Research 17 review, then decide whether any
-   MVP2 UI or direct-queue adapter asset belongs behind an accepted app/adapter boundary.
-2. Run D4/H2b full-Desktop restart once under the documented external-observer protocol.
-3. Rewrite the continuity comparison as an app-specific, trace-based protocol with common
+1. Decide whether any MVP2 UI or direct-queue adapter asset belongs behind the accepted
+   app/adapter boundary.
+2. Rewrite the continuity comparison as an app-specific, trace-based protocol with common
    startup conditions and observed Site Tool calls.
-4. Measure the Research 16 watch-window variables against notification/deep-link and
+3. Measure the Research 16 watch-window variables against notification/deep-link and
    deterministic Host controls.
-5. Build the selected app's public C2 evidence package, then test identity, revocation,
+4. Build the selected app's public C2 evidence package, then test identity, revocation,
    outbox/retry, and real destination delivery only for the chosen topology.
-6. Run a targeted prior-art and license review for the selected domain, not just generic
+5. Run a targeted prior-art and license review for the selected domain, not just generic
    WebMCP patterns.
 
 ### Medium — maintain while building the selected vertical slice
