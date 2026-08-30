@@ -4,7 +4,7 @@
 **Status:** Active; H2a passed; first D4 no-event attempt was inconclusive and D4 is frozen as an
 optional local-topology compatibility test; both standalone App Server Desktop Browser joins
 failed on the tested build; stronger availability tiers remain unverified  
-**Observed:** 2026-08-30  
+**Observed:** 2026-08-30; reconciled 2026-08-31  
 **Scope:** Scheduled same-task context, Browser and Site Tool reacquisition, process and
 device availability, and the exact claim boundary after H0b, H1, H2a, and the first D4 attempt
 
@@ -31,10 +31,12 @@ regression-tested, but full Desktop continuity remains unverified until a fresh 
 automatic helper relaunch and scheduled re-entry.
 
 D4 is no longer the next architecture gate. The narrower standalone App Server seam has now been
-tested in both relevant current-build forms: an App-Server-owned exact resume could not acquire
-Desktop `iab`, while standalone exact warm resume returned an active-writer rejection for the
-supplied task. Those tested joins are therefore rejected for the current build; the warm public
-JSON does not independently prove writer ownership or priming. A published
+tested in both relevant current-build forms. In the cold App-Server-owned arm, exact thread resume
+succeeded, but the Browser selector returned `iab-unavailable` before page access; that signal
+does not identify which Browser or session precondition was absent. In the warm arm, standalone
+exact resume returned an active-writer rejection for the supplied task. Those tested joins are
+therefore rejected for the current build; the warm public JSON does not independently prove writer
+ownership or priming. A published
 Workspace Agent remains a distinct hosted candidate, but its Browser and genuine page-bound
 WebMCP join are not documented or locally verified. D4 should run again only if the selected
 topology requires a local connector or relaunch adapter.

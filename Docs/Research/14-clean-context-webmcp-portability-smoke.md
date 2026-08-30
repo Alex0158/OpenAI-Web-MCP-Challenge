@@ -146,7 +146,7 @@ feature eligibility, account/workspace rollout, public deployment, and the entir
 ## 6. Remaining unknowns and next decision
 
 This smoke does not change the current product and architecture order. The next major
-decision remains app selection with Eddy. When advancing beyond C1, preserve a capture-time,
+decision remains app selection with Eddie. When advancing beyond C1, preserve a capture-time,
 self-contained redacted evidence package. After one app is selected, the project should:
 
 1. turn C2 into a public-instructions test for that app;

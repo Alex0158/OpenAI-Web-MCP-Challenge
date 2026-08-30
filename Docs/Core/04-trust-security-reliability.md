@@ -2,7 +2,7 @@
 
 **Role:** CANONICAL authority, security, and failure semantics  
 **Status:** Target domain-neutral trust and reliability baseline; bounded P0/H1/H2 evidence exists, while production reliability remains unverified.  
-**Last updated:** 2026-08-30
+**Last updated:** 2026-08-31
 
 ## 1. Security objective
 
@@ -76,6 +76,28 @@ The Receiver accepts a Re-entry Manifest only when:
 The MVP may pin one issuer key. A production design needs rotation, revocation, key overlap,
 ownership verification, and compromise recovery.
 
+### 5.1 Trusted Continuation Receipt
+
+A Trusted Continuation Receipt:
+
+- is generated only by the Receiver after Manifest validation and an authenticated
+  Receiver-owned human consent action;
+- is derived only from normalized allowlisted Grant fields and typed continuation intent;
+- is persisted through a Receiver- or Agent-host-controlled adapter, never authored by the
+  page, event payload, or Agent;
+- is bound to the exact Grant, origin, workflow, canonical URL, authorized event type,
+  expiry, and human boundary;
+- contains no arbitrary prompt, business-state assertion, raw managed-context identifier,
+  platform credential, or full domain artifact; and
+- fails closed when missing, altered, expired, revoked, ambiguous, or inconsistent with the
+  accepted delivery.
+
+The receipt is trusted only as Receiver-authored continuation context. It is enrollment
+output, not the future business event, and it does not independently authorize activation or
+mutation. The future event must still be authenticated and deduplicated, the Grant must still
+be live, the selected adapter must still obtain an eligible runtime, and the Host page must
+still revalidate current identity, state, and revision.
+
 ## 6. Event authentication contract
 
 The signature is detached from the JSON body. The provisional mechanism-level headers are:
@@ -135,6 +157,7 @@ The human decision produces a receipt correlated with the run and artifact.
 | Wrong user, tenant, or workflow resumes | Subject, origin, workflow, URL, and auth binding | Terminal run failure |
 | Stale event causes action | Canonical state read and expected version check | No mutation |
 | Tool metadata or output injects instructions | Treat definitions and results as untrusted; narrow schemas | Stop or request review |
+| Page or event forges a continuation plan | Receiver-generated typed receipt, allowlisted fields, trusted persistence path, and live Grant/event match | No activation or mutation |
 | Tool registration changes unexpectedly | Verify origin, stage, tool roles, names, and schemas | Fail closed |
 | Login expires or MFA appears | User-mediated recovery only | Pause without bypass |
 | Human and Agent edit concurrently | Optimistic revision check and visible conflict | Preserve both versions |

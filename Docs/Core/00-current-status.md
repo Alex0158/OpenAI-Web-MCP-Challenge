@@ -1,7 +1,7 @@
 # WebMCP Re-entry Workflow — Current Project Status
 
 **Role:** CANONICAL current truth  
-**As of:** 2026-08-30, Europe/London  
+**As of:** 2026-08-31, Europe/London  
 **Selected direction:** WebMCP re-entry workflow mechanism  
 **Demo web application:** TBD  
 **Final product name:** TBD  
@@ -165,25 +165,25 @@ therefore derives no-op load, useful-run ratio, latency, usage per safe success,
 burden, and expected net value from measured inputs. It identifies continuous sparse polling
 as structurally weak while preserving short bounded windows as a candidate demo transport.
 
-Eddie's parallel `codex/mvp2-tenderrelay` branch has now been reviewed without merging it.
-Its current modularized tip passes 18 deterministic tests in total; the dedicated
-cross-domain conformance command runs eight of them. It adds strict protocol schemas and
-validators, Host and Agent Adapter seams, a Host
-SDK, a second-domain fixture, and state-derived Site Tool lifecycle alongside the useful
-applicant/reviewer UI, visible artifact, and demo choreography. It fixes the earlier reviewed
-snapshot's exact-schema, Grant-scope, replay-conflict, artifact-revision, untrusted-content,
-and Agent-callable submission defects. It still uses a raw process-global Desktop task
-binding, an incompatible wire contract, caller-asserted consent, local JSON persistence,
-synchronous direct queue without durable effect acknowledgement, optimistic diagnostics, and
-unfrozen live claims. Those remain weaker than MVP1's context authority, activation,
-transactional durability, delivery/effect, and evidence contracts. A local Q0 probe observed
-that `codex queue` exists and can enqueue for one unloaded persistent task, but did not awaken
-that task or regain Browser/WebMCP during the initial observation window or a later
-status-and-history recheck; a spawned sub-agent target was rejected. No self-contained Q0
-trace or evidence package is stored in the repository. Preserve MVP2 on its contributor branch
-and import only selected assets after the applicable app, mechanism/protocol, or adapter
-decision. See
-[Research 17](../Research/17-mvp1-mvp2-comparative-integration-review.md).
+Eddie's parallel `codex/mvp2-tenderrelay` branch has now been reviewed through runtime tip
+`fab956e3a64c3bc127016266e45441c844e6906d` and documentation tip
+`3f746694069486d3d48d5c6a26c73942ff6eab42` without merging its runtime. The modularized
+runtime passes 18 deterministic tests in total, including an eight-test cross-domain
+conformance subset. It contributes strict protocol-validation ideas, Host and Agent Adapter
+seams, a Host SDK, a second-domain fixture, state-derived Site Tool lifecycle, a useful
+two-actor UI, a visible artifact, and demo choreography. It still has weaker context authority,
+consent, persistence, delivery/effect acknowledgement, and evidence contracts than the
+mainline mechanism. Its direct-queue path proves enqueue in tests and one bounded local
+observation, not dormant wake, Browser acquisition, or genuine WebMCP.
+
+The later documentation-only commit proposes a hosted Cloud Receiver plus outbound Local
+Connector. Main records that as an unselected candidate topology, not a feasibility verdict or
+implementation order. The canonical sequence remains app selection, transport requirements,
+candidate comparison, route-specific kill test, and then an ADR. Preserve the contributor
+branch and import source assets only after the applicable app, protocol, or adapter decision.
+See [Research 17](../Research/17-mvp1-mvp2-comparative-integration-review.md),
+[Research 21](../Research/21-cloud-receiver-local-connector-candidate-topology.md), and
+[Research 22](../Research/22-mvp2-selective-integration-provenance.md).
 
 The first fail-closed App Server Browser-join probe now separates cold task creation from
 Desktop Browser attachment. ChatGPT Desktop's bundled App Server `0.151.0-alpha.7.1`
@@ -289,6 +289,7 @@ hosted, cross-user, or clean-room judge-reproducible.
 | Fresh Agent context can discover genuine Site Tools without prior project turns or project-file access | **C1 VERIFIED IN SAME ENVIRONMENT** | App-held traces show two separate no-history, no-project-file probes using fresh tabs and fresh page-bound handles for the official control and local P0 Host; each invoked one manifest-annotated read-only Site Tool, and no mutating Site Tool was invoked. Fresh user-visible task, account/workspace, machine, public deployment, and judge portability remain untested |
 | Both documented eligible models can perform fresh Site Tool discovery and one current-state read | **M1 VERIFIED ONCE PER MODEL IN SAME ENVIRONMENT** | Controller-assigned low-effort Sol and Terra arms returned the same official and local manifests and invoked the same manifest-annotated read-only tools once per page. Both documentation preflights failed before the Site Tool calls; no Site Tool invocation retry or mutating Site Tool occurred. This is not model parity, and the repo record is not a self-contained public model-assignment package |
 | Scheduled-pull production economics | **STRUCTURALLY CONSTRAINED; APP INPUTS UNKNOWN** | The watch-window model quantifies no-op runs, latency, usage stress, lifecycle burden, and expected value, but exact per-run usage, persistent-event observation probability or a replacement arrival/availability model, value, and tolerance must be measured for the selected app |
+| Eddie MVP2 and Cloud Receiver/Local Connector proposal | **SELECTIVELY DOCUMENTED; RUNTIME UNMERGED; TOPOLOGY UNSELECTED** | Runtime remains preserved on `codex/mvp2-tenderrelay`; the latest branch commit adds planning and provenance only. Main retains app selection and its requirements profile before transport or topology selection |
 | Stage-A page can deliver the bounded manifest through genuine WebMCP | **VERIFIED FOR Q1** | Clean-run discovery and invocation returned manifest `rm_ZGVXl-elc3QTTA`, matched to the Receiver trace |
 | Resumed run can invoke next-stage Site Tools | **VERIFIED FOR Q4** | The event-opened page read `READY`, exposed only the Stage-B inventory, and genuinely invoked `continue_artifact` |
 | Same-document Site Tool surface changes with authoritative state | **VERIFIED IN CURRENT CLIENT** | The [isolated genuine Browser probe](../../mvp/evidence/site-tool-lifecycle-probe-2026-08-30.json) changed `INITIAL` to `READY`; registration `AbortSignal` removed Stage-A tools, exposed Stage-B tools, and made the prior handle stale |
@@ -351,7 +352,7 @@ See [Official Rules research](../01-official-rules.md) and
    joins from current selection unless a materially different supported contract or topology
    appears. Do not retry the same route through dynamic tools, Chrome, REST, DOM automation,
    generic MCP, task detachment, or manual reconstruction.
-5. Discuss and select the product layer and demo application with Eddy using observed
+5. Discuss and select the product layer and demo application with Eddie using observed
    workflow evidence plus explicit product, WebMCP, execution, judgeability, and
    watch-window economics gates.
 6. Derive the continuation-adapter candidates from the selected app's requirements. Treat
@@ -389,6 +390,8 @@ Do not claim that the project:
   WebMCP Site Tools;
 - requires Desktop Scheduled Tasks as a core mechanism rather than treating scheduled pull
   as one bounded compatibility adapter;
+- has selected or implemented a hosted Cloud Receiver plus Local Connector merely because it
+  is recorded as a candidate topology;
 - has delivered an H2 enrollment receipt to a real Desktop task, hosted Agent, or production
   connector, or operates a continuously supervised outbox worker;
 - has proved production key rotation, multi-tenant isolation, remote topology, production

@@ -215,7 +215,7 @@ thresholds:
   actual user outcome.
 
 Final thresholds must be calibrated after the application, error cost, baseline handling
-time, and unit economics are selected with Eddy.
+time, and unit economics are selected with Eddie.
 
 ## 7. Decision consequences
 

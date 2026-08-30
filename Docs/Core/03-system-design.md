@@ -2,7 +2,7 @@
 
 **Role:** CANONICAL domain-neutral architecture and contracts  
 **Status:** Canonical target architecture bounded by ADR-0004; the production wake and continuation adapter remains unselected. Current as-built truth is owned by Core/00 and Core/05.  
-**Last updated:** 2026-08-30
+**Last updated:** 2026-08-31
 
 ## 1. System objective
 
@@ -84,6 +84,8 @@ flowchart LR
 
 - owns Continuation Grant records;
 - stores the mapping from opaque binding to managed Agent context;
+- derives a trusted typed Continuation Receipt only after Manifest validation and
+  Receiver-owned consent, then persists it through a trusted adapter surface;
 - enforces expiry, revocation, run, cost-like, and concurrency limits;
 - authenticates and records one bounded pending delivery before acknowledging acceptance;
 - delegates activation to a replaceable Wake Adapter;
@@ -231,7 +233,9 @@ No boundary inherits the previous boundary's authority:
 5. The Receiver verifies origin, workflow, manifest integrity, and requested limits.
 6. A Receiver-owned permission surface shows the offer in domain language.
 7. The user approves, narrows, or declines event, expiry, run, and human-boundary scope.
-8. On approval, the Receiver creates a Continuation Grant and binds managed Agent context.
+8. On approval, the Receiver creates a Continuation Grant, binds managed Agent context, and
+   persists a Receiver-generated Trusted Continuation Receipt into that context through a
+   trusted adapter surface.
 9. The host app receives only an opaque agent_binding value.
 
 ### Phase B — Waiting
@@ -326,7 +330,39 @@ or guarantee which tools will exist after re-entry.
 The Receiver stores the platform-specific context binding separately from the portal-facing
 grant handle.
 
-### 8.3 Continuation Event
+### 8.3 Trusted Continuation Receipt
+
+~~~json
+{
+  "receipt_version": "1",
+  "receipt_type": "WEBMCP_REENTRY_GRANT",
+  "grant_id": "cg_...",
+  "issuer_origin": "https://app.example",
+  "workflow_type": "selected-domain-type",
+  "workflow_id": "W-102",
+  "canonical_url": "https://app.example/workflows/W-102",
+  "authorized_event_type": "workflow.follow_up_requested",
+  "continuation_intent": {
+    "mode": "OPEN_CANONICAL_PAGE",
+    "first_action": "READ_CURRENT_STATE",
+    "required_tool_role": "CONTINUE_ARTIFACT",
+    "stop_before": "approve-consequential-action"
+  },
+  "expires_at": "..."
+}
+~~~
+
+The Receiver generates this receipt only after Manifest validation and Receiver-owned human
+consent. It carries the approved reason, destination, first-action role, required continuation
+role, and stopping boundary into the bound managed context. The website, event payload, and
+Agent cannot author or widen it.
+
+The receipt is enrollment output. It is not the future business event, application state, a
+bearer authorization, or proof that the resumed runtime has Browser or WebMCP capability.
+Activation still requires a separately authenticated accepted event, a live matching Grant,
+an available capable adapter, and fresh authoritative page state.
+
+### 8.4 Continuation Event
 
 ~~~json
 {
@@ -350,7 +386,7 @@ grant handle.
 The signature is detached from the JSON body. Event data contains bounded identifiers and
 state metadata, not arbitrary Agent instructions or the full domain artifact.
 
-### 8.4 Re-entry Run
+### 8.5 Re-entry Run
 
 ~~~json
 {
