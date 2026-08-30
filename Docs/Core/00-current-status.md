@@ -5,7 +5,7 @@
 **Selected direction:** WebMCP re-entry workflow mechanism  
 **Demo web application:** TBD  
 **Final product name:** TBD  
-**Phase:** P0, current-build H0b/H1, H2a cold-runtime recovery, and the H2 durable-enrollment service contract passed; production transport, product value, and demo-app selection remain open  
+**Phase:** P0, current-build H0b/H1, H2a cold-runtime recovery, and the H2 durable-enrollment service contract passed; C1 clean Agent-context discovery and one M1 discovery-and-read run on each documented eligible model were verified in the same installed environment; production transport, product value, demo-app selection, and judge portability remain open  
 **Controlling decisions:** [ADR-0002](../Decisions/ADR-0002-separate-mechanism-from-demo-app.md), [ADR-0003](../Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md)
 
 ## 1. Executive status
@@ -20,8 +20,8 @@ The web application used to prove this mechanism has not been selected. The tend
 in the TenderRelay dossier is a detailed reference scenario, not the committed application,
 customer, persona, market, or final project name.
 
-The disposable P0 fixture is implemented, has 37 passing component and contract tests, and
-has completed one clean correlated Q1–Q5 run. In ChatGPT Desktop `26.825.41651` (build
+The disposable P0 fixture is implemented, completed its frozen 37-test P0 suite, and has
+completed one clean correlated Q1–Q5 run. In ChatGPT Desktop `26.825.41651` (build
 `7345`), the run used genuine page-bound WebMCP in both stages, Receiver-owned consent and
 private Grant binding, one authenticated event into the same bound task, canonical Browser
 re-entry, fresh Stage-B discovery, continuation of the same artifact, and a stop before the
@@ -99,9 +99,62 @@ checks, but that post-run description cannot override the invalid primary instru
 task product value therefore remains unproven. See the
 [calibration verdict](../../Experiments/continuity-calibration/verdict.md).
 
+Two fresh internal Agent contexts then ran a zero-mutation-tool WebMCP portability smoke without
+prior conversation turns or project-file access. One separately discovered the official
+ChatGPT Learn page's current Site Tools and invoked only `lookup_context`; the other opened
+the local P0 canonical page, discovered the current `READY` inventory, and invoked only
+`get_workflow_context`. Both used a fresh tab and a freshly fetched page-bound handle. This
+verifies C1 in the current installed environment and is evidence against prior project
+conversation turns, an old tab, an old handle, or project-file access being necessary for
+those two calls. The
+tool manifests annotated both invoked tools as read-only, and the app-held traces contain no
+mutating Site Tool invocation; the annotations alone are not a safety guarantee. C1 does not isolate
+account, workspace, machine, Browser profile, client rollout, public deployment, or the full
+workflow. The app retains the per-arm runtime traces, but the redacted repo package is not a
+self-contained public audit record. See
+[Research 14](../Research/14-clean-context-webmcp-portability-smoke.md).
+
+A paired model-variation smoke intended to vary the eligible model between GPT-5.6 Sol and
+GPT-5.6 Terra. Both fresh no-history contexts separately returned the same official
+and local genuine Site Tool inventories and invoked the same manifest-annotated read-only
+context tools once per page. Both capability-documentation preflights failed; each actual
+Site Tool invocation then succeeded once without invocation retry. This verifies one bounded
+discovery-and-read run per documented eligible model in the current environment and is
+evidence that the observed capability was not Sol-only; it does not verify model parity.
+The full ambient instruction surfaces were not byte-identical: the Terra arm also received
+one unrelated repository-collaboration rule added after the Sol run. The experimental prompt
+and Browser objective were the same, but M1 is an existence result, not a controlled causal
+model-effect comparison.
+Scheduled receipt recovery,
+event reasoning, mutation quality, usage, and selected-app outcomes remain untested across
+models. The app retains the runtime traces, but the repo record is not a self-contained public
+model-assignment and runtime-evidence package. See
+[Research 15](../Research/15-sol-terra-webmcp-model-variation-smoke.md).
+
+The current operating research now treats a complete watch window, rather than one positive
+event, as the economic unit. Official documentation confirms shared ChatGPT Work/Codex usage
+but publishes no dedicated Scheduled Task per-run price or latency SLA. The
+[Research 16 model](../Research/16-scheduled-pull-unit-economics-and-transport-kill-model.md)
+therefore derives no-op load, useful-run ratio, latency, usage per safe success, lifecycle
+burden, and expected net value from measured inputs. It identifies continuous sparse polling
+as structurally weak while preserving short bounded windows as a candidate demo transport.
+
+Eddie's parallel `codex/mvp2-tenderrelay` branch has now been reviewed without merging it.
+Its five tests pass and its applicant/reviewer UI, visible shared artifact, stage-derived Site
+Tools, and demo choreography are useful Host-Adapter references. Its integrated Gateway,
+boolean approval, JSON persistence, synchronous direct queue, diagnostics, and unfrozen live
+claims are weaker than MVP1's authority, durability, replay, and evidence contracts. A local
+Q0 probe observed that `codex queue` exists and can enqueue for one unloaded persistent task,
+but did not awaken that task or regain Browser/WebMCP during the initial observation window or
+a later status-and-history recheck; a spawned sub-agent target was rejected. No self-contained
+Q0 trace or evidence package is stored in the repository. Preserve MVP2 on its contributor
+branch and import only selected assets after the applicable app or adapter decision. See
+[Research 17](../Research/17-mvp1-mvp2-comparative-integration-review.md).
+
 This closes the frozen P0 **technical-composability** question in one controlled, same-user
-local environment. It does not close the production architecture: the Desktop join used an
-undocumented local bridge, not a supported external Receiver API. The project is not yet
+local environment. It does not close the production architecture: the historical P0 join
+used an undocumented local bridge, while H1's scheduled route remains current-build
+empirical behavior rather than a supported external Receiver API. The project is not yet
 deployed, clean-room judge-reproducible, submitted, or specialized to a selected domain.
 See [P0 Technical Validation MVP](07-p0-technical-validation-mvp.md), the
 [runtime probe log](../Research/02-p0-runtime-probe-log.md), and the
@@ -165,11 +218,14 @@ hosted, cross-user, or clean-room judge-reproducible.
 | TenderRelay dossier and diagram preserved | **VERIFIED** | Byte-identical immutable snapshots |
 | Tender is only a reference scenario | **DECIDED** | ADR-0002 |
 | WebMCP can expose page-native structured tools | **VERIFIED IN P0** | Genuine Stage-A and Stage-B page-bound discovery and invocation occurred in the clean run |
-| Grants, signed events, replay control, and bounded trace are implementable | **P0 VERIFIED** | P0 source, 37 current passing tests, the frozen clean correlated package, and the post-fix rehearsal; production durability remains deferred |
+| Grants, signed events, replay control, and bounded trace are implementable | **P0 VERIFIED** | P0 source, the frozen 37-test P0 report, the current 88-test full suite, the frozen clean correlated package, and the post-fix rehearsal; production durability remains deferred |
 | Receiver-owned consent and private exact-task binding | **VERIFIED FOR Q2** | Explicit user-authorized Receiver approval, one active Grant, one private task binding, one opaque host binding, and same-task receipt delivery |
 | Managed Agent context can be resumed from a signed event | **VERIFIED FOR Q3, BOUNDED** | App Server independently proves persisted exact-thread resume; the clean Desktop run proves one deduplicated same-task event delivery but not crash-recoverable production exactly-once semantics |
 | Desktop task-control can wake the same test task and open the canonical page | **VERIFIED IN CURRENT DESKTOP** | The clean event appeared in the bound task and opened the exact canonical page through the private current-build bridge |
 | Current Desktop Browser exposes genuine WebMCP | **VERIFIED IN CURRENT CLIENT** | `/Applications/ChatGPT.app` `26.825.41651` exposes `webmcp` on official-control and local P0 pages; the exact enabling account, workspace, permission, or rollout condition was not isolated |
+| Fresh Agent context can discover genuine Site Tools without prior project turns or project-file access | **C1 VERIFIED IN SAME ENVIRONMENT** | App-held traces show two separate no-history, no-project-file probes using fresh tabs and fresh page-bound handles for the official control and local P0 Host; each invoked one manifest-annotated read-only Site Tool, and no mutating Site Tool was invoked. Fresh user-visible task, account/workspace, machine, public deployment, and judge portability remain untested |
+| Both documented eligible models can perform fresh Site Tool discovery and one current-state read | **M1 VERIFIED ONCE PER MODEL IN SAME ENVIRONMENT** | Controller-assigned low-effort Sol and Terra arms returned the same official and local manifests and invoked the same manifest-annotated read-only tools once per page. Both documentation preflights failed before the Site Tool calls; no Site Tool invocation retry or mutating Site Tool occurred. This is not model parity, and the repo record is not a self-contained public model-assignment package |
+| Scheduled-pull production economics | **STRUCTURALLY CONSTRAINED; APP INPUTS UNKNOWN** | The watch-window model quantifies no-op runs, latency, usage stress, lifecycle burden, and expected value, but exact per-run usage, persistent-event observation probability or a replacement arrival/availability model, value, and tolerance must be measured for the selected app |
 | Stage-A page can deliver the bounded manifest through genuine WebMCP | **VERIFIED FOR Q1** | Clean-run discovery and invocation returned manifest `rm_ZGVXl-elc3QTTA`, matched to the Receiver trace |
 | Resumed run can invoke next-stage Site Tools | **VERIFIED FOR Q4** | The event-opened page read `READY`, exposed only the Stage-B inventory, and genuinely invoked `continue_artifact` |
 | Same-document Site Tool surface changes with authoritative state | **VERIFIED IN CURRENT CLIENT** | The [isolated genuine Browser probe](../../mvp/evidence/site-tool-lifecycle-probe-2026-08-30.json) changed `INITIAL` to `READY`; registration `AbortSignal` removed Stage-A tools, exposed Stage-B tools, and made the prior handle stale |
@@ -181,7 +237,7 @@ hosted, cross-user, or clean-room judge-reproducible.
 | Exact thread adds value beyond structured continuation memory | **UNKNOWN** | Requires the controlled comparison in Research/06 |
 | Demo app meets a real user need | **UNKNOWN** | Domain and user not selected |
 | Challenge implementation | **P0 TECHNICAL FIXTURE PASSED** | The generic mechanism proof is complete; selected-app, deployment, demo, and submission work remain |
-| Public deployment and clean-room judge flow | **NOT STARTED** | No live runtime evidence |
+| Public deployment and clean-room judge flow | **NOT STARTED** | C1 clean Agent-context discovery was verified only in the current local environment; no public selected-app or independent-environment end-to-end evidence exists |
 | Devpost submission | **NOT VERIFIED AS SUBMITTED** | Requires live readback before any status change |
 
 ## 6. Mechanism invariants
@@ -217,20 +273,27 @@ See [Official Rules research](../01-official-rules.md) and
    scheduled pull or the synthetic H2 destination to production contracts. Use the
    [post-H1 roadmap](../Research/10-post-h1-unknowns-and-validation-roadmap.md) to keep
    verified facts separate from product and production unknowns.
-2. Run the smallest available independent clean-room genuine-WebMCP discovery smoke before
-   investing in the selected-app build; keep full end-to-end clean-room reproduction as a
-   release gate.
-3. Discuss and select the product layer and demo application with Eddy using observed
-   workflow evidence plus explicit product, WebMCP, execution, and judgeability gates.
-4. On the selected workflow, compare Agent re-entry with deterministic Host automation and
-   notification/deep link; compare exact-thread continuation with a strong bounded capsule;
-   and compare genuine WebMCP re-entry with a strong authenticated API.
-5. Select the transport from the app's latency, offline, privacy, administration, and cost
-   requirements. Measure only the platform durability and polling envelope relevant to that
-   candidate transport.
-6. After app and transport selection, build the additive P1 trust/delivery seam and repeat
+2. Preserve C1 as a verified same-environment clean Agent-context result without promoting it
+   to account, workspace, machine, public-deployment, or judge portability. Preserve M1 as
+   one bounded run per documented eligible model without claiming parity.
+3. Run one paired D4/H2b full-Desktop-restart experiment as the final app-neutral durability
+   kill test. Use a new process identity, a no-event arm, an event arm, genuine page-bound
+   Site Tools, an external durable observer, replay controls, and no due opportunity while
+   Desktop is closed. Treat any pass as current-build compatibility evidence only.
+4. Discuss and select the product layer and demo application with Eddy using observed
+   workflow evidence plus explicit product, WebMCP, execution, judgeability, and
+   watch-window economics gates.
+5. On the selected workflow, run C2 with a self-contained redacted evidence package; compare
+   Agent re-entry with deterministic Host automation and notification/deep link; compare
+   exact-thread continuation with a strong bounded capsule; and compare genuine WebMCP
+   re-entry with a strong authenticated API.
+6. Select the transport from the app's latency, offline, privacy, administration, and cost
+   requirements. Use Research 16 to measure no-op load, usage per safe success, lifecycle
+   burden, and expected net value. Then test only the route-relevant D5/D6, busy-task,
+   concurrency, and distributed seams.
+7. After app and transport selection, build the additive P1 trust/delivery seam and repeat
    the end-to-end flow from a separate clean-room machine.
-7. Build the selected-app vertical slice only after an accepted app-selection ADR, deploy
+8. Build the selected-app vertical slice only after an accepted app-selection ADR, deploy
    it, capture the public demo, and freeze the submission package.
 
 ## 9. Current non-claims

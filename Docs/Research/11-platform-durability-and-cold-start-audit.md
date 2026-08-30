@@ -66,14 +66,19 @@ must remain an empirical compatibility result and must not be presented as a pla
 | D0 | Fresh page inside a controlled active task | **P0 PASS** | Genuine Stage-A and Stage-B Site Tools in one local run |
 | D1 | Later Scheduled turn; same Desktop process | **H0B/H1 PASS** | Stored receipt recovered; no-event gate and one event-gated continuation passed |
 | D2 | Prior task-scoped Node/Browser kernel terminated | **H2A PASS WITH RECOVERY** | New kernel and Browser runtime completed the mandatory preflight and invoked a genuine no-event Inbox tool |
-| D3 | Parent tool-host process restarted | **UNTESTED** | Would test whether task-local tool service persistence is a hidden dependency |
-| D4 | Desktop app quit and relaunched | **UNTESTED** | Would test task, schedule, receipt, Browser, permissions, and Site Tool reacquisition after client restart |
+| D2b | Fresh internal Agent context; same installed environment | **C1 VERIFIED** | App-held traces show two separate contexts completing no-history official and local discovery plus one current-state invocation each; this is not account, workspace, machine, or restart durability |
+| D3 | Parent tool-host process restarted | **UNTESTED; DIAGNOSTIC AFTER D4 FAILURE** | Would localize whether task-host replacement is the failing layer without crossing a full app restart |
+| D4 | Desktop app quit and relaunched | **UNTESTED; NEXT APP-NEUTRAL KILL TEST** | Would test task, schedule, receipt, Browser, permissions, and Site Tool reacquisition after client restart |
 | D5 | Machine sleep or network offline across a due time | **UNTESTED** | Would test missed-run/catch-up behavior and expiry interaction |
 | D6 | Desktop client update between enrollment and event | **UNTESTED** | Would test compatibility and feature-rollout drift |
 | D7 | Clean machine or another eligible account/workspace | **UNTESTED** | Required for a portability or judge-reproducibility claim |
 
 Evidence for D2 is preserved in the
 [H2a verdict](../../mvp/evidence/h2a-cold-browser-runtime-reentry-2026-08-30-verdict.md).
+The orthogonal D2b context-isolation result is preserved in
+[Research 14](14-clean-context-webmcp-portability-smoke.md). It verifies C1 only in the same
+installed environment and is not evidence for app, account, workspace, or machine restart
+durability.
 
 ## 3. H2a interpretation
 
@@ -138,13 +143,6 @@ For every tier:
 6. Pause the schedule immediately after the bounded run and scan the evidence package for
    secrets and managed-context identifiers.
 
-### D3 — parent tool-host restart
-
-Terminate only the exact test-owned parent tool-host process after enrollment and before the
-scheduled no-event run. Do not terminate unrelated Desktop or project processes. Pass only
-if a later scheduled turn creates a replacement tool runtime and completes the shared
-controls without receipt restatement.
-
 ### D4 — full Desktop restart
 
 Before quitting the app, ensure all project changes and redacted evidence are persisted,
@@ -154,16 +152,43 @@ test task and one-run schedule survive, the receipt remains available from manag
 and fresh Browser/WebMCP is reacquired without a prompt containing the receipt, URL, or tool
 name.
 
-An app restart is operationally disruptive and can interrupt the observing task. It should
-be executed only when an independent durable evidence collector can determine the result
-after relaunch.
+An app restart is operationally disruptive and can interrupt the observing task. Execute it
+only with an external durable observer that records the old app process ending, a new app
+process starting, Receiver state, schedule times, Host effect counts, and a redacted secret
+scan after relaunch.
 
-For a strict test, keep the app closed across at least two due intervals, relaunch it without
-manually opening the target task, and observe at most three later intervals. One coalesced
-catch-up is acceptable; a burst replay of every missed interval is a failure for this
-prototype. A first overdue attempt deferred only while the renderer or collaboration layer
-warms may be recorded as a degraded pass if a later interval succeeds inside the frozen
-observation window.
+Run one paired H2b experiment on the same fresh receipt and disposable task:
+
+1. **No-event arm:** quit normally, prove the old Desktop and owned child processes ended,
+   relaunch without manually opening the task, and place the first due opportunity after
+   relaunch. Within at most three due opportunities, the same task must reconstruct Browser
+   and WebMCP, invoke the genuine Inbox reader, receive `pending: false`, and stop without
+   opening the Host or changing any count or revision.
+2. **Event arm:** quit normally again, persist exactly one authenticated event while Desktop
+   is closed, relaunch without manually opening the task, and again place the first due
+   opportunity after relaunch. The same task must read the event through the genuine Inbox
+   Site Tool, open the allowlisted canonical Host, read fresh authority, rediscover the
+   current stage tools, produce exactly one idempotent effect, acknowledge it, and stop
+   before human commit. Exact replay and one final no-event turn must add no effect.
+
+Both arms fail if the prompt restates the receipt, Inbox URL, or tool name; a stale handle,
+private relay, REST, DOM automation, or generic MCP substitutes for genuine page-bound Site
+Tools; the target task is manually opened; a confirmation requires unattended human repair;
+or the redacted evidence cannot prove a new Desktop process. A pass is current-build,
+same-machine compatibility evidence only.
+
+Do not keep Desktop closed across a due opportunity in this D4 experiment. That would mix
+restart recovery with the distinct D5 missed-run and catch-up question. If D4 passes, a
+separate D3 primary run adds little because the stronger restart already crossed task-host
+replacement. If D4 fails and the layer is ambiguous, use D3 only as a diagnostic split.
+
+### D3 — parent tool-host restart diagnostic
+
+After a D4 failure, terminate only the exact test-owned parent tool-host process after
+enrollment and before a scheduled no-event run. Do not terminate unrelated Desktop or
+project processes. Pass only if a later scheduled turn creates a replacement tool runtime
+and completes the shared controls without receipt restatement. A D3 pass localizes the D4
+failure above the task-host layer; it does not repair or override the D4 result.
 
 ### D5 — sleep and offline catch-up
 

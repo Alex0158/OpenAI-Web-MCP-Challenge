@@ -496,6 +496,27 @@ This is an implementation of the report's incremental modularity recommendation,
 claim that MVP1's stronger durability evidence has been replaced. The next integration step
 remains aligning this interface with MVP1's durable Receiver and conformance fixtures.
 
+### 8.4 Reconciliation with the independent MVP2 review
+
+[`Research 17`](../Docs/Research/17-mvp1-mvp2-comparative-integration-review.md) reviewed
+MVP2 at commit `ccbd242`, before the modular extraction. Its findings are valid for that
+historical snapshot. The current branch responds as follows:
+
+| Review finding | Current branch response | Remaining boundary |
+|---|---|---|
+| Reviewer content mislabeled trusted | Current-state and requirements tools now set `untrustedContentHint: true`; no tool uses `false` | All tool output still requires normal Agent skepticism |
+| Gateway accepted wider signed payloads | Protocol validation now enforces exact fields, pinned origin, canonical URL, manifest, Grant, workflow, event type, state version, expiry, and event time window | Align with MVP1 schemas before claiming one shared protocol |
+| Idempotency conflict treated as duplicate | Exact payload replay returns the existing run; reused identity with different payload fails closed | Distributed/database concurrency still belongs to the durable Receiver |
+| Accepted delivery lacked durability | Host event intent and Receiver run reservation persist before adapter delivery; an external-sender path crosses real HTTP ingress | No destination acknowledgement or crash-after-side-effect recovery yet |
+| Human approval was caller-supplied Site Tool data | Grant activation and initial submission are absent from Site Tools; the re-entry tool remains draft-only | Synthetic UI is not authenticated production consent |
+| Diagnostics could report hardcoded passes | Signature values are redacted and the human-boundary card inspects the actual Site Tool source for forbidden names | A queued adapter result is still not Agent completion or Host-effect evidence |
+| Artifact writes were last-write-wins | Every draft mutation now compares state version and artifact revision | Production persistence still needs database CAS |
+| Fixture security was not deployment security | Public mode rejects the fallback secret and Host/Receiver records are separately projected | Reviewer, mutation, reset, and diagnostics routes remain local-fixture surfaces |
+
+The independent review's integration judgment is unchanged: MVP1 remains the durability and
+evidence authority, MVP2 remains a modular product-flow/reference implementation, and neither
+TenderRelay nor the direct queue adapter is selected for the final submission by this work.
+
 ## 9. Protocol proposal scope
 
 The public deliverable can credibly be called an **open protocol proposal and reference

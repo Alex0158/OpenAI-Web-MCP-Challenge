@@ -128,8 +128,14 @@ Use these integration preferences:
 
 ## Branch and coordination policy
 
-- Prefer one task branch and pull request per bounded goal. Direct pushes to shared `main` are
-  reserved for explicitly coordinated, low-conflict work.
+- Continue on the current working branch, normally shared `main`, for bounded low-conflict
+  research, documentation, experiments, tests, and local fixes. Do not create a new branch
+  merely because a goal is distinct.
+- Create a task branch and pull request for a major architecture change, a substantial
+  cross-layer behavior change, a high-conflict or high-risk change, or when a collaborator
+  explicitly requests isolated review. State why the change crosses that threshold.
+- Direct pushes to shared `main` still require the full validated-goal, fetch, divergence,
+  explicit-staging, and remote-SHA verification gates in this document.
 - Before starting work on a file another collaborator may be editing, announce the intended
   scope and current baseline commit.
 - After pushing, report the commit SHA, branch, checks run, and any intentionally uncommitted

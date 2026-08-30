@@ -2,7 +2,8 @@
 
 **Role:** SUPPORTING reference opinion and architecture review  
 **Status:** Advisory; risk findings remain useful, but topology, sequencing, correlation,
-durability, and product-test priorities are partially superseded by Research 07–12  
+durability, product-test priorities, clean-context isolation, model variation, and
+transport economics are partially superseded by Research 07–16  
 **Observed:** 2026-08-30  
 **Scope:** P0 implementation topology, distributed-deployment seams, security boundaries, reliability, and hardcoded coupling
 
@@ -14,7 +15,13 @@ durability, and product-test priorities are partially superseded by Research 07�
 > ordering in [Research 10](10-post-h1-unknowns-and-validation-roadmap.md). Use
 > [Research 11](11-platform-durability-and-cold-start-audit.md) for current durability
 > treatment and [Research 12](12-product-value-kill-test-preregistration.md) for product
-> substitution tests.
+> substitution tests. Use [Research 13](13-exact-task-vs-capsule-method-calibration.md) for
+> the current continuity-comparison method verdict and
+> [Research 14](14-clean-context-webmcp-portability-smoke.md) for the bounded clean
+> Agent-context isolation result, [Research 15](15-sol-terra-webmcp-model-variation-smoke.md)
+> for the eligible-model discovery-and-read result, and
+> [Research 16](16-scheduled-pull-unit-economics-and-transport-kill-model.md) for the
+> current polling economics and transport falsifiers.
 
 ## Executive conclusion
 
@@ -52,11 +59,12 @@ unresolved seams are:
    been demonstrated for an independent Receiver to attach to an arbitrary user's existing
    Agent task and its Browser.
 
-The recommended next step is not a broad production rewrite. First run the smallest
-supported Agent-transport kill test. If that test selects a local connector topology, then
-build a bounded **distributed seam harness** with three logical processes, separate stores,
-network-only contracts, and failure injection. The existing P0 remains the composability
-baseline.
+The recommended next step is not a broad production rewrite. Run the single paired D4/H2b
+full-Desktop-restart kill test in Research 11, then select the product layer and application
+with Eddy. Run the selected-app product, WebMCP, C2, and economics controls before selecting
+a transport. Only if that transport requires a local connector should the project build a
+bounded **distributed seam harness** with topology-appropriate processes, authority isolation,
+network contracts, and failure injection. The existing P0 remains the composability baseline.
 
 ## 1. Evidence discipline and source boundary
 
@@ -221,7 +229,7 @@ select a production ingress channel.
 emit an event while the Receiver is unavailable, restart the Receiver, and prove delivery
 without a direct shared-database read or loopback shortcut.
 
-### R-02 — Receiver-to-Agent and Browser attachment is a private bridge (S0)
+### R-02 — Receiver-to-Agent and Browser attachment is a private bridge (topology-conditional S0)
 
 **Evidence:** The current Desktop adapter uses a task ID from `CODEX_SESSION_ID`, a local
 Unix-socket relay, fixed task targeting, and `open_in_codex` / `send_message_to_thread`.
@@ -241,17 +249,18 @@ Context continuity and capability continuity are separate problems.
 
 Do not describe the current private relay as a public platform integration.
 
-**Current update:** The sealed-context H0b probe removed this as a current-build feasibility
+**Current update:** The sealed-context H0b probe removed this as a bounded local feasibility
 blocker for scheduled pull: an existing idle task recovered its prior bounded receipt,
 opened a fresh built-in Browser tab, and invoked a genuine page-bound Site Tool without the
-private relay. The risk remains S0 for a production claim because this behavior is not an
-official unattended-Browser compatibility contract and has not passed restart, clean-room,
-busy-task, or multi-account tests.
+private relay. The risk becomes S0 only for a selected production topology that requires an
+independent Receiver to attach to an existing local task and lacks a supported connector or
+hosted alternative. Restart, clean-room, busy-task, and multi-account behavior remain separate
+compatibility questions.
 
 **H1 disposition:** One scheduled current-build run has now exercised the full gated path
 through fresh genuine Receiver and Host Site Tools, including acknowledgement-loss retry.
-R-02 therefore remains S0 for production compatibility and identity, not for bounded local
-composability.
+R-02 therefore remains topology-conditional for production compatibility and identity, not
+for bounded local composability.
 
 **H2a disposition:** A later trigger-only turn also rebuilt its Browser/WebMCP runtime after
 the prior task-scoped Node kernel was terminated. This rules out persistent task-level
@@ -265,7 +274,7 @@ identity, opens the bound page, observes the current page-bound WebMCP tools, an
 closed when the task or browser is unavailable. A Scheduled-pull or hosted-Agent selection
 requires a different topology-specific test.
 
-### R-03 — Trust boundary is logical, not physical (S0/S1)
+### R-03 — Least-privilege authority isolation is not yet proven (topology-conditional S1)
 
 **Evidence:** Grant and workflow data are in one database and are accessed by one runtime.
 The current code can keep `managed_context_id` private by convention, but the physical
@@ -276,14 +285,17 @@ server.
 connector have different trust levels. A convention that is safe in one process can become
 a data leak when a route, database account, log, backup, or operator crosses the boundary.
 
-**Recommendation:** Define separate service identities and stores. The Host must receive
-only a workflow-scoped opaque binding and non-sensitive Grant summary. The Receiver must
-own raw Agent context mapping. Cross-service operations must use versioned authenticated
+**Recommendation:** Define least-privilege service identities and data ownership. The Host
+must receive only a workflow-scoped opaque binding and non-sensitive Grant summary; the
+Receiver or selected Agent authority must own the raw context mapping. Use separate stores
+and processes when independently operated trust zones require them, not as a universal
+physical-topology rule. Any cross-service operations must use versioned authenticated
 protocols rather than shared SQL tables or direct service imports.
 
-**Minimum validation:** Run Host and Receiver with separate databases and credentials;
-make every cross-boundary operation an authenticated request; prove that Host APIs and
-logs cannot retrieve the raw managed context or Agent task identifier.
+**Conditional minimum validation:** In the selected topology, prove that Host APIs, logs,
+operators, and credentials cannot retrieve the raw managed context or Agent task identifier.
+If Host and Receiver are independently operated services, run them with separate credentials
+and stores and make every cross-boundary operation an authenticated request.
 
 ### R-04 — External-fact authority and Host workflow-state authority need a contract (S1)
 
@@ -359,27 +371,31 @@ authorization rather than a client-generated correlation header.
 session, a different user session, a forged Origin, a missing CSRF proof, and a replayed
 correlation ID. Confirm that only the intended workflow can register and continue.
 
-### R-07 — Canonical URL is not sufficient page or tab identity (S1)
+### R-07 — Canonical URL alone is not fresh authenticated page authority (S1)
 
 **Evidence:** The current relay fixes one canonical URL and opens it in the target task.
 The global fixture has one workflow and does not model multiple tabs, sessions, or
 concurrent re-entry attempts.
 
-**Why it matters:** A URL identifies a route, not a page instance. Multiple tabs, stale tabs,
-different users, redirects, or an already-open page can cause the Agent to act on the wrong
-session or artifact. Re-entry must be correlated to the authorized page context, not just a
-string URL.
+**Why it matters:** A URL identifies a route, not the authenticated subject, workflow, origin,
+or current server authority. Multiple tabs, stale sessions, different users, redirects, or
+an already-open page can cause the Agent to act on the wrong artifact. Re-entry intentionally
+opens a fresh page and must validate that fresh authority rather than depend on persistence of
+a particular tab.
 
-**Recommendation:** Bind the Grant to an allowlisted origin and workflow plus a short-lived
-re-entry nonce or page-instance identifier. The page should prove current authenticated
-identity and workflow ownership before accepting the opaque binding. The Agent must read
-fresh state after navigation and reject unexpected identity or stage.
+**Recommendation:** Bind the Grant to the authenticated subject, allowlisted origin, workflow,
+and a short-lived one-time re-entry capability or server nonce. The freshly opened page must
+prove current authenticated identity and workflow ownership before accepting the opaque
+binding. The Agent must read fresh server authority after navigation and reject an unexpected
+identity, nonce, workflow, version, or stage. Do not require persistence of a particular tab
+or page instance.
 
-**Minimum validation:** Open two tabs and two user sessions for the same route; deliver an
-event for one binding; prove that only the intended page/session exposes the continuation
-surface and that the other tab remains unaffected.
+**Minimum validation:** Open fresh pages under two user sessions for the same route; deliver
+an event for one subject/workflow binding; prove the wrong subject and a stale or replayed
+capability fail, while one fresh authorized page re-reads current authority and exposes only
+the correct continuation surface.
 
-### R-08 — Grant activation and binding registration have a timing race (S1)
+### R-08 — Real-destination enrollment integration must preserve H2 ordering (component contract closed; integration S1)
 
 **Evidence:** Grant approval first persists an `ACTIVATING` Grant and dispatches a
 continuation receipt. The Grant becomes `ACTIVE` after that dispatch returns. Host binding
@@ -403,14 +419,14 @@ The remaining production risk is destination-specific: a real Desktop, hosted Ag
 connector must provide the same durable acknowledgement and idempotency contract, with
 supervision, identity, key lifecycle, retention, revocation, and multi-tenant isolation.
 
-**Recommendation:** Make enrollment a small state machine with explicit activation and
-registration acknowledgements. Either complete the required receipt persistence before
-publishing an active Grant, or make registration and first delivery safely idempotent while
-the Grant is pending.
+**Current disposition:** H2 closes the component-level activation, receipt, and binding race
+for the opt-in service contract. A selected real destination must implement the same stable
+dispatch, idempotent durable receipt, explicit binding acknowledgement, and activation fence;
+it must not reopen the historical ordering gap.
 
-**Minimum validation:** Add artificial delays at each approval, receipt, activation, and
-binding boundary. Prove deterministic behavior for early binding, early event, duplicate
-approval, and retry.
+**Conditional minimum validation:** Integrate the selected real destination or worker and
+repeat the H2 crash boundaries plus early binding, early event, duplicate approval, and
+acknowledgement-loss tests under its real identity and supervision model.
 
 ### R-09 — Development credentials and issuer trust are not production lifecycle controls (S1)
 
@@ -458,9 +474,11 @@ are still not version-negotiated components.
 be renamed, removed, or change its schema while the Grant remains valid. An Agent may also
 retain stale context about a previous tool surface.
 
-**Recommendation:** Add a page/tool-surface version or capability hash to the authoritative
-page state. The Agent must re-discover current tools and use only the current stage. The
-Receiver must not grant tools; it should carry only bounded intent and scope.
+**Recommendation:** Version the bounded action role and input/output schema, negotiate
+compatibility where components exchange them, and always re-discover the live page tools for
+the current stage. A capability hash may be useful for diagnostics but must not replace live
+discovery or create unnecessary coupling to an exact inventory. The Receiver must not grant
+tools; it should carry only bounded intent and scope.
 
 **Minimum validation:** Enroll on one page version, deploy a compatible and an incompatible
 tool-surface change, and prove that stale or unknown tools are not invoked.
@@ -483,7 +501,7 @@ and any step-up requirement in a domain-specific security overlay.
 human with the required role can commit, and the decision is recorded with correlation and
 artifact revision.
 
-### R-13 — Local connector lifecycle and ownership are not yet a deployment contract (S2)
+### R-13 — Local connector lifecycle and ownership are not yet a deployment contract (S2 only if selected)
 
 **Evidence:** The current relay uses a task-launched process, an environment-supplied task
 ID, an ephemeral bearer, and a Unix socket. The relay verifies socket mode and owner, but
@@ -521,6 +539,24 @@ credentials.
 **Minimum validation:** Trace one event across all three processes, restart one process,
 and reconcile the final state from independent logs and stores.
 
+### Cross-cutting risks governed by later research
+
+This original register did not fully cover several platform and product risks. Do not add
+them as reasons to build a generic three-process system before app selection; use the later
+owners instead:
+
+- adversarial or stale Site Tool definitions, results, and `readOnlyHint` metadata:
+  [Core security](../Core/04-trust-security-reliability.md) and selected-app threat tests;
+- model, workspace, rollout, permission, confirmation, and Browser-profile drift:
+  [Research 11](11-platform-durability-and-cold-start-audit.md),
+  [Research 14](14-clean-context-webmcp-portability-smoke.md), and
+  [Research 15](15-sol-terra-webmcp-model-variation-smoke.md);
+- long-horizon task, receipt, context-retention, and compaction behavior: the route-relevant
+  durability tier after app selection; and
+- missed, coalesced, busy-run, shared-usage, and polling economics:
+  [Research 10](10-post-h1-unknowns-and-validation-roadmap.md) and
+  [Research 16](16-scheduled-pull-unit-economics-and-transport-kill-model.md).
+
 ## 5. Hardcode and strong-coupling audit
 
 The following table distinguishes acceptable P0 controls from coupling that must not be
@@ -529,9 +565,9 @@ mistaken for production architecture.
 | Current coupling | P0 classification | Architectural concern | Recommended treatment |
 |---|---|---|---|
 | `WF-001` | Intentional fixture control | No workflow or tenant isolation | Keep in P0; inject workflow identity in the next harness |
-| `127.0.0.1:4317` and HTTP | Intentional fixture control | No remote reachability, TLS, or cross-origin behavior | Keep for local P0; test distinct origins and HTTPS-like deployment next |
-| One Node runtime for Host and Receiver | Intentional fixture control | No process, trust, or failure boundary | Keep frozen; split processes for seam validation |
-| One SQLite database | Intentional fixture control | Shared SQL hides protocol and data-isolation failures | Use separate stores and service identities in the seam harness |
+| `127.0.0.1:4317` and HTTP | Intentional fixture control | No remote reachability, TLS, or cross-origin behavior | Keep for local P0; test distinct origins and HTTPS only after app and deployment selection |
+| One Node runtime for Host and Receiver | Intentional fixture control | No independent process or failure boundary | Keep frozen; split only the independently operated zones required by the selected topology |
+| One SQLite database | Intentional fixture control | Shared SQL can hide protocol and data-isolation failures | Use separate stores and service identities when the selected topology crosses trust or operator boundaries |
 | Fixed manifest and event HMAC secrets | P0-only development control | No rotation, revocation, or tenant isolation | Replace with managed, scoped credentials before deployment claims |
 | `/api/test/transition` | Test-only control | Unauthenticated route is not an external backend contract | Keep test-only and exclude from production surface |
 | `GET /api/workflows/WF-001` returns full opaque binding | Fixture shortcut / security risk | A browser or caller can retrieve a value intended to be scoped and opaque | Return only the minimum page-safe summary; resolve binding server-side |
@@ -539,7 +575,7 @@ mistaken for production architecture.
 | `CODEX_SESSION_ID` selects the Agent task | Local diagnostic control | Environment identity is not a portable enrollment or pairing contract | Replace with connector-owned verified task identity |
 | Prompt-prefix constrained relay calls | Diagnostic transport control | Natural-language prefixes are brittle as a long-term protocol | Use a versioned structured adapter command contract |
 | Event sequence effectively fixed at `1` | Single-event fixture control | Ordering and concurrent event behavior are untested | Add workflow-scoped monotonic sequence and stale-event handling |
-| One host binding per workflow | Single-user fixture control | Binding replacement can cross users or tabs | Scope binding by Grant, user/session, page instance, and workflow |
+| One host binding per workflow | Single-user fixture control | Binding replacement can cross users or sessions | Scope binding by Grant, authenticated subject/session, workflow, origin, and one-time registration capability |
 | Synchronous adapter dispatch | P0 happy-path control | Crash, retry, queue, and acknowledgement semantics are absent | Add durable delivery state and idempotent connector dispatch |
 | Run budget consumed before adapter success | P0 reliability limitation | A failed dispatch can permanently consume the only run | Define reservation, lease, retry, and exhaustion semantics |
 | `X-Human-Action: true` | Fixture human boundary | Header is not identity or durable approval evidence | Keep UI-only Agent boundary; add domain authorization later |
@@ -549,7 +585,7 @@ The presence of a hardcode is not by itself a P0 defect. The decision question i
 the value is a disposable test control or an accidental authority, trust, identity, or
 transport dependency.
 
-## 6. Conditional next validation: distributed seam harness
+## 6. Conditional post-selection validation: distributed seam harness
 
 ### 6.1 Preserve the frozen P0
 
@@ -558,9 +594,10 @@ the reference proof for page-bound WebMCP composability. The next harness should
 and should not silently replace genuine Stage-A or Stage-B Site Tool evidence with REST,
 DOM automation, generic MCP, or a headless substitute.
 
-### 6.2 Three-process shape
+### 6.2 Example three-process shape
 
-Build the smallest environment that introduces the real boundaries:
+Only if the selected app and transport require a Local Receiver plus connector, build the
+smallest environment that introduces those real boundaries:
 
 ```mermaid
 flowchart LR
@@ -571,7 +608,7 @@ flowchart LR
     A -->|Open canonical URL| P
 ```
 
-Required constraints:
+Constraints for that candidate topology:
 
 1. Host, third-party Backend, Receiver, and connector run as separate processes, even if
    they initially share one development machine.
@@ -621,8 +658,9 @@ following are demonstrated:
    idempotent continuation effect or a clearly inspectable dead-letter outcome.
 5. Binding and event checks reject wrong workflow, user, session, origin, Grant, event type,
    sequence, or state version before Agent wake.
-6. Re-entry reaches the intended authenticated page instance, re-reads authoritative state,
-   re-discovers current genuine WebMCP tools, and refuses stale or incompatible tools.
+6. Re-entry reaches a fresh page with the intended authenticated subject, workflow, origin,
+   and one-time authority; it re-reads authoritative state, re-discovers current genuine
+   WebMCP tools, and refuses stale or incompatible tools.
 7. The selected product enforces its human consequence through authenticated action
    authority outside the re-entry Grant, with a defined actor and audit record.
 
@@ -647,8 +685,9 @@ The main thread should resolve these questions before production-oriented refact
    dead-letter behavior, and whether any stronger exactly-once claim is actually required.
 6. **Agent identity:** how a connector proves the exact task, user, workspace, and Browser
    context without trusting an environment variable or prompt text.
-7. **Page identity:** how re-entry binds to the correct authenticated page/session/tab and
-   rejects a stale or different context.
+7. **Fresh-page authority:** how re-entry binds to the correct authenticated subject,
+   workflow, origin, and one-time capability and rejects stale or different authority without
+   depending on a persistent tab.
 8. **Claim boundary:** what is demonstrated as a project-owned protocol, what is a
    platform-specific adapter, and what remains a private diagnostic bridge.
 
@@ -669,9 +708,15 @@ This document does not:
 
 ## 10. Bottom-line recommendation
 
-Keep P0/H1/H2a as current-build mechanism evidence and H2 as a bounded enrollment-service
-contract. Treat this review as a conditional production-risk catalog, not the active roadmap.
-Run the smallest independent genuine-WebMCP discovery smoke, select a product layer and app
-from observed workflow evidence, and run the product substitution tests before selecting a
-transport. Only then build the smallest topology-specific distributed seam; build a local
-connector harness only if that transport is actually selected.
+Keep P0/H1/H2a as current-build mechanism evidence, H2 as a bounded enrollment-service
+contract, the Research 14 C1 result as verified clean Agent-context evidence only in the same
+installed environment, and the Research 15 M1 result as one verified discovery-and-read run
+per documented eligible model rather than model parity. Use Research 16 rather
+than this topology review for Scheduled-pull economics.
+Treat this review as a conditional production-risk catalog, not the active roadmap. First run
+the single paired D4/H2b full-Desktop-restart kill test, then select a product layer and app
+from observed workflow evidence. Run C2, product substitution, WebMCP/API, and economics
+tests before selecting a transport. Preserve independent account, machine, public-deployment,
+and end-to-end judge portability as later gates. Only then build the smallest
+topology-specific distributed seam; build a local connector harness only if that transport
+is actually selected.

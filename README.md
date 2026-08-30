@@ -89,8 +89,9 @@ retains the test counts observed when each acceptance package was captured.
 8. [`Docs/Core/06-mvp-and-demo.md`](Docs/Core/06-mvp-and-demo.md) — demo-app selection, challenge scope, build order, and proof rhythm.
 9. [`Docs/Core/07-p0-technical-validation-mvp.md`](Docs/Core/07-p0-technical-validation-mvp.md) — frozen technical-validation contract and Q1–Q5 proof boundary.
 10. [`Docs/Scenarios/README.md`](Docs/Scenarios/README.md) — concrete examples that do not select the final application.
-11. [`mvp-shared/README.md`](mvp-shared/README.md) — shared MVP1/MVP2 integration assessment, modular architecture recommendations, hackathon strategy, and handoff for future implementation work.
-12. [`mvp2/README.md`](mvp2/README.md) — modular continuation infrastructure, protocol schemas, extension contracts, replaceable adapters, and TenderRelay reference Host.
+11. [`Docs/Knowledge/README.md`](Docs/Knowledge/README.md) — cross-layer priority model, high-value register, source reconciliation, and thread/Memory distillation.
+12. [`mvp-shared/README.md`](mvp-shared/README.md) — shared MVP1/MVP2 integration assessment, modular architecture recommendations, hackathon strategy, and handoff for future implementation work.
+13. [`mvp2/README.md`](mvp2/README.md) — modular continuation infrastructure, protocol schemas, extension contracts, replaceable adapters, and TenderRelay reference Host.
 
 ## Source-of-truth hierarchy
 

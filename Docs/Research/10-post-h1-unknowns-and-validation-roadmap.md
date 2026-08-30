@@ -45,6 +45,8 @@ should follow app and transport selection rather than precede them.
 | Human stopping behavior | **P0/H1 PASS** | Artifact remained uncommitted and the Agent never received a commit Site Tool |
 | Task-scoped Browser runtime cold start | **H2A PASS WITH RECOVERY** | A new Node kernel rebuilt Browser/WebMCP after the old kernel was terminated; full Desktop restart remains open |
 | Crash-recoverable enrollment service contract | **H2 PASS** | Atomic enrollment, a stable receipt outbox, separate idempotent durable destination, four real process-crash boundaries, concurrent approval convergence, activation fencing, sealed-receipt purge, and redacted status and trace surfaces; no real Agent destination or production worker is claimed |
+| Clean Agent-context Site Tool discovery | **C1 VERIFIED, SAME ENVIRONMENT** | App-held traces show two fresh internal contexts with no prior turns or project-file access discovering the official and local P0 manifests and invoking one manifest-annotated read-only tool each. No mutating Site Tool was invoked; fresh user-visible task, account/workspace, machine, and full-loop portability remain open |
+| Documented eligible-model Site Tool discovery and read | **M1 VERIFIED ONCE PER MODEL, SAME ENVIRONMENT** | Controller-assigned Sol and Terra arms discovered the same official and local manifests and completed one current-state invocation per page. Both documentation preflights failed; each actual Site Tool invocation succeeded without invocation retry. This is not model parity, and full Scheduled Task comparison remains open |
 
 Evidence: [H1 verdict](../../mvp/evidence/h1-event-gated-scheduled-reentry-2026-08-30-verdict.md)
 and [H2 service-contract verdict](../../mvp/evidence/h2-durable-enrollment-service-contract-2026-08-30-verdict.md).
@@ -103,9 +105,10 @@ prior rationale is a poor fit even if technically easy.
 These questions depend on the app selection discussion with Eddy. They should control the
 transport and security requirements rather than be retrofitted after infrastructure is built.
 
-## 3. Platform durability unknowns that can be tested before app selection
+## 3. Platform durability inventory and the one remaining pre-app test
 
-Run a bounded matrix against the same sealed receipt and no-event/one-event controls:
+The matrix remains the durability inventory, but only D4/H2b should run before app selection.
+Use the same sealed receipt and no-event/one-event controls:
 
 | Condition | Required observation | Failure meaning |
 |---|---|---|
@@ -114,7 +117,7 @@ Run a bounded matrix against the same sealed receipt and no-event/one-event cont
 | Temporary offline period | No effect while offline; one bounded recovery after connectivity returns | Delivery semantics need a hosted or paired runtime |
 | Busy foreground task | No cross-task mix-up, duplicate effect, or indefinite starvation | Exact-task scheduling and concurrency are unsafe |
 | Client update | Re-run H0b and H1 without changing the proof criteria | Undocumented capability drift is too high |
-| Eligible model variation | Sol and Terra independently regain genuine Site Tools | Result is model-specific |
+| Eligible model variation | Sol and Terra separately regain genuine Site Tools in the selected continuation path | Result is model-specific in the selected workflow |
 | Account and workspace variation | Feature availability and permissions are explicit and reproducible | Judge/customer access cannot be assumed |
 | Schedule jitter and missed interval | Record actual scheduled, start, observe, and completion times | Latency cannot support the selected workflow |
 
@@ -126,6 +129,19 @@ does not permanently break the scheduled join. A new kernel recovered within the
 but only after the Agent learned the cold runtime's mandatory confirmation and WebMCP
 documentation gate and retried. The parent tool service and Desktop app remained alive. This
 narrows process-lifetime risk without satisfying the first row of the matrix.
+
+Run exactly one paired D4/H2b full-Desktop-restart experiment next, using the protocol in
+[Research 11](11-platform-durability-and-cold-start-audit.md). Defer sleep/offline, busy-task,
+client-update, full Scheduled Task model comparison, and account/workspace variation until the
+selected app makes them material. D3 is diagnostic only after a D4 failure.
+
+M1 satisfies only the bounded discovery-and-read portion of the eligible-model row in the
+same installed environment. App-held traces show one fresh Sol arm and one Terra arm
+discovering the same official and local genuine Site Tools and completing one invocation per
+page. It does not test Scheduled Task execution, receipt recovery, event reasoning, mutation,
+quality, latency, or usage; those comparisons belong inside the selected-app study. A future
+public evidence package must also capture model assignment and redacted runtime traces in a
+self-contained form.
 
 ## 4. Enrollment and lifecycle unknowns
 
@@ -213,9 +229,11 @@ record, and recovery after rejection or change request.
 ## 8. Commercial and operating unknowns
 
 The bounded H1 used four scheduled turns over roughly seven minutes. That is a feasibility
-cost, not a unit-economics result. The platform exposed no reliable per-run monetary or token
-cost. Continuous one-minute polling can create up to 1,440 checks per day per watch, so the
-following remain unknown:
+cost, not a unit-economics result. Official documentation now supplies shared-usage context,
+but no dedicated Scheduled Task per-run price or accounting rule. Continuous one-minute
+polling can create up to 1,440 checks per day per watch. Research 16 now supplies a
+watch-window calculator and hard transport falsifiers, but the following inputs remain
+unknown:
 
 - expected events per Grant and no-op checks per useful continuation;
 - event-to-result latency distribution and user tolerance;
@@ -235,21 +253,26 @@ production route.
 2. **Specify and test crash-safe enrollment recovery at the service-contract level.**
    Completed by the bounded H2 spike; preserve its synthetic-destination and one-shot-worker
    nonclaims.
-3. **Run the smallest independent clean-room WebMCP discovery smoke available.** This is a
-   global Challenge dependency and should not wait for a complete P1 topology. Keep full
-   end-to-end clean-room reproduction as a later release gate.
-4. **Select the product layer and demo app using observed workflow evidence.** Then run the
+3. **Preserve the verified same-environment C1 and M1 smokes.**
+   App-held source traces verify the official-control and local P0 calls, while the redacted
+   repo package is not a self-contained public audit artifact. Do not promote C1 to an
+   independent account, machine, public deployment, or judge pass, or M1 to parity.
+4. **Run one paired D4/H2b restart experiment.** This is the final app-neutral durability kill
+   test; a pass is current-build compatibility evidence, and a failure may trigger D3 only as
+   a diagnostic split.
+5. **Select the product layer and demo app using observed workflow evidence.** Then run C2 in
+   a fresh user-visible task with a capture-time evidence package and run the
    product kill tests: Agent versus deterministic automation and notification, exact task
    versus bounded capsule, and WebMCP page versus backend API.
-5. **Derive and accept a transport ADR from the selected app's latency, offline, privacy,
+6. **Derive and accept a transport ADR from the selected app's latency, offline, privacy,
    administration, and cost requirements.** Scheduled pull
    remains an experiment unless the measured product envelope fits it.
-6. **Run only the platform-durability and transport measurements material to that selected
+7. **Run only the platform-durability and transport measurements material to that selected
    route.** Do not expand generic pre-app infrastructure after the H2 and clean-room gates.
-7. **Build the additive P1 distributed seam for that topology:** separate authorities,
+8. **Build the additive P1 distributed seam for that topology:** separate authorities,
    authenticated identity and origin, durable outbox/delivery, revocation, retry, and
    human-action enforcement.
-8. **Run a public HTTPS clean-room reproduction** on an independent account or judge-like
+9. **Run a public HTTPS clean-room reproduction** on an independent account or judge-like
    environment before claiming deployability or submission readiness.
 
 ## 10. Current decision boundary

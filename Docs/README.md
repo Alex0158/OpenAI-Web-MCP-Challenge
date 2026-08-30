@@ -64,7 +64,7 @@ These files remain active for the surfaces they own. They do not select the prod
 - [`Research/02-p0-runtime-probe-log.md`](Research/02-p0-runtime-probe-log.md) — SUPPORTING reproducible log of component, App Server, Receiver, Desktop task-control, and Browser capability probes.
 - [`Research/03-site-tools-runtime-availability-audit.md`](Research/03-site-tools-runtime-availability-audit.md) — SUPPORTING client prerequisite, feature-gate, App Server boundary, and safe newer-client migration audit.
 - [`Research/04-platform-bridge-decision.md`](Research/04-platform-bridge-decision.md) — SUPPORTING current-build Desktop bridge decision, public-route gap, proof-substitution boundary, and P0-versus-production claim limit.
-- [`Research/05-distributed-topology-and-hard-coupling-risk-review.md`](Research/05-distributed-topology-and-hard-coupling-risk-review.md) — SUPPORTING conditional production-risk catalog for local P0 topology, distributed seams, and coupling; Research 07–13 control later mechanism evidence, sequencing, durability, product tests, and method calibration.
+- [`Research/05-distributed-topology-and-hard-coupling-risk-review.md`](Research/05-distributed-topology-and-hard-coupling-risk-review.md) — SUPPORTING conditional production-risk catalog for local P0 topology, distributed seams, and coupling; Research 07–16 control later mechanism evidence, sequencing, durability, product tests, method calibration, clean-context portability, model variation, and transport economics.
 - [`Research/06-continuity-value-and-alternative-kill-tests.md`](Research/06-continuity-value-and-alternative-kill-tests.md) — SUPPORTING scientific and product test plan for page authority, exact-thread value, structured continuation memory, and measurable outcomes.
 - [`Research/07-supported-reentry-transport-and-heartbeat-spike.md`](Research/07-supported-reentry-transport-and-heartbeat-spike.md) — SUPPORTING official-capability matrix plus the current-build H0b and event-gated H1 scheduled re-entry verdicts.
 - [`Research/08-review-05-adjudication-and-p1-trust-delivery-plan.md`](Research/08-review-05-adjudication-and-p1-trust-delivery-plan.md) — SUPPORTING independent disposition of Research 05 and the additive P1 trust/delivery gate.
@@ -72,8 +72,11 @@ These files remain active for the surfaces they own. They do not select the prod
 - [`Research/10-post-h1-unknowns-and-validation-roadmap.md`](Research/10-post-h1-unknowns-and-validation-roadmap.md) — SUPPORTING post-H1 separation of verified mechanism facts, product kill tests, platform durability, production topology, identity, lifecycle, and distributed-reliability unknowns.
 - [`Research/11-platform-durability-and-cold-start-audit.md`](Research/11-platform-durability-and-cold-start-audit.md) — SUPPORTING official capability boundary, H2a cold-runtime interpretation, and ordered Desktop/app/device durability protocol.
 - [`Research/12-product-value-kill-test-preregistration.md`](Research/12-product-value-kill-test-preregistration.md) — SUPPORTING preregistered controls, safety gates, metrics, and provisional retain/demote/kill rules for notification, exact-task, capsule, and WebMCP materiality tests.
-- [`Research/13-exact-task-vs-capsule-method-calibration.md`](Research/13-exact-task-vs-capsule-method-calibration.md) — SUPPORTING frozen method-calibration protocol for isolating prior-history effects; its bounded [verdict](../Experiments/continuity-calibration/verdict.md) is `REVISE_PROTOCOL`, not product evidence.
-- [`Research/13-exact-task-vs-capsule-method-calibration.md`](Research/13-exact-task-vs-capsule-method-calibration.md) — SUPPORTING hash-frozen preregistration for exact-task history versus a strong bounded continuation capsule. The completed package is [`../Experiments/continuity-calibration/verdict.md`](../Experiments/continuity-calibration/verdict.md); its outcome is `REVISE_PROTOCOL`, with no product-value inference permitted.
+- [`Research/13-exact-task-vs-capsule-method-calibration.md`](Research/13-exact-task-vs-capsule-method-calibration.md) — SUPPORTING hash-frozen method calibration for exact-task history versus a strong bounded continuation capsule. The completed package is [`../Experiments/continuity-calibration/verdict.md`](../Experiments/continuity-calibration/verdict.md); its outcome is `REVISE_PROTOCOL`, with no product-value inference permitted.
+- [`Research/14-clean-context-webmcp-portability-smoke.md`](Research/14-clean-context-webmcp-portability-smoke.md) — SUPPORTING verified same-environment C1 evidence. App-held traces show two fresh internal contexts discovering genuine Site Tools and invoking one manifest-annotated read-only tool on the official control and local P0 pages; account, workspace, machine, public deployment, and judge portability remain open.
+- [`Research/15-sol-terra-webmcp-model-variation-smoke.md`](Research/15-sol-terra-webmcp-model-variation-smoke.md) — SUPPORTING bounded M1 compatibility evidence. One controller-assigned arm per documented eligible model discovered the same official and local manifests and completed one Site Tool invocation per page; this is not model parity, and scheduled continuation remains open.
+- [`Research/16-scheduled-pull-unit-economics-and-transport-kill-model.md`](Research/16-scheduled-pull-unit-economics-and-transport-kill-model.md) — SUPPORTING first-principles watch-window economics, shared-usage stress, value equations, instrumentation, and hard transport falsifiers. It does not invent a Scheduled Task price or select production transport.
+- [`Research/17-mvp1-mvp2-comparative-integration-review.md`](Research/17-mvp1-mvp2-comparative-integration-review.md) — SUPPORTING review of Eddie's parallel TenderRelay MVP2 branch against the current mechanism. It preserves MVP2 as a contributor reference, identifies selective UI/demo/adapter reuse, records critical authority and evidence gaps, and does not merge or select the app.
 
 ## 5. Deprioritized ideation
 
@@ -88,7 +91,20 @@ These files remain active for the surfaces they own. They do not select the prod
 - [`../References/WebMCP_Analysis/README.md`](../References/WebMCP_Analysis/README.md) — broad WebMCP research dossier; supporting and partially historical.
 - [`../References/Other/`](../References/Other/) — supporter resources, conflicts, and unresolved external questions.
 
-## 7. Maintenance rules
+## 7. Knowledge governance
+
+- [`Knowledge/README.md`](Knowledge/README.md) — cross-layer routing and non-destructive governance for high-value knowledge.
+- [`Knowledge/01-priority-and-classification.md`](Knowledge/01-priority-and-classification.md) — four attention levels and independent evidence metadata.
+- [`Knowledge/02-high-value-register.md`](Knowledge/02-high-value-register.md) — curated statements that can change a decision, claim, or next validation step.
+- [`Knowledge/03-source-reconciliation.md`](Knowledge/03-source-reconciliation.md) — source-family disposition, conflicts, and ordered cleanup backlog.
+- [`Knowledge/04-thread-and-memory-distillation.md`](Knowledge/04-thread-and-memory-distillation.md) — redacted synthesis of relevant Codex threads and Memory, without authority over current files.
+- [`Knowledge/05-challenge-governance-snapshot.md`](Knowledge/05-challenge-governance-snapshot.md) — English operational digest of challenge hard gates; the Official Rules remain controlling.
+
+The Knowledge package is additive. Core, ADR, governing, evidence, and immutable reference
+files retain ownership of their surfaces; the register provides cross-layer routing rather
+than a second source of truth.
+
+## 8. Maintenance rules
 
 1. Put current project behavior in `Core/`, not in the frozen dossier.
 2. Update `00-current-status.md` whenever phase, evidence, deployment, or submission truth changes.
@@ -99,7 +115,7 @@ These files remain active for the surfaces they own. They do not select the prod
 7. Select a host application only through a new ADR that specializes the domain-neutral Core requirements.
 8. Product, development, and submission artifacts are written in English. Conversation may use the user's language.
 
-## 8. Update sequence
+## 9. Update sequence
 
 When a decision or implementation changes:
 

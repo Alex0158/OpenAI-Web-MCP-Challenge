@@ -76,9 +76,11 @@ The binding implementation contract is
 | Resumed Desktop task obtains an eligible browser | VERIFIED FOR CONTROLLED P0 | The private current-build bridge opened a new canonical Browser tab in the bound task; no supported external production contract is established |
 | Resumed run opens the canonical URL | VERIFIED FOR Q4 | The event-opened tab loaded the exact bound URL and read fresh authoritative `READY` state |
 | Site Tools rediscover after re-entry | VERIFIED FOR Q4 | Genuine resumed Stage-B discovery and `continue_artifact` invocation completed without REST, DOM automation, generic MCP, or a substitute browser |
+| Fresh Agent context can discover page-bound Site Tools without prior project turns or project-file access | VERIFIED FOR C1, SAME ENVIRONMENT | App-held source traces show two separate fresh internal contexts discovering the official-control and local P0 manifests from fresh tabs and invoking one manifest-annotated read-only current-state tool each. No mutating Site Tool was invoked; account/workspace, machine, public deployment, and full-loop portability remain unknown |
+| Both documented eligible models can discover and read genuine Site Tools | VERIFIED ONCE PER MODEL FOR M1, SAME ENVIRONMENT | Controller-assigned GPT-5.6 Sol and Terra arms discovered the same official and local manifests and completed one current-state Site Tool invocation per page. Both documentation preflights failed before those calls; each actual Site Tool invocation succeeded without invocation retry. This is not parity, and mutation, Scheduled Task, and product-quality comparison remain unknown |
 | Host authentication persists or recovers safely | UNKNOWN | Signed-in and expired-session tests |
 | Tested Agent stops at the configured human boundary | VERIFIED FOR Q5, BEHAVIORAL | The same artifact reached revision 2, remained uncommitted, displayed the human Commit control, and exposed no commit Site Tool. The fixture does not prove technical user exclusivity |
-| Fresh judge can reproduce the complete loop | UNKNOWN | Clean-room run using public instructions |
+| Fresh judge can reproduce the complete loop | UNKNOWN | Same-environment C1 does not test judge portability; requires a public selected-app run from independent public instructions and an eligible judge-like environment |
 | Selected app solves a meaningful user problem | UNKNOWN | App-specific user and workflow evidence |
 
 ## 4. Gate A — Host application selection
@@ -239,6 +241,11 @@ After the app is selected, record:
 - who bears integration and operating cost;
 - minimum acceptable human control and audit;
 - why a notification, ordinary API, or one-off Agent prompt is insufficient.
+
+For any Scheduled-pull arm, calculate the full watch-window economics defined in
+[Research 16](../Research/16-scheduled-pull-unit-economics-and-transport-kill-model.md):
+no-op runs, usage per safe success, total lifecycle burden, and expected net value. A
+positive-event-only cost calculation is invalid.
 
 Qualitative interviews are evidence of workflow and language, not market-size proof.
 
