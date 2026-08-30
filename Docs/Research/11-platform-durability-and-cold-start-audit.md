@@ -68,7 +68,7 @@ must remain an empirical compatibility result and must not be presented as a pla
 | D2 | Prior task-scoped Node/Browser kernel terminated | **H2A PASS WITH RECOVERY** | New kernel and Browser runtime completed the mandatory preflight and invoked a genuine no-event Inbox tool |
 | D2b | Fresh internal Agent context; same installed environment | **C1 VERIFIED** | App-held traces show two separate contexts completing no-history official and local discovery plus one current-state invocation each; this is not account, workspace, machine, or restart durability |
 | D3 | Parent tool-host process restarted | **UNTESTED; DIAGNOSTIC AFTER D4 FAILURE** | Would localize whether task-host replacement is the failing layer without crossing a full app restart |
-| D4 | Desktop app quit and relaunched | **UNTESTED; NEXT APP-NEUTRAL KILL TEST** | Would test task, schedule, receipt, Browser, permissions, and Site Tool reacquisition after client restart |
+| D4 | Desktop app quit and relaunched while an independent Receiver remains available | **UNTESTED; NEXT APP-NEUTRAL KILL TEST** | Would test task, schedule, receipt, Browser, permissions, and Site Tool reacquisition after client restart; Receiver restart is out of scope |
 | D5 | Machine sleep or network offline across a due time | **UNTESTED** | Would test missed-run/catch-up behavior and expiry interaction |
 | D6 | Desktop client update between enrollment and event | **UNTESTED** | Would test compatibility and feature-rollout drift |
 | D7 | Clean machine or another eligible account/workspace | **UNTESTED** | Required for a portability or judge-reproducibility claim |
@@ -132,8 +132,11 @@ For every tier:
    or local socket path.
 2. Run a no-event control first. It must open only the Receiver Inbox, invoke the genuine
    pending-event Site Tool, return `pending: false`, and create zero Host effect.
-3. Persist one authenticated event while the Receiver is unavailable, then restore the
-   Receiver without resetting its database.
+3. Persist one authenticated event under the availability condition owned by the tier. For
+   D4, keep the Receiver available and accept the event while Desktop is closed; do not mix
+   the app-restart test with Receiver unavailability. A separately repeated Receiver restart
+   must occur only after acceptance, without resetting its database, and is auxiliary H1
+   evidence rather than a D4 pass requirement.
 4. Run one event case. It must read the genuine Inbox event, open the allowlisted canonical
    page, read fresh authoritative state, rediscover current Host Site Tools, produce one
    idempotent effect, stop before the human consequence, and genuinely acknowledge the
@@ -143,7 +146,12 @@ For every tier:
 6. Pause the schedule immediately after the bounded run and scan the evidence package for
    secrets and managed-context identifiers.
 
-### D4 — full Desktop restart
+### D4 — Desktop restart with an independent Receiver
+
+This is a Desktop-lifecycle test with an independent Receiver, not a Receiver-restart test. The
+Receiver must remain available, outside the ChatGPT process tree, and responsible for retaining
+the bounded receipt and any accepted event while Desktop is closed. H1/H2 cover Receiver restart
+and crash-recoverable enrollment separately.
 
 Before quitting the app, ensure all project changes and redacted evidence are persisted,
 all unrelated automations remain paused, and no other Agent task is running. Quit and
@@ -153,29 +161,81 @@ and fresh Browser/WebMCP is reacquired without a prompt containing the receipt, 
 name.
 
 An app restart is operationally disruptive and can interrupt the observing task. Execute it
-only with an external durable observer that records the old app process ending, a new app
-process starting, Receiver state, schedule times, Host effect counts, and a redacted secret
-scan after relaunch.
+only with an external durable observer that proves it is outside the ChatGPT process tree and
+records the old app process ending, a new app process starting, Receiver state, schedule
+times, and Host effect counts. A separate fail-closed evidence scanner must compare the candidate
+public derivative with private receipt, task, runtime identifier, delivery ticket, effect receipt,
+secret, and path values while reporting only counts and booleans.
 
 Run one paired H2b experiment on the same fresh receipt and disposable task:
 
 1. **No-event arm:** quit normally, prove the old Desktop and owned child processes ended,
-   relaunch without manually opening the task, and place the first due opportunity after
-   relaunch. Within at most three due opportunities, the same task must reconstruct Browser
+   relaunch without manually opening the task, and place the one-shot due opportunity after
+   relaunch. In exactly one successful dispatch, the same task must reconstruct Browser
    and WebMCP, invoke the genuine Inbox reader, receive `pending: false`, and stop without
    opening the Host or changing any count or revision.
 2. **Event arm:** quit normally again, persist exactly one authenticated event while Desktop
-   is closed, relaunch without manually opening the task, and again place the first due
+   is closed, relaunch without manually opening the task, and again place one one-shot due
    opportunity after relaunch. The same task must read the event through the genuine Inbox
    Site Tool, open the allowlisted canonical Host, read fresh authority, rediscover the
    current stage tools, produce exactly one idempotent effect, acknowledge it, and stop
    before human commit. Exact replay and one final no-event turn must add no effect.
+
+Use an explicit future one-shot heartbeat for every D4 turn:
+
+```text
+DTSTART:YYYYMMDDTHHMMSSZ
+RRULE:FREQ=MINUTELY;INTERVAL=1;COUNT=1
+```
+
+On observed Desktop `26.825.41651` build `7345`, this produces a persisted exact
+`next_run_at`, avoids interval-boundary ambiguity, and exhausts after one successful dispatch.
+Place `DTSTART` at least five minutes after activation and require observer-proven replacement-app
+startup at least two minutes before it. If the due time occurs while Desktop is closed, classify
+the arm as `INCONCLUSIVE` because the current build can dispatch overdue work after relaunch. This
+is empirical current-build behavior, not a public scheduler contract. The executable operator
+procedure is the [D4/H2b runbook](../../mvp/D4_H2B_RUNBOOK.md).
+
+If the current build retries a `COUNT=1` heartbeat because the task is busy or renderer-ineligible,
+that arm is `INCONCLUSIVE`. Do not aggregate retry opportunities into a pass. Pause, correct the
+precondition, and re-arm a new one-shot. Also reject a no-event arm whose due time leaves less than
+18 minutes of Grant lifetime or an event arm that leaves less than 8 minutes; expiry must not be
+allowed to masquerade as restart failure.
+
+Current-build inspection establishes a usable attempt control: the scheduler persists
+`last_run_at` immediately before dispatch, while renderer/thread blocking only reschedules
+`next_run_at`. The external observer must count distinct post-arm `last_run_at` transitions and
+reschedules with unchanged `last_run_at`. Because the attempt marker precedes task resume and
+`startTurn`, it must also read the private target rollout and count only new strict heartbeat
+`response_item` envelopes whose automation ID, prompt, and turn context match. A valid closed arm
+has exactly one dispatch attempt, zero retry reschedules, exactly one accepted heartbeat turn, and
+`next_run_at = NULL`. The attempt must occur at or after the one-shot due time. The observer must
+also latch any error, polling gap, initial or temporary automation-contract violation, other active
+automation, frozen target-rollout mapping violation, Receiver outage, Receiver process replacement,
+or Receiver ownership change and make the arm `INCONCLUSIVE`. Its first `ACTIVE` observation must be prompt relative to the scheduler
+update so a monitoring gap cannot erase a dirty activation. Treat this composite as build-specific
+empirical evidence, not a published contract or cryptographic provenance; the rollout does not
+persist a `scheduled` versus `run_now` discriminator, so the controlled protocol must prohibit
+manual Run Now and preserve an operator attestation for that procedural control.
+
+The same build's Computer Use safety boundary refuses the host app bundle `com.openai.codex`.
+Therefore the test operator must perform the two normal `Cmd-Q` actions. The external launchd-owned
+helper remains responsible for relaunching through LaunchServices without a task or URL argument.
+AppleScript, signals, force quit, or lower-level termination are not acceptable substitutes. This
+helper must require `launchd` as its direct parent and fail closed unless the automation TOML and
+read-only SQLite schedule state match at startup and immediately before relaunch. The manual quit
+is an experiment-control limitation, not evidence for or against the re-entry mechanism.
 
 Both arms fail if the prompt restates the receipt, Inbox URL, or tool name; a stale handle,
 private relay, REST, DOM automation, or generic MCP substitutes for genuine page-bound Site
 Tools; the target task is manually opened; a confirmation requires unattended human repair;
 or the redacted evidence cannot prove a new Desktop process. A pass is current-build,
 same-machine compatibility evidence only.
+
+If the independently supervised Receiver exits, loses its isolated state, or is unavailable
+during an arm, classify the arm as `INCONCLUSIVE` or a setup/topology violation and rerun it with
+the Receiver boundary restored. Do not treat that mixed failure as evidence about Desktop restart
+continuity.
 
 Do not keep Desktop closed across a due opportunity in this D4 experiment. That would mix
 restart recovery with the distinct D5 missed-run and catch-up question. If D4 passes, a

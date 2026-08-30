@@ -63,6 +63,16 @@ synthetic service-contract pass, not evidence of a real Desktop or hosted destin
 production worker supervision, production key lifecycle, multi-tenant isolation, or
 distributed exactly-once execution.
 
+The prepared [`D4 — Desktop restart with an independent Receiver`](D4_H2B_RUNBOOK.md) defines the
+next app-neutral Desktop-lifecycle experiment. Its bounded harness uses a `launchd`-owned
+Receiver, observer, and relaunch helpers; keeps the Receiver available while only the Desktop
+app is restarted; correlates process replacement with a one-shot scheduler attempt and strict
+accepted heartbeat envelope; and scans any public derivative for private authority. Its scripts
+pass syntax checks, local fail-closed rehearsals completed, the existing 88-test mechanism suite
+remains green as a regression control, and the scanner passed one rehearsal candidate. D4 has no
+dedicated automated test suite, and the formal no-event and event restart arms have not run. No
+full Desktop restart continuity claim is made.
+
 This is a controlled, same-user, current-build P0 technical-feasibility result. The Desktop
 join in the frozen P0 run used an undocumented local relay and is not a supported production
 architecture. H0b, H1, and H2a used Scheduled same-task pull and did not use that relay, but
