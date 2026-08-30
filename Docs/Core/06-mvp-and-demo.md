@@ -1,7 +1,7 @@
 # WebMCP Re-entry Workflow — Demo App Selection and Challenge MVP
 
 **Role:** CANONICAL app-selection framework and challenge execution target  
-**Status:** Core mechanism selected; demo app unselected  
+**Status:** P0 technical mechanism passed; demo app and supported continuation adapter remain unselected  
 **Last updated:** 2026-08-30
 
 ## 1. Current decision boundary
@@ -13,7 +13,8 @@ demonstrates it is a separate product decision.
 
 - one user-scoped future event;
 - one ended page session or Agent turn;
-- one validated resume of managed Agent context;
+- one accepted bounded delivery;
+- one selected continuation adapter resume of managed Agent context;
 - one canonical page re-entry;
 - one fresh state read;
 - one changed WebMCP tool surface;
@@ -49,25 +50,35 @@ A candidate app is rejected if any answer is no:
    frequency and waiting window?
 3. Does the same artifact, case, decision, or prior rationale matter before and after that
    event?
-4. Does the post-event work require judgment or synthesis that a deterministic Host rule or
-   ordinary workflow engine cannot perform equivalently?
-5. Must the Agent return to the live page to act correctly?
-6. Does current state change which Site Tools should exist?
-7. Is there a clear human boundary with a visible consequence?
-8. Can the full loop use synthetic, public, non-sensitive data?
-9. Is the product layer explicit: a Host feature, an integration platform, or an installed
+4. Must the Agent return to the live page to act correctly?
+5. Does current state change which Site Tools should exist?
+6. Is there a clear human boundary with a visible consequence?
+7. Can the full loop use synthetic, public, non-sensitive data?
+8. Is the product layer explicit: a Host feature, an integration platform, or an installed
    Agent-side companion?
-10. Are the beneficiary, buyer, integration owner, operator, and revocation owner plausible
-    for that product layer?
-11. Can a judge understand the value and observe the re-entry in under three minutes?
-12. Can the team build it without private dependencies or a large external integration?
-13. Would removing WebMCP materially weaken the experience rather than merely add clicks?
-14. Is the saved work plausibly greater than enrollment, consent, monitoring, and recovery
-    friction per useful continuation?
+9. Can a judge understand the value and observe the re-entry in under three minutes?
+10. Can the team build it without private dependencies or a large external integration?
+11. Would removing WebMCP materially weaken the experience rather than merely add clicks?
+
+### Post-shortlist hypotheses and kill tests
+
+The following questions must be recorded in the selection ADR and validated on the selected
+workflow. An unresolved answer does not automatically reject a candidate before the
+shortlist:
+
+- Does the post-event work require judgment or synthesis that a deterministic Host rule or
+  ordinary workflow engine cannot perform equivalently?
+- Are the beneficiary, buyer, integration owner, operator, and revocation owner plausible for
+  the selected product layer?
+- Is the saved work plausibly greater than enrollment, consent, monitoring, and recovery
+  friction per useful continuation?
 
 ## 4. Weighted scorecard
 
 Score each surviving candidate from 0 to 3.
+
+This scorecard is a non-binding prioritization heuristic. The accepted app-selection ADR,
+not the weighted total, controls selection.
 
 | Criterion | Weight | 0 | 3 |
 |---|---:|---|---|
@@ -171,23 +182,30 @@ The implementation document created after app selection must define:
 
 ## 10. Build sequence
 
-### Gate 0A — Prove the domain-neutral P0 mechanism
+### Gate 0A — Preserve the completed domain-neutral P0 mechanism proof
 
-Build and pass the frozen
-[P0 Technical Validation MVP](07-p0-technical-validation-mvp.md). This gate may begin before
-the final app is selected because it tests the platform bridge rather than domain value.
+P0 is complete for controlled technical composability. Preserve its frozen
+[evidence and contract](07-p0-technical-validation-mvp.md), and do not expand it into the
+selected product or shipping adapter.
 
 ### Gate 0B — Select the app
 
 Apply the hard gates and scorecard. Record the decision in a new ADR and specialize Core
-requirements, security, validation, and tool inventory.
+requirements, security, validation, and tool inventory. This is the current product gate.
 
-Gate 0A and Gate 0B may proceed in parallel. Full selected-app implementation requires both.
+Full selected-app implementation requires the completed P0 proof and an accepted app-selection
+ADR.
 
-### Gate 1 — Record the selected adapter and app contracts
+### Gate 1 — Validate and select the continuation adapter
 
-Record the passing Agent adapter from Gate 0A and the domain contracts from Gate 0B before
-building the selected-app vertical slice.
+Do not promote the private P0 bridge as the shipping adapter. Both tested standalone App
+Server Desktop joins have failed in the current build. Workspace Agents document external
+triggers, durable queueing, and stable conversation keys, but not Browser or genuine
+page-bound WebMCP for API-triggered runs. Select and validate an adapter only after the app
+defines its topology, latency, lifecycle, privacy, and cost constraints. A bounded Scheduled
+pull may remain a challenge adapter when its watch window is economically acceptable; it is
+not a core dependency or production default. Record an adapter ADR only after the chosen
+route passes its genuine WebMCP join gate.
 
 ### Slice 1 — Host workflow and human UI
 
@@ -207,6 +225,7 @@ building the selected-app vertical slice.
 
 ### Slice 4 — End-to-end re-entry
 
+- consume one accepted pending delivery through the selected continuation adapter;
 - resume the managed context;
 - open the canonical URL;
 - read fresh state;
@@ -238,7 +257,7 @@ The domain content is TBD, but the proof rhythm is fixed:
 | 0:15–0:40 | Open the workflow; Agent reads context and prepares visible work | Genuine WebMCP and shared state |
 | 0:40–1:00 | User authorizes one future event | Scope, expiry, one run, human boundary |
 | 1:00–1:15 | End the turn; external actor creates the state transition | Real backend event |
-| 1:15–1:45 | Receiver resumes the intended workflow and opens the canonical page | Core continuation bridge |
+| 1:15–1:45 | Receiver shows one accepted pending delivery; the selected adapter resumes the intended workflow and opens the canonical page | Delivery/activation separation and continuation bridge |
 | 1:45–2:10 | Agent reads new state and uses a new-stage Site Tool | Dynamic tool surface and continuity |
 | 2:10–2:30 | User reviews and decides | Human control and receipt |
 | 2:30–2:50 | Show correlated timeline and duplicate-event safety | Trust and completeness |
@@ -266,7 +285,8 @@ event-to-page handoff.
 
 ### Continuation
 
-- one valid event produces one resumed run;
+- one valid event creates one bounded accepted delivery;
+- one selected continuation adapter later resumes the intended context;
 - the intended managed context resumes;
 - the canonical page opens and current state is read;
 - a resumed-stage-only tool is invoked;
@@ -291,7 +311,7 @@ event-to-page handoff.
 
 Every proposed feature must answer:
 
-1. Does it materially prove event-to-context-to-page-to-new-tools-to-human-boundary?
+1. Does it materially prove event-to-delivery-to-available-adapter-to-page-to-new-tools-to-human-boundary?
 2. Is it required for user value, judge reproducibility, trust, or a submission hard gate?
 
 If both answers are no, defer it.

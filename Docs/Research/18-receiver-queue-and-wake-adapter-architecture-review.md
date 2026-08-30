@@ -1,10 +1,11 @@
 # Receiver Queue and Wake-Adapter Architecture Review
 
 **Role:** SUPPORTING architecture research and decision input  
-**Status:** Open; not an accepted architecture decision  
+**Status:** Partially superseded supporting input; authority separation remains current, while the
+standalone App Server sequencing is resolved by Research 19  
 **Observed:** 2026-08-30  
-**Scope:** Receiver delivery durability, Agent availability, scheduled heartbeat re-entry, and
-the unresolved join from a supported Agent transport to Browser and genuine page-bound WebMCP
+**Scope:** Receiver delivery durability, Agent availability, bounded scheduled re-entry, and the
+remaining join from a supported Agent transport to Browser and genuine page-bound WebMCP
 
 ## Executive conclusion
 
@@ -31,9 +32,13 @@ validated Desktop re-entry.
 
 The transport question is now narrower than “can an Agent be triggered?” Codex App Server
 documents exact `thread/resume` followed by `turn/start`, and the Workspace Agents API documents
-server-side triggers with durable queueing, idempotency, and stable conversation keys. Neither path
-has been shown to resume an arbitrary local Desktop task **and** regain its built-in Browser and
-genuine page-bound WebMCP Site Tools. The unresolved seam is transport-to-Browser/WebMCP join, not
+server-side triggers with durable queueing, idempotency, and stable conversation keys. Later cold
+and warm probes rejected standalone App Server as a current-build bridge into a Desktop Browser:
+the App-Server-owned thread had no `iab`, while exact warm resume returned an active-writer
+rejection for the supplied task. The warm public JSON does not independently prove writer
+ownership or priming.
+Workspace Agents remain a distinct hosted candidate, but their Browser and genuine page-bound
+WebMCP join are unverified. The remaining seam is supported transport-to-Browser/WebMCP join, not
 the existence of every possible Agent trigger.
 
 ## 1. The design question
@@ -72,8 +77,9 @@ one authority and one failure boundary.
 - The first formal D4 no-event attempt was `INCONCLUSIVE`: the Desktop did close, but an unrelated
   long-lived relay was misclassified as a Desktop lifecycle process, so automatic relaunch was not
   requested. This result does not establish either success or failure of Desktop continuity.
-- Codex App Server has independently passed exact-thread context resume in this repository, but its
-  current adapter deliberately proves no Browser or Site Tool contract.
+- Codex App Server has independently passed exact-thread context resume in this repository. Later
+  cold and warm probes failed the standalone Desktop Browser join on the tested build; preserve
+  App Server as context-continuity evidence, not as the selected Desktop wake adapter.
 - The Workspace Agents API documents external Agent triggering and durable trigger queueing, but it
   targets a published Workspace Agent rather than an arbitrary local Desktop task and does not
   document the required Browser/WebMCP join.
@@ -132,8 +138,8 @@ unfavorable system properties:
   from the page.
 
 These are reasons to demote Heartbeat from a primary event mechanism, not reasons to remove it from
-the MVP. It remains a reasonable bounded compatibility adapter while the supported
-transport-to-Browser/WebMCP join is unresolved.
+the MVP. It remains a reasonable bounded compatibility adapter while the selected app and a
+supported transport-to-Browser/WebMCP join remain unresolved.
 
 ## 5. Delivery-ledger-first target architecture
 
@@ -284,27 +290,28 @@ whose product contract makes same-machine Desktop restart recovery material.
 
 ## 9. Open questions that still require validation
 
-1. **App Server Browser join:** Can an exact `thread/resume` plus `turn/start` regain an eligible
-   Browser, open the stored canonical URL, and genuinely invoke a page-bound WebMCP Site Tool
-   without the private relay, Scheduled Heartbeat, DOM automation, REST, or substitute tools?
-2. **Workspace Agent topology:** If App Server cannot perform that join, can a published Workspace
-   Agent receive an external trigger and reach an equivalent genuine page-bound WebMCP surface?
-   This would be a different runtime claim, not continuation of an arbitrary local Desktop task.
-3. **Local Desktop wake:** If the product requires the existing Desktop task, is a supported local
+Resolved boundary: both tested standalone App Server joins failed for the current Desktop build.
+The exact results and nonclaims are frozen in [Research 19](19-app-server-desktop-browser-join-verdict.md).
+
+1. **Workspace Agent topology:** Can a published Workspace Agent receive an external trigger and
+   reach an eligible Browser plus genuine page-bound WebMCP? External trigger and stable
+   conversation behavior are documented, but the Browser/WebMCP join and current workspace
+   entitlement remain unknown. See [Research 20](20-workspace-agents-trigger-and-webmcp-boundary.md).
+2. **Local Desktop wake:** If the product requires the existing Desktop task, is a supported local
    connector contract available, or would the product depend on an undocumented bridge?
-4. **Closed-app scheduler semantics:** If bounded Heartbeat remains a fallback, what happens to a
+3. **Closed-app scheduler semantics:** If bounded Heartbeat remains a fallback, what happens to a
    one-shot while Desktop is closed, and can missed-run catch-up be distinguished from dispatch?
-5. **Wake adapter ownership:** Should relaunch and wake belong to a local OS agent, the Receiver,
+4. **Wake adapter ownership:** Should relaunch and wake belong to a local OS agent, the Receiver,
    or a platform-provided scheduler?
-6. **Delivery claim protocol:** Can claim, retry, acknowledgement, and idempotent effect receipts be
+5. **Delivery claim protocol:** Can claim, retry, acknowledgement, and idempotent effect receipts be
    recovered safely after Receiver, Agent, or Browser failure?
-7. **Binding lifecycle:** How are Grant expiry, revocation, task deletion, and queued events fenced
+6. **Binding lifecycle:** How are Grant expiry, revocation, task deletion, and queued events fenced
    against a late wake?
-8. **Latency and economics:** What watch-window, polling, and wake costs are acceptable for the
+7. **Latency and economics:** What watch-window, polling, and wake costs are acceptable for the
    target product, and when does a push adapter become necessary?
-9. **Multi-event ordering:** Should events be ordered per workflow, coalesced, or independently
+8. **Multi-event ordering:** Should events be ordered per workflow, coalesced, or independently
    processed when several events arrive while the Agent is unavailable?
-10. **Fresh authority:** How does the Agent prove that a page re-entry is current and bound to the
+9. **Fresh authority:** How does the Agent prove that a page re-entry is current and bound to the
    same workflow rather than merely opening a URL with stale context?
 
 ## 10. Recommended documentation position
@@ -336,6 +343,8 @@ analysis and does not select a final host application, domain, or platform trans
 - [`Research 16`](16-scheduled-pull-unit-economics-and-transport-kill-model.md) — polling economics and transport kill conditions.
 - [`D4/H2b runbook`](../../mvp/D4_H2B_RUNBOOK.md) — current Desktop restart and independent Receiver validation protocol.
 - [`First formal D4 attempt`](../../mvp/evidence/d4-h2b-first-formal-no-event-inconclusive-2026-08-30.md) — preserved `INCONCLUSIVE` restart attempt.
-- [Codex App Server](https://learn.chatgpt.com/docs/app-server) — documented exact thread resume and turn start; Browser/WebMCP join remains unproven.
+- [`Research 19`](19-app-server-desktop-browser-join-verdict.md) — current-build cold and warm standalone App Server Desktop Browser join failures.
+- [`Research 20`](20-workspace-agents-trigger-and-webmcp-boundary.md) — documented hosted trigger/conversation contract and the unverified Browser/WebMCP boundary.
+- [Codex App Server](https://learn.chatgpt.com/docs/app-server) — documented exact thread resume and turn start; the tested standalone Desktop joins failed.
 - [Workspace Agents API](https://learn.chatgpt.com/workspace-agents/trigger-runs) — documented server-side trigger, durable queue, idempotency, and stable conversation key for published Workspace Agents.
 - [Scheduled Tasks](https://learn.chatgpt.com/docs/automations) — documented same-chat scheduling and current Desktop/app-availability boundary.

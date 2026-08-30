@@ -14,9 +14,10 @@ Stage-B Site Tool, and the same artifact stopped uncommitted at the human bounda
 replay created no second event, run, or write. The frozen P0 contract scope had 37 tests
 before the additive H1 work; the historical combined P0 and H1 suite passed 59 tests, and
 the current full suite including the additive H2 spike plus hardened D4 lifecycle,
-contamination-latch, and automation-history scanner controls passes 114 tests. The
-frozen clean-run package retains its historical 23-test result. A separate post-fix runbook rehearsal repeated the complete chain
-after correcting long-task relay response compaction.
+contamination-latch, automation-history scanner, and App Server join-probe evidence controls
+passes 118 tests. The
+frozen clean-run package retains its historical 23-test result. A separate post-fix runbook
+rehearsal repeated the complete chain after correcting long-task relay response compaction.
 
 The current fixture also fails closed when stale Stage-A tools are invoked after transition,
 rejects non-canonical or overlong manifest expiry values and non-canonical event timestamps,
@@ -64,13 +65,14 @@ synthetic service-contract pass, not evidence of a real Desktop or hosted destin
 production worker supervision, production key lifecycle, multi-tenant isolation, or
 distributed exactly-once execution.
 
-The prepared [`D4 — Desktop restart with an independent Receiver`](D4_H2B_RUNBOOK.md) defines the
-next app-neutral Desktop-lifecycle experiment. Its bounded harness uses a `launchd`-owned
-Receiver, observer, and relaunch helpers; keeps the Receiver available while only the Desktop
+The prepared [`D4 — Desktop restart with an independent Receiver`](D4_H2B_RUNBOOK.md) is a
+preserved optional Desktop-lifecycle experiment, not the current next gate. Its bounded harness
+uses a `launchd`-owned Receiver, observer, and relaunch helpers; keeps the Receiver available
+while only the Desktop
 app is restarted; correlates process replacement with a one-shot scheduler attempt and strict
 accepted heartbeat envelope; and scans any public derivative for private authority. Its scripts
-pass syntax checks, and local fail-closed rehearsals have completed. An earlier scanner revision passed
-one clean rehearsal candidate, but that is not certification under the hardened history,
+pass syntax checks, and local fail-closed rehearsals have completed. An earlier scanner revision
+passed one clean rehearsal candidate, but that is not certification under the hardened history,
 current-row, and expected-arm gates. The first formal no-event attempt is
 preserved as `INCONCLUSIVE`: normal quit reached zero Desktop main/current-tree processes, but an
 unrelated detached P0 relay was misclassified as lifecycle state, so the helper never requested
@@ -80,6 +82,21 @@ thirteen scanner-history controls also pass. The hardened scanner rejects this h
 because its automation contract drifted and its row was later deleted. No valid no-event arm or
 event arm has completed. No full Desktop restart continuity claim is made. See the
 [provisional attempt record](evidence/d4-h2b-first-formal-no-event-inconclusive-2026-08-30.md).
+
+The two-arm standalone Codex App Server Browser-join gate has now failed on the tested current
+build. The cold App-Server-owned thread resumed exactly, but the requested Desktop in-app Browser
+was unavailable and no page or genuine Site Tool was reached. The warm arm targeted the exact task
+supplied by the controlled Desktop-priming step, and `thread/resume` returned an active-writer
+rejection. Together these results reject both tested standalone App Server Desktop joins and remove
+that route from current selection unless a materially different supported contract or topology
+appears; they do not invalidate its documented thread-control role in other topologies. App
+selection is the current gate. A published
+Workspace Agent is a conditional distinct hosted-runtime probe only when entitlement and the
+selected app justify it. Scheduled Heartbeat remains a bounded fallback experiment, not the core
+mechanism or a production transport. Rerun D4 only if a selected local connector or relaunch
+topology makes same-machine Desktop restart recovery material. See the
+[cold failure](evidence/app-server-browser-join-probe-2026-08-30.json) and
+[exact warm failure](evidence/app-server-browser-warm-join-probe-2026-08-30.json).
 
 This is a controlled, same-user, current-build P0 technical-feasibility result. The Desktop
 join in the frozen P0 run used an undocumented local relay and is not a supported production

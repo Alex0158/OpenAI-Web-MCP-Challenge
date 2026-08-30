@@ -1,11 +1,19 @@
-# Current Platform Bridge Decision
+# P0 Platform Bridge Evidence and Boundary
 
 **Role:** SUPPORTING platform research  
-**Status:** Controlled current-build P0 passed; public production bridge unresolved  
+**Status:** Preserved bounded P0 bridge decision and evidence snapshot; public production
+bridge unresolved  
 **Last updated:** 2026-08-30  
 **Controls:** [P0 Technical Validation MVP](../Core/07-p0-technical-validation-mvp.md)
 
-## 1. Decision
+> **Current routing:** This document controls the historical P0 bridge claim only. Use the
+> [current project status](../Core/00-current-status.md) for the current platform-research
+> sequence, and use the
+> [Receiver Queue and Wake-Adapter Architecture Review](18-receiver-queue-and-wake-adapter-architecture-review.md)
+> for its Receiver-ledger, replaceable-adapter, and production claim boundaries. That review's
+> prospective App Server step is superseded by the two later failures recorded below.
+
+## 1. Bounded P0 decision
 
 The current ChatGPT Desktop task-control surface was accepted as a **bounded P0 feasibility
 bridge** for testing the missing join from an authenticated Receiver event to the exact
@@ -63,7 +71,20 @@ is sufficient for the Receiver-side Q3 probe already completed.
 
 Neither the published lifecycle nor the inspected current schemas expose Browser
 navigation, Browser attachment, Site Tool discovery, or WebMCP invocation. App Server can
-therefore prove exact-context continuation, but it cannot by itself prove Q4.
+therefore prove exact-context continuation, but it cannot by itself prove Q4. Two current-build
+runtime probes now close the standalone Desktop variant negatively:
+
+1. A cold App-Server-owned thread resumed exactly, but Browser setup returned
+   `iab-unavailable` before page access. That signal does not identify which Browser or
+   session precondition was absent.
+2. A standalone App Server then attempted exact warm resume of the task supplied by the
+   controlled Desktop-priming step, but `thread/resume` returned an active-writer rejection.
+
+Together these failures reject both tested standalone App Server Desktop joins and remove that
+route from current selection unless a materially different supported contract or topology
+appears. The warm public JSON proves the active-writer rejection, but not writer ownership or the
+primed Browser state. The results do not prove that App Server lacks value as thread control
+inside another topology.
 
 ### Same-chat scheduled tasks and heartbeats
 
@@ -77,11 +98,12 @@ That is a credible polling or follow-up mechanism, not the required custom busin
 trigger. Desktop event-triggered tasks are not available: the documented supported app
 events are limited to Gmail, Slack, and GitHub on ChatGPT web and mobile. A scheduled poll
 would change the causal trigger being tested and therefore cannot silently replace the
-frozen event-resumption contract.
+frozen event-resumption contract. Scheduled Heartbeat remains bounded fallback evidence, not
+the core mechanism or a production transport.
 
 ### Workspace Agents API
 
-The official [Workspace Agents API](https://developers.openai.com/workspace-agents/trigger-runs)
+The official [Workspace Agents API](https://learn.chatgpt.com/workspace-agents/trigger-runs)
 does provide an authenticated external trigger, optional idempotency, and a stable
 `conversation_key` for a published ChatGPT workspace agent.
 
@@ -128,10 +150,11 @@ Subsequent implementation probes established an additional current-build boundar
 9. Live relay calls read the exact current task, delivered the enrollment receipt and later
    authenticated event to that task, and opened the canonical fixture page in its built-in
    Browser.
-10. Thirty-one component and contract tests currently pass. They cover relay auth and
-    target fixation, private context capture, pre-dispatch Grant activation, fresh-tab opaque
-    binding registration, strict signed-event identity, one-run deduplication, greater-than-
-    64-KiB native task-response compaction, and fail-closed identity parsing. They do not
+10. At this P0 checkpoint, thirty-one component and contract tests passed. They covered relay
+    authentication and target fixation, private context capture, pre-dispatch Grant activation,
+    fresh-tab opaque binding registration, strict signed-event identity, one-run deduplication,
+    greater-than-64-KiB native task-response compaction, and fail-closed identity parsing. This
+    is a historical scoped count, not the current full-suite total, and those tests do not
     substitute for the event-resumed Stage-B Browser observation.
 11. The event-opened Browser page exposed genuine `webmcp`, read fresh `READY` state,
     discovered only the two Stage-B Site Tools, and invoked `continue_artifact`. Exact replay
@@ -179,19 +202,35 @@ visible human boundary. That run passed. Record two separate conclusions:
 Future bridge work must preserve the same proof boundary. Do not weaken Q4 by substituting
 generic tools or DOM control.
 
+The two bounded standalone App Server arms have both failed on the tested current build: cold
+Browser acquisition was `iab-unavailable`, and exact warm resume returned an active-writer
+rejection for the supplied task. The public warm artifact does not identify the writer owner.
+App selection is the current gate. A published Workspace Agent is a conditional
+distinct hosted-runtime probe only when entitlement and selected-app requirements justify it, not
+continuation of the local Desktop task. Its Browser/WebMCP join must be demonstrated directly in
+that hosted topology. Scheduled Heartbeat remains a bounded fallback experiment, not the core
+mechanism or a production transport. D4 remains frozen optional evidence unless a selected local
+connector or relaunch topology makes Desktop restart recovery material.
+
 ## 6. Source and evidence map
 
 - Official App Server lifecycle: <https://learn.chatgpt.com/docs/app-server>
+- Cold App Server Browser-join failure:
+  [`../../mvp/evidence/app-server-browser-join-probe-2026-08-30.json`](../../mvp/evidence/app-server-browser-join-probe-2026-08-30.json)
+- Warm exact-task App Server join failure:
+  [`../../mvp/evidence/app-server-browser-warm-join-probe-2026-08-30.json`](../../mvp/evidence/app-server-browser-warm-join-probe-2026-08-30.json)
 - Official scheduled and event-triggered task boundaries:
   <https://learn.chatgpt.com/docs/automations>
 - Official same-thread scheduled-wake statement:
   <https://learn.chatgpt.com/docs/changelog>
 - Official Workspace Agents external trigger contract:
-  <https://developers.openai.com/workspace-agents/trigger-runs>
+  <https://learn.chatgpt.com/workspace-agents/trigger-runs>
 - Official Site Tools versus generic MCP boundary:
   <https://learn.chatgpt.com/docs/webmcp>
 - Controlled clean-run verdict:
   [`../../mvp/evidence/p0-correlated-clean-run-2026-08-30-verdict.md`](../../mvp/evidence/p0-correlated-clean-run-2026-08-30-verdict.md)
+- Current delivery-ledger and wake-adapter analysis:
+  [`18-receiver-queue-and-wake-adapter-architecture-review.md`](18-receiver-queue-and-wake-adapter-architecture-review.md)
 - Local bundle manifest:
   `/Applications/ChatGPT.app/Contents/Resources/plugins/openai-bundled/plugins/codex-app-tools/desktop-mcp.json`
 - Local bridge implementation inspected read-only:

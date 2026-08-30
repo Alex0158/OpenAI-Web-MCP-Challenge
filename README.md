@@ -64,8 +64,22 @@ development and contract testing but does not by itself prove Desktop task resum
 Follow [`mvp/RUNBOOK.md`](mvp/RUNBOOK.md) for the bounded genuine-WebMCP P0 procedure and
 [`mvp/H1_RUNBOOK.md`](mvp/H1_RUNBOOK.md) for the scheduled-pull experiment.
 
-The current full deterministic suite contains 88 passing tests. Frozen historical evidence
-retains the test counts observed when each acceptance package was captured.
+The current full deterministic suite contains 118 passing tests. Frozen historical evidence
+retains the test counts observed when each acceptance package was captured, including the
+88-test H2-era full-suite result.
+
+Both standalone Codex App Server Browser-join arms failed on the tested current build. The cold
+App-Server-owned thread resumed exactly, but the Browser selector returned `iab-unavailable`
+before page access; that signal does not identify which precondition was absent. The warm arm
+returned an active-writer rejection for the exact task supplied
+by the controlled Desktop-priming step. These results reject both tested standalone App Server
+Desktop joins and remove that route from current selection unless a materially different supported
+contract or topology appears; they do not reject App Server thread control outside those tested
+joins. App selection is the current gate. A published Workspace Agent is a
+conditional distinct hosted-topology probe only when entitlement and the selected app justify it;
+it must carry its own Browser/WebMCP evidence boundary. Scheduled Heartbeat remains a bounded
+fallback experiment, not the core mechanism or a production transport. The preserved D4
+Desktop-restart harness remains optional compatibility evidence.
 
 ## Evidence
 
@@ -75,6 +89,8 @@ retains the test counts observed when each acceptance package was captured.
 - [`mvp/evidence/h1-event-gated-scheduled-reentry-2026-08-30-verdict.md`](mvp/evidence/h1-event-gated-scheduled-reentry-2026-08-30-verdict.md) — event-gated scheduled continuation and idempotency.
 - [`mvp/evidence/h2a-cold-browser-runtime-reentry-2026-08-30-verdict.md`](mvp/evidence/h2a-cold-browser-runtime-reentry-2026-08-30-verdict.md) — cold Browser-runtime recovery.
 - [`mvp/evidence/h2-durable-enrollment-service-contract-2026-08-30-verdict.md`](mvp/evidence/h2-durable-enrollment-service-contract-2026-08-30-verdict.md) — crash-recoverable enrollment service-contract pass.
+- [`mvp/evidence/app-server-browser-join-probe-2026-08-30.json`](mvp/evidence/app-server-browser-join-probe-2026-08-30.json) — failed cold App Server/Desktop Browser join (`iab-unavailable`).
+- [`mvp/evidence/app-server-browser-warm-join-probe-2026-08-30.json`](mvp/evidence/app-server-browser-warm-join-probe-2026-08-30.json) — failed exact warm join (active-writer rejection).
 - [`mvp/evidence/README.md`](mvp/evidence/README.md) — complete evidence index and redaction boundary.
 
 ## Start here

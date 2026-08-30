@@ -2,7 +2,8 @@
 
 **Role:** SUPPORTING platform research and experiment protocol  
 **Status:** Active; H2a passed; first D4 no-event attempt was inconclusive and D4 is frozen as an
-optional local-topology compatibility test; stronger availability tiers remain unverified  
+optional local-topology compatibility test; both standalone App Server Desktop Browser joins
+failed on the tested build; stronger availability tiers remain unverified  
 **Observed:** 2026-08-30  
 **Scope:** Scheduled same-task context, Browser and Site Tool reacquisition, process and
 device availability, and the exact claim boundary after H0b, H1, H2a, and the first D4 attempt
@@ -29,10 +30,14 @@ run-wide contamination latch, and fail-closed automation-history scanner are loc
 regression-tested, but full Desktop continuity remains unverified until a fresh arm proves the
 automatic helper relaunch and scheduled re-entry.
 
-D4 is no longer the next architecture gate. The smaller unresolved seam is whether documented
-Codex App Server exact-thread resume can regain an eligible Browser and genuine page-bound WebMCP
-without the private relay or Scheduled Heartbeat. D4 should run again only if the selected topology
-requires a local connector or relaunch adapter.
+D4 is no longer the next architecture gate. The narrower standalone App Server seam has now been
+tested in both relevant current-build forms: an App-Server-owned exact resume could not acquire
+Desktop `iab`, while standalone exact warm resume returned an active-writer rejection for the
+supplied task. Those tested joins are therefore rejected for the current build; the warm public
+JSON does not independently prove writer ownership or priming. A published
+Workspace Agent remains a distinct hosted candidate, but its Browser and genuine page-bound
+WebMCP join are not documented or locally verified. D4 should run again only if the selected
+topology requires a local connector or relaunch adapter.
 
 The correct next claim is narrow:
 
@@ -144,10 +149,14 @@ edit local automation databases or configuration files to manufacture a pass.
 
 ## 5. Route-dependent remaining protocol
 
-Preserve the existing H1 and H2a evidence. Run the App Server Browser-join probe before another
-Desktop restart. If a later topology makes a durability tier material, each tier must use a
-separate disposable task, isolated Receiver database, fresh bounded Grant, and a
-paused-by-default one-run schedule. Do not reuse expired receipt capabilities.
+Preserve the existing H1 and H2a evidence plus the two failed standalone App Server join probes in
+[Research 19](19-app-server-desktop-browser-join-verdict.md). Do not repeat that route without a
+new supported platform capability or materially different topology. If the workspace can publish
+an API-channel Workspace Agent, apply the bounded capability gate in
+[Research 20](20-workspace-agents-trigger-and-webmcp-boundary.md). If a later selected topology
+makes a durability tier material, each tier must use a separate disposable task, isolated Receiver
+database, fresh bounded Grant, and a paused-by-default one-run schedule. Do not reuse expired
+receipt capabilities.
 
 ### Shared controls
 

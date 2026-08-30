@@ -14,6 +14,8 @@
     "prepare:stage-b": "node scripts/prepare-stage-b.mjs",
     "setup:h1": "node scripts/h1-command.mjs setup",
     "probe:app-server": "node scripts/probe-app-server.mjs",
+    "probe:app-server-browser-join": "node scripts/probe-app-server-browser-join.mjs",
+    "probe:app-server-browser-warm-join": "node scripts/probe-app-server-browser-warm-join.mjs",
     "probe:receiver-app-server": "node scripts/probe-receiver-app-server.mjs",
     "probe:site-tool-lifecycle": "node scripts/site-tool-lifecycle-probe-server.mjs",
     "trigger": "node scripts/trigger-event.mjs",

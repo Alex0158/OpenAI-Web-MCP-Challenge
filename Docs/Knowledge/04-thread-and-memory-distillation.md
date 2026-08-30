@@ -54,9 +54,9 @@ searched.
 The following statements appeared in earlier thread summaries and must not be reused as
 current truth:
 
-1. **“80/80 tests passing.”** This was an intermediate count. The current full suite is
-   114/114 after the D4 harness hardening; P0, H1, H2, and intermediate D4 counts must still be
-   named by scope.
+1. **“80/80 tests passing.”** This was an intermediate count. The D4-hardening checkpoint was
+   114/114, and the current full suite is 118/118 after four App Server join-probe evidence
+   controls were added; P0, H1, H2, and intermediate D4 counts must still be named by scope.
 2. **“The workspace is not a Git repository.”** That described the pre-initialization parent
    workspace. The shareable Git boundary is now `WebMCP_Challenge/`.
 3. **“WebRTC Receiver.”** That belongs to the Signal Rescue candidate. The current MVP uses

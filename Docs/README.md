@@ -1,5 +1,6 @@
 # Documentation Map and Governance
 
+**Role:** CANONICAL documentation governance and authority index  
 **Status:** Current index  
 **Project:** WebMCP re-entry workflow mechanism; demo app and final name TBD  
 **Last updated:** 2026-08-30
@@ -26,13 +27,13 @@ roles and precedence below.
 |---|---|---|
 | [`Core/00-current-status.md`](Core/00-current-status.md) | CANONICAL | Current phase, evidence state, binding assumptions, next gate |
 | [`Decisions/ADR-0002-separate-mechanism-from-demo-app.md`](Decisions/ADR-0002-separate-mechanism-from-demo-app.md) | DECISION | Selection of the mechanism and separation from the unselected app/domain |
-| [`Core/01-product-definition.md`](Core/01-product-definition.md) | CANONICAL | Problem class, concept, mechanism, application boundary, claim boundary |
-| [`Core/02-product-requirements.md`](Core/02-product-requirements.md) | CANONICAL | Domain-neutral user behavior, stories, acceptance criteria, specialization gate |
-| [`Core/03-system-design.md`](Core/03-system-design.md) | CANONICAL | Reusable components, lifecycle, contracts, host-app and Agent-adapter boundaries |
-| [`Core/04-trust-security-reliability.md`](Core/04-trust-security-reliability.md) | CANONICAL | Authority, permissions, threat controls, delivery and failure semantics |
-| [`Core/05-validation-and-evidence.md`](Core/05-validation-and-evidence.md) | CANONICAL | App, bridge, vertical-slice, judge, and claim evidence gates |
-| [`Core/06-mvp-and-demo.md`](Core/06-mvp-and-demo.md) | CANONICAL | Demo-app selection gates, scorecard, MVP skeleton, demo and definition of done |
-| [`Core/07-p0-technical-validation-mvp.md`](Core/07-p0-technical-validation-mvp.md) | CANONICAL | Frozen first implementation contract: one technical harness, five feasibility questions, three gates, and correlated proof |
+| [`Core/01-product-definition.md`](Core/01-product-definition.md) | CANONICAL | Selected concept and target product boundary; not current implementation status |
+| [`Core/02-product-requirements.md`](Core/02-product-requirements.md) | CANONICAL | Target domain-neutral behavior and selected-app requirements; specialization remains pending |
+| [`Core/03-system-design.md`](Core/03-system-design.md) | CANONICAL | Target architecture and logical contracts; current as-built truth remains in Core/00 and Core/05 |
+| [`Core/04-trust-security-reliability.md`](Core/04-trust-security-reliability.md) | CANONICAL | Target authority, security, and reliability controls plus its dated evidence boundary |
+| [`Core/05-validation-and-evidence.md`](Core/05-validation-and-evidence.md) | CANONICAL | Current proof matrix and future evidence gates |
+| [`Core/06-mvp-and-demo.md`](Core/06-mvp-and-demo.md) | CANONICAL | App-selection and demo target; the scorecard is a supporting heuristic |
+| [`Core/07-p0-technical-validation-mvp.md`](Core/07-p0-technical-validation-mvp.md) | CANONICAL | Frozen P0 implementation contract and dated verdict; not the current production architecture |
 | [`Scenarios/README.md`](Scenarios/README.md) | SUPPORTING | Concrete domain mappings that are not selected product truth |
 
 [`Decisions/ADR-0001-select-tenderrelay.md`](Decisions/ADR-0001-select-tenderrelay.md) is
@@ -58,13 +59,18 @@ These files remain active for the surfaces they own. They do not select the prod
 - [`03-technical-build-verification.md`](03-technical-build-verification.md) — SUPPORTING general WebMCP implementation and verification guidance.
 - [`05-requirement-evidence-audit.md`](05-requirement-evidence-audit.md) — SUPPORTING audit of the earlier challenge research package.
 
-## 4. Active technical research
+## 4. Technical research and evidence
+
+These files preserve current analyses, bounded evidence, conditional risk catalogs, and
+named-commit snapshots. Each file's own status banner controls whether it is current,
+partially superseded, frozen, or historical; inclusion here does not make every conclusion
+an active next step.
 
 - [`Research/01-agent-continuation-adapter-audit.md`](Research/01-agent-continuation-adapter-audit.md) — SUPPORTING evidence audit of exact-thread wake, context-carried continuation, Desktop Browser binding, and the unresolved adapter join.
 - [`Research/02-p0-runtime-probe-log.md`](Research/02-p0-runtime-probe-log.md) — SUPPORTING reproducible log of component, App Server, Receiver, Desktop task-control, and Browser capability probes.
 - [`Research/03-site-tools-runtime-availability-audit.md`](Research/03-site-tools-runtime-availability-audit.md) — SUPPORTING client prerequisite, feature-gate, App Server boundary, and safe newer-client migration audit.
 - [`Research/04-platform-bridge-decision.md`](Research/04-platform-bridge-decision.md) — SUPPORTING current-build Desktop bridge decision, public-route gap, proof-substitution boundary, and P0-versus-production claim limit.
-- [`Research/05-distributed-topology-and-hard-coupling-risk-review.md`](Research/05-distributed-topology-and-hard-coupling-risk-review.md) — SUPPORTING conditional production-risk catalog for local P0 topology, distributed seams, and coupling; Research 07–16 control later mechanism evidence, sequencing, durability, product tests, method calibration, clean-context portability, model variation, and transport economics.
+- [`Research/05-distributed-topology-and-hard-coupling-risk-review.md`](Research/05-distributed-topology-and-hard-coupling-risk-review.md) — SUPPORTING conditional production-risk catalog for local P0 topology, distributed seams, and coupling. Core/00 controls current sequencing; Research 07–20 preserve later mechanism evidence, durability, product tests, method calibration, clean-context portability, model variation, transport economics, and platform-boundary verdicts.
 - [`Research/06-continuity-value-and-alternative-kill-tests.md`](Research/06-continuity-value-and-alternative-kill-tests.md) — SUPPORTING scientific and product test plan for page authority, exact-thread value, structured continuation memory, and measurable outcomes.
 - [`Research/07-supported-reentry-transport-and-heartbeat-spike.md`](Research/07-supported-reentry-transport-and-heartbeat-spike.md) — SUPPORTING official-capability matrix plus the current-build H0b and event-gated H1 scheduled re-entry verdicts.
 - [`Research/08-review-05-adjudication-and-p1-trust-delivery-plan.md`](Research/08-review-05-adjudication-and-p1-trust-delivery-plan.md) — SUPPORTING independent disposition of Research 05 and the additive P1 trust/delivery gate.
@@ -77,7 +83,9 @@ These files remain active for the surfaces they own. They do not select the prod
 - [`Research/15-sol-terra-webmcp-model-variation-smoke.md`](Research/15-sol-terra-webmcp-model-variation-smoke.md) — SUPPORTING bounded M1 compatibility evidence. One controller-assigned arm per documented eligible model discovered the same official and local manifests and completed one Site Tool invocation per page; this is not model parity, and scheduled continuation remains open.
 - [`Research/16-scheduled-pull-unit-economics-and-transport-kill-model.md`](Research/16-scheduled-pull-unit-economics-and-transport-kill-model.md) — SUPPORTING first-principles watch-window economics, shared-usage stress, value equations, instrumentation, and hard transport falsifiers. It does not invent a Scheduled Task price or select production transport.
 - [`Research/17-mvp1-mvp2-comparative-integration-review.md`](Research/17-mvp1-mvp2-comparative-integration-review.md) — SUPPORTING review of Eddie's parallel TenderRelay MVP2 branch against the current mechanism. It preserves MVP2 as a contributor reference, identifies selective UI/demo/adapter reuse, records critical authority and evidence gaps, and does not merge or select the app.
-- [`Research/18-receiver-queue-and-wake-adapter-architecture-review.md`](Research/18-receiver-queue-and-wake-adapter-architecture-review.md) — SUPPORTING analysis that keeps Host business authority separate from the Receiver delivery ledger, treats Heartbeat as a bounded wake fallback, freezes D4 as optional compatibility evidence, and isolates the unresolved supported-transport-to-Browser/WebMCP join.
+- [`Research/18-receiver-queue-and-wake-adapter-architecture-review.md`](Research/18-receiver-queue-and-wake-adapter-architecture-review.md) — SUPPORTING analysis that recommends a delivery-ledger-first Receiver boundary, treats Heartbeat as a bounded wake fallback, records the current Core decision to freeze D4, and isolates the unresolved supported-transport-to-Browser/WebMCP join.
+- [`Research/19-app-server-desktop-browser-join-verdict.md`](Research/19-app-server-desktop-browser-join-verdict.md) — SUPPORTING empirical verdict: the tested cold App-Server-owned thread returned `iab-unavailable` before page access, while standalone resume of the supplied warm task returned an active-writer rejection. Warm priming and writer ownership are controller-attested, not independently proven by the public artifact.
+- [`Research/20-workspace-agents-trigger-and-webmcp-boundary.md`](Research/20-workspace-agents-trigger-and-webmcp-boundary.md) — SUPPORTING official-capability audit: external trigger, durable queueing, and stable Workspace Agent conversations are documented, while Browser and genuine page-bound WebMCP remain unproven.
 
 ## 5. Deprioritized ideation
 
@@ -107,14 +115,15 @@ than a second source of truth.
 
 ## 8. Maintenance rules
 
-1. Put current project behavior in `Core/`, not in the frozen dossier.
-2. Update `00-current-status.md` whenever phase, evidence, deployment, or submission truth changes.
-3. Record a new ADR before changing the core mechanism, selecting or changing the host app, changing the authority model, or moving the MVP boundary.
-4. Label statements as **VERIFIED**, **WORKING ASSUMPTION**, **INFERENCE**, **TARGET**, or **UNKNOWN** where status could affect a decision.
-5. Do not duplicate volatile challenge facts across Core docs; link to the governing source.
-6. Keep the dossier snapshots byte-identical. Import a new version as a new file rather than overwriting version 1.1.
-7. Select a host application only through a new ADR that specializes the domain-neutral Core requirements.
-8. Product, development, and submission artifacts are written in English. Conversation may use the user's language.
+1. Put canonical project behavior and status in `Core/`, not in the frozen dossier.
+2. Use Core/00 and Core/05 for current implementation and evidence, Core/01–04 and Core/06 for target behavior and architecture, and Core/07 only for the frozen P0 contract and its dated outcome.
+3. Update `00-current-status.md` whenever phase, evidence, deployment, or submission truth changes.
+4. Record a new ADR before changing the core mechanism, selecting or changing the host app, changing the authority model, or moving the MVP boundary.
+5. Label statements as **VERIFIED**, **WORKING ASSUMPTION**, **INFERENCE**, **TARGET**, or **UNKNOWN** where status could affect a decision.
+6. Do not duplicate volatile challenge facts across Core docs; link to the governing source.
+7. Keep the dossier snapshots byte-identical. Import a new version as a new file rather than overwriting version 1.1.
+8. Select a host application only through a new ADR that specializes the domain-neutral Core requirements.
+9. Product, development, and submission artifacts are written in English. Conversation may use the user's language.
 
 ## 9. Update sequence
 

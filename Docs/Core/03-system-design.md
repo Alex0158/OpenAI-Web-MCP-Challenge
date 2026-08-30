@@ -1,7 +1,7 @@
 # WebMCP Re-entry Workflow — System Design
 
 **Role:** CANONICAL domain-neutral architecture and contracts  
-**Status:** Architecture baseline under the ADR-0002 planning premise  
+**Status:** Canonical target architecture bounded by ADR-0004; the production wake and continuation adapter remains unselected. Current as-built truth is owned by Core/00 and Core/05.  
 **Last updated:** 2026-08-30
 
 ## 1. System objective
@@ -17,7 +17,7 @@ decision boundary.
 ## 2. Architectural invariants
 
 1. The host application backend owns authoritative workflow state.
-2. A continuation event is a signed wake-up signal, not an Agent instruction.
+2. A continuation event is authenticated work intent and bounded authorization, not an Agent instruction or proof that an Agent was awakened.
 3. The user grants authority to an Agent-side or Agent-host-controlled component.
 4. The host application stores only an opaque workflow-scoped binding.
 5. Every resumed run returns to an allowlisted canonical origin and workflow URL.
@@ -35,7 +35,8 @@ decision boundary.
 |---|---|---|
 | **Host application domain** | User roles, workflow states, artifact, business rules, permissions | Selected demo app |
 | **Page execution** | Human UI, current state, stage-derived Site Tools, mutation validation | Selected demo app |
-| **Re-entry control** | Re-entry offer, grant binding, event validation, durable delivery, Agent resume | Core mechanism |
+| **Receiver control** | Re-entry offer, Grant binding, event validation, and durable delivery ledger | Core mechanism |
+| **Wake and continuation transport** | Activation opportunity, exact-context resume, Browser access, canonical-page re-entry | Selected Agent adapter |
 | **Agent runtime** | Managed context, browser access, navigation, Site Tool invocation | Selected Agent adapter |
 | **Governance** | Consent, scope, expiry, revocation, human boundary, audit visibility | User, organization, Receiver, host app |
 
@@ -48,8 +49,10 @@ flowchart LR
     P --> B["Host application backend"]
     B --> O["Transactional outbox"]
     O --> G["Continuation Gateway"]
-    G --> R["Agent-side Receiver"]
-    R --> C["Agent Continuation Adapter"]
+    G --> R["Receiver ingress and Grant control"]
+    R --> D["Durable delivery ledger"]
+    D --> W["Wake Adapter"]
+    W --> C["Agent Continuation Adapter"]
     C --> A
     C --> P
     U --> R
@@ -82,15 +85,36 @@ flowchart LR
 - owns Continuation Grant records;
 - stores the mapping from opaque binding to managed Agent context;
 - enforces expiry, revocation, run, cost-like, and concurrency limits;
-- requests resumption through the Agent Continuation Adapter;
+- authenticates and records one bounded pending delivery before acknowledging acceptance;
+- delegates activation to a replaceable Wake Adapter;
 - records run status without exposing platform credentials to the host app.
+
+### Durable delivery ledger
+
+- separates accepted event truth from activation attempts;
+- keeps pending work durable across a Receiver restart;
+- records claim, retry, acknowledgement, expiry, and terminal outcome when the selected
+  topology requires them;
+- never treats a scheduler row or prompt as the authoritative business event.
+
+The current H1 implementation proves a durable pending event and effect-backed acknowledgement,
+but not a general claim lease or visibility timeout. H2 separately proves a leased enrollment
+outbox to a synthetic destination; it is not a production event broker.
+
+### Wake Adapter
+
+- creates an activation opportunity through a selected supported platform route;
+- carries only bounded correlation and no application authority;
+- may be direct push, a bounded scheduled pull, an approved paired connector, or a hosted
+  Agent trigger depending on the selected deployment topology;
+- cannot turn event acceptance into proof that an Agent ran.
 
 ### Agent Continuation Adapter
 
 An abstraction over the selected Agent platform. Under the current planning premise it must:
 
 1. bind a user-approved grant to managed Agent context;
-2. resume that context from a validated event;
+2. resume that context after a validated pending delivery is selected for activation;
 3. obtain an eligible WebMCP-capable browser context;
 4. open the allowlisted canonical workflow URL;
 5. wait for current Site Tools to register;
@@ -131,6 +155,23 @@ of the Receiver-to-Agent transport. A public Codex API is one possible solution 
 second problem for a hosted topology; it is not a prerequisite for the core mechanism or
 for a conforming backend to send a Receiver event.
 
+### Current as-built boundary
+
+- The private P0 Desktop adapter completed one controlled same-task join but is not a
+  documented platform contract.
+- H1 Scheduled pull completed one bounded event-gated continuation and remains a
+  current-build compatibility adapter, not the core event truth or a production default.
+- H2 proves durable enrollment dispatch only to a synthetic idempotent destination.
+- The standalone App Server Desktop route failed both tested current-build joins: a cold
+  App-Server-owned thread had no `iab`, and the exact task supplied by the controlled warm
+  priming step returned an active-writer rejection. The warm public JSON does not independently
+  prove writer ownership or priming.
+- Workspace Agents document supported external triggers, durable queueing, idempotent retry,
+  and stable conversation keys, but do not document a Browser or genuine page-bound WebMCP
+  surface for API-triggered runs. This remains an unverified hosted topology.
+- Production wake and continuation transport remains unselected. A hosted Agent topology is
+  distinct from continuation of an arbitrary local Desktop task.
+
 ## 5. Host Application Adapter contract
 
 The host application is not a replaceable visual shell. It must implement the following
@@ -158,7 +199,10 @@ Host page and authoritative backend
 Continuation Gateway
     | verified event and opaque binding
     v
-User-controlled Receiver and grant store
+User-controlled Receiver, grant store, and durable delivery ledger
+    | bounded activation request
+    v
+Wake and continuation adapter
     | managed context binding
     v
 Agent platform and browser
@@ -200,24 +244,27 @@ No boundary inherits the previous boundary's authority:
 13. Another actor or system creates the selected business transition.
 14. The backend commits new workflow state and an outbox event in one transaction.
 15. An outbox relay sends a signed typed Continuation Event.
-16. The Gateway validates and durably deduplicates the event.
-17. The Receiver resolves the grant and atomically reserves one run.
+16. Receiver ingress authenticates and durably deduplicates the event.
+17. The Receiver resolves the Grant and commits one bounded pending delivery before
+    acknowledging acceptance.
 
 ### Phase D — Re-entry and continuation
 
-18. The adapter resumes the bound Agent context.
-19. An eligible browser opens the canonical workflow URL.
-20. The host application authenticates the current user and renders current state.
-21. The Agent verifies origin, workflow ID, stage, state version, and artifact revision through a Site Tool.
-22. The page exposes the tools valid for the resumed stage.
-23. The Agent continues the same artifact or decision process.
-24. The Agent stops at the domain-defined human boundary.
-25. The user edits, rejects, or approves and the host app records a receipt.
+18. An available Wake Adapter creates one bounded activation opportunity.
+19. The Agent Continuation Adapter resumes the bound Agent context.
+20. An eligible browser opens the canonical workflow URL.
+21. The host application authenticates the current user and renders current state.
+22. The Agent verifies origin, workflow ID, stage, state version, and artifact revision through a Site Tool.
+23. The page exposes the tools valid for the resumed stage.
+24. The Agent continues the same artifact or decision process.
+25. The Agent stops at the domain-defined human boundary.
+26. The user edits, rejects, or approves and the host app records a receipt.
 
 ## 8. Logical contracts
 
-These are domain-neutral logical contracts. Exact names, serialization, signing algorithms,
-and transport require implementation decisions.
+These are non-binding domain-neutral target examples. Exact fields, names, serialization,
+signing algorithms, and transport require accepted implementation decisions; these examples
+must not be read as the current wire contract.
 
 ### 8.1 Re-entry Manifest
 
@@ -345,13 +392,19 @@ pending -> active -> expired
                   -> exhausted
 ~~~
 
-### Event delivery
+### Target event, delivery, wake, and effect separation
 
 ~~~text
-created -> dispatched -> accepted -> queued -> delivered
-                     \-> rejected
-                     \-> dead-lettered
+Event:        ACCEPTED | REJECTED | EXPIRED
+Delivery:     PENDING -> LEASED -> ACKNOWLEDGED
+                 |          |
+                 +-> RETRYABLE -> DEAD_LETTER
+Wake attempt: QUEUED -> DISPATCHED | FAILED | COALESCED
+Host effect:  NOT_APPLIED -> APPLIED
 ~~~
+
+This is a target model, not the current H1 schema. H1 proves one durable `PENDING` delivery
+and idempotent Host completion without a delivery claim lease or visibility timeout.
 
 ### Re-entry run
 
@@ -381,8 +434,8 @@ defines a different bounded consequence.
 
 ## 11. Persistence and atomicity
 
-The host state transition and event intent commit in one database transaction. An outbox
-relay may deliver at least once. The Gateway and Receiver make repeat delivery safe through:
+The target host state transition and event intent commit in one database transaction. An
+outbox relay may deliver at least once. The Gateway and Receiver make repeat delivery safe through:
 
 - unique event IDs;
 - workflow event sequence;

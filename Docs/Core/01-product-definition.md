@@ -1,15 +1,20 @@
 # WebMCP Re-entry Workflow — Concept Definition
 
 **Role:** CANONICAL concept and product boundary  
-**Status:** Mechanism baseline; application layer unselected  
+**Status:** Mechanism selected; application and production continuation transport unselected  
 **Last updated:** 2026-08-30
+
+This document defines the target concept and product boundary. Current implementation and
+evidence status are owned by [Core/00](00-current-status.md) and
+[Core/05](05-validation-and-evidence.md).
 
 ## 1. Concept in one sentence
 
 The WebMCP re-entry workflow is a consented mechanism for resuming Agent-assisted work after
-the original page session or Agent turn has ended: a later business event may bring the
-Agent back to the authoritative page, where current state and current Site Tools govern what
-can happen next.
+the original page session or Agent turn has ended: a later business event may authorize
+bounded pending work, and an available continuation adapter may later return the bound Agent
+to the authoritative page, where current state and current Site Tools govern what can happen
+next.
 
 ## 2. What has and has not been selected
 
@@ -59,10 +64,10 @@ the same governed workflow, and the tools valid for the new state.
 | Layer | Purpose | Example status |
 |---|---|---|
 | **Problem class** | Multi-stage asynchronous web work loses Agent continuity across time | Selected |
-| **Core mechanism** | Grant, event, resume, re-entry, fresh-state tools, human boundary | Selected |
+| **Core mechanism** | Grant, accepted delivery, adapter activation, re-entry, fresh-state tools, human boundary | Selected |
 | **Host application** | The real web product whose workflow demonstrates the mechanism | TBD |
 | **Reference scenario** | A concrete example used to reason about the mechanism | Tender workflow available |
-| **Platform implementation** | The Agent runtime, browser, Receiver, and backend integration | TBD and partially unproven |
+| **Platform implementation** | The Agent runtime, browser, Receiver, and backend integration | Bounded local evidence exists; production continuation transport remains TBD |
 | **Final product identity** | App name, brand, market, and commercial boundary | TBD |
 
 ## 5. Abstract actors
@@ -89,8 +94,9 @@ becoming the host application's second embedded AI.
 
 ### Agent-side Receiver
 
-The user-controlled or Agent-platform-controlled component that stores continuation grants,
-binds them to managed Agent context, validates limits, and requests resumption.
+The user-controlled or Agent-platform-controlled component that stores continuation grants
+and authenticated pending deliveries, binds them to managed Agent context, validates limits,
+and delegates activation to a platform-specific continuation adapter.
 
 ### Deployment boundary
 
@@ -105,9 +111,9 @@ This distinction creates two separate interoperability questions:
 - **Backend interoperability:** Can another Website Backend conform to the Receiver's
   versioned typed-event contract, including authentication, Grant scope, state version, and
   idempotency?
-- **Agent-runtime integration:** Can the Receiver's platform adapter capture, resume, and
-  re-enter the intended Agent context with an eligible browser and current Site Tools in the
-  chosen deployment topology?
+- **Agent-runtime integration:** Can the selected continuation adapter capture and resume the
+  intended Agent context, then re-enter it with an eligible browser and current Site Tools in
+  the chosen deployment topology?
 
 The first is a project-owned application protocol. The second is a platform and deployment
 constraint. A public remote-control API may help a hosted topology, but it is not part of the
@@ -122,8 +128,8 @@ concept definition and is not required for a local Receiver realization.
 
 ### Control job
 
-> Let me decide in advance which event may resume the workflow, for how long, how often, and
-> where the Agent must stop for me.
+> Let me decide in advance which event may authorize a later continuation opportunity, for
+> how long, how often, and where the Agent must stop for me.
 
 ### Trust job
 
@@ -139,11 +145,12 @@ The selected app must rewrite these abstract jobs in domain language before impl
 3. **Opaque binding:** the Receiver binds the grant to managed Agent context while the app stores only a safe handle.
 4. **Waiting state:** the page and Agent turn may end without ending the business workflow.
 5. **Typed event:** the authoritative backend emits a signed, allowlisted business transition.
-6. **Context resume:** the Receiver validates the grant and resumes the intended Agent workflow.
-7. **Canonical re-entry:** the Agent opens the allowlisted application page.
-8. **Fresh verification:** the page verifies identity, workflow, state, and current permissions.
-9. **Dynamic tool discovery:** the Agent receives only Site Tools valid for the current stage.
-10. **Governed continuation:** the Agent continues preparation or bounded action and stops at the defined human boundary.
+6. **Durable acceptance:** the Receiver validates the event and Grant, then records one bounded pending delivery.
+7. **Agent activation:** an available continuation adapter resumes the intended Agent context without carrying application authority.
+8. **Canonical re-entry:** the Agent opens the allowlisted application page.
+9. **Fresh verification:** the page verifies identity, workflow, state, and current permissions.
+10. **Dynamic tool discovery:** the Agent receives only Site Tools valid for the current stage.
+11. **Governed continuation:** the Agent continues preparation or bounded action and stops at the defined human boundary.
 
 ## 8. Why WebMCP is material
 
@@ -180,8 +187,9 @@ Agent continuation, state machines, dynamic tools, or human approval.
 
 Its residual contribution is the composed, user-governed handoff:
 
-> page-authored future re-entry semantics + scoped grant + typed event + managed context
-> resume + mandatory canonical page re-entry + current state-derived tools + human boundary.
+> page-authored future re-entry semantics + scoped grant + typed event + bounded accepted
+> delivery + platform-adapter activation of managed context + mandatory canonical page
+> re-entry + current state-derived tools + human boundary.
 
 This is a project mechanism and innovation hypothesis, not yet a standard, market category,
 or proven production pattern.
@@ -195,7 +203,7 @@ interpretation is [Reference Scenario A](../Scenarios/01-tender-reference-scenar
 ## 12. Open decisions
 
 - Which host app yields the clearest real user pain and shortest complete proof?
-- Which event creates an unmistakable reason to resume?
+- Which event creates an unmistakable reason for bounded pending continuation?
 - Which artifact preserves meaningful continuity across stages?
 - Which tools disappear and appear after the state change?
 - Which final action must remain human-controlled?
