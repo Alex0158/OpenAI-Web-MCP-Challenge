@@ -305,29 +305,31 @@ See [Official Rules research](../01-official-rules.md) and
 2. Preserve C1 as a verified same-environment clean Agent-context result without promoting it
    to account, workspace, machine, public-deployment, or judge portability. Preserve M1 as
    one bounded run per documented eligible model without claiming parity.
-3. Complete one valid paired
-   [D4 Desktop-restart-with-independent-Receiver experiment](../../mvp/D4_H2B_RUNBOOK.md) as the
-   next app-neutral Desktop-lifecycle kill test. The first formal no-event attempt was
-   `INCONCLUSIVE` because the old harness treated an unrelated persistent P0 relay as Desktop
-   lifecycle state; the event arm did not run. Stop that relay, use a fresh disposable target and
-   one-shot, require the target not to manage its automation, and rerun the repaired no-event arm
-   first. Continue to the event arm only after a valid no-event pass. Keep the Receiver available
-   throughout; Receiver restart is covered by H1/H2. Treat any pass as current-build compatibility
-   evidence only.
-4. Discuss and select the product layer and demo application with Eddy using observed
+3. Freeze the
+   [D4 Desktop-restart-with-independent-Receiver experiment](../../mvp/D4_H2B_RUNBOOK.md) at its
+   first `INCONCLUSIVE` no-event attempt. Preserve the evidence and repaired harness, but rerun D4
+   only if a selected local connector or relaunch topology makes same-machine Desktop restart
+   recovery material. It is no longer the next architecture gate.
+4. Run one app-neutral App Server Browser-join kill test: resume one exact stored thread through
+   documented `thread/resume`, start one later turn, recover the stored bounded receipt, open the
+   canonical page, and invoke one genuine read-only page-bound WebMCP Site Tool. Do not count the
+   private Desktop relay, Scheduled Heartbeat, App Server dynamic tools, REST, DOM automation, or
+   generic MCP as the join. If this fails, test the Workspace Agents API only as a distinct hosted
+   runtime topology, not as continuation of an arbitrary local Desktop task.
+5. Discuss and select the product layer and demo application with Eddy using observed
    workflow evidence plus explicit product, WebMCP, execution, judgeability, and
    watch-window economics gates.
-5. On the selected workflow, run C2 with a self-contained redacted evidence package; compare
+6. On the selected workflow, run C2 with a self-contained redacted evidence package; compare
    Agent re-entry with deterministic Host automation and notification/deep link; compare
    exact-thread continuation with a strong bounded capsule; and compare genuine WebMCP
    re-entry with a strong authenticated API.
-6. Select the transport from the app's latency, offline, privacy, administration, and cost
+7. Select the transport from the app's latency, offline, privacy, administration, and cost
    requirements. Use Research 16 to measure no-op load, usage per safe success, lifecycle
    burden, and expected net value. Then test only the route-relevant D5/D6, busy-task,
    concurrency, and distributed seams.
-7. After app and transport selection, build the additive P1 trust/delivery seam and repeat
+8. After app and transport selection, build the additive P1 trust/delivery seam and repeat
    the end-to-end flow from a separate clean-room machine.
-8. Build the selected-app vertical slice only after an accepted app-selection ADR, deploy
+9. Build the selected-app vertical slice only after an accepted app-selection ADR, deploy
    it, capture the public demo, and freeze the submission package.
 
 ## 9. Current non-claims

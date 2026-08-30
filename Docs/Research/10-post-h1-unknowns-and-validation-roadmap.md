@@ -105,13 +105,18 @@ prior rationale is a poor fit even if technically easy.
 These questions depend on the app selection discussion with Eddy. They should control the
 transport and security requirements rather than be retrofitted after infrastructure is built.
 
-## 3. Platform durability inventory and the one remaining pre-app test
+## 3. Platform durability inventory and the remaining transport-join test
 
-The matrix remains the durability inventory, but only D4/H2b should run before app selection.
-Use the same sealed receipt and no-event/one-event controls:
+The matrix remains the durability inventory, but D4/H2b is no longer a mandatory pre-app gate.
+The first attempt was inconclusive, and even a pass would prove only a test-helper-assisted local
+Desktop restart path. The smaller pre-app kill test is whether documented Codex App Server thread
+resume can regain genuine Browser/WebMCP without the private relay or Scheduled Heartbeat.
+
+Use the same sealed receipt and no-event controls where applicable:
 
 | Condition | Required observation | Failure meaning |
 |---|---|---|
+| App Server exact-thread Browser join | `thread/resume` plus `turn/start` recovers the stored receipt, opens the canonical page, and invokes one genuine read-only page-bound Site Tool | Documented thread control does not supply the Browser/WebMCP half of the continuation adapter |
 | Desktop app restart | Same task recovers receipt, Browser, and current Site Tools after restart | Current mechanism depends on process-lifetime state |
 | Device sleep and wake | Pending event remains available and the next scheduled turn catches up once | Scheduled pull is unsuitable for unattended local operation |
 | Temporary offline period | No effect while offline; one bounded recovery after connectivity returns | Delivery semantics need a hosted or paired runtime |
@@ -130,10 +135,14 @@ but only after the Agent learned the cold runtime's mandatory confirmation and W
 documentation gate and retried. The parent tool service and Desktop app remained alive. This
 narrows process-lifetime risk without satisfying the first row of the matrix.
 
-Run exactly one paired D4/H2b full-Desktop-restart experiment next, using the protocol in
-[Research 11](11-platform-durability-and-cold-start-audit.md). Defer sleep/offline, busy-task,
+Run one App Server Browser-join probe next. Count only genuine built-in Browser navigation and a
+fresh page-bound Site Tool invocation; App Server dynamic tools, REST, DOM automation, generic MCP,
+the private relay, and Scheduled Heartbeat are negative controls. If it fails, evaluate the
+Workspace Agents API only as a distinct hosted runtime topology. Preserve D4/H2b and its repaired
+protocol as optional compatibility evidence, and rerun it only if a selected local connector or
+relaunch topology makes same-machine Desktop restart material. Defer sleep/offline, busy-task,
 client-update, full Scheduled Task model comparison, and account/workspace variation until the
-selected app makes them material. D3 is diagnostic only after a D4 failure.
+selected app makes them material.
 
 M1 satisfies only the bounded discovery-and-read portion of the eligible-model row in the
 same installed environment. App-held traces show one fresh Sol arm and one Terra arm

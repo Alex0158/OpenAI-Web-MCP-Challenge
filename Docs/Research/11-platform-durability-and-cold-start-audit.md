@@ -1,8 +1,8 @@
 # Platform Durability and Cold-Start Audit
 
 **Role:** SUPPORTING platform research and experiment protocol  
-**Status:** Active; H2a passed; first D4 no-event attempt was inconclusive due to a repaired
-harness control bug; valid D4 and stronger availability tiers remain unverified  
+**Status:** Active; H2a passed; first D4 no-event attempt was inconclusive and D4 is frozen as an
+optional local-topology compatibility test; stronger availability tiers remain unverified  
 **Observed:** 2026-08-30  
 **Scope:** Scheduled same-task context, Browser and Site Tool reacquisition, process and
 device availability, and the exact claim boundary after H0b, H1, H2a, and the first D4 attempt
@@ -29,6 +29,11 @@ run-wide contamination latch, and fail-closed automation-history scanner are loc
 regression-tested, but full Desktop continuity remains unverified until a fresh arm proves the
 automatic helper relaunch and scheduled re-entry.
 
+D4 is no longer the next architecture gate. The smaller unresolved seam is whether documented
+Codex App Server exact-thread resume can regain an eligible Browser and genuine page-bound WebMCP
+without the private relay or Scheduled Heartbeat. D4 should run again only if the selected topology
+requires a local connector or relaunch adapter.
+
 The correct next claim is narrow:
 
 > On the tested current Desktop build, a later scheduled turn in the same task can recover
@@ -48,6 +53,13 @@ durability contract this concept would need for production:
   web and mobile. The current H1 design therefore correctly treats the schedule as the wake
   and the Receiver Inbox event as the authorization gate, not as a native Desktop event
   trigger. See [Scheduled tasks](https://learn.chatgpt.com/docs/automations).
+- Codex App Server documents exact `thread/resume` and later `turn/start`. This repository has
+  independently verified context continuity for that primitive, but not built-in Browser or
+  page-bound WebMCP attachment. See [Codex App Server](https://learn.chatgpt.com/docs/app-server).
+- The Workspace Agents API documents external triggers, durable queueing, idempotency, and a
+  stable conversation key for a published Workspace Agent. It does not document continuation of
+  an arbitrary local Desktop task or the required Browser/WebMCP join. See
+  [Workspace Agents API](https://learn.chatgpt.com/workspace-agents/trigger-runs).
 - The built-in Browser has a profile separate from the user's normal browser and does not
   automatically inherit ordinary tabs or login sessions. See
   [Browser](https://learn.chatgpt.com/docs/browser).
@@ -130,11 +142,12 @@ The local audit found durable metadata, but no stronger runtime guarantee:
 These observations are implementation snapshots, not public platform contracts. Do not
 edit local automation databases or configuration files to manufacture a pass.
 
-## 5. Ordered remaining protocol
+## 5. Route-dependent remaining protocol
 
-Each tier must use a separate disposable task, isolated Receiver database, fresh bounded
-Grant, and a paused-by-default one-run schedule. Preserve the existing H1 and H2a evidence.
-Do not reuse expired receipt capabilities.
+Preserve the existing H1 and H2a evidence. Run the App Server Browser-join probe before another
+Desktop restart. If a later topology makes a durability tier material, each tier must use a
+separate disposable task, isolated Receiver database, fresh bounded Grant, and a
+paused-by-default one-run schedule. Do not reuse expired receipt capabilities.
 
 ### Shared controls
 
@@ -160,7 +173,8 @@ For every tier:
 
 ### D4 — Desktop restart with an independent Receiver
 
-This is a Desktop-lifecycle test with an independent Receiver, not a Receiver-restart test. The
+This is an optional Desktop-lifecycle test with an independent Receiver, not a Receiver-restart
+test and not the current next step. The
 Receiver must remain available, outside the ChatGPT process tree, and responsible for retaining
 the bounded receipt and any accepted event while Desktop is closed. H1/H2 cover Receiver restart
 and crash-recoverable enrollment separately.
