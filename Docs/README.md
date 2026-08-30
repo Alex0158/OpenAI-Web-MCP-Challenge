@@ -90,7 +90,20 @@ These files remain active for the surfaces they own. They do not select the prod
 - [`../References/WebMCP_Analysis/README.md`](../References/WebMCP_Analysis/README.md) — broad WebMCP research dossier; supporting and partially historical.
 - [`../References/Other/`](../References/Other/) — supporter resources, conflicts, and unresolved external questions.
 
-## 7. Maintenance rules
+## 7. Knowledge governance
+
+- [`Knowledge/README.md`](Knowledge/README.md) — cross-layer routing and non-destructive governance for high-value knowledge.
+- [`Knowledge/01-priority-and-classification.md`](Knowledge/01-priority-and-classification.md) — four attention levels and independent evidence metadata.
+- [`Knowledge/02-high-value-register.md`](Knowledge/02-high-value-register.md) — curated statements that can change a decision, claim, or next validation step.
+- [`Knowledge/03-source-reconciliation.md`](Knowledge/03-source-reconciliation.md) — source-family disposition, conflicts, and ordered cleanup backlog.
+- [`Knowledge/04-thread-and-memory-distillation.md`](Knowledge/04-thread-and-memory-distillation.md) — redacted synthesis of relevant Codex threads and Memory, without authority over current files.
+- [`Knowledge/05-challenge-governance-snapshot.md`](Knowledge/05-challenge-governance-snapshot.md) — English operational digest of challenge hard gates; the Official Rules remain controlling.
+
+The Knowledge package is additive. Core, ADR, governing, evidence, and immutable reference
+files retain ownership of their surfaces; the register provides cross-layer routing rather
+than a second source of truth.
+
+## 8. Maintenance rules
 
 1. Put current project behavior in `Core/`, not in the frozen dossier.
 2. Update `00-current-status.md` whenever phase, evidence, deployment, or submission truth changes.
@@ -101,7 +114,7 @@ These files remain active for the surfaces they own. They do not select the prod
 7. Select a host application only through a new ADR that specializes the domain-neutral Core requirements.
 8. Product, development, and submission artifacts are written in English. Conversation may use the user's language.
 
-## 8. Update sequence
+## 9. Update sequence
 
 When a decision or implementation changes:
 
