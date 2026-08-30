@@ -74,6 +74,7 @@ These files remain active for the surfaces they own. They do not select the prod
 - [`Research/12-product-value-kill-test-preregistration.md`](Research/12-product-value-kill-test-preregistration.md) — SUPPORTING preregistered controls, safety gates, metrics, and provisional retain/demote/kill rules for notification, exact-task, capsule, and WebMCP materiality tests.
 - [`Research/13-exact-task-vs-capsule-method-calibration.md`](Research/13-exact-task-vs-capsule-method-calibration.md) — SUPPORTING frozen method-calibration protocol for isolating prior-history effects; its bounded [verdict](../Experiments/continuity-calibration/verdict.md) is `REVISE_PROTOCOL`, not product evidence.
 - [`Research/13-exact-task-vs-capsule-method-calibration.md`](Research/13-exact-task-vs-capsule-method-calibration.md) — SUPPORTING hash-frozen preregistration for exact-task history versus a strong bounded continuation capsule. The completed package is [`../Experiments/continuity-calibration/verdict.md`](../Experiments/continuity-calibration/verdict.md); its outcome is `REVISE_PROTOCOL`, with no product-value inference permitted.
+- [`Research/14-mvp-and-mvp2-integration-assessment.md`](Research/14-mvp-and-mvp2-integration-assessment.md) — SUPPORTING comparison of the verified domain-neutral MVP1 and product-shaped MVP2, with modular integration, protocol, trust, efficiency, app-selection, and hackathon recommendations.
 
 ## 5. Deprioritized ideation
 
