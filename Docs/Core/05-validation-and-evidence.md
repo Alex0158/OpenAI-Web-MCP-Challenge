@@ -2,7 +2,7 @@
 
 **Role:** CANONICAL proof matrix and evidence gates  
 **Status:** Current proof matrix plus future evidence gates; bounded P0/H1/H2 evidence passed, D4 is inconclusive, and the supported transport-to-Browser/WebMCP, app, product, and judge gates remain open.  
-**Last updated:** 2026-08-30
+**Last updated:** 2026-08-31
 
 ## 1. Evidence discipline
 
@@ -18,6 +18,29 @@
 
 Reference scenarios, diagrams, pseudocode, and design documents are reasoning evidence. They
 are not runtime evidence.
+
+### Genuine Site Tool evidence admission
+
+A genuine Site Tool discovery or invocation claim is admissible only when the evidence:
+
+- comes from the exact page-bound Browser tool surface used for the call, with a direct fresh
+  inventory captured before invocation;
+- identifies the observed Browser or backend class, page origin and hostname, tool name,
+  bounded input, untruncated classification-critical output, call count, stage, state
+  version, and correlation path;
+- uses client-specific provenance metadata only as dated corroboration, never as a WebMCP
+  standard;
+- rejects stale, decoy, or reassigned handles where lifecycle or identity is material;
+- aggregates relevant Browser-client and Host-server observations across every phase of a
+  multi-phase claim; and
+- redacts, allowlists, or hashes raw task identifiers, canaries, credentials, local paths,
+  and unrelated tool output.
+
+Agent narration, source or DOM inspection, regex classification, mocks, remembered manifests,
+and screenshots without correlated traces are corroboration or test scaffolding, not runtime
+proof of a genuine invocation. Evidence outcomes remain distinct as `PASS`, classified
+`FAIL`, or `INCONCLUSIVE`; an inconclusive run may not silently overwrite a prior decisive
+result.
 
 ## 2. Critical proposition
 
@@ -59,6 +82,23 @@ Enrollment proves questions 1â€“2. Continuation and Re-entry proves questions 3â
 Closed-loop Workflow gate proves question 5 and repeats all five in one correlated run.
 The binding implementation contract is
 [P0 Technical Validation MVP](07-p0-technical-validation-mvp.md).
+
+### Enrollment non-effect gate
+
+Enrollment is not continuation. After approval and before the future business event, one
+correlated machine-readable checkpoint must show:
+
+- one approved Grant and one Trusted Continuation Receipt bound to the intended managed
+  context;
+- zero accepted business events;
+- zero business-event deliveries;
+- zero wake attempts or resumed continuation runs; and
+- zero Stage-B Site Tool calls, artifact revisions, or Host workflow effects.
+
+Receipt persistence and opaque Host binding are enrollment effects and are excluded from the
+business-event delivery count. The later event arm must reuse the same Grant and correlation
+path. A historical package that lacks one of these counters records an evidence limitation;
+the missing value must not be inferred as zero or retroactively upgraded to a pass.
 
 ## 3. Current proof matrix
 

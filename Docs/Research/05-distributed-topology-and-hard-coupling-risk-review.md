@@ -62,11 +62,12 @@ unresolved seams are:
    Agent task and its Browser.
 
 The current next step is app selection, not a broad production rewrite or another D4 arm. Both standalone
-Codex App Server Browser-join variants failed on the tested current build: the cold owned thread
-had no Desktop in-app Browser session, and exact warm resume returned an active-writer rejection.
+Codex App Server Browser-join variants failed on the tested current build: the cold owned thread's
+Browser selector returned `iab-unavailable` before page access, without identifying which Browser or
+session precondition was absent, and exact warm resume returned an active-writer rejection.
 These results remove both tested standalone Desktop joins from current selection unless a
 materially different supported contract or topology appears. Select the product
-layer and application with Eddy, then run selected-app product, WebMCP, C2, and economics controls
+layer and application with Eddie, then run selected-app product, WebMCP, C2, and economics controls
 and select the transport from those requirements. A published Workspace Agent is a conditional
 hosted-runtime probe only if entitlement is available and the selected app makes that topology
 plausible; it must carry its own Browser/WebMCP evidence boundary and must not block app selection.

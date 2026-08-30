@@ -19,6 +19,14 @@ passes 118 tests. The
 frozen clean-run package retains its historical 23-test result. A separate post-fix runbook
 rehearsal repeated the complete chain after correcting long-task relay response compaction.
 
+Enrollment and continuation are separate phases. Every new acceptance run must capture an
+enrollment-only checkpoint after consent, Grant creation, Trusted Continuation Receipt delivery,
+and Stage-A binding registration, but before any authenticated business event is accepted. That
+checkpoint must show zero accepted business events, zero business-event deliveries or runs, zero
+workflow-continuation turns, and zero additional Host effects or artifact revisions. Any non-zero
+value fails the gate; the enrollment receipt itself is not the future event. Historical frozen
+packages remain unchanged, and a counter they did not capture must not be inferred as zero.
+
 The current fixture also fails closed when stale Stage-A tools are invoked after transition,
 rejects non-canonical or overlong manifest expiry values and non-canonical event timestamps,
 and uses SQL compare-and-swap for workflow transitions and artifact writes.
@@ -83,11 +91,12 @@ because its automation contract drifted and its row was later deleted. No valid 
 event arm has completed. No full Desktop restart continuity claim is made. See the
 [provisional attempt record](evidence/d4-h2b-first-formal-no-event-inconclusive-2026-08-30.md).
 
-The two-arm standalone Codex App Server Browser-join gate has now failed on the tested current
-build. The cold App-Server-owned thread resumed exactly, but the requested Desktop in-app Browser
-was unavailable and no page or genuine Site Tool was reached. The warm arm targeted the exact task
-supplied by the controlled Desktop-priming step, and `thread/resume` returned an active-writer
-rejection. Together these results reject both tested standalone App Server Desktop joins and remove
+The two-arm standalone Codex App Server Browser-join gate failed on the tested current build. In
+the cold arm, the App-Server-owned thread resumed exactly, but the Browser selector returned
+`iab-unavailable` before page access. That signal does not identify which Browser or session
+precondition was absent, and no page or genuine Site Tool was reached. In the warm arm,
+`thread/resume` for the supplied exact task returned an active-writer rejection. Together these
+results reject both tested standalone App Server Desktop joins and remove
 that route from current selection unless a materially different supported contract or topology
 appears; they do not invalidate its documented thread-control role in other topologies. App
 selection is the current gate. A published

@@ -2,7 +2,7 @@
 
 **Role:** CANONICAL app-selection framework and challenge execution target  
 **Status:** P0 technical mechanism passed; demo app and supported continuation adapter remain unselected  
-**Last updated:** 2026-08-30
+**Last updated:** 2026-08-31
 
 ## 1. Current decision boundary
 
@@ -117,6 +117,24 @@ The selection ADR must answer in one page:
 - **Demo proof:** What will the judge see in the first 30 seconds and at the re-entry moment?
 - **Execution risks:** What could block a public clean-room run?
 
+### Continuation transport requirements profile
+
+The app-selection ADR must provide measured or bounded values for:
+
+- event frequency, expected events per Grant, and waiting-window duration;
+- maximum useful event-to-first-Agent-action latency;
+- whether the user's device, Browser, or Desktop runtime may sleep, close, or be offline,
+  including required catch-up and expiry behavior;
+- required local, hosted, or hybrid execution and any cross-device assumptions;
+- identity, privacy, data-residency, administration, pairing, and revocation constraints;
+- expected concurrent Grants, events, and devices; and
+- maximum no-op runs, Agent usage, operating cost, and operator burden per useful
+  continuation or complete watch window.
+
+Use `UNKNOWN` with a named validation step where evidence does not exist. These requirements
+constrain adapter and topology selection after app selection; they do not select a topology
+by themselves.
+
 Do not begin full implementation before this record is accepted.
 
 ## 6. Reference candidates
@@ -198,7 +216,9 @@ ADR.
 
 ### Gate 1 — Validate and select the continuation adapter
 
-Do not promote the private P0 bridge as the shipping adapter. Both tested standalone App
+Use the accepted app's continuation transport requirements profile to compare candidate
+topologies before selecting an adapter. Do not promote the private P0 bridge as the shipping
+adapter. Both tested standalone App
 Server Desktop joins have failed in the current build. Workspace Agents document external
 triggers, durable queueing, and stable conversation keys, but not Browser or genuine
 page-bound WebMCP for API-triggered runs. Select and validate an adapter only after the app

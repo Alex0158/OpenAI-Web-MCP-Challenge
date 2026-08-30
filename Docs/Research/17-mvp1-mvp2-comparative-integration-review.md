@@ -11,6 +11,12 @@ current architecture sequencing is owned by Core/00 and the later Research 18–
 **Earlier reviewed MVP2 snapshot:** `ccbd2427fb00aafdcb0e2ea37ab2a3b46079ddb6`  
 **Current common base:** `46b9549302160dc148bb9bcce95a9c76643e1002`
 
+The later contributor tip `3f746694069486d3d48d5c6a26c73942ff6eab42` adds two
+documentation reports but no runtime change. Its reconciled candidate-topology and integration
+disposition are recorded in [Research 21](21-cloud-receiver-local-connector-candidate-topology.md)
+and [Research 22](22-mvp2-selective-integration-provenance.md); they do not widen this named
+runtime review.
+
 > This review remains authoritative only for the named snapshots and its bounded selective-reuse
 > analysis. It does not describe the current `main` tip or control the next transport experiment.
 
@@ -337,8 +343,9 @@ The current order is maintained in the
 [canonical status](../Core/00-current-status.md). Research 18 retains the Receiver-ledger and
 replaceable-wake-adapter frame, but its prospective App Server step is superseded by later
 runtime evidence. Both standalone App
-Server Browser-join variants have since failed on the tested current build: the cold owned thread
-had no Desktop in-app Browser session, and exact warm resume returned an active-writer rejection.
+Server Browser-join variants have since failed on the tested current build: the cold owned thread's
+Browser selector returned `iab-unavailable` before page access, without identifying which Browser or
+session precondition was absent, and exact warm resume returned an active-writer rejection.
 Those tested standalone Desktop joins are removed from current selection unless a materially
 different supported contract or topology appears. Select the app with Eddie, run
 selected-app product and WebMCP controls, and harden only the transport that the app actually

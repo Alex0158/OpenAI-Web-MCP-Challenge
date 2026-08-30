@@ -3,7 +3,7 @@
 **Role:** CANONICAL documentation governance and authority index  
 **Status:** Current index  
 **Project:** WebMCP re-entry workflow mechanism; demo app and final name TBD  
-**Last updated:** 2026-08-30
+**Last updated:** 2026-08-31
 
 This directory separates current product truth from challenge governance, evidence, and
 historical ideation. A file's location does not by itself make it authoritative; use the
@@ -71,7 +71,7 @@ an active next step.
 - [`Research/02-p0-runtime-probe-log.md`](Research/02-p0-runtime-probe-log.md) — SUPPORTING reproducible log of component, App Server, Receiver, Desktop task-control, and Browser capability probes.
 - [`Research/03-site-tools-runtime-availability-audit.md`](Research/03-site-tools-runtime-availability-audit.md) — SUPPORTING client prerequisite, feature-gate, App Server boundary, and safe newer-client migration audit.
 - [`Research/04-platform-bridge-decision.md`](Research/04-platform-bridge-decision.md) — SUPPORTING current-build Desktop bridge decision, public-route gap, proof-substitution boundary, and P0-versus-production claim limit.
-- [`Research/05-distributed-topology-and-hard-coupling-risk-review.md`](Research/05-distributed-topology-and-hard-coupling-risk-review.md) — SUPPORTING conditional production-risk catalog for local P0 topology, distributed seams, and coupling. Core/00 controls current sequencing; Research 07–20 preserve later mechanism evidence, durability, product tests, method calibration, clean-context portability, model variation, transport economics, and platform-boundary verdicts.
+- [`Research/05-distributed-topology-and-hard-coupling-risk-review.md`](Research/05-distributed-topology-and-hard-coupling-risk-review.md) — SUPPORTING conditional production-risk catalog for local P0 topology, distributed seams, and coupling. Core/00 controls current sequencing; Research 07–22 preserve later mechanism evidence, durability, product tests, method calibration, clean-context portability, model variation, transport economics, platform-boundary verdicts, and contributor-branch integration analysis.
 - [`Research/06-continuity-value-and-alternative-kill-tests.md`](Research/06-continuity-value-and-alternative-kill-tests.md) — SUPPORTING scientific and product test plan for page authority, exact-thread value, structured continuation memory, and measurable outcomes.
 - [`Research/07-supported-reentry-transport-and-heartbeat-spike.md`](Research/07-supported-reentry-transport-and-heartbeat-spike.md) — SUPPORTING official-capability matrix plus the current-build H0b and event-gated H1 scheduled re-entry verdicts.
 - [`Research/08-review-05-adjudication-and-p1-trust-delivery-plan.md`](Research/08-review-05-adjudication-and-p1-trust-delivery-plan.md) — SUPPORTING independent disposition of Research 05 and the additive P1 trust/delivery gate.
@@ -87,6 +87,8 @@ an active next step.
 - [`Research/18-receiver-queue-and-wake-adapter-architecture-review.md`](Research/18-receiver-queue-and-wake-adapter-architecture-review.md) — SUPPORTING analysis that recommends a delivery-ledger-first Receiver boundary, treats Heartbeat as a bounded wake fallback, records the current Core decision to freeze D4, and isolates the unresolved supported-transport-to-Browser/WebMCP join.
 - [`Research/19-app-server-desktop-browser-join-verdict.md`](Research/19-app-server-desktop-browser-join-verdict.md) — SUPPORTING empirical verdict: the tested cold App-Server-owned thread returned `iab-unavailable` before page access, while standalone resume of the supplied warm task returned an active-writer rejection. Warm priming and writer ownership are controller-attested, not independently proven by the public artifact.
 - [`Research/20-workspace-agents-trigger-and-webmcp-boundary.md`](Research/20-workspace-agents-trigger-and-webmcp-boundary.md) — SUPPORTING official-capability audit: external trigger, durable queueing, and stable Workspace Agent conversations are documented, while Browser and genuine page-bound WebMCP remain unproven.
+- [`Research/21-cloud-receiver-local-connector-candidate-topology.md`](Research/21-cloud-receiver-local-connector-candidate-topology.md) — SUPPORTING reconciled candidate topology distilled from Eddie's contributor branch. App requirements remain the prior gate; no topology or adapter is selected.
+- [`Research/22-mvp2-selective-integration-provenance.md`](Research/22-mvp2-selective-integration-provenance.md) — SUPPORTING named-commit provenance and selective-reuse disposition. Eddie's runtime remains preserved on its contributor branch and is not merged by this documentation integration.
 
 ## 5. Deprioritized ideation
 
@@ -125,6 +127,7 @@ than a second source of truth.
 7. Keep the dossier snapshots byte-identical. Import a new version as a new file rather than overwriting version 1.1.
 8. Select a host application only through a new ADR that specializes the domain-neutral Core requirements.
 9. Product, development, and submission artifacts are written in English. Conversation may use the user's language.
+10. Follow the repository [collaboration and commit gates](../AGENTS.md) for every contributor integration, commit, merge, and push.
 
 ## 9. Update sequence
 

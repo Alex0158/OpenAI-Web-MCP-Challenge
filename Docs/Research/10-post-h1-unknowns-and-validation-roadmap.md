@@ -2,7 +2,7 @@
 
 **Role:** SUPPORTING technical, product, and business research  
 **Status:** Active post-H1 risk register and experiment order; no app or production topology selected  
-**Observed:** 2026-08-30  
+**Observed:** 2026-08-30; reconciled 2026-08-31  
 **Scope:** What H1 changed, what remains unknown, and which experiments should precede a
 production-style build
 
@@ -102,23 +102,24 @@ whose next preparation benefits from Agent reasoning, and whose consequence stil
 human boundary. A fast deterministic callback, trivial status change, or event that needs no
 prior rationale is a poor fit even if technically easy.
 
-These questions depend on the app selection discussion with Eddy. They should control the
+These questions depend on the app selection discussion with Eddie. They should control the
 transport and security requirements rather than be retrofitted after infrastructure is built.
 
 ## 3. Platform durability inventory and adapter boundary
 
 The matrix remains the durability inventory, but D4/H2b is no longer a mandatory pre-app gate.
 The first attempt was inconclusive, and even a pass would prove only a test-helper-assisted local
-Desktop restart path. The smaller standalone App Server kill tests have now completed negatively:
-documented thread control could not acquire a cold Desktop in-app Browser, and exact warm resume
-returned an active-writer rejection for the supplied task. The warm public JSON does not
-independently prove writer ownership or priming.
+Desktop restart path. The smaller standalone App Server probes have now completed negatively. In
+the cold arm, the Browser selector returned `iab-unavailable` before page access; that signal does
+not identify which Browser or session precondition was absent. In the warm arm, exact
+`thread/resume` returned an active-writer rejection for the supplied task. The public warm JSON
+does not independently identify the writer or prove the priming state.
 
 Use the same sealed receipt and no-event controls where applicable:
 
 | Condition | Required observation | Current result / failure meaning |
 |---|---|---|
-| App Server cold-start Browser join | A newly started App Server thread and turn open the canonical page and invoke one genuine read-only page-bound Site Tool | **Failed on the tested current build:** the later turn reported managed-context recovery, which pre-turn `thread/read` does not independently expose; the Browser selector then returned `iab-unavailable`, so no page or Site Tool was reached |
+| App Server cold-start Browser join | A newly started App Server thread and turn open the canonical page and invoke one genuine read-only page-bound Site Tool | **Failed on the tested current build:** the later turn reported managed-context recovery, which pre-turn `thread/read` does not independently expose; the Browser selector returned `iab-unavailable` before page access. That classifies the observed boundary but does not identify the missing Browser or session precondition; no page or Site Tool was reached |
 | App Server exact-thread warm-resume join | A fresh client process uses `thread/resume` plus `turn/start` to recover the stored receipt, open the canonical page, and invoke one genuine read-only page-bound Site Tool | **Failed on the tested current build:** `thread/resume` returned an active-writer rejection for the supplied task; the public artifact does not identify the writer owner |
 | Desktop app restart | Same task recovers receipt, Browser, and current Site Tools after restart | Current mechanism depends on process-lifetime state |
 | Device sleep and wake | Pending event remains available and the next scheduled turn catches up once | Scheduled pull is unsuitable for unattended local operation |

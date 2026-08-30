@@ -46,6 +46,37 @@ that adapter may validate contracts and negative controls, but it must never be 
 as proof of real Desktop resumption or Site Tool capability continuity. The final pass used
 the explicit `desktop-task` route and genuine page-bound Browser observations.
 
+## Evidence admission controls
+
+A new P0-style package must include a machine-readable enrollment-only checkpoint captured
+after consent, Grant creation, Trusted Continuation Receipt delivery, and Host binding, but
+before business-event acceptance. It must report zero accepted business events, zero
+business-event deliveries or runs, zero workflow-continuation turns, and zero additional Host
+effects or artifact revisions. Frozen packages remain immutable; a missing counter is an
+evidence limitation, not an inferred zero.
+
+A genuine Site Tool call is admitted only when the execution source directly binds the exact
+result of `fetchTools()` and invokes the expected tool through that unchanged snapshot. Calls
+through a decoy object or a reassigned snapshot do not count. For the current Desktop client,
+the runtime result must also contain trusted `_meta["codex/toolSurface"]` provenance for
+`kind: browserUse`, backend `iab`, exactly one matching `invokeTool` record, the expected tool
+name and source hostname, exact untruncated input and output JSON, and any required read-only or
+path assertion. Agent self-report, copied metadata in text, REST, DOM automation, generic MCP,
+or another substitute path is not runtime proof.
+
+`_meta["codex/toolSurface"]` is a current-client evidence surface used by this fixture. It is
+not part of the WebMCP protocol and does not establish portability to another client or runtime.
+
+Where a proof spans multiple phases, aggregate Browser and tool-client calls plus Host-server
+requests across all phases before classification. A clean final turn cannot hide substitute
+traffic from an earlier phase.
+
+Canonical probe evidence persists only a `PASS` or a classified `FAIL_*` or `FAIL:` verdict by
+default. `INCONCLUSIVE` evidence requires an explicit diagnostic override and a separate
+artifact; it must not silently replace an existing decisive record. Before check-in, raw task or
+thread identifiers, canary markers, home paths, complete private results, receipts, bindings,
+and secrets must be removed, allowlisted into bounded summaries, or represented only by hashes.
+
 ## Current bounded probes
 
 - `browser-webmcp-capability-probe.json` preserves the older Desktop client negative control.
@@ -55,8 +86,9 @@ the explicit `desktop-task` route and genuine page-bound Browser observations.
 - `app-server-resume-probe.json` isolates exact App Server context continuation. Its public
   copy redacts the private thread and turn identifiers.
 - [`app-server-browser-join-probe-2026-08-30.json`](app-server-browser-join-probe-2026-08-30.json)
-  records the failed cold join. The App-Server-owned thread resumed exactly, but
-  the Desktop in-app Browser was `iab-unavailable`; no page or genuine Site Tool was reached.
+  records the failed cold join. The App-Server-owned thread resumed exactly, but its Browser
+  selector returned `iab-unavailable` before page access. That signal does not identify the
+  absent Browser or session precondition; no page or genuine Site Tool was reached.
 - [`app-server-browser-warm-join-probe-2026-08-30.json`](app-server-browser-warm-join-probe-2026-08-30.json)
   records the failed exact-task warm join. The standalone App Server returned an active-writer
   rejection for the exact task supplied by the controlled Desktop-priming step. The public JSON
@@ -107,6 +139,12 @@ the explicit `desktop-task` route and genuine page-bound Browser observations.
   exclusion. Its destination is synthetic, its worker is a one-shot process rather than a
   daemon, and it does not prove real Desktop or hosted delivery, production architecture, or
   product value.
+  Concurrency scope is narrower than simultaneous cold startup. The approval test initializes
+  two independent Node processes, waits until both report `ready`, and then releases both
+  approval transactions from a common barrier. It proves transaction-level convergence against
+  initialized stores, not concurrent runtime or schema initialization. The dispatch test runs
+  two parallel `dispatchNext()` calls on one initialized runtime; it does not prove multiple
+  independently supervised production workers.
 - [`h2-worker-trace-routing-contamination-2026-08-30-verdict.md`](h2-worker-trace-routing-contamination-2026-08-30-verdict.md)
   preserves a diagnostic trace-routing mistake from an early H2 one-shot worker test. Its
   fourteen synthetic records are retained in the adjacent JSONL file and were removed only

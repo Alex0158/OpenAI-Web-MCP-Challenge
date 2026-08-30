@@ -346,4 +346,4 @@ Do not freeze until the app is selected:
 
 This protocol does not prove market demand, statistical efficacy, willingness to pay, or a
 universal advantage for exact-task continuity or WebMCP. It defines a falsifiable,
-precommitted screen for the selected application once Eddy and Alex make that decision.
+precommitted screen for the selected application once Eddie and Alex make that decision.
