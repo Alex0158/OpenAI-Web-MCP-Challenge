@@ -1,0 +1,49 @@
+{
+  "evidence_type": "independent_runbook_rehearsal_final_database_verdict",
+  "captured_after_exact_duplicate_replay": true,
+  "workflow": {
+    "workflow_id": "WF-001",
+    "state": "READY",
+    "state_version": 2,
+    "artifact_id": "continuation_note",
+    "artifact_revision": 2,
+    "artifact_content_length": 235,
+    "committed": false,
+    "human_boundary": "COMMIT_ARTIFACT",
+    "human_boundary_agent_callable": false
+  },
+  "counts": {
+    "workflows": 1,
+    "manifests": 1,
+    "consumed_context_captures": 1,
+    "approved_challenges": 1,
+    "active_grants_with_one_run_used": 1,
+    "host_bindings": 1,
+    "completed_events": 1,
+    "completed_runs": 1
+  },
+  "relational_checks": {
+    "final_artifact_exact": true,
+    "private_context_chain_exact": true,
+    "host_binding_matches_grant": true,
+    "host_summary_excludes_private_context": true,
+    "receipt_matches_grant_and_binding": true,
+    "event_binding_matches_grant": true,
+    "run_event_matches_event": true
+  },
+  "deduplication": {
+    "duplicate_accepted_as_duplicate": true,
+    "duplicate_returned_original_run": true,
+    "second_event_created": false,
+    "second_run_created": false,
+    "second_task_dispatch_recorded": false,
+    "second_artifact_write_recorded": false
+  },
+  "sensitive_values_recorded": {
+    "raw_desktop_task_id": false,
+    "opaque_agent_binding": false,
+    "receiver_or_relay_bearer": false,
+    "native_pipe_path": false
+  },
+  "claim_limit": "This proves one post-fix independent runbook rehearsal in the same-user local Desktop environment. It is not production exactly-once, public deployment, or clean-room judge evidence."
+}

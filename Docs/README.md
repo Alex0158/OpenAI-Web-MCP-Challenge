@@ -1,0 +1,110 @@
+# Documentation Map and Governance
+
+**Status:** Current index  
+**Project:** WebMCP re-entry workflow mechanism; demo app and final name TBD  
+**Last updated:** 2026-08-30
+
+This directory separates current product truth from challenge governance, evidence, and
+historical ideation. A file's location does not by itself make it authoritative; use the
+roles and precedence below.
+
+## 1. Document roles
+
+| Role | Meaning |
+|---|---|
+| **CANONICAL** | Controls an explicitly named project surface. Update it when that surface changes. |
+| **DECISION** | Records an accepted durable choice, its context, and its consequences. |
+| **GOVERNING** | Controls an external constraint such as official challenge rules. |
+| **SUPPORTING** | Supplies research or implementation guidance but does not control product truth. |
+| **REFERENCE** | Preserves source material or historical reasoning. Do not silently promote it into a decision. |
+| **DEPRIORITIZED** | A preserved direction that is not part of the current project. |
+| **SUPERSEDED** | Replaced by a named newer source. Retained only for traceability. |
+
+## 2. Current mechanism core
+
+| Document | Role | Owns |
+|---|---|---|
+| [`Core/00-current-status.md`](Core/00-current-status.md) | CANONICAL | Current phase, evidence state, binding assumptions, next gate |
+| [`Decisions/ADR-0002-separate-mechanism-from-demo-app.md`](Decisions/ADR-0002-separate-mechanism-from-demo-app.md) | DECISION | Selection of the mechanism and separation from the unselected app/domain |
+| [`Core/01-product-definition.md`](Core/01-product-definition.md) | CANONICAL | Problem class, concept, mechanism, application boundary, claim boundary |
+| [`Core/02-product-requirements.md`](Core/02-product-requirements.md) | CANONICAL | Domain-neutral user behavior, stories, acceptance criteria, specialization gate |
+| [`Core/03-system-design.md`](Core/03-system-design.md) | CANONICAL | Reusable components, lifecycle, contracts, host-app and Agent-adapter boundaries |
+| [`Core/04-trust-security-reliability.md`](Core/04-trust-security-reliability.md) | CANONICAL | Authority, permissions, threat controls, delivery and failure semantics |
+| [`Core/05-validation-and-evidence.md`](Core/05-validation-and-evidence.md) | CANONICAL | App, bridge, vertical-slice, judge, and claim evidence gates |
+| [`Core/06-mvp-and-demo.md`](Core/06-mvp-and-demo.md) | CANONICAL | Demo-app selection gates, scorecard, MVP skeleton, demo and definition of done |
+| [`Core/07-p0-technical-validation-mvp.md`](Core/07-p0-technical-validation-mvp.md) | CANONICAL | Frozen first implementation contract: one technical harness, five feasibility questions, three gates, and correlated proof |
+| [`Scenarios/README.md`](Scenarios/README.md) | SUPPORTING | Concrete domain mappings that are not selected product truth |
+
+[`Decisions/ADR-0001-select-tenderrelay.md`](Decisions/ADR-0001-select-tenderrelay.md) is
+superseded historical evidence of the first formalization pass.
+
+[`Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md`](Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md)
+freezes the domain-neutral technical proof that precedes full application implementation.
+
+[`Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md`](Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md)
+separates the project-owned Website Backend-to-Receiver event protocol from the
+platform-specific Agent transport and records the local Receiver deployment boundary.
+
+[`Decisions/ADR-0005-run-additive-durable-enrollment-spike.md`](Decisions/ADR-0005-run-additive-durable-enrollment-spike.md)
+authorizes an isolated H2 service-contract spike for crash-recoverable enrollment without
+changing the frozen P0 or bounded H1 paths.
+
+## 3. Challenge governance
+
+These files remain active for the surfaces they own. They do not select the product.
+
+- [`01-official-rules.md`](01-official-rules.md) — GOVERNING research copy of legal and submission constraints; refresh against live Devpost sources before relying on volatile facts.
+- [`02-submission-evaluation-strategy.md`](02-submission-evaluation-strategy.md) — SUPPORTING competition and evaluation strategy.
+- [`03-technical-build-verification.md`](03-technical-build-verification.md) — SUPPORTING general WebMCP implementation and verification guidance.
+- [`05-requirement-evidence-audit.md`](05-requirement-evidence-audit.md) — SUPPORTING audit of the earlier challenge research package.
+
+## 4. Active technical research
+
+- [`Research/01-agent-continuation-adapter-audit.md`](Research/01-agent-continuation-adapter-audit.md) — SUPPORTING evidence audit of exact-thread wake, context-carried continuation, Desktop Browser binding, and the unresolved adapter join.
+- [`Research/02-p0-runtime-probe-log.md`](Research/02-p0-runtime-probe-log.md) — SUPPORTING reproducible log of component, App Server, Receiver, Desktop task-control, and Browser capability probes.
+- [`Research/03-site-tools-runtime-availability-audit.md`](Research/03-site-tools-runtime-availability-audit.md) — SUPPORTING client prerequisite, feature-gate, App Server boundary, and safe newer-client migration audit.
+- [`Research/04-platform-bridge-decision.md`](Research/04-platform-bridge-decision.md) — SUPPORTING current-build Desktop bridge decision, public-route gap, proof-substitution boundary, and P0-versus-production claim limit.
+- [`Research/05-distributed-topology-and-hard-coupling-risk-review.md`](Research/05-distributed-topology-and-hard-coupling-risk-review.md) — SUPPORTING conditional production-risk catalog for local P0 topology, distributed seams, and coupling; Research 07–13 control later mechanism evidence, sequencing, durability, product tests, and method calibration.
+- [`Research/06-continuity-value-and-alternative-kill-tests.md`](Research/06-continuity-value-and-alternative-kill-tests.md) — SUPPORTING scientific and product test plan for page authority, exact-thread value, structured continuation memory, and measurable outcomes.
+- [`Research/07-supported-reentry-transport-and-heartbeat-spike.md`](Research/07-supported-reentry-transport-and-heartbeat-spike.md) — SUPPORTING official-capability matrix plus the current-build H0b and event-gated H1 scheduled re-entry verdicts.
+- [`Research/08-review-05-adjudication-and-p1-trust-delivery-plan.md`](Research/08-review-05-adjudication-and-p1-trust-delivery-plan.md) — SUPPORTING independent disposition of Research 05 and the additive P1 trust/delivery gate.
+- [`Research/09-heartbeat-business-viability-and-bounded-use.md`](Research/09-heartbeat-business-viability-and-bounded-use.md) — SUPPORTING bounded H1 runtime evidence, polling economics, commercial kill conditions, and production claim limits.
+- [`Research/10-post-h1-unknowns-and-validation-roadmap.md`](Research/10-post-h1-unknowns-and-validation-roadmap.md) — SUPPORTING post-H1 separation of verified mechanism facts, product kill tests, platform durability, production topology, identity, lifecycle, and distributed-reliability unknowns.
+- [`Research/11-platform-durability-and-cold-start-audit.md`](Research/11-platform-durability-and-cold-start-audit.md) — SUPPORTING official capability boundary, H2a cold-runtime interpretation, and ordered Desktop/app/device durability protocol.
+- [`Research/12-product-value-kill-test-preregistration.md`](Research/12-product-value-kill-test-preregistration.md) — SUPPORTING preregistered controls, safety gates, metrics, and provisional retain/demote/kill rules for notification, exact-task, capsule, and WebMCP materiality tests.
+- [`Research/13-exact-task-vs-capsule-method-calibration.md`](Research/13-exact-task-vs-capsule-method-calibration.md) — SUPPORTING frozen method-calibration protocol for isolating prior-history effects; its bounded [verdict](../Experiments/continuity-calibration/verdict.md) is `REVISE_PROTOCOL`, not product evidence.
+- [`Research/13-exact-task-vs-capsule-method-calibration.md`](Research/13-exact-task-vs-capsule-method-calibration.md) — SUPPORTING hash-frozen preregistration for exact-task history versus a strong bounded continuation capsule. The completed package is [`../Experiments/continuity-calibration/verdict.md`](../Experiments/continuity-calibration/verdict.md); its outcome is `REVISE_PROTOCOL`, with no product-value inference permitted.
+
+## 5. Deprioritized ideation
+
+- [`04-research-judgment-and-project-options.md`](04-research-judgment-and-project-options.md) is a DEPRIORITIZED broad option map. It no longer selects the active mechanism or application.
+- [`../References/Legacy-Ideation/README.md`](../References/Legacy-Ideation/README.md) records all earlier idea surfaces and their current status.
+- The `TwinSurface` framing remains useful background but is not the selected concept identity or novelty claim.
+
+## 6. Reference layer
+
+- [`../References/TenderRelay/README.md`](../References/TenderRelay/README.md) — immutable dossier and tender reference package; not an app decision.
+- [`../References/WebMCP/00-source-index.md`](../References/WebMCP/00-source-index.md) — official and primary WebMCP source index.
+- [`../References/WebMCP_Analysis/README.md`](../References/WebMCP_Analysis/README.md) — broad WebMCP research dossier; supporting and partially historical.
+- [`../References/Other/`](../References/Other/) — supporter resources, conflicts, and unresolved external questions.
+
+## 7. Maintenance rules
+
+1. Put current project behavior in `Core/`, not in the frozen dossier.
+2. Update `00-current-status.md` whenever phase, evidence, deployment, or submission truth changes.
+3. Record a new ADR before changing the core mechanism, selecting or changing the host app, changing the authority model, or moving the MVP boundary.
+4. Label statements as **VERIFIED**, **WORKING ASSUMPTION**, **INFERENCE**, **TARGET**, or **UNKNOWN** where status could affect a decision.
+5. Do not duplicate volatile challenge facts across Core docs; link to the governing source.
+6. Keep the dossier snapshots byte-identical. Import a new version as a new file rather than overwriting version 1.1.
+7. Select a host application only through a new ADR that specializes the domain-neutral Core requirements.
+8. Product, development, and submission artifacts are written in English. Conversation may use the user's language.
+
+## 8. Update sequence
+
+When a decision or implementation changes:
+
+1. Update or add the relevant decision record.
+2. Update the owning Core document.
+3. Update current status and the evidence ledger.
+4. Reconcile implementation, tests, demo evidence, and submission material.
+5. Check links and verify that no frozen reference changed.

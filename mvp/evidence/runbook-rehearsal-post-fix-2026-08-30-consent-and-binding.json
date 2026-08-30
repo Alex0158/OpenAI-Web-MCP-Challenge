@@ -1,0 +1,68 @@
+{
+  "evidence_type": "independent_runbook_rehearsal_receiver_consent_and_binding",
+  "correlation_id": "corr_web_1b87ca99af324572b50f610337c19e2c",
+  "workflow_id": "WF-001",
+  "manifest_id": "rm_0epED86UgSBjtw",
+  "challenge_id": "ch_YLmZa7z6sCMHNw",
+  "grant_id": "gr_aXJllwl7-j20BQ",
+  "enrollment": {
+    "exact_genuine_manifest_supplied": true,
+    "enrolled_from_supplied_manifest": true,
+    "private_context_capture_consumed": true,
+    "caller_supplied_context_id": false,
+    "managed_context_id_exposed": false,
+    "pre_consent_grants": 0,
+    "pre_consent_bindings": 0,
+    "pre_consent_events": 0,
+    "pre_consent_runs": 0
+  },
+  "receiver_owned_consent": {
+    "ui_origin": "http://127.0.0.1:4317",
+    "workflow_displayed": "WF-001",
+    "event_type_displayed": "WORKFLOW_READY",
+    "run_limit_displayed": 1,
+    "expiry_displayed": "2026-08-30T12:17:56.342Z",
+    "stop_before_displayed": "COMMIT_ARTIFACT",
+    "explicit_user_authorization_for_required_local_test_actions": true,
+    "approval_executed_in_receiver_ui": true,
+    "decision": "APPROVED"
+  },
+  "grant_summary_at_approval": {
+    "status": "ACTIVE",
+    "event_type": "WORKFLOW_READY",
+    "canonical_url": "http://127.0.0.1:4317/workflows/WF-001",
+    "max_runs": 1,
+    "runs_used": 0,
+    "expires_at": "2026-08-30T12:17:56.342Z",
+    "human_boundary": "COMMIT_ARTIFACT"
+  },
+  "same_task_receipt": {
+    "exact_thread_resolved": true,
+    "enrollment_followup_dispatched": true,
+    "browser_reentry_requested": true,
+    "receipt_matches_grant": true,
+    "raw_task_id_in_host_or_public_response": false
+  },
+  "genuine_stage_a_binding_registration": {
+    "tool": "register_reentry_binding",
+    "registered": true,
+    "grant_status": "ACTIVE",
+    "page_correlation_matched_grant": true,
+    "host_received_only_opaque_binding": true,
+    "opaque_binding_value_recorded": false,
+    "registered_at": "2026-08-30T11:50:02.520Z"
+  },
+  "pre_event_database_counts": {
+    "approved_challenges": 1,
+    "active_unused_grants": 1,
+    "host_bindings": 1,
+    "events": 0,
+    "runs": 0
+  },
+  "sensitive_values_recorded": {
+    "raw_desktop_task_id": false,
+    "opaque_agent_binding": false,
+    "receiver_or_relay_bearer": false,
+    "native_pipe_path": false
+  }
+}

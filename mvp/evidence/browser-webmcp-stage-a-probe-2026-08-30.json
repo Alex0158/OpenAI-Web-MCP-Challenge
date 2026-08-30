@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0",
+  "probe": "chatgpt-desktop-browser-webmcp-stage-a",
+  "probe_run_id": "browser-stage-a-20260830-045629Z",
+  "observed_at": "2026-08-30T04:58:55Z",
+  "environment": {
+    "running_process_path": "/Applications/ChatGPT.app/Contents/MacOS/ChatGPT",
+    "desktop_version": "26.825.41651",
+    "desktop_build": "7345",
+    "process_id": 56136,
+    "process_started_at": "2026-08-30T04:53:32Z",
+    "browser_surface": "ChatGPT Desktop built-in Browser",
+    "permission_state": "not_ui_observed",
+    "effective_site_tools_availability": "runtime_verified"
+  },
+  "official_control": {
+    "url": "https://learn.chatgpt.com/docs/webmcp",
+    "page_loaded": true,
+    "browser_capability_inventory": [
+      "pageAssets",
+      "webmcp"
+    ],
+    "webmcp_available": true,
+    "site_tool_inventory": [
+      "search_openai_docs",
+      "lookup_page",
+      "lookup_context",
+      "navigate_to_page",
+      "generate_custom_guide"
+    ],
+    "observation_source": "browser_runtime_webmcp",
+    "error": null
+  },
+  "local_stage_a": {
+    "url": "http://127.0.0.1:4317/workflows/WF-001",
+    "workflow_id": "WF-001",
+    "state": "INITIAL",
+    "state_version": 1,
+    "artifact": {
+      "id": "continuation_note",
+      "revision": 0,
+      "content": ""
+    },
+    "host_binding": null,
+    "human_boundary": {
+      "id": "COMMIT_ARTIFACT",
+      "agent_callable": false,
+      "committed": false
+    },
+    "page_registration_signal": {
+      "status": "not_used_as_proof",
+      "reason": "Only the agent-side Browser capability and fetched Site Tool inventory establish discovery."
+    },
+    "browser_capability_inventory": [
+      "pageAssets",
+      "webmcp"
+    ],
+    "site_tool_inventory": [
+      "get_workflow_context",
+      "prepare_artifact",
+      "get_reentry_offer",
+      "register_reentry_binding"
+    ],
+    "get_workflow_context": {
+      "observation_source": "browser_runtime_webmcp",
+      "input": {},
+      "outcome": "completed"
+    },
+    "get_reentry_offer": {
+      "observation_source": "browser_runtime_webmcp",
+      "input": {},
+      "outcome": "completed",
+      "result": {
+        "allowed_event_type": "WORKFLOW_READY",
+        "canonical_url": "http://127.0.0.1:4317/workflows/WF-001",
+        "continuation_intent": {
+          "first_action": "READ_CURRENT_STATE",
+          "mode": "OPEN_CANONICAL_PAGE",
+          "required_tool_role": "CONTINUE_ARTIFACT",
+          "stop_before": "COMMIT_ARTIFACT"
+        },
+        "expires_at": "2026-08-30T05:26:29.366Z",
+        "human_boundary": "COMMIT_ARTIFACT",
+        "issuer_origin": "http://127.0.0.1:4317",
+        "key_id": "mvp-local-1",
+        "manifest_id": "rm_TOdhGC8SpeqmvA",
+        "max_runs": 1,
+        "signature": "5i9uc35aUqZHWkRajRTrr8gk2gcv_Xa6byJKLcmk1OI",
+        "workflow_id": "WF-001"
+      }
+    },
+    "server_trace_match": {
+      "matched": true,
+      "manifest_id": "rm_TOdhGC8SpeqmvA",
+      "correlation_id": "corr_bR3M9dxlUCXXnQ",
+      "component": "receiver",
+      "action": "issue_reentry_manifest",
+      "outcome": "completed"
+    }
+  },
+  "verdict": {
+    "official_control": "pass",
+    "q1": "pass",
+    "q1_scope": "The supported Desktop Browser discovered and invoked the fixture's genuine Stage-A page-defined WebMCP Site Tools and returned the signed bounded manifest.",
+    "limitations": [
+      "This isolated probe does not prove Receiver-owned consent or Grant binding for Q2.",
+      "This isolated probe does not prove event-driven exact-context resumption for Q3.",
+      "This isolated probe does not prove resumed Stage-B Browser re-entry or Site Tool invocation for Q4.",
+      "This isolated probe does not prove same-artifact continuation to the human boundary for Q5.",
+      "The specific account, workspace, permission, or rollout condition that made Site Tools available was not independently observed."
+    ]
+  }
+}

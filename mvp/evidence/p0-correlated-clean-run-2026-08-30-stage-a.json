@@ -1,0 +1,52 @@
+{
+  "evidence_type": "genuine_page_bound_webmcp_stage_a",
+  "correlation_id": "corr_web_a4841d405b304c86a30026640a295f1c",
+  "workflow_id": "WF-001",
+  "page_url": "http://127.0.0.1:4317/workflows/WF-001",
+  "transport": "built-in Browser page-bound WebMCP",
+  "prohibited_substitutes_used": [],
+  "initial_context": {
+    "state": "INITIAL",
+    "state_version": 1,
+    "artifact_id": "continuation_note",
+    "artifact_revision": 0,
+    "committed": false,
+    "host_binding_present": false,
+    "human_boundary": "COMMIT_ARTIFACT",
+    "human_boundary_agent_callable": false
+  },
+  "discovered_site_tools": [
+    "get_workflow_context",
+    "prepare_artifact",
+    "get_reentry_offer",
+    "register_reentry_binding"
+  ],
+  "genuine_calls": [
+    "get_workflow_context",
+    "prepare_artifact",
+    "get_reentry_offer"
+  ],
+  "prepared_artifact": {
+    "id": "continuation_note",
+    "revision": 1,
+    "content": "Stage-A artifact prepared through genuine WebMCP in the clean correlated acceptance run."
+  },
+  "reentry_manifest": {
+    "manifest_id": "rm_ZGVXl-elc3QTTA",
+    "signature_present": true,
+    "workflow_id": "WF-001",
+    "canonical_url": "http://127.0.0.1:4317/workflows/WF-001",
+    "allowed_event_types": [
+      "WORKFLOW_READY"
+    ],
+    "max_runs": 1,
+    "human_boundary": "COMMIT_ARTIFACT",
+    "expires_at": "2026-08-30T11:32:54.749Z"
+  },
+  "trace_match": {
+    "issue_reentry_manifest_recorded": true,
+    "manifest_id_matches": true,
+    "correlation_id_matches": true
+  },
+  "q1_verdict": "PASS"
+}

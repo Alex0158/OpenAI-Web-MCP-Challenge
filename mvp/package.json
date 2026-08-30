@@ -1,0 +1,29 @@
+{
+  "name": "webmcp-reentry-p0",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Controlled P0 fixture for validating a WebMCP re-entry workflow.",
+  "scripts": {
+    "start": "node src/server.mjs",
+    "start:h1": "node scripts/h1-command.mjs start",
+    "reset": "node scripts/reset.mjs",
+    "reset:h1": "node scripts/h1-command.mjs reset",
+    "enroll": "node scripts/enroll-fixture.mjs",
+    "enroll:genuine": "node scripts/enroll-genuine-manifest.mjs",
+    "prepare:stage-b": "node scripts/prepare-stage-b.mjs",
+    "setup:h1": "node scripts/h1-command.mjs setup",
+    "probe:app-server": "node scripts/probe-app-server.mjs",
+    "probe:receiver-app-server": "node scripts/probe-receiver-app-server.mjs",
+    "probe:site-tool-lifecycle": "node scripts/site-tool-lifecycle-probe-server.mjs",
+    "trigger": "node scripts/trigger-event.mjs",
+    "trigger:h1": "node scripts/h1-command.mjs trigger",
+    "replay": "node scripts/replay-last-event.mjs",
+    "replay:h1": "node scripts/h1-command.mjs replay",
+    "worker:h2:once": "node scripts/h2-outbox-once.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

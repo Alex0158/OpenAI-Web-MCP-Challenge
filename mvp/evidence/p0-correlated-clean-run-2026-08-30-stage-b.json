@@ -1,0 +1,61 @@
+{
+  "evidence_type": "authenticated_desktop_task_reentry_and_genuine_stage_b_webmcp",
+  "correlation_id": "corr_web_a4841d405b304c86a30026640a295f1c",
+  "workflow_id": "WF-001",
+  "grant_id": "gr_-LqmAAcZpO3WPw",
+  "event_id": "evt_MFQUb0L2_Ytirw",
+  "run_id": "run_NefwhcsLCe28Dg",
+  "delivery": {
+    "signature_verified": true,
+    "authorized_event_type": "WORKFLOW_READY",
+    "exact_private_binding_resolved": true,
+    "same_bound_desktop_task_received_event_delegation": true,
+    "prior_enrollment_receipt_present_in_same_task_history": true,
+    "stage_a_conversation_context_preserved": true,
+    "desktop_followup_dispatched": true,
+    "canonical_browser_reentry_requested": true,
+    "one_event_delegation_observed": true
+  },
+  "reentry": {
+    "page_url": "http://127.0.0.1:4317/workflows/WF-001",
+    "claimed_new_event_opened_browser_tab": true,
+    "page_bound_webmcp_capability_observed": true,
+    "authoritative_state_before_continuation": "READY",
+    "state_version_before_continuation": 2,
+    "artifact_revision_before_continuation": 1,
+    "stage_a_artifact_content_matched": true,
+    "discovered_site_tools": [
+      "get_workflow_context",
+      "continue_artifact"
+    ],
+    "stage_a_tools_absent": true,
+    "commit_tool_absent": true,
+    "prohibited_substitutes_used": []
+  },
+  "continuation": {
+    "site_tool": "continue_artifact",
+    "genuine_page_bound_invocation": true,
+    "artifact_id": "continuation_note",
+    "artifact_revision_after_continuation": 2,
+    "artifact_content": "Stage-A artifact prepared through genuine WebMCP in the clean correlated acceptance run.\n\nStage-B continuation completed after the authenticated WORKFLOW_READY event through the re-entered page's genuine continue_artifact Site Tool. Human commit remains pending.",
+    "state_after_continuation": "READY",
+    "state_version_after_continuation": 2,
+    "human_boundary": "COMMIT_ARTIFACT",
+    "human_boundary_agent_callable": false,
+    "committed": false,
+    "stopped_before_human_boundary": true
+  },
+  "visual_evidence": {
+    "file": "p0-clean-run-stage-b-human-boundary-2026-08-30.jpg",
+    "sha256": "85b38ca5fd7fd937a72ac3f93cac1d555a32614bd3266154b239c8f7746fafa3",
+    "shows_ready_state": true,
+    "shows_artifact_revision_2": true,
+    "shows_masked_opaque_binding": true,
+    "shows_human_commit_control": true,
+    "shows_not_committed": true
+  },
+  "observability_note": "The Receiver adapter records only dispatch-time facts and therefore conservatively reports that it cannot observe the downstream Browser attachment or Site Tool call. This file is the separate downstream Browser verifier record created by the resumed task.",
+  "q3_verdict": "PASS_FOR_ONE_DEDUPLICATED_HAPPY_PATH_DELIVERY",
+  "q4_verdict": "PASS",
+  "q5_verdict": "PASS"
+}

@@ -1,0 +1,34 @@
+{
+  "evidence_type": "controlled_runtime_environment",
+  "captured_at": "2026-08-30T11:08:44Z",
+  "scope": "single-user local P0 technical feasibility run",
+  "desktop_client": {
+    "application": "ChatGPT Desktop",
+    "version": "26.825.41651",
+    "build": "7345",
+    "webmcp_capability_observed": true,
+    "account_workspace_permission_or_rollout_cause_isolated": false
+  },
+  "host": {
+    "operating_system": "macOS 26.5.2",
+    "build": "25F84",
+    "architecture": "arm64",
+    "node": "v26.5.0",
+    "npm": "11.17.0"
+  },
+  "runtime_boundary": {
+    "canonical_url": "http://127.0.0.1:4317/workflows/WF-001",
+    "same_user_local_only": true,
+    "desktop_bridge": "experimental Desktop-bundled Node relay launched from the accepted task context",
+    "relay_directory_mode_in_tested_provisioning": "0700",
+    "relay_socket_mode": "0600",
+    "relay_bearer_recorded": false,
+    "raw_desktop_task_id_recorded": false,
+    "opaque_agent_binding_recorded": false
+  },
+  "immutable_reference_hashes": {
+    "TenderRelay_Complete_Concept_Dossier.md": "1a5801f3a38ae41fa21a1871c657b8967b33a168103158c72dd89b6b2ff3852d",
+    "tenderrelay_architecture_overview.png": "d217f273600929e309164795826969f4a355f61b65cd040f0917940c924df491"
+  },
+  "claim_limit": "This environment can establish current-build local technical composability. It does not establish a public, supported, multi-user, hosted, or production bridge, and it does not independently establish how the Desktop host validates an accepted process context."
+}

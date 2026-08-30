@@ -1,0 +1,107 @@
+{
+  "evidence_type": "independent_runbook_rehearsal_downstream_browser_verifier",
+  "proof_surface": "event_opened_canonical_chatgpt_desktop_browser_tab_with_page_bound_webmcp",
+  "correlation_id": "corr_web_1b87ca99af324572b50f610337c19e2c",
+  "event_id": "evt_bSaKt66OQR--dw",
+  "run_id": "run_RUdPbP3MP2mOLg",
+  "workflow_id": "WF-001",
+  "canonical_url": "http://127.0.0.1:4317/workflows/WF-001",
+  "event_delivery_observation": {
+    "event_received_in_bound_desktop_task": true,
+    "newest_event_opened_canonical_tab_claimed": true,
+    "claimed_user_tab_id": "27",
+    "fresh_webmcp_capability_obtained": true
+  },
+  "tool_inventory": {
+    "source": "webmcp.fetchTools().description()",
+    "names": [
+      "get_workflow_context",
+      "continue_artifact"
+    ],
+    "exact_expected_inventory": true,
+    "stage_a_tools_absent": true,
+    "commit_tool_absent": true,
+    "tool_count": 2
+  },
+  "genuine_calls": {
+    "get_workflow_context_before": {
+      "state": "READY",
+      "state_version": 2,
+      "artifact": {
+        "id": "continuation_note",
+        "content": "Independent runbook rehearsal prepared through genuine Stage-A WebMCP.",
+        "revision": 1
+      },
+      "host_binding_present": true,
+      "host_binding_value_recorded": false,
+      "human_boundary": {
+        "id": "COMMIT_ARTIFACT",
+        "committed": false,
+        "agent_callable": false
+      },
+      "updated_at": "2026-08-30T11:50:31.888Z"
+    },
+    "continue_artifact": {
+      "input": {
+        "content": "Independent runbook rehearsal prepared through genuine Stage-A WebMCP.\n\nResumed by the authenticated WORKFLOW_READY event, refreshed authoritative READY state, and continued through genuine Stage-B WebMCP. Human commit remains pending.",
+        "expected_state_version": 2,
+        "expected_revision": 1
+      },
+      "result": {
+        "state": "READY",
+        "state_version": 2,
+        "artifact_id": "continuation_note",
+        "artifact_revision": 2,
+        "artifact_content_exact": true,
+        "committed": false,
+        "human_boundary": "COMMIT_ARTIFACT",
+        "human_boundary_agent_callable": false,
+        "updated_at": "2026-08-30T11:51:20.977Z"
+      }
+    },
+    "get_workflow_context_after": {
+      "state": "READY",
+      "state_version": 2,
+      "artifact_revision": 2,
+      "artifact_content_length": 235,
+      "available_site_tools": [
+        "get_workflow_context",
+        "continue_artifact"
+      ],
+      "committed": false,
+      "human_boundary": "COMMIT_ARTIFACT",
+      "human_boundary_agent_callable": false
+    }
+  },
+  "dispatch_vs_downstream_observation": {
+    "adapter_dispatch_browser_flags_are_conservative": true,
+    "adapter_reported_browser_attached": false,
+    "adapter_reported_genuine_site_tools_available": false,
+    "separate_downstream_browser_observed_attachment_and_genuine_calls": true
+  },
+  "substitutes_used_for_stage_b_calls": {
+    "rest": false,
+    "dom_automation": false,
+    "generic_mcp": false,
+    "headless_browser": false
+  },
+  "visible_human_boundary": {
+    "screenshot": "runbook-rehearsal-stage-b-human-boundary-2026-08-30.jpg",
+    "sha256": "0a7e68f479f26e731ad841a9fa9a540812be08e76767a62d40be8a3de0a7dafb",
+    "format": "JPEG",
+    "dimensions": "1062x934",
+    "masked_binding_visible": true,
+    "ready_state_visible": true,
+    "revision_2_visible": true,
+    "two_stage_b_tools_visible": true,
+    "not_committed_visible": true,
+    "human_commit_control_visible": true,
+    "human_commit_clicked": false
+  },
+  "sensitive_values_recorded": {
+    "raw_desktop_task_id": false,
+    "opaque_agent_binding": false,
+    "receiver_or_relay_bearer": false,
+    "native_pipe_path": false
+  }
+}

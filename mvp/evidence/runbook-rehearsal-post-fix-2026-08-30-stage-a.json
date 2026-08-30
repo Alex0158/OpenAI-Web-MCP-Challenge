@@ -1,0 +1,84 @@
+{
+  "evidence_type": "independent_runbook_rehearsal_genuine_stage_a",
+  "proof_surface": "page_bound_webmcp_in_chatgpt_desktop_builtin_browser",
+  "correlation_id": "corr_web_1b87ca99af324572b50f610337c19e2c",
+  "workflow_id": "WF-001",
+  "canonical_url": "http://127.0.0.1:4317/workflows/WF-001",
+  "tool_inventory": {
+    "source": "webmcp.fetchTools().description()",
+    "names": [
+      "get_workflow_context",
+      "prepare_artifact",
+      "get_reentry_offer",
+      "register_reentry_binding"
+    ],
+    "exact_expected_inventory": true,
+    "tool_count": 4
+  },
+  "genuine_calls": {
+    "initial_get_workflow_context": {
+      "state": "INITIAL",
+      "state_version": 1,
+      "artifact": {
+        "id": "continuation_note",
+        "content": "",
+        "revision": 0
+      },
+      "host_binding": null,
+      "human_boundary": {
+        "id": "COMMIT_ARTIFACT",
+        "committed": false,
+        "agent_callable": false
+      },
+      "updated_at": "2026-08-30T11:45:24.536Z"
+    },
+    "prepare_artifact": {
+      "input": {
+        "content": "Independent runbook rehearsal prepared through genuine Stage-A WebMCP.",
+        "expected_revision": 0
+      },
+      "result": {
+        "state": "INITIAL",
+        "state_version": 1,
+        "artifact_revision": 1,
+        "artifact_content_exact": true,
+        "committed": false,
+        "updated_at": "2026-08-30T11:47:50.596Z"
+      }
+    },
+    "get_reentry_offer": {
+      "result": {
+        "allowed_event_type": "WORKFLOW_READY",
+        "canonical_url": "http://127.0.0.1:4317/workflows/WF-001",
+        "continuation_intent": {
+          "first_action": "READ_CURRENT_STATE",
+          "mode": "OPEN_CANONICAL_PAGE",
+          "required_tool_role": "CONTINUE_ARTIFACT",
+          "stop_before": "COMMIT_ARTIFACT"
+        },
+        "correlation_id": "corr_web_1b87ca99af324572b50f610337c19e2c",
+        "expires_at": "2026-08-30T12:17:56.342Z",
+        "human_boundary": "COMMIT_ARTIFACT",
+        "issuer_origin": "http://127.0.0.1:4317",
+        "key_id": "mvp-local-1",
+        "manifest_id": "rm_0epED86UgSBjtw",
+        "max_runs": 1,
+        "signature": "mKynLa5WRSLEJ8zPulLBruantc5S8hW4aJUWe1AUyNo",
+        "workflow_id": "WF-001"
+      },
+      "same_object_supplied_to_receiver": true
+    }
+  },
+  "substitutes_used_for_stage_a_calls": {
+    "rest": false,
+    "dom_automation": false,
+    "generic_mcp": false,
+    "headless_browser": false
+  },
+  "sensitive_values_recorded": {
+    "raw_desktop_task_id": false,
+    "opaque_agent_binding": false,
+    "receiver_or_relay_bearer": false,
+    "native_pipe_path": false
+  }
+}

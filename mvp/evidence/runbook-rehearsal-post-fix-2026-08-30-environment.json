@@ -1,0 +1,47 @@
+{
+  "evidence_type": "independent_runbook_rehearsal_environment",
+  "captured_at": "2026-08-30T12:03:35Z",
+  "execution_boundary": "same-machine_same-user_local_chatgpt_desktop",
+  "desktop_client": {
+    "application": "/Applications/ChatGPT.app",
+    "version": "26.825.41651",
+    "build": "7345",
+    "browser_surface": "ChatGPT Desktop built-in Browser",
+    "page_bound_webmcp_observed_in_stage_a": true,
+    "page_bound_webmcp_observed_in_stage_b": true,
+    "effective_site_tools_capability_observed": true,
+    "specific_account_workspace_permission_or_rollout_cause_isolated": false
+  },
+  "local_runtime": {
+    "codex_cli": "0.144.1",
+    "fixture_node": "v24.13.1",
+    "desktop_bundled_node": "v24.19.0",
+    "receiver_adapter": "desktop-task",
+    "trusted_context_capture_configured": true,
+    "canonical_url": "http://127.0.0.1:4317/workflows/WF-001"
+  },
+  "relay_boundary": {
+    "classification": "undocumented_task_launched_desktop_bundled_node_relay",
+    "fixed_task_selected_from_trusted_process_context": true,
+    "fixed_canonical_url": true,
+    "generic_tool_forwarding_available": false,
+    "socket_mode": "0600",
+    "tested_parent_directory_mode": "0700",
+    "relay_client_response_limit_bytes": 65536,
+    "compact_identity_result_below_client_limit": true,
+    "identity_contract": "single_native_json_text_thread.id",
+    "task_content_forwarded": false,
+    "code_signature_independently_verified": false
+  },
+  "immutable_reference_hashes": {
+    "TenderRelay_Complete_Concept_Dossier.md": "1a5801f3a38ae41fa21a1871c657b8967b33a168103158c72dd89b6b2ff3852d",
+    "tenderrelay_architecture_overview.png": "d217f273600929e309164795826969f4a355f61b65cd040f0917940c924df491"
+  },
+  "sensitive_values_recorded": {
+    "raw_desktop_task_id": false,
+    "opaque_agent_binding": false,
+    "receiver_or_relay_bearer": false,
+    "native_pipe_or_socket_path": false
+  },
+  "claim_limit": "This is a current-build local feasibility environment, not a documented production bridge or another-machine clean-room environment."
+}

@@ -1,0 +1,25 @@
+{
+  "probe": "app-server-fresh-process-resume",
+  "proof_classification": "supported_app_server_q3_only",
+  "environment": {
+    "codex_version": "codex-cli 0.144.1",
+    "node_version": "v26.5.0",
+    "model": "gpt-5.6-terra"
+  },
+  "thread_id": "[REDACTED_PRIVATE_RUNTIME_ID]",
+  "first_turn_id": "[REDACTED_PRIVATE_RUNTIME_ID]",
+  "second_turn_id": "[REDACTED_PRIVATE_RUNTIME_ID]",
+  "exact_thread_resumed": true,
+  "first_turn_output": "STAGE_A_CONTEXT_MARKER_WF_001",
+  "first_turn_output_matches_marker": true,
+  "stage_a_marker_persisted_before_disconnect": true,
+  "receipt_injection_acknowledged": true,
+  "stage_a_marker_present_after_fresh_process_resume": true,
+  "continuation_turn_completed": true,
+  "continuation_output": "STAGE_A_CONTEXT_MARKER_WF_001|gr_app_server_probe",
+  "continuation_output_recalled_unrestated_marker_and_receipt": true,
+  "browser_contract_available": false,
+  "genuine_site_tools_proven": false,
+  "verdict": "Q3 primitive and instruction continuity pass independently; Q4 is not addressed by App Server.",
+  "pass": true
+}
