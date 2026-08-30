@@ -1,5 +1,20 @@
 # D4 — Desktop Restart with an Independent Receiver (H2b)
 
+**Role:** Preserved optional compatibility experiment runbook  
+**Status:** Frozen after the first formal no-event arm was `INCONCLUSIVE`; not the current
+architecture gate  
+**Activation rule:** Rerun only if an accepted local connector or relaunch topology makes
+same-machine Desktop restart recovery material
+
+> This protocol and its repaired harness remain valuable evidence assets. The current
+> build failed both standalone App Server Browser/WebMCP join variants: the cold thread had no
+> Desktop in-app Browser session, and exact warm resume returned an active-writer rejection for
+> the supplied task. The warm public JSON does not independently prove writer ownership or priming.
+> App selection is the current gate. A published Workspace Agent is only a conditional hosted
+> topology probe when entitlement and selected-app requirements justify it. Scheduled Heartbeat
+> remains a bounded fallback experiment, not the core mechanism or a production transport.
+> Preserve this runbook without treating its uncompleted arms as required current work.
+
 ## Purpose
 
 This runbook tests one narrow, app-neutral claim: while an independently supervised Receiver

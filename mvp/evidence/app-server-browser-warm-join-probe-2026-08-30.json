@@ -1,0 +1,20 @@
+{
+  "probe": "app-server-desktop-browser-webmcp-warm-join",
+  "proof_classification": "current_environment_empirical_warm_join_probe",
+  "probe_topology": "standalone_app_server_resuming_preexisting_desktop_task_and_iab",
+  "probe_target": "official_openai_webmcp_documentation_control_page",
+  "environment": {
+    "codex_version": "codex-cli 0.151.0-alpha.7.1",
+    "node_version": "v26.5.0",
+    "model": "gpt-5.6-terra",
+    "app_server_source": "chatgpt_desktop_bundle"
+  },
+  "desktop_thread_id_sha256": "9a8d6effec1cc57aaec0ca24462dba28e8ad85f90a7a981f3514041e01548c71",
+  "context_marker_sha256": "c45c3eb381b9cedc58fde9cdda1c58ff6289ddda5c170ebd171210243c96c081",
+  "server_request_methods": [],
+  "failure_classification": "active-writer-conflict",
+  "supplied_desktop_task_archived": false,
+  "pass": false,
+  "verdict": "FAIL_ACTIVE_WRITER_CONFLICT: thread/resume reported that the supplied task already had an active writer; the public probe does not identify the writer owner.",
+  "error": "Error: thread/resume: thread [desktop-thread-redacted] already has an active writer\n    at AppServerClient.handleLine (file://$HOME/OpenAI-WebMCP/WebMCP_Challenge/mvp/src/adapters/app-server-client.mjs:108:24)\n    at Interface.<anonymous> (file://$HOME/OpenAI-WebMCP/WebMCP_Challenge/mvp/src/adapters/app-server-client.mjs:20:42)\n    at Interface.emit (node:events:509:20)\n    at [_onLine] [as _onLine] (node:internal/readline/interface:465:12)\n    at [_normalWrite] [as _normalWrite] (node:internal/readline/interface:647:22)\n    at Socket.ondata (node:internal/readline/interface:263:23)\n    at Socket.emit (node:events:509:20)\n    at addChunk (node:internal/streams/readable:568:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:519:3)\n    at Readable.push (node:internal/streams/readable:399:5)"
+}

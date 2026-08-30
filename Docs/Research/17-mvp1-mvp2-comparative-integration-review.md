@@ -1,7 +1,8 @@
 # MVP1 and MVP2 Comparative Integration Review
 
 **Role:** SUPPORTING implementation, evidence, and integration review  
-**Status:** Current branch review; no app-selection, architecture, or merge decision is promoted to Core by this document alone  
+**Status:** Preserved named-commit branch review; selective-reuse findings remain useful, while
+current architecture sequencing is owned by Core/00 and the later Research 18–20 evidence chain  
 **Reviewed:** 2026-08-30, Europe/London  
 **Review host:** `main` at `b2e6f97df7f941583b9029016a9b37b48c530ee8`  
 **MVP1 validated P0-H2 mechanism/evidence baseline:** `1acf3e28c46cc5f58af27122d6636d10c5155472`  
@@ -9,6 +10,9 @@
 **MVP2 source:** `origin/codex/mvp2-tenderrelay` at `fab956e3a64c3bc127016266e45441c844e6906d`  
 **Earlier reviewed MVP2 snapshot:** `ccbd2427fb00aafdcb0e2ea37ab2a3b46079ddb6`  
 **Current common base:** `46b9549302160dc148bb9bcce95a9c76643e1002`
+
+> This review remains authoritative only for the named snapshots and its bounded selective-reuse
+> analysis. It does not describe the current `main` tip or control the next transport experiment.
 
 ## Executive judgment
 
@@ -75,9 +79,9 @@ that work for review, so merging is not required to compare or learn from it.
 
 ### 2.1 MVP1
 
-- **Later D4 update after the reviewed host SHA:** the current deterministic suite passes
-  **114/114** tests, including the additive lifecycle, contamination-latch, and
-  automation-history scanner controls. See the
+- **Later updates after the reviewed host SHA:** the D4-hardening checkpoint passed
+  **114/114** tests; the current suite passes **118/118** after adding four App Server join-probe
+  evidence controls. See the
   [current status](../Core/00-current-status.md) and
   [provisional D4 attempt record](../../mvp/evidence/d4-h2b-first-formal-no-event-inconclusive-2026-08-30.md).
 - The current evidence package preserves bounded P0, H0b, H1, H2a, and H2 results.
@@ -304,7 +308,8 @@ After the applicable gate:
 2. keep product assets under the selected app, protocol/SDK assets under the decided versioned
    mechanism boundary, and transport code behind the Agent Adapter boundary;
 3. fix the P1 findings relevant to the imported class before any live or deployment claim;
-4. run the current MVP1 mechanism suite, which contains 114 tests at the later D4 update, plus the
+4. run the current MVP1 mechanism suite, which contains 118 tests after the later D4 and App Server
+   join-probe evidence-control updates, plus the
    applicable protocol, Host-Adapter conformance, and MVP2 scenario tests;
 5. capture frozen evidence appropriate to the class, including a genuine WebMCP and Agent
    trace for any runtime or demo claim; and
@@ -328,10 +333,21 @@ or ideas:
 5. investigate direct queue as a narrowly classified current-build adapter, while measuring
    actual wake rather than treating enqueue as completion.
 
-The existing order remains evidence-driven: run the already specified D4/H2b restart test,
-select the app with Eddie, run selected-app product and WebMCP controls, then select and harden
-only the transport that the app actually needs. A further direct-queue wake probe is optional
-adapter research, not a prerequisite for those gates.
+The current order is maintained in the
+[canonical status](../Core/00-current-status.md). Research 18 retains the Receiver-ledger and
+replaceable-wake-adapter frame, but its prospective App Server step is superseded by later
+runtime evidence. Both standalone App
+Server Browser-join variants have since failed on the tested current build: the cold owned thread
+had no Desktop in-app Browser session, and exact warm resume returned an active-writer rejection.
+Those tested standalone Desktop joins are removed from current selection unless a materially
+different supported contract or topology appears. Select the app with Eddie, run
+selected-app product and WebMCP controls, and harden only the transport that the app actually
+needs. Evaluate a published Workspace Agent only as a conditional distinct hosted runtime when
+entitlement and the selected app justify it; require its own Browser/WebMCP evidence boundary.
+Keep D4 frozen as optional compatibility evidence unless the selected local topology makes it
+material. Scheduled Heartbeat remains a bounded fallback experiment, not the core mechanism or a
+production transport. A further direct-queue wake
+probe remains optional adapter research, not a prerequisite for those gates.
 
 ## 10. Nonclaims
 

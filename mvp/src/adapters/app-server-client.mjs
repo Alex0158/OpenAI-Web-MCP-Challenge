@@ -11,6 +11,7 @@ export class AppServerClient {
     this.notifications = [];
     this.waiters = new Set();
     this.stderr = [];
+    this.serverRequests = [];
   }
 
   async connect() {
@@ -124,6 +125,7 @@ export class AppServerClient {
       return;
     }
     if (message.method && message.id !== undefined) {
+      this.serverRequests.push(message.method);
       this.write({
         id: message.id,
         error: { code: -32601, message: `Client request is unsupported in this probe: ${message.method}` },

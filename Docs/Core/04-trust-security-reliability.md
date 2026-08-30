@@ -1,15 +1,15 @@
 # WebMCP Re-entry Workflow — Trust, Security, and Reliability
 
 **Role:** CANONICAL authority, security, and failure semantics  
-**Status:** Domain-neutral MVP control baseline  
+**Status:** Target domain-neutral trust and reliability baseline; bounded P0/H1/H2 evidence exists, while production reliability remains unverified.  
 **Last updated:** 2026-08-30
 
 ## 1. Security objective
 
-Permit one website-originated business event to resume one user-approved Agent workflow
-without giving the website arbitrary prompting authority, platform credentials,
-cross-workflow access, or permission to cross the selected application's human decision
-boundary.
+Permit one website-originated business event to create one bounded authenticated pending
+delivery for a user-approved Agent workflow, while keeping Agent activation, page authority,
+platform credentials, cross-workflow access, and the selected application's human decision
+boundary separate.
 
 ## 2. Protected assets
 
@@ -84,6 +84,10 @@ The signature is detached from the JSON body. The provisional mechanism-level he
 - WebMCP-Reentry-Timestamp: signed delivery timestamp;
 - WebMCP-Reentry-Signature: signature or MAC over timestamp + "." + exact raw request body.
 
+These are target header names, not the frozen P0 wire contract. P0 uses
+`X-Event-Timestamp` and `X-Event-Signature` with one pinned HMAC secret and no key-ID
+header.
+
 Verification requires bounded clock skew, exact raw bytes until validation completes, and
 constant-time comparison when a MAC is used.
 
@@ -135,37 +139,41 @@ The human decision produces a receipt correlated with the run and artifact.
 | Login expires or MFA appears | User-mediated recovery only | Pause without bypass |
 | Human and Agent edit concurrently | Optimistic revision check and visible conflict | Preserve both versions |
 | Revocation races with delivery | Atomic grant status and run reservation rule | Deterministic visible outcome |
-| Receiver is offline | Durable queue, retry budget, expiry, dead letter | No silent loss or action |
+| Receiver unavailable before durable commit | Host outbox retries; Receiver acknowledges only after durable commit; expiry and dead letter are target controls | No false acknowledgement, silent loss, or action |
 | Run loops or spends unexpectedly | One event, one reserved run, timeout, action budget | Cancel and explain |
 | Sensitive data leaks into event or logs | Field allowlist, data minimization, redaction | Reject disallowed data |
 
 ## 10. Reliability model
 
-Delivery is at least once. Effects are exactly once from the user's perspective through
-idempotency and state validation.
+**TARGET:** Delivery is durable at least once, and Host effects converge idempotently to one
+result through state validation. The project does not claim distributed exactly-once
+delivery.
 
-Required observable states:
+Target observable records remain separate:
 
-- event created, dispatched, accepted, rejected, or dead-lettered;
-- run queued, resuming, opening page, verifying, continuing, awaiting human, completed, or failed;
+- event accepted, rejected, or expired;
+- delivery pending, leased, retryable, acknowledged, or dead-lettered;
+- wake attempt queued, dispatched, failed, or coalesced;
+- Host effect not applied or applied;
+- run resuming, opening page, verifying, continuing, awaiting human, completed, or failed;
 - grant active, expired, revoked, or exhausted;
 - artifact current, conflicted, approved, rejected, or committed.
 
 Every transition records actor, time, correlation ID, reason, and previous state.
 
-### Current P0 reliability boundary
+### Current additive evidence boundary
 
-The clean 2026-08-30 run proves one authenticated happy-path dispatch and duplicate
+The clean historical P0 run proves one authenticated happy-path dispatch and duplicate
 suppression: one event produced one run and exact replay produced no second run or artifact
-write. It does not prove the general reliability model above.
+write. It does not prove the target reliability model above.
 
 In particular:
 
 - the fixture consumes the event and run budget before adapter dispatch and has no
   crash-recovery retry for a failed dispatch;
-- the Grant is persisted as `ACTIVATING` before the enrollment follow-up and becomes
-  `ACTIVE` after that dispatch returns, so an exceptionally fast receipt turn could race
-  binding registration; the observed clean run did not hit this timing window; and
+- the frozen P0 path persists the Grant as `ACTIVATING` before the enrollment follow-up and
+  has no crash-recovery contract for that dual-write sequence; the later H2 spike tests a
+  separate additive durable-enrollment design rather than silently changing P0; and
 - a first independent rehearsal failed after run reservation because the relay forwarded a
   `read_thread` result larger than its 64 KiB client limit. The corrected trusted relay now
   validates the single observed `thread.id` contract, returns only a compact identity proof,
@@ -175,9 +183,24 @@ In particular:
 - the current Desktop relay is an undocumented same-user local bridge without a supported
   production lifecycle contract.
 
-Therefore, current evidence supports **one deduplicated successful delivery**, not a general
-claim of crash-recoverable exactly-once effects, production-safe enrollment timing, or
-durable external delivery.
+H1 adds one durable `PENDING` delivery across a Receiver restart and one effect-backed
+acknowledgement-loss retry. It does not implement a delivery claim lease or visibility
+timeout.
+
+H2 adds a crash-recoverable enrollment outbox with stable dispatch identity, leases, and an
+idempotent synthetic SQLite destination. It does not prove delivery to a real Desktop task,
+hosted Agent, or production connector, and its one-shot worker is not a supervised daemon.
+
+D4 remains `INCONCLUSIVE` and supplies no Desktop restart continuity evidence. Therefore,
+current evidence supports bounded additive mechanism and service-contract claims, not a
+general claim of production-safe enrollment, durable external Agent delivery, supported
+wake, or distributed exactly-once effects.
+
+The standalone App Server is also not a current Desktop wake path: an App-Server-owned
+thread had no built-in Browser backend, while exact warm resume returned an active-writer
+rejection for the supplied task. The warm public JSON does not independently prove writer
+ownership or the primed Browser state. Neither failure is repaired
+by weakening the Browser requirement or substituting another execution surface.
 
 ## 11. Transactional delivery
 

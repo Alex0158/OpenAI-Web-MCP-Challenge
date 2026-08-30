@@ -64,8 +64,22 @@ development and contract testing but does not by itself prove Desktop task resum
 Follow [`mvp/RUNBOOK.md`](mvp/RUNBOOK.md) for the bounded genuine-WebMCP P0 procedure and
 [`mvp/H1_RUNBOOK.md`](mvp/H1_RUNBOOK.md) for the scheduled-pull experiment.
 
-The current full deterministic suite contains 88 passing tests. Frozen historical evidence
-retains the test counts observed when each acceptance package was captured.
+The current full deterministic suite contains 118 passing tests. Frozen historical evidence
+retains the test counts observed when each acceptance package was captured, including the
+88-test H2-era full-suite result.
+
+Both standalone Codex App Server Browser-join arms failed on the tested current build. The cold
+App-Server-owned thread resumed exactly, but the Browser selector returned `iab-unavailable`
+before page access; that signal does not identify which precondition was absent. The warm arm
+returned an active-writer rejection for the exact task supplied
+by the controlled Desktop-priming step. These results reject both tested standalone App Server
+Desktop joins and remove that route from current selection unless a materially different supported
+contract or topology appears; they do not reject App Server thread control outside those tested
+joins. App selection is the current gate. A published Workspace Agent is a
+conditional distinct hosted-topology probe only when entitlement and the selected app justify it;
+it must carry its own Browser/WebMCP evidence boundary. Scheduled Heartbeat remains a bounded
+fallback experiment, not the core mechanism or a production transport. The preserved D4
+Desktop-restart harness remains optional compatibility evidence.
 
 ## Evidence
 
@@ -75,21 +89,24 @@ retains the test counts observed when each acceptance package was captured.
 - [`mvp/evidence/h1-event-gated-scheduled-reentry-2026-08-30-verdict.md`](mvp/evidence/h1-event-gated-scheduled-reentry-2026-08-30-verdict.md) — event-gated scheduled continuation and idempotency.
 - [`mvp/evidence/h2a-cold-browser-runtime-reentry-2026-08-30-verdict.md`](mvp/evidence/h2a-cold-browser-runtime-reentry-2026-08-30-verdict.md) — cold Browser-runtime recovery.
 - [`mvp/evidence/h2-durable-enrollment-service-contract-2026-08-30-verdict.md`](mvp/evidence/h2-durable-enrollment-service-contract-2026-08-30-verdict.md) — crash-recoverable enrollment service-contract pass.
+- [`mvp/evidence/app-server-browser-join-probe-2026-08-30.json`](mvp/evidence/app-server-browser-join-probe-2026-08-30.json) — failed cold App Server/Desktop Browser join (`iab-unavailable`).
+- [`mvp/evidence/app-server-browser-warm-join-probe-2026-08-30.json`](mvp/evidence/app-server-browser-warm-join-probe-2026-08-30.json) — failed exact warm join (active-writer rejection).
 - [`mvp/evidence/README.md`](mvp/evidence/README.md) — complete evidence index and redaction boundary.
 
 ## Start here
 
 1. [`Docs/README.md`](Docs/README.md) — documentation map, authority, and maintenance rules.
-2. [`Docs/Core/00-current-status.md`](Docs/Core/00-current-status.md) — current truth, phase, assumptions, and next gate.
-3. [`Docs/Core/01-product-definition.md`](Docs/Core/01-product-definition.md) — concept, mechanism, application boundary, and claim boundary.
-4. [`Docs/Core/02-product-requirements.md`](Docs/Core/02-product-requirements.md) — domain-neutral workflow behavior and acceptance criteria.
-5. [`Docs/Core/03-system-design.md`](Docs/Core/03-system-design.md) — reusable architecture, lifecycle, contracts, and integration slots.
-6. [`Docs/Core/04-trust-security-reliability.md`](Docs/Core/04-trust-security-reliability.md) — authority, controls, and failure semantics.
-7. [`Docs/Core/05-validation-and-evidence.md`](Docs/Core/05-validation-and-evidence.md) — proof matrix and evidence gates.
-8. [`Docs/Core/06-mvp-and-demo.md`](Docs/Core/06-mvp-and-demo.md) — demo-app selection, challenge scope, build order, and proof rhythm.
-9. [`Docs/Core/07-p0-technical-validation-mvp.md`](Docs/Core/07-p0-technical-validation-mvp.md) — frozen technical-validation contract and Q1–Q5 proof boundary.
-10. [`Docs/Scenarios/README.md`](Docs/Scenarios/README.md) — concrete examples that do not select the final application.
-11. [`Docs/Knowledge/README.md`](Docs/Knowledge/README.md) — cross-layer priority model, high-value register, source reconciliation, and thread/Memory distillation.
+2. [`Docs/Core/08-competition-thesis-and-positioning.md`](Docs/Core/08-competition-thesis-and-positioning.md) — single-document competition thesis, core value, positioning, judging posture, and claim hierarchy.
+3. [`Docs/Core/00-current-status.md`](Docs/Core/00-current-status.md) — current truth, phase, assumptions, and next gate.
+4. [`Docs/Core/01-product-definition.md`](Docs/Core/01-product-definition.md) — concept, mechanism, application boundary, and claim boundary.
+5. [`Docs/Core/02-product-requirements.md`](Docs/Core/02-product-requirements.md) — domain-neutral workflow behavior and acceptance criteria.
+6. [`Docs/Core/03-system-design.md`](Docs/Core/03-system-design.md) — reusable architecture, lifecycle, contracts, and integration slots.
+7. [`Docs/Core/04-trust-security-reliability.md`](Docs/Core/04-trust-security-reliability.md) — authority, controls, and failure semantics.
+8. [`Docs/Core/05-validation-and-evidence.md`](Docs/Core/05-validation-and-evidence.md) — proof matrix and evidence gates.
+9. [`Docs/Core/06-mvp-and-demo.md`](Docs/Core/06-mvp-and-demo.md) — demo-app selection, challenge scope, build order, and proof rhythm.
+10. [`Docs/Core/07-p0-technical-validation-mvp.md`](Docs/Core/07-p0-technical-validation-mvp.md) — frozen technical-validation contract and Q1–Q5 proof boundary.
+11. [`Docs/Scenarios/README.md`](Docs/Scenarios/README.md) — concrete examples that do not select the final application.
+12. [`Docs/Knowledge/README.md`](Docs/Knowledge/README.md) — cross-layer priority model, high-value register, source reconciliation, and thread/Memory distillation.
 
 ## Source-of-truth hierarchy
 

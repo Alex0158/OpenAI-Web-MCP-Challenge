@@ -1,7 +1,8 @@
 # Review 05 Adjudication and P1 Trust/Delivery Plan
 
 **Role:** SUPPORTING architecture and security research  
-**Status:** Active risk disposition; additive P1 plan, not a rewrite of P0 evidence  
+**Status:** Partially superseded risk disposition and retained P1 test library; ADR-0005 and
+Research 18 control the later enrollment and wake-adapter updates  
 **Observed:** 2026-08-30  
 **Scope:** Independent adjudication of Research 05, current P0 correctness findings, and the
 minimum trust/delivery seam required before a public production-style claim
@@ -36,7 +37,14 @@ event across Receiver process restart, one genuine Host WebMCP effect, lost-ackn
 idempotency, exact event replay, and final completion through the genuine Inbox
 acknowledgement tool. This narrows current-build R-02 and local effect-idempotency risk. It
 does not resolve R-01 remote ingress, separate trust domains, public session/origin identity,
-crash-safe enrollment, long-window platform durability, or production delivery operations.
+long-window platform durability, or production delivery operations.
+
+The later H2 spike closes the historical enrollment response-loss gap at the bounded synthetic
+service-contract level. It does not prove a real Desktop or hosted receipt destination,
+production worker supervision, key lifecycle, or multi-tenant isolation. Research 18 further
+separates the Receiver delivery ledger from the replaceable wake adapter and freezes D4 as an
+optional local-topology compatibility test. Those later sources supersede this document's old
+sequencing, not its retained P1 trust and failure-injection gates.
 
 ## 1. Verified current findings
 
@@ -53,13 +61,15 @@ crash-safe enrollment, long-window platform durability, or production delivery o
 | Human commit carries no expected reviewed revision | Source audit | In-method race guard exists; stale-review protection remains a P1 requirement |
 | Temporal fields accepted malformed, coercible, or overlong values | Runtime/source test | Canonical timestamp and manifest-horizon guards fixed and regression-tested |
 | Consent and commit rely on spoofable fixture headers | Current HTTP source | Remains a public-demo security gap |
-| No durable Host outbox or Receiver dispatch queue | Current source | Remains a crash-recovery gap |
+| No durable Host outbox | Current source | Remains a crash-recovery gap for authoritative Host transition and event intent |
+| Receiver delivery durability is incomplete | H1 has durable pending event deliveries and effect-backed acknowledgement; H2 has a leased enrollment-receipt outbox | H1 event delivery still lacks claim leases, visibility timeout, backoff, and dead-letter semantics; H2 does not prove the real Agent destination |
 | Grant has no revoke/replace lifecycle | Current schema and routes | Remains a lifecycle gap |
 | Public workflow response returns the full opaque binding | Current source | Must be removed from public/P1 response surfaces |
 | Fixed development keys and broad local file modes exist | Current config and runtime artifacts | Acceptable only inside the controlled fixture |
 
-The corrected P0 contract suite passed 37 tests before H1; the current combined P0 and H1
-suite passes 59 tests. The lifecycle fix also passed a
+The corrected P0 contract suite passed 37 tests before H1, and the historical combined P0 and
+H1 suite passed 59 tests. Those are scoped checkpoint counts rather than the current full-suite
+total. The lifecycle fix also passed a
 [genuine same-document Browser test](../../mvp/evidence/site-tool-lifecycle-probe-2026-08-30.json):
 after authoritative state changed from `INITIAL` to `READY`, the old Stage-A handle became
 stale and the Browser exposed only `get_workflow_context` and `continue_artifact`.
@@ -132,10 +142,11 @@ Selected Agent transport/runtime
     -> current Site Tools
 ~~~
 
-For H1, the selected provisional transport is a same-chat scheduled pull from a narrow
-Receiver Inbox page. The schedule is the wake; the accepted event is the authorization gate.
-The Inbox must not carry Host business truth. Deployment may combine processes for this
-bounded experiment only if Receiver and Host authority, durable state, and failure behavior
+For the historical H1 experiment, the selected provisional transport was a same-chat scheduled
+pull from a narrow Receiver Inbox page. The schedule was the wake; the accepted event was the
+authorization gate. The Inbox did not carry Host business truth. This remains bounded fallback
+evidence, not the core mechanism or a production transport. Deployment may combine processes for
+such a bounded experiment only if Receiver and Host authority, durable state, and failure behavior
 remain separately testable.
 
 ## 6. Minimum lifecycle
@@ -255,9 +266,16 @@ Work that must wait for the selected app:
 P0 remains a valid controlled composability proof. It is not a production-security or
 distributed-delivery proof.
 
-H0b and bounded H1 have passed on the current build. The immediate technical priority is no
-longer another local happy path; it is to test platform durability and select a production
-transport only after the demo application's latency, availability, security, and economic
-requirements are known. The enrollment response-loss gap remains explicit: the current
-fixture cannot recover a one-time Inbox capability after approval if its delivery is lost.
-No demo application or production topology is selected by this document.
+H0b and bounded H1 have passed on the current build, and H2 has closed the enrollment
+response-loss gap against a separate synthetic durable destination. Both standalone App Server
+Browser-join variants have now failed on the tested current build: cold acquisition had no
+Desktop in-app Browser, and exact warm resume returned an active-writer rejection. These results
+remove both tested standalone Desktop joins from current selection unless a materially different
+supported contract or topology appears. App selection is the current gate. A
+published Workspace Agent is a conditional distinct hosted-runtime probe only when entitlement
+and selected-app requirements justify it, with its own Browser/WebMCP evidence boundary. Scheduled
+Heartbeat remains a bounded fallback experiment, not the core mechanism or a production transport.
+Preserve D4 as optional compatibility evidence and rerun it only if a selected local connector or
+relaunch topology makes Desktop restart recovery material. Select a production transport only
+after the demo application's latency, availability, security, administration, and economic
+requirements are known. No demo application or production topology is selected by this document.

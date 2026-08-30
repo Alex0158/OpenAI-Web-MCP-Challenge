@@ -5,16 +5,21 @@
 **Selected direction:** WebMCP re-entry workflow mechanism  
 **Demo web application:** TBD  
 **Final product name:** TBD  
-**Phase:** P0, current-build H0b/H1, H2a cold-runtime recovery, and the H2 durable-enrollment service contract passed; C1 clean Agent-context discovery and one M1 discovery-and-read run on each documented eligible model were verified in the same installed environment; production transport, product value, demo-app selection, and judge portability remain open  
-**Controlling decisions:** [ADR-0002](../Decisions/ADR-0002-separate-mechanism-from-demo-app.md), [ADR-0003](../Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md)
+**Phase:** Bounded local mechanism feasibility passed through P0, H1, H2a, and the synthetic H2 service contract; both standalone App Server Desktop-Browser join variants failed in the current build, D4 is inconclusive and frozen, and product selection, a supported production transport or distinct hosted topology, product value, and judge portability remain open.  
+**Controlling decisions:** [ADR-0002](../Decisions/ADR-0002-separate-mechanism-from-demo-app.md), [ADR-0003](../Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md), [ADR-0004](../Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md), and [ADR-0005](../Decisions/ADR-0005-run-additive-durable-enrollment-spike.md)
 
-## 1. Executive status
+## 1. Evidence chronology
+
+This section preserves dated supporting detail. The phase line, decision layers, evidence
+ledger, and highest-leverage sequence control current status.
 
 The project has selected a mechanism, not a domain product.
 
-The mechanism enables a user to authorize a website-originated business event to resume a
-previous Agent-assisted workflow, re-enter the authoritative web application, rediscover
-the tools valid for the new state, continue the work, and stop at a human decision boundary.
+The mechanism lets a user authorize a website-originated business event for future
+continuation. The Receiver validates and records bounded pending work; a separate available
+continuation adapter later resumes the bound Agent, which re-enters the authoritative web
+application, rediscovers the tools valid for the new state, continues the work, and stops at
+a human decision boundary.
 
 The web application used to prove this mechanism has not been selected. The tender workflow
 in the TenderRelay dossier is a detailed reference scenario, not the committed application,
@@ -84,9 +89,9 @@ activation remains fenced until durable receipt delivery and exact Host binding.
 process termination tests cover each material commit boundary, and two independent approval
 processes converge on one enrollment. Sealed receipt ciphertext is purged after durable
 acknowledgement, and H2 status and trace surfaces redact private authority data. The focused
-H2 suite passes 30 tests and the current full suite passes 114 tests, including ten D4 lifecycle
-classifications, three contamination-latch controls, and thirteen automation-history scanner
-controls.
+H2 suite passes 30 tests and the current full suite passes 118 tests, including ten D4 lifecycle
+classifications, three contamination-latch controls, thirteen automation-history scanner controls,
+and four App Server join-probe evidence controls.
 This is a synthetic
 service-contract pass: the one-shot worker is not a supervised daemon, and no real Desktop
 destination, hosted transport, production key lifecycle, identity boundary, or distributed
@@ -103,8 +108,9 @@ original pinned prompt. Three controller pause updates then reported success wit
 persisted active schedule; the delayed turn ran after the Receiver had been stopped, reached no
 Site Tool, and created no Receiver or Host effect. The event arm was not run. Observer and helper
 now share a semantic lifecycle classifier, continuously latch that P0 relay as contamination, and
-pass thirteen focused process controls plus thirteen automation-history scanner controls in the
-114-test full suite. The hardened scanner correctly refuses to certify this historical attempt
+pass thirteen focused process controls plus thirteen automation-history scanner controls. The
+then-current suite contained 114 tests; the current 118-test suite adds four App Server join-probe
+evidence controls. The hardened scanner correctly refuses to certify this historical attempt
 because its automation contract drifted and its row was later deleted. Full Desktop restart
 continuity remains unknown until a fresh valid no-event arm and then event arm complete.
 See the [inconclusive attempt](../../mvp/evidence/d4-h2b-first-formal-no-event-inconclusive-2026-08-30.md)
@@ -179,6 +185,27 @@ and import only selected assets after the applicable app, mechanism/protocol, or
 decision. See
 [Research 17](../Research/17-mvp1-mvp2-comparative-integration-review.md).
 
+The first fail-closed App Server Browser-join probe now separates cold task creation from
+Desktop Browser attachment. ChatGPT Desktop's bundled App Server `0.151.0-alpha.7.1`
+created a new managed context and a fresh process resumed that exact context. The later turn
+reported receipt recovery and reproduced the unstated canonical URL, but pre-turn `thread/read`
+did not expose the injected receipt, so that part is corroborating Agent output rather than an
+independently inspectable receipt assertion. The only permitted
+built-in Browser selector then failed with `Browser is not available: iab`; no Chrome,
+extension, REST, DOM, generic MCP, dynamic tool, or manual fallback counted. This is a
+reproducible negative result for an App-Server-owned cold thread, not yet a verdict on
+resuming an existing Desktop-owned task with a live Browser backend. See the
+[redacted cold-join evidence](../../mvp/evidence/app-server-browser-join-probe-2026-08-30.json).
+
+A separate warm-join controller then primed a disposable task through one genuine read-only
+`lookup_context` Site Tool call and supplied that exact task to the standalone probe. The same
+bundled App Server returned `already has an active writer` at `thread/resume`, before
+`thread/read` or a later turn. The public JSON directly proves that rejection but not writer
+ownership, idle state, or the live `iab` precondition; those remain controller-side setup
+attestations. Together, the two tested standalone Desktop joins failed and are removed from
+current selection unless a materially different supported contract or topology appears. See the
+[redacted warm-join evidence](../../mvp/evidence/app-server-browser-warm-join-probe-2026-08-30.json).
+
 This closes the frozen P0 **technical-composability** question in one controlled, same-user
 local environment. It does not close the production architecture: the historical P0 join
 used an undocumented local bridge, while H1's scheduled route remains current-build
@@ -192,8 +219,9 @@ the [post-fix rehearsal](../../mvp/evidence/runbook-rehearsal-post-fix-2026-08-3
 ## 2. The selected concept
 
 > WebMCP makes the current page actionable. The re-entry workflow lets a user authorize a
-> future business event to bring the Agent back to the authoritative page and continue under
-> current state, current tools, and current human controls.
+> future business event to create bounded pending work; an available continuation adapter
+> may later return the bound Agent to the authoritative page under current state, current
+> tools, and current human controls.
 
 The selected end-to-end loop is:
 
@@ -203,7 +231,8 @@ live WebMCP session
 -> user-scoped continuation grant
 -> workflow waits after the page or turn ends
 -> authoritative business event
--> validated Agent-context resume
+-> Receiver accepts one bounded pending delivery
+-> available continuation adapter activates the bound context
 -> canonical page re-entry
 -> fresh state verification
 -> stage-appropriate Site Tool discovery
@@ -216,9 +245,10 @@ live WebMCP session
 | Layer | Current status | Meaning |
 |---|---|---|
 | Core problem class | **DECIDED** | Multi-stage web work breaks when page-scoped Agent sessions end before later business events |
-| Re-entry workflow mechanism | **DECIDED** | Enrollment, grant, event, resume, canonical re-entry, dynamic tools, human boundary |
-| Platform bridge | **P0 PASS; PRODUCTION UNRESOLVED** | The current-build private Desktop bridge completed the same-task Stage-B join; no documented public production bridge has been proven |
-| Supported bridge mechanism | **H0B AND H1 PASS IN CURRENT BUILD; PRODUCTION OPEN** | A same-chat Scheduled heartbeat recovered a bounded prior receipt, polled a genuine Receiver event gate, and conditionally produced one idempotent Host effect; no public compatibility or production transport contract is proven |
+| Re-entry workflow mechanism | **DECIDED** | Enrollment, Grant, authenticated pending delivery, separate activation, canonical re-entry, dynamic tools, human boundary |
+| Website Backend-to-Receiver event protocol | **DECIDED AS PROJECT-OWNED CONTRACT** | ADR-0004 separates typed event acceptance from platform-specific Agent activation |
+| Receiver-to-Agent continuation adapter | **UNSELECTED FOR PRODUCTION** | The current-build private Desktop bridge completed P0; Scheduled pull passed bounded current-build probes; neither is a documented production bridge |
+| Standalone App Server Browser join | **BOTH TESTED VARIANTS FAILED IN CURRENT BUILD** | An App-Server-owned thread had no `iab`; exact warm resume returned an active-writer rejection for the supplied task. The warm public artifact does not independently prove writer ownership or priming. These tested joins are not the selected Desktop adapter |
 | P0 technical MVP boundary | **PASSED** | One harness answered all five frozen questions in one clean correlated run under ADR-0003 |
 | Exact-thread product value | **UNPROVEN; METHOD REQUIRES REVISION** | The [bounded calibration](../../Experiments/continuity-calibration/verdict.md) found no interpretable exact-task advantage and falsified its self-reported tool-inventory instrument; the selected-app study must use actual runtime traces and environment parity |
 | Demo application domain | **TBD** | Must be selected through the criteria in 06-mvp-and-demo.md |
@@ -229,9 +259,10 @@ live WebMCP session
 
 ## 4. Validated premise and evidence boundary
 
-> **VERIFIED FOR CONTROLLED P0:** A validated event can return to the intended local Desktop
-> task, obtain its WebMCP-capable built-in Browser, open the canonical workflow URL, discover
-> the new-stage page tools, and invoke the genuine continuation Site Tool.
+> **VERIFIED FOR CONTROLLED P0:** The Receiver accepted one validated event, and a private
+> current-build adapter returned the intended local Desktop task to its WebMCP-capable
+> built-in Browser, opened the canonical workflow URL, discovered the new-stage page tools,
+> and invoked the genuine continuation Site Tool.
 
 This is runtime evidence for technical composability in the tested current build. It is not
 evidence that the private bridge is a documented platform contract, production-stable,
@@ -246,10 +277,14 @@ hosted, cross-user, or clean-room judge-reproducible.
 | TenderRelay dossier and diagram preserved | **VERIFIED** | Byte-identical immutable snapshots |
 | Tender is only a reference scenario | **DECIDED** | ADR-0002 |
 | WebMCP can expose page-native structured tools | **VERIFIED IN P0** | Genuine Stage-A and Stage-B page-bound discovery and invocation occurred in the clean run |
-| Grants, signed events, replay control, and bounded trace are implementable | **P0 VERIFIED** | P0 source, the frozen 37-test P0 report, the current 114-test full suite, the frozen clean correlated package, and the post-fix rehearsal; production durability remains deferred |
+| Grants, signed events, replay control, and bounded trace are implementable | **P0 VERIFIED** | P0 source, the frozen 37-test P0 report, the current 118-test full suite, the frozen clean correlated package, and the post-fix rehearsal; production durability remains deferred |
 | Receiver-owned consent and private exact-task binding | **VERIFIED FOR Q2** | Explicit user-authorized Receiver approval, one active Grant, one private task binding, one opaque host binding, and same-task receipt delivery |
-| Managed Agent context can be resumed from a signed event | **VERIFIED FOR Q3, BOUNDED** | App Server independently proves persisted exact-thread resume; the clean Desktop run proves one deduplicated same-task event delivery but not crash-recoverable production exactly-once semantics |
-| Desktop task-control can wake the same test task and open the canonical page | **VERIFIED IN CURRENT DESKTOP** | The clean event appeared in the bound task and opened the exact canonical page through the private current-build bridge |
+| Exact stored Agent context can be resumed through App Server | **VERIFIED FOR Q3, NO BROWSER JOIN** | App Server independently proves persisted exact-thread resume and prior receipt recovery |
+| Private Desktop adapter delivered one accepted-event continuation to the same bound task | **VERIFIED FOR CONTROLLED P0 ONLY** | The clean event appeared in the bound task and the private current-build bridge opened the exact canonical page; this is not a public transport contract |
+| Cold App Server-to-Desktop Browser join | **FAILED IN CURRENT ENVIRONMENT** | A fresh App-Server-owned thread resumed exactly; the later turn reported receipt recovery, but this is not independently exposed by pre-turn `thread/read`. The built-in Browser selector returned `iab-unavailable`; no fallback surface counted |
+| Warm App Server-to-existing Desktop Browser join | **FAILED FOR THE TESTED INPUT; PRECONDITION ATTESTATION IS NOT SELF-CONTAINED** | Standalone `thread/resume` returned an active-writer rejection for the exact task supplied by the controlled Desktop-priming step before a later turn could start. The public JSON does not independently prove writer ownership, idle state, or the live `iab` precondition |
+| Workspace Agents external trigger and conversation continuity | **EXTERNALLY VERIFIED; LOCAL ENTITLEMENT UNKNOWN** | Official API docs define durable trigger queueing, idempotent retries, run status, and stable `conversation_key`; the current account has not been verified or used |
+| Workspace Agents Browser and genuine page-bound WebMCP join | **UNKNOWN** | Official trigger docs do not state that an API-triggered run receives a Browser or Desktop Site Tools; this is a distinct hosted topology, not local Desktop-task continuation |
 | Current Desktop Browser exposes genuine WebMCP | **VERIFIED IN CURRENT CLIENT** | `/Applications/ChatGPT.app` `26.825.41651` exposes `webmcp` on official-control and local P0 pages; the exact enabling account, workspace, permission, or rollout condition was not isolated |
 | Fresh Agent context can discover genuine Site Tools without prior project turns or project-file access | **C1 VERIFIED IN SAME ENVIRONMENT** | App-held traces show two separate no-history, no-project-file probes using fresh tabs and fresh page-bound handles for the official control and local P0 Host; each invoked one manifest-annotated read-only Site Tool, and no mutating Site Tool was invoked. Fresh user-visible task, account/workspace, machine, public deployment, and judge portability remain untested |
 | Both documented eligible models can perform fresh Site Tool discovery and one current-state read | **M1 VERIFIED ONCE PER MODEL IN SAME ENVIRONMENT** | Controller-assigned low-effort Sol and Terra arms returned the same official and local manifests and invoked the same manifest-annotated read-only tools once per page. Both documentation preflights failed before the Site Tool calls; no Site Tool invocation retry or mutating Site Tool occurred. This is not model parity, and the repo record is not a self-contained public model-assignment package |
@@ -272,7 +307,9 @@ hosted, cross-user, or clean-room judge-reproducible.
 ## 6. Mechanism invariants
 
 - The host web application's backend owns authoritative business state.
-- A continuation event is a bounded wake-up signal, not application truth or an Agent prompt.
+- A continuation event is bounded authorization and durable work availability, not
+  application truth, an Agent prompt, or proof that the Agent has been awakened. Activation
+  belongs to a separate continuation adapter.
 - The user explicitly chooses event type, scope, expiry, run limits, and approval boundary.
 - The website receives an opaque workflow binding, not Agent credentials or a raw thread ID.
 - A resumed run must return to an allowlisted canonical page and read current state.
@@ -310,26 +347,31 @@ See [Official Rules research](../01-official-rules.md) and
    first `INCONCLUSIVE` no-event attempt. Preserve the evidence and repaired harness, but rerun D4
    only if a selected local connector or relaunch topology makes same-machine Desktop restart
    recovery material. It is no longer the next architecture gate.
-4. Run one app-neutral App Server Browser-join kill test: resume one exact stored thread through
-   documented `thread/resume`, start one later turn, recover the stored bounded receipt, open the
-   canonical page, and invoke one genuine read-only page-bound WebMCP Site Tool. Do not count the
-   private Desktop relay, Scheduled Heartbeat, App Server dynamic tools, REST, DOM automation, or
-   generic MCP as the join. If this fails, test the Workspace Agents API only as a distinct hosted
-   runtime topology, not as continuation of an arbitrary local Desktop task.
+4. Preserve both App Server Browser-join failures and remove those tested standalone Desktop
+   joins from current selection unless a materially different supported contract or topology
+   appears. Do not retry the same route through dynamic tools, Chrome, REST, DOM automation,
+   generic MCP, task detachment, or manual reconstruction.
 5. Discuss and select the product layer and demo application with Eddy using observed
    workflow evidence plus explicit product, WebMCP, execution, judgeability, and
    watch-window economics gates.
-6. On the selected workflow, run C2 with a self-contained redacted evidence package; compare
+6. Derive the continuation-adapter candidates from the selected app's requirements. Treat
+   Workspace Agents as a distinct entitlement-dependent hosted candidate, not a presumed
+   fallback. Its external trigger, durable queue, and stable conversation key are documented;
+   Browser and genuine page-bound WebMCP are not. If entitlement is available and the selected
+   app makes that topology plausible, run the bounded gate in Research 20. Do not describe it as
+   continuation of an arbitrary local Desktop task or let unavailable entitlement block app
+   selection.
+7. On the selected workflow, run C2 with a self-contained redacted evidence package; compare
    Agent re-entry with deterministic Host automation and notification/deep link; compare
    exact-thread continuation with a strong bounded capsule; and compare genuine WebMCP
    re-entry with a strong authenticated API.
-7. Select the transport from the app's latency, offline, privacy, administration, and cost
+8. Select the transport from the app's latency, offline, privacy, administration, and cost
    requirements. Use Research 16 to measure no-op load, usage per safe success, lifecycle
    burden, and expected net value. Then test only the route-relevant D5/D6, busy-task,
    concurrency, and distributed seams.
-8. After app and transport selection, build the additive P1 trust/delivery seam and repeat
+9. After app and transport selection, build the additive P1 trust/delivery seam and repeat
    the end-to-end flow from a separate clean-room machine.
-9. Build the selected-app vertical slice only after an accepted app-selection ADR, deploy
+10. Build the selected-app vertical slice only after an accepted app-selection ADR, deploy
    it, capture the public demo, and freeze the submission package.
 
 ## 9. Current non-claims
@@ -341,6 +383,12 @@ Do not claim that the project:
 - has a supported production re-entry bridge, is production-ready, deployed, judge-reproducible, or submitted;
 - has a public OpenAI compatibility promise that unattended Scheduled Tasks will always
   receive the built-in Browser and page-bound Site Tools;
+- has a standalone App Server route that can attach to a Desktop-owned task and its live
+  built-in Browser; both tested current-build join variants failed;
+- has proved that an API-triggered Workspace Agent receives a Browser or genuine page-bound
+  WebMCP Site Tools;
+- requires Desktop Scheduled Tasks as a core mechanism rather than treating scheduled pull
+  as one bounded compatibility adapter;
 - has delivered an H2 enrollment receipt to a real Desktop task, hosted Agent, or production
   connector, or operates a continuously supervised outbox worker;
 - has proved production key rotation, multi-tenant isolation, remote topology, production

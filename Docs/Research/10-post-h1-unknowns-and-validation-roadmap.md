@@ -105,18 +105,21 @@ prior rationale is a poor fit even if technically easy.
 These questions depend on the app selection discussion with Eddy. They should control the
 transport and security requirements rather than be retrofitted after infrastructure is built.
 
-## 3. Platform durability inventory and the remaining transport-join test
+## 3. Platform durability inventory and adapter boundary
 
 The matrix remains the durability inventory, but D4/H2b is no longer a mandatory pre-app gate.
 The first attempt was inconclusive, and even a pass would prove only a test-helper-assisted local
-Desktop restart path. The smaller pre-app kill test is whether documented Codex App Server thread
-resume can regain genuine Browser/WebMCP without the private relay or Scheduled Heartbeat.
+Desktop restart path. The smaller standalone App Server kill tests have now completed negatively:
+documented thread control could not acquire a cold Desktop in-app Browser, and exact warm resume
+returned an active-writer rejection for the supplied task. The warm public JSON does not
+independently prove writer ownership or priming.
 
 Use the same sealed receipt and no-event controls where applicable:
 
-| Condition | Required observation | Failure meaning |
+| Condition | Required observation | Current result / failure meaning |
 |---|---|---|
-| App Server exact-thread Browser join | `thread/resume` plus `turn/start` recovers the stored receipt, opens the canonical page, and invokes one genuine read-only page-bound Site Tool | Documented thread control does not supply the Browser/WebMCP half of the continuation adapter |
+| App Server cold-start Browser join | A newly started App Server thread and turn open the canonical page and invoke one genuine read-only page-bound Site Tool | **Failed on the tested current build:** the later turn reported managed-context recovery, which pre-turn `thread/read` does not independently expose; the Browser selector then returned `iab-unavailable`, so no page or Site Tool was reached |
+| App Server exact-thread warm-resume join | A fresh client process uses `thread/resume` plus `turn/start` to recover the stored receipt, open the canonical page, and invoke one genuine read-only page-bound Site Tool | **Failed on the tested current build:** `thread/resume` returned an active-writer rejection for the supplied task; the public artifact does not identify the writer owner |
 | Desktop app restart | Same task recovers receipt, Browser, and current Site Tools after restart | Current mechanism depends on process-lifetime state |
 | Device sleep and wake | Pending event remains available and the next scheduled turn catches up once | Scheduled pull is unsuitable for unattended local operation |
 | Temporary offline period | No effect while offline; one bounded recovery after connectivity returns | Delivery semantics need a hosted or paired runtime |
@@ -135,14 +138,20 @@ but only after the Agent learned the cold runtime's mandatory confirmation and W
 documentation gate and retried. The parent tool service and Desktop app remained alive. This
 narrows process-lifetime risk without satisfying the first row of the matrix.
 
-Run one App Server Browser-join probe next. Count only genuine built-in Browser navigation and a
-fresh page-bound Site Tool invocation; App Server dynamic tools, REST, DOM automation, generic MCP,
-the private relay, and Scheduled Heartbeat are negative controls. If it fails, evaluate the
-Workspace Agents API only as a distinct hosted runtime topology. Preserve D4/H2b and its repaired
-protocol as optional compatibility evidence, and rerun it only if a selected local connector or
-relaunch topology makes same-machine Desktop restart material. Defer sleep/offline, busy-task,
-client-update, full Scheduled Task model comparison, and account/workspace variation until the
-selected app makes them material.
+Both tested standalone App Server Desktop Browser/WebMCP joins failed on the current build. The
+cold arm returned `iab-unavailable`; the exact warm arm returned an active-writer rejection at
+`thread/resume`. Preserve the
+[cold failure](../../mvp/evidence/app-server-browser-join-probe-2026-08-30.json) and
+[exact warm failure](../../mvp/evidence/app-server-browser-warm-join-probe-2026-08-30.json) as
+separate topology evidence. App selection is the current gate. The Workspace Agents API remains a
+conditional distinct hosted-runtime probe only when entitlement and selected-app requirements
+justify it, with fresh proof of its own Browser/WebMCP capabilities and no claim of local
+Desktop-task continuation. Preserve D4/H2b and its repaired protocol as optional compatibility
+evidence, and rerun it only if a selected local connector or relaunch topology makes same-machine
+Desktop restart material. Scheduled Heartbeat remains a bounded fallback experiment, not the core
+mechanism or a production transport. Defer
+sleep/offline, busy-task, client-update, full Scheduled Task model comparison, and
+account/workspace variation until the selected app makes them material.
 
 M1 satisfies only the bounded discovery-and-read portion of the eligible-model row in the
 same installed environment. App-held traces show one fresh Sol arm and one Terra arm
@@ -162,8 +171,8 @@ Grant, Inbox, and outbox; a sealed receipt can be redispatched with a stable dis
 idempotent separate durable destination tolerates acknowledgement loss; and activation is
 fenced until receipt delivery and exact binding acknowledgement. Real `SIGKILL` tests and
 independent approval processes prove recovery and convergence. The current full suite passes
-114 tests, including the later D4 lifecycle, contamination-latch, and automation-history scanner
-controls.
+118 tests, including the later D4 lifecycle, contamination-latch, automation-history scanner, and
+App Server join-probe evidence controls.
 
 The remaining question is whether the selected real destination can implement the same
 durable acknowledgement and idempotency contract. H2 uses a synthetic SQLite destination
@@ -191,7 +200,9 @@ still needs one explicit ingress topology:
 - a supported native event trigger if the platform later exposes one.
 
 Do not select among these before the app defines latency, offline, privacy, deployment, and
-administration requirements. Do not describe scheduled pull as direct business-event wake.
+administration requirements. Do not describe scheduled pull as direct business-event wake or
+promote Scheduled Heartbeat beyond a bounded fallback experiment without a later accepted
+transport decision and new evidence.
 
 ### U-07 — Who is the authenticated actor at every boundary?
 
@@ -267,22 +278,27 @@ production route.
    App-held source traces verify the official-control and local P0 calls, while the redacted
    repo package is not a self-contained public audit artifact. Do not promote C1 to an
    independent account, machine, public deployment, or judge pass, or M1 to parity.
-4. **Run one paired D4/H2b restart experiment.** This is the final app-neutral durability kill
-   test; a pass is current-build compatibility evidence, and a failure may trigger D3 only as
-   a diagnostic split.
+4. **Preserve both failed standalone App Server Browser-join probes.** Completed on the tested
+   current build: the cold arm failed `iab-unavailable`, and the exact warm arm returned an
+   active-writer rejection for the supplied task. Do not generalize beyond the standalone
+   Desktop topology tested or infer the writer owner from the public artifact.
 5. **Select the product layer and demo app using observed workflow evidence.** Then run C2 in
    a fresh user-visible task with a capture-time evidence package and run the
    product kill tests: Agent versus deterministic automation and notification, exact task
    versus bounded capsule, and WebMCP page versus backend API.
-6. **Derive and accept a transport ADR from the selected app's latency, offline, privacy,
-   administration, and cost requirements.** Scheduled pull
-   remains an experiment unless the measured product envelope fits it.
-7. **Run only the platform-durability and transport measurements material to that selected
+6. **Evaluate only the adapter topologies justified by the selected app.** A published Workspace
+   Agent is a conditional hosted candidate when entitlement is available; it is not continuation
+   of an arbitrary local Desktop task and must carry its own Browser/WebMCP evidence boundary.
+   Keep D4 frozen unless a selected local connector or relaunch topology makes it material.
+7. **Derive and accept a transport ADR from the selected app's latency, offline, privacy,
+   administration, and cost requirements.** Scheduled Heartbeat remains a bounded fallback
+   experiment, not the core mechanism or a production transport.
+8. **Run only the platform-durability and transport measurements material to that selected
    route.** Do not expand generic pre-app infrastructure after the H2 and clean-room gates.
-8. **Build the additive P1 distributed seam for that topology:** separate authorities,
+9. **Build the additive P1 distributed seam for that topology:** separate authorities,
    authenticated identity and origin, durable outbox/delivery, revocation, retry, and
    human-action enforcement.
-9. **Run a public HTTPS clean-room reproduction** on an independent account or judge-like
+10. **Run a public HTTPS clean-room reproduction** on an independent account or judge-like
    environment before claiming deployability or submission readiness.
 
 ## 10. Current decision boundary

@@ -1,6 +1,8 @@
-# P0 Evidence
+# MVP Evidence Index
 
-This directory holds bounded runtime evidence for the five frozen feasibility questions.
+This directory indexes the frozen P0 evidence package and the additive bounded runtime probes
+that followed it. The additive H0, H1, H2a, H2, D4, and platform-join records do not rewrite or
+widen the five frozen P0 feasibility questions.
 
 The controlled P0 passed on 2026-08-30. `latest-trace.jsonl` remains mutable development
 output and is not authoritative by itself. The frozen clean package is:
@@ -52,6 +54,16 @@ the explicit `desktop-task` route and genuine page-bound Browser observations.
   control pass and the genuine Stage-A Q1 pass. It does not prove Q2 through Q5.
 - `app-server-resume-probe.json` isolates exact App Server context continuation. Its public
   copy redacts the private thread and turn identifiers.
+- [`app-server-browser-join-probe-2026-08-30.json`](app-server-browser-join-probe-2026-08-30.json)
+  records the failed cold join. The App-Server-owned thread resumed exactly, but
+  the Desktop in-app Browser was `iab-unavailable`; no page or genuine Site Tool was reached.
+- [`app-server-browser-warm-join-probe-2026-08-30.json`](app-server-browser-warm-join-probe-2026-08-30.json)
+  records the failed exact-task warm join. The standalone App Server returned an active-writer
+  rejection for the exact task supplied by the controlled Desktop-priming step. The public JSON
+  directly proves the rejection, but not the writer's owner or the pre-probe Browser state.
+  Together, these bounded failures reject both tested standalone Desktop joins and remove that
+  route from current selection unless a materially different supported contract or topology
+  appears; they do not claim that App Server is unusable in every topology.
 - `receiver-app-server-event-probe.json` isolates signed-event, exact-context, and
   one-run deduplication behavior for Q3. Its public copy redacts the private managed-context
   identifier.
@@ -88,8 +100,8 @@ the explicit `desktop-task` route and genuine page-bound Browser observations.
   a full Desktop app restart.
 - [`h2-durable-enrollment-service-contract-2026-08-30-verdict.md`](h2-durable-enrollment-service-contract-2026-08-30-verdict.md)
   and its [machine-readable JSON record](h2-durable-enrollment-service-contract-2026-08-30.json)
-  preserve the `H2_SERVICE_CONTRACT_PASS`. The focused H2 suite passed 30 of 30 tests and the
-  complete MVP suite passed 88 of 88. The bounded evidence covers atomic approval, real
+  preserve the `H2_SERVICE_CONTRACT_PASS`. At that H2 checkpoint, the focused H2 suite passed
+  30 of 30 tests and the then-current full MVP suite passed 88 of 88. The bounded evidence covers atomic approval, real
   process-kill recovery, concurrent approval and dispatch, lease fencing, pre-dispatch
   authority checks, exact sealed-receipt validation, idempotent Host binding, and secret
   exclusion. Its destination is synthetic, its worker is a one-shot process rather than a
@@ -104,7 +116,8 @@ the explicit `desktop-task` route and genuine page-bound Browser observations.
   preserves the first formal D4 no-event attempt as `INCONCLUSIVE`. Normal quit reached zero
   Desktop main/current-tree processes, but an unrelated detached P0 relay was misclassified as
   lifecycle state, so the helper did not relaunch. A delayed turn later failed closed with no
-  Site Tool or workflow effect. Thirteen focused lifecycle/contamination controls, thirteen
-  automation-history scanner controls, and the 114-test full suite pass after the harness
-  correction. The scanner correctly refuses to certify this attempt because the observed contract
-  drifted and the current automation row is absent; no valid D4 arm has completed.
+  Site Tool or workflow effect. Thirteen focused lifecycle/contamination controls and thirteen
+  automation-history scanner controls passed. The then-current suite passed 114 tests after the
+  harness correction; the current 118-test suite adds four App Server join-probe evidence controls.
+  The scanner correctly refuses to certify this attempt because the observed
+  contract drifted and the current automation row is absent; no valid D4 arm has completed.

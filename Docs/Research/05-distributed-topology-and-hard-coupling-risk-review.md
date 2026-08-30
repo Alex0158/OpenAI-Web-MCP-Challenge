@@ -1,9 +1,8 @@
 # Distributed Topology and Hard-Coupling Risk Review
 
 **Role:** SUPPORTING reference opinion and architecture review  
-**Status:** Advisory; risk findings remain useful, but topology, sequencing, correlation,
-durability, product-test priorities, clean-context isolation, model variation, and
-transport economics are partially superseded by Research 07–16  
+**Status:** Partially superseded conditional risk catalog; its boundary and failure-mode
+findings remain useful, but it does not control the current experiment sequence  
 **Observed:** 2026-08-30  
 **Scope:** P0 implementation topology, distributed-deployment seams, security boundaries, reliability, and hardcoded coupling
 
@@ -21,7 +20,10 @@ transport economics are partially superseded by Research 07–16
 > Agent-context isolation result, [Research 15](15-sol-terra-webmcp-model-variation-smoke.md)
 > for the eligible-model discovery-and-read result, and
 > [Research 16](16-scheduled-pull-unit-economics-and-transport-kill-model.md) for the
-> current polling economics and transport falsifiers.
+> current polling economics and transport falsifiers. Use
+> [Research 18](18-receiver-queue-and-wake-adapter-architecture-review.md) for the current
+> delivery-ledger, wake-adapter, and D4-priority treatment. Its prospective App Server step is
+> superseded by the two later failures recorded in the current Core status and evidence index.
 
 ## Executive conclusion
 
@@ -59,12 +61,22 @@ unresolved seams are:
    been demonstrated for an independent Receiver to attach to an arbitrary user's existing
    Agent task and its Browser.
 
-The recommended next step is not a broad production rewrite. Run the single paired D4/H2b
-full-Desktop-restart kill test in Research 11, then select the product layer and application
-with Eddy. Run the selected-app product, WebMCP, C2, and economics controls before selecting
-a transport. Only if that transport requires a local connector should the project build a
-bounded **distributed seam harness** with topology-appropriate processes, authority isolation,
-network contracts, and failure injection. The existing P0 remains the composability baseline.
+The current next step is app selection, not a broad production rewrite or another D4 arm. Both standalone
+Codex App Server Browser-join variants failed on the tested current build: the cold owned thread
+had no Desktop in-app Browser session, and exact warm resume returned an active-writer rejection.
+These results remove both tested standalone Desktop joins from current selection unless a
+materially different supported contract or topology appears. Select the product
+layer and application with Eddy, then run selected-app product, WebMCP, C2, and economics controls
+and select the transport from those requirements. A published Workspace Agent is a conditional
+hosted-runtime probe only if entitlement is available and the selected app makes that topology
+plausible; it must carry its own Browser/WebMCP evidence boundary and must not block app selection.
+Scheduled Heartbeat remains a bounded fallback experiment, not the core mechanism or a production
+transport. Preserve D4 as optional same-machine compatibility evidence; rerun it only if a
+selected local connector or relaunch topology makes Desktop restart recovery material.
+Only if the chosen transport requires a local connector should the project build a bounded
+**distributed seam harness** with
+topology-appropriate processes, authority isolation, network contracts, and failure injection.
+The existing P0 remains the composability baseline.
 
 ## 1. Evidence discipline and source boundary
 
@@ -254,8 +266,9 @@ blocker for scheduled pull: an existing idle task recovered its prior bounded re
 opened a fresh built-in Browser tab, and invoked a genuine page-bound Site Tool without the
 private relay. The risk becomes S0 only for a selected production topology that requires an
 independent Receiver to attach to an existing local task and lacks a supported connector or
-hosted alternative. Restart, clean-room, busy-task, and multi-account behavior remain separate
-compatibility questions.
+hosted alternative. Scheduled Heartbeat remains a bounded fallback experiment rather than the
+core mechanism or a production transport. Restart, clean-room, busy-task, and multi-account
+behavior remain separate compatibility questions.
 
 **H1 disposition:** One scheduled current-build run has now exercised the full gated path
 through fresh genuine Receiver and Host Site Tools, including acknowledgement-loss retry.
@@ -713,10 +726,18 @@ contract, the Research 14 C1 result as verified clean Agent-context evidence onl
 installed environment, and the Research 15 M1 result as one verified discovery-and-read run
 per documented eligible model rather than model parity. Use Research 16 rather
 than this topology review for Scheduled-pull economics.
-Treat this review as a conditional production-risk catalog, not the active roadmap. First run
-the single paired D4/H2b full-Desktop-restart kill test, then select a product layer and app
-from observed workflow evidence. Run C2, product substitution, WebMCP/API, and economics
-tests before selecting a transport. Preserve independent account, machine, public-deployment,
-and end-to-end judge portability as later gates. Only then build the smallest
-topology-specific distributed seam; build a local connector harness only if that transport
-is actually selected.
+Treat this review as a conditional production-risk catalog, not the active roadmap. Use
+[Research 18](18-receiver-queue-and-wake-adapter-architecture-review.md) for the Receiver-ledger
+and replaceable-wake-adapter frame, and use the
+[current project status](../Core/00-current-status.md) for sequencing. The cold and exact warm
+standalone App Server Browser/WebMCP joins both failed on the tested current build, removing those
+tested joins from current selection absent a materially different supported contract or topology.
+The current gate is product-layer and app selection from observed workflow evidence.
+Then run C2, product substitution, WebMCP/API, and economics tests before selecting a transport.
+Evaluate a published Workspace Agent only as a conditional hosted topology when entitlement and
+selected-app requirements justify it; require its own Browser/WebMCP proof. D4 is frozen optional
+compatibility evidence, and Scheduled Heartbeat remains a bounded fallback rather than the core or
+production path. Preserve independent account,
+machine, public-deployment, and end-to-end judge portability as later gates. Only then build the
+smallest topology-specific distributed seam; build a local connector harness only if that
+transport is actually selected.

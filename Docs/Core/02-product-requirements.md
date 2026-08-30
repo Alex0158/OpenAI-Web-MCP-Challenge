@@ -1,7 +1,7 @@
 # WebMCP Re-entry Workflow — Product Requirements
 
 **Role:** CANONICAL mechanism-level user behavior  
-**Status:** Application-neutral requirements baseline  
+**Status:** Target application-neutral requirements baseline; selected-app specialization and implementation remain open  
 **Last updated:** 2026-08-30
 
 ## 1. Requirements objective
@@ -9,6 +9,10 @@
 Define the observable behavior every acceptable demo application must implement to prove
 the selected re-entry workflow. Domain-specific requirements must be added only after the
 host application is selected.
+
+These requirements define target behavior. They do not imply that every requirement is
+implemented or verified; current evidence status is owned by [Core/00](00-current-status.md)
+and [Core/05](05-validation-and-evidence.md).
 
 ## 2. Abstract end-to-end journey
 
@@ -18,12 +22,13 @@ host application is selected.
 4. The user reviews a plain-language future re-entry offer and grants one bounded event.
 5. The user may leave the page and the Agent turn may end.
 6. Another actor or system creates the authoritative state transition later.
-7. One typed event resumes the bound Agent workflow.
-8. The Agent returns to the canonical record page and reads current state.
-9. The page exposes tools appropriate to the new stage.
-10. The Agent continues the same artifact or decision process.
-11. The Agent stops at the defined human boundary.
-12. The user reviews the outcome and the system records a receipt.
+7. The Receiver authenticates the event and records one bounded pending delivery.
+8. An available continuation adapter activates the intended Agent workflow.
+9. The Agent returns to the canonical record page and reads current state.
+10. The page exposes tools appropriate to the new stage.
+11. The Agent continues the same artifact or decision process.
+12. The Agent stops at the defined human boundary.
+13. The user reviews the outcome and the system records a receipt.
 
 ## 3. Experience principles
 
@@ -94,7 +99,9 @@ I leave without causing background work before the authorized event.
 **Acceptance criteria:**
 
 - The page can close or navigate away and the Agent turn can end.
-- Waiting does not create runs, mutations, or repeated polling actions.
+- Waiting creates no workflow mutation or event-authorized continuation. If a bounded pull
+  adapter is used, empty checks are explicitly time-bounded, separately recorded, and never
+  reported as event delivery; perpetual polling is not required by the mechanism.
 - The grant retains its scope, expiry, remaining run count, and revocation state.
 - Ending the page session does not falsely mark the business workflow complete.
 
@@ -109,20 +116,24 @@ injecting instructions into the Agent.
 - The event contains issuer, workflow, event ID, event sequence, business state version,
   timestamp, canonical URL, and minimal event-specific identifiers.
 - The event has no arbitrary Agent instruction or prompt field.
-- Invalid, duplicate, expired, mismatched, or out-of-order events do not create another run.
+- Invalid, duplicate, expired, mismatched, or out-of-order events do not create another
+  accepted delivery or run.
 - Every acceptance or rejection appears in the audit timeline.
 
-### WR-07 — Resume only the intended Agent workflow
+### WR-07 — Deliver only to the intended Agent workflow
 
-**Story:** As a workflow participant, I want the event to resume the context I previously
-authorized rather than start unrelated Agent work.
+**Story:** As a workflow participant, I want an accepted event to become pending only for the
+context I authorized, and I want any later activation to resume that context rather than
+unrelated Agent work.
 
 **Acceptance criteria:**
 
-- A valid event resolves one active grant and one managed Agent-context binding.
+- Receiver acceptance resolves one active Grant and one managed Agent-context binding, then
+  records one pending delivery for that binding.
 - The host app never receives Agent credentials or a raw platform thread identifier.
 - Run count and concurrency limits are reserved atomically.
-- A resume failure produces a visible retry-safe status.
+- An activation or resume failure produces a visible retry-safe status without broadening
+  application authority.
 - The resumed experience identifies the record and reason for return.
 
 ### WR-08 — Re-enter and revalidate the canonical page
@@ -171,7 +182,7 @@ decision process while I retain control over the consequential outcome.
 **Acceptance criteria:**
 
 - The control surface shows origin, workflow, event, expiry, remaining runs, last event, and last run.
-- Revocation prevents later events from starting new runs.
+- Revocation prevents later events from creating accepted deliveries or later activations.
 - A race between revocation and delivery follows a documented atomic rule.
 - Revocation does not delete the workflow record, artifact, or audit history.
 
@@ -194,8 +205,8 @@ Every selected app must express these states in its own domain language:
 
 ## 6. Non-functional requirements
 
-- **Traceability:** Grant, event, run, tool mutation, artifact revision, and human decision share a correlation path.
-- **Idempotency:** Retried delivery cannot produce duplicate runs or duplicate effects.
+- **Traceability:** Grant, event, accepted delivery, activation, run, tool mutation, artifact revision, and human decision share a correlation path.
+- **Idempotency:** Retried delivery cannot produce duplicate accepted work, runs, or effects.
 - **Least privilege:** Authority is limited by origin, workflow, event, time, run count, and human boundary.
 - **State freshness:** Every mutation validates current business state and expected revision.
 - **Judge reproducibility:** A fresh evaluator can complete the loop from one public entry point with documented setup.
@@ -218,7 +229,7 @@ The challenge MVP will not:
 
 ## 8. Domain specialization gate
 
-Before implementation, the selected application must add:
+Before selected-app implementation, the selected application must add:
 
 - named user and external actor;
 - concrete workflow record and persistent artifact;
@@ -232,19 +243,20 @@ Before implementation, the selected application must add:
 
 These additions require a new accepted ADR and an update to 06-mvp-and-demo.md.
 
-## 9. Mechanism acceptance
+## 9. Selected-app vertical-slice acceptance
 
-The mechanism slice is accepted only when one clean run demonstrates:
+The selected-app mechanism slice is accepted only when one clean run demonstrates:
 
 1. genuine initial Site Tool discovery and invocation;
 2. visible Agent-prepared work in the host app;
 3. one plain-language, user-approved future event;
 4. an ended page session or Agent turn;
-5. one authoritative state transition and one accepted event;
-6. resume of the intended Agent workflow;
-7. canonical page re-entry and fresh state read;
-8. discovery and invocation of a different resumed-stage Site Tool;
-9. continuation of the same artifact or decision process;
-10. preservation of the human decision boundary;
-11. safe duplicate and invalid-event behavior;
-12. a correlated, judge-reproducible evidence trace.
+5. one authoritative state transition;
+6. one accepted event recorded as bounded pending delivery;
+7. activation and resume of the intended Agent workflow through an available continuation adapter;
+8. canonical page re-entry and fresh state read;
+9. discovery and invocation of a different resumed-stage Site Tool;
+10. continuation of the same artifact or decision process;
+11. preservation of the human decision boundary;
+12. safe duplicate and invalid-event behavior;
+13. a correlated, judge-reproducible evidence trace.

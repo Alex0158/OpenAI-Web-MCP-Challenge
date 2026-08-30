@@ -5,6 +5,12 @@
 **Last updated:** 2026-08-30  
 **Controlling decision:** [ADR-0003](../Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md)
 
+**Authority boundary:** Sections 1–15 preserve the frozen P0 contract, and Sections 16–20
+preserve its dated outcome. Event-to-resume wording describes the private controlled P0 join
+only. [ADR-0004](../Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md) and
+[Core/00](00-current-status.md) control ongoing event/transport separation; this file does not
+define the current production topology.
+
 ## 1. Purpose
 
 Build the smallest domain-neutral runtime fixture that can prove or falsify the WebMCP
@@ -271,6 +277,9 @@ documented external contract can satisfy the same responsibilities.
 
 ## 11. Initial implementation stack
 
+This is the freeze-time planned stack. The successful run used Node.js `v26.5.0`, as recorded
+in Section 16.
+
 Use the smallest locally available stack unless adapter evidence requires a change:
 
 - Node.js 24, ECMAScript modules, and built-in `node:http`, `node:crypto`, and `node:sqlite`;
@@ -284,6 +293,9 @@ Add a dependency only when a current runtime contract cannot be implemented reli
 the platform libraries.
 
 ## 12. Planned implementation tree
+
+This is the freeze-time planned source layout, not the current repository inventory. Later
+H1, H2, and D4 work added further source and test files.
 
 ~~~text
 mvp/
@@ -397,20 +409,21 @@ five-question verdict.
 
 Component tests cannot substitute for runtime tests.
 
-## 16. Current platform evidence and adapter gate
+## 16. Dated P0 platform evidence and adapter gate
 
-Current official OpenAI documentation establishes separate primitives:
+At the 2026-08-30 P0 evidence boundary, official OpenAI documentation established separate
+primitives:
 
-- [Codex App Server](https://developers.openai.com/codex/app-server) documents
+- [Codex App Server](https://learn.chatgpt.com/docs/app-server) documents
   `thread/resume` and `turn/start` for stored conversation continuation.
-- [Workspace Agent triggers](https://developers.openai.com/workspace-agents/trigger-runs)
+- [Workspace Agent triggers](https://learn.chatgpt.com/workspace-agents/trigger-runs)
   document durable triggering, stable `conversation_key`, idempotency, and run status.
-- [Site Tools](https://developers.openai.com/codex/webmcp) document page-provided WebMCP
+- [Site Tools](https://learn.chatgpt.com/docs/webmcp) document page-provided WebMCP
   tools in the shared signed-in browser session and state that closing or navigating away
   can make those tools unavailable. They require a supported model, current desktop app,
   eligible workspace and rollout, plus the user-controlled
   `Settings > Browser > Permissions > Enable site tools` permission.
-- [Browser](https://developers.openai.com/codex/browser) documents a separate built-in
+- [Browser](https://learn.chatgpt.com/docs/browser) documents a separate built-in
   browser profile and does not make Browser available in Codex CLI or the IDE extension.
 
 Local evidence on 2026-08-30:
@@ -434,8 +447,9 @@ Local evidence on 2026-08-30:
 - the post-fix independent runbook rehearsal repeated the same Q1–Q5 chain after the relay
   compacted a greater-than-64-KiB native task response into a small verified identity
   proof; and
-- 37 component and contract tests pass. The frozen clean-run package retains its accurate
-  historical 23-test snapshot.
+- the frozen P0 component and contract scope passed 37 tests. The current complete suite count
+  is owned by [Core/00](00-current-status.md); the frozen clean-run package retains its
+  accurate historical 23-test snapshot.
 
 `dynamicTools` are not evidence of WebMCP Site Tools. App Server independently isolates Q3,
 but its current adapter cannot pass Q4 because it exposes no supported Browser or Site Tool
@@ -492,11 +506,14 @@ This P0 MVP is complete only when:
 - evidence distinguishes real Site Tool use from mocks, dynamic tools, REST, and DOM automation;
 - the duplicate event produces no second run or write;
 - commit remains absent from the Site Tool surface and the tested Agent stops before it;
-- the environment and setup are reproducible by another project team member;
+- the environment and setup are documented for another project team member;
 - the five-question verdict and canonical status are updated from runtime evidence.
 
+The reproduction runbook establishes a documented path; it is not evidence that a second
+team member or independent judge completed the run.
+
 The controlled P0 meets these requirements through the
-[clean-run evidence package](../../mvp/evidence/p0-correlated-clean-run-2026-08-30-verdict.md)
+[clean-run evidence package](../../mvp/evidence/p0-correlated-clean-run-2026-08-30-verdict.md),
 the [post-fix runbook rehearsal](../../mvp/evidence/runbook-rehearsal-post-fix-2026-08-30-verdict.md),
 and the [reproduction runbook](../../mvp/RUNBOOK.md). An independent public clean-room judge
 run on another machine remains a later product and submission gate, not evidence supplied by
