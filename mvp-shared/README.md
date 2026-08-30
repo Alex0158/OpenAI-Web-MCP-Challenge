@@ -1,31 +1,33 @@
 # MVP and MVP2 Integration Assessment and Hackathon Recommendation
 
-**Role:** SUPPORTING architecture, product, and competition handoff  
+**Role:** SHARED SUPPORTING architecture, product, and competition handoff between MVP1 and
+MVP2  
 **Status:** Advisory comparison; no Core decision, app selection, transport selection, or
 production claim is changed by this report  
 **Prepared:** 2026-08-30, Europe/London  
 **Audience:** Alex, the project team, and future Codex sessions  
-**Compared implementations:** [`mvp/`](../../mvp/) and [`mvp2/`](../../mvp2/)
+**Compared implementations:** [`mvp/`](../mvp/) and [`mvp2/`](../mvp2/)
 
 ## 0. Authority and reading rule
 
 This report records observations and recommendations after a live review of both
-implementations and one clean MVP2 Desktop replay. It is deliberately stored in the shared
-`Docs/Research/` layer because it compares the implementations without selecting a final
-application or changing the mechanism.
+implementations and one clean MVP2 Desktop replay. It is deliberately stored in the
+root-level `mvp-shared/` layer, alongside `mvp/` and `mvp2/`, because it is the integration
+bridge between the implementations rather than another research experiment. It remains
+supporting material and does not select a final application or change the mechanism.
 
 The following sources continue to control project truth:
 
-1. [`Core/00-current-status.md`](../Core/00-current-status.md) controls current status and
+1. [`Core/00-current-status.md`](../Docs/Core/00-current-status.md) controls current status and
    evidence claims.
-2. [`ADR-0002`](../Decisions/ADR-0002-separate-mechanism-from-demo-app.md) controls the
+2. [`ADR-0002`](../Docs/Decisions/ADR-0002-separate-mechanism-from-demo-app.md) controls the
    separation between the mechanism and the unselected demo app.
-3. [`ADR-0004`](../Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md)
+3. [`ADR-0004`](../Docs/Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md)
    controls the separation between the Website Backend-to-Receiver protocol and the
    Receiver-to-Agent transport.
-4. [`Core/03-system-design.md`](../Core/03-system-design.md) controls reusable architecture
+4. [`Core/03-system-design.md`](../Docs/Core/03-system-design.md) controls reusable architecture
    and contract boundaries.
-5. [`Core/06-mvp-and-demo.md`](../Core/06-mvp-and-demo.md) controls app selection, the
+5. [`Core/06-mvp-and-demo.md`](../Docs/Core/06-mvp-and-demo.md) controls app selection, the
    challenge slice, and the three-minute demo shape.
 
 Where this report recommends a new durable choice, the team must accept a new ADR before
@@ -124,7 +126,7 @@ The labels below follow the repository's evidence discipline.
 ### 4.1 Verified strengths
 
 MVP1 is a domain-neutral P0 fixture with additive H0b, H1, H2a, and H2 experiments. Its
-current [`README`](../../mvp/README.md) and evidence packages support the following bounded
+current [`README`](../mvp/README.md) and evidence packages support the following bounded
 strengths:
 
 - **VERIFIED:** Genuine page-bound WebMCP discovery and invocation occurred in both stages
@@ -238,7 +240,7 @@ The event verification and Receiver queue records in that replay were approximat
 apart. This is a useful observation about the local direct queue path, not a general latency
 benchmark and not evidence about remote delivery, task scheduling, or Agent completion time.
 
-The live replay is summarized in [`mvp2/README.md`](../../mvp2/README.md). It has not yet
+The live replay is summarized in [`mvp2/README.md`](../mvp2/README.md). It has not yet
 been frozen into an evidence package equivalent to MVP1's correlated artifacts.
 
 ### 5.3 MVP2 product and demo strengths
@@ -610,8 +612,8 @@ link the remainder to tests and diagnostics.
 ## 12. Hackathon assessment
 
 The governing rules and current evaluation notes remain in
-[`Docs/01-official-rules.md`](../01-official-rules.md) and
-[`Docs/02-submission-evaluation-strategy.md`](../02-submission-evaluation-strategy.md).
+[`Docs/01-official-rules.md`](../Docs/01-official-rules.md) and
+[`Docs/02-submission-evaluation-strategy.md`](../Docs/02-submission-evaluation-strategy.md).
 Volatile dates and requirements must be refreshed there rather than copied into this report.
 
 The current official judging model gives equal weight to:
@@ -692,7 +694,7 @@ TenderRelay remains Reference Scenario A. MVP2 proves that it can explain the me
 that it is the highest-scoring final domain.
 
 Use the hard gates and weighted scorecard in
-[`Core/06-mvp-and-demo.md`](../Core/06-mvp-and-demo.md). In particular, reject any scenario
+[`Core/06-mvp-and-demo.md`](../Docs/Core/06-mvp-and-demo.md). In particular, reject any scenario
 where deterministic Host automation is equivalent, prior context does not matter, current
 page authority is unnecessary, or the judge cannot see the value in under three minutes.
 
@@ -889,7 +891,7 @@ direction unambiguous, not to bypass the decision process.
 
 Before making changes based on this report:
 
-1. Read [`Docs/README.md`](../README.md) and follow its authority and update sequence.
+1. Read [`Docs/README.md`](../Docs/README.md) and follow its authority and update sequence.
 2. Read `Core/00`, ADR-0002, ADR-0004, `Core/03`, `Core/06`, and Research 10.
 3. Treat this report as SUPPORTING analysis only.
 4. Do not silently select TenderRelay or another app.
