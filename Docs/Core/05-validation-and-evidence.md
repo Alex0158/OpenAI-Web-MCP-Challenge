@@ -1,7 +1,7 @@
 # Re-entry Core — Validation and Evidence Plan
 
 **Role:** CANONICAL proof matrix and evidence gates  
-**Status:** Current proof matrix plus future evidence gates; the Re-entry Core v0.1 protocol, Host SDK, ADR-0008 Receiver C1 authority, and ADR-0009 Connector delivery C2 are locally verified, bounded P0/H1/H2 reference evidence passed, D4 is inconclusive, and production consent, pairing, separate processes, a real Host-effect verifier, a supported Agent adapter, app, product, and judge gates remain open.  
+**Status:** Current proof matrix plus future evidence gates; the Re-entry Core v0.1 protocol, Host SDK, ADR-0008 Receiver C1 authority, and ADR-0009 Connector delivery C2 are locally verified; ADR-0010 specifies but does not implement the transport boundary; bounded P0/H1/H2 reference evidence passed, D4 is inconclusive, and production consent, pairing, separate processes, a real Host-effect verifier, a supported Agent adapter, app, product, and judge gates remain open.  
 **Last updated:** 2026-08-31
 
 ## 1. Evidence discipline
@@ -111,6 +111,7 @@ the missing value must not be inferred as zero or retroactively upgraded to a pa
 | Authoritative `reentry-core/` implementation | PARTIALLY LOCALLY VERIFIED | Protocol, Host SDK, Receiver authority, Connector delivery state machine, and the SQLite reference store pass bounded local tests; production consent and pairing, separate-process transport, real Host effect, Connector daemon, adapter, deployment, and broader performance gates remain open |
 | Receiver-owned consent, Grant, event reservation, and pending delivery | LOCALLY VERIFIED, BOUNDED | ADR-0008 plus RECORE-001 C1b; 26 aggregate tests pass on Node 24.20.0 and Node 26.5.0, including private outputs, exact replay, injected rollback, WAL/schema rejection, and file close-and-reopen persistence. No production session, HTTP, OS-crash, Connector, Agent, or multi-replica behavior is proven |
 | Connector identity, delivery lease, and Host-effect acknowledgement | LOCALLY VERIFIED, BOUNDED | ADR-0009 plus RECORE-001 C2b; 40 aggregate tests pass on Node 24.20.0 and Node 26.5.0, including target and subject scope, exact claim replay, per-delivery attempt bounds, stale-worker fencing, late final-effect convergence, progress-string rejection, rollback, token non-persistence, schema-version migration, and file reopen. No pairing, HTTP, separate process, real Host effect, Connector daemon, or Agent behavior is proven |
+| Receiver HTTP and outbound Connector process boundary | SPECIFIED, NOT IMPLEMENTED | ADR-0010 plus RECORE-001 C3a fix exact event, claim, and acknowledgement routes, bounded JSON and canonical responses, redacted errors, secure-origin rules, no automatic retry, and a three-process evidence gate. Passing adapter, client, restart, timeout, and child-process evidence remain required |
 | Final host application and user selected | UNKNOWN | Accepted app-selection ADR |
 | Page source registers genuine Site Tools | VERIFIED FOR Q1 AND Q4 | The clean run discovered and invoked genuine page-defined Site Tools in both `INITIAL` and private-adapter-resumed `READY` |
 | Tool surface changes with application state | VERIFIED FOR P0 | Stage A exposed four exact tools; the re-entered Stage B exposed only `get_workflow_context` and `continue_artifact` |

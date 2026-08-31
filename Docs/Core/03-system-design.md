@@ -1,7 +1,7 @@
 # Re-entry Core — System Design
 
 **Role:** CANONICAL domain-neutral architecture and contracts  
-**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant, reservation, and pending-delivery authority, and ADR-0009 fixes the locally verified Connector lease and effect-acknowledgement contract. Separate process shells and the concrete Agent continuation adapter remain unimplemented. Current as-built truth is owned by Core/00 and Core/05.  
+**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant, reservation, and pending-delivery authority, ADR-0009 fixes the locally verified Connector lease and effect-acknowledgement contract, and ADR-0010 fixes the not-yet-implemented HTTP and outbound Connector transport. The concrete Agent continuation adapter remains unselected. Current as-built truth is owned by Core/00 and Core/05.  
 **Last updated:** 2026-08-31
 
 ## 1. System objective
@@ -183,6 +183,13 @@ Connector health, adapter return, or `agent_started` and `completed` strings are
 Production pairing, credential custody, HTTP, separate processes, and Agent activation remain
 later boundaries.
 
+ADR-0010 fixes the first transport shell without changing those Core contracts. A Cloud adapter
+maps exactly three bounded JSON `POST` routes to event acceptance, delivery claim, and effect-
+backed acknowledgement. A separate outbound Connector client requires HTTPS except on literal
+loopback, validates bounded exact responses, follows no redirects, and never retries or replaces
+a claim token automatically. Consent, pairing, health, diagnostics, background polling, and Agent
+dispatch remain separate later boundaries.
+
 The Receiver's event algorithm is domain-neutral even when a deterministic fixture pins one
 workflow, event type, issuer, or development key. Generalizing the protocol means adding
 configuration, issuer onboarding, key management, and lifecycle controls; it does not mean
@@ -213,6 +220,8 @@ for a conforming backend to send a Receiver event.
 - ADR-0009 delivery behavior is as-built only behind deterministic identity and effect-authority
   ports in one process. No HTTP service, production pairing, separate Connector, real Host effect,
   Agent call, or distributed storage behavior is part of that evidence.
+- ADR-0010 specifies the HTTP adapter, outbound client, and three-process evidence boundary, but no
+  transport implementation or separate-process result has passed yet.
 - The private P0 Desktop adapter completed one controlled same-task join but is not a
   documented platform contract.
 - H1 Scheduled pull completed one bounded event-gated continuation and remains a

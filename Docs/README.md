@@ -65,6 +65,14 @@ freezes the Receiver-owned consent-authority port, effective private Grant, exac
 atomic one-run reservation, private pending delivery, and zero-dependency SQLite reference-store
 boundary without adding HTTP, Connector, or Agent behavior.
 
+[`Decisions/ADR-0009-freeze-connector-lease-and-effect-acknowledgement.md`](Decisions/ADR-0009-freeze-connector-lease-and-effect-acknowledgement.md)
+freezes trusted Connector identity, replayable target-scoped leases, bounded attempt and stale-
+worker fencing, and acknowledgement only through a correlated trusted Host effect.
+
+[`Decisions/ADR-0010-freeze-receiver-http-and-connector-transport.md`](Decisions/ADR-0010-freeze-receiver-http-and-connector-transport.md)
+freezes three bounded Receiver HTTP routes, redacted transport errors, an outbound-only no-retry
+Connector client, and the independent Host, Receiver, and Connector process-evidence boundary.
+
 ## 3. Active development and closure
 
 - [`Development/README.md`](Development/README.md) — CANONICAL Re-entry Core development,

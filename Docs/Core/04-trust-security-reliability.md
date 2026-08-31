@@ -1,7 +1,7 @@
 # Re-entry Core — Trust, Security, and Reliability
 
 **Role:** CANONICAL authority, security, and failure semantics  
-**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through ADR-0009; the v0.1 protocol, Host SDK, bounded Receiver C1 authority, and Connector delivery C2 are locally verified, while production consent, pairing, separate processes, real Host-effect verification, and distributed topology remain unverified.  
+**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through ADR-0010; the v0.1 protocol, Host SDK, bounded Receiver C1 authority, and Connector delivery C2 are locally verified; the HTTP and outbound Connector transport is specified but unimplemented, while production consent, pairing, real Host-effect verification, and distributed topology remain unverified.  
 **Last updated:** 2026-08-31
 
 ## 1. Security objective
@@ -176,6 +176,8 @@ The human decision produces a receipt correlated with the run and artifact.
 | Connector replays or steals a lease | Authenticated target, one active digest-bound claim token, expiry, bounded attempts, and atomic fencing | Preserve pending, retryable, or explicitly exhausted delivery |
 | Connector falsely reports completion | Trusted Host-effect attestation bound to delivery, event, workflow, and human boundary | Do not acknowledge |
 | Connector exposes inbound device control | Outbound-only protocol and no public local listener | No activation surface |
+| HTTP input is oversized, ambiguous, redirected, or malformed | Exact routes and parsed fields, bounded UTF-8 JSON, no query or content encoding, response bounds, and redirect rejection | Reject without Core transition or fallback |
+| Transport leaks credentials or internal failures | Tokens only in no-store request bodies, TLS except literal loopback, and code-only redacted errors | No token, payload, message, or stack disclosure |
 | Wrong user, tenant, or workflow resumes | Subject, origin, workflow, URL, and auth binding | Terminal run failure |
 | Stale event causes action | Canonical state read and expected version check | No mutation |
 | Tool metadata or output injects instructions | Treat definitions and results as untrusted; narrow schemas | Stop or request review |

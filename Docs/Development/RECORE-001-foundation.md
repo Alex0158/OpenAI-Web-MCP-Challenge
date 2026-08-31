@@ -28,6 +28,8 @@ Receiver, a working Codex wake path, a selected web app, or a judge-reproducible
   delivery, and reference-store boundary.
 - ADR-0009 freezes trusted Connector identity, replayable target-scoped delivery leases, bounded
   retry, stale-worker fencing, and Host-effect-backed acknowledgement.
+- ADR-0010 freezes the minimal Receiver HTTP mapping, outbound Connector client, transport
+  bounds, and separate-process evidence boundary.
 - Core/01 through Core/05 own the durable behavior, architecture, trust, and evidence contracts.
 - MVP1 is the authority, durability, delivery, and evidence reference.
 - MVP2 supplies selectively reusable modular seams and product-composition patterns only.
@@ -386,3 +388,32 @@ Browser/WebMCP re-entry, deployment, or distributed durability.
 **Next entry condition:** define and prove the smallest separate Cloud Receiver and outbound Local
 Connector process shells around the unchanged Core ports. Keep transport, production identity,
 and Agent adapter authority outside Receiver Core, and add no fallback path.
+
+### Increment C3a — Receiver HTTP and Connector transport contract
+
+**Closure:** `specified` on 2026-08-31.
+
+- ADR-0010 fixes three narrow `POST` routes for signed Host-event ingress, Connector claims, and
+  effect-backed acknowledgements. Consent, pairing, health, diagnostics, admin, reset, Agent, and
+  generic RPC routes remain outside the increment.
+- Requests use bounded UTF-8 JSON with exact parsed fields; responses use canonical JSON. The
+  contract accepts standard UTF-8 content-type syntax but no query, content encoding, extensions,
+  or credentials in URLs. Errors expose only one bounded code; unknown exceptions become a
+  redacted internal error.
+- The Cloud adapter receives an already composed `ReceiverCore`; it cannot select persistence or
+  authority implementations. The Connector client is outbound-only, requires an explicit timeout,
+  rejects redirects and insecure non-loopback origins, validates exact responses, and performs no
+  automatic retry or token replacement.
+- Separate-process evidence must keep Host signing authority, Receiver storage, and Connector
+  credentials in independent child processes. Deterministic identity and effect fixtures remain
+  test-only and cannot support production claims.
+- The package stays zero-dependency and exposes transport only through explicit subpaths. No HTTP
+  framework, retry package, broker, ORM, logger, or background loop is authorized.
+
+This is a wire and process-boundary decision only. No HTTP adapter, Connector client, child-
+process proof, restart recovery, network timeout, TLS service, pairing, real Host effect, Agent,
+Browser, or WebMCP behavior is yet implemented or verified under ADR-0010.
+
+**Next entry condition:** implement the strict HTTP adapter and outbound Connector client, then
+prove exact Host event, claim, no-work, acknowledgement, redacted failure, restart replay, and
+token non-persistence across independent Host, Receiver, and Connector processes.
