@@ -1,7 +1,7 @@
 # WebMCP Re-entry Workflow — Competition Thesis and Positioning
 
 **Role:** CANONICAL competition-facing thesis, value proposition, positioning, and claim hierarchy  
-**Status:** Mechanism selected; application, audience, product proof, production transport, and final name unselected  
+**Status:** Re-entry Core foundation in progress; application, audience, product proof, concrete Agent adapter, and final app name unselected  
 **Last updated:** 2026-08-30  
 **Official basis refreshed:** [Devpost Official Rules](https://webmcp.devpost.com/rules) and
 [challenge overview](https://webmcp.devpost.com/), observed 2026-08-30
@@ -156,8 +156,11 @@ time. WebMCP is material rather than incidental.
 
 **The current project is not yet a competition-ready product.** Submitting the generic
 technical fixture would leave the two largest judging gaps unresolved: a complete coherent
-product experience and a credible real problem for a real audience. The highest-leverage
-move is app selection and product proof, not additional generic infrastructure.
+product experience and a credible real problem for a real audience. Re-entry Core foundation
+and app selection now proceed in parallel: the core must close only the contracts and process
+boundaries every candidate needs, while product proof remains the binding competition gate.
+Additional generic infrastructure with no selected-app or core-contract consumer is still out
+of scope.
 
 ## 7. Claim hierarchy
 
@@ -214,13 +217,15 @@ This summary does not replace current status or the named-commit
 
 | Surface | Current strategic role |
 |---|---|
-| MVP1 | Mechanism, Receiver authority, durability, adapter boundaries, conformance, and evidence foundation |
-| MVP2 | Contributor reference for modular protocol and Host seams, product-shaped UI, shared artifact, state choreography, and demo patterns |
+| MVP1 | Frozen reference for mechanism, Receiver authority, durability, adapter boundaries, conformance, and evidence |
+| MVP2 | Preserved contributor reference for modular protocol and Host seams, product-shaped UI, shared artifact, state choreography, and demo patterns |
+| Re-entry Core | Authoritative application-neutral implementation, selectively adapting the references under ADR-0006 |
 | Selected app | A later Host Adapter chosen through the app-selection ADR, reusing only assets that pass the relevant product, protocol, or adapter gate |
 
-The project should not choose between MVP1 and MVP2 as complete competing replacements.
-It should preserve MVP1's stronger authority and evidence contracts while selectively using
-MVP2's modularity and product-explanation strengths after the owning decision.
+The project does not choose between MVP1 and MVP2 as complete competing replacements. Re-entry
+Core preserves MVP1's stronger authority and evidence contracts while selectively adapting
+MVP2's modularity. Final-app product and presentation assets still wait for the owning app
+decision.
 
 ## 10. Competition proof contract
 

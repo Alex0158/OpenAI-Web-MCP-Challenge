@@ -1,7 +1,7 @@
-# WebMCP Re-entry Workflow — System Design
+# Re-entry Core — System Design
 
 **Role:** CANONICAL domain-neutral architecture and contracts  
-**Status:** Canonical target architecture bounded by ADR-0004; the production wake and continuation adapter remains unselected. Current as-built truth is owned by Core/00 and Core/05.  
+**Status:** Canonical Re-entry Core architecture under ADR-0006; the concrete Agent continuation adapter remains unselected. Current as-built truth is owned by Core/00 and Core/05.  
 **Last updated:** 2026-08-31
 
 ## 1. System objective
@@ -28,6 +28,14 @@ decision boundary.
 10. Delivery, run, tool, artifact, and human-decision records share correlation identifiers.
 11. Duplicate delivery cannot create duplicate runs or duplicate effects.
 12. The mechanism remains observable and usable through the host application's human interface.
+13. Receiver Core is the only Grant, event, and delivery authority; local and cloud shells may
+    not diverge semantically.
+14. Host, Cloud Receiver, Local Connector, and Agent runtime use explicit identity, credential,
+    persistence, and failure boundaries.
+15. Local Connector communication is outbound; it cannot expose a public device-control port or
+    widen Receiver authority.
+16. An unsupported activation capability fails visibly and is never hidden by an undeclared
+    fallback path.
 
 ## 3. Separation of responsibilities
 
@@ -35,9 +43,11 @@ decision boundary.
 |---|---|---|
 | **Host application domain** | User roles, workflow states, artifact, business rules, permissions | Selected demo app |
 | **Page execution** | Human UI, current state, stage-derived Site Tools, mutation validation | Selected demo app |
-| **Receiver control** | Re-entry offer, Grant binding, event validation, and durable delivery ledger | Core mechanism |
-| **Wake and continuation transport** | Activation opportunity, exact-context resume, Browser access, canonical-page re-entry | Selected Agent adapter |
-| **Agent runtime** | Managed context, browser access, navigation, Site Tool invocation | Selected Agent adapter |
+| **Receiver Core** | Manifest validation, Grant binding, event validation, durable delivery, leases, and acknowledgement | Re-entry Core |
+| **Cloud Receiver shell** | Authenticated ingress, hosted identity, Receiver Core lifecycle, and durable work availability | Re-entry Core deployment |
+| **Local Connector** | Paired-device identity, outbound retrieval, delivery claim, adapter dispatch, and acknowledgement | Re-entry Core device boundary |
+| **Agent continuation transport** | Managed-context activation, Browser access, canonical-page re-entry, and runtime evidence | Selected Agent adapter |
+| **Agent runtime** | Managed context, Browser access, navigation, Site Tool invocation | Selected Agent adapter |
 | **Governance** | Consent, scope, expiry, revocation, human boundary, audit visibility | User, organization, Receiver, host app |
 
 ## 4. Component model
@@ -48,13 +58,12 @@ flowchart LR
     A["External Agent"] <--> P
     P --> B["Host application backend"]
     B --> O["Transactional outbox"]
-    O --> G["Continuation Gateway"]
-    G --> R["Receiver ingress and Grant control"]
-    R --> D["Durable delivery ledger"]
-    D --> W["Wake Adapter"]
-    W --> C["Agent Continuation Adapter"]
+    O --> R["Cloud Receiver ingress"]
+    R --> D["Receiver Core and durable delivery ledger"]
+    D --> L["Outbound Local Connector"]
+    L --> C["Agent Continuation Adapter"]
     C --> A
-    C --> P
+    A --> P
     U --> R
     U --> P
 ~~~
@@ -73,23 +82,30 @@ flowchart LR
 - commits business changes and event intents atomically through an outbox;
 - emits bounded event data rather than prompts or full artifacts.
 
-### Continuation Gateway
+### Cloud Receiver
 
-- resolves an opaque Agent binding;
-- verifies issuer, origin, workflow, event type, signature, time window, sequence, and replay state;
-- durably records accepted and rejected delivery;
-- forwards accepted events to the Agent-side Receiver.
+- hosts the only production Receiver Core authority;
+- exposes authenticated Manifest enrollment, Grant control, event ingress, and Connector
+  delivery endpoints;
+- owns hosted service identity, issuer verification, durable work availability, and bounded
+  audit projection;
+- stores no full Host artifact and sends no arbitrary Agent instruction; and
+- never treats event acceptance as Agent activation or Host-effect completion.
 
-### Agent-side Receiver
+### Receiver Core
 
 - owns Continuation Grant records;
-- stores the mapping from opaque binding to managed Agent context;
+- stores the mapping from opaque Host binding to a private Connector or managed-context binding;
 - derives a trusted typed Continuation Receipt only after Manifest validation and
   Receiver-owned consent, then persists it through a trusted adapter surface;
 - enforces expiry, revocation, run, cost-like, and concurrency limits;
 - authenticates and records one bounded pending delivery before acknowledging acceptance;
-- delegates activation to a replaceable Wake Adapter;
+- offers accepted delivery through a bounded lease to an eligible Connector;
 - records run status without exposing platform credentials to the host app.
+
+Receiver Core is transport-neutral domain logic behind explicit persistence, clock, identity,
+and cryptographic ports. The local development service and Cloud Receiver use the same Core;
+they are not separate authority implementations.
 
 ### Durable delivery ledger
 
@@ -103,13 +119,16 @@ The current H1 implementation proves a durable pending event and effect-backed a
 but not a general claim lease or visibility timeout. H2 separately proves a leased enrollment
 outbox to a synthetic destination; it is not a production event broker.
 
-### Wake Adapter
+### Local Connector
 
-- creates an activation opportunity through a selected supported platform route;
-- carries only bounded correlation and no application authority;
-- may be direct push, a bounded scheduled pull, an approved paired connector, or a hosted
-  Agent trigger depending on the selected deployment topology;
-- cannot turn event acceptance into proof that an Agent ran.
+- establishes an authenticated outbound connection to the Cloud Receiver;
+- retrieves only deliveries assigned to its paired device identity;
+- claims one short-lived delivery lease before dispatch;
+- resolves a private per-Grant adapter binding without exposing it to the Host;
+- delegates activation to a replaceable Agent Continuation Adapter;
+- acknowledges only after the required correlated outcome is observed; and
+- cannot issue Grants, reinterpret events, host public inbound control, or turn queue
+  acceptance into proof that an Agent ran.
 
 ### Agent Continuation Adapter
 
@@ -125,7 +144,7 @@ An abstraction over the selected Agent platform. Under the current planning prem
 
 The concrete adapter requires a separate ADR after runtime validation.
 
-### Integration contract boundaries and deployment topologies
+### Integration contract boundaries and deployment profiles
 
 The mechanism has two distinct integration contracts. They must be versioned, tested, and
 documented separately.
@@ -133,24 +152,23 @@ documented separately.
 | Contract | Owner and consumer | Required responsibilities | Main portability question |
 |---|---|---|---|
 | **Website Backend -> Receiver** | This project defines the Receiver contract; each host backend is an event issuer | Typed event schema, issuer authentication, Grant scope, state-version checks, and idempotency | Can another backend conform without bespoke Receiver control logic? |
-| **Receiver -> Agent runtime** | The selected Agent Continuation Adapter implements the platform boundary | Context capture, receipt persistence, exact resume, browser access, canonical-page re-entry, and Site Tool invocation | Can the chosen runtime provide these capabilities in the intended deployment topology? |
+| **Cloud Receiver -> Local Connector** | Re-entry Core owns the delivery contract; a paired Connector consumes it | Device identity, outbound retrieval, lease, dispatch result, effect-backed acknowledgement, and revocation | Can accepted work survive offline and process-failure boundaries without device-control exposure? |
+| **Local Connector -> Agent runtime** | The selected Agent Continuation Adapter implements the platform boundary | Context capture, receipt persistence, bounded activation, Browser access, canonical-page re-entry, and Site Tool invocation | Can the chosen runtime provide these capabilities through a supported route? |
 
 The Receiver's event algorithm is domain-neutral even when a deterministic fixture pins one
 workflow, event type, issuer, or development key. Generalizing the protocol means adding
 configuration, issuer onboarding, key management, and lifecycle controls; it does not mean
 creating a different Receiver algorithm for every backend.
 
-The mechanism does not require one particular deployment topology:
+ADR-0006 selects this target reference topology for active development:
 
-- **Local or Agent-side Receiver:** a user-controlled Receiver or connector runs alongside
-  the Agent runtime. A hosted Website Backend can send authenticated events to it. This
-  topology does not require a public remote-control API for the local Desktop runtime.
-- **Hosted Receiver plus local connector:** the Receiver becomes an independent service,
-  while a paired local connector owns the device-specific Agent and Browser interaction.
-  The connector needs an explicit pairing, identity, lifecycle, and failure contract.
-- **Hosted Receiver plus hosted Agent runtime:** the Agent and browser are hosted as part of
-  the service, removing the local Desktop dependency. This is a different adapter and may
-  change the product's platform claim.
+- **Cloud Receiver plus outbound Local Connector:** the hosted service owns Receiver authority
+  and durable work; a paired Connector owns device-specific delivery and Agent-adapter dispatch.
+- **Local development profile:** the same Receiver Core may run in a local service for
+  deterministic development and tests. It is not an automatic shipping fallback.
+- **Alternative hosted Agent profile:** remains a reopen trigger if a supported hosted Agent can
+  provide the required Browser and genuine WebMCP with lower risk. It requires a later ADR and
+  cannot silently replace the Connector profile.
 
 Portability of the Website Backend-to-Receiver event protocol is separate from portability
 of the Receiver-to-Agent transport. A public Codex API is one possible solution to the
@@ -172,8 +190,9 @@ for a conforming backend to send a Receiver event.
 - Workspace Agents document supported external triggers, durable queueing, idempotent retry,
   and stable conversation keys, but do not document a Browser or genuine page-bound WebMCP
   surface for API-triggered runs. This remains an unverified hosted topology.
-- Production wake and continuation transport remains unselected. A hosted Agent topology is
-  distinct from continuation of an arbitrary local Desktop task.
+- The target process shape is selected, but the concrete Local Connector-to-Agent adapter
+  remains unselected. A hosted Agent topology is distinct from continuation of an arbitrary
+  local Desktop task and is not the current implementation target.
 
 ## 5. Host Application Adapter contract
 
@@ -199,13 +218,13 @@ default contract.
 Host page and authoritative backend
     | signed re-entry offer and typed event
     v
-Continuation Gateway
-    | verified event and opaque binding
+Cloud Receiver and Receiver Core
+    | accepted delivery bound to paired identity
     v
-User-controlled Receiver, grant store, and durable delivery ledger
-    | bounded activation request
+Outbound Local Connector
+    | leased delivery and private adapter binding
     v
-Wake and continuation adapter
+Agent Continuation Adapter
     | managed context binding
     v
 Agent platform and browser
@@ -216,8 +235,9 @@ Current state-derived WebMCP Site Tools
 
 No boundary inherits the previous boundary's authority:
 
-- the Gateway verifies event authenticity;
-- the Receiver verifies continuation authority;
+- the Cloud Receiver verifies issuer and event authenticity;
+- Receiver Core verifies continuation authority and reserves bounded delivery;
+- the Local Connector proves paired-device eligibility and a valid delivery lease;
 - the Agent adapter proves the intended context and browser path;
 - the host page verifies current identity, permissions, workflow, and state;
 - the domain layer verifies each requested effect.
@@ -255,8 +275,8 @@ No boundary inherits the previous boundary's authority:
 
 ### Phase D — Re-entry and continuation
 
-18. An available Wake Adapter creates one bounded activation opportunity.
-19. The Agent Continuation Adapter resumes the bound Agent context.
+18. An eligible paired Local Connector leases one bounded pending delivery.
+19. The Agent Continuation Adapter attempts the declared bounded context activation.
 20. An eligible browser opens the canonical workflow URL.
 21. The host application authenticates the current user and renders current state.
 22. The Agent verifies origin, workflow ID, stage, state version, and artifact revision through a Site Tool.
@@ -472,7 +492,7 @@ defines a different bounded consequence.
 ## 11. Persistence and atomicity
 
 The target host state transition and event intent commit in one database transaction. An
-outbox relay may deliver at least once. The Gateway and Receiver make repeat delivery safe through:
+outbox relay may deliver at least once. The Host and Cloud Receiver make repeat delivery safe through:
 
 - unique event IDs;
 - workflow event sequence;
@@ -488,9 +508,10 @@ should prefer a database-backed outbox or queue unless the selected runtime requ
 ## 12. Decisions still required
 
 - host application domain, user, artifact, event, states, and human boundary;
-- final app and mechanism name;
+- final app and product name; Re-entry Core is the accepted mechanism name;
 - concrete Agent Continuation Adapter and supported client;
-- application framework, datastore, and hosting provider;
+- Cloud Receiver datastore, hosting provider, and multi-replica requirement;
+- Connector pairing, credential custody, revocation, update, and lifecycle contract;
 - manifest signing and key distribution;
 - identity and grant-subject model;
 - browser authentication recovery behavior;

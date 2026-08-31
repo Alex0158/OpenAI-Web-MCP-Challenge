@@ -1,7 +1,7 @@
-# WebMCP Re-entry Workflow — Trust, Security, and Reliability
+# Re-entry Core — Trust, Security, and Reliability
 
 **Role:** CANONICAL authority, security, and failure semantics  
-**Status:** Target domain-neutral trust and reliability baseline; bounded P0/H1/H2 evidence exists, while production reliability remains unverified.  
+**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006; bounded P0/H1/H2 evidence exists, while the new core and distributed topology remain unverified.  
 **Last updated:** 2026-08-31
 
 ## 1. Security objective
@@ -17,6 +17,7 @@ boundary separate.
 - host application session and user identity;
 - domain records, artifacts, decisions, and sensitive content;
 - Continuation Grants and revocation state;
+- paired Connector identity, device credentials, delivery leases, and acknowledgements;
 - workflow IDs, event integrity, state versions, and artifact revisions;
 - human approval decisions and receipts;
 - Receiver availability, signing material, and audit records.
@@ -35,6 +36,7 @@ trusted issuer origin
 + allowlisted event type
 + unused event ID and valid event sequence
 + unexpired run budget
++ eligible paired Connector and valid delivery lease
 + matching canonical origin and workflow
 + authenticated user with current host-app authorization
 + current business state permits the requested operation
@@ -57,9 +59,9 @@ Every Continuation Grant binds:
 - maximum total and concurrent runs;
 - revocation and current status;
 - opaque host-facing binding;
-- separately stored managed Agent-context binding.
+- separately stored Connector and managed Agent-context bindings.
 
-The permission surface is controlled by the Receiver or Agent host, not solely by page
+The permission surface is controlled by the Cloud Receiver or Agent host, not solely by page
 content. Website wording is untrusted input and may not hide scope or consequence.
 
 ## 5. Re-entry offer and key trust
@@ -121,7 +123,7 @@ Do not place a signature inside the body and ambiguously claim to sign the entir
 
 ## 7. Replay, ordering, and idempotency
 
-- event_id is globally unique and has a Gateway uniqueness constraint.
+- event_id is globally unique and has a Cloud Receiver uniqueness constraint.
 - event_sequence is monotonic within a workflow event stream and is distinct from state_version.
 - Different legitimate events may share one business state version.
 - The Receiver atomically reserves a run before acknowledging delivery.
@@ -154,6 +156,9 @@ The human decision produces a receipt correlated with the run and artifact.
 | Forged event | Detached signature, trusted key, timestamp check | Reject and audit |
 | Replay or duplicate delivery | Unique event ID, sequence, atomic run reservation | Return prior outcome |
 | Host learns Agent credentials | Opaque binding and Receiver-only context store | Revoke binding safely |
+| Unpaired Connector claims delivery | Paired-device identity, scoped authorization, short lease | Reject and audit |
+| Connector replays or steals a lease | Single active lease token, expiry, atomic claim and acknowledgement | Preserve pending or retryable delivery |
+| Connector exposes inbound device control | Outbound-only protocol and no public local listener | No activation surface |
 | Wrong user, tenant, or workflow resumes | Subject, origin, workflow, URL, and auth binding | Terminal run failure |
 | Stale event causes action | Canonical state read and expected version check | No mutation |
 | Tool metadata or output injects instructions | Treat definitions and results as untrusted; narrow schemas | Stop or request review |
@@ -229,8 +234,9 @@ by weakening the Browser requirement or substituting another execution surface.
 ## 11. Transactional delivery
 
 The host business transition and outbox record commit atomically. An outbox relay retries
-delivery. Gateway acceptance and replay state commit atomically. Receiver run reservation
-and grant run count commit atomically.
+delivery. Cloud Receiver acceptance, replay state, pending delivery, Receiver run reservation,
+and grant run count commit atomically. Connector lease claim and acknowledgement use separate
+atomic transitions and never extend Host or Grant authority.
 
 The MVP should prefer one durable datastore and an outbox worker. A separate broker is
 justified only when the selected runtime makes it necessary.

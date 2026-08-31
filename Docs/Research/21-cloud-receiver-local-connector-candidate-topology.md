@@ -1,7 +1,7 @@
 # Cloud Receiver and Local Connector — Candidate Topology
 
 **Role:** SUPPORTING reconciled topology and pre-ADR decision input  
-**Status:** Candidate only; the host application, production topology, wire protocol, and Agent adapter remain unselected  
+**Status:** Reconciled precursor adopted in part by ADR-0006; implementation, wire protocol, concrete Agent adapter, and final Host app remain unverified or unselected  
 **Integrated:** 2026-08-31, Europe/London  
 **Source provenance:** Distilled from Eddie's `codex/mvp2-tenderrelay` branch at
 `3f746694069486d3d48d5c6a26c73942ff6eab42`, especially the branch-local
@@ -11,16 +11,28 @@
 [ADR-0004](../Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md), and
 [Core/06](../Core/06-mvp-and-demo.md)
 
+## Decision update
+
+ADR-0006 now adopts one Receiver Core with a Cloud Receiver service shell and outbound Local
+Connector as the active Re-entry Core development topology. This selects the process and
+authority shape, not a deployed system or a supported Connector-to-Agent path. The final Host
+app still supplies operating requirements, and a materially better supported hosted-Agent path
+remains an explicit reopen trigger.
+
+The analysis below retains the evidence and kill gates that informed that decision. Where it
+says the topology was only a candidate or lacked implementation authority, ADR-0006 and
+RECORE-001 now control current development authority.
+
 ## Executive judgment
 
-A hosted Cloud Receiver plus an outbound Local Connector is a credible candidate topology
-when the selected application must accept events while the user's device is unavailable but
-still needs a local Codex and Browser execution surface later. It is not the selected
-architecture and does not become the next build merely because the components are
-engineering-feasible.
+A hosted Cloud Receiver plus an outbound Local Connector is the selected Re-entry Core
+reference topology. It is intended for applications that must accept events while the user's
+device is unavailable but still need a local Codex and Browser execution surface later. The
+selection does not prove that the components or last-mile join work.
 
-The application must be selected first. Its measured event frequency, waiting window,
-latency, offline behavior, privacy, administration, and cost constraints determine whether
+The application must be selected before this topology is specialized or claimed as product-fit.
+Its measured event frequency, waiting window, latency, offline behavior, privacy,
+administration, and cost constraints determine whether
 this topology is appropriate. Once a shortlisted application makes a local connector
 plausible, the connector-to-Agent-to-Browser/WebMCP join becomes the earliest kill test
 before a full hosted Receiver is built.
@@ -210,8 +222,8 @@ mechanism.
 
 ## 10. Decision consequence
 
-No Cloud Receiver, Local Connector, direct-queue adapter, or TenderRelay code is authorized
-for shared implementation by this report. After app selection, the team should choose the
-smallest topology that satisfies the recorded requirements, run only its earliest material
-kill gate, and create an ADR before establishing a cross-layer production contract.
-
+This report no longer controls implementation authority. ADR-0006 and RECORE-001 authorize the
+application-neutral Receiver Core, Cloud Receiver, and Local Connector foundation. They do not
+authorize a direct-queue adapter, TenderRelay import, production credentials, deployment, or a
+claim that the Connector-to-Agent-to-Browser/WebMCP join works. The earliest material adapter
+kill gate remains required before a real Agent adapter is integrated.

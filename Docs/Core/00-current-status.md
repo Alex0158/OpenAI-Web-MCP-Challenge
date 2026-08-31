@@ -2,11 +2,11 @@
 
 **Role:** CANONICAL current truth  
 **As of:** 2026-08-31, Europe/London  
-**Selected direction:** WebMCP re-entry workflow mechanism  
+**Selected direction:** Re-entry Core — the domain-neutral WebMCP re-entry workflow mechanism  
 **Demo web application:** TBD  
 **Final product name:** TBD  
-**Phase:** Bounded local mechanism feasibility passed through P0, H1, H2a, and the synthetic H2 service contract; both standalone App Server Desktop-Browser join variants failed in the current build, D4 is inconclusive and frozen, and product selection, a supported production transport or distinct hosted topology, product value, and judge portability remain open.  
-**Controlling decisions:** [ADR-0002](../Decisions/ADR-0002-separate-mechanism-from-demo-app.md), [ADR-0003](../Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md), [ADR-0004](../Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md), and [ADR-0005](../Decisions/ADR-0005-run-additive-durable-enrollment-spike.md)
+**Phase:** Re-entry Core foundation started under ADR-0006. Bounded local mechanism feasibility remains passed through P0, H1, H2a, and the synthetic H2 service contract; the authoritative `reentry-core/` implementation is not yet locally verified, both standalone App Server Desktop-Browser joins remain failed in the current build, and final-app selection, a supported Agent adapter, deployment, product value, and judge portability remain open.  
+**Controlling decisions:** [ADR-0002](../Decisions/ADR-0002-separate-mechanism-from-demo-app.md), [ADR-0003](../Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md), [ADR-0004](../Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md), [ADR-0005](../Decisions/ADR-0005-run-additive-durable-enrollment-spike.md), and [ADR-0006](../Decisions/ADR-0006-establish-reentry-core-development-baseline.md)
 
 ## 1. Evidence chronology
 
@@ -176,11 +176,13 @@ consent, persistence, delivery/effect acknowledgement, and evidence contracts th
 mainline mechanism. Its direct-queue path proves enqueue in tests and one bounded local
 observation, not dormant wake, Browser acquisition, or genuine WebMCP.
 
-The later documentation-only commit proposes a hosted Cloud Receiver plus outbound Local
-Connector. Main records that as an unselected candidate topology, not a feasibility verdict or
-implementation order. The canonical sequence remains app selection, transport requirements,
-candidate comparison, route-specific kill test, and then an ADR. Preserve the contributor
-branch and import source assets only after the applicable app, protocol, or adapter decision.
+The later documentation-only commit proposed a hosted Cloud Receiver plus outbound Local
+Connector. ADR-0006 now selects a reconciled version as the active Re-entry Core development
+topology: one Receiver Core, a Cloud Receiver service shell, and a separately runnable outbound
+Local Connector. This is an architecture and source-ownership decision, not runtime proof. The
+concrete Connector-to-Agent adapter remains unselected and must fail visibly rather than use an
+undeclared fallback. The contributor branch remains preserved; source assets require selective,
+provenance-aware adaptation.
 See [Research 17](../Research/17-mvp1-mvp2-comparative-integration-review.md),
 [Research 21](../Research/21-cloud-receiver-local-connector-candidate-topology.md), and
 [Research 22](../Research/22-mvp2-selective-integration-provenance.md).
@@ -246,6 +248,7 @@ live WebMCP session
 |---|---|---|
 | Core problem class | **DECIDED** | Multi-stage web work breaks when page-scoped Agent sessions end before later business events |
 | Re-entry workflow mechanism | **DECIDED** | Enrollment, Grant, authenticated pending delivery, separate activation, canonical re-entry, dynamic tools, human boundary |
+| Re-entry Core identity and source baseline | **DECIDED; FOUNDATION IN PROGRESS** | ADR-0006 establishes `reentry-core/`, freezes MVP1/MVP2 as references, and selects one Receiver Core with Cloud Receiver and outbound Local Connector process shells |
 | Website Backend-to-Receiver event protocol | **DECIDED AS PROJECT-OWNED CONTRACT** | ADR-0004 separates typed event acceptance from platform-specific Agent activation |
 | Receiver-to-Agent continuation adapter | **UNSELECTED FOR PRODUCTION** | The current-build private Desktop bridge completed P0; Scheduled pull passed bounded current-build probes; neither is a documented production bridge |
 | Standalone App Server Browser join | **BOTH TESTED VARIANTS FAILED IN CURRENT BUILD** | The cold thread's Browser selector returned `iab-unavailable` before page access; that signal does not identify the absent precondition. Exact warm resume returned an active-writer rejection for the supplied task. The warm public artifact does not independently prove writer ownership or priming. These tested joins are not the selected Desktop adapter |
@@ -289,7 +292,7 @@ hosted, cross-user, or clean-room judge-reproducible.
 | Fresh Agent context can discover genuine Site Tools without prior project turns or project-file access | **C1 VERIFIED IN SAME ENVIRONMENT** | App-held traces show two separate no-history, no-project-file probes using fresh tabs and fresh page-bound handles for the official control and local P0 Host; each invoked one manifest-annotated read-only Site Tool, and no mutating Site Tool was invoked. Fresh user-visible task, account/workspace, machine, public deployment, and judge portability remain untested |
 | Both documented eligible models can perform fresh Site Tool discovery and one current-state read | **M1 VERIFIED ONCE PER MODEL IN SAME ENVIRONMENT** | Controller-assigned low-effort Sol and Terra arms returned the same official and local manifests and invoked the same manifest-annotated read-only tools once per page. Both documentation preflights failed before the Site Tool calls; no Site Tool invocation retry or mutating Site Tool occurred. This is not model parity, and the repo record is not a self-contained public model-assignment package |
 | Scheduled-pull production economics | **STRUCTURALLY CONSTRAINED; APP INPUTS UNKNOWN** | The watch-window model quantifies no-op runs, latency, usage stress, lifecycle burden, and expected value, but exact per-run usage, persistent-event observation probability or a replacement arrival/availability model, value, and tolerance must be measured for the selected app |
-| Eddie MVP2 and Cloud Receiver/Local Connector proposal | **SELECTIVELY DOCUMENTED; RUNTIME UNMERGED; TOPOLOGY UNSELECTED** | Runtime remains preserved on `codex/mvp2-tenderrelay`; the latest branch commit adds planning and provenance only. Main retains app selection and its requirements profile before transport or topology selection |
+| Eddie MVP2 and Cloud Receiver/Local Connector proposal | **SELECTIVELY ADOPTED THROUGH ADR-0006; CONTRIBUTOR RUNTIME UNMERGED** | Re-entry Core adopts the reconciled process shape, not MVP2 Receiver authority, JSON persistence, caller-asserted consent, queue assumptions, or runtime claims |
 | Stage-A page can deliver the bounded manifest through genuine WebMCP | **VERIFIED FOR Q1** | Clean-run discovery and invocation returned manifest `rm_ZGVXl-elc3QTTA`, matched to the Receiver trace |
 | Resumed run can invoke next-stage Site Tools | **VERIFIED FOR Q4** | The event-opened page read `READY`, exposed only the Stage-B inventory, and genuinely invoked `continue_artifact` |
 | Same-document Site Tool surface changes with authoritative state | **VERIFIED IN CURRENT CLIENT** | The [isolated genuine Browser probe](../../mvp/evidence/site-tool-lifecycle-probe-2026-08-30.json) changed `INITIAL` to `READY`; registration `AbortSignal` removed Stage-A tools, exposed Stage-B tools, and made the prior handle stale |
@@ -301,7 +304,7 @@ hosted, cross-user, or clean-room judge-reproducible.
 | Same artifact stops at human boundary | **VERIFIED FOR Q5** | Revision 1 continued to revision 2; commit remained false and unavailable as a Site Tool |
 | Exact thread adds value beyond structured continuation memory | **UNKNOWN** | Requires the controlled comparison in Research/06 |
 | Demo app meets a real user need | **UNKNOWN** | Domain and user not selected |
-| Challenge implementation | **P0 TECHNICAL FIXTURE PASSED** | The generic mechanism proof is complete; selected-app, deployment, demo, and submission work remain |
+| Challenge implementation | **RE-ENTRY CORE FOUNDATION IN PROGRESS** | The generic P0 mechanism proof remains frozen; authoritative core, selected-app, deployment, demo, and submission closure remain open |
 | Public deployment and clean-room judge flow | **NOT STARTED** | C1 clean Agent-context discovery was verified only in the current local environment; no public selected-app or independent-environment end-to-end evidence exists |
 | Devpost submission | **NOT VERIFIED AS SUBMITTED** | Requires live readback before any status change |
 
@@ -343,37 +346,29 @@ See [Official Rules research](../01-official-rules.md) and
 2. Preserve C1 as a verified same-environment clean Agent-context result without promoting it
    to account, workspace, machine, public-deployment, or judge portability. Preserve M1 as
    one bounded run per documented eligible model without claiming parity.
-3. Freeze the
-   [D4 Desktop-restart-with-independent-Receiver experiment](../../mvp/D4_H2B_RUNBOOK.md) at its
-   first `INCONCLUSIVE` no-event attempt. Preserve the evidence and repaired harness, but rerun D4
-   only if a selected local connector or relaunch topology makes same-machine Desktop restart
-   recovery material. It is no longer the next architecture gate.
-4. Preserve both App Server Browser-join failures and remove those tested standalone Desktop
-   joins from current selection unless a materially different supported contract or topology
-   appears. Do not retry the same route through dynamic tools, Chrome, REST, DOM automation,
-   generic MCP, task detachment, or manual reconstruction.
-5. Discuss and select the product layer and demo application with Eddie using observed
-   workflow evidence plus explicit product, WebMCP, execution, judgeability, and
-   watch-window economics gates.
-6. Derive the continuation-adapter candidates from the selected app's requirements. Treat
-   Workspace Agents as a distinct entitlement-dependent hosted candidate, not a presumed
-   fallback. Its external trigger, durable queue, and stable conversation key are documented;
-   Browser and genuine page-bound WebMCP are not. If entitlement is available and the selected
-   app makes that topology plausible, run the bounded gate in Research 20. Do not describe it as
-   continuation of an arbitrary local Desktop task or let unavailable entitlement block app
-   selection.
-7. On the selected workflow, run C2 with a self-contained redacted evidence package; compare
-   Agent re-entry with deterministic Host automation and notification/deep link; compare
-   exact-thread continuation with a strong bounded capsule; and compare genuine WebMCP
-   re-entry with a strong authenticated API.
-8. Select the transport from the app's latency, offline, privacy, administration, and cost
-   requirements. Use Research 16 to measure no-op load, usage per safe success, lifecycle
-   burden, and expected net value. Then test only the route-relevant D5/D6, busy-task,
-   concurrency, and distributed seams.
-9. After app and transport selection, build the additive P1 trust/delivery seam and repeat
-   the end-to-end flow from a separate clean-room machine.
-10. Build the selected-app vertical slice only after an accepted app-selection ADR, deploy
-   it, capture the public demo, and freeze the submission package.
+3. Complete [RECORE-001](../Development/RECORE-001-foundation.md) in bounded increments. First
+   establish the protocol and module-boundary kernel, then Receiver authority and durability,
+   then separate Cloud Receiver and Local Connector process evidence. Do not modify MVP1 or
+   MVP2 to create the new core.
+4. Preserve both App Server Browser-join failures and the frozen D4 result. Do not retry the
+   same route or hide it through polling, Chrome, REST, DOM automation, generic MCP, task
+   detachment, manual reconstruction, or another undeclared fallback.
+5. Define Connector pairing, credential custody, outbound delivery leases, revocation, and
+   effect-backed acknowledgement before integrating a real device-side adapter.
+6. Continue final-app selection in parallel. The selected app specializes Re-entry Core through
+   a Host Adapter and supplies event frequency, latency, offline, privacy, administration,
+   economics, tool, artifact, and human-boundary requirements; it does not reopen core authority
+   by default.
+7. Test a materially different supported Agent adapter only through a bounded gate that
+   distinguishes delivery retrieval, activation, Browser acquisition, canonical navigation,
+   genuine Site Tool invocation, Host effect, and acknowledgement.
+8. On the selected workflow, compare Agent re-entry with deterministic Host automation and a
+   notification/deep link; compare exact-thread continuation with a strong bounded capsule; and
+   compare genuine WebMCP re-entry with a strong authenticated API.
+9. Repeat the selected process boundaries from a separate clean-room machine and reconcile code,
+   tests, performance evidence, Core truth, and claim limits.
+10. Build and deploy the selected-app vertical slice only after its accepted ADR, then capture
+    the public demo and freeze the submission package.
 
 ## 9. Current non-claims
 

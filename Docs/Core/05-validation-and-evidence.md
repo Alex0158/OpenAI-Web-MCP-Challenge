@@ -1,7 +1,7 @@
-# WebMCP Re-entry Workflow — Validation and Evidence Plan
+# Re-entry Core — Validation and Evidence Plan
 
 **Role:** CANONICAL proof matrix and evidence gates  
-**Status:** Current proof matrix plus future evidence gates; bounded P0/H1/H2 evidence passed, D4 is inconclusive, and the supported transport-to-Browser/WebMCP, app, product, and judge gates remain open.  
+**Status:** Current proof matrix plus future evidence gates; Re-entry Core foundation is in progress, bounded P0/H1/H2 reference evidence passed, D4 is inconclusive, and the new core, supported Agent adapter, app, product, and judge gates remain open.  
 **Last updated:** 2026-08-31
 
 ## 1. Evidence discipline
@@ -48,8 +48,9 @@ The selected concept is proven only if one complete chain is observable:
 
 ~~~text
 valid Host transition and outbox intent
--> Receiver authenticates and durably records one pending delivery
--> an available wake and continuation adapter resumes the intended context
+-> Cloud Receiver authenticates and Receiver Core durably records one pending delivery
+-> a paired Local Connector leases the delivery through its outbound channel
+-> an available Agent Continuation Adapter activates the intended context
 -> eligible browser context
 -> canonical workflow page opens
 -> current identity and state are verified
@@ -105,6 +106,8 @@ the missing value must not be inferred as zero or retroactively upgraded to a pa
 | Capability | Current status | Required project evidence |
 |---|---|---|
 | Core re-entry mechanism selected | VERIFIED AS DECISION | ADR-0002 |
+| Re-entry Core identity, source root, and target process shape selected | VERIFIED AS DECISION | ADR-0006; implementation and runtime proof remain separate |
+| Authoritative `reentry-core/` implementation | NOT YET VERIFIED | RECORE-001 protocol, authority, separate-process, durability, and performance gates |
 | Final host application and user selected | UNKNOWN | Accepted app-selection ADR |
 | Page source registers genuine Site Tools | VERIFIED FOR Q1 AND Q4 | The clean run discovered and invoked genuine page-defined Site Tools in both `INITIAL` and private-adapter-resumed `READY` |
 | Tool surface changes with application state | VERIFIED FOR P0 | Stage A exposed four exact tools; the re-entered Stage B exposed only `get_workflow_context` and `continue_artifact` |

@@ -2,7 +2,7 @@
 
 **Role:** CANONICAL documentation governance and authority index  
 **Status:** Current index  
-**Project:** WebMCP re-entry workflow mechanism; demo app and final name TBD  
+**Project:** Re-entry Core; demo app and final app name TBD  
 **Last updated:** 2026-08-31
 
 This directory separates current product truth from challenge governance, evidence, and
@@ -51,7 +51,22 @@ platform-specific Agent transport and records the local Receiver deployment boun
 authorizes an isolated H2 service-contract spike for crash-recoverable enrollment without
 changing the frozen P0 or bounded H1 paths.
 
-## 3. Challenge governance
+[`Decisions/ADR-0006-establish-reentry-core-development-baseline.md`](Decisions/ADR-0006-establish-reentry-core-development-baseline.md)
+accepts Re-entry Core as the authoritative application-neutral implementation baseline,
+freezes MVP1 and MVP2 as references, and selects one Receiver Core with Cloud Receiver and
+outbound Local Connector process shells.
+
+## 3. Active development and closure
+
+- [`Development/README.md`](Development/README.md) — CANONICAL Re-entry Core development,
+  verification, evidence, and closure workflow plus the active-work index.
+- [`Development/RECORE-001-foundation.md`](Development/RECORE-001-foundation.md) — ACTIVE
+  implementation record for the Re-entry Core foundation and first contract kernel.
+
+These records control active scope and closure state. They do not override the owning Core or
+decision document and must not accumulate conversational history.
+
+## 4. Challenge governance
 
 These files remain active for the surfaces they own. They do not select the product.
 
@@ -60,7 +75,7 @@ These files remain active for the surfaces they own. They do not select the prod
 - [`03-technical-build-verification.md`](03-technical-build-verification.md) — SUPPORTING general WebMCP implementation and verification guidance.
 - [`05-requirement-evidence-audit.md`](05-requirement-evidence-audit.md) — SUPPORTING audit of the earlier challenge research package.
 
-## 4. Technical research and evidence
+## 5. Technical research and evidence
 
 These files preserve current analyses, bounded evidence, conditional risk catalogs, and
 named-commit snapshots. Each file's own status banner controls whether it is current,
@@ -87,23 +102,23 @@ an active next step.
 - [`Research/18-receiver-queue-and-wake-adapter-architecture-review.md`](Research/18-receiver-queue-and-wake-adapter-architecture-review.md) — SUPPORTING analysis that recommends a delivery-ledger-first Receiver boundary, treats Heartbeat as a bounded wake fallback, records the current Core decision to freeze D4, and isolates the unresolved supported-transport-to-Browser/WebMCP join.
 - [`Research/19-app-server-desktop-browser-join-verdict.md`](Research/19-app-server-desktop-browser-join-verdict.md) — SUPPORTING empirical verdict: the tested cold App-Server-owned thread returned `iab-unavailable` before page access, while standalone resume of the supplied warm task returned an active-writer rejection. Warm priming and writer ownership are controller-attested, not independently proven by the public artifact.
 - [`Research/20-workspace-agents-trigger-and-webmcp-boundary.md`](Research/20-workspace-agents-trigger-and-webmcp-boundary.md) — SUPPORTING official-capability audit: external trigger, durable queueing, and stable Workspace Agent conversations are documented, while Browser and genuine page-bound WebMCP remain unproven.
-- [`Research/21-cloud-receiver-local-connector-candidate-topology.md`](Research/21-cloud-receiver-local-connector-candidate-topology.md) — SUPPORTING reconciled candidate topology distilled from Eddie's contributor branch. App requirements remain the prior gate; no topology or adapter is selected.
+- [`Research/21-cloud-receiver-local-connector-candidate-topology.md`](Research/21-cloud-receiver-local-connector-candidate-topology.md) — SUPPORTING precursor analysis for the Cloud Receiver plus outbound Local Connector shape adopted by ADR-0006. Implementation and the concrete Agent adapter remain unverified.
 - [`Research/22-mvp2-selective-integration-provenance.md`](Research/22-mvp2-selective-integration-provenance.md) — SUPPORTING named-commit provenance and selective-reuse disposition. Eddie's runtime remains preserved on its contributor branch and is not merged by this documentation integration.
 
-## 5. Deprioritized ideation
+## 6. Deprioritized ideation
 
 - [`04-research-judgment-and-project-options.md`](04-research-judgment-and-project-options.md) is a DEPRIORITIZED broad option map. It no longer selects the active mechanism or application.
 - [`../References/Legacy-Ideation/README.md`](../References/Legacy-Ideation/README.md) records all earlier idea surfaces and their current status.
 - The `TwinSurface` framing remains useful background but is not the selected concept identity or novelty claim.
 
-## 6. Reference layer
+## 7. Reference layer
 
 - [`../References/TenderRelay/README.md`](../References/TenderRelay/README.md) — immutable dossier and tender reference package; not an app decision.
 - [`../References/WebMCP/00-source-index.md`](../References/WebMCP/00-source-index.md) — official and primary WebMCP source index.
 - [`../References/WebMCP_Analysis/README.md`](../References/WebMCP_Analysis/README.md) — broad WebMCP research dossier; supporting and partially historical.
 - [`../References/Other/`](../References/Other/) — supporter resources, conflicts, and unresolved external questions.
 
-## 7. Knowledge governance
+## 8. Knowledge governance
 
 - [`Knowledge/README.md`](Knowledge/README.md) — cross-layer routing and non-destructive governance for high-value knowledge.
 - [`Knowledge/01-priority-and-classification.md`](Knowledge/01-priority-and-classification.md) — four attention levels and independent evidence metadata.
@@ -116,7 +131,7 @@ The Knowledge package is additive. Core, ADR, governing, evidence, and immutable
 files retain ownership of their surfaces; the register provides cross-layer routing rather
 than a second source of truth.
 
-## 8. Maintenance rules
+## 9. Maintenance rules
 
 1. Put canonical project behavior and status in `Core/`, not in the frozen dossier.
 2. Use Core/00 and Core/05 for current implementation and evidence, Core/01–04 and Core/06 for target behavior and architecture, and Core/07 only for the frozen P0 contract and its dated outcome.
@@ -129,7 +144,7 @@ than a second source of truth.
 9. Product, development, and submission artifacts are written in English. Conversation may use the user's language.
 10. Follow the repository [collaboration and commit gates](../AGENTS.md) for every contributor integration, commit, merge, and push.
 
-## 9. Update sequence
+## 10. Update sequence
 
 When a decision or implementation changes:
 
