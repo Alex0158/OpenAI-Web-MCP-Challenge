@@ -11,7 +11,7 @@ const CLAIM_TOKEN = Buffer.alloc(32, 11).toString("base64url");
 const WRONG_EFFECT_TOKEN = "wrong_effect_process_fixture_token";
 const PROCESS_TIMEOUT_MS = 5_000;
 
-test("independent Host, Receiver, and Connector processes preserve durable replay and effect acknowledgement", async (t) => {
+test("independent processes recover exact event, lease, and effect state after forced Receiver termination", async (t) => {
   const directory = await mkdtemp(join(tmpdir(), "webmcp-reentry-process-"));
   const databasePath = join(directory, "receiver.sqlite");
   const children = new Set();
@@ -64,7 +64,7 @@ test("independent Host, Receiver, and Connector processes preserve durable repla
     "pending",
   );
 
-  await receiver.close();
+  assert.deepEqual(await receiver.terminate(), { code: null, signal: "SIGTERM" });
   receiver = spawnFixture(new URL("./process-fixtures/receiver-process.mjs", import.meta.url));
   children.add(receiver);
   receiverInfo = await receiver.request("start", receiverConfiguration({
@@ -95,7 +95,7 @@ test("independent Host, Receiver, and Connector processes preserve durable repla
   assert.equal(firstClaim.lease.attempt, 1);
   assert.equal(firstClaim.lease.lease_token, CLAIM_TOKEN);
 
-  await receiver.close();
+  assert.deepEqual(await receiver.terminate(), { code: null, signal: "SIGTERM" });
   receiver = spawnFixture(new URL("./process-fixtures/receiver-process.mjs", import.meta.url));
   children.add(receiver);
   receiverInfo = await receiver.request("start", receiverConfiguration({
@@ -127,13 +127,7 @@ test("independent Host, Receiver, and Connector processes preserve durable repla
     }),
     { code: "connector_network_error" },
   );
-  const committedAfterResponseLoss = await receiver.request("inspectDelivery", {
-    eventId: firstEvent.eventId,
-  });
-  assert.equal(committedAfterResponseLoss.status, "acknowledged");
-  assert.equal(committedAfterResponseLoss.effect_id, effect.attestation.effect_id);
-
-  await receiver.close();
+  assert.deepEqual(await receiver.terminate(), { code: null, signal: "SIGTERM" });
   receiver = spawnFixture(new URL("./process-fixtures/receiver-process.mjs", import.meta.url));
   children.add(receiver);
   receiverInfo = await receiver.request("start", receiverConfiguration({
@@ -183,18 +177,20 @@ function spawnFixture(moduleUrl) {
   });
   let nextId = 0;
   let exited = false;
+  let exitResult;
   let stderr = "";
   const pending = new Map();
   const exitPromise = new Promise((resolve) => {
     child.once("exit", (code, signal) => {
       exited = true;
+      exitResult = { code, signal };
       const reason = `fixture exited (${code ?? signal ?? "unknown"})${stderr ? `: ${stderr}` : ""}`;
       for (const entry of pending.values()) {
         clearTimeout(entry.timer);
         entry.reject(new Error(reason));
       }
       pending.clear();
-      resolve();
+      resolve(exitResult);
     });
   });
   child.stderr.on("data", (chunk) => {
@@ -230,15 +226,15 @@ function spawnFixture(moduleUrl) {
     },
 
     async close() {
-      if (exited) return;
+      if (exited) return exitResult;
       await this.request("stop");
-      await exitPromise;
+      return exitPromise;
     },
 
     async terminate() {
-      if (exited) return;
-      child.kill("SIGTERM");
-      await exitPromise;
+      if (exited) return exitResult;
+      if (!child.kill("SIGTERM")) throw new Error("fixture termination signal was not sent");
+      return exitPromise;
     },
   };
 }

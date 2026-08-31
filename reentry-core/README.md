@@ -1,6 +1,6 @@
 # Re-entry Core
 
-**Status:** v0.1 protocol, Host SDK, Receiver C1, Connector delivery C2, and transport/process C3c locally verified  
+**Status:** v0.1 protocol, Host SDK, Receiver C1, Connector delivery C2, and transport/process C3d locally verified  
 **Authority:** ADR-0006 through ADR-0010 and `Docs/Development/RECORE-001-foundation.md`
 
 This directory is the authoritative source for new application-neutral Re-entry Core behavior.
@@ -54,8 +54,8 @@ effect-backed acknowledgement, transaction rollback, version-1 migration, and fi
 close-and-reopen persistence. Focused transport tests also cover ordinary JSON request mapping,
 no-work responses, bounds, redacted failures, origin policy, redirects, timeouts, malformed or
 stale responses, and absence of automatic retry. One test-only harness runs Host, Receiver, and
-Connector children independently and verifies restart replay, effect gating, response-loss
-convergence, and token non-persistence. It remains local evidence only.
+Connector children independently and verifies forced-termination replay, effect gating,
+response-loss convergence, and token non-persistence. It remains local evidence only.
 
 The benchmark is a local regression baseline, not a throughput promise or service SLA.
 

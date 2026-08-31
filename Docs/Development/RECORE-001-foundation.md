@@ -486,9 +486,9 @@ without adding runtime health, admin, test, or fallback routes.
 - The aggregate suite passes 48 of 48 tests on Node `v24.20.0` and Node `v26.5.0`; protocol
   conformance remains 11 of 11. Informational coverage is 89.86% lines, 74.90% branches, and
   97.20% functions.
-- Runtime package weight and dependencies are unchanged because every process shell is test-only:
-  zero runtime dependencies and 14 packed files at 28,508 bytes compressed and 146,580 bytes
-  unpacked.
+- Runtime source, exports, dependencies, and the 14-file pack selection are unchanged because every
+  process shell is test-only. Pack bytes are remeasured after documentation changes because the
+  package includes its README.
 
 This proves the ADR-0010 test-process boundary, graceful file-backed restart, unknown network
 outcome convergence after a committed acknowledgement, and token non-persistence. It does not
@@ -500,3 +500,36 @@ selected app.
 **Next entry condition:** prove one bounded forced-Receiver-termination recovery path and decide
 whether production single-owner enforcement needs a Core-adjacent contract. Do not add a daemon,
 supervisor, credential store, or fallback until that evidence identifies a necessary interface.
+
+### Increment C3d — forced Receiver termination
+
+**Closure:** `locally_verified` on 2026-08-31.
+
+- The C3c harness now terminates the Receiver with `SIGTERM` and no fixture cleanup command at
+  three authority boundaries: after a committed event returns `202`, after a private lease is
+  returned, and after acknowledgement commits while its HTTP response is deliberately destroyed.
+- Every child exit reports `signal: SIGTERM`. A new Receiver process opens the same SQLite file and
+  preserves exact event replay, the original claim token and lease without another attempt, and
+  the final Host effect as a duplicate acknowledgement after the unknown network outcome.
+- The focused forced-termination flow passes on Node `v24.20.0` and Node `v26.5.0`, including five
+  consecutive current-runtime runs. The aggregate suite remains 48 of 48; no runtime source,
+  export, dependency, listener route, or persistence schema changed.
+- `npm ls --omit=dev --all --json` remains dependency-free. The packed README now records C3d, so
+  the unchanged 14-file selection measures 28,650 bytes compressed and 146,941 bytes unpacked;
+  the runtime source bytes themselves did not change in C3c or C3d.
+
+This proves recovery after abrupt process termination at three already committed boundaries. It
+does not inject termination inside a SQLite transaction, prove two simultaneous Receiver owners,
+or supply a production supervisor. SQLite rollback is already covered through injected
+post-write failures in C1/C2, but that is not OS-crash evidence and is not relabelled here.
+
+Production single-owner enforcement is not added to the Core package now. Its correct mechanism
+depends on the selected deployment substrate: one service replica, a platform lease, a managed
+database transaction model, or a local supervisor have different stale-owner and recovery
+semantics. A generic lockfile before that choice would add a second failure protocol without
+proving the shipping topology.
+
+**Next entry condition:** keep process ownership explicit and select any production owner or
+durable Connector-custody mechanism only through a runtime-specific decision. Until then, continue
+with bounded Core quality, evidence reconciliation, and app-independent adapter gates rather than
+adding a daemon, lockfile, credential store, or fallback.
