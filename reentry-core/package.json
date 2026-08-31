@@ -13,6 +13,8 @@
     "./protocol": "./src/protocol.mjs",
     "./host-sdk": "./src/host-sdk.mjs",
     "./receiver-core": "./src/receiver-core.mjs",
+    "./cloud-receiver-http": "./src/cloud-receiver-http.mjs",
+    "./local-connector-client": "./src/local-connector-client.mjs",
     "./sqlite-receiver-store": "./src/sqlite-receiver-store.mjs"
   },
   "scripts": {

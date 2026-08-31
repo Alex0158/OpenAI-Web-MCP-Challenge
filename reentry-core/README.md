@@ -1,7 +1,7 @@
 # Re-entry Core
 
-**Status:** v0.1 protocol, Host SDK, Receiver C1, and Connector delivery C2 locally verified  
-**Authority:** ADR-0006 through ADR-0009 and `Docs/Development/RECORE-001-foundation.md`
+**Status:** v0.1 protocol, Host SDK, Receiver C1, Connector delivery C2, and transport C3b locally verified  
+**Authority:** ADR-0006 through ADR-0010 and `Docs/Development/RECORE-001-foundation.md`
 
 This directory is the authoritative source for new application-neutral Re-entry Core behavior.
 MVP1 and MVP2 remain unchanged references.
@@ -23,6 +23,11 @@ MVP1 and MVP2 remain unchanged references.
   transactions, additive schema migration, WAL and full synchronous durability for file-backed
   state, and no fallback.
 - `src/sqlite-receiver-schema.mjs` — internal versioned schema and delivery projection.
+- `src/cloud-receiver-http.mjs` — strict bounded Host-event, delivery-claim, and effect-
+  acknowledgement HTTP mapping over an injected Receiver Core.
+- `src/local-connector-client.mjs` — outbound-only no-retry Connector client with secure-origin,
+  timeout, response-size, redirect, and exact-response validation.
+- `src/receiver-http-contract.mjs` — internal route, field, and transport-limit constants.
 - `test/` — positive, negative, tamper, boundary, privacy, rollback, restart, and isolation tests.
 - `protocol/test-vectors/` — frozen interoperability inputs and outputs.
 
@@ -44,13 +49,16 @@ trusted-origin anchoring, tamper and boundary rejection, frozen vectors, Host SD
 trusted consent integration, private-output boundaries, atomic run reservation, exact replay,
 target and subject isolation, replayable lease claims, bounded reclamation, stale-worker fencing,
 effect-backed acknowledgement, transaction rollback, version-1 migration, and file
-close-and-reopen persistence. It remains local evidence only.
+close-and-reopen persistence. Focused transport tests also cover ordinary JSON request mapping,
+no-work responses, bounds, redacted failures, origin policy, redirects, timeouts, malformed or
+stale responses, and absence of automatic retry. It remains local evidence only.
 
 The benchmark is a local regression baseline, not a throughput promise or service SLA.
 
 ## Current non-claims
 
-This kernel does not implement a production consent or pairing session, Cloud Receiver HTTP
-service, Local Connector process or dispatch, real Host-effect verifier, Agent activation,
-Browser acquisition, WebMCP runtime access, deployment, or a selected Host application.
-Unsupported capability is not replaced by a hidden fallback.
+This kernel does not implement a production consent or pairing session, TLS listener or public
+Cloud Receiver service, separately running Local Connector, durable Connector credential or claim-
+token storage, real Host-effect verifier, Agent activation, Browser acquisition, WebMCP runtime
+access, deployment, or a selected Host application. Unsupported capability is not replaced by a
+hidden fallback.

@@ -417,3 +417,44 @@ Browser, or WebMCP behavior is yet implemented or verified under ADR-0010.
 **Next entry condition:** implement the strict HTTP adapter and outbound Connector client, then
 prove exact Host event, claim, no-work, acknowledgement, redacted failure, restart replay, and
 token non-persistence across independent Host, Receiver, and Connector processes.
+
+### Increment C3b — HTTP adapter and outbound Connector client
+
+**Closure:** `locally_verified` on 2026-08-31.
+
+- `createCloudReceiverHttpHandler` maps only the three ADR-0010 routes to an injected synchronous
+  Receiver Core. It accepts bounded UTF-8 JSON with standard content-type syntax, rejects query,
+  content encoding, unknown route, wrong method, malformed body, oversized body, and claim or
+  acknowledgement extensions before Core invocation, and emits deterministic no-store responses.
+- Typed Receiver errors preserve only their bounded status and code. Unknown exceptions become
+  `receiver_internal_error`; no exception message, stack, request body, token, delivery payload, or
+  storage detail is returned.
+- `LocalConnectorClient` accepts HTTPS origins or literal loopback HTTP only, requires an explicit
+  100–60,000 millisecond timeout, follows no redirect, performs no automatic retry, and never
+  replaces the caller's claim token. It bounds response bytes and rejects invalid content type,
+  noncanonical response JSON, stream failure, malformed or extended shapes, stale leases, token
+  mismatch, receipt/continuation mismatch, and acknowledgement mismatch.
+- The root package export remains transport-free. Cloud HTTP and Connector client are explicit
+  subpaths; their shared route contract remains internal. Import probes passed without loading
+  `node:sqlite`.
+- Seven focused transport tests pass. They include ordinary noncanonical request JSON,
+  `202`/`200`/`204` mapping, raw route-alias and other pre-Core rejection, bounded error redaction,
+  secure-origin rejection, redirect and timeout failure with one observed request, no-work, exact
+  request bodies, noncanonical or BOM-prefixed JSON, oversized responses, stale or wrong-token
+  leases, and interrupted response streams.
+- The aggregate suite passed 47 of 47 tests on Node `v24.20.0` and Node `v26.5.0`; protocol
+  conformance remained 11 of 11. Informational coverage was 89.48% lines, 73.25% branches, and
+  95.79% functions.
+- `npm ls --omit=dev --all --json` reported no dependencies. `npm pack --dry-run --json` selected
+  14 runtime, README, and vector files: 28,508 bytes compressed and 146,580 bytes unpacked.
+
+This verifies the HTTP mapping and client behavior locally through loopback unit integration. It
+does not prove an independent Host, Receiver, or Connector process; file-backed network restart;
+concurrent process ownership; acknowledgement-response loss; TLS; production pairing; secure
+credential storage; real Host effects; a Connector daemon; Agent activation; Browser/WebMCP;
+deployment; or a selected app.
+
+**Next entry condition:** build test-only independent Host, Receiver, and Connector process
+fixtures around these unchanged public subpaths. Prove signed event ingress, durable acceptance,
+Receiver restart, exact claim replay, effect-backed acknowledgement, and token non-persistence
+without adding runtime health, admin, test, or fallback routes.
