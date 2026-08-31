@@ -559,3 +559,43 @@ yet implemented or locally verified under ADR-0011.
 contract tests, then prove strict input/result shape, expiry, correlation, immutable credential-
 free dispatch, every result class, one-call timeout/exception behavior, no fallback, and Node 24
 compatibility before selecting any concrete Agent platform.
+
+### Increment C4b — deterministic Agent Adapter boundary
+
+**Closure:** `locally_verified` on 2026-08-31.
+
+- The explicit `./agent-adapter` subpath now derives one immutable activation from a live delivery
+  lease, passes no Connector, lease, effect, or raw managed-context credential to the adapter,
+  validates exact receipt and continuation correlation, and invokes one injected adapter once.
+- The boundary accepts only the four ADR-0011 result classes and four bounded unavailable-
+  capability values. An exception, lease-bounded timeout, malformed result, or correlation mismatch
+  becomes a redacted `outcome_unknown`; no path retries, falls back, calls the Host, asserts an
+  effect, or acknowledges delivery.
+- Six focused deterministic tests cover strict and accessor-safe input, expiry, scope mismatch,
+  credential omission, immutability, every result class and unavailable capability, exception,
+  timeout, malformed result, and result mismatch. The fixture has no Agent, Browser, network,
+  Host, WebMCP, credential, or persistence behavior.
+- The aggregate suite passes 54 of 54 tests on Node `v24.20.0` and Node `v26.5.0`; protocol
+  conformance remains 11 of 11. Informational aggregate coverage is 89.71% lines, 74.58%
+  branches, and 97.03% functions; the new module is 90.55%, 77.17%, and 100% respectively. No
+  low-value behavior was added to increase coverage.
+- The reproducible Node `v24.20.0` local regression benchmark measured ten cold Node-process plus
+  Agent-subpath imports at 23.629 ms median, 118,460 activation derivations/s, and 61,920 accepted
+  dispatch wrappers/s across 10,000 iterations. This is deterministic local overhead, not Agent,
+  Browser, network, service, or end-to-end latency and not an SLA.
+- `npm ls --omit=dev --all --json` reports no dependency tree. The explicit Agent subpath and root
+  import pass package self-reference probes without loading `node:sqlite`, and the Agent symbols do
+  not leak through the root export. `npm pack --dry-run --json` selects 15 runtime, README, and
+  vector files: 31,189 bytes compressed and 161,874 bytes unpacked. Benchmarks and tests remain
+  outside the package allowlist.
+
+This proves only the platform-neutral ADR-0011 activation and result boundary with a deterministic
+adapter. It does not prove private context-binding capture or persistence, a supported Codex or
+Agent route, Agent activation, Browser acquisition, canonical-page opening, WebMCP discovery,
+Host effect, delivery acknowledgement, production Connector custody, deployment, or a selected
+application.
+
+**Next entry condition:** reconcile the smallest useful development runbook and closure evidence,
+then audit RECORE-001 against its bounded `locally_verified` target. Keep real adapter selection,
+private context-binding lifecycle, production process ownership, and app specialization behind
+their named runtime or application decisions.

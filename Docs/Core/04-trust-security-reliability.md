@@ -255,6 +255,12 @@ rollback, token non-persistence, and file reopen pass locally. This does not pro
 consent or pairing, an HTTP boundary, a separate Connector process, a real Host effect, OS-crash
 recovery, Agent activation, or distributed durability.
 
+Re-entry Core C4 independently verifies the ADR-0011 Agent Adapter contract with a deterministic
+no-platform adapter. One live lease derives one immutable activation without Connector, lease,
+effect, or raw context credentials. Unsupported, rejected, timeout, exception, malformed-result,
+and unknown-outcome paths return bounded observations and never retry or acknowledge. This does
+not prove a private context binding, real Agent activation, Browser, WebMCP, or Host effect.
+
 D4 remains `INCONCLUSIVE` and supplies no Desktop restart continuity evidence. Therefore,
 current evidence supports bounded additive mechanism and service-contract claims, not a
 general claim of production-safe enrollment, durable external Agent delivery, supported

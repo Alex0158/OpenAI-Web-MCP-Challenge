@@ -1,7 +1,8 @@
 # Re-entry Core
 
-**Status:** v0.1 protocol, Host SDK, Receiver C1, Connector delivery C2, and transport/process C3d locally verified  
-**Authority:** ADR-0006 through ADR-0010 and `Docs/Development/RECORE-001-foundation.md`
+**Status:** v0.1 protocol, Host SDK, Receiver C1, Connector delivery C2, transport/process C3d,
+and Agent Adapter contract C4b locally verified  
+**Authority:** ADR-0006 through ADR-0011 and `Docs/Development/RECORE-001-foundation.md`
 
 This directory is the authoritative source for new application-neutral Re-entry Core behavior.
 MVP1 and MVP2 remain unchanged references.
@@ -27,6 +28,8 @@ MVP1 and MVP2 remain unchanged references.
   acknowledgement HTTP mapping over an injected Receiver Core.
 - `src/local-connector-client.mjs` — outbound-only no-retry Connector client with secure-origin,
   timeout, response-size, redirect, and exact-response validation.
+- `src/agent-adapter.mjs` — credential-free lease-to-activation derivation, one-call bounded
+  adapter dispatch, and explicit accepted, unsupported, rejected, or unknown outcomes.
 - `src/receiver-http-contract.mjs` — internal route, field, and transport-limit constants.
 - `test/` — positive, negative, tamper, boundary, privacy, rollback, restart, and independent-
   process tests; process fixtures are not runtime entrypoints.
@@ -38,6 +41,7 @@ MVP1 and MVP2 remain unchanged references.
 npm test
 npm run test:conformance
 npm run benchmark:protocol
+npm run benchmark:agent-adapter
 node --test test/receiver-core.test.mjs test/sqlite-receiver-store.test.mjs
 node --test test/separate-process.test.mjs
 ```
@@ -56,8 +60,11 @@ no-work responses, bounds, redacted failures, origin policy, redirects, timeouts
 stale responses, and absence of automatic retry. One test-only harness runs Host, Receiver, and
 Connector children independently and verifies forced-termination replay, effect gating,
 response-loss convergence, and token non-persistence. It remains local evidence only.
+Deterministic Agent Adapter tests cover credential omission, expiry and correlation rejection,
+all bounded outcomes and unavailable capabilities, one-call behavior, timeout, exception,
+malformed result, immutability, and the no-effect/no-acknowledgement boundary.
 
-The benchmark is a local regression baseline, not a throughput promise or service SLA.
+The benchmarks are local regression baselines, not throughput promises or service SLAs.
 
 ## Current non-claims
 
@@ -65,4 +72,5 @@ This kernel does not implement a production consent or pairing session, TLS list
 Cloud Receiver service, production Connector daemon, durable Connector credential or claim-token
 storage, real Host-effect verifier, Agent activation, Browser acquisition, WebMCP runtime access,
 deployment, or a selected Host application. Test child processes are evidence scaffolding, not
-shipping services. Unsupported capability is not replaced by a hidden fallback.
+shipping services. The deterministic adapter is contract evidence, not a runtime fallback or a
+real Agent. Unsupported capability is not replaced by a hidden fallback.

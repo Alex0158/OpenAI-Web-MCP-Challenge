@@ -15,12 +15,14 @@
     "./receiver-core": "./src/receiver-core.mjs",
     "./cloud-receiver-http": "./src/cloud-receiver-http.mjs",
     "./local-connector-client": "./src/local-connector-client.mjs",
+    "./agent-adapter": "./src/agent-adapter.mjs",
     "./sqlite-receiver-store": "./src/sqlite-receiver-store.mjs"
   },
   "scripts": {
     "test": "node --test test/*.test.mjs",
     "test:conformance": "node --test test/protocol.test.mjs",
-    "benchmark:protocol": "node bench/protocol.mjs"
+    "benchmark:protocol": "node bench/protocol.mjs",
+    "benchmark:agent-adapter": "node bench/agent-adapter.mjs"
   },
   "engines": {
     "node": ">=24"

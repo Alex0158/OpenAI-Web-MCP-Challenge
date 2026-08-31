@@ -1,7 +1,7 @@
 # Re-entry Core — System Design
 
 **Role:** CANONICAL domain-neutral architecture and contracts  
-**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant, reservation, and pending-delivery authority, ADR-0009 fixes the locally verified Connector lease and effect-acknowledgement contract, ADR-0010 fixes the locally verified HTTP adapter, outbound Connector client, and forced-restart test-process isolation, and ADR-0011 specifies the platform-neutral Agent activation boundary. Production process shells, ADR-0011 implementation, and the concrete Agent continuation adapter remain open. Current as-built truth is owned by Core/00 and Core/05.  
+**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant, reservation, and pending-delivery authority, ADR-0009 fixes the locally verified Connector lease and effect-acknowledgement contract, ADR-0010 fixes the locally verified HTTP adapter, outbound Connector client, and forced-restart test-process isolation, and ADR-0011 fixes the locally verified deterministic Agent activation boundary. Production process shells, private context-binding lifecycle, and the concrete Agent continuation adapter remain open. Current as-built truth is owned by Core/00 and Core/05.  
 **Last updated:** 2026-08-31
 
 ## 1. System objective
@@ -236,8 +236,9 @@ for a conforming backend to send a Receiver event.
   and Receiver-only SQLite ownership. No mid-transaction crash injection, concurrent ownership,
   production process shell, TLS, pairing, real Host effect, Agent call, or distributed storage
   behavior has passed.
-- ADR-0011 specifies one typed credential-free activation and explicit result classifications.
-  Its code and deterministic contract evidence remain pending, and no concrete Agent platform is
+- ADR-0011 code and deterministic tests locally verify one typed credential-free activation,
+  explicit result classifications, one bounded adapter call, and no retry or effect inference.
+  The fixture has no Agent, Browser, Host, or WebMCP capability, and no concrete platform is
   selected.
 - The private P0 Desktop adapter completed one controlled same-task join but is not a
   documented platform contract.
