@@ -1,7 +1,7 @@
 # Re-entry Core — Trust, Security, and Reliability
 
 **Role:** CANONICAL authority, security, and failure semantics  
-**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 and ADR-0007; the v0.1 protocol and Host SDK kernel are locally verified, while Receiver authority and the distributed topology remain unverified.  
+**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through ADR-0008; the v0.1 protocol and Host SDK kernel are locally verified, Receiver authority is specified but not implemented, and the distributed topology remains unverified.  
 **Last updated:** 2026-08-31
 
 ## 1. Security objective
@@ -63,6 +63,11 @@ Every Continuation Grant binds:
 
 The permission surface is controlled by the Cloud Receiver or Agent host, not solely by page
 content. Website wording is untrusted input and may not hide scope or consequence.
+
+ADR-0008 requires an opaque decision token verified through a trusted Receiver consent-authority
+port. The Core accepts no `humanApproved` boolean, approval header, caller-selected subject, or
+caller-selected delivery target. A production Cloud shell must still prove its authenticated
+session and anti-CSRF implementation before this becomes runtime-verified consent.
 
 ## 5. Re-entry offer and key trust
 
@@ -240,6 +245,10 @@ The host business transition and outbox record commit atomically. An outbox rela
 delivery. Cloud Receiver acceptance, replay state, pending delivery, Receiver run reservation,
 and grant run count commit atomically. Connector lease claim and acknowledgement use separate
 atomic transitions and never extend Host or Grant authority.
+
+ADR-0008 makes the first half exact: one authenticated event, one event record, one private
+pending delivery, and the `1 -> 0` Grant run reservation commit together before the Host receives
+acceptance. The lease and acknowledgement transition remains unimplemented.
 
 The MVP should prefer one durable datastore and an outbox worker. A separate broker is
 justified only when the selected runtime makes it necessary.

@@ -1,7 +1,7 @@
 # Re-entry Core — System Design
 
 **Role:** CANONICAL domain-neutral architecture and contracts  
-**Status:** Canonical Re-entry Core architecture under ADR-0006 with the v0.1 contract kernel fixed by ADR-0007; the concrete Agent continuation adapter remains unselected. Current as-built truth is owned by Core/00 and Core/05.  
+**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol and ADR-0008 fixes Receiver consent, Grant, reservation, and pending-delivery authority. The concrete Agent continuation adapter remains unselected. Current as-built truth is owned by Core/00 and Core/05.  
 **Last updated:** 2026-08-31
 
 ## 1. System objective
@@ -166,6 +166,11 @@ Receiver Core validates the signed issuer claim against the resolved Grant. It d
 a caller-supplied workflow snapshot as independent proof of current Host truth. The live Host
 page still revalidates current identity, authorization, workflow state, state version, and
 artifact revision before any mutation.
+
+ADR-0008 fixes the next internal boundary: viewing a Manifest creates only a consent challenge;
+a trusted Receiver-session decision may create one effective private Grant and public binding;
+one authenticated event atomically consumes its single run and creates one private pending
+delivery. Event acceptance invokes no Connector or Agent and returns no private delivery ID.
 
 The Receiver's event algorithm is domain-neutral even when a deterministic fixture pins one
 workflow, event type, issuer, or development key. Generalizing the protocol means adding

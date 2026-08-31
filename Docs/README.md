@@ -60,6 +60,11 @@ outbound Local Connector process shells.
 freezes the strict v0.1 Manifest, opaque Host binding, detached Ed25519 event envelope, private
 receipt, process ports, bounded payloads, and rejected prompt-like fields.
 
+[`Decisions/ADR-0008-freeze-receiver-authority-and-durable-reservation.md`](Decisions/ADR-0008-freeze-receiver-authority-and-durable-reservation.md)
+freezes the Receiver-owned consent-authority port, effective private Grant, exact replay,
+atomic one-run reservation, private pending delivery, and zero-dependency SQLite reference-store
+boundary without adding HTTP, Connector, or Agent behavior.
+
 ## 3. Active development and closure
 
 - [`Development/README.md`](Development/README.md) — CANONICAL Re-entry Core development,

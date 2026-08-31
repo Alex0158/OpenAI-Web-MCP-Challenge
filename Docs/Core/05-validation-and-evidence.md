@@ -1,7 +1,7 @@
 # Re-entry Core — Validation and Evidence Plan
 
 **Role:** CANONICAL proof matrix and evidence gates  
-**Status:** Current proof matrix plus future evidence gates; the Re-entry Core v0.1 protocol and Host SDK kernel are locally verified, bounded P0/H1/H2 reference evidence passed, D4 is inconclusive, and Receiver authority, separate processes, a supported Agent adapter, app, product, and judge gates remain open.  
+**Status:** Current proof matrix plus future evidence gates; the Re-entry Core v0.1 protocol and Host SDK kernel are locally verified, Receiver authority is specified under ADR-0008 but not implemented, bounded P0/H1/H2 reference evidence passed, D4 is inconclusive, and separate processes, a supported Agent adapter, app, product, and judge gates remain open.  
 **Last updated:** 2026-08-31
 
 ## 1. Evidence discipline
@@ -109,6 +109,7 @@ the missing value must not be inferred as zero or retroactively upgraded to a pa
 | Re-entry Core identity, source root, and target process shape selected | VERIFIED AS DECISION | ADR-0006; implementation and runtime proof remain separate |
 | Re-entry Core v0.1 contract kernel selected | LOCALLY VERIFIED FOR PROTOCOL AND HOST SDK | ADR-0007 plus RECORE-001 Increment B2; 14 aggregate tests and 10 protocol conformance tests pass on the current runtime, the aggregate suite also passes on Node 24.20.0, and the frozen vector verifies without a private key |
 | Authoritative `reentry-core/` implementation | PARTIALLY LOCALLY VERIFIED | Protocol and Host SDK only; RECORE-001 Receiver authority, separate-process, durability, adapter, and broader performance gates remain open |
+| Receiver-owned consent, Grant, event reservation, and pending delivery | VERIFIED AS DECISION ONLY | ADR-0008; implementation, restart, rollback, replay, and private-output tests remain open |
 | Final host application and user selected | UNKNOWN | Accepted app-selection ADR |
 | Page source registers genuine Site Tools | VERIFIED FOR Q1 AND Q4 | The clean run discovered and invoked genuine page-defined Site Tools in both `INITIAL` and private-adapter-resumed `READY` |
 | Tool surface changes with application state | VERIFIED FOR P0 | Stage A exposed four exact tools; the re-entered Stage B exposed only `get_workflow_context` and `continue_artifact` |

@@ -5,8 +5,8 @@
 **Selected direction:** Re-entry Core — the domain-neutral WebMCP re-entry workflow mechanism  
 **Demo web application:** TBD  
 **Final product name:** TBD  
-**Phase:** Re-entry Core foundation is active under ADR-0006. The v0.1 protocol and Host SDK kernel are locally verified on Node 24 and the current Node 26 runtime; Receiver authority, durable delivery, separate Cloud Receiver and Local Connector processes, a supported Agent adapter, final-app selection, deployment, product value, and judge portability remain open. Bounded mechanism feasibility remains passed through P0, H1, H2a, and the synthetic H2 service contract, while both standalone App Server Desktop-Browser joins remain failed in the current build.  
-**Controlling decisions:** [ADR-0002](../Decisions/ADR-0002-separate-mechanism-from-demo-app.md), [ADR-0003](../Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md), [ADR-0004](../Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md), [ADR-0005](../Decisions/ADR-0005-run-additive-durable-enrollment-spike.md), [ADR-0006](../Decisions/ADR-0006-establish-reentry-core-development-baseline.md), and [ADR-0007](../Decisions/ADR-0007-freeze-reentry-core-v0.1-contract-kernel.md)
+**Phase:** Re-entry Core foundation is active under ADR-0006. The v0.1 protocol and Host SDK kernel are locally verified on Node 24 and the current Node 26 runtime; ADR-0008 specifies but does not yet implement Receiver-owned consent, Grant, atomic reservation, and pending-delivery authority. Separate Cloud Receiver and Local Connector processes, a supported Agent adapter, final-app selection, deployment, product value, and judge portability remain open. Bounded mechanism feasibility remains passed through P0, H1, H2a, and the synthetic H2 service contract, while both standalone App Server Desktop-Browser joins remain failed in the current build.  
+**Controlling decisions:** [ADR-0002](../Decisions/ADR-0002-separate-mechanism-from-demo-app.md), [ADR-0003](../Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md), [ADR-0004](../Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md), [ADR-0005](../Decisions/ADR-0005-run-additive-durable-enrollment-spike.md), [ADR-0006](../Decisions/ADR-0006-establish-reentry-core-development-baseline.md), [ADR-0007](../Decisions/ADR-0007-freeze-reentry-core-v0.1-contract-kernel.md), and [ADR-0008](../Decisions/ADR-0008-freeze-receiver-authority-and-durable-reservation.md)
 
 ## 1. Evidence chronology
 
@@ -250,6 +250,7 @@ live WebMCP session
 | Re-entry workflow mechanism | **DECIDED** | Enrollment, Grant, authenticated pending delivery, separate activation, canonical re-entry, dynamic tools, human boundary |
 | Re-entry Core identity and source baseline | **DECIDED; FOUNDATION IN PROGRESS** | ADR-0006 establishes `reentry-core/`, freezes MVP1/MVP2 as references, and selects one Receiver Core with Cloud Receiver and outbound Local Connector process shells |
 | Re-entry Core v0.1 contract kernel | **LOCALLY VERIFIED FOR PROTOCOL AND HOST SDK** | ADR-0007 fixes the contract; RECORE-001 records Node 24 and current-runtime conformance, strict negative and boundary behavior, and a frozen vector without claiming Receiver or process behavior |
+| Receiver authority and durable reservation | **SPECIFIED; IMPLEMENTATION NOT YET VERIFIED** | ADR-0008 fixes the consent-authority port, effective private Grant, exact event replay, atomic one-run reservation, private pending delivery, and SQLite reference-store boundary without claiming a consent UI, Connector, or Agent |
 | Receiver-to-Agent continuation adapter | **UNSELECTED FOR PRODUCTION** | The current-build private Desktop bridge completed P0; Scheduled pull passed bounded current-build probes; neither is a documented production bridge |
 | Standalone App Server Browser join | **BOTH TESTED VARIANTS FAILED IN CURRENT BUILD** | The cold thread's Browser selector returned `iab-unavailable` before page access; that signal does not identify the absent precondition. Exact warm resume returned an active-writer rejection for the supplied task. The warm public artifact does not independently prove writer ownership or priming. These tested joins are not the selected Desktop adapter |
 | P0 technical MVP boundary | **PASSED** | One harness answered all five frozen questions in one clean correlated run under ADR-0003 |
@@ -294,6 +295,7 @@ hosted, cross-user, or clean-room judge-reproducible.
 | Scheduled-pull production economics | **STRUCTURALLY CONSTRAINED; APP INPUTS UNKNOWN** | The watch-window model quantifies no-op runs, latency, usage stress, lifecycle burden, and expected value, but exact per-run usage, persistent-event observation probability or a replacement arrival/availability model, value, and tolerance must be measured for the selected app |
 | Eddie MVP2 and Cloud Receiver/Local Connector proposal | **SELECTIVELY ADOPTED THROUGH ADR-0006; CONTRIBUTOR RUNTIME UNMERGED** | Re-entry Core adopts the reconciled process shape, not MVP2 Receiver authority, JSON persistence, caller-asserted consent, queue assumptions, or runtime claims |
 | Re-entry Core v0.1 protocol and Host SDK | **LOCALLY VERIFIED IN PROCESS** | RECORE-001 Increment B2 passes strict Manifest, binding, receipt, canonical event, Ed25519, origin-anchor, tamper, boundary, frozen-vector, and Host-isolation tests on Node 24.20.0 and the current Node 26.5.0; this is not Receiver, durability, or separate-process evidence |
+| Re-entry Core Receiver authority C1 | **SPECIFIED** | ADR-0008 defines the first new-core consent, Grant, replay, reservation, pending-delivery, and persistence boundary; code and restart evidence remain open |
 | Stage-A page can deliver the bounded manifest through genuine WebMCP | **VERIFIED FOR Q1** | Clean-run discovery and invocation returned manifest `rm_ZGVXl-elc3QTTA`, matched to the Receiver trace |
 | Resumed run can invoke next-stage Site Tools | **VERIFIED FOR Q4** | The event-opened page read `READY`, exposed only the Stage-B inventory, and genuinely invoked `continue_artifact` |
 | Same-document Site Tool surface changes with authoritative state | **VERIFIED IN CURRENT CLIENT** | The [isolated genuine Browser probe](../../mvp/evidence/site-tool-lifecycle-probe-2026-08-30.json) changed `INITIAL` to `READY`; registration `AbortSignal` removed Stage-A tools, exposed Stage-B tools, and made the prior handle stale |
@@ -348,9 +350,9 @@ See [Official Rules research](../01-official-rules.md) and
    to account, workspace, machine, public-deployment, or judge portability. Preserve M1 as
    one bounded run per documented eligible model without claiming parity.
 3. Complete [RECORE-001](../Development/RECORE-001-foundation.md) in bounded increments. The
-   protocol and Host SDK kernel are locally verified; next implement Receiver authority and
-   durability, then prove separate Cloud Receiver and Local Connector processes. Do not modify
-   MVP1 or MVP2 to create the new core.
+   protocol and Host SDK kernel are locally verified and ADR-0008 freezes Receiver authority;
+   next implement and verify that bounded contract, then prove separate Cloud Receiver and Local
+   Connector processes. Do not modify MVP1 or MVP2 to create the new core.
 4. Preserve both App Server Browser-join failures and the frozen D4 result. Do not retry the
    same route or hide it through polling, Chrome, REST, DOM automation, generic MCP, task
    detachment, manual reconstruction, or another undeclared fallback.

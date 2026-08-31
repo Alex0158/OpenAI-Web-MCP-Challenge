@@ -24,6 +24,8 @@ Receiver, a working Codex wake path, a selected web app, or a judge-reproducible
 - ADR-0004 separates the event protocol from Agent runtime transport.
 - ADR-0006 establishes Re-entry Core, its source root, and target process topology.
 - ADR-0007 freezes the v0.1 protocol, cryptographic, binding, receipt, and module-port kernel.
+- ADR-0008 freezes the Receiver-owned consent, Grant, replay, durable reservation, pending
+  delivery, and reference-store boundary.
 - Core/01 through Core/05 own the durable behavior, architecture, trust, and evidence contracts.
 - MVP1 is the authority, durability, delivery, and evidence reference.
 - MVP2 supplies selectively reusable modular seams and product-composition patterns only.
@@ -229,3 +231,24 @@ delivery, deployment, performance under service load, or a selected application.
 **Next entry condition:** specify and implement the smallest Receiver-owned Grant, durable
 reservation, private receipt, and delivery-ledger authority boundary without adding an HTTP
 service or Agent adapter.
+
+### Increment C1a — Receiver authority contract
+
+**Closure:** `specified` on 2026-08-31.
+
+- ADR-0008 fixes the consent-authority port and explicitly rejects caller approval booleans or
+  headers.
+- It separates challenge creation, terminal human decision, private Grant, public binding,
+  private receipt, authenticated event acceptance, run-budget reservation, and pending delivery.
+- It selects a zero-runtime-dependency Node SQLite reference store without claiming hosted or
+  multi-replica durability and forbids a JSON or volatile fallback.
+- A local Node `v24.20.0` capability probe imported `node:sqlite`, enforced a foreign key setting,
+  created a constrained table, inserted and read one row, and closed cleanly.
+
+This is a decision and capability probe only. No Receiver Core, consent session, Grant record,
+event reservation, pending delivery, restart behavior, Connector, or Agent behavior is yet
+implemented or verified in the new core.
+
+**Next entry condition:** implement ADR-0008 behind a narrow Receiver Core and SQLite store,
+then prove consent, privacy, exact replay, rollback, close-and-reopen durability, bounds, and
+Node 24 behavior before adding leases or network services.
