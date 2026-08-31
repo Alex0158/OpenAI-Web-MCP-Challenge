@@ -127,6 +127,7 @@ This closes only the local Core and SQLite Grant-control boundary. It does not p
 administration surface, browser-session security, production identity, separate-process race,
 distributed store, managed-context ownership, Agent wake, deployment, or selected-app behavior.
 
-**Next entry condition:** select the smaller evidence-driven Program increment between private
-managed-context binding and the remaining separate-process fault matrix. Keep production control
-sessions and administration HTTP behind their own accepted runtime and security decision.
+**Follow-up:** RECORE-005 subsequently closed the bounded separate-process fault matrix without
+changing this increment's in-process claim. The next application-neutral entry is the minimum
+private managed-context binding lifecycle. Production control sessions and administration HTTP
+remain behind their own accepted runtime and security decision.

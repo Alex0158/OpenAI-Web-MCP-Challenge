@@ -1,7 +1,7 @@
 # Re-entry Core — System Design
 
 **Role:** CANONICAL domain-neutral architecture and contracts  
-**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant creation, reservation, and pending-delivery authority, ADR-0009 fixes the locally verified Connector lease and effect-acknowledgement contract, ADR-0010 fixes the locally verified HTTP adapter, outbound Connector client, and forced-restart test-process isolation, ADR-0011 fixes the locally verified deterministic Agent activation boundary, ADR-0012 fixes the locally verified non-production conformance/development profile, and ADR-0013 fixes the locally verified in-process Receiver Grant-control boundary. Private context-binding lifecycle, separate-process Grant-control evidence, production process shells, and the concrete Agent continuation adapter remain open. Current as-built truth is owned by Core/00 and Core/05.  
+**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 through ADR-0013 fix the locally verified protocol, authority, delivery, transport, deterministic Agent boundary, conformance profile, and Receiver Grant-control contracts. RECORE-005 adds exact source-repository separate-process fault evidence without changing those contracts or runtime architecture. Private context-binding lifecycle, production process shells, and the concrete Agent continuation adapter remain open. Current as-built truth is owned by Core/00 and Core/05.  
 **Last updated:** 2026-08-31
 
 ## 1. System objective
@@ -216,6 +216,13 @@ delivery authority, and preserves only pre-revocation Host-effect convergence. R
 this Core and SQLite behavior locally; control HTTP, browser session security, private context
 binding, separate-process races, and production identity remain outside that evidence.
 
+RECORE-005 verifies four exact test-process compositions on top of those accepted contracts:
+revocation before event, lease before revocation with pre-boundary effect convergence, expired-
+lease reclaim with stale-worker fencing, and `SIGKILL` after the delivery write but before the
+event transaction commits. It changes no runtime architecture, route, schema, dependency, or
+package surface and does not imply arbitrary-crash safety, production process ownership, private
+context binding, or Agent activation.
+
 The Receiver's event algorithm is domain-neutral even when a deterministic fixture pins one
 workflow, event type, issuer, or development key. Generalizing the protocol means adding
 configuration, issuer onboarding, key management, and lifecycle controls; it does not mean
@@ -246,12 +253,13 @@ for a conforming backend to send a Receiver event.
 - ADR-0009 delivery behavior is as-built only behind deterministic identity and effect-authority
   ports in one process. No HTTP service, production pairing, separate Connector, real Host effect,
   Agent call, or distributed storage behavior is part of that evidence.
-- ADR-0010 HTTP mapping, outbound client, and one test-only process harness pass bounded loopback
-  tests. Independent Host, Receiver, and Connector children prove file-backed replay after forced
-  Receiver termination, effect-gated acknowledgement, acknowledgement-response-loss convergence,
-  and Receiver-only SQLite ownership. No mid-transaction crash injection, concurrent ownership,
-  production process shell, TLS, pairing, real Host effect, Agent call, or distributed storage
-  behavior has passed.
+- ADR-0010 HTTP mapping, outbound client, and the test-only process harness pass bounded loopback
+  tests. Independent Host, Receiver, and Connector children prove file-backed restart replay,
+  effect-gated acknowledgement, acknowledgement-response-loss convergence, and Receiver-only
+  SQLite ownership. RECORE-005 adds the exact revocation, expired-lease, stale-worker, effect-
+  conflict, and one pre-commit `SIGKILL` case defined above. Concurrent ownership, arbitrary crash
+  placement, production process shells, TLS, pairing, real Host effects, Agent calls, and
+  distributed storage behavior remain unproved.
 - ADR-0011 code and deterministic tests locally verify one typed credential-free activation,
   explicit result classifications, one bounded adapter call, and no retry or effect inference.
   The fixture has no Agent, Browser, Host, or WebMCP capability, and no concrete platform is

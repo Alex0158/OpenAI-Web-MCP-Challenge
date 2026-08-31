@@ -1,7 +1,7 @@
 # Re-entry Core — Trust, Security, and Reliability
 
 **Role:** CANONICAL authority, security, and failure semantics  
-**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through accepted ADR-0013; the v0.1 protocol, Host SDK, bounded Receiver C1 authority, in-process Receiver Grant control, Connector delivery C2, HTTP adapter, outbound Connector client, forced-restart test-process isolation, deterministic Agent Adapter C4b, and non-production conformance/development profile C6b are locally verified. Private context binding, control-session and HTTP security, mid-transaction crash injection, the remaining separate-process revocation, stale-worker, and conflicting-effect matrix, production process ownership, consent and pairing, real Agent activation, real Host-effect verification, and distributed topology remain unverified.  
+**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through accepted ADR-0013; the v0.1 protocol, Host SDK, bounded Receiver authority and Grant control, Connector delivery, HTTP adapter, outbound Connector client, deterministic Agent Adapter, non-production conformance profile, and exact RECORE-005 test-process fault matrix are locally verified. Private context binding, control-session and HTTP security, arbitrary crash or power-loss safety, production process ownership, consent and pairing, real Agent activation, real Host-effect verification, and distributed topology remain unverified.  
 **Last updated:** 2026-08-31
 
 ## 1. Security objective
@@ -263,6 +263,15 @@ changes no state, real persisted revocation fences later event acceptance and de
 and only a Host effect confirmed before revocation may converge late. Rollback, file reopen,
 token non-persistence, and inconsistent-write failure pass locally. This does not prove a control
 session, anti-CSRF, administration HTTP, separate-process races, or production identity.
+
+RECORE-005 adds bounded separate-process evidence without widening that authority. Across distinct
+Host, Receiver, and Connector children, revocation remains durable before a later event; a lease
+issued before revocation can converge only through an effect confirmed before the revocation
+boundary; an expired lease can be reclaimed while the stale worker stays fenced; and a forced
+`SIGKILL` immediately after the delivery write but before transaction commit leaves no partial
+reservation. Exact replay and conflicting-effect outcomes remain visible. This proves only the
+four named source-repository test points, not arbitrary crash placement, power-loss durability,
+concurrent ownership, production supervision, real identity, or distributed coordination.
 
 Re-entry Core C4 independently verifies the ADR-0011 Agent Adapter contract with a deterministic
 no-platform adapter. One live lease derives one immutable activation without Connector, lease,

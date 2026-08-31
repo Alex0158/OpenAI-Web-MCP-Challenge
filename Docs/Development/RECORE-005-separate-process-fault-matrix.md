@@ -1,11 +1,13 @@
 # RECORE-005: Separate-Process Fault Matrix
 
-**Role:** ACTIVE IMPLEMENTATION RECORD  
+**Role:** CLOSED IMPLEMENTATION RECORD  
 **Risk profile:** High — forced process termination and durability evidence; no shipping behavior  
-**Status:** `specified`  
+**Status:** `separate_process_verified`  
 **Opened:** 2026-08-31  
+**Closed:** 2026-08-31  
 **Branch:** `codex/re-entry-core-foundation`  
 **Baseline:** `bc224cc2c25ee04b21ba7e9d9993e503575ab3b4`
+**Implementation commit:** `e5571fa8cb56ff129e787fb725a81d5ee94bfae5`
 
 ## Objective
 
@@ -132,6 +134,37 @@ or judge portability.
 - MVP1, MVP2, References, research, scenarios, final-app work, deployment, and submission;
 - user-owned dirty files outside the exact task paths.
 
-**Next entry condition:** implement only after this record is committed and remotely verified.
-On closure, return to the private managed-context binding gap and final exact Program audit rather
-than expanding the fault harness.
+## Verification record
+
+**Closure:** `separate_process_verified` on 2026-08-31.
+
+- P1 preserved exact revocation across Receiver restart, left the Grant run unspent, and rejected
+  the later event as `grant_revoked` without a delivery.
+- P2 kept exact claim replay retired after revocation, allowed only the effect confirmed before
+  revocation to converge, returned exact acknowledgement replay as a duplicate, and exposed a
+  different effect as `delivery_effect_conflict`.
+- P3 reclaimed a one-second expired lease through a second Connector process, rejected the old
+  claim as `claim_token_retired`, fenced the stale worker as `delivery_lease_invalid`, and allowed
+  the new lease to converge.
+- P4 observed Receiver exit by `SIGKILL`, no partial event transaction after restart, one exact
+  reacceptance as new work, and duplicate replay only after that complete reservation committed.
+- The focused process suite passed 5 of 5 tests, and the aggregate suite passed 71 of 71 tests,
+  on Node 24.20.0 and Node 26.5.0.
+- Protocol conformance passed 11 of 11 tests on both runtimes. Direct redacted conformance output
+  remained exact on both runtimes, and the normal profile rejects Grant-control commands because
+  it receives no control authority.
+- Runtime dependencies remain zero. Package selection remains 15 files, 32,602 compressed bytes,
+  and 170,432 unpacked bytes; conformance and test sources remain excluded.
+- Persisted database, WAL, and SHM bytes excluded the bounded raw Connector, claim, control, and
+  effect tokens before exact handled cleanup.
+- Only conformance and test sources changed. Runtime `src/`, routes, schema, protocol vectors,
+  public exports, dependencies, and package behavior did not change.
+- The implementation commit was pushed, and the remote branch resolved to the same exact SHA.
+
+This closure proves only P1 through P4 at the named source-repository test boundaries. It does not
+prove arbitrary crash placement, power-loss durability, production supervision, concurrent
+Receiver ownership, distributed coordination, real identity or Host-effect verification, private
+context binding, Agent activation, deployment, or judge portability.
+
+**Next entry condition:** return to the private managed-context binding gap and final exact Program
+audit. Do not expand the fault harness.

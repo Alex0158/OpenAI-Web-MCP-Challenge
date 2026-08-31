@@ -7,9 +7,9 @@
 **Closed:** 2026-08-31  
 **Branch:** `codex/re-entry-core-foundation`  
 **Baseline:** `9b55410ae645b88dc7c9cb3f6ea41907576bf01a`  
-**Follow-up:** RECORE-004 later closed the Grant-control gap at `locally_verified`; private
-managed-context binding, the remaining separate-process fault matrix, and final exact Program
-closure remain open.
+**Follow-up:** RECORE-004 closed the Grant-control gap at `locally_verified`, and RECORE-005
+closed the bounded fault matrix at `separate_process_verified`; private managed-context binding
+and final exact Program closure remain open.
 
 ## Objective
 
@@ -59,7 +59,7 @@ This audit changes no runtime behavior or Definition of Done. It uses four evide
 | Requirement | State | Direct evidence and remaining boundary |
 |---|---|---|
 | Cloud Receiver and Local Connector complete the bounded protocol as separate processes with separate state and credentials | `MET` | Shared role entrypoints run distinct Host, Receiver, and Connector children; only Receiver opens SQLite, Host retains its signing key, and Connector uses its own bearer and claim tokens over HTTP. This is non-production process evidence. |
-| Separate-process failure, restart, lease recovery, replay, acknowledgement loss, revocation, stale state, and duplicate-effect behavior | `PARTIAL` | Forced Receiver termination after committed event and lease state, exact event and claim replay, wrong-effect rejection, acknowledgement-response loss, restart, and same-effect convergence are direct. RECORE-004 makes revocation direct in-process; separate-process revocation, expired-lease stale-worker fencing, conflicting-effect behavior, and OS-level mid-transaction termination remain unproved. |
+| Separate-process failure, restart, lease recovery, replay, acknowledgement loss, revocation, stale state, and duplicate-effect behavior | `MET` | RECORE-005 directly verifies revocation-before-event, lease-before-revocation effect convergence and conflict, expired-lease reclaim with stale-worker fencing, and one exact pre-commit `SIGKILL` rollback point across distinct test processes. This remains bounded source-repository evidence, not production or arbitrary-crash proof. |
 | Local Connector cannot issue or widen continuation authority | `MET` | Its public client can only claim and acknowledge with Receiver-verified identity and Host-effect authority. It has no Grant, event-signing, scope, or persistence mutation port. |
 
 ### Agent boundary truth
@@ -106,10 +106,11 @@ Three application-neutral gaps remain:
 The final exact verification and Git evidence record follows those increments. These blockers are
 independent of final Web App selection and may proceed sequentially.
 
-RECORE-004 has since locally verified item 1 through ADR-0013, implementation commit
-`eadb7313984f8dd16e5fb973c8775e56f252d845`, and direct Core/store evidence. Items 2 and 3 remain
-the current application-neutral blockers. Separate-process revocation stays inside item 3; the
-in-process control result is not process evidence.
+RECORE-004 has since locally verified item 1 through ADR-0013 and implementation commit
+`eadb7313984f8dd16e5fb973c8775e56f252d845`. RECORE-005 has since verified item 3 through
+implementation commit `e5571fa8cb56ff129e787fb725a81d5ee94bfae5` and the exact four-case
+test-process matrix. Item 2 is now the only application-neutral implementation blocker before
+the final exact closure audit.
 
 ## Decision-gated non-blockers
 
@@ -142,6 +143,5 @@ must not be relabelled as proof of those surfaces.
 Grant inspection and revocation without bundling private context binding, production credential
 revocation, new HTTP administration, or process-fault scaffolding.
 
-**Current next entry condition:** choose the smallest coherent increment between private managed-
-context binding and the remaining separate-process fault matrix. Do not combine them merely to
-advance the Program label.
+**Current next entry condition:** define the smallest private managed-context binding lifecycle
+without choosing a concrete Agent wake path, production custody model, or final application.
