@@ -1,7 +1,7 @@
 # Re-entry Core — Validation and Evidence Plan
 
 **Role:** CANONICAL proof matrix and evidence gates  
-**Status:** Current proof matrix plus future evidence gates; the Re-entry Core v0.1 protocol, Host SDK, and ADR-0008 Receiver C1 authority are locally verified, bounded P0/H1/H2 reference evidence passed, D4 is inconclusive, and production consent, separate processes, Connector delivery, a supported Agent adapter, app, product, and judge gates remain open.  
+**Status:** Current proof matrix plus future evidence gates; the Re-entry Core v0.1 protocol, Host SDK, and ADR-0008 Receiver C1 authority are locally verified, ADR-0009 specifies but does not implement Connector leasing and effect acknowledgement, bounded P0/H1/H2 reference evidence passed, D4 is inconclusive, and production consent, pairing, separate processes, a supported Agent adapter, app, product, and judge gates remain open.  
 **Last updated:** 2026-08-31
 
 ## 1. Evidence discipline
@@ -110,6 +110,7 @@ the missing value must not be inferred as zero or retroactively upgraded to a pa
 | Re-entry Core v0.1 contract kernel selected | LOCALLY VERIFIED FOR PROTOCOL AND HOST SDK | ADR-0007 plus RECORE-001 Increment B2; 14 aggregate tests and 10 protocol conformance tests pass on the current runtime, the aggregate suite also passes on Node 24.20.0, and the frozen vector verifies without a private key |
 | Authoritative `reentry-core/` implementation | PARTIALLY LOCALLY VERIFIED | Protocol, Host SDK, Receiver authority, and the SQLite reference store pass bounded local tests; production consent, separate-process, Connector, adapter, deployment, and broader performance gates remain open |
 | Receiver-owned consent, Grant, event reservation, and pending delivery | LOCALLY VERIFIED, BOUNDED | ADR-0008 plus RECORE-001 C1b; 26 aggregate tests pass on Node 24.20.0 and Node 26.5.0, including private outputs, exact replay, injected rollback, WAL/schema rejection, and file close-and-reopen persistence. No production session, HTTP, OS-crash, Connector, Agent, or multi-replica behavior is proven |
+| Connector identity, delivery lease, and Host-effect acknowledgement | SPECIFIED, NOT IMPLEMENTED | ADR-0009 fixes the minimum trusted ports, replayable claim token, target scope, bounded attempts, stale-worker fencing, and effect-backed acknowledgement. Passing code, migration, process, pairing, Agent, and Host-effect evidence remain required |
 | Final host application and user selected | UNKNOWN | Accepted app-selection ADR |
 | Page source registers genuine Site Tools | VERIFIED FOR Q1 AND Q4 | The clean run discovered and invoked genuine page-defined Site Tools in both `INITIAL` and private-adapter-resumed `READY` |
 | Tool surface changes with application state | VERIFIED FOR P0 | Stage A exposed four exact tools; the re-entered Stage B exposed only `get_workflow_context` and `continue_artifact` |

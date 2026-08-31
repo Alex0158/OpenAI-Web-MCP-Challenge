@@ -1,7 +1,7 @@
 # Re-entry Core — System Design
 
 **Role:** CANONICAL domain-neutral architecture and contracts  
-**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol and ADR-0008 fixes Receiver consent, Grant, reservation, and pending-delivery authority. The concrete Agent continuation adapter remains unselected. Current as-built truth is owned by Core/00 and Core/05.  
+**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant, reservation, and pending-delivery authority, and ADR-0009 fixes the Connector lease and effect-acknowledgement contract. The ADR-0009 contract is not yet implemented and the concrete Agent continuation adapter remains unselected. Current as-built truth is owned by Core/00 and Core/05.  
 **Last updated:** 2026-08-31
 
 ## 1. System objective
@@ -172,6 +172,17 @@ a trusted Receiver-session decision may create one effective private Grant and p
 one authenticated event atomically consumes its single run and creates one private pending
 delivery. Event acceptance invokes no Connector or Agent and returns no private delivery ID.
 
+ADR-0009 fixes the Cloud Receiver-to-Local Connector Core contract without claiming a network
+service. An opaque Connector token resolves through a trusted identity port to one subject and
+delivery target. The Connector supplies a fresh 32-byte claim token so exact response-loss replay
+can recover the same target-scoped short lease while Receiver storage retains only its digest.
+Expired leases may be reclaimed only within a configured attempt bound; stale leases are fenced.
+Delivery becomes acknowledged only after a separate trusted authority verifies one exact Host
+effect correlated to the delivery, event, workflow, and human boundary. Queue acceptance,
+Connector health, adapter return, or `agent_started` and `completed` strings are not effect proof.
+Production pairing, credential custody, HTTP, separate processes, and Agent activation remain
+later boundaries.
+
 The Receiver's event algorithm is domain-neutral even when a deterministic fixture pins one
 workflow, event type, issuer, or development key. Generalizing the protocol means adding
 configuration, issuer onboarding, key management, and lifecycle controls; it does not mean
@@ -199,6 +210,8 @@ for a conforming backend to send a Receiver event.
   zero-dependency SQLite reference store. These pass local Node 24 and Node 26 tests plus file
   close-and-reopen verification; no service, Connector, lease, acknowledgement, or Agent call is
   part of that evidence.
+- ADR-0009 specifies Connector identity, lease, bounded retry, and Host-effect acknowledgement,
+  but none of those specified behaviors is yet as-built evidence.
 - The private P0 Desktop adapter completed one controlled same-task join but is not a
   documented platform contract.
 - H1 Scheduled pull completed one bounded event-gated continuation and remains a

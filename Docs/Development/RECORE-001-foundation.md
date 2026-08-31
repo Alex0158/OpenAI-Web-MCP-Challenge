@@ -26,6 +26,8 @@ Receiver, a working Codex wake path, a selected web app, or a judge-reproducible
 - ADR-0007 freezes the v0.1 protocol, cryptographic, binding, receipt, and module-port kernel.
 - ADR-0008 freezes the Receiver-owned consent, Grant, replay, durable reservation, pending
   delivery, and reference-store boundary.
+- ADR-0009 freezes trusted Connector identity, replayable target-scoped delivery leases, bounded
+  retry, stale-worker fencing, and Host-effect-backed acknowledgement.
 - Core/01 through Core/05 own the durable behavior, architecture, trust, and evidence contracts.
 - MVP1 is the authority, durability, delivery, and evidence reference.
 - MVP2 supplies selectively reusable modular seams and product-composition patterns only.
@@ -298,3 +300,35 @@ deployment, or distributed durability.
 **Next entry condition:** freeze the smallest Cloud Receiver-to-Local Connector contract,
 including pairing identity, outbound retrieval, lease fencing, and effect-backed acknowledgement,
 before adding either process shell or any Agent adapter.
+
+### Increment C2a — Connector lease and acknowledgement contract
+
+**Closure:** `specified` on 2026-08-31.
+
+- ADR-0009 fixes one trusted Connector-identity port and one exact identity attestation mapping
+  a Connector to one subject and delivery target; it does not treat a caller-supplied target as
+  authority or claim that production pairing exists.
+- A Connector-generated 32-byte claim token becomes the lease token. Exact response-loss replay
+  can return the same lease, while Receiver persistence keeps only its SHA-256 digest.
+- One short target-scoped lease, one active lease per target, compare-and-set fencing, Grant-
+  bounded expiry, and an explicit maximum attempt count prevent parallel or unbounded adapter
+  activation.
+- Delivery acknowledgement requires one trusted exact Host-effect attestation with outcome
+  `effect_applied_awaiting_human`. Queue acceptance, Connector health, Agent start, adapter
+  return, and caller completion strings are non-authoritative observations.
+- The SQLite evolution is additive: schema version 2 keeps immutable version-1 delivery facts,
+  adds one mutable state row per delivery, and retains a bounded digest-only attempt ledger so
+  an expired claim token can never regain authority. Version-1 migration must be atomic and
+  fail-closed.
+- The decision deliberately excludes production pairing, credential vaults, HTTP, long polling,
+  supervised workers, process separation, a real Agent adapter, Browser/WebMCP runtime behavior,
+  and app-specific Host-effect verification.
+
+This is a contract decision only. No Connector claim, lease, schema migration, acknowledgement,
+separate process, Agent activation, or Host effect is yet implemented or locally verified in the
+new core.
+
+**Next entry condition:** implement ADR-0009 in Receiver Core and the SQLite reference store,
+then prove identity scope, claim replay, bounded reclamation, stale-worker fencing, late
+effect-acknowledgement convergence, rollback, version-1 migration, close-and-reopen behavior,
+token non-persistence, and Node 24 compatibility before adding service shells.

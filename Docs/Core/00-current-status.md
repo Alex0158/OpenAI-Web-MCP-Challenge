@@ -5,8 +5,8 @@
 **Selected direction:** Re-entry Core — the domain-neutral WebMCP re-entry workflow mechanism  
 **Demo web application:** TBD  
 **Final product name:** TBD  
-**Phase:** Re-entry Core foundation is active under ADR-0006. The v0.1 protocol, Host SDK, and ADR-0008 Receiver C1 authority are locally verified on Node 24 and the current Node 26 runtime, including atomic pending-delivery reservation, rollback, and file close-and-reopen persistence. A production consent session, separate Cloud Receiver and Local Connector processes, delivery leasing and acknowledgement, a supported Agent adapter, final-app selection, deployment, product value, and judge portability remain open. Bounded mechanism feasibility remains passed through P0, H1, H2a, and the synthetic H2 service contract, while both standalone App Server Desktop-Browser joins remain failed in the current build.  
-**Controlling decisions:** [ADR-0002](../Decisions/ADR-0002-separate-mechanism-from-demo-app.md), [ADR-0003](../Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md), [ADR-0004](../Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md), [ADR-0005](../Decisions/ADR-0005-run-additive-durable-enrollment-spike.md), [ADR-0006](../Decisions/ADR-0006-establish-reentry-core-development-baseline.md), [ADR-0007](../Decisions/ADR-0007-freeze-reentry-core-v0.1-contract-kernel.md), and [ADR-0008](../Decisions/ADR-0008-freeze-receiver-authority-and-durable-reservation.md)
+**Phase:** Re-entry Core foundation is active under ADR-0006. The v0.1 protocol, Host SDK, and ADR-0008 Receiver C1 authority are locally verified on Node 24 and the current Node 26 runtime, including atomic pending-delivery reservation, rollback, and file close-and-reopen persistence. ADR-0009 now specifies the minimum Connector identity, replayable claim, bounded lease, and Host-effect-backed acknowledgement contract; its implementation, a production consent or pairing session, separate Cloud Receiver and Local Connector processes, a supported Agent adapter, final-app selection, deployment, product value, and judge portability remain open. Bounded mechanism feasibility remains passed through P0, H1, H2a, and the synthetic H2 service contract, while both standalone App Server Desktop-Browser joins remain failed in the current build.  
+**Controlling decisions:** [ADR-0002](../Decisions/ADR-0002-separate-mechanism-from-demo-app.md), [ADR-0003](../Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md), [ADR-0004](../Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md), [ADR-0005](../Decisions/ADR-0005-run-additive-durable-enrollment-spike.md), [ADR-0006](../Decisions/ADR-0006-establish-reentry-core-development-baseline.md), [ADR-0007](../Decisions/ADR-0007-freeze-reentry-core-v0.1-contract-kernel.md), [ADR-0008](../Decisions/ADR-0008-freeze-receiver-authority-and-durable-reservation.md), and [ADR-0009](../Decisions/ADR-0009-freeze-connector-lease-and-effect-acknowledgement.md)
 
 ## 1. Evidence chronology
 
@@ -251,6 +251,7 @@ live WebMCP session
 | Re-entry Core identity and source baseline | **DECIDED; FOUNDATION IN PROGRESS** | ADR-0006 establishes `reentry-core/`, freezes MVP1/MVP2 as references, and selects one Receiver Core with Cloud Receiver and outbound Local Connector process shells |
 | Re-entry Core v0.1 contract kernel | **LOCALLY VERIFIED FOR PROTOCOL AND HOST SDK** | ADR-0007 fixes the contract; RECORE-001 records Node 24 and current-runtime conformance, strict negative and boundary behavior, and a frozen vector without claiming Receiver or process behavior |
 | Receiver authority and durable reservation | **LOCALLY VERIFIED IN PROCESS AND ACROSS FILE REOPEN** | ADR-0008 and RECORE-001 C1b now cover the consent-authority port, effective private Grant, exact event replay, atomic one-run reservation, private pending delivery, rollback, and SQLite close-and-reopen behavior without claiming a consent UI, Connector, Agent, service, or OS-crash boundary |
+| Connector lease and effect acknowledgement | **SPECIFIED; NOT IMPLEMENTED** | ADR-0009 fixes trusted Connector identity, a client-replayable claim token, one target-scoped short lease, bounded attempts, stale-worker fencing, and acknowledgement only through a trusted correlated Host-effect attestation. Pairing, HTTP, separate processes, Agent activation, and runtime effects remain unproved |
 | Receiver-to-Agent continuation adapter | **UNSELECTED FOR PRODUCTION** | The current-build private Desktop bridge completed P0; Scheduled pull passed bounded current-build probes; neither is a documented production bridge |
 | Standalone App Server Browser join | **BOTH TESTED VARIANTS FAILED IN CURRENT BUILD** | The cold thread's Browser selector returned `iab-unavailable` before page access; that signal does not identify the absent precondition. Exact warm resume returned an active-writer rejection for the supplied task. The warm public artifact does not independently prove writer ownership or priming. These tested joins are not the selected Desktop adapter |
 | P0 technical MVP boundary | **PASSED** | One harness answered all five frozen questions in one clean correlated run under ADR-0003 |
@@ -296,6 +297,7 @@ hosted, cross-user, or clean-room judge-reproducible.
 | Eddie MVP2 and Cloud Receiver/Local Connector proposal | **SELECTIVELY ADOPTED THROUGH ADR-0006; CONTRIBUTOR RUNTIME UNMERGED** | Re-entry Core adopts the reconciled process shape, not MVP2 Receiver authority, JSON persistence, caller-asserted consent, queue assumptions, or runtime claims |
 | Re-entry Core v0.1 protocol and Host SDK | **LOCALLY VERIFIED IN PROCESS** | RECORE-001 Increment B2 passes strict Manifest, binding, receipt, canonical event, Ed25519, origin-anchor, tamper, boundary, frozen-vector, and Host-isolation tests on Node 24.20.0 and the current Node 26.5.0; this is not Receiver, durability, or separate-process evidence |
 | Re-entry Core Receiver authority C1 | **LOCALLY VERIFIED** | RECORE-001 C1b passes consent, privacy, replay, rollback, expiry, scope, transaction, WAL/schema, and file close-and-reopen tests on Node 24.20.0 and Node 26.5.0; no production session, service, Connector, Agent, or OS-crash behavior is inferred |
+| Re-entry Core Connector lease contract C2a | **SPECIFIED ONLY** | ADR-0009 defines the identity, lease, bounded-retry, and effect-acknowledgement semantics. No implementation, migration, separate process, Connector session, Host effect, or Agent behavior has passed yet |
 | Stage-A page can deliver the bounded manifest through genuine WebMCP | **VERIFIED FOR Q1** | Clean-run discovery and invocation returned manifest `rm_ZGVXl-elc3QTTA`, matched to the Receiver trace |
 | Resumed run can invoke next-stage Site Tools | **VERIFIED FOR Q4** | The event-opened page read `READY`, exposed only the Stage-B inventory, and genuinely invoked `continue_artifact` |
 | Same-document Site Tool surface changes with authoritative state | **VERIFIED IN CURRENT CLIENT** | The [isolated genuine Browser probe](../../mvp/evidence/site-tool-lifecycle-probe-2026-08-30.json) changed `INITIAL` to `READY`; registration `AbortSignal` removed Stage-A tools, exposed Stage-B tools, and made the prior handle stale |
@@ -307,7 +309,7 @@ hosted, cross-user, or clean-room judge-reproducible.
 | Same artifact stops at human boundary | **VERIFIED FOR Q5** | Revision 1 continued to revision 2; commit remained false and unavailable as a Site Tool |
 | Exact thread adds value beyond structured continuation memory | **UNKNOWN** | Requires the controlled comparison in Research/06 |
 | Demo app meets a real user need | **UNKNOWN** | Domain and user not selected |
-| Challenge implementation | **RE-ENTRY CORE FOUNDATION IN PROGRESS; RECEIVER C1 LOCALLY VERIFIED** | Protocol, Host SDK, and bounded Receiver authority are locally verified; separate services, Connector delivery, Agent activation, selected app, deployment, demo, and submission closure remain open |
+| Challenge implementation | **RE-ENTRY CORE FOUNDATION IN PROGRESS; RECEIVER C1 LOCALLY VERIFIED; C2A SPECIFIED** | Protocol, Host SDK, and bounded Receiver authority are locally verified; the Connector lease contract is specified but not implemented, and separate services, Agent activation, selected app, deployment, demo, and submission closure remain open |
 | Public deployment and clean-room judge flow | **NOT STARTED** | C1 clean Agent-context discovery was verified only in the current local environment; no public selected-app or independent-environment end-to-end evidence exists |
 | Devpost submission | **NOT VERIFIED AS SUBMITTED** | Requires live readback before any status change |
 
@@ -350,14 +352,16 @@ See [Official Rules research](../01-official-rules.md) and
    to account, workspace, machine, public-deployment, or judge portability. Preserve M1 as
    one bounded run per documented eligible model without claiming parity.
 3. Complete [RECORE-001](../Development/RECORE-001-foundation.md) in bounded increments. The
-   protocol, Host SDK, and ADR-0008 Receiver authority are locally verified; next freeze the
-   minimum pairing, outbound retrieval, lease, and acknowledgement contract, then prove separate
-   Cloud Receiver and Local Connector processes. Do not modify MVP1 or MVP2 to create the new core.
+   protocol, Host SDK, and ADR-0008 Receiver authority are locally verified, and ADR-0009 fixes
+   the minimum Connector identity, outbound claim, lease, and effect-backed acknowledgement
+   contract. Implement and verify that contract before proving separate Cloud Receiver and Local
+   Connector processes. Do not modify MVP1 or MVP2 to create the new core.
 4. Preserve both App Server Browser-join failures and the frozen D4 result. Do not retry the
    same route or hide it through polling, Chrome, REST, DOM automation, generic MCP, task
    detachment, manual reconstruction, or another undeclared fallback.
-5. Define Connector pairing, credential custody, outbound delivery leases, revocation, and
-   effect-backed acknowledgement before integrating a real device-side adapter.
+5. Keep production pairing, credential custody, and revocation distinct from the ADR-0009
+   identity port. Prove the lease and effect-backed acknowledgement Core first, then add only
+   the minimum process and credential controls needed by a real device-side adapter.
 6. Continue final-app selection in parallel. The selected app specializes Re-entry Core through
    a Host Adapter and supplies event frequency, latency, offline, privacy, administration,
    economics, tool, artifact, and human-boundary requirements; it does not reopen core authority

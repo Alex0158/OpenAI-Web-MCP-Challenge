@@ -1,7 +1,7 @@
 # Re-entry Core — Trust, Security, and Reliability
 
 **Role:** CANONICAL authority, security, and failure semantics  
-**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through ADR-0008; the v0.1 protocol, Host SDK, and bounded Receiver C1 authority are locally verified, while production consent, leasing, acknowledgement, separate processes, and distributed topology remain unverified.  
+**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through ADR-0009; the v0.1 protocol, Host SDK, and bounded Receiver C1 authority are locally verified, while the specified Connector identity, lease, and effect-acknowledgement contract is not yet implemented and production consent, pairing, separate processes, and distributed topology remain unverified.  
 **Last updated:** 2026-08-31
 
 ## 1. Security objective
@@ -138,6 +138,14 @@ Do not place a signature inside the body and ambiguously claim to sign the entir
 - Mutation tools require an idempotency key and expected artifact revision.
 - A duplicate event returns its prior outcome and never starts a second run.
 - Out-of-order events are rejected or parked for explicit reconciliation.
+- A Connector-generated 32-byte claim token makes exact lease-response replay idempotent while
+  only its digest persists.
+- One target has at most one unexpired lease; expired leases are reclaimed only below a bounded
+  attempt count, and a replaced lease cannot acknowledge.
+- Delivery acknowledgement requires a trusted exact Host-effect attestation. Connector or
+  adapter progress is never sufficient authority.
+- A final late acknowledgement may converge only when its effect occurred inside the final
+  lease and Grant window and no newer lease replaced it.
 
 ## 8. Human decision boundary
 
@@ -165,7 +173,8 @@ The human decision produces a receipt correlated with the run and artifact.
 | Replay or duplicate delivery | Unique event ID, sequence, atomic run reservation | Return prior outcome |
 | Host learns Agent credentials | Opaque binding and Receiver-only context store | Revoke binding safely |
 | Unpaired Connector claims delivery | Paired-device identity, scoped authorization, short lease | Reject and audit |
-| Connector replays or steals a lease | Single active lease token, expiry, atomic claim and acknowledgement | Preserve pending or retryable delivery |
+| Connector replays or steals a lease | Authenticated target, one active digest-bound claim token, expiry, bounded attempts, and atomic fencing | Preserve pending, retryable, or explicitly exhausted delivery |
+| Connector falsely reports completion | Trusted Host-effect attestation bound to delivery, event, workflow, and human boundary | Do not acknowledge |
 | Connector exposes inbound device control | Outbound-only protocol and no public local listener | No activation surface |
 | Wrong user, tenant, or workflow resumes | Subject, origin, workflow, URL, and auth binding | Terminal run failure |
 | Stale event causes action | Canonical state read and expected version check | No mutation |
