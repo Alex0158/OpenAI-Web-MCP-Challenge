@@ -1,7 +1,7 @@
 # Re-entry Core — Product Requirements
 
 **Role:** CANONICAL mechanism-level user behavior  
-**Status:** Target application-neutral requirements baseline; v0.1 contract accepted under ADR-0007, selected-app specialization and implementation remain open  
+**Status:** Target application-neutral requirements baseline; the v0.1 application-neutral Core is locally verified at its stated boundary, while selected-app specialization and application implementation remain open  
 **Last updated:** 2026-08-31
 
 ## 1. Requirements objective

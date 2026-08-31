@@ -1,22 +1,56 @@
 # OpenAI Web MCP Challenge
 
-A technical-validation MVP for a consented WebMCP re-entry workflow.
+An application-neutral Re-entry Core plus preserved technical evidence for a consented WebMCP
+workflow that can continue after the original page session or Agent turn has ended.
 
-> **Current status:** The domain-neutral mechanism has passed its controlled P0, H0b, H1,
-> H2a, and H2 service-contract gates. The final application, production transport, public
-> deployment, product value, and submission remain open.
+> **Current status:** The application-neutral Re-entry Core Program is complete at its
+> `locally_verified` boundary. The final Host application, production process shells, supported
+> Agent continuation adapter, deployment, product proof, judge reproduction, and submission remain
+> separate open gates.
 
 This repository is an independent challenge project and is not an official OpenAI product.
 The canonical status and claim boundary are maintained in
-[`Docs/Core/00-current-status.md`](Docs/Core/00-current-status.md).
+[`Docs/Core/00-current-status.md`](Docs/Core/00-current-status.md). The current reusable source is
+[`reentry-core/`](reentry-core/); [`mvp/`](mvp/) is a frozen MVP1 proof and evidence reference.
 
-## What this project proves
+## Repository layout
 
-The implemented fixture demonstrates that a user can authorize one bounded future business
-event to return an Agent to the authoritative web workflow, rediscover the Site Tools valid
-for the new state, continue the same artifact, and stop before a human-only commitment.
+```text
+reentry-core/             current application-neutral contracts and reference implementation
+mvp/                      frozen MVP1 fixture, runbooks, and bounded evidence
+Docs/Core/                canonical product, architecture, trust, and evidence truth
+Docs/Decisions/           accepted durable choices
+Docs/Development/         bounded implementation, verification, runbook, and closure records
+Docs/Research/            supporting research and unresolved analysis
+Docs/Scenarios/           unselected application mappings
+Experiments/              isolated reproducible experiments and verdicts
+References/               immutable, external, and historical reference material
+```
 
-The evidence includes:
+After an accepted app-selection ADR, selected-app and deployable runtime code should default to
+the following placement outside `reentry-core/` and `mvp/`, unless that ADR records a narrower
+reasoned layout:
+
+```text
+app/                      selected Host application, Host backend, WebMCP tools, and Host Adapter
+runtime/cloud-receiver/   hosted process shell around Receiver Core, when implemented
+runtime/local-connector/  device-side Connector and concrete Agent adapter, when implemented
+```
+
+Do not create those directories before their first real implementation, and do not move current
+Core code merely to anticipate a larger workspace.
+
+## What has been verified
+
+The current Re-entry Core locally verifies the application-neutral protocol, Host SDK, Receiver
+authority and Grant control, Connector delivery, bounded HTTP transport, independent test-process
+fault behavior, deterministic Agent Adapter contract, private managed-context resolution, and a
+non-production conformance profile. The frozen MVP1 fixture separately demonstrates that a user
+can authorize one bounded future business event to return an Agent to an authoritative web
+workflow, rediscover the Site Tools valid for the new state, continue the same artifact, and stop
+before a human-only commitment.
+
+The frozen MVP1 runtime evidence includes:
 
 - genuine page-bound WebMCP discovery and invocation in both workflow stages;
 - Receiver-owned consent, scoped Grants, and private managed-context binding;
@@ -46,7 +80,21 @@ live WebMCP page
 -> human decision boundary
 ```
 
-## Run the fixture
+## Verify Re-entry Core
+
+Requirements: Node.js 24 or newer.
+
+```sh
+cd reentry-core
+npm test
+node conformance/run.mjs
+```
+
+See [`reentry-core/README.md`](reentry-core/README.md) for focused checks and bounded benchmark
+commands. Passing these checks does not prove deployment, a production service, or real Agent and
+Browser activation.
+
+## Run the frozen MVP1 fixture
 
 Requirements: Node.js 24 or newer.
 
@@ -81,7 +129,7 @@ it must carry its own Browser/WebMCP evidence boundary. Scheduled Heartbeat rema
 fallback experiment, not the core mechanism or a production transport. The preserved D4
 Desktop-restart harness remains optional compatibility evidence.
 
-## Evidence
+## Frozen MVP1 evidence
 
 - [`mvp/evidence/p0-correlated-clean-run-2026-08-30-verdict.md`](mvp/evidence/p0-correlated-clean-run-2026-08-30-verdict.md) — complete correlated Q1–Q5 Desktop pass.
 - [`mvp/evidence/runbook-rehearsal-post-fix-2026-08-30-verdict.md`](mvp/evidence/runbook-rehearsal-post-fix-2026-08-30-verdict.md) — independent post-fix rehearsal.
@@ -96,27 +144,30 @@ Desktop-restart harness remains optional compatibility evidence.
 ## Start here
 
 1. [`Docs/README.md`](Docs/README.md) — documentation map, authority, and maintenance rules.
-2. [`Docs/Core/08-competition-thesis-and-positioning.md`](Docs/Core/08-competition-thesis-and-positioning.md) — single-document competition thesis, core value, positioning, judging posture, and claim hierarchy.
-3. [`Docs/Core/00-current-status.md`](Docs/Core/00-current-status.md) — current truth, phase, assumptions, and next gate.
-4. [`Docs/Core/01-product-definition.md`](Docs/Core/01-product-definition.md) — concept, mechanism, application boundary, and claim boundary.
-5. [`Docs/Core/02-product-requirements.md`](Docs/Core/02-product-requirements.md) — domain-neutral workflow behavior and acceptance criteria.
-6. [`Docs/Core/03-system-design.md`](Docs/Core/03-system-design.md) — reusable architecture, lifecycle, contracts, and integration slots.
-7. [`Docs/Core/04-trust-security-reliability.md`](Docs/Core/04-trust-security-reliability.md) — authority, controls, and failure semantics.
-8. [`Docs/Core/05-validation-and-evidence.md`](Docs/Core/05-validation-and-evidence.md) — proof matrix and evidence gates.
-9. [`Docs/Core/06-mvp-and-demo.md`](Docs/Core/06-mvp-and-demo.md) — demo-app selection, challenge scope, build order, and proof rhythm.
-10. [`Docs/Core/07-p0-technical-validation-mvp.md`](Docs/Core/07-p0-technical-validation-mvp.md) — frozen technical-validation contract and Q1–Q5 proof boundary.
-11. [`Docs/Scenarios/README.md`](Docs/Scenarios/README.md) — concrete examples that do not select the final application.
-12. [`Docs/Knowledge/README.md`](Docs/Knowledge/README.md) — cross-layer priority model, high-value register, source reconciliation, and thread/Memory distillation.
+2. [`Docs/Core/00-current-status.md`](Docs/Core/00-current-status.md) — current truth, phase, assumptions, and next gate.
+3. [`reentry-core/README.md`](reentry-core/README.md) — current package surface, commands, evidence boundary, and non-claims.
+4. [`Docs/Development/README.md`](Docs/Development/README.md) — development workflow, runbook, Program records, and closure states.
+5. [`Docs/Core/08-competition-thesis-and-positioning.md`](Docs/Core/08-competition-thesis-and-positioning.md) — competition thesis, core value, positioning, judging posture, and claim hierarchy.
+6. [`Docs/Core/01-product-definition.md`](Docs/Core/01-product-definition.md) — concept, mechanism, application boundary, and claim boundary.
+7. [`Docs/Core/02-product-requirements.md`](Docs/Core/02-product-requirements.md) — domain-neutral workflow behavior and acceptance criteria.
+8. [`Docs/Core/03-system-design.md`](Docs/Core/03-system-design.md) — reusable architecture, lifecycle, contracts, and integration slots.
+9. [`Docs/Core/04-trust-security-reliability.md`](Docs/Core/04-trust-security-reliability.md) — authority, controls, and failure semantics.
+10. [`Docs/Core/05-validation-and-evidence.md`](Docs/Core/05-validation-and-evidence.md) — proof matrix and evidence gates.
+11. [`Docs/Core/06-mvp-and-demo.md`](Docs/Core/06-mvp-and-demo.md) — demo-app selection, challenge scope, build order, and proof rhythm.
+12. [`Docs/Core/07-p0-technical-validation-mvp.md`](Docs/Core/07-p0-technical-validation-mvp.md) — frozen technical-validation contract and Q1–Q5 proof boundary.
+13. [`Docs/Scenarios/README.md`](Docs/Scenarios/README.md) — concrete examples that do not select the final application.
+14. [`Docs/Knowledge/README.md`](Docs/Knowledge/README.md) — cross-layer priority model, high-value register, source reconciliation, and thread/Memory distillation.
 
 ## Source-of-truth hierarchy
 
 1. Devpost Official Rules control legal eligibility and submission requirements.
 2. [`ADR-0002`](Docs/Decisions/ADR-0002-separate-mechanism-from-demo-app.md) controls the separation between the selected mechanism and the unselected demo app.
-3. `Docs/Core/00-current-status.md` controls current project status and evidence claims.
-4. Each named Core document controls its own product or system surface.
-5. Selected scenario and application decisions require a separate accepted ADR.
-6. The frozen TenderRelay dossier is an immutable concept reference, not a live specification or app decision.
-7. General WebMCP research and earlier ideas are supporting or historical references only.
+3. [`ADR-0006`](Docs/Decisions/ADR-0006-establish-reentry-core-development-baseline.md) controls the current source root, MVP reference freeze, and Receiver/Connector topology.
+4. `Docs/Core/00-current-status.md` controls current project status and evidence claims.
+5. Each named Core document controls its own product or system surface.
+6. Selected scenario and application decisions require a separate accepted ADR.
+7. The frozen TenderRelay dossier is an immutable concept reference, not a live specification or app decision.
+8. General WebMCP research and earlier ideas are supporting or historical references only.
 
 ## Preservation rule
 

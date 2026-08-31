@@ -35,50 +35,27 @@ roles and precedence below.
 | [`Core/06-mvp-and-demo.md`](Core/06-mvp-and-demo.md) | CANONICAL | App-selection and demo target; the scorecard is a supporting heuristic |
 | [`Core/07-p0-technical-validation-mvp.md`](Core/07-p0-technical-validation-mvp.md) | CANONICAL | Frozen P0 implementation contract and dated verdict; not the current production architecture |
 | [`Core/08-competition-thesis-and-positioning.md`](Core/08-competition-thesis-and-positioning.md) | CANONICAL | Competition-facing thesis, value proposition, differentiation, judging posture, and claim hierarchy; underlying status remains in Core/00 and Core/05 |
+| [`Decisions/README.md`](Decisions/README.md) | DECISION INDEX | Accepted, superseded, and partially superseded durable choices through ADR-0014 |
+| [`Development/README.md`](Development/README.md) | CANONICAL | Development workflow, runbook, bounded work records, verification, and closure states |
 | [`Scenarios/README.md`](Scenarios/README.md) | SUPPORTING | Concrete domain mappings that are not selected product truth |
 
-[`Decisions/ADR-0001-select-tenderrelay.md`](Decisions/ADR-0001-select-tenderrelay.md) is
-superseded historical evidence of the first formalization pass.
+The [decision register](Decisions/README.md) owns the complete decision index. ADR-0001 is
+superseded by ADR-0002; ADR-0004 is partially superseded by ADR-0006 and ADR-0007; ADR-0006 through
+ADR-0014 control the current Re-entry Core source, topology, protocol, authority, delivery,
+transport, deterministic Agent boundary, conformance, Grant control, and private binding
+resolution. The index records decision status, not implementation or runtime proof.
 
-[`Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md`](Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md)
-freezes the domain-neutral technical proof that precedes full application implementation.
-
-[`Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md`](Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md)
-separates the project-owned Website Backend-to-Receiver event protocol from the
-platform-specific Agent transport and records the local Receiver deployment boundary.
-
-[`Decisions/ADR-0005-run-additive-durable-enrollment-spike.md`](Decisions/ADR-0005-run-additive-durable-enrollment-spike.md)
-authorizes an isolated H2 service-contract spike for crash-recoverable enrollment without
-changing the frozen P0 or bounded H1 paths.
-
-[`Decisions/ADR-0006-establish-reentry-core-development-baseline.md`](Decisions/ADR-0006-establish-reentry-core-development-baseline.md)
-accepts Re-entry Core as the authoritative application-neutral implementation baseline,
-freezes MVP1 and MVP2 as references, and selects one Receiver Core with Cloud Receiver and
-outbound Local Connector process shells.
-
-[`Decisions/ADR-0007-freeze-reentry-core-v0.1-contract-kernel.md`](Decisions/ADR-0007-freeze-reentry-core-v0.1-contract-kernel.md)
-freezes the strict v0.1 Manifest, opaque Host binding, detached Ed25519 event envelope, private
-receipt, process ports, bounded payloads, and rejected prompt-like fields.
-
-[`Decisions/ADR-0008-freeze-receiver-authority-and-durable-reservation.md`](Decisions/ADR-0008-freeze-receiver-authority-and-durable-reservation.md)
-freezes the Receiver-owned consent-authority port, effective private Grant, exact replay,
-atomic one-run reservation, private pending delivery, and zero-dependency SQLite reference-store
-boundary without adding HTTP, Connector, or Agent behavior.
-
-[`Decisions/ADR-0009-freeze-connector-lease-and-effect-acknowledgement.md`](Decisions/ADR-0009-freeze-connector-lease-and-effect-acknowledgement.md)
-freezes trusted Connector identity, replayable target-scoped leases, bounded attempt and stale-
-worker fencing, and acknowledgement only through a correlated trusted Host effect.
-
-[`Decisions/ADR-0010-freeze-receiver-http-and-connector-transport.md`](Decisions/ADR-0010-freeze-receiver-http-and-connector-transport.md)
-freezes three bounded Receiver HTTP routes, redacted transport errors, an outbound-only no-retry
-Connector client, and the independent Host, Receiver, and Connector process-evidence boundary.
-
-## 3. Active development and closure
+## 3. Development and closure
 
 - [`Development/README.md`](Development/README.md) — CANONICAL Re-entry Core development,
-  verification, evidence, and closure workflow plus the active-work index.
-- [`Development/RECORE-001-foundation.md`](Development/RECORE-001-foundation.md) — ACTIVE
-  implementation record for the Re-entry Core foundation and first contract kernel.
+  verification, evidence, and closure workflow plus the work-record index.
+- [`Development/REENTRY-CORE-PROGRAM.md`](Development/REENTRY-CORE-PROGRAM.md) — accepted Program
+  contract; the application-neutral Program is complete at `locally_verified`.
+- [`Development/REENTRY-CORE-RUNBOOK.md`](Development/REENTRY-CORE-RUNBOOK.md) — local resume,
+  verification, failure-triage, evidence-writeback, and Git-closure procedure.
+- RECORE-001 through RECORE-006 are closed at the evidence levels recorded in the
+  [development index](Development/README.md). New selected-app or production work uses a new
+  bounded record rather than silently widening a closed Core increment.
 
 These records control active scope and closure state. They do not override the owning Core or
 decision document and must not accumulate conversational history.
@@ -95,32 +72,11 @@ These files remain active for the surfaces they own. They do not select the prod
 ## 5. Technical research and evidence
 
 These files preserve current analyses, bounded evidence, conditional risk catalogs, and
-named-commit snapshots. Each file's own status banner controls whether it is current,
-partially superseded, frozen, or historical; inclusion here does not make every conclusion
-an active next step.
+named-commit snapshots. The [Research index](Research/README.md) owns detailed routing by platform,
+runtime, product value, topology, and integration question. Each record's own status and claim
+boundary controls its use; inclusion does not make a conclusion an active next step or product
+decision.
 
-- [`Research/01-agent-continuation-adapter-audit.md`](Research/01-agent-continuation-adapter-audit.md) — SUPPORTING evidence audit of exact-thread wake, context-carried continuation, Desktop Browser binding, and the unresolved adapter join.
-- [`Research/02-p0-runtime-probe-log.md`](Research/02-p0-runtime-probe-log.md) — SUPPORTING reproducible log of component, App Server, Receiver, Desktop task-control, and Browser capability probes.
-- [`Research/03-site-tools-runtime-availability-audit.md`](Research/03-site-tools-runtime-availability-audit.md) — SUPPORTING client prerequisite, feature-gate, App Server boundary, and safe newer-client migration audit.
-- [`Research/04-platform-bridge-decision.md`](Research/04-platform-bridge-decision.md) — SUPPORTING current-build Desktop bridge decision, public-route gap, proof-substitution boundary, and P0-versus-production claim limit.
-- [`Research/05-distributed-topology-and-hard-coupling-risk-review.md`](Research/05-distributed-topology-and-hard-coupling-risk-review.md) — SUPPORTING conditional production-risk catalog for local P0 topology, distributed seams, and coupling. Core/00 controls current sequencing; Research 07–22 preserve later mechanism evidence, durability, product tests, method calibration, clean-context portability, model variation, transport economics, platform-boundary verdicts, and contributor-branch integration analysis.
-- [`Research/06-continuity-value-and-alternative-kill-tests.md`](Research/06-continuity-value-and-alternative-kill-tests.md) — SUPPORTING scientific and product test plan for page authority, exact-thread value, structured continuation memory, and measurable outcomes.
-- [`Research/07-supported-reentry-transport-and-heartbeat-spike.md`](Research/07-supported-reentry-transport-and-heartbeat-spike.md) — SUPPORTING official-capability matrix plus the current-build H0b and event-gated H1 scheduled re-entry verdicts.
-- [`Research/08-review-05-adjudication-and-p1-trust-delivery-plan.md`](Research/08-review-05-adjudication-and-p1-trust-delivery-plan.md) — SUPPORTING independent disposition of Research 05 and the additive P1 trust/delivery gate.
-- [`Research/09-heartbeat-business-viability-and-bounded-use.md`](Research/09-heartbeat-business-viability-and-bounded-use.md) — SUPPORTING bounded H1 runtime evidence, polling economics, commercial kill conditions, and production claim limits.
-- [`Research/10-post-h1-unknowns-and-validation-roadmap.md`](Research/10-post-h1-unknowns-and-validation-roadmap.md) — SUPPORTING post-H1 separation of verified mechanism facts, product kill tests, platform durability, production topology, identity, lifecycle, and distributed-reliability unknowns.
-- [`Research/11-platform-durability-and-cold-start-audit.md`](Research/11-platform-durability-and-cold-start-audit.md) — SUPPORTING official capability boundary, H2a cold-runtime interpretation, and ordered Desktop/app/device durability protocol.
-- [`Research/12-product-value-kill-test-preregistration.md`](Research/12-product-value-kill-test-preregistration.md) — SUPPORTING preregistered controls, safety gates, metrics, and provisional retain/demote/kill rules for notification, exact-task, capsule, and WebMCP materiality tests.
-- [`Research/13-exact-task-vs-capsule-method-calibration.md`](Research/13-exact-task-vs-capsule-method-calibration.md) — SUPPORTING hash-frozen method calibration for exact-task history versus a strong bounded continuation capsule. The completed package is [`../Experiments/continuity-calibration/verdict.md`](../Experiments/continuity-calibration/verdict.md); its outcome is `REVISE_PROTOCOL`, with no product-value inference permitted.
-- [`Research/14-clean-context-webmcp-portability-smoke.md`](Research/14-clean-context-webmcp-portability-smoke.md) — SUPPORTING verified same-environment C1 evidence. App-held traces show two fresh internal contexts discovering genuine Site Tools and invoking one manifest-annotated read-only tool on the official control and local P0 pages; account, workspace, machine, public deployment, and judge portability remain open.
-- [`Research/15-sol-terra-webmcp-model-variation-smoke.md`](Research/15-sol-terra-webmcp-model-variation-smoke.md) — SUPPORTING bounded M1 compatibility evidence. One controller-assigned arm per documented eligible model discovered the same official and local manifests and completed one Site Tool invocation per page; this is not model parity, and scheduled continuation remains open.
-- [`Research/16-scheduled-pull-unit-economics-and-transport-kill-model.md`](Research/16-scheduled-pull-unit-economics-and-transport-kill-model.md) — SUPPORTING first-principles watch-window economics, shared-usage stress, value equations, instrumentation, and hard transport falsifiers. It does not invent a Scheduled Task price or select production transport.
-- [`Research/17-mvp1-mvp2-comparative-integration-review.md`](Research/17-mvp1-mvp2-comparative-integration-review.md) — SUPPORTING review of Eddie's parallel TenderRelay MVP2 branch against the current mechanism. It preserves MVP2 as a contributor reference, identifies selective UI/demo/adapter reuse, records critical authority and evidence gaps, and does not merge or select the app.
-- [`Research/18-receiver-queue-and-wake-adapter-architecture-review.md`](Research/18-receiver-queue-and-wake-adapter-architecture-review.md) — SUPPORTING analysis that recommends a delivery-ledger-first Receiver boundary, treats Heartbeat as a bounded wake fallback, records the current Core decision to freeze D4, and isolates the unresolved supported-transport-to-Browser/WebMCP join.
-- [`Research/19-app-server-desktop-browser-join-verdict.md`](Research/19-app-server-desktop-browser-join-verdict.md) — SUPPORTING empirical verdict: the tested cold App-Server-owned thread returned `iab-unavailable` before page access, while standalone resume of the supplied warm task returned an active-writer rejection. Warm priming and writer ownership are controller-attested, not independently proven by the public artifact.
-- [`Research/20-workspace-agents-trigger-and-webmcp-boundary.md`](Research/20-workspace-agents-trigger-and-webmcp-boundary.md) — SUPPORTING official-capability audit: external trigger, durable queueing, and stable Workspace Agent conversations are documented, while Browser and genuine page-bound WebMCP remain unproven.
-- [`Research/21-cloud-receiver-local-connector-candidate-topology.md`](Research/21-cloud-receiver-local-connector-candidate-topology.md) — SUPPORTING precursor analysis for the Cloud Receiver plus outbound Local Connector shape adopted by ADR-0006. Implementation and the concrete Agent adapter remain unverified.
-- [`Research/22-mvp2-selective-integration-provenance.md`](Research/22-mvp2-selective-integration-provenance.md) — SUPPORTING named-commit provenance and selective-reuse disposition. Eddie's runtime remains preserved on its contributor branch and is not merged by this documentation integration.
 
 ## 6. Deprioritized ideation
 
@@ -159,7 +115,8 @@ than a second source of truth.
 7. Keep the dossier snapshots byte-identical. Import a new version as a new file rather than overwriting version 1.1.
 8. Select a host application only through a new ADR that specializes the domain-neutral Core requirements.
 9. Product, development, and submission artifacts are written in English. Conversation may use the user's language.
-10. Follow the repository [collaboration and commit gates](../AGENTS.md) for every contributor integration, commit, merge, and push.
+10. Add every tracked decision and research record to its local index; keep this root map focused on category and authority routing.
+11. Follow the repository [collaboration and commit gates](../AGENTS.md) for every contributor integration, commit, merge, and push.
 
 ## 10. Update sequence
 

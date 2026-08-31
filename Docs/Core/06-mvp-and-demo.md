@@ -1,7 +1,7 @@
 # WebMCP Re-entry Workflow — Demo App Selection and Challenge MVP
 
 **Role:** CANONICAL app-selection framework and challenge execution target  
-**Status:** Re-entry Core foundation baseline locally verified; broader program active; demo app and supported continuation adapter remain unselected  
+**Status:** Application-neutral Re-entry Core Program complete at `locally_verified`; demo app and supported continuation adapter remain unselected  
 **Last updated:** 2026-08-31
 
 ## 1. Current decision boundary
@@ -208,15 +208,17 @@ P0 is complete for controlled technical composability. Preserve its frozen
 [evidence and contract](07-p0-technical-validation-mvp.md), and do not expand it into the
 selected product or shipping adapter.
 
-### Gate 0B — Establish Re-entry Core
+### Gate 0B — Preserve the completed Re-entry Core
 
-Implement the accepted application-neutral baseline under ADR-0006 and RECORE-001. Preserve
-MVP1 and MVP2 as references, keep Host and Agent adapters replaceable, and prove the new core's
-contracts, durability, process boundaries, and resource budgets without selecting domain
-states, tools, or product claims.
+This gate is complete at the application-neutral `locally_verified` boundary under ADR-0006
+through ADR-0014 and RECORE-001 through RECORE-006. Preserve MVP1 and MVP2 as references, keep Host
+and Agent adapters replaceable, and retain the verified contract, durability, process-boundary,
+and resource claim limits without importing domain states, tools, or product claims.
 
-This gate may proceed in parallel with app selection. It does not authorize a generic platform,
-multiple Host implementations, or an unsupported Agent wake fallback.
+Do not reopen this gate merely to begin app work. A stated Core falsifier or reopen condition is
+required. Selected-app work proceeds through Gate 0C and its own bounded implementation record; it
+does not authorize a generic platform, multiple Host implementations, or an unsupported Agent wake
+fallback.
 
 ### Gate 0C — Select the app
 

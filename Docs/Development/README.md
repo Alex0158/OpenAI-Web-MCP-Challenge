@@ -99,6 +99,7 @@ genuine WebMCP, deployment, or judge reproducibility.
 | [`RECORE-004`](RECORE-004-grant-control.md) | Implement Receiver-authenticated Grant inspection and atomic revocation without adding a production administration surface | `locally_verified` |
 | [`RECORE-005`](RECORE-005-separate-process-fault-matrix.md) | Verify bounded revocation, stale-worker, conflicting-effect, and mid-transaction termination behavior across test processes | `separate_process_verified` |
 | [`RECORE-006`](RECORE-006-private-managed-context-binding.md) | Implement private Grant-to-context resolution without exposing a raw platform locator or selecting an Agent runtime | `locally_verified` |
+| [`DOCS-001`](DOCS-001-documentation-architecture-reconciliation.md) | Reconcile repository entry points, documentation routing, Core completion wording, and future source placement without changing product behavior | `locally_verified` |
 
 ## Lean implementation rules
 

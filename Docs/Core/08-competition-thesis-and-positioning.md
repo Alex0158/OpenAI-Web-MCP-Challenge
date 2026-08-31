@@ -1,7 +1,7 @@
 # WebMCP Re-entry Workflow — Competition Thesis and Positioning
 
 **Role:** CANONICAL competition-facing thesis, value proposition, positioning, and claim hierarchy  
-**Status:** Re-entry Core foundation baseline locally verified; broader program active; application, audience, product proof, concrete Agent adapter, and final app name unselected  
+**Status:** Application-neutral Re-entry Core Program complete at `locally_verified`; application, audience, product proof, concrete Agent adapter, and final app name remain unselected  
 **Last updated:** 2026-08-31  
 **Official basis refreshed:** [Devpost Official Rules](https://webmcp.devpost.com/rules) and
 [challenge overview](https://webmcp.devpost.com/), observed 2026-08-30
