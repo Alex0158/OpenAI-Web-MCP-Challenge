@@ -110,6 +110,11 @@ runtime, product value, topology, and integration question. Each record's own st
 boundary controls its use; inclusion does not make a conclusion an active next step or product
 decision.
 
+- [`Research/23-three-candidate-competition-app-selection-review.md`](Research/23-three-candidate-competition-app-selection-review.md)
+  — SUPPORTING source-backed comparison of Opportunity, Sleepless, and Greenlight, including the
+  preserved original Greenlight ranking and a post-clarification update that makes Opportunity the
+  provisional scenario-level lead. It does not select the app; TASK-001 and an accepted ADR remain
+  controlling.
 
 ## 7. Deprioritized ideation
 
