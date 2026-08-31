@@ -1,6 +1,6 @@
 # DOCS-002: Modular Authority and Core Denoising
 
-**Status:** `in_progress`  
+**Status:** `locally_verified`  
 **Opened:** 2026-08-31  
 **Owner:** Primary Codex session under user authorization  
 **Closure target:** `locally_verified` documentation-only delivery
@@ -132,4 +132,13 @@ a genuinely missing domain or cross-cutting authority layer.
 - `npm pack --dry-run --json` still reports 16 Re-entry Core package files; no runtime source or
   dependency file changed.
 
-Commit, remote delivery, and final status remain pending.
+### Delivery closure
+
+- Implementation commit: `969e7b115c661cb3779875064b4cad60f5e7732e`.
+- Branch: `codex/re-entry-core-foundation`.
+- The implementation commit was pushed and matched the remote branch before this closure update.
+- This record is complete only when the remote branch resolves to the commit containing this final
+  closure state; that readback is performed by the delivering session after push.
+
+DOCS-002 is closed at `locally_verified`. It changes documentation ownership and active routing,
+not product behavior, runtime capability, deployment state, app selection, or submission truth.
