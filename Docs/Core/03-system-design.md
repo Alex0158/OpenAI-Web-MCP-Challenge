@@ -1,7 +1,7 @@
 # Re-entry Core — System Design
 
 **Role:** CANONICAL domain-neutral architecture and contracts  
-**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant, reservation, and pending-delivery authority, ADR-0009 fixes the locally verified Connector lease and effect-acknowledgement contract, ADR-0010 fixes the locally verified HTTP adapter, outbound Connector client, and forced-restart test-process isolation, and ADR-0011 fixes the locally verified deterministic Agent activation boundary. Production process shells, private context-binding lifecycle, and the concrete Agent continuation adapter remain open. Current as-built truth is owned by Core/00 and Core/05.  
+**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant, reservation, and pending-delivery authority, ADR-0009 fixes the locally verified Connector lease and effect-acknowledgement contract, ADR-0010 fixes the locally verified HTTP adapter, outbound Connector client, and forced-restart test-process isolation, ADR-0011 fixes the locally verified deterministic Agent activation boundary, and ADR-0012 specifies a non-production domain-neutral conformance/development profile. ADR-0012 implementation, production process shells, private context-binding lifecycle, and the concrete Agent continuation adapter remain open. Current as-built truth is owned by Core/00 and Core/05.  
 **Last updated:** 2026-08-31
 
 ## 1. System objective
@@ -200,6 +200,12 @@ platform. The adapter receives no lease or Connector token, no prompt, and no ra
 Exceptions, timeouts, or malformed results become an explicit unknown outcome; the wrapper does
 not retry, fall back, call the Host, or acknowledge the delivery.
 
+ADR-0012 specifies one source-repository conformance profile outside `test/`. Distinct Host,
+Receiver, and Connector children reuse the existing ports; profile IPC may coordinate only
+synthetic consent, effect setup, readiness, inspection, and teardown. Material event, claim, and
+acknowledgement operations still cross ADR-0010 HTTP, and deterministic Agent acceptance remains
+separate from the later synthetic Host effect. The profile is not a production process shell.
+
 The Receiver's event algorithm is domain-neutral even when a deterministic fixture pins one
 workflow, event type, issuer, or development key. Generalizing the protocol means adding
 configuration, issuer onboarding, key management, and lifecycle controls; it does not mean
@@ -240,6 +246,8 @@ for a conforming backend to send a Receiver event.
   explicit result classifications, one bounded adapter call, and no retry or effect inference.
   The fixture has no Agent, Browser, Host, or WebMCP capability, and no concrete platform is
   selected.
+- ADR-0012 specifies, but does not yet implement, the non-production conformance/development
+  profile needed to exercise the existing role ports outside the test tree.
 - The private P0 Desktop adapter completed one controlled same-task join but is not a
   documented platform contract.
 - H1 Scheduled pull completed one bounded event-gated continuation and remains a

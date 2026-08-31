@@ -629,3 +629,30 @@ runtime claim, deployment claim, or selected-app claim is upgraded.
 can exercise the existing Host, Receiver HTTP, outbound Connector, persistence, and deterministic
 Agent ports outside the test tree. Freeze only its ownership, configuration, lifecycle, and claim
 boundary before implementation; keep production custody and supervision explicitly out of scope.
+
+### Increment C6a — conformance/development profile contract
+
+**Closure:** `specified` on 2026-08-31.
+
+- ADR-0012 freezes one source-repository-only loopback profile with distinct Host, Receiver, and
+  Connector child processes. It reuses the current Core modules and existing event, claim, and
+  acknowledgement HTTP routes without creating another Receiver implementation.
+- The Connector exercises the deterministic Agent Adapter once. Its `accepted` result remains a
+  dispatch observation only; one separate synthetic Host-effect attestation is still required
+  before acknowledgement.
+- Profile IPC is limited to readiness, deterministic consent, synthetic effect-verifier setup,
+  bounded inspection, and teardown. It is not a Re-entry Core wire contract or a reason to add
+  health, admin, consent, pairing, reset, or effect HTTP routes.
+- Reusable role composition moves outside `test/`, while forced restart and fault orchestration
+  remain test-owned. One role implementation must serve direct profile execution and the existing
+  separate-process tests; copy-paste is rejected.
+- The profile remains outside runtime exports and the package allowlist, adds no dependency or
+  background loop, emits one redacted JSON result, and creates no production process, pairing,
+  credential-custody, real effect, Agent, Browser, WebMCP, app, or deployment claim.
+
+No conformance profile source or direct execution evidence exists yet.
+
+**Next entry condition:** implement the shared role entrypoints and one bounded runner, add the
+deterministic Agent dispatch plus separate synthetic-effect gate, reuse those roles from the
+forced-restart test, and verify direct execution on Node 24 and the current runtime before any
+production shell or credential work.

@@ -1,7 +1,7 @@
 # Re-entry Core — Trust, Security, and Reliability
 
 **Role:** CANONICAL authority, security, and failure semantics  
-**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through ADR-0011; the v0.1 protocol, Host SDK, bounded Receiver C1 authority, Connector delivery C2, HTTP adapter, outbound Connector client, forced-restart test-process isolation, and deterministic Agent Adapter C4b are locally verified; mid-transaction crash injection, production process ownership, consent and pairing, private context binding, real Agent activation, real Host-effect verification, and distributed topology remain unverified.  
+**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through ADR-0012; the v0.1 protocol, Host SDK, bounded Receiver C1 authority, Connector delivery C2, HTTP adapter, outbound Connector client, forced-restart test-process isolation, and deterministic Agent Adapter C4b are locally verified; ADR-0012 specifies a non-production conformance/development profile whose implementation remains pending; mid-transaction crash injection, production process ownership, consent and pairing, private context binding, real Agent activation, real Host-effect verification, and distributed topology remain unverified.  
 **Last updated:** 2026-08-31
 
 ## 1. Security objective
