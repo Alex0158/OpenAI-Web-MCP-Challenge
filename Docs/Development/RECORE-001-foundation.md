@@ -186,3 +186,46 @@ durability, performance, Agent activation, Browser access, or WebMCP runtime beh
 
 **Next entry condition:** implement the zero-runtime-dependency protocol and Host SDK kernel,
 then verify strict positive, negative, boundary, tamper, and frozen-vector behavior.
+
+### Increment B2 — protocol and Host SDK kernel
+
+**Closure:** `locally_verified` on 2026-08-31.
+
+- `reentry-core/` now contains one Node 24 ESM package with no runtime dependency, a narrow
+  protocol export, a Host SDK export, and one frozen public-key interoperability vector.
+- The protocol enforces exact shapes, bounded canonical JSON, Ed25519 Manifest and detached
+  event authentication, trusted expected-origin anchors, public-binding and private-receipt
+  separation, typed validation and authentication errors, and explicit rejection of prompt-like
+  or duplicate-authority fields.
+- The Host SDK can issue only a signed Manifest or signed event envelope from Host-owned
+  workflow state. It derives event scope from a live Receiver-issued public binding and has no
+  Grant, consent, Receiver-store, Connector, Agent, or fallback authority.
+- `npm test` passed 14 of 14 tests on the current Node `v26.5.0` runtime.
+- `npm run test:conformance` passed 10 of 10 protocol tests.
+- The same 14-test aggregate suite passed on an actual Node `v24.20.0` runtime.
+- Informational coverage was 90.31% lines, 77.02% branches, and 96.67% functions. This is not a
+  completeness or security claim.
+- The reproducible `benchmark:protocol` entrypoint ran 5,000 iterations per operation on Node
+  `v24.20.0`. For the 827-byte Manifest and 384-byte event body it observed 28,842 Manifest
+  signs/s, 20,651 Manifest verifications/s, 51,870 event signs/s, and 25,094 event
+  verifications/s. This is one single-process local regression baseline, not an SLA, hosted
+  service result, or competitive performance claim.
+- OpenSSL `3.6.3` independently verified both Ed25519 signatures in the frozen vector from the
+  public key and Node-produced canonical bytes. This is local cross-tool cryptographic evidence;
+  it does not prove independent canonicalization or cross-language interoperability.
+- `npm ls --omit=dev --all` reported an empty dependency tree. `npm pack --dry-run --json`
+  selected six runtime and vector files: 9,665 bytes compressed and 42,471 bytes unpacked.
+  Tests remain in the repository but are excluded from the deployable package allowlist.
+- `git diff --cached --check` passed. A relative-link audit resolved 42 of 42 links across the
+  six owned documentation surfaces. English-only, private-PEM, forbidden-runtime-surface, and
+  exact staged-scope scans passed; no MVP, reference, research, scenario, or evidence file is
+  part of Increment B2.
+
+This proves the v0.1 protocol and Host SDK kernel locally and in process. It does not prove
+Receiver consent, Grant durability, reservation, replay convergence, leases, Cloud Receiver or
+Local Connector process behavior, Agent activation, Browser access, genuine WebMCP runtime
+delivery, deployment, performance under service load, or a selected application.
+
+**Next entry condition:** specify and implement the smallest Receiver-owned Grant, durable
+reservation, private receipt, and delivery-ledger authority boundary without adding an HTTP
+service or Agent adapter.

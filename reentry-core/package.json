@@ -1,0 +1,24 @@
+{
+  "name": "@webmcp-challenge/reentry-core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Lightweight domain-neutral contracts for governed WebMCP re-entry.",
+  "files": [
+    "src/",
+    "protocol/test-vectors/"
+  ],
+  "exports": {
+    ".": "./src/index.mjs",
+    "./protocol": "./src/protocol.mjs",
+    "./host-sdk": "./src/host-sdk.mjs"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "test:conformance": "node --test test/protocol.test.mjs",
+    "benchmark:protocol": "node bench/protocol.mjs"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

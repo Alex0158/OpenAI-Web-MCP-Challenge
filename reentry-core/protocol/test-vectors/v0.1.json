@@ -1,0 +1,47 @@
+{
+  "protocol_version": "0.1",
+  "issuer_origin": "https://host.example",
+  "key_id": "host_vector_001",
+  "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAexPFz3rVIm1COdpt2RVq3NBtTM9ycspPEAAVqC3VZlA=\n-----END PUBLIC KEY-----\n",
+  "verification_time": "2026-08-31T03:05:00.000Z",
+  "manifest": {
+    "type": "webmcp.reentry_manifest",
+    "protocol_version": "0.1",
+    "manifest_id": "manifest_vector_001",
+    "correlation_id": "correlation_vector_001",
+    "issuer_origin": "https://host.example",
+    "issued_at": "2026-08-31T03:00:00.000Z",
+    "offer_expires_at": "2026-08-31T03:10:00.000Z",
+    "workflow": {
+      "id": "workflow_vector_001",
+      "type": "domain-neutral-workflow",
+      "state_version": 7,
+      "canonical_url": "https://host.example/workflows/workflow_vector_001"
+    },
+    "display": {
+      "title": "Continue this workflow",
+      "reason": "The authoritative Host state changed while the Agent was away."
+    },
+    "grant_request": {
+      "event_type": "workflow.ready",
+      "grant_expires_at": "2026-08-31T04:00:00.000Z",
+      "max_runs": 1,
+      "human_boundary": "explicit_receiver_consent"
+    },
+    "signature": {
+      "algorithm": "Ed25519",
+      "key_id": "host_vector_001",
+      "value": "GJlwB_hB_o1X-Jk5u7jtAhooFQkQ5F4EWLOnrzPAdxpnjVfP1URSb642Pt2yuCyGjiIZ9ePjgC79kGGXttjrCQ"
+    }
+  },
+  "manifest_canonical_json": "{\"correlation_id\":\"correlation_vector_001\",\"display\":{\"reason\":\"The authoritative Host state changed while the Agent was away.\",\"title\":\"Continue this workflow\"},\"grant_request\":{\"event_type\":\"workflow.ready\",\"grant_expires_at\":\"2026-08-31T04:00:00.000Z\",\"human_boundary\":\"explicit_receiver_consent\",\"max_runs\":1},\"issued_at\":\"2026-08-31T03:00:00.000Z\",\"issuer_origin\":\"https://host.example\",\"manifest_id\":\"manifest_vector_001\",\"offer_expires_at\":\"2026-08-31T03:10:00.000Z\",\"protocol_version\":\"0.1\",\"signature\":{\"algorithm\":\"Ed25519\",\"key_id\":\"host_vector_001\",\"value\":\"GJlwB_hB_o1X-Jk5u7jtAhooFQkQ5F4EWLOnrzPAdxpnjVfP1URSb642Pt2yuCyGjiIZ9ePjgC79kGGXttjrCQ\"},\"type\":\"webmcp.reentry_manifest\",\"workflow\":{\"canonical_url\":\"https://host.example/workflows/workflow_vector_001\",\"id\":\"workflow_vector_001\",\"state_version\":7,\"type\":\"domain-neutral-workflow\"}}",
+  "event_envelope": {
+    "body": "{\"binding_id\":\"binding_vector_001\",\"canonical_url\":\"https://host.example/workflows/workflow_vector_001\",\"correlation_id\":\"correlation_vector_001\",\"event_id\":\"event_vector_001\",\"event_sequence\":1,\"event_type\":\"workflow.ready\",\"issuer_origin\":\"https://host.example\",\"occurred_at\":\"2026-08-31T03:04:00.000Z\",\"protocol_version\":\"0.1\",\"state_version\":8,\"type\":\"webmcp.continuation_event\",\"workflow_id\":\"workflow_vector_001\"}",
+    "headers": {
+      "WebMCP-Reentry-Key-Id": "host_vector_001",
+      "WebMCP-Reentry-Timestamp": "1788145440",
+      "WebMCP-Reentry-Signature": "3Nm3tu0kQJ63HRJy1bq0fMIz7zibO5z01A2wRdUawC7Vu9iY3RM6cUEWmIRfMARX7n6sA5KaXEtk7GadGjHgAA"
+    }
+  },
+  "event_canonical_json": "{\"binding_id\":\"binding_vector_001\",\"canonical_url\":\"https://host.example/workflows/workflow_vector_001\",\"correlation_id\":\"correlation_vector_001\",\"event_id\":\"event_vector_001\",\"event_sequence\":1,\"event_type\":\"workflow.ready\",\"issuer_origin\":\"https://host.example\",\"occurred_at\":\"2026-08-31T03:04:00.000Z\",\"protocol_version\":\"0.1\",\"state_version\":8,\"type\":\"webmcp.continuation_event\",\"workflow_id\":\"workflow_vector_001\"}"
+}

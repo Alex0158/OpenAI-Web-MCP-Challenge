@@ -90,6 +90,10 @@ expiry must be later than offer expiry. The Receiver may narrow or decline the r
 `signature` has exactly `algorithm`, `key_id`, and `value`. It covers the canonical JSON of all
 other Manifest fields.
 
+Manifest verification requires a trusted expected origin from the actual page-acquisition
+boundary. The declared issuer origin and canonical workflow URL must match that anchor. A key
+resolver match alone is not proof that the Manifest came from the page being enrolled.
+
 ### 3. Public Host binding
 
 Authenticated Receiver consent returns only a workflow-scoped public binding with:
@@ -164,6 +168,10 @@ clock-skew window. The signature is canonical unpadded base64url. The key resolv
 allowlisted Ed25519 public key by issuer origin, key ID, and purpose. The Cloud Receiver never
 receives the Host private key and therefore cannot mint a valid Host Manifest or event.
 
+Event verification requires the trusted issuer origin already stored with the resolved Grant.
+The event issuer must match that origin before its key is accepted; the event body cannot select
+its own authority merely by naming an origin and key.
+
 MVP1's HMAC envelope remains historical fixture evidence. It is not the Re-entry Core v0.1
 cryptographic contract.
 
@@ -181,7 +189,8 @@ Initial limits are deliberately small:
 - display reason: at most 500 UTF-8 bytes;
 - Manifest canonical JSON: at most 16 KiB;
 - event canonical JSON body: at most 8 KiB;
-- timestamps: canonical millisecond ISO-8601 strings; and
+- timestamps: canonical millisecond ISO-8601 strings of at most 27 characters, with detached
+  epoch seconds limited to 16 canonical decimal digits; and
 - revisions and sequences: non-negative safe integers, with stricter per-field rules.
 
 These are denial-of-service and evidence-size boundaries, not performance claims. Any increase
@@ -190,8 +199,8 @@ requires a measured consumer need.
 ### 7. Private continuation receipt and Adapter input
 
 After authenticated consent, Receiver Core derives a private receipt only from normalized
-Grant fields. It binds the internal Grant identity, correlation, workflow, event type,
-canonical URL, expiry, human boundary, and the fixed typed continuation mode
+Grant fields. It binds the internal Grant identity, correlation, issuer origin, workflow,
+event type, canonical URL, expiry, human boundary, and the fixed typed continuation mode
 `open_canonical_page_read_current_state`.
 
 The receipt contains no display copy, Host event payload, business-state assertion, free-form

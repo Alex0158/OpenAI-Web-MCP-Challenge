@@ -1,7 +1,7 @@
 # Re-entry Core — Trust, Security, and Reliability
 
 **Role:** CANONICAL authority, security, and failure semantics  
-**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 and ADR-0007; bounded P0/H1/H2 evidence exists, while the new core and distributed topology remain unverified.  
+**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 and ADR-0007; the v0.1 protocol and Host SDK kernel are locally verified, while Receiver authority and the distributed topology remain unverified.  
 **Last updated:** 2026-08-31
 
 ## 1. Security objective
@@ -117,6 +117,10 @@ Verification requires bounded clock skew, canonical decimal epoch seconds, exact
 until validation completes, canonical unpadded base64url, and a key trusted for the resolved
 Grant issuer. Key provisioning may pin one challenge issuer; general rotation and origin
 ownership remain deferred.
+
+The verification caller must supply the trusted origin anchor: the actual page origin for a
+Manifest and the stored Grant issuer origin for an event. A declared origin plus a resolver hit
+cannot establish authority by itself.
 
 Do not place a signature inside the body and ambiguously claim to sign the entire body.
 
