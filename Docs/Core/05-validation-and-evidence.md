@@ -1,368 +1,195 @@
-# WebMCP Re-entry Workflow — Validation and Evidence Plan
+# Re-entry Core — Validation and Evidence
 
-**Role:** CANONICAL proof matrix and evidence gates  
-**Status:** Current proof matrix plus future evidence gates; bounded P0/H1/H2 evidence passed, D4 is inconclusive, and the supported transport-to-Browser/WebMCP, app, product, and judge gates remain open.  
-**Last updated:** 2026-08-31
+**Role:** CANONICAL current proof matrix, future evidence gates, and claim limits  
+**Status:** Application-neutral Core complete at locally verified; application, runtime,
+deployment, product, judge, and submission gates open  
+**Authority:** ADR-0003, ADR-0006 through ADR-0015, and executed evidence
 
 ## 1. Evidence discipline
 
-| Label | Meaning |
-|---|---|
-| **VERIFIED** | Observed in the current project through reproducible runtime evidence or controlled by a current governing source |
-| **EXTERNALLY VERIFIED** | Documented or observed in a platform, but not yet demonstrated in this project |
-| **ENGINEERING-FEASIBLE** | Uses ordinary implementable components but has not been built here |
-| **WORKING ASSUMPTION** | Accepted temporarily for planning and still requires a named test |
-| **INFERENCE** | Reasoned interpretation of evidence, not a platform or market guarantee |
-| **TARGET** | Desired outcome, not current evidence |
-| **UNKNOWN** | No sufficient evidence yet |
+Use the strongest executed evidence level and no stronger:
 
-Reference scenarios, diagrams, pseudocode, and design documents are reasoning evidence. They
-are not runtime evidence.
-
-### Genuine Site Tool evidence admission
-
-A genuine Site Tool discovery or invocation claim is admissible only when the evidence:
-
-- comes from the exact page-bound Browser tool surface used for the call, with a direct fresh
-  inventory captured before invocation;
-- identifies the observed Browser or backend class, page origin and hostname, tool name,
-  bounded input, untruncated classification-critical output, call count, stage, state
-  version, and correlation path;
-- uses client-specific provenance metadata only as dated corroboration, never as a WebMCP
-  standard;
-- rejects stale, decoy, or reassigned handles where lifecycle or identity is material;
-- aggregates relevant Browser-client and Host-server observations across every phase of a
-  multi-phase claim; and
-- redacts, allowlists, or hashes raw task identifiers, canaries, credentials, local paths,
-  and unrelated tool output.
-
-Agent narration, source or DOM inspection, regex classification, mocks, remembered manifests,
-and screenshots without correlated traces are corroboration or test scaffolding, not runtime
-proof of a genuine invocation. Evidence outcomes remain distinct as `PASS`, classified
-`FAIL`, or `INCONCLUSIVE`; an inconclusive run may not silently overwrite a prior decisive
-result.
-
-## 2. Critical proposition
-
-The selected concept is proven only if one complete chain is observable:
-
-~~~text
-valid Host transition and outbox intent
--> Receiver authenticates and durably records one pending delivery
--> an available wake and continuation adapter resumes the intended context
--> eligible browser context
--> canonical workflow page opens
--> current identity and state are verified
--> a new-stage WebMCP tool surface is discovered
--> a new-stage Site Tool is invoked
--> the same artifact or decision process continues
--> the defined human boundary is preserved
-~~~
-
-Showing isolated components or narrating intended behavior is insufficient.
-
-On 2026-08-30, the domain-neutral P0 fixture completed this chain once in a controlled,
-same-user local Desktop run. That result establishes the mechanism's technical
-composability under the tested environment; it does not satisfy the selected-app,
-production-support, deployment, or clean-room judge gates below.
-
-### P0 decomposition
-
-The first implementation uses one technical harness to answer five questions through three
-gates:
-
-1. genuine WebMCP Re-entry Manifest delivery;
-2. Receiver-owned consent and secure Grant-to-context binding;
-3. authenticated resumption of the intended managed context with one event identity and
-   one run reservation, where exact replay starts no second run;
-4. resumed canonical-page re-entry and new-stage Site Tool invocation;
-5. continuation of the same artifact up to the human boundary.
-
-Enrollment proves questions 1–2. Continuation and Re-entry proves questions 3–4. The
-Closed-loop Workflow gate proves question 5 and repeats all five in one correlated run.
-The binding implementation contract is
-[P0 Technical Validation MVP](07-p0-technical-validation-mvp.md).
-
-### Enrollment non-effect gate
-
-Enrollment is not continuation. After approval and before the future business event, one
-correlated machine-readable checkpoint must show:
-
-- one approved Grant and one Trusted Continuation Receipt bound to the intended managed
-  context;
-- zero accepted business events;
-- zero business-event deliveries;
-- zero wake attempts or resumed continuation runs; and
-- zero Stage-B Site Tool calls, artifact revisions, or Host workflow effects.
-
-Receipt persistence and opaque Host binding are enrollment effects and are excluded from the
-business-event delivery count. The later event arm must reuse the same Grant and correlation
-path. A historical package that lacks one of these counters records an evidence limitation;
-the missing value must not be inferred as zero or retroactively upgraded to a pass.
-
-## 3. Current proof matrix
-
-| Capability | Current status | Required project evidence |
+| Level | Evidence | Maximum claim |
 |---|---|---|
-| Core re-entry mechanism selected | VERIFIED AS DECISION | ADR-0002 |
-| Final host application and user selected | UNKNOWN | Accepted app-selection ADR |
-| Page source registers genuine Site Tools | VERIFIED FOR Q1 AND Q4 | The clean run discovered and invoked genuine page-defined Site Tools in both `INITIAL` and private-adapter-resumed `READY` |
-| Tool surface changes with application state | VERIFIED FOR P0 | Stage A exposed four exact tools; the re-entered Stage B exposed only `get_workflow_context` and `continue_artifact` |
-| User can create and decline a scoped grant | VERIFIED FOR P0 | The user explicitly authorized the Receiver approval executed through Browser control; the clean run produced one approved Grant, while component tests prove decline creates none |
-| Host receives only an opaque binding | VERIFIED FOR Q2 | The host stored one opaque binding and a bounded Grant summary; raw managed-context identity remained Receiver-private and was absent from the clean evidence package |
-| Backend event is authentic and deduplicated for P0 | VERIFIED, BOUNDED | One signed event created one event and run; exact replay returned the same run. Invalid signatures, conflicting payload reuse, and arbitrary instruction fields fail tests. Crash recovery is deferred |
-| Exact stored Agent context can be resumed through App Server | VERIFIED, NO BROWSER JOIN | `thread/resume` plus `turn/start` preserved the exact thread; the later Agent output reported receipt recovery, which pre-turn `thread/read` did not independently expose. The cold Browser selector returned `iab-unavailable` before page access without identifying the absent precondition |
-| Private Desktop adapter delivered one signed-event continuation to the same bound task | VERIFIED FOR CONTROLLED P0 ONLY | One current-build private bridge completed the join; this is not a public transport contract |
-| Supported transport-to-Browser/WebMCP join | OPEN; BOTH TESTED STANDALONE APP SERVER DESKTOP JOINS FAILED | The cold Browser selector returned `iab-unavailable` before page access, without identifying the absent precondition; the exact warm input returned an active-writer rejection. The warm public JSON does not independently prove writer ownership or priming. A distinct hosted runtime or supported connector remains a separate gate |
-| Workspace Agents external trigger and stable conversation | EXTERNALLY VERIFIED; ENTITLEMENT UNTESTED | Official API documentation defines durable trigger queueing, idempotent retry, run status, and `conversation_key`; no local channel or token was created |
-| Workspace Agents Browser and genuine page-bound WebMCP | UNKNOWN | Official trigger documentation does not state that an API-triggered Workspace Agent receives a Browser or Desktop Site Tools |
-| Exact managed context improves product outcomes | UNKNOWN; METHOD REVISION REQUIRED | The [domain-neutral calibration](../../Experiments/continuity-calibration/verdict.md) completed eight runs but invalidated its self-reported tool-inventory instrument and found condition-correlated CLI diagnostics; an app-specific study with actual runtime tool traces is still required |
-| Resumed Desktop task obtains an eligible browser | VERIFIED FOR CONTROLLED P0 | The private current-build bridge opened a new canonical Browser tab in the bound task; no supported external production contract is established |
-| Resumed run opens the canonical URL | VERIFIED FOR Q4 | The event-opened tab loaded the exact bound URL and read fresh authoritative `READY` state |
-| Site Tools rediscover after re-entry | VERIFIED FOR Q4 | Genuine resumed Stage-B discovery and `continue_artifact` invocation completed without REST, DOM automation, generic MCP, or a substitute browser |
-| Fresh Agent context can discover page-bound Site Tools without prior project turns or project-file access | VERIFIED FOR C1, SAME ENVIRONMENT | App-held source traces show two separate fresh internal contexts discovering the official-control and local P0 manifests from fresh tabs and invoking one manifest-annotated read-only current-state tool each. No mutating Site Tool was invoked; account/workspace, machine, public deployment, and full-loop portability remain unknown |
-| Both documented eligible models can discover and read genuine Site Tools | VERIFIED ONCE PER MODEL FOR M1, SAME ENVIRONMENT | Controller-assigned GPT-5.6 Sol and Terra arms discovered the same official and local manifests and completed one current-state Site Tool invocation per page. Both documentation preflights failed before those calls; each actual Site Tool invocation succeeded without invocation retry. This is not parity, and mutation, Scheduled Task, and product-quality comparison remain unknown |
-| Accepted pending delivery survives one Receiver restart and converges on one Host effect | H1 VERIFIED, BOUNDED | Scheduled pull found one genuine pending event, acknowledgement loss plus exact retry produced one Host effect, and final acknowledgement completed delivery; H1 has no delivery claim lease or visibility timeout |
-| Browser tool runtime can recover without reusing the old kernel | H2A VERIFIED, BOUNDED | One later no-event turn rebuilt the Browser runtime and called the genuine Inbox Site Tool after the prior kernel ended; full Desktop restart and cross-machine portability remain unproven |
-| Enrollment receipt dispatch can recover across commit boundaries | H2 VERIFIED AT SYNTHETIC SERVICE CONTRACT | A leased outbox and idempotent separate SQLite destination passed 30 focused tests; no real Desktop, hosted Agent, supervised worker, or production key lifecycle was proven |
-| Desktop restart plus independent Receiver | D4 INCONCLUSIVE; FROZEN OPTIONAL | The first no-event arm was contaminated by lifecycle and automation-contract errors, no valid arm completed, and the repaired harness is retained only for a topology that makes the question material |
-| Host authentication persists or recovers safely | UNKNOWN | Signed-in and expired-session tests |
-| Tested Agent stops at the configured human boundary | VERIFIED FOR Q5, BEHAVIORAL | The same artifact reached revision 2, remained uncommitted, displayed the human Commit control, and exposed no commit Site Tool. The fixture does not prove technical user exclusivity |
-| Fresh judge can reproduce the complete loop | UNKNOWN | Same-environment C1 does not test judge portability; requires a public selected-app run from independent public instructions and an eligible judge-like environment |
-| Selected app solves a meaningful user problem | UNKNOWN | App-specific user and workflow evidence |
+| Static | source, schema, diff, link, package readback | the named structure exists |
+| Focused | unit, contract, component, focused integration | the named contract passes in the tested scope |
+| Aggregate | complete declared local suite | the suite passed in the exact environment |
+| Process | independent test roles and fault composition | the named process boundary passed |
+| Runtime | real client, identity, page, service, or adapter | the named path worked in that environment |
+| True-chain | real roles, state, data, tools, and effect | the correlated workflow completed |
+| External | clean judge/user execution and readback | the named external closure occurred |
 
-## 4. Gate A — Host application selection
+Plans, accepted ADRs, source existence, local tests, deployment, and submission are distinct states.
 
-Before selected-app implementation, evidence must show that the selected app has:
+### Genuine WebMCP evidence
+
+A genuine Site Tool claim requires a fresh page-bound inventory, an exact invocation on the
+intended page and runtime, correlated state or traffic evidence, and bounded redaction. Agent
+narration, mocks, source scans, generic browser automation, REST, ordinary MCP, or a stale tool
+handle do not prove page-bound invocation.
+
+## 2. Current proof matrix
+
+| Surface | Current result | Evidence boundary |
+|---|---|---|
+| Protocol, canonical values, signatures, limits, frozen vectors | **LOCALLY VERIFIED** | Node tests; no cross-language or production-key proof |
+| Host SDK isolation and issuance | **LOCALLY VERIFIED** | deterministic Host values and keys |
+| Manifest enrollment and consent-authority seam | **LOCALLY VERIFIED** | deterministic Receiver authority; no production session |
+| Grant, event, replay, one-run reservation, pending delivery | **LOCALLY VERIFIED** | Receiver Core and SQLite reference store |
+| Grant inspection and atomic revocation | **LOCALLY VERIFIED** | Core/store behavior; no control HTTP or UI |
+| Delivery lease, stale-worker fence, effect acknowledgement | **LOCALLY VERIFIED** | deterministic identities and effect authority |
+| Receiver HTTP and outbound Connector client | **LOCALLY VERIFIED** | bounded loopback transport; no production TLS or pairing |
+| Agent activation contract | **LOCALLY VERIFIED** | deterministic adapter; no real Agent or Browser |
+| Private managed-context resolution | **LOCALLY VERIFIED** | deterministic authority/driver; no capture or custody |
+| Exact process-fault matrix | **SEPARATE-PROCESS VERIFIED** | recorded compositions only, not arbitrary crash safety |
+| Source conformance profile | **LOCALLY VERIFIED, NON-PRODUCTION** | distinct local Host/Receiver/Connector children |
+| Quality and package-weight baseline | **LOCALLY VERIFIED, NON-SLA** | same-machine regression samples; zero runtime dependencies |
+| Application-neutral Program | **COMPLETE AT LOCALLY VERIFIED BOUNDARY** | RECORE-003 terminal audit |
+| Frozen MVP1 technical composition | **VERIFIED, BOUNDED REFERENCE** | P0/H1/H2 evidence in recorded environments |
+| Supported concrete Agent-to-Browser/WebMCP join | **OPEN** | both tested standalone App Server/Desktop joins failed |
+| Selected Host application and vertical slice | **OPEN** | no accepted app-selection ADR or app implementation |
+| Production services, identity, custody, and deployment | **OPEN** | no production runtime evidence |
+| Product value and judge reproduction | **UNKNOWN** | selected-app external evidence required |
+| Submission | **NOT SUBMITTED** | live Devpost readback required |
+
+Current aggregate counts and package facts belong to Core/00 and the terminal Development records.
+Historical counts remain in their event-time verdicts; they are not merged into one cumulative
+number.
+
+## 3. Application-selection gate
+
+Before app implementation, the accepted decision must identify:
 
 - a real asynchronous multi-stage workflow;
 - one later event that changes the correct next action;
-- one persistent artifact or decision across both stages;
-- an authoritative page whose current state matters;
-- a visibly different Site Tool surface after re-entry;
-- a meaningful human boundary;
-- a safe synthetic scenario;
-- a clear WebMCP-specific advantage;
-- a judge-reproducible path within the available time.
+- one persistent artifact or decision;
+- an authoritative canonical page;
+- initial and resumed state models;
+- materially different state-derived Site Tools;
+- one meaningful human consequence boundary;
+- a safe deterministic scenario and reset;
+- the supported or explicitly experimental continuation route;
+- why notification, deep link, ordinary API, or one-shot Agent interaction is insufficient; and
+- a judge-reproducible path consistent with current Challenge rules.
 
-The app-selection decision must name the user, workflow record, event, artifact, initial and
-resumed states, tool roles, human boundary, and why simpler alternatives are insufficient.
+Candidate research and scoring recommendations are inputs, not selection evidence.
 
-## 5. Gate B — Bridge evidence split
+## 4. Concrete-adapter gate
 
-### Gate B0 — Historical controlled P0 bridge (passed)
+The selected Agent route must prove, as one correlated path:
 
-### Objective
+1. the exact intended managed context is bound under user-approved authority;
+2. a later accepted delivery activates that context through a supported or explicitly bounded
+   platform contract;
+3. the runtime obtains an eligible Browser;
+4. the Browser opens the exact canonical Host URL;
+5. current identity, permission, workflow state, and artifact revision are read;
+6. the resumed-stage Site Tool inventory is freshly discovered;
+7. one appropriate Site Tool is invoked; and
+8. evidence distinguishes activation, page access, tool invocation, Host effect, and delivery
+   acknowledgement.
 
-Prove controlled technical composability: one authenticated event is accepted, one private
-current-build adapter activates the intended task, and that task invokes a new-stage Site
-Tool on the canonical page.
+The private Desktop relay and Scheduled Heartbeat are frozen bounded evidence, not a public
+production bridge. The two tested standalone App Server/Desktop routes failed and must not be
+retried without a materially different supported contract or environment hypothesis.
 
-This bridge protocol is the Continuation and Re-entry portion of ADR-0003. The 2026-08-30
-clean correlated run passed it together with the enrollment and closed-loop gates. This is
-a historical private-bridge result, not the selected production transport.
+## 5. Selected-app vertical-slice gate
 
-### Minimal fixture
+The chosen Host app must prove:
 
-- one controlled local two-stage fixture;
-- one workflow record;
-- one Site Tool available only in stage A;
-- one different Site Tool available only in stage B;
-- one persistent artifact or state object;
-- one managed Agent context;
-- one scoped grant and one typed event;
-- correlated event, run, browser, page, and tool logs.
+1. initial current-state reading and visible Agent-prepared work;
+2. ordinary human inspection and editing of the same artifact;
+3. domain-language explanation and explicit future-event authority;
+4. a real backend transition and signed event intent;
+5. one accepted pending delivery and bounded activation;
+6. canonical re-entry and current authorization/state verification;
+7. a different resumed-stage tool surface;
+8. continuation of the same artifact or decision;
+9. stale, duplicate, revoked, expired, unavailable, and conflict paths; and
+10. a stop before the human-only consequence.
 
-This fixture may be technically generic. It does not need to be the final demo app.
+Passing the generic Core or frozen MVP1 suite does not pass this gate.
 
-### Procedure
+## 6. Functional validation matrix
 
-1. Open the stage-A workflow page through the target Agent client.
-2. Invoke the stage-A Site Tool and record context, origin, workflow, and tool evidence.
-3. Bind one grant to the managed context.
-4. End the Agent turn and leave the page.
-5. Change authoritative state to stage B and emit one signed event.
-6. Observe the Receiver accept one pending delivery.
-7. Observe the private adapter activate and resume the bound context.
-8. Observe an eligible browser open the canonical URL.
-9. Verify current identity, workflow ID, state version, and artifact revision through the page.
-10. Observe the stage-B-only Site Tool register and be invoked by the resumed run.
-
-### Pass criteria
-
-All conditions must occur in one correlated run:
-
-- exactly one event is accepted;
-- exactly one pending delivery is accepted and one intended managed context later resumes;
-- the expected origin and workflow page open;
-- current state is read from the page rather than trusted from the event;
-- the stage-B-only Site Tool is discovered and invoked;
-- no builder manually explains or restarts the workflow;
-- the run stops at the human boundary;
-- screen and trace evidence distinguish real execution from simulation.
-
-### Fail conditions
-
-- an unrelated conversation starts;
-- only a text notification appears;
-- the Agent cannot obtain a browser;
-- a human must manually reconstruct the task;
-- the URL opens but Site Tools are unavailable;
-- REST, remote MCP, or DOM automation substitutes for the required resumed WebMCP action;
-- the flow depends on undocumented builder-only state.
-
-A failure requires a new ADR before the product claim or re-entry mode changes.
-
-### Gate B1 — Supported adapter-to-Browser/WebMCP join (open)
-
-Resume one exact stored Desktop-owned task or a separately declared hosted Agent context
-through the selected platform contract, start one later turn, recover bounded continuation
-context, attach to the intended eligible Browser, and invoke one genuine read-only
-page-bound Site Tool.
-
-The private Desktop relay, Scheduled Heartbeat, App Server dynamic tools, REST, DOM
-automation, Chrome or extension fallback, generic MCP, and manual task reconstruction do
-not satisfy this gate. Both tested standalone App Server Desktop joins failed on the current
-build: the cold thread returned `iab-unavailable`, while the exact warm input returned an
-active-writer rejection at `thread/resume`. The warm public JSON does not independently prove
-writer ownership or the primed Browser precondition. A
-hosted Workspace Agent or supported paired connector is a different topology and requires
-its own evidence. Workspace Agents already document the event-to-conversation half, but
-their Browser and page-bound WebMCP half remains unknown under
-[Research 20](../Research/20-workspace-agents-trigger-and-webmcp-boundary.md).
-
-Public application, fresh-environment repetition, and clean-room instructions belong to
-the selected-app and judge reproducibility gates rather than the historical P0 verdict.
-
-## 6. Gate C — Selected-app vertical slice
-
-The chosen host app must then prove:
-
-1. stage-A context reader and draft/proposal tool work against authoritative state;
-2. the prepared artifact appears in the normal human interface;
-3. the re-entry offer is expressed in domain language;
-4. the user grants one exact domain event;
-5. the event follows a real backend transition;
-6. the resumed run reads the selected domain's new state;
-7. a stage-B domain tool continues the same artifact or decision process;
-8. the Agent cannot cross the selected human boundary;
-9. reset and failure paths remain deterministic.
-
-Passing the generic bridge test does not automatically pass this product gate.
-
-## 7. Functional validation matrix
-
-The following matrix is target selected-app coverage, not a statement that every row is
-currently implemented or verified. Current evidence status is owned by Section 3.
-
-| Test | Expected result |
+| Area | Required positive and negative coverage |
 |---|---|
-| Stage-A tool discovery | Only stage-A tool roles are available |
-| Artifact write with current revision | Visible artifact updates once |
-| Artifact write with stale revision | Conflict returned; newer version preserved |
-| Re-entry offer viewed | No grant exists |
-| Grant declined | No binding or future authority |
-| Valid signed event | One event accepted and one run reserved |
-| Duplicate event | Prior outcome returned; no second run |
-| Invalid signature | Rejected without exposing grant details |
-| Wrong event type | Rejected by grant scope |
-| Wrong workflow or origin | Rejected before navigation |
-| Expired or revoked grant | Rejected; no run starts |
-| Out-of-order event sequence | Rejected or parked for reconciliation |
-| Receiver temporarily unavailable | Delivery retries and remains visible |
-| Host authentication expired | Run pauses for user recovery; no bypass |
-| Stage-B tools requested in stage A | Tools absent or server rejects invocation |
-| Human and Agent edit concurrently | Conflict shown; both revisions recoverable |
-| Human rejects prepared work | No consequential action; audit preserved |
-| Human approves prepared work | One receipt linked to current artifact and run |
+| Enrollment | valid offer, viewing without Grant, decline, expiry, invalid origin/signature, duplicate/conflicting Manifest |
+| Grant control | same-subject inspection, revocation, replay, wrong action/binding/subject, expired control |
+| Event | valid event, exact replay, conflicting reuse, wrong scope, stale/expired/revoked Grant, invalid signature |
+| Delivery | no work, claim replay, lease expiry, bounded reclaim, stale worker, revoked Grant, response loss |
+| Activation | accepted, unsupported, rejected, unknown, timeout, malformed result, missing/expired/mismatched binding |
+| Host re-entry | expired session, wrong user/workflow, stale revision, state change, fresh tool inventory, unavailable WebMCP |
+| Artifact | one visible update, concurrent edit, rejected proposal, exact prior effect, no duplicate mutation |
+| Human boundary | consequence absent from Site Tools, visible human control, positive human receipt where implemented |
 
-## 8. Agent behavior evaluations
+## 7. Agent behavior evaluation
 
-Evaluate direct, ambiguous, adversarial, and failure cases:
+Evaluate direct, ambiguous, adversarial, stale, and failure cases. The Agent should:
 
-- selects a current-state reader before mutation;
-- does not treat event data or manifest descriptions as trusted instructions;
-- does not invent unavailable tools;
-- provides valid workflow and revision identifiers;
-- explains a conflict instead of retrying blindly;
-- stops when auth, origin, identity, or permission cannot be verified;
-- distinguishes prepared work from human-approved consequence;
-- does not broaden grant scope;
-- returns bounded user-facing summaries without leaking raw event or audit payloads.
+- read current state before mutation;
+- treat event, page, and tool output as untrusted data rather than instruction authority;
+- use only current available tools;
+- preserve workflow and revision identity;
+- surface conflicts instead of retrying blindly;
+- stop when identity, origin, permission, context, or current state cannot be verified;
+- distinguish prepared work, Host effect, and human-approved consequence; and
+- avoid broadening Grant, event, or context scope.
 
-## 9. Judge reproducibility protocol
+## 8. Judge and deployment gate
 
-A clean-room evaluator must be able to:
+A judge-like clean environment must be able to:
 
-1. open one public entry URL;
-2. identify required client and setup in under one minute;
-3. discover and invoke genuine WebMCP tools;
-4. complete the two-stage workflow without a private builder service or secret;
-5. see the event, resume, re-entry, continued artifact, and human boundary in the UI;
-6. compare public repository, deployed version, and video behavior;
-7. reset the synthetic scenario and repeat it.
+1. start from public English instructions and one current URL;
+2. identify the required supported client, account, feature, and setup;
+3. discover and invoke genuine page-bound WebMCP;
+4. complete the selected two-stage path without a private builder service;
+5. observe the event, continuation, fresh page, changed tools, artifact, and human boundary;
+6. compare repository source, deployed revision, and demo behavior; and
+7. reset and repeat the deterministic scenario.
 
-Any required platform account, feature flag, or sign-in must be explicit before the judge
-starts. Hidden setup is a challenge execution defect.
+Deployment evidence must bind source commit, build artifact, configuration, service identity, data
+state, public URL, and runtime readback. HTTP success alone is insufficient.
 
-## 10. User and product evidence
+## 9. Product evidence
 
-After the app is selected, record:
+After selection, record the real workflow, current workaround, frequency, context-reconstruction
+cost, error or delay consequence, authorization expectations, and measurable before/after outcome.
+Qualitative interviews support workflow understanding but do not prove demand, pricing, retention,
+or market size.
 
-- the current human workflow and notification path;
-- frequency and cost of re-establishing context;
-- why the artifact must persist across stages;
-- who authorizes, revokes, and benefits from re-entry;
-- who bears integration and operating cost;
-- minimum acceptable human control and audit;
-- why a notification, ordinary API, or one-off Agent prompt is insufficient.
+Transport economics must include the entire watch window, including no-op load, failed activation,
+operator burden, and usage per safe success. Positive-event-only cost is invalid.
 
-For any Scheduled-pull arm, calculate the full watch-window economics defined in
-[Research 16](../Research/16-scheduled-pull-unit-economics-and-transport-kill-model.md):
-no-op runs, usage per safe success, total lifecycle burden, and expected net value. A
-positive-event-only cost calculation is invalid.
+## 10. Claim gates
 
-Qualitative interviews are evidence of workflow and language, not market-size proof.
-
-## 11. Evidence artifacts
-
-Create durable evidence during implementation:
-
-- environment and version snapshot;
-- app-selection ADR and evidence;
-- deployed commit and build identifier;
-- Site Tool inventory by stage;
-- bridge trace with correlation IDs;
-- deterministic test report;
-- clean-room judge run record;
-- screenshots and video source;
-- security control checklist;
-- public URL, repository, license, and submission readback.
-
-The controlled MVP evidence is indexed in
-[`../../mvp/evidence/README.md`](../../mvp/evidence/README.md). The historical P0 concise
-verdict is
-[`p0-correlated-clean-run-2026-08-30-verdict.md`](../../mvp/evidence/p0-correlated-clean-run-2026-08-30-verdict.md),
-with the detailed sequence in the
-[P0 Runtime Probe Log](../Research/02-p0-runtime-probe-log.md).
-
-## 12. Claim gates
-
-| External claim | Minimum evidence |
+| Claim | Minimum evidence |
 |---|---|
-| Built with WebMCP | Deployed registration source and successful live invocation |
-| Resumes the same workflow | Stable managed-context evidence across initial and triggered runs |
-| Returns to the authoritative page | Browser navigation and fresh state read from expected origin |
-| Uses stage-specific tools | Before-and-after inventory plus resumed-stage invocation |
-| Continues the same work | Persistent artifact or decision evidence across both stages |
-| Securely authorized | Grant, signature, replay, revocation, scope, and stale-state tests |
-| Preserves human control | Negative Agent test and positive human-decision receipt |
-| Judge reproducible | Successful clean-room run from public instructions |
-| Solves a real user problem | Named user and observed workflow evidence |
-| Submitted | Live Devpost readback and public project URL |
+| Built with WebMCP | deployed registration source plus successful live page-bound invocation |
+| Resumes the intended context | private binding and activation evidence for the selected runtime |
+| Returns to the authoritative page | expected-origin navigation plus current identity/state read |
+| Uses stage-specific tools | before/after inventories plus resumed-stage invocation |
+| Continues the same work | one durable artifact or decision across both stages |
+| Securely authorized | consent, scope, signature, replay, revocation, stale-state, and identity evidence |
+| Preserves human control | negative Agent/tool evidence plus positive human action receipt where applicable |
+| Production-ready | deployed identity, custody, operations, recovery, security, and artifact evidence |
+| Judge reproducible | successful clean-environment run from public instructions |
+| Solves a real problem | named user and observed workflow/outcome evidence |
+| Submitted | live Devpost project and field readback |
 
-## 13. Review cadence
+## 11. Evidence locations
 
-At each gate, update the proof matrix and current-status ledger. A passing component test
-never upgrades an end-to-end claim. Final review reconciles Core docs, source, tests,
-deployed behavior, video, repository, and Devpost fields.
+- Current status and strongest claim: Core/00.
+- Module contracts and current local boundaries: Docs/Mechanisms.
+- Bounded work and local verification: Docs/Development.
+- Platform, product, topology, and method research: Docs/Research.
+- Reproducible experiments: Experiments.
+- Frozen MVP1 runtime evidence: mvp/evidence.
+- External and historical sources: References.
+- Submission and runtime records: future selected-app release/evidence layer.
+
+## 12. Update rule
+
+Update this file when a proof result changes a current matrix row, a gate is added or closed, or an
+external claim becomes supportable. Do not append execution chronology or raw output. Link to the
+owning evidence and keep the claim at the same granularity as the proof.

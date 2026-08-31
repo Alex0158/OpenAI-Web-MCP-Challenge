@@ -1,297 +1,177 @@
-# WebMCP Re-entry Workflow — Trust, Security, and Reliability
+# Re-entry Core — Trust, Security, and Reliability
 
-**Role:** CANONICAL authority, security, and failure semantics  
-**Status:** Target domain-neutral trust and reliability baseline; bounded P0/H1/H2 evidence exists, while production reliability remains unverified.  
-**Last updated:** 2026-08-31
+**Role:** CANONICAL cross-cutting trust, security, and reliability policy  
+**Status:** Application-neutral controls locally verified at their stated boundary; production
+identity, custody, services, and runtime evidence open  
+**Authority:** ADR-0006 through ADR-0015
 
 ## 1. Security objective
 
-Permit one website-originated business event to create one bounded authenticated pending
-delivery for a user-approved Agent workflow, while keeping Agent activation, page authority,
-platform credentials, cross-workflow access, and the selected application's human decision
-boundary separate.
+Allow one user-approved future continuation without letting the Host, event issuer, Receiver,
+Connector, Agent Adapter, page content, or stale runtime silently widen authority.
+
+This document owns system-wide policy and trust boundaries. Module-specific state and failure
+semantics belong to [Docs/Mechanisms](../Mechanisms/README.md). Dated implementation evidence
+belongs to Core/05, Development, Research, and frozen evidence.
 
 ## 2. Protected assets
 
-- Agent platform credentials and managed context identifiers;
-- host application session and user identity;
-- domain records, artifacts, decisions, and sensitive content;
-- Continuation Grants and revocation state;
-- workflow IDs, event integrity, state versions, and artifact revisions;
-- human approval decisions and receipts;
-- Receiver availability, signing material, and audit records.
-
-The selected application must add domain-specific assets, consequences, and regulatory
-constraints before implementation.
+- Host issuer private keys;
+- Receiver consent and control-session authority;
+- private Grant, subject, and delivery-target identity;
+- Connector and lease credentials;
+- private managed-context binding and raw platform locator;
+- Host workflow state and artifact revision;
+- human-only consequential actions;
+- audit and evidence integrity; and
+- user content excluded from bounded event and transport surfaces.
 
 ## 3. Authority model
 
-Authority is conjunctive. A run is valid only when every condition remains true:
+| Authority | Granted by | Permits | Does not permit |
+|---|---|---|---|
+| Manifest issuer | Host key and trusted origin | offer one bounded future event | create a Grant or choose an Agent context |
+| Consent decision | Receiver-owned authenticated session | approve or decline one exact challenge | caller-asserted approval or Host-selected subject |
+| Continuation Grant | Receiver Core | accept one matching event within scope | Host mutation or arbitrary Agent instruction |
+| Signed event | Host issuer plus live Grant | reserve one pending delivery | prove current Host state or Agent execution |
+| Connector lease | Receiver target authority | dispatch one bounded activation attempt | issue/revoke Grants or choose a context |
+| Private context binding | configured adapter authority | select one exact managed context | expose the locator or acknowledge delivery |
+| Current Host session | Host application | read or mutate current authorized workflow state | inherit stale event or Agent assertions |
+| Human decision | authenticated user in current Host state | cross the selected consequence boundary | delegation by a hidden Site Tool |
+
+Possession of one opaque identifier is never sufficient to gain the next authority.
+
+## 4. Cross-cutting invariants
+
+1. Authority is resolved from trusted stored state before untrusted caller data is interpreted.
+2. Consent, control, Connector, and adapter tokens are action- and boundary-specific.
+3. Secrets and raw platform identifiers are absent from public bindings, event bodies, activation,
+   result, error, logs, and shareable evidence.
+4. The event contains no prompt, goal, artifact, tool plan, or arbitrary instruction.
+5. Current Host authorization and state are checked again after re-entry.
+6. Replay returns prior truth only for exact canonical identity; conflicting reuse fails.
+7. Retries are explicit and bounded; unknown external outcome never becomes assumed success.
+8. Revocation fences future authority but does not rewrite committed history.
+9. Test authorities, loopback transport, and deterministic adapters are not production identity.
+10. No fallback may hide unsupported capability, missing binding, stale state, or failed evidence.
+
+## 5. Trust boundaries
 
 ~~~text
-trusted issuer origin
-+ valid event signature and time window
-+ active workflow-scoped grant
-+ allowlisted event type
-+ unused event ID and valid event sequence
-+ unexpired run budget
-+ matching canonical origin and workflow
-+ authenticated user with current host-app authorization
-+ current business state permits the requested operation
-+ expected artifact revision still matches
+Host key boundary
+    signed Manifest and event
+          |
+          v
+Receiver identity and persistence boundary
+    private Grant and delivery truth
+          |
+          v
+Connector device/process boundary
+    short lease and credential-free activation
+          |
+          v
+Agent Adapter custody boundary
+    private binding reference
+          |
+          v
+Host page authority boundary
+    current session, state, tools, and human consequence
 ~~~
 
-Failure of any condition stops before mutation.
+No boundary receives the private authority held by the next boundary merely to simplify
+integration.
 
-## 4. Grant rules
+## 6. Threat and control matrix
 
-Every Continuation Grant binds:
-
-- user or organization subject;
-- issuer origin;
-- workflow type and workflow ID;
-- canonical URL or URL pattern;
-- explicit event type;
-- human decision boundary;
-- issue and expiry times;
-- maximum total and concurrent runs;
-- revocation and current status;
-- opaque host-facing binding;
-- separately stored managed Agent-context binding.
-
-The permission surface is controlled by the Receiver or Agent host, not solely by page
-content. Website wording is untrusted input and may not hide scope or consequence.
-
-## 5. Re-entry offer and key trust
-
-The Receiver accepts a Re-entry Manifest only when:
-
-- the current page origin matches the declared issuer origin;
-- the manifest is signed by a key trusted for that origin;
-- the key identifier resolves through an allowlisted or verified origin-owned source;
-- the manifest is inside its validity window;
-- the workflow and canonical URL match the current page;
-- requested event, limits, and boundary fit Receiver policy.
-
-The MVP may pin one issuer key. A production design needs rotation, revocation, key overlap,
-ownership verification, and compromise recovery.
-
-### 5.1 Trusted Continuation Receipt
-
-A Trusted Continuation Receipt:
-
-- is generated only by the Receiver after Manifest validation and an authenticated
-  Receiver-owned human consent action;
-- is derived only from normalized allowlisted Grant fields and typed continuation intent;
-- is persisted through a Receiver- or Agent-host-controlled adapter, never authored by the
-  page, event payload, or Agent;
-- is bound to the exact Grant, origin, workflow, canonical URL, authorized event type,
-  expiry, and human boundary;
-- contains no arbitrary prompt, business-state assertion, raw managed-context identifier,
-  platform credential, or full domain artifact; and
-- fails closed when missing, altered, expired, revoked, ambiguous, or inconsistent with the
-  accepted delivery.
-
-The receipt is trusted only as Receiver-authored continuation context. It is enrollment
-output, not the future business event, and it does not independently authorize activation or
-mutation. The future event must still be authenticated and deduplicated, the Grant must still
-be live, the selected adapter must still obtain an eligible runtime, and the Host page must
-still revalidate current identity, state, and revision.
-
-## 6. Event authentication contract
-
-The signature is detached from the JSON body. The provisional mechanism-level headers are:
-
-- WebMCP-Reentry-Key-Id: issuer key identifier;
-- WebMCP-Reentry-Timestamp: signed delivery timestamp;
-- WebMCP-Reentry-Signature: signature or MAC over timestamp + "." + exact raw request body.
-
-These are target header names, not the frozen P0 wire contract. P0 uses
-`X-Event-Timestamp` and `X-Event-Signature` with one pinned HMAC secret and no key-ID
-header.
-
-Verification requires bounded clock skew, exact raw bytes until validation completes, and
-constant-time comparison when a MAC is used.
-
-For a single-host MVP, HMAC-SHA-256 with a securely provisioned shared secret is acceptable.
-A multi-host design should prefer asymmetric signatures so verification does not require
-sharing an issuer's signing secret.
-
-Do not place a signature inside the body and ambiguously claim to sign the entire body.
-
-## 7. Replay, ordering, and idempotency
-
-- event_id is globally unique and has a Gateway uniqueness constraint.
-- event_sequence is monotonic within a workflow event stream and is distinct from state_version.
-- Different legitimate events may share one business state version.
-- The Receiver atomically reserves a run before acknowledging delivery.
-- Mutation tools require an idempotency key and expected artifact revision.
-- A duplicate event returns its prior outcome and never starts a second run.
-- Out-of-order events are rejected or parked for explicit reconciliation.
-
-## 8. Human decision boundary
-
-The selected application must name one consequential outcome the Agent cannot cross.
-Examples include submission, publication, payment, legal commitment, irreversible change,
-or approval of another person's work.
-
-The Agent may inspect state and prepare bounded work. The mechanism never delegates:
-
-- extension of grant scope or expiry;
-- revocation reversal;
-- identity recovery or MFA bypass;
-- a domain consequence that has not been explicitly designed, reviewed, and approved.
-
-The human interface shows the proposal, source state, material changes, and consequence.
-The human decision produces a receipt correlated with the run and artifact.
-
-## 9. Threat and control matrix
-
-| Threat | Required control | Safe failure |
+| Threat | Required control | Current evidence limit |
 |---|---|---|
-| Malicious page requests broad authority | Receiver-owned permission UI, origin binding, minimum defaults | No grant |
-| Event injects arbitrary instructions | Typed schema, bounded data, no prompt field | Reject event |
-| Forged event | Detached signature, trusted key, timestamp check | Reject and audit |
-| Replay or duplicate delivery | Unique event ID, sequence, atomic run reservation | Return prior outcome |
-| Host learns Agent credentials | Opaque binding and Receiver-only context store | Revoke binding safely |
-| Wrong user, tenant, or workflow resumes | Subject, origin, workflow, URL, and auth binding | Terminal run failure |
-| Stale event causes action | Canonical state read and expected version check | No mutation |
-| Tool metadata or output injects instructions | Treat definitions and results as untrusted; narrow schemas | Stop or request review |
-| Page or event forges a continuation plan | Receiver-generated typed receipt, allowlisted fields, trusted persistence path, and live Grant/event match | No activation or mutation |
-| Tool registration changes unexpectedly | Verify origin, stage, tool roles, names, and schemas | Fail closed |
-| Login expires or MFA appears | User-mediated recovery only | Pause without bypass |
-| Human and Agent edit concurrently | Optimistic revision check and visible conflict | Preserve both versions |
-| Revocation races with delivery | Atomic grant status and run reservation rule | Deterministic visible outcome |
-| Receiver unavailable before durable commit | Host outbox retries; Receiver acknowledges only after durable commit; expiry and dead letter are target controls | No false acknowledgement, silent loss, or action |
-| Run loops or spends unexpectedly | One event, one reserved run, timeout, action budget | Cancel and explain |
-| Sensitive data leaks into event or logs | Field allowlist, data minimization, redaction | Reject disallowed data |
+| Forged Host offer or event | origin anchoring, allowlisted Ed25519 key, canonical bytes, bounded clock skew | local deterministic keys and vectors |
+| Caller-asserted consent | Receiver-owned decision authority, challenge/action/subject binding, expiry | deterministic authority only |
+| Binding enumeration or cross-subject control | authenticate before private resolution, same-subject check, bounded summary | Core/store tests; no production session |
+| Replay or conflicting event reuse | exact event identity, canonical payload comparison, atomic prior-outcome return | local Core/store tests |
+| Double run or partial reservation | one transaction consumes run and creates pending delivery | SQLite reference evidence |
+| Stale or wrong Connector | target identity, short lease, claim digest, attempt bound, stale-worker fence | local and test-process evidence |
+| Adapter credential leakage | credential-free activation and private adapter-local binding lookup | deterministic contract evidence |
+| Wrong managed context | lookup only by private Grant and configured adapter, exact scope and lifetime checks | deterministic authority/driver |
+| False completion | separate trusted Host-effect verification before acknowledgement | synthetic authority only |
+| Stale Host mutation | canonical-page revalidation, server authorization, revision compare-and-swap | frozen MVP1 fixture evidence |
+| Prompt injection through event/page copy | bounded typed event, untrusted display treatment, no prompt transport | contract and negative tests |
+| Hidden fallback | explicit unsupported/unknown states and no automatic retry or alternate adapter | local tests |
 
-## 10. Reliability model
+## 7. Reliability semantics
 
-**TARGET:** Delivery is durable at least once, and Host effects converge idempotently to one
-result through state validation. The project does not claim distributed exactly-once
-delivery.
+### Atomic boundaries
 
-Target observable records remain separate:
+- Enrollment decision creates Grant, binding, and receipt under one Receiver transaction.
+- Event acceptance records the event, consumes the one-run budget, and creates pending delivery
+  atomically.
+- Revocation compare-and-set serializes against event and lease transitions.
+- Delivery claim, reclaim, stale-worker fencing, effect binding, and acknowledgement use explicit
+  store transactions.
 
-- event accepted, rejected, or expired;
-- delivery pending, leased, retryable, acknowledged, or dead-lettered;
-- wake attempt queued, dispatched, failed, or coalesced;
-- Host effect not applied or applied;
-- run resuming, opening page, verifying, continuing, awaiting human, completed, or failed;
-- grant active, expired, revoked, or exhausted;
-- artifact current, conflicted, approved, rejected, or committed.
+### Failure states
 
-Every transition records actor, time, correlation ID, reason, and previous state.
+The system keeps these states distinct:
 
-### Current additive evidence boundary
+- rejected input or authority;
+- accepted pending work;
+- leased activation;
+- unsupported capability;
+- rejected activation;
+- outcome unknown;
+- Host effect absent, present, or conflicting;
+- acknowledged completion;
+- expired, revoked, exhausted, or terminal work.
 
-The clean historical P0 run proves one authenticated happy-path dispatch and duplicate
-suppression: one event produced one run and exact replay produced no second run or artifact
-write. It does not prove the target reliability model above.
+Timeout, exception, process exit, and response loss do not collapse into success. The operator or a
+later exact replay reconciles authoritative stored state.
 
-In particular:
+### Durability boundary
 
-- the fixture consumes the event and run budget before adapter dispatch and has no
-  crash-recovery retry for a failed dispatch;
-- the frozen P0 path persists the Grant as `ACTIVATING` before the enrollment follow-up and
-  has no crash-recovery contract for that dual-write sequence; the later H2 spike tests a
-  separate additive durable-enrollment design rather than silently changing P0; and
-- a first independent rehearsal failed after run reservation because the relay forwarded a
-  `read_thread` result larger than its 64 KiB client limit. The corrected trusted relay now
-  validates the single observed `thread.id` contract, returns only a compact identity proof,
-  forwards no task content, and fails closed on malformed, mismatched, conflicting, or
-  multiple identity payloads. A post-fix rehearsal completed successfully without raising
-  the client limit; and
-- the current Desktop relay is an undocumented same-user local bridge without a supported
-  production lifecycle contract.
+The Node SQLite reference store uses explicit transactions and file-backed durability settings.
+Recorded tests cover exact migrations, close/reopen behavior, response loss, selected process
+restarts, and one pre-commit termination position. This is not arbitrary-crash, disk-corruption,
+power-loss, distributed-store, or multi-replica evidence.
 
-H1 adds one durable `PENDING` delivery across a Receiver restart and one effect-backed
-acknowledgement-loss retry. It does not implement a delivery claim lease or visibility
-timeout.
+## 8. Data minimization and retention
 
-H2 adds a crash-recoverable enrollment outbox with stable dispatch identity, leases, and an
-idempotent synthetic SQLite destination. It does not prove delivery to a real Desktop task,
-hosted Agent, or production connector, and its one-shot worker is not a supervised daemon.
+- Host events carry identifiers, state version, event type, time, and canonical URL only.
+- Full artifacts and free-form business payloads remain in the Host application.
+- Public bindings exclude private Grant, subject, delivery target, receipt, and Agent identity.
+- Raw consent, control, Connector, and lease tokens are not persisted.
+- Managed-context references remain inside the adapter custody boundary.
+- Logs and public evidence use bounded correlation and redacted outcomes.
+- Revocation preserves minimal private history needed for replay, race, and audit semantics.
 
-D4 remains `INCONCLUSIVE` and supplies no Desktop restart continuity evidence. Therefore,
-current evidence supports bounded additive mechanism and service-contract claims, not a
-general claim of production-safe enrollment, durable external Agent delivery, supported
-wake, or distributed exactly-once effects.
+Production retention periods, deletion, export, backup, legal hold, and subject-access behavior are
+selected-app and deployment decisions. They are not invented by the application-neutral Core.
 
-The standalone App Server is also not a current Desktop wake path: the cold thread's Browser
-selector returned `iab-unavailable` before page access, without identifying the absent
-precondition, while exact warm resume returned an active-writer rejection for the supplied
-task. The warm public JSON does not independently prove writer ownership or the primed Browser
-state. Neither failure is repaired
-by weakening the Browser requirement or substituting another execution surface.
+## 9. Human control
 
-## 11. Transactional delivery
+The user must understand the event, scope, expiry, one-run limit, reason for return, and consequence
+that remains human-only. The user can decline enrollment and later inspect or revoke the exact
+Grant through an authenticated Receiver-owned control surface.
 
-The host business transition and outbox record commit atomically. An outbox relay retries
-delivery. Gateway acceptance and replay state commit atomically. Receiver run reservation
-and grant run count commit atomically.
+Agent preparation must remain visible and revisable in normal Host UI. A selected app must enforce
+the human consequence in backend authorization and tool registration, not only in copy or model
+instructions.
 
-The MVP should prefer one durable datastore and an outbox worker. A separate broker is
-justified only when the selected runtime makes it necessary.
+## 10. Production controls still required
 
-## 12. Data minimization and retention
+- real consent and Grant-control identity, recovery, anti-CSRF, and session security;
+- issuer onboarding, origin ownership, key rotation, revocation, and compromise response;
+- Receiver service identity, TLS, rate limits, admission control, and abuse monitoring;
+- Connector pairing, credential storage, revocation, supervision, upgrade, and device recovery;
+- managed-context capture, encryption, retirement, migration, and in-flight revocation behavior;
+- real Host-effect verification;
+- production persistence, backup, restore, corruption handling, and multi-instance ownership;
+- selected-app retention, deletion, privacy, audit, and support obligations; and
+- deployment, incident response, observability, and judge-safe evidence.
 
-### Event data
+These controls are gates. Test fixtures must not be renamed or wrapped to imply that they exist.
 
-Include workflow identifiers, event type, versions, canonical URL, time, and the minimum
-event-specific identifier. Do not include the full domain artifact by default.
+## 11. Update rule
 
-### Audit data
-
-Store hashes or bounded summaries when full payload retention is unnecessary. Redact
-credentials, session data, secrets, and unrelated content.
-
-### Retention
-
-The MVP must provide a deterministic reset and deletion path for synthetic data. Production
-retention, legal hold, subject access, and organization policy remain unresolved until the
-domain is selected.
-
-## 13. Domain security overlay
-
-Before the demo app becomes implementation-ready, add:
-
-- named protected data and worst credible consequence;
-- user roles and decision rights;
-- tenant or workspace boundary;
-- domain authorization checks for every tool role;
-- prohibited Agent actions;
-- required human decision evidence;
-- domain-specific retention and privacy constraints;
-- abuse cases unique to the selected event and artifact.
-
-The generic mechanism controls do not replace this domain review.
-
-## 14. MVP control baseline
-
-Before public demonstration, the MVP must have:
-
-- one pinned issuer origin and key;
-- one event type with a strict schema;
-- detached event signature verification;
-- unique event IDs and workflow event sequence;
-- transactional outbox or equivalent durable state;
-- opaque Agent binding;
-- grant expiry, revocation, and one-run limit;
-- current state and artifact revision checks;
-- visible human decision boundary;
-- redacted correlated logs;
-- duplicate, invalid-signature, wrong-workflow, expired-grant, stale-state, and conflict tests.
-
-## 15. Production controls deliberately deferred
-
-- multi-tenant enterprise administration and role federation;
-- general issuer onboarding and public key infrastructure;
-- cross-device Receiver migration and disaster recovery;
-- domain regulatory programs;
-- broad event taxonomies and policy engines;
-- formal protocol standardization;
-- security certification and penetration testing.
-
-Deferred means outside the challenge proof, not solved.
+Change this file only for a cross-cutting authority, threat, reliability, data-minimization, or
+human-control rule. Put exact module behavior in the owning Mechanism document, durable choices in
+an ADR, and executed evidence in Core/05 or its evidence owner.

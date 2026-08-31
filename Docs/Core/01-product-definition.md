@@ -1,16 +1,17 @@
-# WebMCP Re-entry Workflow — Concept Definition
+# Re-entry Core — Product Definition
 
 **Role:** CANONICAL concept and product boundary  
-**Status:** Mechanism selected; application and production continuation transport unselected  
-**Last updated:** 2026-08-30
+**Status:** Re-entry Core accepted; application and concrete Agent continuation adapter unselected  
+**Last updated:** 2026-08-31
 
 This document defines the target concept and product boundary. Current implementation and
 evidence status are owned by [Core/00](00-current-status.md) and
-[Core/05](05-validation-and-evidence.md).
+[Core/05](05-validation-and-evidence.md). Stable lifecycle and authority contracts are owned by
+the [Mechanism index](../Mechanisms/README.md).
 
 ## 1. Concept in one sentence
 
-The WebMCP re-entry workflow is a consented mechanism for resuming Agent-assisted work after
+Re-entry Core is a consented mechanism for resuming Agent-assisted work after
 the original page session or Agent turn has ended: a later business event may authorize
 bounded pending work, and an available continuation adapter may later return the bound Agent
 to the authoritative page, where current state and current Site Tools govern what can happen
@@ -28,6 +29,9 @@ next.
 - canonical page re-entry and fresh-state verification;
 - stage-derived Site Tools;
 - visible human governance across runs.
+- Re-entry Core as the authoritative application-neutral implementation baseline;
+- one Receiver authority model with Cloud Receiver and local development service shells; and
+- an outbound Local Connector behind a replaceable Agent Continuation Adapter boundary.
 
 ### Not selected
 
@@ -64,10 +68,10 @@ the same governed workflow, and the tools valid for the new state.
 | Layer | Purpose | Example status |
 |---|---|---|
 | **Problem class** | Multi-stage asynchronous web work loses Agent continuity across time | Selected |
-| **Core mechanism** | Grant, accepted delivery, adapter activation, re-entry, fresh-state tools, human boundary | Selected |
+| **Core mechanism** | Re-entry Core: Grant, accepted delivery, adapter activation, re-entry, fresh-state tools, human boundary | Selected |
 | **Host application** | The real web product whose workflow demonstrates the mechanism | TBD |
 | **Reference scenario** | A concrete example used to reason about the mechanism | Tender workflow available |
-| **Platform implementation** | The Agent runtime, browser, Receiver, and backend integration | Bounded local evidence exists; production continuation transport remains TBD |
+| **Platform implementation** | Cloud Receiver, outbound Local Connector, Agent runtime, Browser, and Host integration | Target process shape selected; concrete Agent adapter and runtime proof remain TBD |
 | **Final product identity** | App name, brand, market, and commercial boundary | TBD |
 
 ## 5. Abstract actors
@@ -92,32 +96,36 @@ and stage-specific WebMCP tools.
 The user's reasoning and action environment. It works through the live page rather than
 becoming the host application's second embedded AI.
 
-### Agent-side Receiver
+### Cloud Receiver and Receiver Core
 
-The user-controlled or Agent-platform-controlled component that stores continuation grants
-and authenticated pending deliveries, binds them to managed Agent context, validates limits,
-and delegates activation to a platform-specific continuation adapter.
+The Cloud Receiver hosts the single Receiver Core authority that stores continuation Grants,
+opaque Host bindings, and authenticated pending deliveries. The Receiver-issued private
+`grant_id` anchors the authority relationship to one managed context, while the selected adapter
+authority retains any raw platform locator outside the Host and Cloud Receiver. The Receiver
+validates limits and offers bounded delivery to an eligible paired Connector without inheriting
+Host business authority.
 
 ### Deployment boundary
 
-The Receiver is a trust boundary in the mechanism, not a mandatory hosting topology. The
-original distribution ambition was an independent hosted Receiver, but the mechanism can
-also be realized with a local or Agent-side Receiver that runs alongside the user's Agent
-runtime. A hosted Website Backend may still deliver an authenticated event to that local
-component.
+ADR-0006 selects a hosted Cloud Receiver plus outbound Local Connector as the active reference
+topology. The same Receiver Core may run through a local service shell for development and
+deterministic tests, but that shell is not a second production authority or an automatic
+fallback. The Local Connector owns device-side delivery and Agent-adapter dispatch, not Grants
+or event truth.
 
 This distinction creates two separate interoperability questions:
 
 - **Backend interoperability:** Can another Website Backend conform to the Receiver's
   versioned typed-event contract, including authentication, Grant scope, state version, and
   idempotency?
-- **Agent-runtime integration:** Can the selected continuation adapter capture and resume the
-  intended Agent context, then re-enter it with an eligible browser and current Site Tools in
-  the chosen deployment topology?
+- **Connector delivery:** Can a paired outbound Connector safely lease, dispatch, and
+  acknowledge one accepted delivery across offline and process-failure boundaries?
+- **Agent-runtime integration:** Can the selected continuation adapter activate the intended
+  bounded Agent context, then re-enter it with an eligible Browser and current Site Tools?
 
-The first is a project-owned application protocol. The second is a platform and deployment
-constraint. A public remote-control API may help a hosted topology, but it is not part of the
-concept definition and is not required for a local Receiver realization.
+The first two are project-owned application protocols. The final question is a platform
+constraint. A public remote-control API may enable a future adapter, but it is not part of the
+concept definition and has not been proven for the current local Codex and Browser path.
 
 ## 6. User jobs at the mechanism level
 

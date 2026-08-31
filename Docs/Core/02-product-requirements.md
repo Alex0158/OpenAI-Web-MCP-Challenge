@@ -1,8 +1,8 @@
-# WebMCP Re-entry Workflow — Product Requirements
+# Re-entry Core — Product Requirements
 
 **Role:** CANONICAL mechanism-level user behavior  
-**Status:** Target application-neutral requirements baseline; selected-app specialization and implementation remain open  
-**Last updated:** 2026-08-30
+**Status:** Target application-neutral requirements baseline; the v0.1 application-neutral Core is locally verified at its stated boundary, while selected-app specialization and application implementation remain open  
+**Last updated:** 2026-08-31
 
 ## 1. Requirements objective
 
@@ -12,7 +12,8 @@ host application is selected.
 
 These requirements define target behavior. They do not imply that every requirement is
 implemented or verified; current evidence status is owned by [Core/00](00-current-status.md)
-and [Core/05](05-validation-and-evidence.md).
+and [Core/05](05-validation-and-evidence.md). Detailed protocol, authority, delivery, activation,
+and re-entry contracts are routed through the [Mechanism index](../Mechanisms/README.md).
 
 ## 2. Abstract end-to-end journey
 
@@ -74,8 +75,8 @@ Agent to return before I authorize anything.
 **Acceptance criteria:**
 
 - The application describes one legitimate future event in domain language.
-- The offer identifies the record, purpose, canonical return location, requested expiry,
-  maximum runs, and human boundary.
+- The offer identifies the record, purpose, canonical return location, separate offer and
+  requested Grant expiries, maximum runs, and human boundary.
 - Merely viewing or invoking the offer creates no continuation authority.
 - The offer is bound to the current origin and workflow record.
 
@@ -113,8 +114,10 @@ injecting instructions into the Agent.
 **Acceptance criteria:**
 
 - The MVP emits exactly one allowlisted event type.
-- The event contains issuer, workflow, event ID, event sequence, business state version,
-  timestamp, canonical URL, and minimal event-specific identifiers.
+- The event contains only its opaque Host binding, issuer, workflow, event ID, correlation,
+  event sequence, business state version, timestamp, event type, and canonical URL.
+- Version `0.1` has no event-specific payload; the canonical page supplies current business
+  state after re-entry.
 - The event has no arbitrary Agent instruction or prompt field.
 - Invalid, duplicate, expired, mismatched, or out-of-order events do not create another
   accepted delivery or run.
@@ -128,9 +131,13 @@ unrelated Agent work.
 
 **Acceptance criteria:**
 
-- Receiver acceptance resolves one active Grant and one managed Agent-context binding, then
-  records one pending delivery for that binding.
-- The host app never receives Agent credentials or a raw platform thread identifier.
+- Receiver acceptance resolves one active Grant and records one pending delivery carrying its
+  private receipt. At activation, the selected adapter authority resolves that receipt's
+  `grant_id` to one live adapter-private context binding.
+- The host app receives only an opaque workflow binding and never receives a Receiver Grant ID,
+  Connector or Agent credentials, or a raw platform thread identifier.
+- The event, delivery target, Local Connector caller, and activation cannot select or carry the
+  raw context locator.
 - Run count and concurrency limits are reserved atomically.
 - An activation or resume failure produces a visible retry-safe status without broadening
   application authority.

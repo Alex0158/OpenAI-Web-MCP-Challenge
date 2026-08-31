@@ -1,0 +1,37 @@
+{
+  "name": "@webmcp-challenge/reentry-core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Lightweight domain-neutral contracts for governed WebMCP re-entry.",
+  "files": [
+    "src/",
+    "protocol/test-vectors/"
+  ],
+  "exports": {
+    ".": "./src/index.mjs",
+    "./protocol": "./src/protocol.mjs",
+    "./host-sdk": "./src/host-sdk.mjs",
+    "./receiver-core": "./src/receiver-core.mjs",
+    "./cloud-receiver-http": "./src/cloud-receiver-http.mjs",
+    "./local-connector-client": "./src/local-connector-client.mjs",
+    "./agent-adapter": "./src/agent-adapter.mjs",
+    "./managed-context-adapter": "./src/managed-context-adapter.mjs",
+    "./sqlite-receiver-store": "./src/sqlite-receiver-store.mjs"
+  },
+  "scripts": {
+    "check:syntax": "node scripts/check-syntax.mjs",
+    "test": "node --test test/*.test.mjs",
+    "test:conformance": "node --test test/protocol.test.mjs",
+    "verify:conformance": "node conformance/run.mjs",
+    "verify:package": "node scripts/verify-package.mjs",
+    "verify": "npm run check:syntax && npm test && npm run verify:conformance && npm run verify:package",
+    "benchmark:protocol": "node bench/protocol.mjs",
+    "benchmark:agent-adapter": "node bench/agent-adapter.mjs",
+    "benchmark:receiver": "node bench/receiver-lifecycle.mjs",
+    "benchmark:profile": "node bench/profile-startup.mjs"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

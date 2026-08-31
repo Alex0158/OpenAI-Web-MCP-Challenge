@@ -1,8 +1,11 @@
 # WebMCP Re-entry Workflow — Demo App Selection and Challenge MVP
 
 **Role:** CANONICAL app-selection framework and challenge execution target  
-**Status:** P0 technical mechanism passed; demo app and supported continuation adapter remain unselected  
+**Status:** Application-neutral Re-entry Core Program complete at `locally_verified`; demo app and supported continuation adapter remain unselected  
 **Last updated:** 2026-08-31
+
+This document owns app selection and challenge-MVP shape. Stable application-neutral lifecycle
+contracts remain owned by the [Mechanism index](../Mechanisms/README.md).
 
 ## 1. Current decision boundary
 
@@ -135,7 +138,9 @@ Use `UNKNOWN` with a named validation step where evidence does not exist. These 
 constrain adapter and topology selection after app selection; they do not select a topology
 by themselves.
 
-Do not begin full implementation before this record is accepted.
+Do not begin the selected-app vertical slice before this record is accepted. Application-neutral
+Re-entry Core protocol, authority, durability, Cloud Receiver, Local Connector, conformance,
+and evidence work may proceed under ADR-0006 and RECORE-001 without inventing domain behavior.
 
 ## 6. Reference candidates
 
@@ -155,7 +160,7 @@ The selected app should contain:
 - one authoritative state machine;
 - one durable application database;
 - one transactional outbox or database-backed queue;
-- one Continuation Gateway and Receiver path;
+- one Cloud Receiver, Receiver Core, and outbound Local Connector path;
 - one selected Agent Continuation Adapter;
 - one event type;
 - one active grant per synthetic scenario;
@@ -206,13 +211,25 @@ P0 is complete for controlled technical composability. Preserve its frozen
 [evidence and contract](07-p0-technical-validation-mvp.md), and do not expand it into the
 selected product or shipping adapter.
 
-### Gate 0B — Select the app
+### Gate 0B — Preserve the completed Re-entry Core
+
+This gate is complete at the application-neutral `locally_verified` boundary under ADR-0006
+through ADR-0014 and RECORE-001 through RECORE-006. Preserve MVP1 and MVP2 as references, keep Host
+and Agent adapters replaceable, and retain the verified contract, durability, process-boundary,
+and resource claim limits without importing domain states, tools, or product claims.
+
+Do not reopen this gate merely to begin app work. A stated Core falsifier or reopen condition is
+required. Selected-app work proceeds through Gate 0C and its own bounded implementation record; it
+does not authorize a generic platform, multiple Host implementations, or an unsupported Agent wake
+fallback.
+
+### Gate 0C — Select the app
 
 Apply the hard gates and scorecard. Record the decision in a new ADR and specialize Core
 requirements, security, validation, and tool inventory. This is the current product gate.
 
-Full selected-app implementation requires the completed P0 proof and an accepted app-selection
-ADR.
+Full selected-app implementation requires the completed P0 proof, the relevant Re-entry Core
+contract baseline, and an accepted app-selection ADR.
 
 ### Gate 1 — Validate and select the continuation adapter
 
