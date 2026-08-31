@@ -252,3 +252,49 @@ implemented or verified in the new core.
 **Next entry condition:** implement ADR-0008 behind a narrow Receiver Core and SQLite store,
 then prove consent, privacy, exact replay, rollback, close-and-reopen durability, bounds, and
 Node 24 behavior before adding leases or network services.
+
+### Increment C1b — Receiver authority and durable reservation
+
+**Closure:** `locally_verified` on 2026-08-31.
+
+- `ReceiverCore` now creates a Receiver-owned challenge without a Grant, verifies only an opaque
+  decision token through the trusted consent-authority port, narrows requested Grant lifetime,
+  and creates one private Grant plus the exact public binding after approval. Decline creates no
+  Grant. Stable decision replay converges; conflicting or mutated attestations fail closed.
+- Event acceptance resolves the opaque binding before signature verification, anchors the
+  expected issuer origin in the stored Grant, revalidates exact scope and lifetime, and commits
+  the event, one private pending delivery, and the `1 -> 0` run reservation in one transaction.
+  It invokes no Connector, Agent, Host-state reader, network call, or fallback.
+- `SqliteReceiverStore` uses Node's built-in `node:sqlite`, synchronous `BEGIN IMMEDIATE`
+  transactions, foreign keys, schema version 1, and file-backed WAL plus full synchronous
+  durability. It rejects unknown or unversioned non-empty databases and permits no JSON or
+  volatile fallback. Its write methods are unavailable outside an explicit transaction.
+- Exact event replay re-authenticates the envelope and returns the prior public acceptance with
+  `duplicate = true`; it creates no new event, delivery, identity, or run reservation. Public
+  challenge, binding, and acceptance outputs contain no Grant, subject, delivery target, receipt,
+  decision token, or Agent identity.
+- The aggregate suite passed 26 of 26 tests on the current Node `v26.5.0` runtime and on an actual
+  Node `v24.20.0` runtime. The tests include tamper, scope, expiry, exhaustion, caller-asserted
+  approval rejection, hidden-getter rejection, exact and conflicting replay, injected
+  pre-commit failure, transaction fencing, WAL/schema fail-closed behavior, and file
+  close-and-reopen persistence.
+- Informational coverage was 88.72% lines, 73.88% branches, and 93.23% functions. This is not a
+  completeness, security, or runtime claim, and no low-value test was added to optimize the
+  percentage.
+- `npm ls --omit=dev --all --json` reported no dependency tree. `npm pack --dry-run --json`
+  selected eight runtime and vector files: 16,898 bytes compressed and 82,830 bytes unpacked.
+  The root package exposes Receiver Core without implicitly loading `node:sqlite`; the reference
+  store is an explicit subpath.
+- `git diff --check` passed. A local relative-link audit resolved 46 of 46 links across the seven
+  owned code-facing and canonical documents. The English-only scan found no Han characters in
+  code, tests, or owned documentation, and no MVP1 or immutable reference file changed.
+
+This proves ADR-0008 locally through one process and a file close-and-reopen boundary. It does
+not prove a production consent session or anti-CSRF control, service HTTP ingress, concurrent
+multi-process contention, crash termination at OS boundaries, Connector pairing, leases,
+acknowledgement, external delivery, Agent activation, Browser or WebMCP runtime behavior,
+deployment, or distributed durability.
+
+**Next entry condition:** freeze the smallest Cloud Receiver-to-Local Connector contract,
+including pairing identity, outbound retrieval, lease fencing, and effect-backed acknowledgement,
+before adding either process shell or any Agent adapter.

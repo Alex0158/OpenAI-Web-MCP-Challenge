@@ -11,7 +11,9 @@
   "exports": {
     ".": "./src/index.mjs",
     "./protocol": "./src/protocol.mjs",
-    "./host-sdk": "./src/host-sdk.mjs"
+    "./host-sdk": "./src/host-sdk.mjs",
+    "./receiver-core": "./src/receiver-core.mjs",
+    "./sqlite-receiver-store": "./src/sqlite-receiver-store.mjs"
   },
   "scripts": {
     "test": "node --test test/*.test.mjs",

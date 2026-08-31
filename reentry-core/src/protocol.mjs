@@ -11,6 +11,7 @@ export const MANIFEST_TYPE = "webmcp.reentry_manifest";
 export const EVENT_TYPE = "webmcp.continuation_event";
 export const PUBLIC_BINDING_TYPE = "webmcp.reentry_binding";
 export const RECEIPT_TYPE = "webmcp.continuation_receipt";
+export const ACCEPTANCE_TYPE = "webmcp.continuation_acceptance";
 export const SIGNATURE_ALGORITHM = "Ed25519";
 export const CONTINUATION_MODE = "open_canonical_page_read_current_state";
 
@@ -99,6 +100,15 @@ const RECEIPT_FIELDS = Object.freeze([
   "expires_at",
   "human_boundary",
   "continuation_mode",
+]);
+const ACCEPTANCE_FIELDS = Object.freeze([
+  "type",
+  "protocol_version",
+  "event_id",
+  "correlation_id",
+  "accepted",
+  "duplicate",
+  "status",
 ]);
 const ENVELOPE_FIELDS = Object.freeze(["body", "headers"]);
 const ENVELOPE_HEADER_FIELDS = Object.freeze(Object.values(REENTRY_HEADER_NAMES));
@@ -202,6 +212,24 @@ export function serializeContinuationEvent(event) {
   return body;
 }
 
+export function parseContinuationEventBody(body) {
+  if (typeof body !== "string" || body.length === 0) {
+    throw validation("event_body_invalid", "Event body must be a non-empty string", 400);
+  }
+  assertByteLimit(body, PROTOCOL_LIMITS.eventBodyBytes, "event_body_too_large");
+  let parsed;
+  try {
+    parsed = JSON.parse(body);
+  } catch {
+    throw validation("event_body_invalid", "Event body is not valid JSON", 400);
+  }
+  const event = normalizeEvent(parsed);
+  if (canonicalJson(event) !== body) {
+    throw validation("event_body_noncanonical", "Event body is not canonically encoded");
+  }
+  return deepFreeze(event);
+}
+
 export function createContinuationEventEnvelope(event, {
   privateKey,
   keyId,
@@ -240,22 +268,8 @@ export function verifyContinuationEventEnvelope(envelope, {
     throw new TypeError("expectedOrigin is required for event verification");
   }
   requireExactRecord(envelope, ENVELOPE_FIELDS, "event envelope");
-  if (typeof envelope.body !== "string" || envelope.body.length === 0) {
-    throw validation("event_body_invalid", "Event body must be a non-empty string", 400);
-  }
-  assertByteLimit(envelope.body, PROTOCOL_LIMITS.eventBodyBytes, "event_body_too_large");
   requireExactRecord(envelope.headers, ENVELOPE_HEADER_FIELDS, "event envelope headers");
-
-  let parsed;
-  try {
-    parsed = JSON.parse(envelope.body);
-  } catch {
-    throw validation("event_body_invalid", "Event body is not valid JSON", 400);
-  }
-  const event = normalizeEvent(parsed);
-  if (canonicalJson(event) !== envelope.body) {
-    throw validation("event_body_noncanonical", "Event body is not canonically encoded");
-  }
+  const event = parseContinuationEventBody(envelope.body);
   const origin = requireOrigin(expectedOrigin, "expected event origin");
   if (event.issuer_origin !== origin) {
     throw validation("event_origin_mismatch", "Event origin does not match the resolved Grant");
@@ -334,6 +348,31 @@ export function createContinuationReceipt(receipt) {
 
 export function validateContinuationReceipt(receipt) {
   return deepFreeze(normalizeReceipt(receipt));
+}
+
+export function createContinuationAcceptance(value) {
+  requireExactRecord(value, ACCEPTANCE_FIELDS, "continuation acceptance");
+  if (value.type !== ACCEPTANCE_TYPE || value.protocol_version !== PROTOCOL_VERSION) {
+    throw validation(
+      "acceptance_version_unsupported",
+      "Continuation acceptance type or protocol version is unsupported",
+    );
+  }
+  if (value.accepted !== true || typeof value.duplicate !== "boolean" || value.status !== "accepted") {
+    throw validation(
+      "acceptance_value_invalid",
+      "Continuation acceptance contains an unsupported outcome",
+    );
+  }
+  return deepFreeze({
+    type: ACCEPTANCE_TYPE,
+    protocol_version: PROTOCOL_VERSION,
+    event_id: requireIdentifier(value.event_id, "acceptance event_id"),
+    correlation_id: requireIdentifier(value.correlation_id, "acceptance correlation_id"),
+    accepted: true,
+    duplicate: value.duplicate,
+    status: "accepted",
+  });
 }
 
 function normalizeManifest(value, requireSignature) {

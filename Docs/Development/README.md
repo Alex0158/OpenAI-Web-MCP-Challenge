@@ -85,7 +85,7 @@ genuine WebMCP, deployment, or judge reproducibility.
 
 | ID | Scope | Status |
 |---|---|---|
-| [`RECORE-001`](RECORE-001-foundation.md) | Establish the authoritative Re-entry Core development baseline and first contract kernel | `in_progress` |
+| [`RECORE-001`](RECORE-001-foundation.md) | Build the Re-entry Core baseline through protocol, Host, Receiver authority, and later process seams | `in_progress` |
 
 ## Lean implementation rules
 

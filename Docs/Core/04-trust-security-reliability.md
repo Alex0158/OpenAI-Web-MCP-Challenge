@@ -1,7 +1,7 @@
 # Re-entry Core — Trust, Security, and Reliability
 
 **Role:** CANONICAL authority, security, and failure semantics  
-**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through ADR-0008; the v0.1 protocol and Host SDK kernel are locally verified, Receiver authority is specified but not implemented, and the distributed topology remains unverified.  
+**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through ADR-0008; the v0.1 protocol, Host SDK, and bounded Receiver C1 authority are locally verified, while production consent, leasing, acknowledgement, separate processes, and distributed topology remain unverified.  
 **Last updated:** 2026-08-31
 
 ## 1. Security objective
@@ -227,6 +227,13 @@ H2 adds a crash-recoverable enrollment outbox with stable dispatch identity, lea
 idempotent synthetic SQLite destination. It does not prove delivery to a real Desktop task,
 hosted Agent, or production connector, and its one-shot worker is not a supervised daemon.
 
+The new Re-entry Core C1 independently verifies the ADR-0008 authority slice: a challenge alone
+creates no Grant, trusted approval creates one private Grant and public binding, and one valid
+event atomically commits its record, a private pending delivery, and run-budget consumption.
+Exact replay, injected rollback, and file close-and-reopen persistence pass locally on Node 24
+and Node 26. This does not prove a production consent session, OS-crash recovery, leasing,
+acknowledgement, external delivery, Agent activation, or distributed durability.
+
 D4 remains `INCONCLUSIVE` and supplies no Desktop restart continuity evidence. Therefore,
 current evidence supports bounded additive mechanism and service-contract claims, not a
 general claim of production-safe enrollment, durable external Agent delivery, supported
@@ -246,9 +253,10 @@ delivery. Cloud Receiver acceptance, replay state, pending delivery, Receiver ru
 and grant run count commit atomically. Connector lease claim and acknowledgement use separate
 atomic transitions and never extend Host or Grant authority.
 
-ADR-0008 makes the first half exact: one authenticated event, one event record, one private
-pending delivery, and the `1 -> 0` Grant run reservation commit together before the Host receives
-acceptance. The lease and acknowledgement transition remains unimplemented.
+ADR-0008 makes the first half exact, and C1 now verifies it locally: one authenticated event, one
+event record, one private pending delivery, and the `1 -> 0` Grant run reservation commit together
+before the Host receives acceptance. The lease and acknowledgement transition remains
+unimplemented.
 
 The MVP should prefer one durable datastore and an outbox worker. A separate broker is
 justified only when the selected runtime makes it necessary.

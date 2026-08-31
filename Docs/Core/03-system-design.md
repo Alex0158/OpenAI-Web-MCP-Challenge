@@ -194,6 +194,11 @@ for a conforming backend to send a Receiver event.
 
 ### Current as-built boundary
 
+- The new Re-entry Core implements the v0.1 protocol, Host SDK, Receiver-owned challenge and
+  decision boundary, private one-run Grant, exact event replay, atomic pending delivery, and a
+  zero-dependency SQLite reference store. These pass local Node 24 and Node 26 tests plus file
+  close-and-reopen verification; no service, Connector, lease, acknowledgement, or Agent call is
+  part of that evidence.
 - The private P0 Desktop adapter completed one controlled same-task join but is not a
   documented platform contract.
 - H1 Scheduled pull completed one bounded event-gated continuation and remains a

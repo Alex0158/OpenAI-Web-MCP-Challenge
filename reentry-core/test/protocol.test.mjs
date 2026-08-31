@@ -3,14 +3,17 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import {
+  ACCEPTANCE_TYPE,
   ProtocolAuthenticationError,
   ProtocolValidationError,
   REENTRY_HEADER_NAMES,
   canonicalJson,
+  createContinuationAcceptance,
   createContinuationEvent,
   createContinuationEventEnvelope,
   createContinuationReceipt,
   createReentryManifest,
+  parseContinuationEventBody,
   validateContinuationReceipt,
   validatePublicBinding,
   validateReentryManifest,
@@ -220,8 +223,42 @@ test("event envelope verifies exact canonical body, detached headers, and resolv
     purpose: "event",
   });
   assert.deepEqual(verified, event);
+  assert.deepEqual(parseContinuationEventBody(envelope.body), event);
   assert.equal(envelope.body, canonicalJson(event));
   assert.deepEqual(Object.keys(envelope.headers).sort(), Object.values(REENTRY_HEADER_NAMES).sort());
+});
+
+test("continuation acceptance is strict and exposes no private delivery authority", () => {
+  const acceptance = createContinuationAcceptance({
+    type: ACCEPTANCE_TYPE,
+    protocol_version: "0.1",
+    event_id: "event_001",
+    correlation_id: "correlation_001",
+    accepted: true,
+    duplicate: false,
+    status: "accepted",
+  });
+
+  assert.deepEqual(Object.keys(acceptance).sort(), [
+    "accepted",
+    "correlation_id",
+    "duplicate",
+    "event_id",
+    "protocol_version",
+    "status",
+    "type",
+  ]);
+  assert.ok(!("delivery_id" in acceptance));
+  assert.ok(!("grant_id" in acceptance));
+  assert.ok(Object.isFrozen(acceptance));
+  assert.throws(
+    () => createContinuationAcceptance({ ...acceptance, delivery_id: "delivery_private" }),
+    { code: "continuation_acceptance_fields_invalid" },
+  );
+  assert.throws(
+    () => createContinuationAcceptance({ ...acceptance, accepted: false }),
+    { code: "acceptance_value_invalid" },
+  );
 });
 
 test("event validation rejects wire extensions, tamper, noncanonical JSON, and stale delivery", () => {
