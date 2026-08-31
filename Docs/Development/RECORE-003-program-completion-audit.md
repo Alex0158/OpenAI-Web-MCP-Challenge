@@ -6,7 +6,10 @@
 **Opened:** 2026-08-31  
 **Closed:** 2026-08-31  
 **Branch:** `codex/re-entry-core-foundation`  
-**Baseline:** `9b55410ae645b88dc7c9cb3f6ea41907576bf01a`
+**Baseline:** `9b55410ae645b88dc7c9cb3f6ea41907576bf01a`  
+**Follow-up:** RECORE-004 later closed the Grant-control gap at `locally_verified`; private
+managed-context binding, the remaining separate-process fault matrix, and final exact Program
+closure remain open.
 
 ## Objective
 
@@ -26,10 +29,10 @@ This audit changes no runtime behavior or Definition of Done. It uses four evide
 
 - `REENTRY-CORE-PROGRAM.md` owns the Definition of Done.
 - Core/00 and Core/05 own current status and evidence claims.
-- ADR-0006 through ADR-0012 own the accepted source, authority, transport, adapter, and
+- ADR-0006 through ADR-0013 own the accepted source, authority, transport, adapter, and
   conformance boundaries.
-- RECORE-001 and RECORE-002 are closed implementation records, not authority for unimplemented
-  behavior.
+- RECORE-001, RECORE-002, and RECORE-004 are closed implementation records, not authority for
+  unimplemented behavior.
 - A test double that injects a field or authority result proves consumer behavior only. It does
   not prove the missing write lifecycle or production authority.
 
@@ -47,7 +50,7 @@ This audit changes no runtime behavior or Definition of Done. It uses four evide
 
 | Requirement | State | Direct evidence and remaining boundary |
 |---|---|---|
-| Manifest, Grant, private binding, typed event, durable delivery, lease, acknowledgement, Host-effect correlation, and human-boundary semantics | `PARTIAL` | Protocol, Grant creation, opaque Host binding, event, delivery, lease, acknowledgement, correlation, and human-boundary data semantics are directly tested. A Receiver-owned Grant inspection/revocation lifecycle and a private managed-context binding lifecycle are not implemented. |
+| Manifest, Grant, private binding, typed event, durable delivery, lease, acknowledgement, Host-effect correlation, and human-boundary semantics | `PARTIAL` | Protocol, Grant creation and control, opaque Host binding, event, delivery, lease, acknowledgement, correlation, and human-boundary data semantics are directly tested. RECORE-004 closes in-process Grant inspection/revocation; a private managed-context binding lifecycle is not implemented. |
 | Host SDK, Receiver Core, Cloud Receiver, Local Connector, persistence, and Agent Adapter are independently exercisable | `MET` | Narrow exported modules and focused suites exercise every named boundary. The Cloud Receiver evidence is an HTTP handler and bounded role process, not a deployed service. |
 | Domain-neutral conformance Host fixture | `MET` | ADR-0012 and `conformance/` exercise the current contracts without importing a final-app domain. |
 
@@ -56,7 +59,7 @@ This audit changes no runtime behavior or Definition of Done. It uses four evide
 | Requirement | State | Direct evidence and remaining boundary |
 |---|---|---|
 | Cloud Receiver and Local Connector complete the bounded protocol as separate processes with separate state and credentials | `MET` | Shared role entrypoints run distinct Host, Receiver, and Connector children; only Receiver opens SQLite, Host retains its signing key, and Connector uses its own bearer and claim tokens over HTTP. This is non-production process evidence. |
-| Separate-process failure, restart, lease recovery, replay, acknowledgement loss, revocation, stale state, and duplicate-effect behavior | `PARTIAL` | Forced Receiver termination after committed event and lease state, exact event and claim replay, wrong-effect rejection, acknowledgement-response loss, restart, and same-effect convergence are direct. Grant revocation is only simulated through overridden read results; expired-lease stale-worker fencing and conflicting-effect behavior are direct only in-process; no OS-level mid-transaction termination has been injected. |
+| Separate-process failure, restart, lease recovery, replay, acknowledgement loss, revocation, stale state, and duplicate-effect behavior | `PARTIAL` | Forced Receiver termination after committed event and lease state, exact event and claim replay, wrong-effect rejection, acknowledgement-response loss, restart, and same-effect convergence are direct. RECORE-004 makes revocation direct in-process; separate-process revocation, expired-lease stale-worker fencing, conflicting-effect behavior, and OS-level mid-transaction termination remain unproved. |
 | Local Connector cannot issue or widen continuation authority | `MET` | Its public client can only claim and acknowledge with Receiver-verified identity and Host-effect authority. It has no Grant, event-signing, scope, or persistence mutation port. |
 
 ### Agent boundary truth
@@ -82,9 +85,9 @@ This audit changes no runtime behavior or Definition of Done. It uses four evide
 |---|---|---|
 | Authority map, status, architecture, trust, validation, active work, runbook, and evidence are concise and consistent | `MET` | The Development index routes authority; Core/00 and Core/05 state the evidence ceiling; this audit records the remaining Program gaps without redefining their owners. |
 | No private credential, raw managed-context identifier, mutable runtime database, or sensitive trace is tracked | `MET` | No tracked Re-entry Core database, WAL, log, or trace exists. Credential-shape scans found no API or bearer secret; the only private-key header match is protocol source that accepts caller-supplied signing material, not embedded key material. Managed-context terms occur only as contract names or explicit absence assertions. |
-| Final Core increment has exact verification, commit, remote, and residual-risk state | `OPEN` | This is intentionally a terminal closure gate. RECORE-001 and RECORE-002 are individually closed, but the Program cannot name a final increment while the gaps below remain. |
+| Final Core increment has exact verification, commit, remote, and residual-risk state | `OPEN` | This is intentionally a terminal closure gate. RECORE-001, RECORE-002, and RECORE-004 are individually closed, but the Program cannot name a final increment while the gaps below remain. |
 
-## Completion blockers
+## Completion blockers at audit closure
 
 Three application-neutral gaps remain:
 
@@ -102,6 +105,11 @@ Three application-neutral gaps remain:
 
 The final exact verification and Git evidence record follows those increments. These blockers are
 independent of final Web App selection and may proceed sequentially.
+
+RECORE-004 has since locally verified item 1 through ADR-0013, implementation commit
+`eadb7313984f8dd16e5fb973c8775e56f252d845`, and direct Core/store evidence. Items 2 and 3 remain
+the current application-neutral blockers. Separate-process revocation stays inside item 3; the
+in-process control result is not process evidence.
 
 ## Decision-gated non-blockers
 
@@ -130,6 +138,10 @@ must not be relabelled as proof of those surfaces.
 - No runtime source, test, conformance, benchmark, package, MVP, reference, research, scenario, or
   user-owned dirty file changed in this audit.
 
-**Next entry condition:** accept a narrow ADR for Receiver-owned Grant inspection and revocation.
-Do not bundle private context binding, production credential revocation, new HTTP administration,
-or process-fault scaffolding into that decision.
+**Audit next entry condition (satisfied):** accept and implement a narrow ADR for Receiver-owned
+Grant inspection and revocation without bundling private context binding, production credential
+revocation, new HTTP administration, or process-fault scaffolding.
+
+**Current next entry condition:** choose the smallest coherent increment between private managed-
+context binding and the remaining separate-process fault matrix. Do not combine them merely to
+advance the Program label.

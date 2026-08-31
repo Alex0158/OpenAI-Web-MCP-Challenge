@@ -1,7 +1,7 @@
 # Re-entry Core — System Design
 
 **Role:** CANONICAL domain-neutral architecture and contracts  
-**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant creation, reservation, and pending-delivery authority, ADR-0009 fixes the locally verified Connector lease and effect-acknowledgement contract, ADR-0010 fixes the locally verified HTTP adapter, outbound Connector client, and forced-restart test-process isolation, ADR-0011 fixes the locally verified deterministic Agent activation boundary, ADR-0012 fixes the locally verified non-production conformance/development profile, and ADR-0013 specifies Receiver-authenticated Grant inspection/revocation. ADR-0013 implementation, private context-binding lifecycle, production process shells, and the concrete Agent continuation adapter remain open. Current as-built truth is owned by Core/00 and Core/05.  
+**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant creation, reservation, and pending-delivery authority, ADR-0009 fixes the locally verified Connector lease and effect-acknowledgement contract, ADR-0010 fixes the locally verified HTTP adapter, outbound Connector client, and forced-restart test-process isolation, ADR-0011 fixes the locally verified deterministic Agent activation boundary, ADR-0012 fixes the locally verified non-production conformance/development profile, and ADR-0013 fixes the locally verified in-process Receiver Grant-control boundary. Private context-binding lifecycle, separate-process Grant-control evidence, production process shells, and the concrete Agent continuation adapter remain open. Current as-built truth is owned by Core/00 and Core/05.  
 **Last updated:** 2026-08-31
 
 ## 1. System objective
@@ -95,6 +95,7 @@ flowchart LR
 ### Receiver Core
 
 - owns Continuation Grant records;
+- authenticates same-subject inspection and atomically records an irreversible revocation boundary;
 - stores the mapping from opaque Host binding to a private Connector or managed-context binding;
 - derives a trusted typed Continuation Receipt only after Manifest validation and
   Receiver-owned consent, then persists it through a trusted adapter surface;
@@ -205,6 +206,15 @@ Receiver, and Connector children reuse the existing ports; profile IPC may coord
 synthetic consent, effect setup, readiness, inspection, and teardown. Material event, claim, and
 acknowledgement operations still cross ADR-0010 HTTP, and deterministic Agent acceptance remains
 separate from the later synthetic Host effect. The profile is not a production process shell.
+
+ADR-0013 fixes the in-process Grant-control boundary without creating an administration surface.
+The Core accepts only an opaque binding and control token, resolves one exact action through a
+required trusted authority, verifies same-subject ownership before disclosure or mutation, and
+uses its own clock to compare-and-set the existing `revoked_at` state. Inspection exposes only a
+bounded immutable summary. Revocation is idempotent, deletes no history, fences later event and
+delivery authority, and preserves only pre-revocation Host-effect convergence. RECORE-004 verifies
+this Core and SQLite behavior locally; control HTTP, browser session security, private context
+binding, separate-process races, and production identity remain outside that evidence.
 
 The Receiver's event algorithm is domain-neutral even when a deterministic fixture pins one
 workflow, event type, issuer, or development key. Generalizing the protocol means adding

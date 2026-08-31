@@ -1,7 +1,7 @@
 # Re-entry Core — Trust, Security, and Reliability
 
 **Role:** CANONICAL authority, security, and failure semantics  
-**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through accepted ADR-0013; the v0.1 protocol, Host SDK, bounded Receiver C1 authority, Connector delivery C2, HTTP adapter, outbound Connector client, forced-restart test-process isolation, deterministic Agent Adapter C4b, and non-production conformance/development profile C6b are locally verified. ADR-0013 specifies but does not yet implement Receiver-owned Grant inspection/revocation. Private context binding, mid-transaction crash injection, the remaining separate-process stale-worker and conflicting-effect matrix, production process ownership, consent and pairing, real Agent activation, real Host-effect verification, and distributed topology remain unverified.  
+**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through accepted ADR-0013; the v0.1 protocol, Host SDK, bounded Receiver C1 authority, in-process Receiver Grant control, Connector delivery C2, HTTP adapter, outbound Connector client, forced-restart test-process isolation, deterministic Agent Adapter C4b, and non-production conformance/development profile C6b are locally verified. Private context binding, control-session and HTTP security, mid-transaction crash injection, the remaining separate-process revocation, stale-worker, and conflicting-effect matrix, production process ownership, consent and pairing, real Agent activation, real Host-effect verification, and distributed topology remain unverified.  
 **Last updated:** 2026-08-31
 
 ## 1. Security objective
@@ -188,7 +188,7 @@ The human decision produces a receipt correlated with the run and artifact.
 | Tool registration changes unexpectedly | Verify origin, stage, tool roles, names, and schemas | Fail closed |
 | Login expires or MFA appears | User-mediated recovery only | Pause without bypass |
 | Human and Agent edit concurrently | Optimistic revision check and visible conflict | Preserve both versions |
-| Revocation races with delivery | Atomic grant status and run reservation rule | Deterministic visible outcome |
+| Revocation races with delivery | Authenticated same-subject control, Core-timestamped compare-and-set, and atomic Grant/run checks | Deterministic visible outcome |
 | Receiver unavailable before durable commit | Host outbox retries; Receiver acknowledges only after durable commit; expiry and dead letter are target controls | No false acknowledgement, silent loss, or action |
 | Run loops or spends unexpectedly | One event, one reserved run, timeout, action budget | Cancel and explain |
 | Sensitive data leaks into event or logs | Field allowlist, data minimization, redaction | Reject disallowed data |
@@ -254,6 +254,15 @@ effect attestation acknowledges. Attempt bounds persist with each delivery; sche
 rollback, token non-persistence, and file reopen pass locally. This does not prove production
 consent or pairing, an HTTP boundary, a separate Connector process, a real Host effect, OS-crash
 recovery, Agent activation, or distributed durability.
+
+RECORE-004 independently verifies the ADR-0013 Grant-control slice in one process. A required
+authority authenticates one binding-bound action before lookup; only the stored Grant subject may
+inspect or revoke; the Core supplies the revocation timestamp; and one transaction-only compare-
+and-set updates the existing Grant row. Exact replay returns the stored boundary, invalid control
+changes no state, real persisted revocation fences later event acceptance and delivery claims,
+and only a Host effect confirmed before revocation may converge late. Rollback, file reopen,
+token non-persistence, and inconsistent-write failure pass locally. This does not prove a control
+session, anti-CSRF, administration HTTP, separate-process races, or production identity.
 
 Re-entry Core C4 independently verifies the ADR-0011 Agent Adapter contract with a deterministic
 no-platform adapter. One live lease derives one immutable activation without Connector, lease,

@@ -1,9 +1,10 @@
 # RECORE-004: Receiver Grant Control
 
-**Role:** ACTIVE IMPLEMENTATION RECORD  
+**Role:** CLOSED IMPLEMENTATION RECORD  
 **Risk profile:** High — authority and data-lifecycle mutation  
-**Status:** `specified`  
+**Status:** `locally_verified`  
 **Opened:** 2026-08-31  
+**Closed:** 2026-08-31  
 **Branch:** `codex/re-entry-core-foundation`  
 **Baseline:** `680afba0881351bde0cedf1f8c5d1e895af79291`
 
@@ -90,6 +91,42 @@ fallback or widening the increment.
 - Closure claims only local Core authority and persistence behavior, not HTTP, user consent,
   production identity, process separation, Agent activation, or app behavior.
 
-**Next entry condition:** implement only after this decision and task record are committed and
-remotely verified. On closure, the next Program gap remains private managed-context binding or the
-separate-process fault matrix, selected by current evidence rather than task-number momentum.
+## Verification record
+
+**Closure:** `locally_verified` on 2026-08-31.
+
+- Implementation commit `eadb7313984f8dd16e5fb973c8775e56f252d845` was pushed and matched
+  `origin/codex/re-entry-core-foundation` before this closure writeback.
+- `inspectGrant` and `revokeGrant` use one required `grantControlAuthority` port. Authorization is
+  action- and binding-bound before lookup, while the stored Grant subject remains the ownership
+  authority. Outputs are exact and frozen; the raw token, Grant ID, subject, target, receipt, and
+  managed-context data are absent.
+- The SQLite port adds one transaction-only compare-and-set of the existing `revoked_at` column.
+  There is no schema migration, table, dependency, deletion, audit side channel, or second mutable
+  revocation system.
+- Direct tests cover invalid and out-of-scope control, authority-before-lookup, exact inspection,
+  first and duplicate revocation, event-first and revocation-first order, claim cancellation,
+  lease replay fencing, pre-revocation effect convergence, at-boundary rejection, rollback, lost-
+  write failure, close and reopen, and raw-token non-persistence. Prior read-override revocation
+  cases now use the real persisted lifecycle where applicable.
+- Focused Receiver/store verification passes 36 of 36 tests. The aggregate suite passes 67 of 67
+  and protocol conformance passes 11 of 11 on Node `v24.20.0` and Node `v26.5.0`. Direct redacted
+  conformance execution also passes.
+- `npm ls --omit=dev --all --json` reports zero runtime dependencies. `npm pack --dry-run --json`
+  selects 15 files: 32,602 bytes compressed and 170,432 bytes unpacked. Benchmark, conformance,
+  and test sources remain excluded.
+- The exact final-source Receiver benchmark passes its existing local-only, non-SLA contract on
+  Node `v26.5.0`: median startup 1.367 ms, event acceptance 0.223 ms, claim 0.134 ms, and
+  acknowledgement 0.109 ms; each completed file set is 167,936 bytes. These observations do not
+  establish a service threshold or cross-version comparison.
+- Cloud Receiver HTTP routes, outbound Connector transport, process shells, production sessions,
+  private context binding, Agent activation, MVP1, MVP2, References, research, scenarios, and
+  user-owned dirty files are unchanged by the implementation.
+
+This closes only the local Core and SQLite Grant-control boundary. It does not prove an
+administration surface, browser-session security, production identity, separate-process race,
+distributed store, managed-context ownership, Agent wake, deployment, or selected-app behavior.
+
+**Next entry condition:** select the smaller evidence-driven Program increment between private
+managed-context binding and the remaining separate-process fault matrix. Keep production control
+sessions and administration HTTP behind their own accepted runtime and security decision.
