@@ -126,7 +126,9 @@ Every implementation and Host specialization must preserve these invariants:
 1. A live Host page exposes a project-defined Re-entry Manifest through genuine WebMCP.
 2. Viewing or invoking the offer creates no continuation authority.
 3. The Receiver validates the offer and owns authenticated user consent, Grant scope, expiry,
-   revocation, run limits, and private managed-context binding.
+   revocation, run limits, and the authority relationship to one private managed-context binding.
+   The selected adapter authority owns raw platform-locator custody; the Host, Cloud Receiver,
+   event, activation, and Local Connector caller never select or receive that locator.
 4. The Host stores only an opaque workflow-scoped binding, never raw Agent credentials or a raw
    platform task identifier.
 5. The Host backend owns business truth and emits only typed, bounded event data after the
