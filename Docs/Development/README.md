@@ -12,6 +12,8 @@ semantics owned by `Docs/Core/` and `Docs/Decisions/`.
 
 The binding program mandate, execution boundaries, anti-bloat rules, and Definition of Done are
 owned by the [Re-entry Core Program Contract](REENTRY-CORE-PROGRAM.md).
+The [development runbook](REENTRY-CORE-RUNBOOK.md) owns the repeatable local resume,
+verification, failure-triage, evidence-writeback, and Git-closure procedure.
 
 The operating loop is:
 
@@ -39,6 +41,7 @@ objective
 | Validation gates and claim limits | `Docs/Core/05-validation-and-evidence.md` |
 | Accepted durable choice | `Docs/Decisions/` |
 | Active bounded implementation | This directory |
+| Local development resume, verification, and Git closure | [`REENTRY-CORE-RUNBOOK.md`](REENTRY-CORE-RUNBOOK.md) |
 | Supporting analysis or unresolved research | `Docs/Research/` |
 | Implemented behavior | Current code and tests |
 | Runtime, deployment, or submission truth | Current runtime and release evidence |

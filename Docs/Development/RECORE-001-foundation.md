@@ -599,3 +599,33 @@ application.
 then audit RECORE-001 against its bounded `locally_verified` target. Keep real adapter selection,
 private context-binding lifecycle, production process ownership, and app specialization behind
 their named runtime or application decisions.
+
+### Increment C5 — development runbook and foundation closure audit
+
+**Closure:** `locally_verified` on 2026-08-31. RECORE-001 remains `in_progress`.
+
+- `REENTRY-CORE-RUNBOOK.md` now owns one repeatable local resume, bounded implementation,
+  verification, failure-triage, evidence-writeback, Git-closure, and handoff procedure. It does not
+  duplicate Core semantics or act as a production operations, pairing, deployment, or Agent-
+  runtime runbook.
+- The Development index links that procedure while preserving separate authority for the program
+  contract, current status, Core contracts, ADRs, active implementation, code, and runtime truth.
+- The closure audit confirms that the initial source baseline, protocol, Host SDK, Receiver
+  authority, Connector delivery, strict HTTP transport, forced-restart test isolation, and
+  deterministic Agent Adapter contract have reached their recorded bounded evidence levels.
+- RECORE-001 does not close yet. Its own ordered Increment D and final reconciliation still lack a
+  non-test-fixture domain-neutral conformance/development profile with independently exercisable
+  Host, Receiver, and Connector entrypoints. The current child-process files remain evidence
+  scaffolding and cannot be relabelled as shipping or production processes.
+- This gap does not justify speculative pairing UI, daemon, lockfile, credential vault, hosted
+  datastore, multi-replica control, real Agent adapter, or final-app behavior. Those remain behind
+  their explicit runtime, trust, or application decisions.
+
+This audit distinguishes a locally verified set of foundation contracts from a completed
+foundation task and from the larger Re-entry Core Program Definition of Done. No closure label,
+runtime claim, deployment claim, or selected-app claim is upgraded.
+
+**Next entry condition:** decide the smallest domain-neutral conformance/development profile that
+can exercise the existing Host, Receiver HTTP, outbound Connector, persistence, and deterministic
+Agent ports outside the test tree. Freeze only its ownership, configuration, lifecycle, and claim
+boundary before implementation; keep production custody and supervision explicitly out of scope.
