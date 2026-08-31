@@ -9,10 +9,10 @@
 - Lifecycle: `closed`
 - Priority: `P0`
 - Owner: Alex and the primary Codex session
-- Current increment: Complete. The project-wide engineering-governance baseline is locally verified
-  and independently CI-verified on its exact implementation commit.
-- Next gate: Future selected-application and runtime tasks apply the baseline and add only controls
-  justified by their first real consumer.
+- Current increment: Complete. Repository contributor guidance is self-contained and the placement
+  boundary is locally verified under ENG-002.
+- Next gate: Future work applies the tracked guide and Engineering controls; reopen only under the
+  existing authority-discovery or instruction-drift conditions.
 - Dependencies: Preserve the current application-selection work and keep selected-app standards
   extensible until TASK-001 is decided.
 
@@ -82,3 +82,26 @@ review. Close only when:
 Reopen if a new session cannot find the correct engineering authority, a documented mandatory gate
 is not executable, CI diverges from the local runbook, application development exposes a missing
 cross-project control, or the controls create recurring noise without changing decisions or defects.
+
+## 7. Reopened collaborator-guidance increment
+
+The owner identified that the tracked repository guide still described the untracked parent
+workspace file as a source of broader defaults. A collaborator cloning only the repository could
+therefore miss evidence, immutable-reference, and change-safety rules, while the tracked guide also
+duplicated detailed Git and verification procedure already owned by Engineering.
+
+This increment applies ADR-0017 rather than changing it:
+
+1. make the tracked `AGENTS.md` self-contained for every repository collaborator;
+2. keep only mandatory routing, protected boundaries, engineering non-negotiables, executable
+   closure commands, Git safety, and claim discipline in that guide;
+3. place detailed instruction-location policy and Git readback in Engineering;
+4. reduce the untracked parent file to a machine-local workspace router; and
+5. preserve Core, Mechanism, application, runtime, and release truth with their existing owners.
+
+No new ADR is required because ADR-0017 already accepts a concise routing role for `AGENTS.md`,
+rejects putting every rule there, and names failed authority discovery as a reopen trigger.
+
+The final staged repository-governance suite passed: 6 validator tests, 3 sensitive-scanner tests,
+complete repository validation, Markdown and index checks, English-only checks, and the
+high-confidence sensitive-pattern scan. ENG-002 owns the exact scope and closure evidence.

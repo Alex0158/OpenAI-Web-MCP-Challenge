@@ -107,6 +107,7 @@ genuine WebMCP, deployment, or judge reproducibility.
 | [`DOCS-002`](DOCS-002-modular-authority-and-core-denoising.md) | Establish mechanism-module ownership, reduce mixed-role Core content, and remove the duplicate Knowledge routing layer | `locally_verified` |
 | [`DOCS-003`](DOCS-003-unified-task-authority.md) | Establish one unified task lifecycle for pending work, problems, defects, investigations, and decision needs | `locally_verified` |
 | [`ENG-001`](ENG-001-project-engineering-governance-baseline.md) | Establish the project-wide engineering authority, mechanical repository checks, aggregate Core verification, and CI baseline | `locally_verified` with exact-source CI success |
+| [`ENG-002`](ENG-002-collaborator-agent-guidance-reconciliation.md) | Make repository contributor guidance self-contained and restore the AGENTS, Runbook, Core, and evidence placement boundary | `locally_verified` |
 
 ## Lean implementation rules
 

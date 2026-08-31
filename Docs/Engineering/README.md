@@ -39,7 +39,25 @@ For non-trivial implementation:
 Do not read every Core or Research file by default. Select the minimum sufficient context for the
 question and affected surfaces.
 
-## 3. Layering rules
+## 3. Contributor-instruction placement
+
+Use one owner for each kind of guidance:
+
+| Content | Owner |
+|---|---|
+| Rules every repository contributor must see before acting | Root `AGENTS.md` |
+| Repeatable intake, implementation, verification, Git, and closure procedure | Primary Development Runbook |
+| Reusable code, test, dependency, security, failure, and performance standard | Development Standard or Testing and Verification |
+| Current product status, requirement, trust boundary, or mechanism behavior | Owning Core or Mechanism document |
+| Active work, accepted decision, implementation history, or evidence | Task, ADR, Development record, code, test, runtime, or release owner |
+| Stable mechanical enforcement | Validator, test, script, or CI workflow backed by documented policy |
+
+The root `AGENTS.md` must be self-contained for a repository clone, but it remains a compact router
+and non-negotiable contract. Do not make it depend on a machine-local parent file, copy mutable
+product status into it, or duplicate a complete runbook. Workspace and global instructions may add
+local defaults but cannot supply a rule that collaborators need in order to work safely.
+
+## 4. Layering rules
 
 1. Engineering documents define reusable controls, not product semantics or task history.
 2. `AGENTS.md` routes to these controls and states non-negotiables; it does not duplicate the full
@@ -51,7 +69,7 @@ question and affected surfaces.
    deployment, judge reproduction, or submission.
 6. Templates, new directories, and new gates are added only after a real repeated consumer exists.
 
-## 4. Maintenance rules
+## 5. Maintenance rules
 
 - Update the owning document when a durable engineering control changes.
 - Keep task-specific scope and results in Tasks and Development records.

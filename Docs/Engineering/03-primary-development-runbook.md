@@ -112,6 +112,13 @@ Before closure:
 - update the Development record with exact commands, evidence, closure label, and residual risk; and
 - keep command logs and chronology out of Core, Engineering, and flagship documents.
 
+When contributor guidance changes, apply the
+[instruction-placement contract](README.md#3-contributor-instruction-placement): keep only
+repository-wide routing and non-negotiables in `AGENTS.md`, put repeatable procedure in this
+runbook, keep product and mechanism truth with their owners, and use scripts or CI for stable
+mechanical enforcement. Confirm that a clean clone receives every collaborator-required rule
+without relying on a parent workspace file.
+
 ## 8. Git and remote closure
 
 Follow the repository `AGENTS.md` collaboration gate. The primary session alone owns final staging,
@@ -126,6 +133,19 @@ commit, push, and remote claims.
 6. rerun invalidated checks after integration;
 7. push only the intended branch; and
 8. prove local `HEAD` equals the remote branch SHA.
+
+Use the following readback before commit and again where remote integration can invalidate it:
+
+```sh
+git status --short --branch
+git diff --stat
+git diff --check
+git diff
+git diff --cached --stat
+git diff --cached --check
+git diff --cached --name-only
+git diff --cached
+```
 
 Report `locally_verified`, `committed`, `pushed`, `CI_verified`, `runtime_verified`, `deployed`,
 `judge_reproducible`, and `submitted` as distinct states.
