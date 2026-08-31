@@ -15,6 +15,7 @@ test("browser prompt renders in the top-layer dialog and returns the user's deci
   assert.equal(dialog.tagName, "DIALOG");
   assert.equal(dialog.open, true);
   assert.equal(dialog.className, "webmcp-continuation__dialog");
+  assert.ok(findByText(dialog, "WebMCP Continuation SDK"));
   assert.equal(findByText(dialog, "Continue this workflow?").tagName, "H2");
 
   const approve = findByText(dialog, "Approve & continue");

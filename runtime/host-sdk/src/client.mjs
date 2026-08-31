@@ -7,45 +7,37 @@ let promptSequence = 0;
 
 const PROMPT_STYLES = `
   dialog.${PROMPT_CLASS}__dialog {
-    width: min(calc(100vw - 32px), 480px);
+    width: min(calc(100vw - 32px), 468px);
     max-width: none;
     margin: auto;
     padding: 0;
     border: 0;
-    border-radius: 28px;
+    border-radius: 18px;
     background: transparent;
-    color: #f8fafc;
+    color: #2d2d2d;
     overflow: visible;
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   dialog.${PROMPT_CLASS}__dialog::backdrop {
-    background: rgb(3 7 18 / 68%);
-    backdrop-filter: blur(12px);
-    animation: ${PROMPT_CLASS}-backdrop-in 180ms ease-out both;
+    background: rgb(0 0 0 / 58%);
+    backdrop-filter: blur(6px);
+    animation: ${PROMPT_CLASS}-backdrop-in 160ms ease-out both;
   }
 
   .${PROMPT_CLASS}__card {
     position: relative;
-    padding: 10px;
-    border: 1px solid rgb(148 163 184 / 22%);
-    border-radius: 28px;
-    background:
-      radial-gradient(circle at 94% 0%, rgb(99 102 241 / 26%), transparent 36%),
-      linear-gradient(145deg, #17213f 0%, #0c142c 62%, #0a1024 100%);
-    box-shadow:
-      0 32px 90px rgb(2 6 23 / 52%),
-      0 8px 24px rgb(2 6 23 / 28%),
-      inset 0 1px 0 rgb(255 255 255 / 9%);
-    animation: ${PROMPT_CLASS}-card-in 220ms cubic-bezier(.2, .75, .25, 1) both;
+    border: 1px solid #d9d9d9;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 24px 70px rgb(0 0 0 / 25%), 0 4px 12px rgb(0 0 0 / 10%);
+    animation: ${PROMPT_CLASS}-card-in 180ms cubic-bezier(.2, .75, .25, 1) both;
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 
   .${PROMPT_CLASS}__surface {
     padding: 24px 24px 20px;
-    border: 1px solid rgb(255 255 255 / 8%);
-    border-radius: 20px;
-    background: linear-gradient(180deg, rgb(255 255 255 / 5%), rgb(255 255 255 / 1%));
+    border-radius: inherit;
   }
 
   .${PROMPT_CLASS}__topbar {
@@ -58,52 +50,59 @@ const PROMPT_STYLES = `
   .${PROMPT_CLASS}__brand {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 11px;
   }
 
   .${PROMPT_CLASS}__mark {
     display: grid;
     place-items: center;
-    width: 42px;
-    height: 42px;
-    border: 1px solid rgb(165 180 252 / 32%);
-    border-radius: 13px;
-    background: linear-gradient(145deg, #818cf8, #4f46e5 70%, #3730a3);
-    box-shadow: 0 8px 18px rgb(79 70 229 / 30%), inset 0 1px 0 rgb(255 255 255 / 35%);
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    background: #202123;
+    color: #ffffff;
   }
 
-  .${PROMPT_CLASS}__mark-line {
-    display: block;
-    width: 18px;
-    height: 3px;
-    border-radius: 999px;
-    background: #eef2ff;
-    transform: translateX(-2px);
-  }
-
-  .${PROMPT_CLASS}__mark-line + .${PROMPT_CLASS}__mark-line {
-    width: 12px;
-    margin-top: 5px;
-    transform: translateX(2px);
-    opacity: .72;
+  .${PROMPT_CLASS}__mark-glyph {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: -.16em;
+    transform: translateX(-1px);
   }
 
   .${PROMPT_CLASS}__eyebrow {
-    margin: 1px 0 4px;
-    color: #a5b4fc;
+    margin: 0 0 4px;
+    color: #6b6b6b;
     font-size: 10px;
-    font-weight: 750;
-    letter-spacing: .16em;
+    font-weight: 700;
+    letter-spacing: .13em;
     line-height: 1.2;
     text-transform: uppercase;
   }
 
+  .${PROMPT_CLASS}__brand-name-line {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
   .${PROMPT_CLASS}__brand-name {
-    margin: 0;
-    color: #e2e8f0;
+    color: #2d2d2d;
     font-size: 13px;
     font-weight: 650;
-    letter-spacing: .01em;
+    letter-spacing: -.01em;
+  }
+
+  .${PROMPT_CLASS}__brand-version {
+    padding: 2px 6px;
+    border: 1px solid #e5e5e5;
+    border-radius: 999px;
+    background: #f7f7f7;
+    color: #6b6b6b;
+    font-size: 9px;
+    font-weight: 650;
+    letter-spacing: .03em;
   }
 
   .${PROMPT_CLASS}__close {
@@ -114,41 +113,41 @@ const PROMPT_STYLES = `
     margin: -2px -2px 0 0;
     padding: 0;
     border: 1px solid transparent;
-    border-radius: 10px;
+    border-radius: 9px;
     background: transparent;
-    color: #94a3b8;
+    color: #6b6b6b;
     cursor: pointer;
-    font-size: 22px;
+    font-size: 21px;
     font-weight: 300;
     line-height: 1;
-    transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
+    transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
   }
 
   .${PROMPT_CLASS}__close:hover {
-    border-color: rgb(148 163 184 / 22%);
-    background: rgb(255 255 255 / 8%);
-    color: #f8fafc;
+    border-color: #d9d9d9;
+    background: #f7f7f7;
+    color: #202123;
   }
 
   .${PROMPT_CLASS}__close:focus-visible,
   .${PROMPT_CLASS}__button:focus-visible {
-    outline: 3px solid rgb(165 180 252 / 72%);
+    outline: 3px solid rgb(16 163 127 / 35%);
     outline-offset: 3px;
   }
 
   .${PROMPT_CLASS}__title {
-    margin: 27px 0 10px;
-    color: #f8fafc;
-    font-size: clamp(24px, 5vw, 30px);
-    font-weight: 720;
-    letter-spacing: -.035em;
+    margin: 28px 0 10px;
+    color: #202123;
+    font-size: clamp(24px, 5vw, 29px);
+    font-weight: 700;
+    letter-spacing: -.04em;
     line-height: 1.08;
   }
 
   .${PROMPT_CLASS}__reason {
     max-width: 38ch;
     margin: 0;
-    color: #b6c2d9;
+    color: #5d5d5d;
     font-size: 15px;
     line-height: 1.55;
   }
@@ -156,12 +155,12 @@ const PROMPT_STYLES = `
   .${PROMPT_CLASS}__notice {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 11px;
     margin-top: 22px;
     padding: 13px 14px;
-    border: 1px solid rgb(129 140 248 / 18%);
-    border-radius: 15px;
-    background: rgb(99 102 241 / 10%);
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    background: #f7f7f7;
   }
 
   .${PROMPT_CLASS}__notice-icon {
@@ -170,11 +169,11 @@ const PROMPT_STYLES = `
     place-items: center;
     width: 27px;
     height: 27px;
-    border-radius: 9px;
-    background: rgb(129 140 248 / 18%);
-    color: #c7d2fe;
-    font-size: 15px;
-    font-weight: 700;
+    border-radius: 8px;
+    background: #e6f4f0;
+    color: #0d8a6a;
+    font-size: 14px;
+    font-weight: 750;
   }
 
   .${PROMPT_CLASS}__notice-copy {
@@ -183,13 +182,13 @@ const PROMPT_STYLES = `
   }
 
   .${PROMPT_CLASS}__notice-copy strong {
-    color: #e0e7ff;
+    color: #2d2d2d;
     font-size: 12px;
     font-weight: 680;
   }
 
   .${PROMPT_CLASS}__notice-copy span {
-    color: #aeb9d0;
+    color: #6b6b6b;
     font-size: 12px;
     line-height: 1.35;
   }
@@ -197,29 +196,29 @@ const PROMPT_STYLES = `
   .${PROMPT_CLASS}__actions {
     display: grid;
     grid-template-columns: 1fr 1.35fr;
-    gap: 10px;
+    gap: 9px;
     margin-top: 24px;
   }
 
   .${PROMPT_CLASS}__button {
-    min-height: 46px;
-    padding: 0 16px;
-    border: 1px solid rgb(148 163 184 / 24%);
-    border-radius: 13px;
-    background: rgb(255 255 255 / 5%);
-    color: #dbe5f5;
+    min-height: 44px;
+    padding: 0 15px;
+    border: 1px solid #d9d9d9;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #2d2d2d;
     cursor: pointer;
     font: inherit;
     font-size: 13px;
-    font-weight: 680;
+    font-weight: 650;
     letter-spacing: -.005em;
-    transition: transform 140ms ease, border-color 140ms ease, background 140ms ease, box-shadow 140ms ease;
+    transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
   }
 
   .${PROMPT_CLASS}__button:hover {
     transform: translateY(-1px);
-    border-color: rgb(165 180 252 / 40%);
-    background: rgb(255 255 255 / 9%);
+    border-color: #bdbdbd;
+    background: #f7f7f7;
   }
 
   .${PROMPT_CLASS}__button:active {
@@ -227,16 +226,14 @@ const PROMPT_STYLES = `
   }
 
   .${PROMPT_CLASS}__button--primary {
-    border-color: rgb(165 180 252 / 48%);
-    background: linear-gradient(135deg, #818cf8, #6366f1);
+    border-color: #202123;
+    background: #202123;
     color: #ffffff;
-    box-shadow: 0 8px 18px rgb(79 70 229 / 28%), inset 0 1px 0 rgb(255 255 255 / 28%);
   }
 
   .${PROMPT_CLASS}__button--primary:hover {
-    border-color: rgb(199 210 254 / 72%);
-    background: linear-gradient(135deg, #a5b4fc, #818cf8);
-    box-shadow: 0 10px 22px rgb(79 70 229 / 38%), inset 0 1px 0 rgb(255 255 255 / 32%);
+    border-color: #40414f;
+    background: #40414f;
   }
 
   .${PROMPT_CLASS}__footer {
@@ -245,7 +242,7 @@ const PROMPT_STYLES = `
     justify-content: center;
     gap: 7px;
     margin: 14px 0 0;
-    color: #8f9db7;
+    color: #8a8a8a;
     font-size: 11px;
     line-height: 1.4;
     text-align: center;
@@ -255,8 +252,8 @@ const PROMPT_STYLES = `
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #34d399;
-    box-shadow: 0 0 0 4px rgb(52 211 153 / 10%);
+    background: #10a37f;
+    box-shadow: 0 0 0 4px rgb(16 163 127 / 12%);
   }
 
   @keyframes ${PROMPT_CLASS}-backdrop-in {
@@ -265,7 +262,7 @@ const PROMPT_STYLES = `
   }
 
   @keyframes ${PROMPT_CLASS}-card-in {
-    from { opacity: 0; transform: translateY(12px) scale(.97); }
+    from { opacity: 0; transform: translateY(8px) scale(.985); }
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
 
@@ -330,11 +327,12 @@ export function createContinuationPrompt(options = {}) {
     const topbar = documentRef.createElement("div");
     const brand = documentRef.createElement("div");
     const mark = documentRef.createElement("div");
-    const markLine = documentRef.createElement("span");
-    const markLineShort = documentRef.createElement("span");
+    const markGlyph = documentRef.createElement("span");
     const brandCopy = documentRef.createElement("div");
     const eyebrow = documentRef.createElement("div");
-    const brandName = documentRef.createElement("div");
+    const brandNameLine = documentRef.createElement("div");
+    const brandName = documentRef.createElement("span");
+    const brandVersion = documentRef.createElement("span");
     const closeButton = documentRef.createElement("button");
     const title = documentRef.createElement("h2");
     const reason = documentRef.createElement("p");
@@ -362,11 +360,12 @@ export function createContinuationPrompt(options = {}) {
     topbar.className = `${PROMPT_CLASS}__topbar`;
     brand.className = `${PROMPT_CLASS}__brand`;
     mark.className = `${PROMPT_CLASS}__mark`;
-    markLine.className = `${PROMPT_CLASS}__mark-line`;
-    markLineShort.className = `${PROMPT_CLASS}__mark-line`;
+    markGlyph.className = `${PROMPT_CLASS}__mark-glyph`;
     brandCopy.className = `${PROMPT_CLASS}__brand-copy`;
     eyebrow.className = `${PROMPT_CLASS}__eyebrow`;
+    brandNameLine.className = `${PROMPT_CLASS}__brand-name-line`;
     brandName.className = `${PROMPT_CLASS}__brand-name`;
+    brandVersion.className = `${PROMPT_CLASS}__brand-version`;
     closeButton.className = `${PROMPT_CLASS}__close`;
     title.className = `${PROMPT_CLASS}__title`;
     reason.className = `${PROMPT_CLASS}__reason`;
@@ -385,14 +384,16 @@ export function createContinuationPrompt(options = {}) {
     reason.id = reasonId;
     title.textContent = input.title;
     reason.textContent = input.reason;
-    eyebrow.textContent = "Workflow continuation";
-    brandName.textContent = "Secure review request";
+    eyebrow.textContent = "SDK request";
+    markGlyph.textContent = "</>";
+    brandName.textContent = "WebMCP Continuation SDK";
+    brandVersion.textContent = "v0.1";
     closeButton.textContent = "×";
     closeButton.setAttribute("aria-label", "Close request");
     closeButton.setAttribute("title", "Close request");
-    noticeIcon.textContent = "↗";
-    noticeTitle.textContent = "Review before continuing";
-    noticeReason.textContent = "Nothing happens until you choose.";
+    noticeIcon.textContent = "✓";
+    noticeTitle.textContent = "Human checkpoint";
+    noticeReason.textContent = "Review before the next step runs.";
     footerText.textContent = "You stay in control of this workflow";
     approve.type = "button";
     approve.textContent = "Approve & continue";
@@ -402,8 +403,9 @@ export function createContinuationPrompt(options = {}) {
     dialog.setAttribute("aria-describedby", reasonId);
     dialog.setAttribute("aria-modal", "true");
 
-    mark.append(markLine, markLineShort);
-    brandCopy.append(eyebrow, brandName);
+    mark.append(markGlyph);
+    brandNameLine.append(brandName, brandVersion);
+    brandCopy.append(eyebrow, brandNameLine);
     brand.append(mark, brandCopy);
     topbar.append(brand, closeButton);
     noticeCopy.append(noticeTitle, noticeReason);
