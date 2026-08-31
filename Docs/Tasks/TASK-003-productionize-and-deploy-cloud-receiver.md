@@ -6,14 +6,13 @@
 ## Task Control
 
 - Type: `implementation`
-- Lifecycle: `pending`
+- Lifecycle: `in_progress`
 - Priority: `P1`
 - Owner: Alex and project team
-- Current increment: Define the deployable Cloud Receiver shell contract and close its first
-  application-neutral local production-readiness increment, using one small generic end-to-end
-  proof path.
-- Next gate: Accept the short protocol and deployment-boundary decision notes, then register any
-  independently owned parallel implementation increment before it starts.
+- Current increment: CLOUD-001 locally verified the loopback-only Stage 1 Cloud Receiver shell;
+  prepare the bounded Stage 2 identity and consent decision without widening the shell first.
+- Next gate: Accept one decision that freezes organization scope, Host-key enrollment, Receiver-owned
+  consent sessions, Connector pairing, and credential custody before Stage 2 code begins.
 - Dependencies: Host-integrated runtime verification depends on TASK-001; public hosting, secrets,
   credentials, paid infrastructure, and deployment require their own current authority.
 

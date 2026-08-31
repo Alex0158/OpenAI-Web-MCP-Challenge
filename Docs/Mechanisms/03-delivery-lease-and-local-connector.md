@@ -1,9 +1,9 @@
 # Delivery Lease and Local Connector
 
 **Role:** CANONICAL mechanism contract  
-**Status:** Core, bounded HTTP transport, and test-process behavior locally verified; production
-Connector open  
-**Controls:** ADR-0009, ADR-0010, and ADR-0013
+**Status:** Core, bounded HTTP transport, Stage 1 Cloud Receiver shell, and test-process behavior
+locally verified; production identity, deployment, and Connector process open  
+**Controls:** ADR-0009, ADR-0010, ADR-0013, and ADR-0019
 
 ## Responsibility
 
@@ -52,7 +52,9 @@ effect-backed acknowledgement. The outbound Connector client:
 - performs no automatic retry or claim-token substitution.
 
 Production consent, Grant control, pairing, health, diagnostics, long polling, push transport, and
-daemon lifecycle remain outside this transport kernel.
+daemon lifecycle remain outside this transport kernel. ADR-0019 adds shell-owned `GET /healthz`
+and `GET /readyz` around the unchanged adapter; those routes report process state and never delivery
+or effect success.
 
 ## Effect and acknowledgement
 
@@ -73,14 +75,17 @@ silently reconciled.
 | HTTP route mapping | `reentry-core/src/cloud-receiver-http.mjs` | `reentry-core/test/cloud-receiver-http.test.mjs` |
 | Outbound Connector client | `reentry-core/src/local-connector-client.mjs` | `reentry-core/test/local-connector-client.test.mjs` |
 | Process and restart composition | conformance and process fixtures | separate-process and fault-matrix tests |
+| Stage 1 Cloud Receiver process shell | `runtime/cloud-receiver/src/` | `runtime/cloud-receiver/test/` |
 
 ## Current evidence and non-claims
 
 Local evidence covers target isolation, claim replay, bounded reclamation, stale-worker fencing,
 revocation races, effect conflicts, response loss, Receiver restart, exact HTTP mapping, and
-outbound-client failure behavior. Test child processes and loopback HTTP do not prove a production
-Cloud Receiver, TLS termination, durable Connector credentials, paired-device identity, supervised
-daemon, offline catch-up, real Host-effect verifier, service capacity, or distributed queue.
+outbound-client failure behavior. Stage 1 additionally covers one real loopback shell lifecycle,
+file-backed composition, bounded readiness, graceful shutdown, and generic acknowledgement replay
+after reopen. This does not prove a production Cloud Receiver, TLS termination, durable Connector
+credentials, paired-device identity, supervised daemon, offline catch-up, real Host-effect verifier,
+service capacity, or distributed queue.
 
 ## Runtime integration obligations
 

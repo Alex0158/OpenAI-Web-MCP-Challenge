@@ -1,7 +1,7 @@
 # Decision Register
 
 **Role:** DECISION index  
-**Status:** Current through ADR-0018  
+**Status:** Current through ADR-0019  
 **Last updated:** 2026-08-31
 
 This directory records accepted durable choices and their consequences. A decision record owns
@@ -31,6 +31,7 @@ and runtime evidence.
 | [ADR-0016](ADR-0016-adopt-unified-task-authority.md) | Accepted | Adopt one unified lifecycle authority for pending work, problems, defects, and investigations |
 | [ADR-0017](ADR-0017-adopt-project-engineering-governance-baseline.md) | Accepted | Adopt the project-wide engineering authority, native enforcement baseline, Node 24 closure runtime, and always-run CI |
 | [ADR-0018](ADR-0018-adopt-collaborative-source-of-truth-and-change-gates.md) | Accepted | Adopt collaborative authority checks, canonical writeback, and Git synchronization gates |
+| [ADR-0019](ADR-0019-establish-stage-one-cloud-receiver-shell.md) | Accepted | Establish the loopback-only Stage 1 Cloud Receiver process shell and operational boundary |
 
 ## Decision rules
 

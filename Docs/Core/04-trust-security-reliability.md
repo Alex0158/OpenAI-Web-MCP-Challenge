@@ -3,7 +3,7 @@
 **Role:** CANONICAL cross-cutting trust, security, and reliability policy  
 **Status:** Application-neutral controls locally verified at their stated boundary; production
 identity, custody, services, and runtime evidence open  
-**Authority:** ADR-0006 through ADR-0015
+**Authority:** ADR-0006 through ADR-0015 and ADR-0019
 
 ## 1. Security objective
 
@@ -97,6 +97,7 @@ integration.
 | Stale Host mutation | canonical-page revalidation, server authorization, revision compare-and-swap | frozen MVP1 fixture evidence |
 | Prompt injection through event/page copy | bounded typed event, untrusted display treatment, no prompt transport | contract and negative tests |
 | Hidden fallback | explicit unsupported/unknown states and no automatic retry or alternate adapter | local tests |
+| Accidental Stage 1 public exposure | literal loopback bind, absolute trusted composition, fail-closed startup | local shell and child-process tests; no TLS or public-profile evidence |
 
 ## 7. Reliability semantics
 

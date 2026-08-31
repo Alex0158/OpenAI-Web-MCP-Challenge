@@ -5,7 +5,8 @@
 **Selected direction:** Application-neutral Re-entry Core  
 **Host application:** Unselected  
 **Agent continuation adapter:** Unselected  
-**Phase:** Core complete at `locally_verified`; application selection is the next product gate
+**Phase:** Core and Stage 1 Cloud Receiver shell locally verified; application selection remains the
+next product gate
 
 ## 1. Executive status
 
@@ -21,9 +22,15 @@ Grant control and revocation, target-scoped delivery leases, bounded HTTP and ou
 transport, deterministic Agent activation, private managed-context resolution, process-fault
 evidence, and a non-production conformance profile.
 
-The project has not selected or implemented the final Host application, production Receiver or
-Connector shells, concrete Agent adapter, production consent and control sessions, binding
-capture or custody, deployment, product validation, judge reproduction, or submission.
+ADR-0019 and CLOUD-001 now add a loopback-only Cloud Receiver process shell under
+`runtime/cloud-receiver/`. Its Node 24 suite passes 9 of 9 tests for exact Core-route delegation,
+file-backed SQLite composition, bounded health and readiness, configuration failure, graceful
+shutdown, a generic event-to-acknowledgement flow, and exact replay after close and reopen.
+
+The project has not selected or implemented the final Host application, public or production
+Receiver profile, Local Connector process, concrete Agent adapter, production consent and control
+sessions, binding capture or custody, deployment, product validation, judge reproduction, or
+submission.
 
 ## 2. Selected concept
 
@@ -58,18 +65,19 @@ Agent runtime, and final product name remain open until accepted decisions selec
 | Application-neutral implementation | **LOCALLY VERIFIED** | `reentry-core/`, RECORE-001 through RECORE-006 |
 | Exact bounded process-fault matrix | **SEPARATE-PROCESS VERIFIED** | RECORE-005 |
 | Source conformance profile | **LOCALLY VERIFIED, NON-PRODUCTION** | ADR-0012 and direct conformance execution |
+| Stage 1 Cloud Receiver shell | **LOCALLY VERIFIED, LOOPBACK ONLY** | ADR-0019, CLOUD-001, and `runtime/cloud-receiver/` |
 | Frozen MVP1 mechanism proof | **VERIFIED, BOUNDED REFERENCE** | `mvp/` and its evidence index |
 | Standalone App Server/Desktop Browser joins | **FAILED FOR BOTH TESTED ROUTES** | Research 19 and frozen probe artifacts |
 | Workspace Agent Browser and page-bound WebMCP path | **UNKNOWN** | Research 20 |
 | Final Host application and user | **UNSELECTED** | new app-selection ADR required |
 | Concrete supported Agent adapter | **UNSELECTED / UNVERIFIED** | route-specific ADR and runtime evidence required |
-| Production services and deployment | **NOT IMPLEMENTED** | future runtime work |
+| Production services and deployment | **NOT IMPLEMENTED** | Stage 1 is local process evidence only |
 | Product value and judge reproducibility | **UNKNOWN** | selected-app evidence required |
 | Submission | **NOT SUBMITTED** | live Devpost readback required |
 
 ## 4. Current implementation map
 
-The current reusable source is `reentry-core/`. Its stable contracts are routed through the
+The current reusable contract source is `reentry-core/`. Its stable contracts are routed through the
 [Mechanism index](../Mechanisms/README.md):
 
 1. [Host integration, Manifest, and enrollment](../Mechanisms/01-host-integration-manifest-and-enrollment.md);
@@ -84,6 +92,10 @@ obligation with frozen bounded MVP1 evidence; it is not implemented in `reentry-
 `mvp/` is a frozen MVP1 proof fixture. MVP2 remains a preserved contributor reference. Neither is
 the active source baseline for new application-neutral behavior.
 
+The first runtime consumer is `runtime/cloud-receiver/`. It wraps the existing Receiver Core and
+HTTP adapter without changing their contracts. It is loopback-only and receives authority ports
+from an explicit trusted composition; it is not a public or production identity implementation.
+
 ## 5. Evidence boundary
 
 Current evidence supports these bounded claims:
@@ -93,6 +105,9 @@ Current evidence supports these bounded claims:
   restart, and pre-commit termination cases;
 - the source conformance profile runs distinct Host, Receiver, and Connector children and emits a
   redacted result;
+- the Stage 1 Cloud Receiver starts as a real child process, reports bounded readiness, closes its
+  file-backed composition through `SIGTERM`, and preserves one tested acknowledgement across store
+  reopen;
 - the frozen MVP1 suite currently passes 118 tests; and
 - bounded P0/H1/H2 evidence demonstrates technical composability in the recorded local/current-
   build environments.
@@ -135,7 +150,7 @@ The project does not currently claim:
 - a new WebMCP standard or universal Agent continuation protocol;
 - a supported public Codex or other Agent wake API;
 - production consent, identity, pairing, credential custody, or administration;
-- a production Cloud Receiver or Local Connector daemon;
+- a public or production Cloud Receiver profile or Local Connector daemon;
 - a real Host-effect verifier or real managed-context activation;
 - public deployment, judge reproducibility, release, or submission; or
 - historical originality beyond the bounded composition and evidence stated in Core/08.

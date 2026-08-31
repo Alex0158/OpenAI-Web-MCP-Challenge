@@ -1,9 +1,9 @@
 # Re-entry Core — System Architecture
 
 **Role:** CANONICAL system-wide architecture overview  
-**Status:** Application-neutral Core locally verified at its stated boundary; selected application,
-production shells, and concrete Agent runtime open  
-**Authority:** ADR-0006 through ADR-0015
+**Status:** Application-neutral Core and loopback Stage 1 Cloud Receiver shell locally verified;
+selected application, production profiles, Local Connector, and concrete Agent runtime open  
+**Authority:** ADR-0006 through ADR-0015 and ADR-0019
 
 ## 1. Objective
 
@@ -129,9 +129,10 @@ This is the selected reference topology, not a deployed result.
 
 ### Local development profile
 
-The same Receiver Core may run behind loopback HTTP with deterministic authorities and separate
-test processes. This profile exists for development and evidence. It is not an automatic shipping
-fallback.
+`runtime/cloud-receiver/` now runs the same Receiver Core behind a loopback-only service shell with
+file-backed SQLite, bounded operational routes, and graceful shutdown. A trusted composition must
+supply the authority ports. Deterministic authorities remain test-only. This profile exists for
+development and evidence; it is not an automatic shipping fallback or public deployment profile.
 
 ### Alternative hosted-Agent profile
 
@@ -163,10 +164,15 @@ source conformance profile. Local tests cover protocol, Receiver authority, dura
 state, delivery, HTTP mapping, outbound client, deterministic adapter, private binding resolution,
 and bounded process-fault compositions.
 
-It does not contain the selected Host application, production process ownership, public TLS,
-pairing, production identity, real binding custody, real Host-effect verification, real Agent
-activation, Browser acquisition, or WebMCP runtime access. Those gaps remain visible rather than
-being filled with test authorities or implicit fallback.
+`runtime/cloud-receiver/` implements the ADR-0019 Stage 1 listener, operational readiness, durable
+composition, and process lifecycle around those unchanged contracts. Its local tests cover one
+generic event, claim, effect acknowledgement, store reopen, exact acknowledgement replay, and
+signal-driven process closure.
+
+The repository still does not contain the selected Host application, public Receiver profile,
+Local Connector process, public TLS, pairing, production identity, real binding custody, real
+Host-effect verification, real Agent activation, Browser acquisition, or WebMCP runtime access.
+Those gaps remain visible rather than being filled with test authorities or implicit fallback.
 
 ## 9. Module routing
 

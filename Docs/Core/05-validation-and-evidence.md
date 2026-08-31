@@ -1,9 +1,9 @@
 # Re-entry Core — Validation and Evidence
 
 **Role:** CANONICAL current proof matrix, future evidence gates, and claim limits  
-**Status:** Application-neutral Core complete at locally verified; application, runtime,
-deployment, product, judge, and submission gates open  
-**Authority:** ADR-0003, ADR-0006 through ADR-0015, and executed evidence
+**Status:** Application-neutral Core and Stage 1 Cloud Receiver shell locally verified;
+application, production runtime, deployment, product, judge, and submission gates open  
+**Authority:** ADR-0003, ADR-0006 through ADR-0015, ADR-0019, and executed evidence
 
 ## 1. Evidence discipline
 
@@ -43,12 +43,13 @@ handle do not prove page-bound invocation.
 | Private managed-context resolution | **LOCALLY VERIFIED** | deterministic authority/driver; no capture or custody |
 | Exact process-fault matrix | **SEPARATE-PROCESS VERIFIED** | recorded compositions only, not arbitrary crash safety |
 | Source conformance profile | **LOCALLY VERIFIED, NON-PRODUCTION** | distinct local Host/Receiver/Connector children |
+| Stage 1 Cloud Receiver shell | **LOCALLY VERIFIED, LOOPBACK ONLY** | real child lifecycle plus in-process generic protocol flow; no production identity or TLS |
 | Quality and package-weight baseline | **LOCALLY VERIFIED, NON-SLA** | same-machine regression samples; zero runtime dependencies |
 | Application-neutral Program | **COMPLETE AT LOCALLY VERIFIED BOUNDARY** | RECORE-003 terminal audit |
 | Frozen MVP1 technical composition | **VERIFIED, BOUNDED REFERENCE** | P0/H1/H2 evidence in recorded environments |
 | Supported concrete Agent-to-Browser/WebMCP join | **OPEN** | both tested standalone App Server/Desktop joins failed |
 | Selected Host application and vertical slice | **OPEN** | no accepted app-selection ADR or app implementation |
-| Production services, identity, custody, and deployment | **OPEN** | no production runtime evidence |
+| Production services, identity, custody, and deployment | **OPEN** | Stage 1 shell is not a production profile or deployment |
 | Product value and judge reproduction | **UNKNOWN** | selected-app external evidence required |
 | Submission | **NOT SUBMITTED** | live Devpost readback required |
 

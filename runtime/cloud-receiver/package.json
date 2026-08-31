@@ -1,0 +1,21 @@
+{
+  "name": "@webmcp-challenge/cloud-receiver",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Loopback-only Stage 1 process shell around the application-neutral Receiver Core.",
+  "exports": {
+    ".": "./src/index.mjs",
+    "./service": "./src/cloud-receiver-service.mjs",
+    "./sqlite-composition": "./src/sqlite-composition.mjs"
+  },
+  "scripts": {
+    "start": "node src/main.mjs",
+    "check:syntax": "node scripts/check-syntax.mjs",
+    "test": "node --test test/*.test.mjs",
+    "verify": "npm run check:syntax && npm test"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

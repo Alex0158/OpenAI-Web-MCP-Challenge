@@ -3,10 +3,10 @@
 An application-neutral Re-entry Core plus preserved technical evidence for a consented WebMCP
 workflow that can continue after the original page session or Agent turn has ended.
 
-> **Current status:** The application-neutral Re-entry Core Program is complete at its
-> `locally_verified` boundary. The final Host application, production process shells, supported
-> Agent continuation adapter, deployment, product proof, judge reproduction, and submission remain
-> separate open gates.
+> **Current status:** The application-neutral Re-entry Core Program and the loopback-only Stage 1
+> Cloud Receiver shell are complete at their `locally_verified` boundaries. The final Host
+> application, production identity and process profiles, Local Connector, supported Agent
+> continuation adapter, deployment, product proof, judge reproduction, and submission remain open.
 
 This repository is an independent challenge project and is not an official OpenAI product.
 The canonical status and claim boundary are maintained in
@@ -17,6 +17,7 @@ The canonical status and claim boundary are maintained in
 
 ```text
 reentry-core/             current application-neutral contracts and reference implementation
+runtime/cloud-receiver/   loopback-only Stage 1 service shell around Receiver Core
 mvp/                      frozen MVP1 fixture, runbooks, and bounded evidence
 Docs/Core/                canonical product, architecture, trust, and evidence truth
 Docs/Mechanisms/          stable Re-entry lifecycle and authority module contracts
@@ -31,13 +32,12 @@ Experiments/              isolated reproducible experiments and verdicts
 References/               immutable, external, and historical reference material
 ```
 
-After an accepted app-selection ADR, selected-app and deployable runtime code should default to
-the following placement outside `reentry-core/` and `mvp/`, unless that ADR records a narrower
-reasoned layout:
+ADR-0019 places the first Cloud Receiver shell under `runtime/cloud-receiver/`. After an accepted
+app-selection ADR, remaining selected-app and runtime code should default to the following placement
+outside `reentry-core/` and `mvp/`, unless that ADR records a narrower reasoned layout:
 
 ```text
 app/                      selected Host application, Host backend, WebMCP tools, and Host Adapter
-runtime/cloud-receiver/   hosted process shell around Receiver Core, when implemented
 runtime/local-connector/  device-side Connector and concrete Agent adapter, when implemented
 ```
 
@@ -49,10 +49,12 @@ Core code merely to anticipate a larger workspace.
 The current Re-entry Core locally verifies the application-neutral protocol, Host SDK, Receiver
 authority and Grant control, Connector delivery, bounded HTTP transport, independent test-process
 fault behavior, deterministic Agent Adapter contract, private managed-context resolution, and a
-non-production conformance profile. The frozen MVP1 fixture separately demonstrates that a user
-can authorize one bounded future business event to return an Agent to an authoritative web
-workflow, rediscover the Site Tools valid for the new state, continue the same artifact, and stop
-before a human-only commitment.
+non-production conformance profile. The Stage 1 Cloud Receiver additionally verifies a real
+loopback process shell, file-backed composition, redacted health and readiness, graceful shutdown,
+and one generic event-to-acknowledgement flow with restart replay. The frozen MVP1 fixture separately
+demonstrates that a user can authorize one bounded future business event to return an Agent to an
+authoritative web workflow, rediscover the Site Tools valid for the new state, continue the same
+artifact, and stop before a human-only commitment.
 
 The frozen MVP1 runtime evidence includes:
 
@@ -96,6 +98,18 @@ npm run verify
 See [`reentry-core/README.md`](reentry-core/README.md) for focused checks and bounded benchmark
 commands. Passing these checks does not prove deployment, a production service, or real Agent and
 Browser activation.
+
+## Verify the Stage 1 Cloud Receiver
+
+Requirements: Node.js 24 or newer.
+
+```sh
+cd runtime/cloud-receiver
+npm run verify
+```
+
+See [`runtime/cloud-receiver/README.md`](runtime/cloud-receiver/README.md) for its exact composition,
+manual local smoke, and non-production boundaries.
 
 ## Run the frozen MVP1 fixture
 

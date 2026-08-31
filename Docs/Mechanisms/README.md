@@ -2,7 +2,7 @@
 
 **Role:** CANONICAL module-contract index  
 **Status:** Current application-neutral baseline  
-**Authority:** ADR-0006 through ADR-0015
+**Authority:** ADR-0006 through ADR-0015 and ADR-0019
 
 ## Purpose
 
@@ -17,7 +17,7 @@ or silently weaken them.
 |---|---|---|
 | [Host integration, Manifest, and enrollment](01-host-integration-manifest-and-enrollment.md) | Host-issued offer, origin anchoring, consent-challenge creation, public binding, private receipt | Protocol, Host SDK, Receiver enrollment locally verified |
 | [Receiver Grant and event authority](02-receiver-grant-and-event-authority.md) | Grant lifecycle, signed event acceptance, replay, one-run reservation, revocation, pending delivery | Receiver Core and SQLite reference store locally verified |
-| [Delivery lease and Local Connector](03-delivery-lease-and-local-connector.md) | target identity, delivery lease, stale-worker fencing, outbound transport, effect-backed acknowledgement | Core, HTTP mapping, outbound client, and bounded process evidence locally verified |
+| [Delivery lease and Local Connector](03-delivery-lease-and-local-connector.md) | target identity, delivery lease, stale-worker fencing, outbound transport, effect-backed acknowledgement | Core, Stage 1 Cloud Receiver shell, outbound client, and bounded process evidence locally verified |
 | [Managed context and Agent activation](04-managed-context-and-agent-activation.md) | credential-free activation, private binding resolution, typed outcomes, no-fallback boundary | Deterministic adapter and binding-resolution seams locally verified; real runtime open |
 | [Host re-entry, WebMCP, and human boundary](05-host-reentry-webmcp-and-human-boundary.md) | canonical-page return, fresh state, stage-derived Site Tools, continued artifact, human-only consequence | Frozen MVP1 evidence only; selected application not implemented |
 
