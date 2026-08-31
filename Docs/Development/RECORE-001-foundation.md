@@ -18,6 +18,8 @@ Receiver, a working Codex wake path, a selected web app, or a judge-reproducible
 
 ## Owning decisions and sources
 
+- `REENTRY-CORE-PROGRAM.md` owns the standing program outcome, execution boundaries,
+  anti-bloat rules, and Definition of Done.
 - ADR-0002 separates the mechanism from the final application.
 - ADR-0004 separates the event protocol from Agent runtime transport.
 - ADR-0006 establishes Re-entry Core, its source root, and target process topology.

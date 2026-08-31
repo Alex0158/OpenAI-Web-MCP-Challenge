@@ -10,6 +10,9 @@ This directory controls how Re-entry Core moves from an accepted decision to imp
 verification, evidence, and precise closure. It does not redefine product or architecture
 semantics owned by `Docs/Core/` and `Docs/Decisions/`.
 
+The binding program mandate, execution boundaries, anti-bloat rules, and Definition of Done are
+owned by the [Re-entry Core Program Contract](REENTRY-CORE-PROGRAM.md).
+
 The operating loop is:
 
 ```text
@@ -28,6 +31,7 @@ objective
 
 | Question | Owning surface |
 |---|---|
+| Program outcome, execution boundaries, and completion | [`REENTRY-CORE-PROGRAM.md`](REENTRY-CORE-PROGRAM.md) |
 | Current phase and verified state | `Docs/Core/00-current-status.md` |
 | Durable concept and requirements | `Docs/Core/01-product-definition.md` and `02-product-requirements.md` |
 | Architecture and logical contracts | `Docs/Core/03-system-design.md` |
