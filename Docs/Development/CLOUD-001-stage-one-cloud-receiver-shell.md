@@ -7,7 +7,7 @@
 **Closed:** 2026-08-31  
 **Branch:** `codex/eyad-reentry-core-foundation`  
 **Baseline:** `0ce22ad8e6f3478cd85f5ad22ec3b5c18448f6a3`  
-**Implementation commit:** Pending Git closure
+**Implementation commit:** `e11e71cebdb23782dcb85b9b19a4756a620bb917`
 
 ## Objective
 
