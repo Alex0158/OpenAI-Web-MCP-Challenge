@@ -18,6 +18,7 @@ Use the smallest applicable authority:
 | Code, module, dependency, failure, security, performance, and documentation quality | [Development Standard](01-development-standard.md) |
 | Test layers, verification selection, compatibility, CI, benchmarks, and claim limits | [Testing and Verification](02-testing-and-verification.md) |
 | Current-state audit through exact local and Git closure | [Primary Development Runbook](03-primary-development-runbook.md) |
+| Human-request conflict handling, canonical writeback, and collaborator Git cadence | [Primary Development Runbook](03-primary-development-runbook.md) |
 | Re-entry Core-specific commands, seams, and non-claims | [Re-entry Core Runbook](../Development/REENTRY-CORE-RUNBOOK.md) |
 | Registered task lifecycle and next gate | [`Docs/Tasks/`](../Tasks/README.md) |
 | Program, implementation, evidence, and closure record | [`Docs/Development/`](../Development/README.md) |

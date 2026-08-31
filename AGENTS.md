@@ -5,6 +5,10 @@
 This tracked file is the self-contained contributor instruction surface for this repository. A
 clone must not depend on an untracked parent-workspace or machine-global `AGENTS.md`.
 
+All collaborator-required repository rules must live here or in the scoped project documents this
+guide routes to. A parent workspace guide may add local defaults, but it is never a hidden dependency
+or substitute for this file.
+
 The repository is the directory returned by `git rev-parse --show-toplevel`; do not infer it from
 the current directory, open editor, or last task.
 Preserve unrelated tracked, untracked, and ignored work. Stage exact task-owned paths or hunks only.
@@ -52,6 +56,13 @@ the profile changes the required control depth, not the product authority.
   deployment, or cross-layer contract change, create or update the owning ADR.
 - Tasks own lifecycle, ADRs own durable decisions, Development records own implementation and
   closure, and Core or Mechanisms own intended behavior.
+- A human request, suggestion, or target is intent, not an authority override. Before implementation,
+  compare it with the current Core or Mechanism contract, governing ADR, and applicable Engineering
+  controls. If it conflicts with or changes an accepted architecture, mechanism, authority, security,
+  data, process, compatibility, deployment, or cross-layer contract, stop at the decision boundary
+  and present the current rule, proposed difference, impact, and viable alternatives. Obtain an
+  explicit human decision before changing authority or code; keep an unaccepted proposal in its
+  Task or Research surface and out of canonical Core truth.
 
 ## Protected and frozen surfaces
 
@@ -94,6 +105,10 @@ the profile changes the required control depth, not the product authority.
   ```
 
 - Detailed test selection, aggregate reopen rules, and evidence recording belong in Engineering.
+- At the start of each coherent increment and again before commit, check whether product or mechanism
+  intent, authority, contract, status, or claims changed. Update the owning Core, Mechanism, ADR, and
+  Development or evidence record before closure when it did; record why no canonical update was needed
+  when it did not. Do not close code against stale authoritative documents.
 
 ## Git and collaboration
 
@@ -107,9 +122,13 @@ the profile changes the required control depth, not the product authority.
   explicit-staging, and remote-SHA verification gates in the Primary Development Runbook.
 - Follow the [Primary Development Runbook Git gate](Docs/Engineering/03-primary-development-runbook.md#8-git-and-remote-closure)
   for exact inspection, staging, verification, commit, integration, push, and readback procedure.
-- Fetch before push and review remote movement deliberately. Never use blind pull, force push,
-  shared-history rewriting, destructive checkout, `git clean`, or `git reset --hard` to manufacture
-  a clean result.
+- At session start or resume, and again before push, fetch the intended remote and inspect branch,
+  ownership, status, and divergence. After a bounded verified increment closes, commit and push
+  promptly, and do the same before handing work to the other contributor or going idle. Integrate
+  remote work deliberately on a clean tree; a pull is never a blind substitute for fetch and review.
+- Never use blind pull, force push, shared-history rewriting, destructive checkout, `git clean`, or
+  `git reset --hard` to manufacture a clean result. Remote-ahead or diverged state is an integration
+  decision, not permission to overwrite another contributor.
 - Before editing a collaborator-owned file, announce scope and baseline. After delivery, prove local
   and remote identities and report intentionally uncommitted work.
 

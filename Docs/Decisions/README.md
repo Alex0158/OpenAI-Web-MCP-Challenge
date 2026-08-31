@@ -1,7 +1,7 @@
 # Decision Register
 
 **Role:** DECISION index  
-**Status:** Current through ADR-0017  
+**Status:** Current through ADR-0018  
 **Last updated:** 2026-08-31
 
 This directory records accepted durable choices and their consequences. A decision record owns
@@ -30,13 +30,14 @@ and runtime evidence.
 | [ADR-0015](ADR-0015-adopt-modular-mechanism-documentation.md) | Accepted | Adopt modular mechanism documentation and canonical content-density rules |
 | [ADR-0016](ADR-0016-adopt-unified-task-authority.md) | Accepted | Adopt one unified lifecycle authority for pending work, problems, defects, and investigations |
 | [ADR-0017](ADR-0017-adopt-project-engineering-governance-baseline.md) | Accepted | Adopt the project-wide engineering authority, native enforcement baseline, Node 24 closure runtime, and always-run CI |
+| [ADR-0018](ADR-0018-adopt-collaborative-source-of-truth-and-change-gates.md) | Accepted | Adopt collaborative authority checks, canonical writeback, and Git synchronization gates |
 
 ## Decision rules
 
 Create a new ADR before changing the core mechanism, authority model, process topology, reference
-freeze, or application selection. An ADR does not prove implementation, deployment, or runtime
-behavior. Supersede an earlier decision explicitly; do not silently rewrite its historical
-context.
+freeze, application selection, or project-wide engineering or collaboration control. An ADR does
+not prove implementation, deployment, or runtime behavior. Supersede an earlier decision explicitly;
+do not silently rewrite its historical context.
 
 The next application-selection decision should use a new ADR. It must specialize the
 application-neutral Core without promoting a supporting scenario or research recommendation into

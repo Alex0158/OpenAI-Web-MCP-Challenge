@@ -108,6 +108,7 @@ genuine WebMCP, deployment, or judge reproducibility.
 | [`DOCS-003`](DOCS-003-unified-task-authority.md) | Establish one unified task lifecycle for pending work, problems, defects, investigations, and decision needs | `locally_verified` |
 | [`ENG-001`](ENG-001-project-engineering-governance-baseline.md) | Establish the project-wide engineering authority, mechanical repository checks, aggregate Core verification, and CI baseline | `locally_verified` with exact-source CI success |
 | [`ENG-002`](ENG-002-collaborator-agent-guidance-reconciliation.md) | Make repository contributor guidance self-contained and restore the AGENTS, Runbook, Core, and evidence placement boundary | `locally_verified` |
+| [`ENG-003`](ENG-003-collaborative-source-of-truth-and-git-gates.md) | Establish human-request authority checks, canonical writeback, and multi-computer Git synchronization gates | `locally_verified` |
 
 ## Lean implementation rules
 

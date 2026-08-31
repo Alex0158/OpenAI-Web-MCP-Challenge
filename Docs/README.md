@@ -41,7 +41,7 @@ closure. Neither Decisions nor Development replaces the owning Core truth.
 | [`Core/07-p0-technical-validation-mvp.md`](Core/07-p0-technical-validation-mvp.md) | CANONICAL | Frozen P0 implementation contract and dated verdict; not the current production architecture |
 | [`Core/08-competition-thesis-and-positioning.md`](Core/08-competition-thesis-and-positioning.md) | CANONICAL | Competition-facing thesis, value proposition, differentiation, judging posture, and claim hierarchy; underlying status remains in Core/00 and Core/05 |
 | [`Mechanisms/README.md`](Mechanisms/README.md) | CANONICAL MODULE INDEX | Stable Re-entry lifecycle and authority contracts, with code, test, and evidence routing |
-| [`Decisions/README.md`](Decisions/README.md) | DECISION INDEX | Accepted, superseded, and partially superseded durable choices through ADR-0017 |
+| [`Decisions/README.md`](Decisions/README.md) | DECISION INDEX | Accepted, superseded, and partially superseded durable choices through ADR-0018 |
 | [`Tasks/README.md`](Tasks/README.md) | CANONICAL TASK INDEX | Unified lifecycle for pending work, problems, defects, investigations, risks, decisions, and verification gaps |
 | [`Development/README.md`](Development/README.md) | CANONICAL | Program, implementation, verification, runbook, and closure records |
 | [`Engineering/README.md`](Engineering/README.md) | CANONICAL ENGINEERING INDEX | Project-wide development, testing, verification, and execution controls |
@@ -52,8 +52,9 @@ The [decision register](Decisions/README.md) owns the complete decision index. A
 superseded by ADR-0002; ADR-0004 is partially superseded by ADR-0006 and ADR-0007; ADR-0006 through
 ADR-0017 control the current Re-entry Core source, topology, protocol, authority, delivery,
 transport, deterministic Agent boundary, conformance, Grant control, private binding resolution,
-modular documentation ownership, unified task lifecycle, and engineering governance baseline. The
-index records decision status, not implementation or runtime proof.
+modular documentation ownership, unified task lifecycle, and engineering governance baseline.
+ADR-0018 controls collaborator authority checks, canonical writeback, and Git synchronization gates.
+The index records decision status, not implementation or runtime proof.
 
 ## 3. Tasks, development, and closure
 
@@ -134,7 +135,9 @@ decision.
 1. Put canonical project behavior and status in `Core/`, not in the frozen dossier.
 2. Use Core/00 and Core/05 for current implementation and evidence, Core/01–04 and Core/06 for target behavior and architecture, `Mechanisms/` for stable module contracts, `Engineering/` for project-wide development controls, and Core/07 only for the frozen P0 contract and its dated outcome.
 3. Update `00-current-status.md` whenever phase, evidence, deployment, or submission truth changes.
-4. Record a new ADR before changing the core mechanism, selecting or changing the host app, changing the authority model, or moving the MVP boundary.
+4. Record a new ADR before changing the core mechanism, selecting or changing the host app, changing
+   the authority model, moving the MVP boundary, or changing a project-wide engineering or
+   collaboration control.
 5. Label statements as **VERIFIED**, **WORKING ASSUMPTION**, **INFERENCE**, **TARGET**, or **UNKNOWN** where status could affect a decision.
 6. Do not duplicate volatile challenge facts across Core docs; link to the governing source.
 7. Keep the dossier snapshots byte-identical. Import a new version as a new file rather than overwriting version 1.1.

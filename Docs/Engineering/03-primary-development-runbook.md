@@ -64,6 +64,26 @@ Begin implementation when no unresolved contradiction changes the target or auth
 unmitigated P0/P1 defect exists inside the increment, and verification and remediation are feasible.
 Do not repeat an unchanged Challenge merely to produce another record.
 
+### 4.1 Human-request and architecture-change gate
+
+Treat every human request, suggestion, or next-step target as intent to evaluate, not as permission
+to override accepted authority. Before editing, compare it with the current Core or Mechanism
+contract, governing ADR, active Task, and applicable Engineering controls. Classify the request as:
+
+1. **No authority conflict:** an implementation detail that stays within the accepted contracts. Proceed
+   under the existing decision and record the affected surface.
+2. **Non-authoritative proposal:** an additive idea or alternative that does not yet change accepted
+   truth. Keep it in the Task or Research layer; do not rewrite Core, Mechanisms, or an accepted ADR.
+3. **Material conflict or change:** anything that changes accepted architecture, mechanism, authority,
+   security, data lifecycle, process topology, compatibility, deployment, or a cross-layer contract.
+
+For the third category, stop implementation at the decision boundary and show the human decision-maker
+the current rule, proposed difference, affected surfaces, impact and failure modes, viable alternatives,
+and the evidence required to choose. Obtain an explicit decision before changing authority or code. If
+accepted, update or create the ADR and reconcile the owning Core or Mechanism and Task before or
+alongside implementation. Reconfirm only when the material scope or impact changes; do not repeatedly
+ask for unchanged approved work. An unaccepted proposal remains non-authoritative.
+
 ## 5. Coherent implementation loop
 
 ```text
@@ -112,6 +132,12 @@ Before closure:
 - update the Development record with exact commands, evidence, closure label, and residual risk; and
 - keep command logs and chronology out of Core, Engineering, and flagship documents.
 
+At both increment start and pre-commit review, ask whether the work changed product or mechanism
+intent, authority, contract, status, or claims. When it did, update every affected owning Core or
+Mechanism document and the governing ADR before closure; when it did not, state why no canonical
+update was needed in the Development or evidence record. A code change is not closed while its
+authoritative documentation is stale.
+
 When contributor guidance changes, apply the
 [instruction-placement contract](README.md#3-contributor-instruction-placement): keep only
 repository-wide routing and non-negotiables in `AGENTS.md`, put repeatable procedure in this
@@ -124,15 +150,39 @@ without relying on a parent workspace file.
 Follow the repository `AGENTS.md` collaboration gate. The primary session alone owns final staging,
 commit, push, and remote claims.
 
-1. establish the current branch, remote movement, and dirty ownership;
-2. stage exact task-owned paths or exact hunks only;
-3. review the complete staged diff and confirm no secret, mutable state, generated noise, frozen
+1. At session start or resume, fetch the intended remote with pruning and inspect branch, upstream,
+   dirty ownership, and divergence before editing. If the remote is ahead on a clean tree, integrate
+   it deliberately before editing; if the tree is dirty or diverged, preserve the work and resolve
+   ownership before proceeding.
+2. Stage exact task-owned paths or exact hunks only.
+3. Review the complete staged diff and confirm no secret, mutable state, generated noise, frozen
    reference, or owner-held file entered it;
-4. commit one coherent locally verified outcome;
-5. fetch again and integrate remote movement deliberately without blind pull or force push;
-6. rerun invalidated checks after integration;
-7. push only the intended branch; and
-8. prove local `HEAD` equals the remote branch SHA.
+4. Commit one coherent locally verified outcome promptly after the increment closes, and before
+   handoff or going idle. Do not create a commit for every save; the unit is a bounded coherent
+   increment.
+5. Fetch again before push and inspect any remote movement. On a clean tree, integrate deliberately
+   with an explicit fast-forward or reviewed merge/rebase; `git pull` is acceptable only when its
+   mode and result are intentional, never as a blind refresh.
+6. Rerun invalidated checks after integration.
+7. Push only the intended branch.
+8. Prove local `HEAD` equals the remote branch SHA and report any intentionally uncommitted work.
+
+If the remote is ahead or diverged, pause delivery, inspect the competing commits and affected paths,
+and resolve ownership before integration. Never force-push, rewrite shared history, or discard a
+collaborator's work to make the branch appear clean.
+
+For the shared branch, the minimum start and pre-push readback is:
+
+```sh
+git fetch origin --prune
+git status --short --branch
+git branch -vv
+git rev-list --left-right --count HEAD...@{upstream}
+```
+
+When the readback shows only a remote-ahead fast-forward and the tree is clean, an explicit
+`git pull --ff-only <remote> <branch>` is acceptable. Otherwise inspect the competing commits and
+use a reviewed merge or rebase; never use pull to conceal an unknown result.
 
 Use the following readback before commit and again where remote integration can invalidate it:
 
