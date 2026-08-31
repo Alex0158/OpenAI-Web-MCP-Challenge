@@ -103,7 +103,7 @@ genuine WebMCP, deployment, or judge reproducibility.
 | [`RECORE-006`](RECORE-006-private-managed-context-binding.md) | Implement private Grant-to-context resolution without exposing a raw platform locator or selecting an Agent runtime | `locally_verified` |
 | [`DOCS-001`](DOCS-001-documentation-architecture-reconciliation.md) | Reconcile repository entry points, documentation routing, Core completion wording, and future source placement without changing product behavior | `locally_verified` |
 | [`DOCS-002`](DOCS-002-modular-authority-and-core-denoising.md) | Establish mechanism-module ownership, reduce mixed-role Core content, and remove the duplicate Knowledge routing layer | `locally_verified` |
-| [`DOCS-003`](DOCS-003-unified-task-authority.md) | Establish one unified task lifecycle for pending work, problems, defects, investigations, and decision needs | `in_progress` |
+| [`DOCS-003`](DOCS-003-unified-task-authority.md) | Establish one unified task lifecycle for pending work, problems, defects, investigations, and decision needs | `locally_verified` |
 
 ## Lean implementation rules
 

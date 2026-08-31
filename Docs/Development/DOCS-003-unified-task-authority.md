@@ -1,6 +1,6 @@
 # DOCS-003: Unified Task Authority
 
-**Status:** `in_progress`  
+**Status:** `locally_verified`  
 **Opened:** 2026-08-31  
 **Owner:** Primary Codex session under user authorization  
 **Closure target:** `locally_verified` documentation-only delivery
@@ -84,4 +84,14 @@ or selected-app development proves a separate issue system is necessary.
 - The staged scope contains ten documentation and index files. It excludes runtime source, frozen
   MVP files, Research, Scenarios, References, Experiments, and preserved owner work.
 
-Commit, remote delivery, and final status remain pending.
+### Delivery closure
+
+- Implementation commit: `0b4bbd677b4376be54b976e570d97d22b2846b1d`.
+- Branch: `codex/re-entry-core-foundation`.
+- The implementation commit was pushed and matched the remote branch before this closure update.
+- This record is complete only when the remote branch resolves to the commit containing this final
+  closure state; that readback is performed by the delivering session after push.
+
+DOCS-003 is closed at `locally_verified`. It establishes task governance and routing only; it does
+not select the Host application, close TASK-001, alter runtime behavior, or advance deployment or
+submission truth.
