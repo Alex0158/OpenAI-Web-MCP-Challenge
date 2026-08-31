@@ -1,7 +1,7 @@
 # Re-entry Core — Trust, Security, and Reliability
 
 **Role:** CANONICAL authority, security, and failure semantics  
-**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through accepted ADR-0013; the v0.1 protocol, Host SDK, bounded Receiver authority and Grant control, Connector delivery, HTTP adapter, outbound Connector client, deterministic Agent Adapter, non-production conformance profile, and exact RECORE-005 test-process fault matrix are locally verified. Private context binding, control-session and HTTP security, arbitrary crash or power-loss safety, production process ownership, consent and pairing, real Agent activation, real Host-effect verification, and distributed topology remain unverified.  
+**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through accepted ADR-0014; the v0.1 protocol, Host SDK, bounded Receiver authority and Grant control, Connector delivery, HTTP adapter, outbound Connector client, deterministic Agent Adapter, private binding-resolution seam, non-production conformance profile, and exact RECORE-005 test-process fault matrix are locally verified. Production binding capture and custody, control-session and HTTP security, arbitrary crash or power-loss safety, production process ownership, consent and pairing, real Agent activation, real Host-effect verification, and distributed topology remain unverified.  
 **Last updated:** 2026-08-31
 
 ## 1. Security objective
@@ -37,6 +37,7 @@ trusted issuer origin
 + unused event ID and valid event sequence
 + unexpired run budget
 + eligible paired Connector and valid delivery lease
++ live exact adapter binding scoped to the Receiver Grant and activation lease
 + matching canonical origin and workflow
 + authenticated user with current host-app authorization
 + current business state permits the requested operation
@@ -59,7 +60,9 @@ Every Continuation Grant binds:
 - maximum total and concurrent runs;
 - revocation and current status;
 - opaque host-facing binding;
-- separately stored Connector and managed Agent-context bindings.
+- delivery-target eligibility; and
+- one Receiver-issued `grant_id` relationship to an adapter-authority-owned private context
+  binding. The Cloud Receiver does not store or receive the raw platform locator.
 
 The permission surface is controlled by the Cloud Receiver or Agent host, not solely by page
 content. Website wording is untrusted input and may not hide scope or consequence.
@@ -277,7 +280,16 @@ Re-entry Core C4 independently verifies the ADR-0011 Agent Adapter contract with
 no-platform adapter. One live lease derives one immutable activation without Connector, lease,
 effect, or raw context credentials. Unsupported, rejected, timeout, exception, malformed-result,
 and unknown-outcome paths return bounded observations and never retry or acknowledge. This does
-not prove a private context binding, real Agent activation, Browser, WebMCP, or Host effect.
+not by itself prove private binding resolution, real Agent activation, Browser, WebMCP, or Host
+effect.
+
+RECORE-006 independently verifies the ADR-0014 private binding-resolution seam. Only the private
+receipt `grant_id` and configured adapter ID enter one immutable lookup. One exact live binding
+that covers the lease reaches one selected driver; missing binding is typed unsupported, and
+expired, lease-shorter, late, malformed, mismatched, exception, timeout, or invalid-result paths
+cannot disclose the private reference or invoke a fallback. This proves a deterministic consumer
+boundary only, not binding capture, production persistence or encryption, retirement propagation,
+credential custody, or a real managed-context activation.
 
 Re-entry Core C6 locally verifies the ADR-0012 source-repository profile with distinct Host,
 Receiver, and Connector children. Only the Receiver loads SQLite; event, claim, and acknowledgement

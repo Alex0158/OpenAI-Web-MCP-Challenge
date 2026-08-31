@@ -7,9 +7,9 @@
 **Closed:** 2026-08-31  
 **Branch:** `codex/re-entry-core-foundation`  
 **Baseline:** `9b55410ae645b88dc7c9cb3f6ea41907576bf01a`  
-**Follow-up:** RECORE-004 closed the Grant-control gap at `locally_verified`, and RECORE-005
-closed the bounded fault matrix at `separate_process_verified`; private managed-context binding
-and final exact Program closure remain open.
+**Follow-up:** RECORE-004 closed the Grant-control gap at `locally_verified`, RECORE-005 closed the
+bounded fault matrix at `separate_process_verified`, and RECORE-006 closed the private
+binding-resolution gap at `locally_verified`; only the terminal ledger reconciliation remains.
 
 ## Objective
 
@@ -29,7 +29,7 @@ This audit changes no runtime behavior or Definition of Done. It uses four evide
 
 - `REENTRY-CORE-PROGRAM.md` owns the Definition of Done.
 - Core/00 and Core/05 own current status and evidence claims.
-- ADR-0006 through ADR-0013 own the accepted source, authority, transport, adapter, and
+- ADR-0006 through ADR-0014 own the accepted source, authority, transport, adapter, and
   conformance boundaries.
 - RECORE-001, RECORE-002, and RECORE-004 are closed implementation records, not authority for
   unimplemented behavior.
@@ -112,6 +112,14 @@ implementation commit `e5571fa8cb56ff129e787fb725a81d5ee94bfae5` and the exact f
 test-process matrix. Item 2 is now the only application-neutral implementation blocker before
 the final exact closure audit.
 
+RECORE-006 has since verified item 2 through implementation commit
+`41fa3ef47b6b43c1234962419f08165f52d7b004`. Its deterministic adapter authority resolves only the
+private receipt `grant_id` plus configured adapter ID, keeps the raw locator inside the
+authority-to-driver boundary, and adds no runtime dependency, Receiver route, schema, Connector
+API, platform SDK, or fallback. All three implementation gaps identified by this audit are now
+closed at their stated evidence levels; the Definition of Done ledger requires one terminal
+current-state reconciliation before Program closure.
+
 ## Decision-gated non-blockers
 
 The following remain real risks but are not permission to expand the application-neutral Core:
@@ -143,5 +151,6 @@ must not be relabelled as proof of those surfaces.
 Grant inspection and revocation without bundling private context binding, production credential
 revocation, new HTTP administration, or process-fault scaffolding.
 
-**Current next entry condition:** define the smallest private managed-context binding lifecycle
-without choosing a concrete Agent wake path, production custody model, or final application.
+**Current next entry condition:** reconcile every Definition of Done row against RECORE-004 through
+RECORE-006, record exact final source, verification, package, commit, remote, and residual-risk
+state, and close the application-neutral Program only if no material contradiction remains.

@@ -98,8 +98,11 @@ becoming the host application's second embedded AI.
 ### Cloud Receiver and Receiver Core
 
 The Cloud Receiver hosts the single Receiver Core authority that stores continuation Grants,
-private bindings, and authenticated pending deliveries. It validates limits and offers bounded
-delivery to an eligible paired Connector without inheriting Host business authority.
+opaque Host bindings, and authenticated pending deliveries. The Receiver-issued private
+`grant_id` anchors the authority relationship to one managed context, while the selected adapter
+authority retains any raw platform locator outside the Host and Cloud Receiver. The Receiver
+validates limits and offers bounded delivery to an eligible paired Connector without inheriting
+Host business authority.
 
 ### Deployment boundary
 

@@ -1,7 +1,7 @@
 # Re-entry Core — System Design
 
 **Role:** CANONICAL domain-neutral architecture and contracts  
-**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 through ADR-0013 fix the locally verified protocol, authority, delivery, transport, deterministic Agent boundary, conformance profile, and Receiver Grant-control contracts. RECORE-005 adds exact source-repository separate-process fault evidence without changing those contracts or runtime architecture. Private context-binding lifecycle, production process shells, and the concrete Agent continuation adapter remain open. Current as-built truth is owned by Core/00 and Core/05.  
+**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 through ADR-0014 fix the locally verified protocol, authority, delivery, transport, deterministic Agent boundary, conformance profile, Receiver Grant-control, and private binding-resolution contracts. RECORE-005 adds exact source-repository separate-process fault evidence without changing runtime architecture. Production binding capture and custody, process shells, and the concrete Agent continuation adapter remain open. Current as-built truth is owned by Core/00 and Core/05.  
 **Last updated:** 2026-08-31
 
 ## 1. System objective
@@ -36,6 +36,8 @@ decision boundary.
     widen Receiver authority.
 16. An unsupported activation capability fails visibly and is never hidden by an undeclared
     fallback path.
+17. Receiver-issued Grant authority selects the binding lookup; only the configured adapter
+    authority receives the raw platform locator.
 
 ## 3. Separation of responsibilities
 
@@ -43,10 +45,10 @@ decision boundary.
 |---|---|---|
 | **Host application domain** | User roles, workflow states, artifact, business rules, permissions | Selected demo app |
 | **Page execution** | Human UI, current state, stage-derived Site Tools, mutation validation | Selected demo app |
-| **Receiver Core** | Manifest validation, Grant binding, event validation, durable delivery, leases, and acknowledgement | Re-entry Core |
+| **Receiver Core** | Manifest validation, Grant authority, opaque Host binding, event validation, durable delivery, leases, and acknowledgement | Re-entry Core |
 | **Cloud Receiver shell** | Authenticated ingress, hosted identity, Receiver Core lifecycle, and durable work availability | Re-entry Core deployment |
 | **Local Connector** | Paired-device identity, outbound retrieval, delivery claim, adapter dispatch, and acknowledgement | Re-entry Core device boundary |
-| **Agent continuation transport** | Managed-context activation, Browser access, canonical-page re-entry, and runtime evidence | Selected Agent adapter |
+| **Agent continuation transport** | Private Grant-to-context resolution, managed-context activation, Browser access, canonical-page re-entry, and runtime evidence | Selected Agent adapter |
 | **Agent runtime** | Managed context, Browser access, navigation, Site Tool invocation | Selected Agent adapter |
 | **Governance** | Consent, scope, expiry, revocation, human boundary, audit visibility | User, organization, Receiver, host app |
 
@@ -96,7 +98,8 @@ flowchart LR
 
 - owns Continuation Grant records;
 - authenticates same-subject inspection and atomically records an irreversible revocation boundary;
-- stores the mapping from opaque Host binding to a private Connector or managed-context binding;
+- maps the opaque Host binding to one private Grant and receipt without storing a raw Agent
+  platform locator;
 - derives a trusted typed Continuation Receipt only after Manifest validation and
   Receiver-owned consent, then persists it through a trusted adapter surface;
 - enforces expiry, revocation, run, cost-like, and concurrency limits;
@@ -125,7 +128,8 @@ outbox to a synthetic destination; it is not a production event broker.
 - establishes an authenticated outbound connection to the Cloud Receiver;
 - retrieves only deliveries assigned to its paired device identity;
 - claims one short-lived delivery lease before dispatch;
-- resolves a private per-Grant adapter binding without exposing it to the Host;
+- passes one validated credential-free activation to the configured adapter without supplying or
+  selecting its private binding;
 - delegates activation to a replaceable Agent Continuation Adapter;
 - acknowledges only after the required correlated outcome is observed; and
 - cannot issue Grants, reinterpret events, host public inbound control, or turn queue
@@ -146,9 +150,11 @@ An abstraction over the selected Agent platform. Under the current planning prem
 ADR-0011 fixes the platform-neutral dispatch boundary: the Connector derives one immutable typed
 activation from a live lease, omits Connector and lease credentials, invokes one adapter once,
 and receives only a bounded `accepted`, `unsupported`, `rejected`, or `outcome_unknown` result.
-No result is Host-effect evidence or permission to acknowledge delivery. The concrete adapter,
-private context-binding lifecycle, and platform evidence still require a route-specific ADR after
-runtime validation.
+No result is Host-effect evidence or permission to acknowledge delivery. ADR-0014 adds one
+adapter-local resolution seam: only the private receipt `grant_id` and configured adapter ID enter
+one binding-authority lookup; only the selected driver receives the bounded private reference.
+The concrete adapter, production binding capture and custody, and platform evidence still require
+a route-specific ADR after runtime validation.
 
 ### Integration contract boundaries and deployment profiles
 
@@ -159,7 +165,7 @@ documented separately.
 |---|---|---|---|
 | **Website Backend -> Receiver** | This project defines the Receiver contract; each host backend is an event issuer | Typed event schema, issuer authentication, Grant scope, state-version checks, and idempotency | Can another backend conform without bespoke Receiver control logic? |
 | **Cloud Receiver -> Local Connector** | Re-entry Core owns the delivery contract; a paired Connector consumes it | Device identity, outbound retrieval, lease, dispatch result, effect-backed acknowledgement, and revocation | Can accepted work survive offline and process-failure boundaries without device-control exposure? |
-| **Local Connector -> Agent runtime** | The selected Agent Continuation Adapter implements the platform boundary | Context capture, receipt persistence, bounded activation, Browser access, canonical-page re-entry, and Site Tool invocation | Can the chosen runtime provide these capabilities through a supported route? |
+| **Local Connector -> Agent runtime** | The selected Agent Continuation Adapter implements the platform boundary | Private Grant-to-context resolution, context capture, receipt persistence, bounded activation, Browser access, canonical-page re-entry, and Site Tool invocation | Can the chosen runtime provide these capabilities through a supported route? |
 
 ADR-0007 freezes the first Website Backend-to-Receiver kernel. The Host receives only an opaque
 `binding_id`; its canonical event body carries no Receiver `grant_id`, arbitrary prompt, goal,
@@ -223,6 +229,15 @@ event transaction commits. It changes no runtime architecture, route, schema, de
 package surface and does not imply arbitrary-crash safety, production process ownership, private
 context binding, or Agent activation.
 
+ADR-0014 fixes the private managed-context consumer boundary without choosing storage or an Agent
+platform. One configured adapter authority resolves exactly the Receiver-issued receipt `grant_id`
+and configured adapter ID. A live exact binding must cover the activation lease before one driver
+call; missing binding is typed unsupported, while expired, malformed, mismatched, late, failed, or
+timed-out resolution reaches no fallback. The raw binding reference exists only between that
+authority and driver and is absent from Host, Cloud Receiver, delivery, activation, result, error,
+and public evidence surfaces. RECORE-006 verifies this contract locally; production capture,
+persistence, encryption, retirement, and real activation remain outside the evidence.
+
 The Receiver's event algorithm is domain-neutral even when a deterministic fixture pins one
 workflow, event type, issuer, or development key. Generalizing the protocol means adding
 configuration, issuer onboarding, key management, and lifecycle controls; it does not mean
@@ -264,6 +279,10 @@ for a conforming backend to send a Receiver event.
   explicit result classifications, one bounded adapter call, and no retry or effect inference.
   The fixture has no Agent, Browser, Host, or WebMCP capability, and no concrete platform is
   selected.
+- ADR-0014 code and deterministic tests locally verify exact private Grant-to-binding lookup,
+  configured adapter scope, binding and lease lifetime fencing, one driver call, late-resolution
+  rejection, and raw-reference non-disclosure. The injected authority and driver prove no
+  production custody or real context activation.
 - ADR-0012 direct runs and aggregate tests locally verify a non-production conformance/development
   profile outside the test tree. It shares role logic with the forced-restart test, runs distinct
   Host, Receiver, and Connector children, dispatches one deterministic Agent activation, rejects
@@ -314,10 +333,10 @@ Cloud Receiver and Receiver Core
     | accepted delivery bound to paired identity
     v
 Outbound Local Connector
-    | leased delivery and private adapter binding
+    | credential-free typed activation
     v
 Agent Continuation Adapter
-    | managed context binding
+    | private binding resolution and managed-context activation
     v
 Agent platform and browser
     | authenticated canonical page
@@ -439,8 +458,9 @@ or guarantee which tools will exist after re-entry.
 }
 ~~~
 
-The Receiver stores the platform-specific context binding separately from the portal-facing
-grant handle.
+The Receiver stores the Grant and portal-facing opaque binding, but not the raw platform locator.
+The configured adapter authority stores or resolves that private locator under the Receiver-issued
+`grant_id`; the exact production custody mechanism is selected-runtime work.
 
 ### 8.3 Trusted Continuation Receipt
 

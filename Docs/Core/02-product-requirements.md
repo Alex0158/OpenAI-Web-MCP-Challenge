@@ -130,10 +130,13 @@ unrelated Agent work.
 
 **Acceptance criteria:**
 
-- Receiver acceptance resolves one active Grant and one managed Agent-context binding, then
-  records one pending delivery for that binding.
+- Receiver acceptance resolves one active Grant and records one pending delivery carrying its
+  private receipt. At activation, the selected adapter authority resolves that receipt's
+  `grant_id` to one live adapter-private context binding.
 - The host app receives only an opaque workflow binding and never receives a Receiver Grant ID,
   Connector or Agent credentials, or a raw platform thread identifier.
+- The event, delivery target, Local Connector caller, and activation cannot select or carry the
+  raw context locator.
 - Run count and concurrency limits are reserved atomically.
 - An activation or resume failure produces a visible retry-safe status without broadening
   application authority.

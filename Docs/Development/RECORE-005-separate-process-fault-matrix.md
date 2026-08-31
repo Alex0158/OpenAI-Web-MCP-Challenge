@@ -166,5 +166,5 @@ prove arbitrary crash placement, power-loss durability, production supervision, 
 Receiver ownership, distributed coordination, real identity or Host-effect verification, private
 context binding, Agent activation, deployment, or judge portability.
 
-**Next entry condition:** return to the private managed-context binding gap and final exact Program
-audit. Do not expand the fault harness.
+**Next entry condition (satisfied):** RECORE-006 closed the private managed-context binding gap.
+Run the final exact Program audit. Do not expand the fault harness.

@@ -1,11 +1,13 @@
 # RECORE-006: Private Managed-Context Binding Resolution
 
-**Role:** ACTIVE IMPLEMENTATION RECORD  
+**Role:** CLOSED IMPLEMENTATION RECORD  
 **Risk profile:** High — private target selection and adapter authority  
-**Status:** `specified`  
+**Status:** `locally_verified`  
 **Opened:** 2026-08-31  
+**Closed:** 2026-08-31  
 **Branch:** `codex/re-entry-core-foundation`  
-**Baseline:** `1b4f4b204f01d03dddb51a478dac668474e93904`
+**Baseline:** `1b4f4b204f01d03dddb51a478dac668474e93904`  
+**Implementation commit:** `41fa3ef47b6b43c1234962419f08165f52d7b004`
 
 ## Objective
 
@@ -54,6 +56,15 @@ No Receiver route, schema, persistence method, Connector API, platform SDK, or f
 If a falsifier occurs, preserve the smallest failing evidence and reopen ADR-0014. Do not hide the
 gap through a synthetic global binding, automatic retry, or generic adapter framework.
 
+### Result
+
+The hypothesis held. One new zero-dependency module and one explicit subpath close the Core
+consumer seam without changing a Receiver route, schema, Connector client, conformance output, or
+platform contract. Review found one lease-boundary race in the first implementation: an authority
+lookup could complete after dispatch timeout and still continue inside the unresolved adapter
+promise. The final implementation rechecks the adapter clock after lookup and before any driver
+call. A deterministic boundary test proves that late resolution reaches no driver.
+
 ## Minimal implementation boundary
 
 - Add `src/managed-context-adapter.mjs` with the exact binding record validator and
@@ -92,6 +103,39 @@ gap through a synthetic global binding, automatic retry, or generic adapter fram
 - MVP1, MVP2, References, research, scenarios, final-app work, deployment, and submission;
 - user-owned dirty files outside the exact task paths.
 
-**Next entry condition:** implement only after ADR-0014 and this record are committed and remotely
-verified. On closure, run the final exact Program completion audit rather than widening private
-binding into a platform implementation.
+## Verification record
+
+**Closure:** `locally_verified` on 2026-08-31.
+
+- Eight managed-context tests and the combined fourteen-test Agent/managed-context focused suite
+  pass on Node 24.20.0 and Node 26.5.0.
+- The complete suite passes 79 of 79 tests on both runtimes. The protocol suite separately passes
+  11 of 11 tests on both, and the unchanged conformance runner emits its exact passing bounded
+  result on both.
+- Focused evidence covers exact factory and activation shapes, immutable Grant-only lookup, one
+  configured adapter, active, missing, expired, lease-shorter, late-resolution, mismatched,
+  malformed, accessor-bearing, authority exception, timeout, invalid-driver-result, one-call,
+  no-driver, and raw-reference non-disclosure paths.
+- Package self-import succeeds on both runtimes. Runtime dependencies remain zero.
+- `npm pack --dry-run --json` selects 16 files, 34,227 compressed bytes, and 180,301 unpacked
+  bytes. Relative to the RECORE-005 closure baseline, the exact change is one file, 1,625
+  compressed bytes, and 9,869 unpacked bytes; tests and development evidence remain excluded.
+- The unchanged Agent Adapter benchmark remains a bounded regression sample. Node 24.20.0 records
+  23.759 ms median process-plus-import startup, 127,432 activation derivations per second, and
+  60,512 accepted dispatches per second. Node 26.5.0 records 28.946 ms, 107,346, and 52,051
+  respectively. These are same-machine samples, not managed-context, Agent, or service latency.
+- Exact staging excluded MVP1, MVP2, references, research, scenarios, mutable runtime state, raw
+  locator evidence, and the user's unrelated dirty files. The implementation commit is pushed and
+  the local and remote branch both resolve to
+  `41fa3ef47b6b43c1234962419f08165f52d7b004`.
+
+## Residual boundary
+
+The authority and driver are deterministic injected ports. No production binding was captured,
+stored, encrypted, rotated, retired, or resumed. No real Agent, Browser, WebMCP, Host effect,
+Cloud Receiver process, Connector daemon, deployment, selected app, or judge path is proven. A
+selected runtime must decide and verify those surfaces without moving its raw locator into the
+Host, Cloud Receiver, event, activation, typed result, or public evidence.
+
+**Next entry condition:** run the final exact Program completion audit. Do not widen private
+binding resolution into a platform implementation before a selected-runtime decision.

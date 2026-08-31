@@ -128,6 +128,7 @@ administration surface, browser-session security, production identity, separate-
 distributed store, managed-context ownership, Agent wake, deployment, or selected-app behavior.
 
 **Follow-up:** RECORE-005 subsequently closed the bounded separate-process fault matrix without
-changing this increment's in-process claim. The next application-neutral entry is the minimum
-private managed-context binding lifecycle. Production control sessions and administration HTTP
-remain behind their own accepted runtime and security decision.
+changing this increment's in-process claim, and RECORE-006 closed the application-neutral private
+binding-resolution seam without adding a control surface. The terminal Program audit is next.
+Production control sessions and administration HTTP remain behind their own accepted runtime and
+security decision.
