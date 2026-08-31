@@ -117,6 +117,7 @@ or perform a destructive action.
 ## 5. Current non-terminal tasks
 
 - [TASK-001 — Select the Host application](TASK-001-select-host-application.md)
+- [TASK-003 — Productionize and deploy Cloud Receiver](TASK-003-productionize-and-deploy-cloud-receiver.md)
 
 Discover all task records with:
 
