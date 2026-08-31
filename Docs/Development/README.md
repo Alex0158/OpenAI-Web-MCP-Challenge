@@ -90,6 +90,7 @@ genuine WebMCP, deployment, or judge reproducibility.
 |---|---|---|
 | [`RECORE-001`](RECORE-001-foundation.md) | Build the Re-entry Core baseline through protocol, Host, Receiver authority, process seams, and deterministic conformance profile | `locally_verified` |
 | [`RECORE-002`](RECORE-002-quality-and-weight.md) | Measure bounded Receiver durability, source-profile startup, and package weight without changing runtime behavior | `locally_verified` |
+| [`RECORE-003`](RECORE-003-program-completion-audit.md) | Audit every Program completion gate and isolate the remaining application-neutral gaps from decision-gated runtime work | `locally_verified` |
 
 ## Lean implementation rules
 
