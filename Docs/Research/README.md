@@ -36,8 +36,9 @@ proof claims belong in `Docs/Core/00-current-status.md` and
 - [Research 17](17-mvp1-mvp2-comparative-integration-review.md): MVP1/MVP2 comparative integration review.
 - [Research 21](21-cloud-receiver-local-connector-candidate-topology.md): Cloud Receiver and outbound Local Connector precursor analysis.
 - [Research 22](22-mvp2-selective-integration-provenance.md): MVP2 selective-reuse provenance.
-- [Research 23](23-three-candidate-competition-app-selection-review.md): preserved original and
-  post-clarification comparison of the three application candidates; recommendation only.
+- [Research 23](23-three-candidate-competition-app-selection-review.md): historical preserved
+  comparison of the original three application candidates; its earlier ranking is superseded by
+  the current Sleepless Kingdom and Rental Marketplace Relay shortlist.
 
 ## Maintenance rules
 

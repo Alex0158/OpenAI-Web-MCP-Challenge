@@ -1,21 +1,32 @@
 # Candidate Scenario D — Greenlight Relay
 
-**Role:** EXECUTION-SAFE RESERVE — NOT SELECTED  
+**Role:** ELIMINATED CANDIDATE — PRESERVED REFERENCE  
 **Selected as the challenge demo app:** No  
 **Implementation status:** Concept only; not implemented or validated  
 **Primary pattern:** Conditional rights decision resumes the same creative release artifact  
 **Last updated:** 2026-08-31
 
-**Comparative research disposition:** Retain as the strongest execution-safe reserve, subject to a
-deterministic-baseline test and a genuine Agent-to-Browser/WebMCP re-entry test. The earlier
-[three-candidate app-selection review](../Research/23-three-candidate-competition-app-selection-review.md)
-still records Greenlight as lead; the latest scenario-level reassessment gives Opportunity the
-lead after clarifying its custom-review and causal cross-site design. Neither document selects the
-app without an accepted ADR.
+**Current disposition:** Eliminated from the active application shortlist by project direction on
+2026-08-31. Preserve this scenario and its evidence as historical reference; do not treat it as
+the current lead, reserve, or implementation target. This is not an accepted app-selection
+decision, and the application-neutral Re-entry Core is unchanged.
 
-## Comparative Research Update
+**Historical comparative research disposition:** Previously retained as the strongest
+execution-safe reserve, subject to a deterministic-baseline test and a genuine
+Agent-to-Browser/WebMCP re-entry test. The earlier
+[historical three-candidate app-selection review](../Research/23-three-candidate-competition-app-selection-review.md)
+records that historical ranking; its lead/reserve recommendations are superseded for current
+shortlist purposes.
 
-Greenlight remains viable only after a material repositioning: from a rights-aware matrix to
+## Historical analysis notice
+
+The sections below preserve the scenario's prior reasoning, product thesis, and implementation
+hypotheses for traceability. Their recommendations and score implications are historical and do
+not authorize implementation or selection.
+
+## Historical Comparative Research Update
+
+The historical Greenlight concept remained viable only after a material repositioning: from a rights-aware matrix to
 **Conditional Creative Release**. It was not recommended merely because its scope was smaller.
 Its real advantages are one persistent visual artifact, a naturally delayed consequential event,
 a legible human release boundary, a plausible professional buyer, and a sparse-event transport
@@ -41,15 +52,16 @@ profile.
 - **GREENLIGHT'S REMAINING EDGE:** one app can show a visually coherent before/after release pack
   with lower implementation and narration cost. Its buyer, operator, and consequence owner are
   also easier to name than in a general opportunity platform.
-- **RECOMMENDATION:** preserve one synthetic trailer, one conditional music decision, one
+- **HISTORICAL RECOMMENDATION:** preserve one synthetic trailer, one conditional music decision, one
   intervening campaign change, one replacement or narrowed release branch, five Site Tools, and
   one human publish boundary as the fallback build.
 
-Greenlight should retake the lead if Opportunity's custom-question fixture collapses into template
-work, its flight epilogue obscures the core proof, the independent-site authority boundary cannot be
-shown honestly, or a three-minute stranger test finds the two-act story incoherent. Greenlight
-should remain reserve if its own Agent output is functionally equivalent to the deterministic
-rights matrix or if judges consistently interpret it as autonomous legal advice.
+The historical analysis would have retaken the lead if Opportunity's custom-question fixture
+collapsed into template work, its flight epilogue obscured the core proof, the independent-site
+authority boundary could not be shown honestly, or a three-minute stranger test found the two-act
+story incoherent. It would have kept Greenlight as reserve if its own Agent output were
+functionally equivalent to the deterministic rights matrix or if judges consistently interpreted
+it as autonomous legal advice. Those conditions remain historical kill tests only.
 
 ### Why Greenlight is more than a small-scope choice
 
@@ -64,8 +76,8 @@ rights matrix or if judges consistently interpret it as autonomous legal advice.
 5. **Commercial legibility:** agencies, production teams, creative-operations systems, and rights
    platforms provide plausible beneficiaries, operators, and buyers.
 
-These strengths justify retaining Greenlight even when it is not the broadest or most ambitious
-concept.
+These strengths explained its historical reserve status even when it was not the broadest or most
+ambitious concept. They do not return it to the active shortlist.
 
 ### Protocol and claim boundary
 
@@ -864,7 +876,7 @@ No “Agent publish” tool should exist in the challenge build.
 - Show the event, grant, re-entry, tool delta, asset hash, changes, and boundary in one receipt.
 - Reset the fixture.
 
-## 21. Why It Should Win
+## 21. Historical case for selection (superseded)
 
 ### 21.1 The later event is intrinsic and consequential
 
@@ -1535,13 +1547,13 @@ claims:
 External pages were checked on 2026-08-31. Their inclusion does not imply endorsement of this
 candidate or confirm any product integration.
 
-## 43. Final Assessment
+## 43. Historical Final Assessment (superseded)
 
-Greenlight Relay — Conditional Creative Release is the strongest execution-safe reserve among the
-three current candidate ideas. A rights decision is an intrinsic later event. The same creative
-intent still matters, the live campaign may have changed, and the tool surface can transform
-visibly. The golden path can use one application, one page, one event, five tools, synthetic assets,
-and no production side effect.
+Greenlight Relay — Conditional Creative Release was the strongest execution-safe reserve in the
+historical three-candidate comparison. A rights decision is an intrinsic later event. The same
+creative intent still matters, the live campaign may have changed, and the tool surface can
+transform visibly. The golden path could use one application, one page, one event, five tools,
+synthetic assets, and no production side effect.
 
 Its strongest “Why It Should Win” argument is not that AI understands copyright or that the
 product computes a new rights matrix. Both claims are unsafe or competitively weak. The
@@ -1549,16 +1561,17 @@ winning argument is that WebMCP can turn an authorized external decision into a 
 context-aware continuation: the bound Agent returns to current web state, reconciles a changed
 campaign, stages a materially adapted release pack, and stops at the human release boundary.
 
-Opportunity now has the stronger lead thesis because its clarified custom-review fixture makes
-project context indispensable and its bounded arrival epilogue can prove cross-site composition.
-Greenlight retains four comparative advantages: the most coherent single-app experience, the most
-visual same-artifact diff, the clearest professional buyer, and the lowest narration and reset cost.
-Those are substantive advantages, not merely “smaller scope.”
+The historical comparison then gave Opportunity the stronger lead thesis because its clarified
+custom-review fixture made project context indispensable and its bounded arrival epilogue could
+prove cross-site composition. Greenlight retained four comparative advantages: the most coherent
+single-app experience, the most visual same-artifact diff, the clearest professional buyer, and the
+lowest narration and reset cost. Those were substantive advantages, not merely “smaller scope.”
 
-Selection should still depend on four hard validations: users must value the workflow, Agent
+The historical selection test depended on four hard validations: users must value the workflow, Agent
 judgment must outperform a deterministic matrix on the adaptation task, judges must not read the
 product as autonomous legal advice, and the continuation adapter must produce honest
-judge-reproducible evidence. Greenlight should immediately replace Opportunity if the latter's
-custom question is template-equivalent, its flight epilogue requires a bespoke integration, or its
-two-act story cannot pass a timed stranger-comprehension test. This document preserves the
-candidate in full detail. It does not select, implement, deploy, or validate the product.
+judge-reproducible evidence. The historical recommendation would have replaced Opportunity if its
+custom question were template-equivalent, its flight epilogue required a bespoke integration, or
+its two-act story could not pass a timed stranger-comprehension test. Greenlight is now eliminated
+from the active shortlist. This document preserves the candidate in full detail; it does not
+select, implement, deploy, or validate the product.

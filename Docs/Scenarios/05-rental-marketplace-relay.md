@@ -1,10 +1,14 @@
 # Candidate Scenario E — Rental Marketplace Relay
 
-**Role:** NEW CANDIDATE — NOT SELECTED  
+**Role:** ACTIVE SHORTLIST CANDIDATE — NOT SELECTED  
 **Selected as the challenge demo app:** No  
 **Implementation status:** Concept only; not implemented or validated  
 **Primary pattern:** Role-scoped bilateral continuation inside one marketplace  
 **Last updated:** 2026-08-31
+
+**Current disposition:** Remains in the active application shortlist alongside Sleepless Kingdom.
+It is not selected, implemented, or validated; TASK-001 and a future accepted ADR remain the
+selection authority.
 
 This is a fourth application candidate for comparison. It does not select the host application,
 change the Re-entry Core, or authorize implementation. The Core mechanism, protocol, authority
@@ -412,10 +416,11 @@ It should not include:
 This scenario is a supporting candidate only. It does not change the application-neutral Core,
 the accepted authority model, or the current Cloud Receiver/Local Connector topology.
 
-The next decision is whether this candidate should enter the same comparative app-selection
-scorecard as Opportunity, Sleepless Kingdom, and Greenlight. Selection would require a new accepted
-application ADR followed by domain-specific Core requirements, role/privacy rules, WebMCP tool
-contracts, a selected-app implementation record, and a genuine adapter/browser proof.
+The next decision is whether this candidate or Sleepless Kingdom should be selected through
+TASK-001. Both active candidates must enter the same comparative app-selection scorecard. Selection
+would require a new accepted application ADR followed by domain-specific Core requirements,
+role/privacy rules, WebMCP tool contracts, a selected-app implementation record, and a genuine
+adapter/browser proof.
 
 Until then, the recommended posture is:
 

@@ -1,25 +1,32 @@
-# Three-Candidate Competition App Selection Review
+# Historical Three-Candidate Competition App Selection Review
 
-**Role:** SUPPORTING comparative baseline and post-review app-selection recommendation  
-**Status:** Updated after candidate clarification; recommendation only, not an accepted app-selection decision  
-**Candidates:** Opportunity-to-Arrival Relay, Sleepless Kingdom, Greenlight Relay  
+**Role:** SUPPORTING historical comparative baseline and superseded app-selection recommendation  
+**Status:** Historical review; current shortlist disposition is recorded below and no app-selection ADR is accepted  
+**Historical candidates:** Opportunity-to-Arrival Relay, Sleepless Kingdom, Greenlight Relay  
+**Current active shortlist:** Sleepless Kingdom, Rental Marketplace Relay  
 **Evidence cutoff:** 2026-08-31  
 **Last updated:** 2026-08-31
 
-## Current post-review disposition
+## Current shortlist disposition
 
-**Opportunity-to-Arrival Relay is the current provisional scenario-level lead, subject to an
-accepted app-selection ADR and five immediate kill tests.** Greenlight Relay is the strongest
-execution-safe reserve. Sleepless Kingdom remains the creative wild card, not the primary
-challenge recommendation.
+Project direction on 2026-08-31 eliminates Opportunity-to-Arrival Relay and Greenlight Relay from
+the active application shortlist. Their scenario files and the analysis below remain preserved as
+historical references. The active shortlist is now **Sleepless Kingdom** and **Rental Marketplace
+Relay**; neither is selected, implemented, or validated.
 
-This update follows two design clarifications recorded in the Opportunity and Greenlight scenario
-files: the application core now requires a reviewer-authored custom question that cannot be known
-at enrollment, and the compact arrival epilogue is a causally connected cross-site interoperability
-proof rather than a second equal product. Those clarifications invalidate the original assumption
-that Opportunity was only a fixed staged form plus an unrelated flight feature.
+This disposition supersedes the post-clarification ranking recorded in this file. Rental Marketplace
+Relay is documented separately in [Scenario 05](../Scenarios/05-rental-marketplace-relay.md) and has
+not yet been scored in this historical three-candidate review.
 
-Opportunity keeps the lead only if all five gates pass:
+No application is selected in canonical project truth until TASK-001 closes through an accepted ADR.
+
+## Historical analysis notice
+
+The sections below preserve the earlier three-candidate research, evidence, scorecards, demo
+blueprints, and kill tests. Any lead, reserve, or promotion language inside those sections is
+historical and is not a current implementation or selection instruction.
+
+The historical Opportunity recommendation required all five gates to pass:
 
 1. the custom-question fixture is materially open-ended rather than template-equivalent;
 2. the project-aware Agent produces a better answer than a deterministic application baseline;
@@ -27,20 +34,20 @@ Opportunity keeps the lead only if all five gates pass:
 4. the cross-site handoff uses independent genuine Site Tools without transferring authority; and
 5. the continuation path is honest, repeatable, and visible to a clean evaluator.
 
-If any of the first three gates fails, Greenlight becomes the safer lead. No application is
-selected in canonical project truth until TASK-001 closes through an accepted ADR.
+If any of the first three gates failed, the historical analysis would have preferred Greenlight.
+That conditional ranking is superseded by the current two-candidate shortlist above.
 
-## Original pre-clarification decision baseline and analysis
+## Historical pre-clarification decision baseline and analysis
 
-**Recommend Greenlight Relay — Conditional Creative Release as the lead challenge app, subject
+**HISTORICAL RECOMMENDATION: Greenlight Relay — Conditional Creative Release as the lead challenge app, subject
 to an accepted app-selection ADR and two immediate kill tests.** Keep a narrowed,
 application-only Opportunity Relay as the reserve. Do not use Sleepless Kingdom as the primary
 entry for this challenge.
 
 Sections 4 through 13 preserve the pre-clarification Greenlight-led analysis, scorecards, demo
 blueprint, and implementation order. They remain useful as dated comparative evidence but do not
-control the current portfolio ranking. The current disposition above and the current recommendation
-statement at the end of this record control this research document.
+control the current portfolio ranking. The current shortlist disposition above and the current
+shortlist statement at the end of this record control this research document.
 
 This recommendation does not select an application in canonical project truth. The current
 selected demo app remains `None` until an ADR is accepted.
@@ -73,7 +80,7 @@ Why this candidate leads:
    better than the game.** Events are sparse and tolerate minutes rather than seconds, although
    the Connector-to-Agent-to-Browser/WebMCP join remains unproven and must be tested first.
 
-The recommendation is conditional. Greenlight loses its lead if its resumed work is only a
+The historical recommendation was conditional. Greenlight would have lost its lead if its resumed work were only a
 deterministic eligibility matrix, if a clean evaluator cannot observe genuine page-bound
 WebMCP re-entry, or if the product cannot demonstrate a changed creative decision that uses
 the original project context.
@@ -265,7 +272,7 @@ the Connector-to-Agent-to-Browser/WebMCP join is the first topology kill test.
 
 | Candidate | Strongest real value | Defensible novelty | Main fatal risk | Recommended disposition |
 |---|---|---|---|---|
-| Greenlight Relay — Conditional Creative Release | Prevent post-clearance campaign reconstruction and avoid staging ineligible variants | A later authoritative decision resumes the same project-bound Agent into current creative state, where it adapts the release plan and stops at human publish | If the Agent only renders a deterministic rights matrix, WebMCP and Agent value collapse | **Lead recommendation; proceed to two kill tests and an app-selection ADR** |
+| Greenlight Relay — Conditional Creative Release | Prevent post-clearance campaign reconstruction and avoid staging ineligible variants | A later authoritative decision resumes the same project-bound Agent into current creative state, where it adapts the release plan and stops at human publish | If the Agent only renders a deterministic rights matrix, WebMCP and Agent value collapse | **Historical lead recommendation; proceed to two kill tests and an app-selection ADR** |
 | Opportunity Relay — Application Continuation | Reduce repeated context recovery across application rounds | The portal resumes the Agent that already understands the evolving underlying project | Existing portals already manage rounds and tasks; the two-app flight story dilutes execution and novelty | **Reserve; retain only the application-stage flow** |
 | Sleepless Kingdom | Let players delegate bounded decisions in a persistent world | Governed temporal re-entry as a first-party game mechanic | Deterministic bot equivalence, direct game prior art, seconds-level latency, fairness, and multi-user demo fragility | **Defer; do not use as the primary entry** |
 
@@ -991,7 +998,7 @@ or selected until current evidence supports those statements.
 External sources were inspected on 2026-08-31. Vendor pages establish existing capabilities
 and competitive substitutes, not independent performance validation.
 
-## Original recommendation statement
+## Historical original recommendation statement
 
 Advance **Greenlight Relay — Conditional Creative Release** to a short app-selection ADR after
 Gates A and B. In parallel with the ADR, run the bounded Connector-to-Agent-to-Browser/WebMCP
@@ -1004,13 +1011,13 @@ the right Agent to the right live page at the right later moment—both visible 
 leaving enough execution margin to submit a coherent product rather than an ambitious proof
 assembly.
 
-## Current recommendation statement
+## Current shortlist statement
 
-Advance **Opportunity-to-Arrival Relay** to TASK-001's app-selection ADR only after its
-custom-question, Agent-versus-deterministic-baseline, timed two-act comprehension, and independent
-cross-site Site Tool gates pass. The judged core is application continuation; the arrival epilogue
-is optional and must be removable without weakening that proof. Preserve **Greenlight Relay** as
-the immediate execution-safe reserve and **Sleepless Kingdom** as a creative wild card.
+The active shortlist is **Sleepless Kingdom** and **Rental Marketplace Relay**. Opportunity-to-Arrival
+Relay and Greenlight Relay are eliminated from current selection work but remain preserved in this
+historical review and their scenario files. This record does not yet compare Rental Marketplace
+Relay against Sleepless Kingdom or select an application; TASK-001 and a future accepted
+app-selection ADR remain controlling.
 
-This ranking remains supporting research. It does not select, implement, deploy, or validate the
-Host application, continuation adapter, or challenge entry.
+This shortlist status remains supporting research. It does not select, implement, deploy, or
+validate the Host application, continuation adapter, or challenge entry.

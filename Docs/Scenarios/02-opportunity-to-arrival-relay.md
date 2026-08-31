@@ -1,20 +1,29 @@
 # Candidate Scenario B — Opportunity-to-Arrival Relay
 
-**Role:** CURRENT REASSESSMENT LEAD — NOT SELECTED  
+**Role:** ELIMINATED CANDIDATE — PRESERVED REFERENCE  
 **Selected as the challenge demo app:** No  
 **Implementation status:** Concept only; not implemented or validated  
 **Primary pattern:** Project-aware application continuation plus a bounded cross-site arrival relay  
 **Last updated:** 2026-08-31
 
-**Comparative research disposition:** Reassessed from reserve to the current scenario-level lead
-after clarifying that later rounds may contain reviewer-authored custom questions and that travel
-is a causally connected interoperability proof, not an unrelated feature. This is not an accepted
-app-selection decision. The earlier ranking in the
-[three-candidate app-selection review](../Research/23-three-candidate-competition-app-selection-review.md)
-and scenario index now preserve both the original baseline and the current provisional ranking;
-an accepted ADR is still required to select the application.
+**Current disposition:** Eliminated from the active application shortlist by project direction on
+2026-08-31. Preserve this scenario and its evidence as historical reference; do not treat it as
+the current lead, reserve, or implementation target. This is not an accepted app-selection
+decision, and the application-neutral Re-entry Core is unchanged.
 
-## Comparative Research Update
+**Historical comparative research disposition:** Reassessed from reserve to a provisional lead
+after clarifying that later rounds may contain reviewer-authored custom questions and that travel
+is a causally connected interoperability proof, not an unrelated feature. The earlier ranking in the
+[historical three-candidate app-selection review](../Research/23-three-candidate-competition-app-selection-review.md)
+and scenario index preserve that dated analysis; it is superseded for current shortlist purposes.
+
+## Historical analysis notice
+
+The sections below preserve the scenario's prior reasoning, product thesis, and implementation
+hypotheses for traceability. Their recommendations and score implications are historical and do
+not authorize implementation or selection.
+
+## Historical Comparative Research Update
 
 The application-side problem is real. The earlier comparative review also relied on two
 assumptions that the clarified concept does not require: that later-round questions are fixed
@@ -43,7 +52,7 @@ materially changes the candidate's competitive position.
 - **VERIFIED novelty pressure:** Chrome's official WebMCP workflow guide already uses flight
   booking as a worked example. The challenge claim must therefore be the causal, authority-safe
   relay from application outcome to an independent site, never merely “the Agent books a flight.”
-- **RECOMMENDATION:** make one custom review question the mandatory judged core. Retain a compact
+- **HISTORICAL RECOMMENDATION:** make one custom review question the mandatory judged core. Retain a compact
   acceptance-to-flight epilogue only when it uses an independent Site Tool surface, transfers
   minimal signed trip facts, preserves site-specific authority, and does not endanger the complete
   application proof.
@@ -1463,13 +1472,13 @@ These sources support the problem and substitute analysis, not product validatio
 External sources were checked on 2026-08-31. Vendor documentation establishes existing
 capabilities, not independent performance or demand evidence.
 
-## 42. Final Assessment
+## 42. Historical Final Assessment (superseded)
 
-The clarified Opportunity-to-Arrival Relay is the current scenario-level lead recommendation,
-subject to portfolio reconciliation and an app-selection ADR. It uses the original project context
-more directly than the other candidates: a reviewer can ask a new, submission-specific question,
-and the Agent must reconcile the live request with prior claims, current source, tests, decisions,
-and evidence. That is a defensible Agent task rather than fixed-form automation.
+The clarified Opportunity-to-Arrival Relay was the historical scenario-level lead recommendation.
+It used the original project context more directly than the other candidates: a reviewer could ask
+a new, submission-specific question, and the Agent would reconcile the live request with prior
+claims, current source, tests, decisions, and evidence. That was a defensible Agent task rather
+than fixed-form automation.
 
 The flight workflow should no longer be rejected merely because it widens the concept. Acceptance
 creates a real adjacent life task, and a compact independent flight surface can demonstrate
@@ -1477,7 +1486,7 @@ horizontal WebMCP interoperability in a way Greenlight cannot. Flight booking it
 prior art and even an official WebMCP teaching example; the innovation claim is the governed causal
 relay, minimal data handoff, fresh site-owned tools, and non-transfer of authority.
 
-Opportunity should lead only if five conditions hold:
+The historical recommendation required five conditions:
 
 1. the custom question is created after enrollment and read from the live page;
 2. the answer visibly depends on current project evidence and corrects a stale claim;
@@ -1485,6 +1494,8 @@ Opportunity should lead only if five conditions hold:
 4. the flight page independently owns its tools and consequence boundary; and
 5. the continuation path is honest, repeatable, and visible to a clean evaluator.
 
-If any of the first three conditions fail, Greenlight becomes the safer lead. If only the
-cross-site epilogue fails, retain the application-only fallback rather than rejecting the entire
-candidate. This document does not select, implement, deploy, or validate the app.
+If any of the first three conditions failed, the historical analysis would have preferred
+Greenlight; if only the cross-site epilogue failed, it would have retained the application-only
+fallback. Those conditions are preserved as historical kill tests. The candidate is now eliminated
+from the active shortlist and this document does not select, implement, deploy, or validate the
+app.

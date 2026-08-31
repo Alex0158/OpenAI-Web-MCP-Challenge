@@ -1,16 +1,20 @@
 # Candidate Scenario C — Sleepless Kingdom
 
-**Role:** CREATIVE WILD-CARD CANDIDATE — NOT SELECTED  
+**Role:** ACTIVE SHORTLIST CANDIDATE — NOT SELECTED  
 **Selected as the challenge demo app:** No  
 **Implementation status:** Concept only; not implemented or validated  
 **Primary pattern:** Multi-user, event-driven Agent participation in a shared 24/7 world  
 **Last updated:** 2026-08-31
 
+**Current disposition:** Remains in the active application shortlist alongside Rental Marketplace
+Relay. It is not selected, implemented, or validated; TASK-001 and a future accepted ADR remain
+the selection authority.
+
 **Comparative research disposition:** Preserve as the highest-creativity alternative, but do not
 promote it to the primary challenge entry without passing Agent-value, decision-window,
 single-run-demo, and prior-art differentiation tests. The earlier disposition in the
-[three-candidate app-selection review](../Research/23-three-candidate-competition-app-selection-review.md)
-remains useful but overstates the cheating objection after the first-party design clarification.
+[historical three-candidate app-selection review](../Research/23-three-candidate-competition-app-selection-review.md)
+remains useful as historical comparative evidence but does not rank the current shortlist.
 
 ## Comparative Research Update
 
@@ -41,9 +45,10 @@ explicit rule and player expression comes partly from how each human communicate
 - **UNRESOLVED:** the game still has the largest combined build, multiplayer-state, fairness,
   transport-frequency, cost, and three-minute reproducibility surface. Direct WebMCP game prior
   art also increases the burden of explaining what is new.
-- **RECOMMENDATION:** retain a first-party, symmetric, turn-based version with one event, one
+- **SHORTLIST RECOMMENDATION:** retain a first-party, symmetric, turn-based version with one event, one
   defender, three legal plans, one bounded doctrine, no allied cascade, no spending, and one
-  server-authoritative receipt. Treat it as a creative wild card rather than the current lead.
+  server-authoritative receipt. Treat it as an active creative wild card within the current
+  shortlist rather than a selected app.
 
 ### What is actually novel
 
@@ -1394,14 +1399,15 @@ reading: every player may use the same Agent/WebMCP surface, and part of the gam
 human communicates doctrine, priorities, and risk. That makes it a legitimate Agent-native product
 hypothesis rather than unauthorized automation.
 
-It is still not the strongest current competition choice. Open Mercy proves that multiplayer WebMCP
-play already exists, so novelty must come from bounded re-entry after the player leaves and from
-human-authored strategy under later unforeseen state. The project has not yet shown that this form
-of Agent judgment beats a transparent strategy builder, that the transport fits the chosen window,
-or that the multi-user world can be demonstrated reproducibly inside three minutes.
+It remains unselected. Open Mercy proves that multiplayer WebMCP play already exists, so novelty
+must come from bounded re-entry after the player leaves and from human-authored strategy under
+later unforeseen state. The project has not yet shown that this form of Agent judgment beats a
+transparent strategy builder, that the transport fits the chosen window, or that the multi-user
+world can be demonstrated reproducibly inside three minutes. Whether it is preferable to Rental
+Marketplace Relay requires the same comparative tests.
 
-The correct disposition is creative wild card, not dismissal. Preserve a first-party, turn-based,
-single-event build concept with symmetric access, three legal plans, contrasting doctrines, one
-defender continuation, and no allied cascade or spending. Promote it only if the Agent-value test,
-multi-minute transport test, and one-run demo test all pass early. This document does not select,
-implement, deploy, or validate the app.
+The correct current disposition is an active creative wild card, not a selection. Preserve a
+first-party, turn-based, single-event build concept with symmetric access, three legal plans,
+contrasting doctrines, one defender continuation, and no allied cascade or spending. Promote it
+only if the Agent-value test, multi-minute transport test, and one-run demo test all pass early.
+This document does not select, implement, deploy, or validate the app.
