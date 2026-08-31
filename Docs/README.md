@@ -41,18 +41,19 @@ closure. Neither Decisions nor Development replaces the owning Core truth.
 | [`Core/07-p0-technical-validation-mvp.md`](Core/07-p0-technical-validation-mvp.md) | CANONICAL | Frozen P0 implementation contract and dated verdict; not the current production architecture |
 | [`Core/08-competition-thesis-and-positioning.md`](Core/08-competition-thesis-and-positioning.md) | CANONICAL | Competition-facing thesis, value proposition, differentiation, judging posture, and claim hierarchy; underlying status remains in Core/00 and Core/05 |
 | [`Mechanisms/README.md`](Mechanisms/README.md) | CANONICAL MODULE INDEX | Stable Re-entry lifecycle and authority contracts, with code, test, and evidence routing |
-| [`Decisions/README.md`](Decisions/README.md) | DECISION INDEX | Accepted, superseded, and partially superseded durable choices through ADR-0016 |
+| [`Decisions/README.md`](Decisions/README.md) | DECISION INDEX | Accepted, superseded, and partially superseded durable choices through ADR-0017 |
 | [`Tasks/README.md`](Tasks/README.md) | CANONICAL TASK INDEX | Unified lifecycle for pending work, problems, defects, investigations, risks, decisions, and verification gaps |
 | [`Development/README.md`](Development/README.md) | CANONICAL | Program, implementation, verification, runbook, and closure records |
+| [`Engineering/README.md`](Engineering/README.md) | CANONICAL ENGINEERING INDEX | Project-wide development, testing, verification, and execution controls |
 | [`Challenge/README.md`](Challenge/README.md) | GOVERNING ROUTER | Current English routing for challenge constraints, volatile facts, and release refresh gates |
 | [`Scenarios/README.md`](Scenarios/README.md) | SUPPORTING | Concrete domain mappings that are not selected product truth |
 
 The [decision register](Decisions/README.md) owns the complete decision index. ADR-0001 is
 superseded by ADR-0002; ADR-0004 is partially superseded by ADR-0006 and ADR-0007; ADR-0006 through
-ADR-0016 control the current Re-entry Core source, topology, protocol, authority, delivery,
+ADR-0017 control the current Re-entry Core source, topology, protocol, authority, delivery,
 transport, deterministic Agent boundary, conformance, Grant control, private binding resolution,
-modular documentation ownership, and unified task lifecycle. The index records decision status,
-not implementation or runtime proof.
+modular documentation ownership, unified task lifecycle, and engineering governance baseline. The
+index records decision status, not implementation or runtime proof.
 
 ## 3. Tasks, development, and closure
 
@@ -60,8 +61,14 @@ not implementation or runtime proof.
   non-terminal task, including problems and defects.
 - [`Tasks/TASK-001-select-host-application.md`](Tasks/TASK-001-select-host-application.md) — current
   P0 task to produce and reconcile the application-selection ADR.
+- [`Tasks/TASK-002-establish-engineering-governance-baseline.md`](Tasks/TASK-002-establish-engineering-governance-baseline.md) — project-wide engineering authority and mechanical-quality baseline.
 
-- [`Development/README.md`](Development/README.md) — CANONICAL Re-entry Core development,
+- [`Engineering/README.md`](Engineering/README.md) — CANONICAL project-wide development, testing,
+  verification, and execution controls.
+- [`Engineering/03-primary-development-runbook.md`](Engineering/03-primary-development-runbook.md) —
+  repeatable task intake, implementation, verification, handoff, and delivery procedure.
+
+- [`Development/README.md`](Development/README.md) — CANONICAL implementation,
   verification, evidence, runbook, and closure workflow plus the Program-record index.
 - [`Development/REENTRY-CORE-PROGRAM.md`](Development/REENTRY-CORE-PROGRAM.md) — accepted Program
   contract; the application-neutral Program is complete at `locally_verified`.
@@ -122,7 +129,7 @@ decision.
 ## 9. Maintenance rules
 
 1. Put canonical project behavior and status in `Core/`, not in the frozen dossier.
-2. Use Core/00 and Core/05 for current implementation and evidence, Core/01–04 and Core/06 for target behavior and architecture, `Mechanisms/` for stable module contracts, and Core/07 only for the frozen P0 contract and its dated outcome.
+2. Use Core/00 and Core/05 for current implementation and evidence, Core/01–04 and Core/06 for target behavior and architecture, `Mechanisms/` for stable module contracts, `Engineering/` for project-wide development controls, and Core/07 only for the frozen P0 contract and its dated outcome.
 3. Update `00-current-status.md` whenever phase, evidence, deployment, or submission truth changes.
 4. Record a new ADR before changing the core mechanism, selecting or changing the host app, changing the authority model, or moving the MVP boundary.
 5. Label statements as **VERIFIED**, **WORKING ASSUMPTION**, **INFERENCE**, **TARGET**, or **UNKNOWN** where status could affect a decision.

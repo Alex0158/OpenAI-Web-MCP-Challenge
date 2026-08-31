@@ -23,6 +23,7 @@ Docs/Mechanisms/          stable Re-entry lifecycle and authority module contrac
 Docs/Decisions/           accepted durable choices
 Docs/Tasks/               unified lifecycle for pending work, problems, and defects
 Docs/Development/         bounded implementation, verification, runbook, and closure records
+Docs/Engineering/         project-wide development, testing, and execution controls
 Docs/Challenge/           current English challenge routing and refresh gates
 Docs/Research/            supporting research and unresolved analysis
 Docs/Scenarios/           unselected application mappings
@@ -89,8 +90,7 @@ Requirements: Node.js 24 or newer.
 
 ```sh
 cd reentry-core
-npm test
-node conformance/run.mjs
+npm run verify
 ```
 
 See [`reentry-core/README.md`](reentry-core/README.md) for focused checks and bounded benchmark
@@ -148,20 +148,21 @@ Desktop-restart harness remains optional compatibility evidence.
 
 1. [`Docs/README.md`](Docs/README.md) — documentation map, authority, and maintenance rules.
 2. [`Docs/Core/00-current-status.md`](Docs/Core/00-current-status.md) — current truth, phase, assumptions, and next gate.
-3. [`reentry-core/README.md`](reentry-core/README.md) — current package surface, commands, evidence boundary, and non-claims.
-4. [`Docs/Mechanisms/README.md`](Docs/Mechanisms/README.md) — stable module contracts, code and test routing, and application obligations.
-5. [`Docs/Tasks/README.md`](Docs/Tasks/README.md) — current non-terminal work, problems, defects, owners, and next gates.
-6. [`Docs/Development/README.md`](Docs/Development/README.md) — Program, implementation, verification, runbook, and closure records.
-7. [`Docs/Core/08-competition-thesis-and-positioning.md`](Docs/Core/08-competition-thesis-and-positioning.md) — competition thesis, core value, positioning, judging posture, and claim hierarchy.
-8. [`Docs/Core/01-product-definition.md`](Docs/Core/01-product-definition.md) — concept, mechanism, application boundary, and claim boundary.
-9. [`Docs/Core/02-product-requirements.md`](Docs/Core/02-product-requirements.md) — domain-neutral workflow behavior and acceptance criteria.
-10. [`Docs/Core/03-system-design.md`](Docs/Core/03-system-design.md) — reusable architecture, lifecycle, contracts, and integration slots.
-11. [`Docs/Core/04-trust-security-reliability.md`](Docs/Core/04-trust-security-reliability.md) — authority, controls, and failure semantics.
-12. [`Docs/Core/05-validation-and-evidence.md`](Docs/Core/05-validation-and-evidence.md) — proof matrix and evidence gates.
-13. [`Docs/Core/06-mvp-and-demo.md`](Docs/Core/06-mvp-and-demo.md) — demo-app selection, challenge scope, build order, and proof rhythm.
-14. [`Docs/Challenge/README.md`](Docs/Challenge/README.md) — current challenge constraints and release refresh gates.
-15. [`Docs/Core/07-p0-technical-validation-mvp.md`](Docs/Core/07-p0-technical-validation-mvp.md) — frozen technical-validation contract and Q1–Q5 proof boundary.
-16. [`Docs/Scenarios/README.md`](Docs/Scenarios/README.md) — concrete examples that do not select the final application.
+3. [`Docs/Tasks/README.md`](Docs/Tasks/README.md) — current non-terminal work, problems, defects, owners, and next gates.
+4. [`Docs/Engineering/README.md`](Docs/Engineering/README.md) — project-wide development, testing, verification, and execution controls.
+5. [`reentry-core/README.md`](reentry-core/README.md) — current package surface, commands, evidence boundary, and non-claims.
+6. [`Docs/Mechanisms/README.md`](Docs/Mechanisms/README.md) — stable module contracts, code and test routing, and application obligations.
+7. [`Docs/Development/README.md`](Docs/Development/README.md) — implementation, verification, runbook, and closure records.
+8. [`Docs/Core/08-competition-thesis-and-positioning.md`](Docs/Core/08-competition-thesis-and-positioning.md) — competition thesis, core value, positioning, judging posture, and claim hierarchy.
+9. [`Docs/Core/01-product-definition.md`](Docs/Core/01-product-definition.md) — concept, mechanism, application boundary, and claim boundary.
+10. [`Docs/Core/02-product-requirements.md`](Docs/Core/02-product-requirements.md) — domain-neutral workflow behavior and acceptance criteria.
+11. [`Docs/Core/03-system-design.md`](Docs/Core/03-system-design.md) — reusable architecture, lifecycle, contracts, and integration slots.
+12. [`Docs/Core/04-trust-security-reliability.md`](Docs/Core/04-trust-security-reliability.md) — authority, controls, and failure semantics.
+13. [`Docs/Core/05-validation-and-evidence.md`](Docs/Core/05-validation-and-evidence.md) — proof matrix and evidence gates.
+14. [`Docs/Core/06-mvp-and-demo.md`](Docs/Core/06-mvp-and-demo.md) — demo-app selection, challenge scope, build order, and proof rhythm.
+15. [`Docs/Challenge/README.md`](Docs/Challenge/README.md) — current challenge constraints and release refresh gates.
+16. [`Docs/Core/07-p0-technical-validation-mvp.md`](Docs/Core/07-p0-technical-validation-mvp.md) — frozen technical-validation contract and Q1–Q5 proof boundary.
+17. [`Docs/Scenarios/README.md`](Docs/Scenarios/README.md) — concrete examples that do not select the final application.
 
 ## Source-of-truth hierarchy
 
@@ -172,9 +173,10 @@ Desktop-restart harness remains optional compatibility evidence.
 5. Each named Core document controls its own product or system surface.
 6. Each Mechanism document controls its named lifecycle and authority module within the Core invariants.
 7. Each Task record controls its own lifecycle, owner, current increment, dependencies, and next gate; it cannot redefine product truth.
-8. Selected scenario and application decisions require a separate accepted ADR.
-9. The frozen TenderRelay dossier is an immutable concept reference, not a live specification or app decision.
-10. General WebMCP research and earlier ideas are supporting or historical references only.
+8. `Docs/Engineering/` controls project-wide development, testing, verification, and execution procedure without redefining product truth.
+9. Selected scenario and application decisions require a separate accepted ADR.
+10. The frozen TenderRelay dossier is an immutable concept reference, not a live specification or app decision.
+11. General WebMCP research and earlier ideas are supporting or historical references only.
 
 ## Preservation rule
 

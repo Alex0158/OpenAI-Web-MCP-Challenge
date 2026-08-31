@@ -20,8 +20,12 @@
     "./sqlite-receiver-store": "./src/sqlite-receiver-store.mjs"
   },
   "scripts": {
+    "check:syntax": "node scripts/check-syntax.mjs",
     "test": "node --test test/*.test.mjs",
     "test:conformance": "node --test test/protocol.test.mjs",
+    "verify:conformance": "node conformance/run.mjs",
+    "verify:package": "node scripts/verify-package.mjs",
+    "verify": "npm run check:syntax && npm test && npm run verify:conformance && npm run verify:package",
     "benchmark:protocol": "node bench/protocol.mjs",
     "benchmark:agent-adapter": "node bench/agent-adapter.mjs",
     "benchmark:receiver": "node bench/receiver-lifecycle.mjs",

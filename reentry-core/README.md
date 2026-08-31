@@ -48,6 +48,7 @@ MVP1 and MVP2 remain unchanged references.
 ## Commands
 
 ```bash
+npm run verify
 npm test
 npm run test:conformance
 npm run benchmark:protocol
@@ -65,6 +66,10 @@ node conformance/run.mjs
 ```
 
 The package has zero runtime dependencies and targets Node 24 or newer.
+`npm run verify` is the source-checkout closure command: it checks JavaScript syntax, runs the full
+test suite, executes the direct conformance profile, and inspects the dry-run package surface.
+The repository `.node-version` selects the reproducible Node 24 closure runtime; runs on newer local
+runtimes are additional compatibility evidence and must name the executed version.
 `SqliteReceiverStore` is available only through the `./sqlite-receiver-store` subpath, so the
 root, protocol, Host SDK, and Receiver Core imports do not load `node:sqlite` implicitly.
 

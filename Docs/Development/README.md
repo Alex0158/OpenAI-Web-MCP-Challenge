@@ -1,14 +1,15 @@
-# Re-entry Core Development and Closure
+# Development and Closure
 
 **Role:** CANONICAL Program, implementation, verification, runbook, and closure index  
-**Status:** Application-neutral Program closure baseline; active for governed reuse or reopen  
+**Status:** Application-neutral Core closure baseline plus active project-wide governance work  
 **Last updated:** 2026-08-31
 
 ## Purpose
 
-This directory controls how Re-entry Core moves from an accepted decision to implementation,
-verification, evidence, and precise closure. It does not redefine product or architecture
-semantics owned by `Docs/Core/` and `Docs/Decisions/`, or task lifecycle owned by
+This directory records bounded implementation, verification, evidence, and precise closure for
+Re-entry Core and cross-project engineering increments. It does not redefine product or architecture
+semantics owned by `Docs/Core/` and `Docs/Decisions/`, project-wide engineering controls owned by
+[`Docs/Engineering/`](../Engineering/README.md), or task lifecycle owned by
 [`Docs/Tasks/`](../Tasks/README.md).
 
 The binding program mandate, execution boundaries, anti-bloat rules, and Definition of Done are
@@ -48,6 +49,7 @@ increment.
 | Accepted durable choice | `Docs/Decisions/` |
 | Registered task lifecycle, owner, current increment, dependency, and next gate | `Docs/Tasks/` |
 | Accepted Program, implementation, verification, and closure detail | This directory |
+| Project-wide development, testing, and execution controls | [`Docs/Engineering/`](../Engineering/README.md) |
 | Local development resume, verification, and Git closure | [`REENTRY-CORE-RUNBOOK.md`](REENTRY-CORE-RUNBOOK.md) |
 | Supporting analysis or unresolved research | `Docs/Research/` |
 | Implemented behavior | Current code and tests |
@@ -104,6 +106,7 @@ genuine WebMCP, deployment, or judge reproducibility.
 | [`DOCS-001`](DOCS-001-documentation-architecture-reconciliation.md) | Reconcile repository entry points, documentation routing, Core completion wording, and future source placement without changing product behavior | `locally_verified` |
 | [`DOCS-002`](DOCS-002-modular-authority-and-core-denoising.md) | Establish mechanism-module ownership, reduce mixed-role Core content, and remove the duplicate Knowledge routing layer | `locally_verified` |
 | [`DOCS-003`](DOCS-003-unified-task-authority.md) | Establish one unified task lifecycle for pending work, problems, defects, investigations, and decision needs | `locally_verified` |
+| [`ENG-001`](ENG-001-project-engineering-governance-baseline.md) | Establish the project-wide engineering authority, mechanical repository checks, aggregate Core verification, and CI baseline | `verification_pending` |
 
 ## Lean implementation rules
 

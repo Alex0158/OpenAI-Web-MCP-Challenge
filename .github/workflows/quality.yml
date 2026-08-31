@@ -1,0 +1,51 @@
+name: Quality
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+      - "codex/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+
+      - name: Test repository validators
+        run: python3 scripts/test_validators.py
+
+      - name: Test sensitive-pattern scanner
+        run: python3 scripts/test_sensitive_scan.py
+
+      - name: Validate repository
+        run: python3 scripts/validate_repository.py --root .
+
+      - name: Scan sensitive patterns
+        run: python3 scripts/scan_sensitive_patterns.py --root .
+
+      - name: Verify Re-entry Core
+        run: npm run verify
+        working-directory: reentry-core

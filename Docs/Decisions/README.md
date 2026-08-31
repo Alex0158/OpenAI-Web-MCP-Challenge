@@ -1,7 +1,7 @@
 # Decision Register
 
 **Role:** DECISION index  
-**Status:** Current through ADR-0016  
+**Status:** Current through ADR-0017  
 **Last updated:** 2026-08-31
 
 This directory records accepted durable choices and their consequences. A decision record owns
@@ -29,6 +29,7 @@ and runtime evidence.
 | [ADR-0014](ADR-0014-freeze-private-managed-context-binding-resolution.md) | Accepted | Freeze private managed-context binding resolution |
 | [ADR-0015](ADR-0015-adopt-modular-mechanism-documentation.md) | Accepted | Adopt modular mechanism documentation and canonical content-density rules |
 | [ADR-0016](ADR-0016-adopt-unified-task-authority.md) | Accepted | Adopt one unified lifecycle authority for pending work, problems, defects, and investigations |
+| [ADR-0017](ADR-0017-adopt-project-engineering-governance-baseline.md) | Accepted | Adopt the project-wide engineering authority, native enforcement baseline, Node 24 closure runtime, and always-run CI |
 
 ## Decision rules
 

@@ -12,6 +12,10 @@ discipline only. Product intent belongs in `Docs/Core/01-product-definition.md` 
 claim limits belong in Core/00 and Core/05; durable choices belong in `Docs/Decisions/`; and the
 current increment belongs in its `Docs/Development/RECORE-*.md` record.
 
+The project-wide development and testing authorities remain in
+[`Docs/Engineering/`](../Engineering/README.md). This runbook adds only Re-entry Core-specific
+resume, verification, evidence, and closure detail.
+
 This is not a production operations, deployment, pairing, credential-provisioning, incident, or
 Agent-runtime runbook. Do not use it to claim a Cloud Receiver service, supported Codex wake path,
 Browser/WebMCP join, selected application, or judge-reproducible flow.
@@ -90,6 +94,7 @@ Current commands are:
 
 ```sh
 node --version
+npm run verify
 npm test
 npm run test:conformance
 npx --yes node@24.20.0 --test test/*.test.mjs
@@ -107,10 +112,13 @@ output as a local regression sample, not Agent, Browser, network, service, end-t
 evidence. Inspect the package file list, not only its byte count. When exports change, also prove
 the intended subpath is importable and that unrelated root imports do not load the new boundary.
 
-Before closure, also run `git diff --check`, verify English-only project-authored content, inspect
-relative links in changed documentation, scan owned files for accidental credentials or private
-runtime identifiers, and confirm that no `mvp/`, reference snapshot, mutable database, trace,
-build output, or unrelated file entered the diff.
+For a source-checkout closure, `npm run verify` is the aggregate default. Run the focused commands
+above when isolating a failure or supporting a narrower claim. From the repository root, also run
+the mandatory validators and sensitive-pattern scanner listed in the
+[Testing and Verification Standard](../Engineering/02-testing-and-verification.md).
+
+Before closure, run `git diff --check` and confirm that no `mvp/`, reference snapshot, mutable
+database, trace, build output, or unrelated file entered the diff.
 
 ## 5. Failure triage
 

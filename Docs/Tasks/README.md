@@ -117,6 +117,7 @@ or perform a destructive action.
 ## 5. Current non-terminal tasks
 
 - [TASK-001 — Select the Host application](TASK-001-select-host-application.md)
+- [TASK-002 — Establish the engineering governance baseline](TASK-002-establish-engineering-governance-baseline.md)
 
 Discover all task records with:
 
