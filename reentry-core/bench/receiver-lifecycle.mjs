@@ -133,6 +133,11 @@ function createHarness(store) {
         return decision;
       },
     },
+    grantControlAuthority: {
+      verifyControl() {
+        throw benchmarkError("grant_control_not_configured");
+      },
+    },
     connectorAuthority: {
       verifyConnector({ connectorToken }) {
         const connector = connectors.get(connectorToken);

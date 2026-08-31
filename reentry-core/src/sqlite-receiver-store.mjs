@@ -140,6 +140,12 @@ export class SqliteReceiverStore {
     assertSingleChange(result, "insert Grant");
   }
 
+  revokeGrant(grantId, revokedAt) {
+    this.#assertWriteTransaction();
+    const result = this.#statements.revokeGrant.run(revokedAt, grantId);
+    return result.changes === 1;
+  }
+
   consumeGrantRun(grantId) {
     this.#assertWriteTransaction();
     const result = this.#statements.consumeGrantRun.run(grantId);
@@ -399,6 +405,11 @@ export class SqliteReceiverStore {
           correlation_id, issuer_origin, workflow_type, workflow_id, event_type, canonical_url,
           expires_at, human_boundary, runs_remaining, revoked_at, receipt_json, created_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `),
+      revokeGrant: this.#database.prepare(`
+        UPDATE receiver_grants
+        SET revoked_at = ?
+        WHERE grant_id = ? AND revoked_at IS NULL
       `),
       consumeGrantRun: this.#database.prepare(`
         UPDATE receiver_grants

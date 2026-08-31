@@ -1,10 +1,10 @@
 # Re-entry Core
 
-**Status:** v0.1 protocol, Host SDK, Receiver C1, Connector delivery C2, transport/process C3d,
-Agent Adapter contract C4b, source-repository conformance profile C6b, and app-independent quality
-and weight baseline locally verified  
-**Authority:** ADR-0006 through ADR-0012, `Docs/Development/RECORE-001-foundation.md`, and
-`Docs/Development/RECORE-002-quality-and-weight.md`
+**Status:** v0.1 protocol, Host SDK, Receiver C1, Receiver Grant control, Connector delivery C2,
+transport/process C3d, Agent Adapter contract C4b, source-repository conformance profile C6b, and
+app-independent quality and weight baseline locally verified  
+**Authority:** ADR-0006 through ADR-0013 and `Docs/Development/RECORE-001-foundation.md` through
+`Docs/Development/RECORE-004-grant-control.md`
 
 This directory is the authoritative source for new application-neutral Re-entry Core behavior.
 MVP1 and MVP2 remain unchanged references.
@@ -16,8 +16,8 @@ MVP1 and MVP2 remain unchanged references.
 - `src/host-sdk.mjs` — narrow Host-side Manifest and event issuance without Receiver or Agent
   authority.
 - `src/receiver-core.mjs` — Receiver-owned consent challenge, private Grant, public binding,
-  exact event replay, atomic pending-delivery reservation, and a narrow delivery facade behind
-  injected authority ports.
+  authenticated same-subject inspection and atomic revocation, exact event replay, atomic
+  pending-delivery reservation, and a narrow delivery facade behind injected authority ports.
 - `src/receiver-delivery.mjs` — internal target-scoped claim, short lease, bounded-attempt,
   stale-worker fencing, and Host-effect-backed acknowledgement state machine.
 - `src/receiver-support.mjs` — shared strict Receiver validation, immutable-value, and typed-error
@@ -67,8 +67,10 @@ root, protocol, Host SDK, and Receiver Core imports do not load `node:sqlite` im
 Local verification covers strict shapes, canonical encoding, Ed25519 signing and verification,
 trusted-origin anchoring, tamper and boundary rejection, frozen vectors, Host SDK isolation,
 trusted consent integration, private-output boundaries, atomic run reservation, exact replay,
-target and subject isolation, replayable lease claims, bounded reclamation, stale-worker fencing,
-effect-backed acknowledgement, transaction rollback, version-1 migration, and file
+authenticated Grant inspection, revocation-before-event and event-before-revocation ordering,
+idempotent revocation replay, target and subject isolation, replayable lease claims, bounded
+reclamation, stale-worker fencing, pre-revocation effect convergence, post-revocation effect
+rejection, transaction rollback, token non-persistence, version-1 migration, and file
 close-and-reopen persistence. Focused transport tests also cover ordinary JSON request mapping,
 no-work responses, bounds, redacted failures, origin policy, redirects, timeouts, malformed or
 stale responses, and absence of automatic retry. The source-repository conformance profile runs
@@ -87,10 +89,11 @@ throughput promises, production latency, cross-machine comparisons, or service S
 
 ## Current non-claims
 
-This kernel does not implement a production consent or pairing session, TLS listener or public
-Cloud Receiver service, production Connector daemon, durable Connector credential or claim-token
-storage, real Host-effect verifier, Agent activation, Browser acquisition, WebMCP runtime access,
-deployment, or a selected Host application. Test child processes are evidence scaffolding, not
-shipping services. The conformance profile uses synthetic authorities and is not a production
-service shell. The deterministic adapter is contract evidence, not a runtime fallback or a real
-Agent. Unsupported capability is not replaced by a hidden fallback.
+This kernel does not implement a production consent, Grant-control, or pairing session; a consent
+or administration UI; a Grant-control HTTP route; a TLS listener or public Cloud Receiver service;
+a production Connector daemon; durable Connector credential or claim-token storage; a real Host-
+effect verifier; Agent activation; Browser acquisition; WebMCP runtime access; deployment; or a
+selected Host application. Test child processes are evidence scaffolding, not shipping services.
+The conformance profile uses synthetic authorities and is not a production service shell. The
+deterministic adapter is contract evidence, not a runtime fallback or a real Agent. Unsupported
+capability is not replaced by a hidden fallback.

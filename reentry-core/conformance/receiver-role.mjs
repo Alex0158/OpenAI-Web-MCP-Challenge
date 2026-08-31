@@ -58,6 +58,11 @@ export function createReceiverRole({ beforeHandleRequest } = {}) {
             };
           },
         },
+        grantControlAuthority: {
+          verifyControl() {
+            throw new Error("Grant control is not configured in the conformance profile");
+          },
+        },
         connectorAuthority: {
           verifyConnector({ connectorToken }) {
             if (connectorToken !== input.connectorToken) {

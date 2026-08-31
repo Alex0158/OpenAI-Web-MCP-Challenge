@@ -7,6 +7,9 @@ import test from "node:test";
 import {
   CONNECTOR_IDENTITY_TYPE,
   CONSENT_DECISION_TYPE,
+  GRANT_CONTROL_AUTHORIZATION_TYPE,
+  GRANT_REVOCATION_TYPE,
+  GRANT_SUMMARY_TYPE,
   HOST_EFFECT_ATTESTATION_TYPE,
   HOST_EFFECT_OUTCOME,
   ReceiverCore,
@@ -38,6 +41,7 @@ function createHarness({
   store = new SqliteReceiverStore({ filename: ":memory:" }),
   keys = createTestKeys(),
   decisions = new Map(),
+  controls = new Map(),
   connectors = new Map(),
   effects = new Map(),
   clockRef = { value: new Date(FIXED_NOW) },
@@ -65,6 +69,13 @@ function createHarness({
         return typeof value === "function" ? value(challengeId) : value;
       },
     },
+    grantControlAuthority: {
+      verifyControl({ bindingId, action, controlToken }) {
+        const value = controls.get(controlToken);
+        if (value === undefined) throw new Error("Unknown Grant control token");
+        return typeof value === "function" ? value(bindingId, action) : value;
+      },
+    },
     connectorAuthority: {
       verifyConnector({ connectorToken }) {
         const value = connectors.get(connectorToken);
@@ -85,7 +96,7 @@ function createHarness({
     clock: () => clockRef.value,
     createId,
   });
-  return { core, store, keys, decisions, connectors, effects, clockRef };
+  return { core, store, keys, decisions, controls, connectors, effects, clockRef };
 }
 
 function deterministicIdSource() {
@@ -127,6 +138,19 @@ function declineDecision(challengeId, overrides = {}) {
     action: "decline",
     subject_id: "subject_001",
     decided_at: FIXED_NOW.toISOString(),
+    ...overrides,
+  };
+}
+
+function grantControlAuthorization(bindingId, action, overrides = {}) {
+  return {
+    type: GRANT_CONTROL_AUTHORIZATION_TYPE,
+    protocol_version: PROTOCOL_VERSION,
+    binding_id: bindingId,
+    action,
+    subject_id: "subject_001",
+    authenticated_at: new Date(FIXED_NOW.getTime() - 1_000).toISOString(),
+    expires_at: new Date(FIXED_NOW.getTime() + 60_000).toISOString(),
     ...overrides,
   };
 }
@@ -212,6 +236,7 @@ function acceptPendingDelivery(harness) {
   const signed = signedEventEnvelope(harness, approval.binding);
   const acceptance = harness.core.acceptEvent(signed.envelope);
   return {
+    approval,
     ...signed,
     acceptance,
     delivery: harness.store.getDeliveryByEventId(signed.event.event_id),
@@ -357,6 +382,233 @@ test("decline is stable, creates no Grant, and fences later decisions", (t) => {
     { code: "consent_already_decided", statusCode: 409 },
   );
   assert.equal(harness.store.getGrantByChallengeId(challengeId), undefined);
+});
+
+test("Grant inspection authenticates before lookup and returns an exact bounded summary", (t) => {
+  const harness = createHarness();
+  t.after(() => harness.store.close());
+  const { approval } = enrollAndApprove(harness);
+  const bindingId = approval.binding.binding_id;
+  const grant = harness.store.getGrantByBindingId(bindingId);
+
+  assert.throws(
+    () => harness.core.inspectGrant({
+      bindingId: "binding_missing",
+      controlToken: "unknown_control",
+    }),
+    { code: "grant_control_invalid", statusCode: 403 },
+  );
+  harness.controls.set(
+    "missing_binding_control",
+    (requestedBindingId, action) => grantControlAuthorization(requestedBindingId, action),
+  );
+  assert.throws(
+    () => harness.core.inspectGrant({
+      bindingId: "binding_missing",
+      controlToken: "missing_binding_control",
+    }),
+    { code: "grant_not_found", statusCode: 404 },
+  );
+
+  harness.controls.set(
+    "inspect_control",
+    grantControlAuthorization(bindingId, "inspect"),
+  );
+  const summary = harness.core.inspectGrant({
+    bindingId,
+    controlToken: "inspect_control",
+  });
+  assert.deepEqual(summary, {
+    type: GRANT_SUMMARY_TYPE,
+    protocol_version: PROTOCOL_VERSION,
+    binding_id: bindingId,
+    correlation_id: "correlation_001",
+    issuer_origin: HOST_ORIGIN,
+    workflow_type: "domain-neutral-workflow",
+    workflow_id: "workflow_001",
+    event_type: "workflow.ready",
+    canonical_url: `${HOST_ORIGIN}/workflows/workflow_001`,
+    expires_at: EFFECTIVE_EXPIRY,
+    human_boundary: "explicit_receiver_consent",
+    runs_remaining: 1,
+    status: "active",
+    created_at: FIXED_NOW.toISOString(),
+    revoked_at: null,
+  });
+  assert.equal(Object.isFrozen(summary), true);
+  const output = JSON.stringify(summary);
+  for (const privateValue of [
+    grant.grant_id,
+    grant.subject_id,
+    grant.delivery_target_id,
+    grant.receipt_json,
+    "inspect_control",
+  ]) {
+    assert.ok(!output.includes(privateValue));
+  }
+});
+
+test("Grant control rejects malformed or out-of-scope authority without mutation", (t) => {
+  const harness = createHarness();
+  t.after(() => harness.store.close());
+  const { approval } = enrollAndApprove(harness);
+  const bindingId = approval.binding.binding_id;
+
+  assert.throws(
+    () => harness.core.revokeGrant({
+      bindingId,
+      controlToken: "unknown_control",
+    }),
+    { code: "grant_control_invalid", statusCode: 403 },
+  );
+  assert.throws(
+    () => harness.core.revokeGrant({
+      bindingId,
+      controlToken: "unknown_control",
+      revokedAt: FIXED_NOW.toISOString(),
+    }),
+    { code: "receiver_input_fields_invalid" },
+  );
+
+  const cases = [
+    [
+      "wrong_action",
+      grantControlAuthorization(bindingId, "inspect"),
+      { code: "grant_control_scope_invalid", statusCode: 403 },
+    ],
+    [
+      "wrong_binding",
+      grantControlAuthorization("binding_other", "revoke"),
+      { code: "grant_control_scope_invalid", statusCode: 403 },
+    ],
+    [
+      "wrong_subject",
+      grantControlAuthorization(bindingId, "revoke", { subject_id: "subject_other" }),
+      { code: "grant_control_scope_invalid", statusCode: 403 },
+    ],
+    [
+      "expired_control",
+      grantControlAuthorization(bindingId, "revoke", {
+        expires_at: FIXED_NOW.toISOString(),
+      }),
+      { code: "grant_control_time_invalid", statusCode: 403 },
+    ],
+    [
+      "future_control",
+      grantControlAuthorization(bindingId, "revoke", {
+        authenticated_at: new Date(FIXED_NOW.getTime() + 60_001).toISOString(),
+        expires_at: new Date(FIXED_NOW.getTime() + 120_000).toISOString(),
+      }),
+      { code: "grant_control_time_invalid", statusCode: 403 },
+    ],
+  ];
+  for (const [token, control, expected] of cases) {
+    harness.controls.set(token, control);
+    assert.throws(
+      () => harness.core.revokeGrant({ bindingId, controlToken: token }),
+      expected,
+    );
+  }
+  assert.equal(harness.store.getGrantByBindingId(bindingId).revoked_at, null);
+});
+
+test("Grant revocation is durable, idempotent, and ordered against event acceptance", async (t) => {
+  await t.test("revocation first rejects a new event and keeps the run unspent", (t) => {
+    const harness = createHarness();
+    t.after(() => harness.store.close());
+    const { approval } = enrollAndApprove(harness);
+    const bindingId = approval.binding.binding_id;
+    harness.controls.set(
+      "revoke_control",
+      grantControlAuthorization(bindingId, "revoke"),
+    );
+
+    const first = harness.core.revokeGrant({
+      bindingId,
+      controlToken: "revoke_control",
+    });
+    assert.deepEqual(first, {
+      type: GRANT_REVOCATION_TYPE,
+      protocol_version: PROTOCOL_VERSION,
+      binding_id: bindingId,
+      status: "revoked",
+      revoked_at: FIXED_NOW.toISOString(),
+      duplicate: false,
+    });
+    assert.equal(Object.isFrozen(first), true);
+    harness.clockRef.value = new Date(FIXED_NOW.getTime() + 1_000);
+    assert.deepEqual(harness.core.revokeGrant({
+      bindingId,
+      controlToken: "revoke_control",
+    }), { ...first, duplicate: true });
+    harness.controls.set(
+      "inspect_revoked",
+      grantControlAuthorization(bindingId, "inspect"),
+    );
+    assert.deepEqual(harness.core.inspectGrant({
+      bindingId,
+      controlToken: "inspect_revoked",
+    }), {
+      type: GRANT_SUMMARY_TYPE,
+      protocol_version: PROTOCOL_VERSION,
+      binding_id: bindingId,
+      correlation_id: "correlation_001",
+      issuer_origin: HOST_ORIGIN,
+      workflow_type: "domain-neutral-workflow",
+      workflow_id: "workflow_001",
+      event_type: "workflow.ready",
+      canonical_url: `${HOST_ORIGIN}/workflows/workflow_001`,
+      expires_at: EFFECTIVE_EXPIRY,
+      human_boundary: "explicit_receiver_consent",
+      runs_remaining: 1,
+      status: "revoked",
+      created_at: FIXED_NOW.toISOString(),
+      revoked_at: first.revoked_at,
+    });
+
+    const signed = signedEventEnvelope(harness, approval.binding, {
+      event_id: "event_after_revocation",
+    });
+    assert.throws(
+      () => harness.core.acceptEvent(signed.envelope),
+      { code: "grant_revoked" },
+    );
+    const grant = harness.store.getGrantByBindingId(bindingId);
+    assert.equal(grant.runs_remaining, 1);
+    assert.equal(grant.revoked_at, FIXED_NOW.toISOString());
+    assert.equal(harness.store.getEventById(signed.event.event_id), undefined);
+    assert.equal(harness.store.getDeliveryByEventId(signed.event.event_id), undefined);
+  });
+
+  await t.test("event first remains replayable while later leasing is cancelled", (t) => {
+    const harness = createHarness();
+    t.after(() => harness.store.close());
+    const accepted = acceptPendingDelivery(harness);
+    const bindingId = accepted.approval.binding.binding_id;
+    harness.clockRef.value = new Date(FIXED_NOW.getTime() + 1_000);
+    harness.controls.set(
+      "revoke_after_event",
+      grantControlAuthorization(bindingId, "revoke"),
+    );
+    harness.core.revokeGrant({
+      bindingId,
+      controlToken: "revoke_after_event",
+    });
+
+    assert.deepEqual(harness.core.acceptEvent(accepted.envelope), {
+      ...accepted.acceptance,
+      duplicate: true,
+    });
+    harness.connectors.set("connector_secret", connectorIdentity());
+    assert.equal(harness.core.claimDelivery({
+      connectorToken: "connector_secret",
+      claimToken: claimToken(30),
+    }), null);
+    const cancelled = harness.store.getDeliveryById(accepted.delivery.delivery_id);
+    assert.equal(cancelled.status, "cancelled");
+    assert.equal(cancelled.terminal_reason, "grant_revoked");
+    assert.equal(cancelled.current_attempt, 0);
+  });
 });
 
 test("event acceptance atomically reserves one private pending delivery and replays exactly", (t) => {
@@ -525,6 +777,61 @@ test("file-backed state survives close and exact replay after restart", async (t
   assert.equal(openStore.getDeliveryByEventId(event.event_id).delivery_id, deliveryId);
   assert.deepEqual(restarted.core.acceptEvent(envelope), { ...acceptance, duplicate: true });
   assert.equal(openStore.getDeliveryByEventId(event.event_id).delivery_id, deliveryId);
+});
+
+test("Grant revocation survives file reopen without persisting the control token", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "webmcp-grant-control-"));
+  const filename = join(directory, "receiver.sqlite");
+  const controlToken = "grant_control_restart_secret";
+  let openStore;
+  t.after(async () => {
+    openStore?.close();
+    for (const path of [filename, `${filename}-wal`, `${filename}-shm`]) {
+      await unlinkIfPresent(path);
+    }
+    await rmdir(directory);
+  });
+
+  const keys = createTestKeys();
+  const decisions = new Map();
+  const controls = new Map();
+  openStore = new SqliteReceiverStore({ filename });
+  const first = createHarness({ store: openStore, keys, decisions, controls });
+  const { approval } = enrollAndApprove(first);
+  controls.set(
+    controlToken,
+    grantControlAuthorization(approval.binding.binding_id, "revoke"),
+  );
+  const revocation = first.core.revokeGrant({
+    bindingId: approval.binding.binding_id,
+    controlToken,
+  });
+  openStore.close();
+  openStore = undefined;
+
+  openStore = new SqliteReceiverStore({ filename });
+  const restarted = createHarness({ store: openStore, keys, decisions, controls });
+  assert.deepEqual(restarted.core.revokeGrant({
+    bindingId: approval.binding.binding_id,
+    controlToken,
+  }), { ...revocation, duplicate: true });
+  assert.equal(
+    openStore.getGrantByBindingId(approval.binding.binding_id).revoked_at,
+    revocation.revoked_at,
+  );
+  openStore.close();
+  openStore = undefined;
+
+  for (const path of [filename, `${filename}-wal`, `${filename}-shm`]) {
+    let bytes;
+    try {
+      bytes = await readFile(path);
+    } catch (error) {
+      if (error?.code === "ENOENT") continue;
+      throw error;
+    }
+    assert.equal(bytes.includes(Buffer.from(controlToken)), false);
+  }
 });
 
 test("Connector claim is target-scoped, private, and exactly replayable", (t) => {
@@ -900,70 +1207,185 @@ test("expired or revoked pending authority cancels without creating a lease", as
   });
 
   await t.test("a revoked Grant from the persistence port cancels the pending delivery", (t) => {
-    const baseStore = new SqliteReceiverStore({ filename: ":memory:" });
-    t.after(() => baseStore.close());
-    const harness = createHarness({ store: baseStore });
-    const { delivery } = acceptPendingDelivery(harness);
+    const harness = createHarness();
+    t.after(() => harness.store.close());
+    const { approval, delivery } = acceptPendingDelivery(harness);
     harness.connectors.set("connector_secret", connectorIdentity());
-    const revokedStore = overrideStoreMethod(
-      baseStore,
-      "getNextDeliveryByTarget",
-      (...args) => ({
-        ...baseStore.getNextDeliveryByTarget(...args),
-        grant_revoked_at: FIXED_NOW.toISOString(),
-      }),
+    harness.controls.set(
+      "revoke_pending",
+      grantControlAuthorization(approval.binding.binding_id, "revoke"),
     );
-    const revokedHarness = createHarness({
-      store: revokedStore,
-      keys: harness.keys,
-      decisions: harness.decisions,
-      connectors: harness.connectors,
-      effects: harness.effects,
-      clockRef: harness.clockRef,
+    harness.core.revokeGrant({
+      bindingId: approval.binding.binding_id,
+      controlToken: "revoke_pending",
     });
 
-    assert.equal(revokedHarness.core.claimDelivery({
+    assert.equal(harness.core.claimDelivery({
       connectorToken: "connector_secret",
       claimToken: claimToken(31),
     }), null);
-    const cancelled = baseStore.getDeliveryById(delivery.delivery_id);
+    const cancelled = harness.store.getDeliveryById(delivery.delivery_id);
     assert.equal(cancelled.status, "cancelled");
     assert.equal(cancelled.terminal_reason, "grant_revoked");
   });
 
   await t.test("revocation after lease prevents exact claim replay", (t) => {
-    const baseStore = new SqliteReceiverStore({ filename: ":memory:" });
-    t.after(() => baseStore.close());
-    const harness = createHarness({ store: baseStore });
-    const { delivery } = acceptPendingDelivery(harness);
+    const harness = createHarness();
+    t.after(() => harness.store.close());
+    const { approval, delivery } = acceptPendingDelivery(harness);
     harness.connectors.set("connector_secret", connectorIdentity());
     const token = claimToken(32);
     harness.core.claimDelivery({ connectorToken: "connector_secret", claimToken: token });
-
-    const revokedStore = overrideStoreMethod(
-      baseStore,
-      "getDeliveryByCurrentLeaseTokenDigest",
-      (...args) => ({
-        ...baseStore.getDeliveryByCurrentLeaseTokenDigest(...args),
-        grant_revoked_at: FIXED_NOW.toISOString(),
-      }),
+    harness.clockRef.value = new Date(FIXED_NOW.getTime() + 1_000);
+    harness.controls.set(
+      "revoke_leased",
+      grantControlAuthorization(approval.binding.binding_id, "revoke"),
     );
-    const revokedHarness = createHarness({
-      store: revokedStore,
-      keys: harness.keys,
-      decisions: harness.decisions,
-      connectors: harness.connectors,
-      effects: harness.effects,
-      clockRef: harness.clockRef,
+    harness.core.revokeGrant({
+      bindingId: approval.binding.binding_id,
+      controlToken: "revoke_leased",
     });
-    assert.equal(revokedHarness.core.claimDelivery({
+    assert.equal(harness.core.claimDelivery({
       connectorToken: "connector_secret",
       claimToken: token,
     }), null);
-    const exhausted = baseStore.getDeliveryById(delivery.delivery_id);
+    const exhausted = harness.store.getDeliveryById(delivery.delivery_id);
     assert.equal(exhausted.status, "retry_exhausted");
     assert.equal(exhausted.terminal_reason, "grant_revoked");
   });
+});
+
+test("lease-first revocation preserves only pre-revocation Host-effect convergence", async (t) => {
+  await t.test("an effect confirmed before revocation can acknowledge late", (t) => {
+    const harness = createHarness();
+    t.after(() => harness.store.close());
+    const { approval, delivery } = acceptPendingDelivery(harness);
+    harness.connectors.set("connector_secret", connectorIdentity());
+    const leaseToken = claimToken(33);
+    const lease = harness.core.claimDelivery({
+      connectorToken: "connector_secret",
+      claimToken: leaseToken,
+    }).lease;
+    harness.clockRef.value = new Date(FIXED_NOW.getTime() + 1_000);
+    harness.controls.set(
+      "revoke_before_ack",
+      grantControlAuthorization(approval.binding.binding_id, "revoke"),
+    );
+    harness.core.revokeGrant({
+      bindingId: approval.binding.binding_id,
+      controlToken: "revoke_before_ack",
+    });
+    assert.equal(harness.core.claimDelivery({
+      connectorToken: "connector_secret",
+      claimToken: leaseToken,
+    }), null);
+
+    harness.effects.set(
+      "pre_revocation_effect",
+      effectAttestation(lease, new Date(FIXED_NOW.getTime() + 500)),
+    );
+    const acknowledgement = harness.core.acknowledgeDelivery({
+      connectorToken: "connector_secret",
+      deliveryId: delivery.delivery_id,
+      leaseToken,
+      effectToken: "pre_revocation_effect",
+    });
+    assert.equal(acknowledgement.acknowledged, true);
+    assert.equal(harness.store.getDeliveryById(delivery.delivery_id).status, "acknowledged");
+  });
+
+  await t.test("an effect confirmed at the revocation boundary is rejected", (t) => {
+    const harness = createHarness();
+    t.after(() => harness.store.close());
+    const { approval, delivery } = acceptPendingDelivery(harness);
+    harness.connectors.set("connector_secret", connectorIdentity());
+    const leaseToken = claimToken(34);
+    const lease = harness.core.claimDelivery({
+      connectorToken: "connector_secret",
+      claimToken: leaseToken,
+    }).lease;
+    harness.clockRef.value = new Date(FIXED_NOW.getTime() + 1_000);
+    harness.controls.set(
+      "revoke_before_late_effect",
+      grantControlAuthorization(approval.binding.binding_id, "revoke"),
+    );
+    const revocation = harness.core.revokeGrant({
+      bindingId: approval.binding.binding_id,
+      controlToken: "revoke_before_late_effect",
+    });
+    harness.effects.set(
+      "post_revocation_effect",
+      effectAttestation(lease, new Date(revocation.revoked_at)),
+    );
+
+    assert.throws(
+      () => harness.core.acknowledgeDelivery({
+        connectorToken: "connector_secret",
+        deliveryId: delivery.delivery_id,
+        leaseToken,
+        effectToken: "post_revocation_effect",
+      }),
+      { code: "host_effect_time_invalid", statusCode: 403 },
+    );
+    assert.equal(harness.store.getDeliveryById(delivery.delivery_id).status, "leased");
+  });
+});
+
+test("an injected post-write failure rolls back Grant revocation", (t) => {
+  const baseStore = new SqliteReceiverStore({ filename: ":memory:" });
+  t.after(() => baseStore.close());
+  const failingStore = overrideStoreMethod(baseStore, "revokeGrant", (...args) => {
+    baseStore.revokeGrant(...args);
+    throw new Error("Injected post-revocation failure");
+  });
+  const harness = createHarness({ store: failingStore });
+  const { approval } = enrollAndApprove(harness);
+  harness.controls.set(
+    "rollback_control",
+    grantControlAuthorization(approval.binding.binding_id, "revoke"),
+  );
+
+  assert.throws(
+    () => harness.core.revokeGrant({
+      bindingId: approval.binding.binding_id,
+      controlToken: "rollback_control",
+    }),
+    /Injected post-revocation failure/,
+  );
+  assert.equal(
+    baseStore.getGrantByBindingId(approval.binding.binding_id).revoked_at,
+    null,
+  );
+});
+
+test("Grant revocation fails closed when a lost write has no durable boundary", (t) => {
+  const baseStore = new SqliteReceiverStore({ filename: ":memory:" });
+  t.after(() => baseStore.close());
+  const failedWriteStore = overrideStoreMethod(baseStore, "revokeGrant", () => false);
+  let grantReads = 0;
+  const inconsistentStore = overrideStoreMethod(
+    failedWriteStore,
+    "getGrantByBindingId",
+    (...args) => {
+      grantReads += 1;
+      return grantReads === 1 ? baseStore.getGrantByBindingId(...args) : undefined;
+    },
+  );
+  const harness = createHarness({ store: inconsistentStore });
+  const { approval } = enrollAndApprove(harness);
+  harness.controls.set(
+    "lost_write_control",
+    grantControlAuthorization(approval.binding.binding_id, "revoke"),
+  );
+
+  assert.throws(
+    () => harness.core.revokeGrant({
+      bindingId: approval.binding.binding_id,
+      controlToken: "lost_write_control",
+    }),
+    { code: "grant_revocation_race", statusCode: 409 },
+  );
+  assert.equal(baseStore.getGrantByBindingId(approval.binding.binding_id).revoked_at, null);
 });
 
 test("lease lifetime is narrowed by Connector identity and Grant expiry", async (t) => {
@@ -1176,6 +1598,7 @@ function failDeliveryWrites(baseStore) {
     "getGrantByChallengeId",
     "getGrantByBindingId",
     "insertGrant",
+    "revokeGrant",
     "consumeGrantRun",
     "getEventById",
     "insertEvent",

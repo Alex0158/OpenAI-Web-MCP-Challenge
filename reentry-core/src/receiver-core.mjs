@@ -43,11 +43,16 @@ export {
 } from "./receiver-support.mjs";
 
 export const CONSENT_DECISION_TYPE = "webmcp.receiver_consent_decision";
+export const GRANT_CONTROL_AUTHORIZATION_TYPE =
+  "webmcp.receiver_grant_control_authorization";
+export const GRANT_SUMMARY_TYPE = "webmcp.receiver_grant_summary";
+export const GRANT_REVOCATION_TYPE = "webmcp.receiver_grant_revocation";
 
 const RECEIVER_OPTION_FIELDS = Object.freeze([
   "store",
   "keyResolver",
   "consentAuthority",
+  "grantControlAuthority",
   "connectorAuthority",
   "effectAuthority",
   "maximumGrantLifetimeMs",
@@ -58,6 +63,7 @@ const RECEIVER_OPTION_FIELDS = Object.freeze([
 ]);
 const CREATE_CHALLENGE_FIELDS = Object.freeze(["manifest", "expectedOrigin"]);
 const DECIDE_CONSENT_FIELDS = Object.freeze(["challengeId", "decisionToken"]);
+const GRANT_CONTROL_INPUT_FIELDS = Object.freeze(["bindingId", "controlToken"]);
 const ENVELOPE_FIELDS = Object.freeze(["body", "headers"]);
 const APPROVAL_DECISION_FIELDS = Object.freeze([
   "type",
@@ -72,6 +78,15 @@ const APPROVAL_DECISION_FIELDS = Object.freeze([
 const DECLINE_DECISION_FIELDS = Object.freeze(
   APPROVAL_DECISION_FIELDS.filter((field) => field !== "delivery_target_id"),
 );
+const GRANT_CONTROL_AUTHORIZATION_FIELDS = Object.freeze([
+  "type",
+  "protocol_version",
+  "binding_id",
+  "action",
+  "subject_id",
+  "authenticated_at",
+  "expires_at",
+]);
 const STORE_METHODS = Object.freeze([
   "transaction",
   "getChallengeByManifestId",
@@ -81,12 +96,13 @@ const STORE_METHODS = Object.freeze([
   "getGrantByChallengeId",
   "getGrantByBindingId",
   "insertGrant",
+  "revokeGrant",
   "consumeGrantRun",
   "getEventById",
   "insertEvent",
   "insertDelivery",
 ]);
-const DECISION_FUTURE_SKEW_MS = 60 * 1_000;
+const AUTHORITY_FUTURE_SKEW_MS = 60 * 1_000;
 const MIN_LEASE_DURATION_MS = 1_000;
 const MAX_LEASE_DURATION_MS = 5 * 60 * 1_000;
 const MAX_DELIVERY_ATTEMPTS_LIMIT = 100;
@@ -95,6 +111,7 @@ export class ReceiverCore {
   #store;
   #keyResolver;
   #consentAuthority;
+  #grantControlAuthority;
   #maximumGrantLifetimeMs;
   #maximumDeliveryAttempts;
   #clock;
@@ -109,6 +126,7 @@ export class ReceiverCore {
         "store",
         "keyResolver",
         "consentAuthority",
+        "grantControlAuthority",
         "connectorAuthority",
         "effectAuthority",
         "maximumGrantLifetimeMs",
@@ -123,6 +141,9 @@ export class ReceiverCore {
     }
     if (typeof options.consentAuthority?.verifyDecision !== "function") {
       throw new TypeError("Receiver Core consentAuthority must implement verifyDecision");
+    }
+    if (typeof options.grantControlAuthority?.verifyControl !== "function") {
+      throw new TypeError("Receiver Core grantControlAuthority must implement verifyControl");
     }
     if (typeof options.connectorAuthority?.verifyConnector !== "function") {
       throw new TypeError("Receiver Core connectorAuthority must implement verifyConnector");
@@ -154,6 +175,7 @@ export class ReceiverCore {
     this.#store = options.store;
     this.#keyResolver = options.keyResolver;
     this.#consentAuthority = options.consentAuthority;
+    this.#grantControlAuthority = options.grantControlAuthority;
     this.#maximumGrantLifetimeMs = options.maximumGrantLifetimeMs;
     this.#maximumDeliveryAttempts = options.maximumDeliveryAttempts;
     this.#clock = options.clock ?? (() => new Date());
@@ -418,6 +440,69 @@ export class ReceiverCore {
     });
   }
 
+  inspectGrant(input) {
+    requireExactInput(
+      input,
+      GRANT_CONTROL_INPUT_FIELDS,
+      GRANT_CONTROL_INPUT_FIELDS,
+      "Grant inspection input",
+    );
+    const bindingId = requireIdentifier(input.bindingId, "bindingId");
+    const controlToken = requireGrantControlToken(input.controlToken);
+    const now = this.#readClock();
+    const authorization = this.#verifyGrantControl(
+      bindingId,
+      "inspect",
+      controlToken,
+      now,
+    );
+    const grant = this.#store.getGrantByBindingId(bindingId);
+    if (!grant) {
+      throw notFound("grant_not_found", "Grant was not found");
+    }
+    assertGrantControlSubject(grant, authorization);
+    return grantSummary(grant, now);
+  }
+
+  revokeGrant(input) {
+    requireExactInput(
+      input,
+      GRANT_CONTROL_INPUT_FIELDS,
+      GRANT_CONTROL_INPUT_FIELDS,
+      "Grant revocation input",
+    );
+    const bindingId = requireIdentifier(input.bindingId, "bindingId");
+    const controlToken = requireGrantControlToken(input.controlToken);
+    const now = this.#readClock();
+    const authorization = this.#verifyGrantControl(
+      bindingId,
+      "revoke",
+      controlToken,
+      now,
+    );
+    const revokedAt = now.toISOString();
+
+    return this.#store.transaction((transaction) => {
+      const grant = transaction.getGrantByBindingId(bindingId);
+      if (!grant) {
+        throw notFound("grant_not_found", "Grant was not found");
+      }
+      assertGrantControlSubject(grant, authorization);
+      if (grant.revoked_at !== null) {
+        return grantRevocation(grant, true);
+      }
+      if (!transaction.revokeGrant(grant.grant_id, revokedAt)) {
+        const current = transaction.getGrantByBindingId(bindingId);
+        if (current && current.revoked_at !== null) {
+          assertGrantControlSubject(current, authorization);
+          return grantRevocation(current, true);
+        }
+        throw conflict("grant_revocation_race", "Grant revocation claim was lost");
+      }
+      return grantRevocation({ ...grant, revoked_at: revokedAt }, false);
+    });
+  }
+
   claimDelivery(input) {
     return this.#delivery.claimDelivery(input);
   }
@@ -445,6 +530,29 @@ export class ReceiverCore {
       );
     }
     return normalizeConsentDecision(value, challenge, now);
+  }
+
+  #verifyGrantControl(bindingId, action, token, now) {
+    let value;
+    try {
+      value = this.#grantControlAuthority.verifyControl({
+        bindingId,
+        action,
+        controlToken: token,
+      });
+    } catch {
+      throw authorization(
+        "grant_control_invalid",
+        "Grant control could not be verified by the Receiver authority",
+      );
+    }
+    if (value === undefined || value === null) {
+      throw authorization(
+        "grant_control_invalid",
+        "Grant control could not be verified by the Receiver authority",
+      );
+    }
+    return normalizeGrantControlAuthorization(value, bindingId, action, now);
   }
 
   #terminalDecisionResponse(challenge, decision, now, duplicate, transaction = this.#store) {
@@ -567,9 +675,52 @@ function normalizeConsentDecision(value, challenge, now) {
   const decidedAt = Date.parse(normalized.decided_at);
   if (
     decidedAt < Date.parse(challenge.created_at) ||
-    decidedAt > now.getTime() + DECISION_FUTURE_SKEW_MS
+    decidedAt > now.getTime() + AUTHORITY_FUTURE_SKEW_MS
   ) {
     throw authorization("consent_decision_time_invalid", "Consent decision time is outside its valid window");
+  }
+  return deepFreeze(normalized);
+}
+
+function normalizeGrantControlAuthorization(value, bindingId, action, now) {
+  requireExactInput(
+    value,
+    GRANT_CONTROL_AUTHORIZATION_FIELDS,
+    GRANT_CONTROL_AUTHORIZATION_FIELDS,
+    "Grant control authorization",
+  );
+  if (
+    value.type !== GRANT_CONTROL_AUTHORIZATION_TYPE ||
+    value.protocol_version !== PROTOCOL_VERSION
+  ) {
+    throw authorization(
+      "grant_control_version_invalid",
+      "Grant control version is unsupported",
+    );
+  }
+  const normalized = {
+    type: GRANT_CONTROL_AUTHORIZATION_TYPE,
+    protocol_version: PROTOCOL_VERSION,
+    binding_id: requireIdentifier(value.binding_id, "control binding_id"),
+    action: value.action,
+    subject_id: requireIdentifier(value.subject_id, "control subject_id"),
+    authenticated_at: requireTimestamp(value.authenticated_at, "control authenticated_at"),
+    expires_at: requireTimestamp(value.expires_at, "control expires_at"),
+  };
+  if (!["inspect", "revoke"].includes(normalized.action)) {
+    throw authorization("grant_control_action_invalid", "Grant control action is unsupported");
+  }
+  if (normalized.binding_id !== bindingId || normalized.action !== action) {
+    throw authorization("grant_control_scope_invalid", "Grant control is for another operation");
+  }
+  const authenticatedAt = Date.parse(normalized.authenticated_at);
+  const expiresAt = Date.parse(normalized.expires_at);
+  if (
+    authenticatedAt > now.getTime() + AUTHORITY_FUTURE_SKEW_MS ||
+    authenticatedAt >= expiresAt ||
+    expiresAt <= now.getTime()
+  ) {
+    throw authorization("grant_control_time_invalid", "Grant control is outside its valid window");
   }
   return deepFreeze(normalized);
 }
@@ -630,10 +781,6 @@ function decisionResponse(status, challengeId, duplicate) {
 }
 
 function publicBindingFromGrant(grant, now) {
-  let status = "active";
-  if (grant.revoked_at !== null) status = "revoked";
-  else if (Date.parse(grant.expires_at) <= now.getTime()) status = "expired";
-  else if (grant.runs_remaining === 0) status = "exhausted";
   return validatePublicBinding({
     type: PUBLIC_BINDING_TYPE,
     protocol_version: PROTOCOL_VERSION,
@@ -643,8 +790,55 @@ function publicBindingFromGrant(grant, now) {
     event_type: grant.event_type,
     expires_at: grant.expires_at,
     runs_remaining: grant.runs_remaining,
-    status,
+    status: grantStatus(grant, now),
   });
+}
+
+function grantSummary(grant, now) {
+  return deepFreeze({
+    type: GRANT_SUMMARY_TYPE,
+    protocol_version: PROTOCOL_VERSION,
+    binding_id: grant.binding_id,
+    correlation_id: grant.correlation_id,
+    issuer_origin: grant.issuer_origin,
+    workflow_type: grant.workflow_type,
+    workflow_id: grant.workflow_id,
+    event_type: grant.event_type,
+    canonical_url: grant.canonical_url,
+    expires_at: grant.expires_at,
+    human_boundary: grant.human_boundary,
+    runs_remaining: grant.runs_remaining,
+    status: grantStatus(grant, now),
+    created_at: grant.created_at,
+    revoked_at: grant.revoked_at,
+  });
+}
+
+function grantRevocation(grant, duplicate) {
+  return deepFreeze({
+    type: GRANT_REVOCATION_TYPE,
+    protocol_version: PROTOCOL_VERSION,
+    binding_id: grant.binding_id,
+    status: "revoked",
+    revoked_at: grant.revoked_at,
+    duplicate,
+  });
+}
+
+function grantStatus(grant, now) {
+  if (grant.revoked_at !== null) return "revoked";
+  if (Date.parse(grant.expires_at) <= now.getTime()) return "expired";
+  if (grant.runs_remaining === 0) return "exhausted";
+  return "active";
+}
+
+function assertGrantControlSubject(grant, control) {
+  if (grant.subject_id !== control.subject_id) {
+    throw authorization(
+      "grant_control_scope_invalid",
+      "Grant control subject does not own this Grant",
+    );
+  }
 }
 
 function requireChallenge(store, challengeId) {
@@ -666,4 +860,8 @@ function requireStore(store) {
 
 function requireDecisionToken(value) {
   return requireOpaqueToken(value, "Consent decision token", "consent_token_invalid");
+}
+
+function requireGrantControlToken(value) {
+  return requireOpaqueToken(value, "Grant control token", "grant_control_token_invalid");
 }
