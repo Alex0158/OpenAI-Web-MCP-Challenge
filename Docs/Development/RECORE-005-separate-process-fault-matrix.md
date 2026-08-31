@@ -167,4 +167,4 @@ Receiver ownership, distributed coordination, real identity or Host-effect verif
 context binding, Agent activation, deployment, or judge portability.
 
 **Next entry condition (satisfied):** RECORE-006 closed the private managed-context binding gap.
-Run the final exact Program audit. Do not expand the fault harness.
+Terminal RECORE-003 closed the application-neutral Program. Do not expand the fault harness.

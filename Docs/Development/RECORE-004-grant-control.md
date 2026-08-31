@@ -129,6 +129,6 @@ distributed store, managed-context ownership, Agent wake, deployment, or selecte
 
 **Follow-up:** RECORE-005 subsequently closed the bounded separate-process fault matrix without
 changing this increment's in-process claim, and RECORE-006 closed the application-neutral private
-binding-resolution seam without adding a control surface. The terminal Program audit is next.
-Production control sessions and administration HTTP remain behind their own accepted runtime and
-security decision.
+binding-resolution seam without adding a control surface. Terminal RECORE-003 then closed the
+application-neutral Program at `locally_verified`. Production control sessions and administration
+HTTP remain behind their own accepted runtime and security decision.

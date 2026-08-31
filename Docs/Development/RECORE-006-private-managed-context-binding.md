@@ -137,5 +137,6 @@ Cloud Receiver process, Connector daemon, deployment, selected app, or judge pat
 selected runtime must decide and verify those surfaces without moving its raw locator into the
 Host, Cloud Receiver, event, activation, typed result, or public evidence.
 
-**Next entry condition:** run the final exact Program completion audit. Do not widen private
-binding resolution into a platform implementation before a selected-runtime decision.
+**Next entry condition (satisfied):** terminal RECORE-003 closed the application-neutral Program.
+Do not widen private binding resolution into a platform implementation before a selected-runtime
+decision.

@@ -1,10 +1,12 @@
 # Re-entry Core Program Contract
 
 **Role:** CANONICAL PROGRAM EXECUTION CONTRACT  
-**Status:** Accepted  
+**Status:** Accepted; application-neutral Program complete at `locally_verified`  
 **Owner:** Alex and project team  
 **Effective date:** 2026-08-31  
-**Current program:** Re-entry Core  
+**Completion date:** 2026-08-31  
+**Terminal audit:** [RECORE-003](RECORE-003-program-completion-audit.md)  
+**Program:** Re-entry Core  
 **Final Host application:** Unselected
 
 ## 1. Purpose
@@ -389,6 +391,12 @@ If any item is missing, contradicted, indirectly evidenced, or merely planned, t
 remains active. A selected Host application and competition submission may begin before this
 program closes when their bounded dependencies are ready, but they do not substitute for these
 core completion requirements.
+
+**Current completion result:** the terminal RECORE-003 audit marks every requirement above `MET`
+against the exact final source and closes this application-neutral Program at `locally_verified`.
+Production topology, real Agent/Browser/WebMCP activation, selected-app specialization, deployment,
+judge reproduction, and submission remain separate decision- and evidence-gated work. This
+contract remains authoritative for any later Core reuse or reopen.
 
 ## 16. Change control
 
