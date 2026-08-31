@@ -384,7 +384,7 @@ export function createContinuationPrompt(options = {}) {
     reason.id = reasonId;
     title.textContent = input.title;
     reason.textContent = input.reason;
-    eyebrow.textContent = "SDK request";
+    eyebrow.textContent = "Codex continuation";
     markGlyph.textContent = "</>";
     brandName.textContent = "WebMCP Continuation SDK";
     brandVersion.textContent = "v0.1";
@@ -392,9 +392,9 @@ export function createContinuationPrompt(options = {}) {
     closeButton.setAttribute("aria-label", "Close request");
     closeButton.setAttribute("title", "Close request");
     noticeIcon.textContent = "✓";
-    noticeTitle.textContent = "Human checkpoint";
+    noticeTitle.textContent = "Codex is ready to continue";
     noticeReason.textContent = "Review before the next step runs.";
-    footerText.textContent = "You stay in control of this workflow";
+    footerText.textContent = "Codex waits for your approval";
     approve.type = "button";
     approve.textContent = "Approve & continue";
     decline.type = "button";
