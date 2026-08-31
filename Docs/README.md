@@ -61,8 +61,6 @@ index records decision status, not implementation or runtime proof.
   non-terminal task, including problems and defects.
 - [`Tasks/TASK-001-select-host-application.md`](Tasks/TASK-001-select-host-application.md) — current
   P0 task to produce and reconcile the application-selection ADR.
-- [`Tasks/TASK-002-establish-engineering-governance-baseline.md`](Tasks/TASK-002-establish-engineering-governance-baseline.md) — project-wide engineering authority and mechanical-quality baseline.
-
 - [`Engineering/README.md`](Engineering/README.md) — CANONICAL project-wide development, testing,
   verification, and execution controls.
 - [`Engineering/03-primary-development-runbook.md`](Engineering/03-primary-development-runbook.md) —

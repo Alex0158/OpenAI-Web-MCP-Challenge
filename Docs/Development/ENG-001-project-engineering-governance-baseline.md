@@ -1,6 +1,6 @@
 # ENG-001: Project Engineering Governance Baseline
 
-**Status:** `verification_pending`  
+**Status:** `locally_verified` with exact-source CI success  
 **Opened:** 2026-08-31  
 **Owner:** Primary Codex session under user authorization  
 **Closure target:** `locally_verified` project-governance and mechanical-quality baseline
@@ -83,5 +83,15 @@ The intended implementation source is locally verified and staged with exact own
 - staged scope excludes TASK-003, Research 23, Scenarios 02 through 04, and their owner-held index
   changes.
 
-The highest current label is `locally_verified`. The implementation commit, remote match, GitHub
-Actions result, terminal Task lifecycle, and final closure source identity remain pending.
+The implementation commit is
+`a73a410fe72e99ae6f1025cb214b6230d9cd7fbc`. It was pushed to
+`origin/codex/re-entry-core-foundation`, and local and remote identities matched. GitHub Actions
+Quality run
+[`33410338478`](https://github.com/Alex0158/OpenAI-Web-MCP-Challenge/actions/runs/33410338478)
+completed successfully for that exact SHA; every validator, scan, and Re-entry Core step passed.
+
+The highest Development label remains `locally_verified`; CI success independently verifies the
+repository-safe and local-process commands on the exact implementation source but does not raise the
+runtime, deployment, judge-reproduction, or submission claim. TASK-002 is closed. Future
+selected-application and runtime work applies this baseline through its own bounded Task and adds
+only the controls required by a real surface.

@@ -1,7 +1,7 @@
 # Development and Closure
 
 **Role:** CANONICAL Program, implementation, verification, runbook, and closure index  
-**Status:** Application-neutral Core closure baseline plus active project-wide governance work  
+**Status:** Application-neutral Core and project-wide engineering-governance closure baseline  
 **Last updated:** 2026-08-31
 
 ## Purpose
@@ -106,7 +106,7 @@ genuine WebMCP, deployment, or judge reproducibility.
 | [`DOCS-001`](DOCS-001-documentation-architecture-reconciliation.md) | Reconcile repository entry points, documentation routing, Core completion wording, and future source placement without changing product behavior | `locally_verified` |
 | [`DOCS-002`](DOCS-002-modular-authority-and-core-denoising.md) | Establish mechanism-module ownership, reduce mixed-role Core content, and remove the duplicate Knowledge routing layer | `locally_verified` |
 | [`DOCS-003`](DOCS-003-unified-task-authority.md) | Establish one unified task lifecycle for pending work, problems, defects, investigations, and decision needs | `locally_verified` |
-| [`ENG-001`](ENG-001-project-engineering-governance-baseline.md) | Establish the project-wide engineering authority, mechanical repository checks, aggregate Core verification, and CI baseline | `verification_pending` |
+| [`ENG-001`](ENG-001-project-engineering-governance-baseline.md) | Establish the project-wide engineering authority, mechanical repository checks, aggregate Core verification, and CI baseline | `locally_verified` with exact-source CI success |
 
 ## Lean implementation rules
 

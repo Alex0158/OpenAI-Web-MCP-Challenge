@@ -6,13 +6,13 @@
 ## Task Control
 
 - Type: `implementation`
-- Lifecycle: `verification_pending`
+- Lifecycle: `closed`
 - Priority: `P0`
 - Owner: Alex and the primary Codex session
-- Current increment: Deliver the locally verified engineering-governance baseline and obtain remote
-  CI evidence for its exact implementation commit.
-- Next gate: The implementation commit is pushed, its Quality workflow passes, and final Task and
-  Development closure are reconciled and remote-matched.
+- Current increment: Complete. The project-wide engineering-governance baseline is locally verified
+  and independently CI-verified on its exact implementation commit.
+- Next gate: Future selected-application and runtime tasks apply the baseline and add only controls
+  justified by their first real consumer.
 - Dependencies: Preserve the current application-selection work and keep selected-app standards
   extensible until TASK-001 is decided.
 
