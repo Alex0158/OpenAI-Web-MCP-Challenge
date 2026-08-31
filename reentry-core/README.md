@@ -1,8 +1,10 @@
 # Re-entry Core
 
 **Status:** v0.1 protocol, Host SDK, Receiver C1, Connector delivery C2, transport/process C3d,
-Agent Adapter contract C4b, and source-repository conformance profile C6b locally verified  
-**Authority:** ADR-0006 through ADR-0012 and `Docs/Development/RECORE-001-foundation.md`
+Agent Adapter contract C4b, source-repository conformance profile C6b, and app-independent quality
+and weight baseline locally verified  
+**Authority:** ADR-0006 through ADR-0012, `Docs/Development/RECORE-001-foundation.md`, and
+`Docs/Development/RECORE-002-quality-and-weight.md`
 
 This directory is the authoritative source for new application-neutral Re-entry Core behavior.
 MVP1 and MVP2 remain unchanged references.

@@ -1,9 +1,10 @@
 # RECORE-002: Quality and Weight Baseline
 
-**Role:** ACTIVE IMPLEMENTATION RECORD  
+**Role:** CLOSED IMPLEMENTATION RECORD  
 **Risk profile:** Standard — developer-only measurement with no runtime behavior change  
-**Status:** `specified`  
+**Status:** `locally_verified`  
 **Opened:** 2026-08-31  
+**Closed:** 2026-08-31  
 **Branch:** `codex/re-entry-core-foundation`  
 **Baseline:** `cd3c3402b6df6d6faddbde36e830044c26f652c3`
 
@@ -25,8 +26,9 @@ permission to weaken authority, durability, validation, or failure semantics.
 - `benchmark:protocol` already measures bounded signing and verification overhead.
 - `benchmark:agent-adapter` already measures deterministic adapter derivation, dispatch-wrapper
   overhead, and cold Agent-subpath import.
-- The Connector has no poller, daemon, timer, or idle loop. Its current idle work is structurally
-  zero, so this task will not invent an idle workload merely to produce a number.
+- The Connector has no poller, daemon, periodic timer, keepalive, or idle loop. Its request timeout
+  exists only during an explicit call, so this task will not invent an idle workload merely to
+  produce a number.
 
 No ADR is required because this task changes no product, protocol, authority, data lifecycle,
 runtime topology, or production behavior. Any such change discovered during measurement must be
@@ -101,7 +103,8 @@ evidence, and fix it as a separate coherent increment. Do not optimize around in
 - Both entrypoints emit bounded machine-readable JSON with runtime, sample configuration, explicit
   local-only claim text, and summary measurements.
 - Receiver measurements exercise file-backed durable acceptance, claim, and acknowledgement and
-  leave no temporary state after success or failure.
+  remove their exact temporary state after handled success or failure. External hard termination
+  is not a cleanup claim.
 - Profile measurements call the unchanged redacted conformance entrypoint and reject any failed or
   malformed sample.
 - Aggregate and protocol tests pass on Node 24 and the current runtime.
@@ -114,8 +117,38 @@ evidence, and fix it as a separate coherent increment. Do not optimize around in
 
 ## Verification record
 
-No implementation or measurement evidence exists yet.
+**Closure:** `locally_verified` on 2026-08-31.
 
-**Next entry condition:** implement the two bounded benchmark entrypoints without changing
-`reentry-core/src/` or the existing conformance runner, then validate correctness, cleanup,
-compatibility, package exclusion, and claim limits before recording any timing result.
+- Implementation commit `1503c77f45cb9e83d2c80ac1bcb8c466e2d0b181` was pushed and matched
+  `origin/codex/re-entry-core-foundation` before this closure writeback.
+- `benchmark:receiver` uses seven fresh file-backed samples with 16 completed lifecycles per
+  sample. Setup is excluded from the timed event phase; the benchmark separately measures fresh
+  store startup, signed-event durable acceptance, target-scoped claim, and Host-effect-backed
+  acknowledgement. Every result is checked before it can be reported.
+- On this machine, Node `v26.5.0` observed median store startup of 1.295 ms and median event, claim,
+  and acknowledgement operations of 0.205 ms, 0.119 ms, and 0.111 ms. Node `v24.20.0` observed
+  1.177 ms, 0.201 ms, 0.113 ms, and 0.097 ms. Each completed 16-lifecycle file set was 167,936
+  bytes. These are sequential local samples, not a Node-version comparison or service claim.
+- `benchmark:profile` cold-spawns the unchanged conformance runner seven times and requires its
+  exact redacted result. Median wall-clock observations were 182.015 ms on Node `v26.5.0` and
+  169.857 ms on Node `v24.20.0`; each public result was 419 bytes. No outer hard-kill timeout was
+  added because that could orphan child roles or temporary state; the runner retains its bounded
+  IPC timeout and cleanup behavior.
+- The existing protocol and Agent Adapter benchmarks also ran successfully on both runtimes. Their
+  outputs remain regression samples; this task sets no pass/fail timing threshold and makes no
+  optimization or relative-runtime claim.
+- The aggregate suite passes 56 of 56 tests and protocol conformance passes 11 of 11 on both
+  runtimes. The direct source profile also passes on both runtimes.
+- `npm ls --omit=dev --all --json` reports zero runtime dependencies. `npm pack --dry-run --json`
+  selects the same 15 runtime, README, and vector files: 31,621 bytes compressed and 163,211 bytes
+  unpacked. Benchmark, conformance, and test sources remain excluded.
+- `reentry-core/src/`, the conformance runner, MVP1, MVP2, References, app-selection research,
+  scenarios, production runtime, and user-owned dirty files are unchanged by the implementation.
+
+This closes RECORE-002 at a local regression-evidence level. It does not prove service throughput,
+capacity, HTTP or internet latency, Cloud Receiver operation, production Connector idle cost,
+Browser or Agent latency, cross-machine portability, a selected-app budget, deployment, or an SLA.
+
+**Next entry condition:** audit the Re-entry Core Program Definition of Done against current code
+and evidence before opening another runtime-bearing increment. Keep production ownership,
+credential custody, real Agent integration, and app specialization behind their named decisions.
