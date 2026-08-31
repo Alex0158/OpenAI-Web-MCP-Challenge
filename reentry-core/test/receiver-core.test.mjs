@@ -1,11 +1,14 @@
 import assert from "node:assert/strict";
-import { mkdtemp, rmdir, unlink } from "node:fs/promises";
+import { mkdtemp, readFile, rmdir, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
 import {
+  CONNECTOR_IDENTITY_TYPE,
   CONSENT_DECISION_TYPE,
+  HOST_EFFECT_ATTESTATION_TYPE,
+  HOST_EFFECT_OUTCOME,
   ReceiverCore,
 } from "../src/receiver-core.mjs";
 import {
@@ -28,13 +31,19 @@ import {
 const MAXIMUM_GRANT_LIFETIME_MS = 20 * 60 * 1_000;
 const EFFECTIVE_EXPIRY = "2026-08-31T03:25:00.000Z";
 const KEY_ID = "host_key_001";
+const LEASE_DURATION_MS = 60 * 1_000;
+const MAXIMUM_DELIVERY_ATTEMPTS = 3;
 
 function createHarness({
   store = new SqliteReceiverStore({ filename: ":memory:" }),
   keys = createTestKeys(),
   decisions = new Map(),
+  connectors = new Map(),
+  effects = new Map(),
   clockRef = { value: new Date(FIXED_NOW) },
   maximumGrantLifetimeMs = MAXIMUM_GRANT_LIFETIME_MS,
+  leaseDurationMs = LEASE_DURATION_MS,
+  maximumDeliveryAttempts = MAXIMUM_DELIVERY_ATTEMPTS,
   createId = deterministicIdSource(),
 } = {}) {
   const core = new ReceiverCore({
@@ -56,11 +65,27 @@ function createHarness({
         return typeof value === "function" ? value(challengeId) : value;
       },
     },
+    connectorAuthority: {
+      verifyConnector({ connectorToken }) {
+        const value = connectors.get(connectorToken);
+        if (value === undefined) throw new Error("Unknown Connector token");
+        return typeof value === "function" ? value() : value;
+      },
+    },
+    effectAuthority: {
+      verifyEffect({ effectToken, expected }) {
+        const value = effects.get(effectToken);
+        if (value === undefined) throw new Error("Unknown Host-effect token");
+        return typeof value === "function" ? value(expected) : value;
+      },
+    },
     maximumGrantLifetimeMs,
+    leaseDurationMs,
+    maximumDeliveryAttempts,
     clock: () => clockRef.value,
     createId,
   });
-  return { core, store, keys, decisions, clockRef };
+  return { core, store, keys, decisions, connectors, effects, clockRef };
 }
 
 function deterministicIdSource() {
@@ -147,6 +172,49 @@ function signedEventEnvelope(harness, binding, overrides = {}, options = {}) {
       keyId: KEY_ID,
       timestamp: String(Math.floor(timestamp.getTime() / 1_000)),
     }),
+  };
+}
+
+function connectorIdentity(overrides = {}) {
+  return {
+    type: CONNECTOR_IDENTITY_TYPE,
+    protocol_version: PROTOCOL_VERSION,
+    connector_id: "connector_001",
+    subject_id: "subject_001",
+    delivery_target_id: "target_001",
+    authenticated_at: FIXED_NOW.toISOString(),
+    expires_at: new Date(FIXED_NOW.getTime() + 10 * 60 * 1_000).toISOString(),
+    ...overrides,
+  };
+}
+
+function claimToken(fill) {
+  return Buffer.alloc(32, fill).toString("base64url");
+}
+
+function effectAttestation(lease, confirmedAt, overrides = {}) {
+  return {
+    type: HOST_EFFECT_ATTESTATION_TYPE,
+    protocol_version: PROTOCOL_VERSION,
+    effect_id: "effect_001",
+    delivery_id: lease.delivery_id,
+    event_id: lease.event_id,
+    correlation_id: lease.continuation.correlation_id,
+    workflow_id: lease.continuation.workflow_id,
+    outcome: HOST_EFFECT_OUTCOME,
+    confirmed_at: confirmedAt.toISOString(),
+    ...overrides,
+  };
+}
+
+function acceptPendingDelivery(harness) {
+  const { approval } = enrollAndApprove(harness);
+  const signed = signedEventEnvelope(harness, approval.binding);
+  const acceptance = harness.core.acceptEvent(signed.envelope);
+  return {
+    ...signed,
+    acceptance,
+    delivery: harness.store.getDeliveryByEventId(signed.event.event_id),
   };
 }
 
@@ -459,6 +527,638 @@ test("file-backed state survives close and exact replay after restart", async (t
   assert.equal(openStore.getDeliveryByEventId(event.event_id).delivery_id, deliveryId);
 });
 
+test("Connector claim is target-scoped, private, and exactly replayable", (t) => {
+  const harness = createHarness();
+  t.after(() => harness.store.close());
+  const { delivery } = acceptPendingDelivery(harness);
+  const token = claimToken(1);
+
+  assert.throws(
+    () => harness.core.claimDelivery({
+      connectorToken: "unknown_connector",
+      claimToken: token,
+    }),
+    { code: "connector_identity_invalid", statusCode: 403 },
+  );
+  harness.connectors.set("wrong_target", connectorIdentity({
+    delivery_target_id: "target_other",
+  }));
+  assert.equal(harness.core.claimDelivery({
+    connectorToken: "wrong_target",
+    claimToken: token,
+  }), null);
+  harness.connectors.set("wrong_subject", connectorIdentity({ subject_id: "subject_other" }));
+  assert.throws(
+    () => harness.core.claimDelivery({
+      connectorToken: "wrong_subject",
+      claimToken: token,
+    }),
+    { code: "connector_delivery_scope_invalid", statusCode: 403 },
+  );
+  assert.equal(harness.store.getDeliveryById(delivery.delivery_id).status, "pending");
+
+  harness.connectors.set("connector_secret", connectorIdentity());
+  const claimed = harness.core.claimDelivery({
+    connectorToken: "connector_secret",
+    claimToken: token,
+  });
+  assert.deepEqual(Object.keys(claimed).sort(), ["duplicate", "lease"]);
+  assert.equal(claimed.duplicate, false);
+  assert.equal(claimed.lease.type, "webmcp.delivery_lease");
+  assert.equal(claimed.lease.delivery_id, delivery.delivery_id);
+  assert.equal(claimed.lease.attempt, 1);
+  assert.equal(claimed.lease.lease_token, token);
+  assert.equal(
+    claimed.lease.lease_expires_at,
+    new Date(FIXED_NOW.getTime() + LEASE_DURATION_MS).toISOString(),
+  );
+  assert.equal(claimed.lease.continuation.state_version, 4);
+  assert.equal(claimed.lease.receipt.grant_id, delivery.grant_id);
+  for (const forbidden of [
+    "connector_001",
+    "subject_001",
+    "target_001",
+    "binding_1",
+  ]) {
+    assert.ok(!JSON.stringify(claimed).includes(forbidden));
+  }
+
+  const stored = harness.store.getDeliveryById(delivery.delivery_id);
+  assert.equal(stored.status, "leased");
+  assert.equal(stored.current_attempt, 1);
+  assert.notEqual(stored.current_lease_token_digest, token);
+  assert.ok(!JSON.stringify(stored).includes("connector_secret"));
+  assert.ok(!JSON.stringify(stored).includes(token));
+
+  const replay = harness.core.claimDelivery({
+    connectorToken: "connector_secret",
+    claimToken: token,
+  });
+  assert.deepEqual(replay, { ...claimed, duplicate: true });
+  assert.equal(harness.store.getDeliveryById(delivery.delivery_id).current_attempt, 1);
+  harness.connectors.set("other_connector", connectorIdentity({
+    connector_id: "connector_002",
+  }));
+  assert.throws(
+    () => harness.core.claimDelivery({
+      connectorToken: "other_connector",
+      claimToken: token,
+    }),
+    { code: "delivery_lease_scope_invalid", statusCode: 403 },
+  );
+  assert.equal(harness.core.claimDelivery({
+    connectorToken: "connector_secret",
+    claimToken: claimToken(2),
+  }), null);
+  assert.equal(harness.store.getDeliveryById(delivery.delivery_id).current_attempt, 1);
+});
+
+test("expired leases require fresh tokens, fence stale workers, and bound activation", (t) => {
+  const clockRef = { value: new Date(FIXED_NOW) };
+  const harness = createHarness({
+    clockRef,
+    leaseDurationMs: 1_000,
+    maximumDeliveryAttempts: 3,
+  });
+  t.after(() => harness.store.close());
+  const { delivery } = acceptPendingDelivery(harness);
+  harness.connectors.set("connector_secret", connectorIdentity());
+  const firstToken = claimToken(10);
+  const secondToken = claimToken(11);
+  const thirdToken = claimToken(12);
+
+  const first = harness.core.claimDelivery({
+    connectorToken: "connector_secret",
+    claimToken: firstToken,
+  }).lease;
+  clockRef.value = new Date(FIXED_NOW.getTime() + 1_001);
+  assert.throws(
+    () => harness.core.claimDelivery({
+      connectorToken: "connector_secret",
+      claimToken: firstToken,
+    }),
+    { code: "claim_token_retired", statusCode: 409 },
+  );
+
+  const second = harness.core.claimDelivery({
+    connectorToken: "connector_secret",
+    claimToken: secondToken,
+  }).lease;
+  assert.equal(second.attempt, 2);
+  assert.throws(
+    () => harness.core.acknowledgeDelivery({
+      connectorToken: "connector_secret",
+      deliveryId: delivery.delivery_id,
+      leaseToken: first.lease_token,
+      effectToken: "unused_effect",
+    }),
+    { code: "delivery_lease_invalid", statusCode: 403 },
+  );
+
+  clockRef.value = new Date(FIXED_NOW.getTime() + 2_002);
+  assert.throws(
+    () => harness.core.claimDelivery({
+      connectorToken: "connector_secret",
+      claimToken: firstToken,
+    }),
+    { code: "claim_token_retired", statusCode: 409 },
+  );
+  const third = harness.core.claimDelivery({
+    connectorToken: "connector_secret",
+    claimToken: thirdToken,
+  }).lease;
+  assert.equal(third.attempt, 3);
+
+  clockRef.value = new Date(FIXED_NOW.getTime() + 3_003);
+  assert.equal(harness.core.claimDelivery({
+    connectorToken: "connector_secret",
+    claimToken: claimToken(13),
+  }), null);
+  const exhausted = harness.store.getDeliveryById(delivery.delivery_id);
+  assert.equal(exhausted.status, "retry_exhausted");
+  assert.equal(exhausted.current_attempt, 3);
+  assert.equal(exhausted.terminal_reason, "attempt_limit_reached");
+
+  const confirmedAt = new Date(Date.parse(third.lease_expires_at) - 1);
+  harness.effects.set("final_effect", effectAttestation(third, confirmedAt));
+  const acknowledgement = harness.core.acknowledgeDelivery({
+    connectorToken: "connector_secret",
+    deliveryId: delivery.delivery_id,
+    leaseToken: thirdToken,
+    effectToken: "final_effect",
+  });
+  assert.equal(acknowledgement.status, "acknowledged");
+  assert.equal(acknowledgement.duplicate, false);
+  assert.equal(harness.store.getDeliveryById(delivery.delivery_id).status, "acknowledged");
+  assert.throws(
+    () => harness.core.acknowledgeDelivery({
+      connectorToken: "connector_secret",
+      deliveryId: delivery.delivery_id,
+      leaseToken: secondToken,
+      effectToken: "final_effect",
+    }),
+    { code: "delivery_lease_invalid", statusCode: 403 },
+  );
+});
+
+test("a persisted attempt cap cannot be widened by Receiver reconfiguration", (t) => {
+  const store = new SqliteReceiverStore({ filename: ":memory:" });
+  t.after(() => store.close());
+  const clockRef = { value: new Date(FIXED_NOW) };
+  const first = createHarness({
+    store,
+    clockRef,
+    leaseDurationMs: 1_000,
+    maximumDeliveryAttempts: 1,
+  });
+  const { delivery } = acceptPendingDelivery(first);
+  first.connectors.set("connector_secret", connectorIdentity());
+  first.core.claimDelivery({
+    connectorToken: "connector_secret",
+    claimToken: claimToken(14),
+  });
+  clockRef.value = new Date(FIXED_NOW.getTime() + 1_001);
+
+  const reconfigured = createHarness({
+    store,
+    keys: first.keys,
+    decisions: first.decisions,
+    connectors: first.connectors,
+    effects: first.effects,
+    clockRef,
+    leaseDurationMs: 1_000,
+    maximumDeliveryAttempts: 100,
+  });
+  assert.equal(reconfigured.core.claimDelivery({
+    connectorToken: "connector_secret",
+    claimToken: claimToken(15),
+  }), null);
+  const exhausted = store.getDeliveryById(delivery.delivery_id);
+  assert.equal(exhausted.maximum_attempts, 1);
+  assert.equal(exhausted.current_attempt, 1);
+  assert.equal(exhausted.status, "retry_exhausted");
+  assert.equal(exhausted.terminal_reason, "attempt_limit_reached");
+});
+
+test("delivery acknowledgement requires one stable trusted Host effect", (t) => {
+  const harness = createHarness();
+  t.after(() => harness.store.close());
+  const { delivery } = acceptPendingDelivery(harness);
+  const leaseToken = claimToken(20);
+  harness.connectors.set("connector_secret", connectorIdentity());
+  const lease = harness.core.claimDelivery({
+    connectorToken: "connector_secret",
+    claimToken: leaseToken,
+  }).lease;
+
+  assert.throws(
+    () => harness.core.acknowledgeDelivery({
+      connectorToken: "connector_secret",
+      deliveryId: delivery.delivery_id,
+      leaseToken,
+      effectToken: "effect_secret",
+      completed: true,
+    }),
+    { code: "receiver_input_fields_invalid" },
+  );
+  assert.throws(
+    () => harness.core.acknowledgeDelivery({
+      connectorToken: "connector_secret",
+      deliveryId: delivery.delivery_id,
+      leaseToken,
+      effectToken: "unknown_effect",
+    }),
+    { code: "host_effect_invalid", statusCode: 403 },
+  );
+
+  harness.effects.set("wrong_effect", effectAttestation(
+    lease,
+    new Date(FIXED_NOW.getTime() + 500),
+    { event_id: "event_other" },
+  ));
+  assert.throws(
+    () => harness.core.acknowledgeDelivery({
+      connectorToken: "connector_secret",
+      deliveryId: delivery.delivery_id,
+      leaseToken,
+      effectToken: "wrong_effect",
+    }),
+    { code: "host_effect_invalid", statusCode: 403 },
+  );
+  harness.effects.set("pre_lease_effect", effectAttestation(
+    lease,
+    new Date(FIXED_NOW.getTime() - 1),
+  ));
+  assert.throws(
+    () => harness.core.acknowledgeDelivery({
+      connectorToken: "connector_secret",
+      deliveryId: delivery.delivery_id,
+      leaseToken,
+      effectToken: "pre_lease_effect",
+    }),
+    { code: "host_effect_time_invalid", statusCode: 403 },
+  );
+  harness.effects.set("late_effect", effectAttestation(
+    lease,
+    new Date(lease.lease_expires_at),
+  ));
+  assert.throws(
+    () => harness.core.acknowledgeDelivery({
+      connectorToken: "connector_secret",
+      deliveryId: delivery.delivery_id,
+      leaseToken,
+      effectToken: "late_effect",
+    }),
+    { code: "host_effect_time_invalid", statusCode: 403 },
+  );
+  assert.equal(harness.store.getDeliveryById(delivery.delivery_id).status, "leased");
+
+  harness.effects.set("effect_secret", (expected) => {
+    assert.deepEqual(expected, {
+      delivery_id: delivery.delivery_id,
+      event_id: lease.event_id,
+      correlation_id: lease.continuation.correlation_id,
+      workflow_id: lease.continuation.workflow_id,
+      canonical_url: lease.continuation.canonical_url,
+      human_boundary: "explicit_receiver_consent",
+      outcome: HOST_EFFECT_OUTCOME,
+    });
+    return effectAttestation(lease, new Date(FIXED_NOW.getTime() + 500));
+  });
+  const acknowledgement = harness.core.acknowledgeDelivery({
+    connectorToken: "connector_secret",
+    deliveryId: delivery.delivery_id,
+    leaseToken,
+    effectToken: "effect_secret",
+  });
+  assert.deepEqual(Object.keys(acknowledgement).sort(), [
+    "acknowledged",
+    "delivery_id",
+    "duplicate",
+    "effect_id",
+    "event_id",
+    "protocol_version",
+    "status",
+    "type",
+  ]);
+  assert.equal(acknowledgement.acknowledged, true);
+  assert.equal(acknowledgement.duplicate, false);
+  assert.ok(!("lease_token" in acknowledgement));
+  assert.ok(!("receipt" in acknowledgement));
+
+  const stored = harness.store.getDeliveryById(delivery.delivery_id);
+  assert.equal(stored.status, "acknowledged");
+  assert.equal(stored.effect_id, "effect_001");
+  for (const rawToken of ["connector_secret", leaseToken, "effect_secret"]) {
+    assert.ok(!JSON.stringify(stored).includes(rawToken));
+  }
+  assert.deepEqual(harness.core.acknowledgeDelivery({
+    connectorToken: "connector_secret",
+    deliveryId: delivery.delivery_id,
+    leaseToken,
+    effectToken: "effect_secret",
+  }), { ...acknowledgement, duplicate: true });
+
+  harness.effects.set("different_effect", effectAttestation(
+    lease,
+    new Date(FIXED_NOW.getTime() + 500),
+    { effect_id: "effect_002" },
+  ));
+  assert.throws(
+    () => harness.core.acknowledgeDelivery({
+      connectorToken: "connector_secret",
+      deliveryId: delivery.delivery_id,
+      leaseToken,
+      effectToken: "different_effect",
+    }),
+    { code: "delivery_effect_conflict", statusCode: 409 },
+  );
+});
+
+test("expired or revoked pending authority cancels without creating a lease", async (t) => {
+  await t.test("Grant expiry cancels the pending delivery", (t) => {
+    const clockRef = { value: new Date(FIXED_NOW) };
+    const harness = createHarness({
+      clockRef,
+      maximumGrantLifetimeMs: 1_000,
+    });
+    t.after(() => harness.store.close());
+    const { delivery } = acceptPendingDelivery(harness);
+    harness.connectors.set("connector_secret", connectorIdentity());
+    const token = claimToken(30);
+    clockRef.value = new Date(FIXED_NOW.getTime() + 1_001);
+
+    assert.equal(harness.core.claimDelivery({
+      connectorToken: "connector_secret",
+      claimToken: token,
+    }), null);
+    const cancelled = harness.store.getDeliveryById(delivery.delivery_id);
+    assert.equal(cancelled.status, "cancelled");
+    assert.equal(cancelled.terminal_reason, "grant_expired");
+    assert.equal(cancelled.current_attempt, 0);
+    assert.equal(cancelled.current_lease_token_digest, null);
+  });
+
+  await t.test("a revoked Grant from the persistence port cancels the pending delivery", (t) => {
+    const baseStore = new SqliteReceiverStore({ filename: ":memory:" });
+    t.after(() => baseStore.close());
+    const harness = createHarness({ store: baseStore });
+    const { delivery } = acceptPendingDelivery(harness);
+    harness.connectors.set("connector_secret", connectorIdentity());
+    const revokedStore = overrideStoreMethod(
+      baseStore,
+      "getNextDeliveryByTarget",
+      (...args) => ({
+        ...baseStore.getNextDeliveryByTarget(...args),
+        grant_revoked_at: FIXED_NOW.toISOString(),
+      }),
+    );
+    const revokedHarness = createHarness({
+      store: revokedStore,
+      keys: harness.keys,
+      decisions: harness.decisions,
+      connectors: harness.connectors,
+      effects: harness.effects,
+      clockRef: harness.clockRef,
+    });
+
+    assert.equal(revokedHarness.core.claimDelivery({
+      connectorToken: "connector_secret",
+      claimToken: claimToken(31),
+    }), null);
+    const cancelled = baseStore.getDeliveryById(delivery.delivery_id);
+    assert.equal(cancelled.status, "cancelled");
+    assert.equal(cancelled.terminal_reason, "grant_revoked");
+  });
+
+  await t.test("revocation after lease prevents exact claim replay", (t) => {
+    const baseStore = new SqliteReceiverStore({ filename: ":memory:" });
+    t.after(() => baseStore.close());
+    const harness = createHarness({ store: baseStore });
+    const { delivery } = acceptPendingDelivery(harness);
+    harness.connectors.set("connector_secret", connectorIdentity());
+    const token = claimToken(32);
+    harness.core.claimDelivery({ connectorToken: "connector_secret", claimToken: token });
+
+    const revokedStore = overrideStoreMethod(
+      baseStore,
+      "getDeliveryByCurrentLeaseTokenDigest",
+      (...args) => ({
+        ...baseStore.getDeliveryByCurrentLeaseTokenDigest(...args),
+        grant_revoked_at: FIXED_NOW.toISOString(),
+      }),
+    );
+    const revokedHarness = createHarness({
+      store: revokedStore,
+      keys: harness.keys,
+      decisions: harness.decisions,
+      connectors: harness.connectors,
+      effects: harness.effects,
+      clockRef: harness.clockRef,
+    });
+    assert.equal(revokedHarness.core.claimDelivery({
+      connectorToken: "connector_secret",
+      claimToken: token,
+    }), null);
+    const exhausted = baseStore.getDeliveryById(delivery.delivery_id);
+    assert.equal(exhausted.status, "retry_exhausted");
+    assert.equal(exhausted.terminal_reason, "grant_revoked");
+  });
+});
+
+test("lease lifetime is narrowed by Connector identity and Grant expiry", async (t) => {
+  await t.test("Connector identity expiry narrows the lease", (t) => {
+    const harness = createHarness();
+    t.after(() => harness.store.close());
+    acceptPendingDelivery(harness);
+    const identityExpiry = new Date(FIXED_NOW.getTime() + 5_000).toISOString();
+    harness.connectors.set("short_session", connectorIdentity({ expires_at: identityExpiry }));
+    const claimed = harness.core.claimDelivery({
+      connectorToken: "short_session",
+      claimToken: claimToken(40),
+    });
+    assert.equal(claimed.lease.lease_expires_at, identityExpiry);
+  });
+
+  await t.test("Grant expiry narrows the lease", (t) => {
+    const harness = createHarness({ maximumGrantLifetimeMs: 5_000 });
+    t.after(() => harness.store.close());
+    acceptPendingDelivery(harness);
+    harness.connectors.set("connector_secret", connectorIdentity());
+    const claimed = harness.core.claimDelivery({
+      connectorToken: "connector_secret",
+      claimToken: claimToken(41),
+    });
+    assert.equal(
+      claimed.lease.lease_expires_at,
+      new Date(FIXED_NOW.getTime() + 5_000).toISOString(),
+    );
+  });
+});
+
+test("claim and acknowledgement roll back after injected post-write failures", (t) => {
+  const baseStore = new SqliteReceiverStore({ filename: ":memory:" });
+  t.after(() => baseStore.close());
+  const harness = createHarness({ store: baseStore });
+  const { delivery } = acceptPendingDelivery(harness);
+  harness.connectors.set("connector_secret", connectorIdentity());
+  const leaseToken = claimToken(50);
+
+  const claimFailureStore = overrideStoreMethod(baseStore, "claimDelivery", (...args) => {
+    baseStore.claimDelivery(...args);
+    throw new Error("Injected post-claim failure");
+  });
+  const claimFailureHarness = createHarness({
+    store: claimFailureStore,
+    keys: harness.keys,
+    decisions: harness.decisions,
+    connectors: harness.connectors,
+    effects: harness.effects,
+    clockRef: harness.clockRef,
+  });
+  assert.throws(
+    () => claimFailureHarness.core.claimDelivery({
+      connectorToken: "connector_secret",
+      claimToken: leaseToken,
+    }),
+    /Injected post-claim failure/,
+  );
+  assert.equal(baseStore.getDeliveryById(delivery.delivery_id).status, "pending");
+
+  const lease = harness.core.claimDelivery({
+    connectorToken: "connector_secret",
+    claimToken: leaseToken,
+  }).lease;
+  harness.effects.set(
+    "effect_secret",
+    effectAttestation(lease, new Date(FIXED_NOW.getTime() + 500)),
+  );
+  const acknowledgementFailureStore = overrideStoreMethod(
+    baseStore,
+    "acknowledgeDelivery",
+    (...args) => {
+      baseStore.acknowledgeDelivery(...args);
+      throw new Error("Injected post-acknowledgement failure");
+    },
+  );
+  const acknowledgementFailureHarness = createHarness({
+    store: acknowledgementFailureStore,
+    keys: harness.keys,
+    decisions: harness.decisions,
+    connectors: harness.connectors,
+    effects: harness.effects,
+    clockRef: harness.clockRef,
+  });
+  assert.throws(
+    () => acknowledgementFailureHarness.core.acknowledgeDelivery({
+      connectorToken: "connector_secret",
+      deliveryId: delivery.delivery_id,
+      leaseToken,
+      effectToken: "effect_secret",
+    }),
+    /Injected post-acknowledgement failure/,
+  );
+  const afterFailure = baseStore.getDeliveryById(delivery.delivery_id);
+  assert.equal(afterFailure.status, "leased");
+  assert.equal(afterFailure.effect_id, null);
+
+  const acknowledged = harness.core.acknowledgeDelivery({
+    connectorToken: "connector_secret",
+    deliveryId: delivery.delivery_id,
+    leaseToken,
+    effectToken: "effect_secret",
+  });
+  assert.equal(acknowledged.duplicate, false);
+  assert.equal(baseStore.getDeliveryById(delivery.delivery_id).status, "acknowledged");
+});
+
+test("lease and acknowledgement survive file reopen without persisting raw tokens", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "webmcp-delivery-state-"));
+  const filename = join(directory, "receiver.sqlite");
+  let openStore;
+  t.after(async () => {
+    openStore?.close();
+    for (const path of [filename, `${filename}-wal`, `${filename}-shm`]) {
+      await unlinkIfPresent(path);
+    }
+    await rmdir(directory);
+  });
+
+  const keys = createTestKeys();
+  const decisions = new Map();
+  const connectors = new Map();
+  const effects = new Map();
+  const clockRef = { value: new Date(FIXED_NOW) };
+  const connectorToken = "connector_restart_secret";
+  const leaseToken = claimToken(60);
+  const effectToken = "effect_restart_secret";
+  connectors.set(connectorToken, connectorIdentity());
+
+  openStore = new SqliteReceiverStore({ filename });
+  const first = createHarness({
+    store: openStore,
+    keys,
+    decisions,
+    connectors,
+    effects,
+    clockRef,
+  });
+  const { delivery } = acceptPendingDelivery(first);
+  const lease = first.core.claimDelivery({ connectorToken, claimToken: leaseToken }).lease;
+  effects.set(effectToken, effectAttestation(lease, new Date(FIXED_NOW.getTime() + 500)));
+  openStore.close();
+
+  openStore = new SqliteReceiverStore({ filename });
+  const restarted = createHarness({
+    store: openStore,
+    keys,
+    decisions,
+    connectors,
+    effects,
+    clockRef,
+  });
+  const acknowledged = restarted.core.acknowledgeDelivery({
+    connectorToken,
+    deliveryId: delivery.delivery_id,
+    leaseToken,
+    effectToken,
+  });
+  assert.equal(acknowledged.duplicate, false);
+  openStore.close();
+
+  openStore = new SqliteReceiverStore({ filename });
+  const replayed = createHarness({
+    store: openStore,
+    keys,
+    decisions,
+    connectors,
+    effects,
+    clockRef,
+  }).core.acknowledgeDelivery({
+    connectorToken,
+    deliveryId: delivery.delivery_id,
+    leaseToken,
+    effectToken,
+  });
+  assert.deepEqual(replayed, { ...acknowledged, duplicate: true });
+  assert.equal(openStore.getDeliveryById(delivery.delivery_id).status, "acknowledged");
+  openStore.close();
+  openStore = undefined;
+
+  for (const path of [filename, `${filename}-wal`, `${filename}-shm`]) {
+    let bytes;
+    try {
+      bytes = await readFile(path);
+    } catch (error) {
+      if (error?.code === "ENOENT") continue;
+      throw error;
+    }
+    for (const rawToken of [connectorToken, leaseToken, effectToken]) {
+      assert.equal(bytes.includes(Buffer.from(rawToken)), false);
+    }
+  }
+});
+
 function failDeliveryWrites(baseStore) {
   const wrapper = {
     transaction(callback) {
@@ -479,9 +1179,34 @@ function failDeliveryWrites(baseStore) {
     "consumeGrantRun",
     "getEventById",
     "insertEvent",
+    "getDeliveryById",
+    "getDeliveryByEffectId",
+    "getDeliveryByCurrentLeaseTokenDigest",
+    "hasDeliveryAttemptTokenDigest",
+    "getActiveDeliveryByTarget",
+    "getNextDeliveryByTarget",
+    "claimDelivery",
+    "cancelDelivery",
+    "exhaustDelivery",
+    "acknowledgeDelivery",
   ]) {
     wrapper[method] = (...args) => baseStore[method](...args);
   }
+  return wrapper;
+}
+
+function overrideStoreMethod(baseStore, methodName, implementation) {
+  let wrapper;
+  wrapper = new Proxy(baseStore, {
+    get(target, property) {
+      if (property === "transaction") {
+        return (callback) => target.transaction(() => callback(wrapper));
+      }
+      if (property === methodName) return implementation;
+      const value = Reflect.get(target, property, target);
+      return typeof value === "function" ? value.bind(target) : value;
+    },
+  });
   return wrapper;
 }
 

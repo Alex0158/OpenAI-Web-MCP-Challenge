@@ -12,6 +12,35 @@ import {
   validateReentryManifest,
   verifyContinuationEventEnvelope,
 } from "./protocol.mjs";
+import { ReceiverDelivery } from "./receiver-delivery.mjs";
+import {
+  authorization,
+  conflict,
+  deepFreeze,
+  invariant,
+  notFound,
+  requireExactInput,
+  requireIdentifier,
+  requireOpaqueToken,
+  requireTimestamp,
+  scope,
+} from "./receiver-support.mjs";
+
+export {
+  CONNECTOR_IDENTITY_TYPE,
+  DELIVERY_ACKNOWLEDGEMENT_TYPE,
+  DELIVERY_LEASE_TYPE,
+  HOST_EFFECT_ATTESTATION_TYPE,
+  HOST_EFFECT_OUTCOME,
+} from "./receiver-delivery.mjs";
+export {
+  ReceiverAuthorizationError,
+  ReceiverConflictError,
+  ReceiverInvariantError,
+  ReceiverNotFoundError,
+  ReceiverScopeError,
+  ReceiverValidationError,
+} from "./receiver-support.mjs";
 
 export const CONSENT_DECISION_TYPE = "webmcp.receiver_consent_decision";
 
@@ -19,7 +48,11 @@ const RECEIVER_OPTION_FIELDS = Object.freeze([
   "store",
   "keyResolver",
   "consentAuthority",
+  "connectorAuthority",
+  "effectAuthority",
   "maximumGrantLifetimeMs",
+  "leaseDurationMs",
+  "maximumDeliveryAttempts",
   "clock",
   "createId",
 ]);
@@ -53,23 +86,35 @@ const STORE_METHODS = Object.freeze([
   "insertEvent",
   "insertDelivery",
 ]);
-const IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$/;
 const DECISION_FUTURE_SKEW_MS = 60 * 1_000;
-const MAX_DECISION_TOKEN_BYTES = 4 * 1_024;
+const MIN_LEASE_DURATION_MS = 1_000;
+const MAX_LEASE_DURATION_MS = 5 * 60 * 1_000;
+const MAX_DELIVERY_ATTEMPTS_LIMIT = 100;
 
 export class ReceiverCore {
   #store;
   #keyResolver;
   #consentAuthority;
   #maximumGrantLifetimeMs;
+  #maximumDeliveryAttempts;
   #clock;
   #createId;
+  #delivery;
 
   constructor(options) {
     requireExactInput(
       options,
       RECEIVER_OPTION_FIELDS,
-      ["store", "keyResolver", "consentAuthority", "maximumGrantLifetimeMs"],
+      [
+        "store",
+        "keyResolver",
+        "consentAuthority",
+        "connectorAuthority",
+        "effectAuthority",
+        "maximumGrantLifetimeMs",
+        "leaseDurationMs",
+        "maximumDeliveryAttempts",
+      ],
       "Receiver Core options",
     );
     requireStore(options.store);
@@ -79,17 +124,38 @@ export class ReceiverCore {
     if (typeof options.consentAuthority?.verifyDecision !== "function") {
       throw new TypeError("Receiver Core consentAuthority must implement verifyDecision");
     }
+    if (typeof options.connectorAuthority?.verifyConnector !== "function") {
+      throw new TypeError("Receiver Core connectorAuthority must implement verifyConnector");
+    }
+    if (typeof options.effectAuthority?.verifyEffect !== "function") {
+      throw new TypeError("Receiver Core effectAuthority must implement verifyEffect");
+    }
     if (
       !Number.isSafeInteger(options.maximumGrantLifetimeMs) ||
       options.maximumGrantLifetimeMs < 1_000
     ) {
       throw new TypeError("Receiver Core maximumGrantLifetimeMs must be at least one second");
     }
+    if (
+      !Number.isSafeInteger(options.leaseDurationMs) ||
+      options.leaseDurationMs < MIN_LEASE_DURATION_MS ||
+      options.leaseDurationMs > MAX_LEASE_DURATION_MS
+    ) {
+      throw new TypeError("Receiver Core leaseDurationMs must be between one second and five minutes");
+    }
+    if (
+      !Number.isSafeInteger(options.maximumDeliveryAttempts) ||
+      options.maximumDeliveryAttempts < 1 ||
+      options.maximumDeliveryAttempts > MAX_DELIVERY_ATTEMPTS_LIMIT
+    ) {
+      throw new TypeError("Receiver Core maximumDeliveryAttempts must be between 1 and 100");
+    }
 
     this.#store = options.store;
     this.#keyResolver = options.keyResolver;
     this.#consentAuthority = options.consentAuthority;
     this.#maximumGrantLifetimeMs = options.maximumGrantLifetimeMs;
+    this.#maximumDeliveryAttempts = options.maximumDeliveryAttempts;
     this.#clock = options.clock ?? (() => new Date());
     this.#createId = options.createId ?? ((prefix) => `${prefix}_${randomUUID()}`);
     if (typeof this.#clock !== "function") {
@@ -98,6 +164,13 @@ export class ReceiverCore {
     if (typeof this.#createId !== "function") {
       throw new TypeError("Receiver Core createId must be a function");
     }
+    this.#delivery = new ReceiverDelivery({
+      store: options.store,
+      connectorAuthority: options.connectorAuthority,
+      effectAuthority: options.effectAuthority,
+      leaseDurationMs: options.leaseDurationMs,
+      clock: this.#clock,
+    });
   }
 
   createConsentChallenge(input) {
@@ -338,12 +411,20 @@ export class ReceiverCore {
         grant_id: grant.grant_id,
         delivery_target_id: grant.delivery_target_id,
         status: "pending",
+        maximum_attempts: this.#maximumDeliveryAttempts,
         created_at: now.toISOString(),
       });
       return acceptance;
     });
   }
 
+  claimDelivery(input) {
+    return this.#delivery.claimDelivery(input);
+  }
+
+  acknowledgeDelivery(input) {
+    return this.#delivery.acknowledgeDelivery(input);
+  }
   #verifyDecision(challengeId, token, challenge, now) {
     let value;
     try {
@@ -583,151 +664,6 @@ function requireStore(store) {
   }
 }
 
-function requireExactInput(value, allowedFields, requiredFields, label) {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    throw validation("receiver_input_invalid", `${label} must be an object`);
-  }
-  const prototype = Object.getPrototypeOf(value);
-  if (prototype !== Object.prototype && prototype !== null) {
-    throw validation("receiver_input_invalid", `${label} must be a plain object`);
-  }
-  for (const key of Reflect.ownKeys(value)) {
-    if (typeof key === "symbol") {
-      throw validation("receiver_input_invalid", `${label} cannot contain symbol properties`);
-    }
-    const descriptor = Object.getOwnPropertyDescriptor(value, key);
-    if (!descriptor?.enumerable || !("value" in descriptor)) {
-      throw validation(
-        "receiver_input_invalid",
-        `${label} must contain enumerable data properties only`,
-      );
-    }
-  }
-  const fields = Object.keys(value);
-  if (fields.some((field) => !allowedFields.includes(field))) {
-    throw validation("receiver_input_fields_invalid", `${label} contains an unsupported field`);
-  }
-  if (requiredFields.some((field) => !fields.includes(field))) {
-    throw validation("receiver_input_fields_invalid", `${label} is missing a required field`);
-  }
-}
-
-function requireIdentifier(value, label) {
-  if (
-    typeof value !== "string" ||
-    Buffer.byteLength(value, "utf8") > 160 ||
-    !IDENTIFIER_PATTERN.test(value)
-  ) {
-    throw validation("receiver_identifier_invalid", `${label} is invalid`);
-  }
-  return value;
-}
-
 function requireDecisionToken(value) {
-  if (
-    typeof value !== "string" ||
-    value.length === 0 ||
-    Buffer.byteLength(value, "utf8") > MAX_DECISION_TOKEN_BYTES ||
-    /[^\x21-\x7e]/.test(value)
-  ) {
-    throw authorization("consent_token_invalid", "Consent decision token is invalid");
-  }
-  return value;
-}
-
-function requireTimestamp(value, label) {
-  if (typeof value !== "string" || value.length > 27) {
-    throw validation("receiver_timestamp_invalid", `${label} must be a canonical ISO-8601 timestamp`);
-  }
-  const parsed = Date.parse(value);
-  if (!Number.isFinite(parsed) || new Date(parsed).toISOString() !== value) {
-    throw validation("receiver_timestamp_invalid", `${label} must be a canonical ISO-8601 timestamp`);
-  }
-  return value;
-}
-
-function deepFreeze(value) {
-  if (value && typeof value === "object" && !Object.isFrozen(value)) {
-    for (const child of Object.values(value)) deepFreeze(child);
-    Object.freeze(value);
-  }
-  return value;
-}
-
-export class ReceiverValidationError extends Error {
-  constructor(code, message, statusCode = 422) {
-    super(message);
-    this.name = "ReceiverValidationError";
-    this.code = code;
-    this.statusCode = statusCode;
-  }
-}
-
-export class ReceiverAuthorizationError extends Error {
-  constructor(code, message) {
-    super(message);
-    this.name = "ReceiverAuthorizationError";
-    this.code = code;
-    this.statusCode = 403;
-  }
-}
-
-export class ReceiverConflictError extends Error {
-  constructor(code, message, statusCode = 409) {
-    super(message);
-    this.name = "ReceiverConflictError";
-    this.code = code;
-    this.statusCode = statusCode;
-  }
-}
-
-export class ReceiverScopeError extends Error {
-  constructor(code, message, statusCode = 422) {
-    super(message);
-    this.name = "ReceiverScopeError";
-    this.code = code;
-    this.statusCode = statusCode;
-  }
-}
-
-export class ReceiverNotFoundError extends Error {
-  constructor(code, message) {
-    super(message);
-    this.name = "ReceiverNotFoundError";
-    this.code = code;
-    this.statusCode = 404;
-  }
-}
-
-export class ReceiverInvariantError extends Error {
-  constructor(code, message) {
-    super(message);
-    this.name = "ReceiverInvariantError";
-    this.code = code;
-    this.statusCode = 500;
-  }
-}
-
-function validation(code, message, statusCode) {
-  return new ReceiverValidationError(code, message, statusCode);
-}
-
-function authorization(code, message) {
-  return new ReceiverAuthorizationError(code, message);
-}
-
-function conflict(code, message, statusCode) {
-  return new ReceiverConflictError(code, message, statusCode);
-}
-
-function scope(code, message, statusCode) {
-  return new ReceiverScopeError(code, message, statusCode);
-}
-
-function notFound(code, message) {
-  return new ReceiverNotFoundError(code, message);
-}
-
-function invariant(code, message) {
-  return new ReceiverInvariantError(code, message);
+  return requireOpaqueToken(value, "Consent decision token", "consent_token_invalid");
 }

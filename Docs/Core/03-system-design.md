@@ -1,7 +1,7 @@
 # Re-entry Core — System Design
 
 **Role:** CANONICAL domain-neutral architecture and contracts  
-**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant, reservation, and pending-delivery authority, and ADR-0009 fixes the Connector lease and effect-acknowledgement contract. The ADR-0009 contract is not yet implemented and the concrete Agent continuation adapter remains unselected. Current as-built truth is owned by Core/00 and Core/05.  
+**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant, reservation, and pending-delivery authority, and ADR-0009 fixes the locally verified Connector lease and effect-acknowledgement contract. Separate process shells and the concrete Agent continuation adapter remain unimplemented. Current as-built truth is owned by Core/00 and Core/05.  
 **Last updated:** 2026-08-31
 
 ## 1. System objective
@@ -206,12 +206,13 @@ for a conforming backend to send a Receiver event.
 ### Current as-built boundary
 
 - The new Re-entry Core implements the v0.1 protocol, Host SDK, Receiver-owned challenge and
-  decision boundary, private one-run Grant, exact event replay, atomic pending delivery, and a
-  zero-dependency SQLite reference store. These pass local Node 24 and Node 26 tests plus file
-  close-and-reopen verification; no service, Connector, lease, acknowledgement, or Agent call is
-  part of that evidence.
-- ADR-0009 specifies Connector identity, lease, bounded retry, and Host-effect acknowledgement,
-  but none of those specified behaviors is yet as-built evidence.
+  decision boundary, private one-run Grant, exact event replay, atomic pending delivery,
+  target-scoped claim and lease, bounded attempt fencing, effect-backed acknowledgement, and a
+  zero-dependency SQLite reference store. These pass local Node 24 and Node 26 tests plus schema
+  migration and file close-and-reopen verification.
+- ADR-0009 delivery behavior is as-built only behind deterministic identity and effect-authority
+  ports in one process. No HTTP service, production pairing, separate Connector, real Host effect,
+  Agent call, or distributed storage behavior is part of that evidence.
 - The private P0 Desktop adapter completed one controlled same-task join but is not a
   documented platform contract.
 - H1 Scheduled pull completed one bounded event-gated continuation and remains a

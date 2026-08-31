@@ -125,9 +125,9 @@ Mutable delivery status is exactly `pending`, `leased`, `retry_exhausted`, `ackn
 no-effect outcome for a delivery that never held a lease. `retry_exhausted` authorizes no new
 activation but may still converge to `acknowledged` through the exact final lease proof.
 
-The new lease expiry is the earlier of `now + leaseDuration` and the private Grant expiry. A
-lease is never authority beyond the Grant. Each successful new claim increments `attempt` once;
-an exact claim replay does not.
+The new lease expiry is the earliest of `now + leaseDuration`, the private Grant expiry, and the
+verified Connector identity expiry. A lease is never authority beyond either attestation. Each
+successful new claim increments `attempt` once; an exact claim replay does not.
 
 After an expired lease reaches the maximum attempt count, no further activation lease may be
 issued. The delivery becomes `retry_exhausted`. It retains only the final lease digest and
@@ -210,10 +210,10 @@ Host mutation it is asked to attest. Its selected-app implementation must verify
 identity, authorization, workflow state, expected revision, and idempotency. The generic Core
 does not accept or invent those domain facts.
 
-The attestation must match every expected identifier. `confirmed_at` must not be after the
-final lease expiry, Grant expiry, or a recorded Grant revocation. A bounded future clock-skew
-check still applies. The raw effect token is bounded to 4 KiB and is never persisted, returned,
-or logged.
+The attestation must match every expected identifier. `confirmed_at` must be at or after the
+final lease issue time and strictly earlier than the final lease expiry, Grant expiry, and any
+recorded Grant revocation. A bounded future clock-skew check still applies. The raw effect token
+is bounded to 4 KiB and is never persisted, returned, or logged.
 
 ### 8. Effect-backed acknowledgement and replay
 
@@ -272,16 +272,17 @@ challenge, Grant, event, and immutable delivery-creation records remain unchange
 one-row-per-delivery state table owns mutable delivery status, current attempt, current
 Connector ID and lease digest, effect attestation, acknowledgement time, bounded terminal reason,
 and update time. A second bounded attempt ledger records each attempt number, Connector ID,
-globally unique lease-token digest, and lease timestamps. The configured maximum limits that
-ledger to at most 100 rows per delivery.
+globally unique lease-token digest, and lease timestamps. The configured maximum is snapshotted
+on delivery creation, so later Receiver reconfiguration cannot widen existing authority; it
+limits that ledger to at most 100 rows per delivery.
 
 Attempt history is necessary for fencing: a retired digest can never become a later lease. If
 only the current digest were stored, an old token could be reused after another lease expired
 and a stale worker could regain current authority.
 
 Version-1 databases migrate in one `BEGIN IMMEDIATE` transaction by creating the state and
-attempt tables, seeding every existing delivery state as `pending`, and advancing `user_version`
-only after success.
+attempt tables, conservatively seeding every existing delivery state as `pending` with a
+one-attempt maximum, and advancing `user_version` only after success.
 The base delivery row's historical `status = pending` remains its creation fact; all current
 delivery status reads use the version-2 state row. No JSON, memory, or destructive rebuild
 fallback is allowed.

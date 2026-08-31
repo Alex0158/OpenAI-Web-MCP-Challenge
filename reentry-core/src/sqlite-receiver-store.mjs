@@ -1,74 +1,13 @@
 import { DatabaseSync } from "node:sqlite";
 
-const SCHEMA_VERSION = 1;
+import {
+  DELIVERY_DETAIL_SELECT,
+  DELIVERY_STATE_SCHEMA_SQL,
+  SCHEMA_SQL,
+  SCHEMA_VERSION,
+} from "./sqlite-receiver-schema.mjs";
+
 const STORE_OPTION_FIELDS = Object.freeze(["filename"]);
-
-const SCHEMA_SQL = `
-CREATE TABLE receiver_challenges (
-  challenge_id TEXT PRIMARY KEY,
-  manifest_id TEXT NOT NULL UNIQUE,
-  manifest_json TEXT NOT NULL,
-  expected_origin TEXT NOT NULL,
-  effective_expires_at TEXT NOT NULL,
-  status TEXT NOT NULL CHECK (status IN ('pending', 'approved', 'declined')),
-  decision_id TEXT UNIQUE,
-  decision_action TEXT CHECK (decision_action IN ('approve', 'decline')),
-  subject_id TEXT,
-  created_at TEXT NOT NULL,
-  decided_at TEXT,
-  CHECK (
-    (status = 'pending' AND decision_id IS NULL AND decision_action IS NULL
-      AND subject_id IS NULL AND decided_at IS NULL)
-    OR
-    (status = 'approved' AND decision_id IS NOT NULL AND decision_action = 'approve'
-      AND subject_id IS NOT NULL AND decided_at IS NOT NULL)
-    OR
-    (status = 'declined' AND decision_id IS NOT NULL AND decision_action = 'decline'
-      AND subject_id IS NOT NULL AND decided_at IS NOT NULL)
-  )
-) STRICT;
-
-CREATE TABLE receiver_grants (
-  grant_id TEXT PRIMARY KEY,
-  challenge_id TEXT NOT NULL UNIQUE REFERENCES receiver_challenges(challenge_id),
-  manifest_id TEXT NOT NULL,
-  binding_id TEXT NOT NULL UNIQUE,
-  subject_id TEXT NOT NULL,
-  delivery_target_id TEXT NOT NULL,
-  correlation_id TEXT NOT NULL,
-  issuer_origin TEXT NOT NULL,
-  workflow_type TEXT NOT NULL,
-  workflow_id TEXT NOT NULL,
-  event_type TEXT NOT NULL,
-  canonical_url TEXT NOT NULL,
-  expires_at TEXT NOT NULL,
-  human_boundary TEXT NOT NULL,
-  runs_remaining INTEGER NOT NULL CHECK (runs_remaining IN (0, 1)),
-  revoked_at TEXT,
-  receipt_json TEXT NOT NULL,
-  created_at TEXT NOT NULL
-) STRICT;
-
-CREATE TABLE receiver_events (
-  event_id TEXT PRIMARY KEY,
-  grant_id TEXT NOT NULL UNIQUE REFERENCES receiver_grants(grant_id),
-  canonical_body TEXT NOT NULL,
-  acceptance_json TEXT NOT NULL,
-  received_at TEXT NOT NULL
-) STRICT;
-
-CREATE TABLE receiver_deliveries (
-  delivery_id TEXT PRIMARY KEY,
-  event_id TEXT NOT NULL UNIQUE REFERENCES receiver_events(event_id),
-  grant_id TEXT NOT NULL UNIQUE REFERENCES receiver_grants(grant_id),
-  delivery_target_id TEXT NOT NULL,
-  status TEXT NOT NULL CHECK (status = 'pending'),
-  created_at TEXT NOT NULL
-) STRICT;
-
-CREATE INDEX receiver_deliveries_pending
-  ON receiver_deliveries(status, delivery_target_id, created_at);
-`;
 
 export class SqliteReceiverStore {
   #database;
@@ -235,11 +174,118 @@ export class SqliteReceiverStore {
       delivery.created_at,
     );
     assertSingleChange(result, "insert delivery");
+    const state = this.#statements.insertDeliveryState.run(
+      delivery.delivery_id,
+      delivery.status,
+      delivery.maximum_attempts,
+      delivery.created_at,
+    );
+    assertSingleChange(state, "insert delivery state");
   }
 
   getDeliveryByEventId(eventId) {
     this.#assertOpen();
     return plainRow(this.#statements.deliveryByEventId.get(eventId));
+  }
+
+  getDeliveryById(deliveryId) {
+    this.#assertOpen();
+    return plainRow(this.#statements.deliveryById.get(deliveryId));
+  }
+
+  getDeliveryByEffectId(effectId) {
+    this.#assertOpen();
+    return plainRow(this.#statements.deliveryByEffectId.get(effectId));
+  }
+
+  getDeliveryByCurrentLeaseTokenDigest(leaseTokenDigest) {
+    this.#assertOpen();
+    return plainRow(this.#statements.deliveryByCurrentLeaseTokenDigest.get(leaseTokenDigest));
+  }
+
+  hasDeliveryAttemptTokenDigest(leaseTokenDigest) {
+    this.#assertOpen();
+    return this.#statements.hasDeliveryAttemptTokenDigest.get(leaseTokenDigest) !== undefined;
+  }
+
+  getActiveDeliveryByTarget(deliveryTargetId, now) {
+    this.#assertOpen();
+    return plainRow(this.#statements.activeDeliveryByTarget.get(deliveryTargetId, now));
+  }
+
+  getNextDeliveryByTarget(deliveryTargetId, now) {
+    this.#assertOpen();
+    return plainRow(this.#statements.nextDeliveryByTarget.get(deliveryTargetId, now));
+  }
+
+  claimDelivery(claim) {
+    this.#assertWriteTransaction();
+    const result = this.#statements.claimDelivery.run(
+      claim.attempt,
+      claim.connector_id,
+      claim.lease_token_digest,
+      claim.leased_at,
+      claim.lease_expires_at,
+      claim.updated_at,
+      claim.delivery_id,
+      claim.expected_status,
+      claim.expected_attempt,
+      claim.expected_connector_id,
+      claim.expected_lease_token_digest,
+      claim.expected_lease_expires_at,
+    );
+    if (result.changes !== 1) return false;
+    const attempt = this.#statements.insertDeliveryAttempt.run(
+      claim.delivery_id,
+      claim.attempt,
+      claim.connector_id,
+      claim.lease_token_digest,
+      claim.leased_at,
+      claim.lease_expires_at,
+    );
+    assertSingleChange(attempt, "insert delivery attempt");
+    return true;
+  }
+
+  cancelDelivery(transition) {
+    this.#assertWriteTransaction();
+    const result = this.#statements.cancelDelivery.run(
+      transition.reason,
+      transition.updated_at,
+      transition.delivery_id,
+    );
+    return result.changes === 1;
+  }
+
+  exhaustDelivery(transition) {
+    this.#assertWriteTransaction();
+    const result = this.#statements.exhaustDelivery.run(
+      transition.reason,
+      transition.updated_at,
+      transition.delivery_id,
+      transition.expected_attempt,
+      transition.expected_connector_id,
+      transition.expected_lease_token_digest,
+      transition.expected_lease_expires_at,
+    );
+    return result.changes === 1;
+  }
+
+  acknowledgeDelivery(acknowledgement) {
+    this.#assertWriteTransaction();
+    const result = this.#statements.acknowledgeDelivery.run(
+      acknowledgement.effect_id,
+      acknowledgement.effect_attestation_json,
+      acknowledgement.acknowledged_at,
+      acknowledgement.updated_at,
+      acknowledgement.delivery_id,
+      acknowledgement.expected_status,
+      acknowledgement.expected_attempt,
+      acknowledgement.expected_connector_id,
+      acknowledgement.expected_lease_token_digest,
+      acknowledgement.expected_lease_expires_at,
+    );
+    return result.changes === 1;
   }
 
   close() {
@@ -272,6 +318,23 @@ export class SqliteReceiverStore {
   #initializeSchema() {
     const version = this.#database.prepare("PRAGMA user_version").get()?.user_version;
     if (version === SCHEMA_VERSION) return;
+    if (version === 1) {
+      this.#schemaTransaction("migration", () => {
+        this.#database.exec(DELIVERY_STATE_SCHEMA_SQL);
+        this.#database.exec(`
+          INSERT INTO receiver_delivery_states (
+            delivery_id, status, maximum_attempts, current_attempt, current_connector_id,
+            current_lease_token_digest, leased_at, lease_expires_at, effect_id,
+            effect_attestation_json, acknowledged_at, terminal_reason, updated_at
+          )
+          SELECT
+            delivery_id, 'pending', 1, 0, NULL, NULL, NULL, NULL, NULL,
+            NULL, NULL, NULL, created_at
+          FROM receiver_deliveries
+        `);
+      });
+      return;
+    }
     if (version !== 0) {
       throw new Error(`Unsupported SQLite Receiver schema version: ${version}`);
     }
@@ -282,9 +345,13 @@ export class SqliteReceiverStore {
       throw new Error("Unversioned SQLite Receiver database is not empty");
     }
 
+    this.#schemaTransaction("initialization", () => this.#database.exec(SCHEMA_SQL));
+  }
+
+  #schemaTransaction(operation, callback) {
     this.#database.exec("BEGIN IMMEDIATE");
     try {
-      this.#database.exec(SCHEMA_SQL);
+      callback();
       this.#database.exec(`PRAGMA user_version = ${SCHEMA_VERSION}`);
       this.#database.exec("COMMIT");
     } catch (error) {
@@ -293,7 +360,7 @@ export class SqliteReceiverStore {
       } catch (rollbackError) {
         throw new AggregateError(
           [error, rollbackError],
-          "SQLite Receiver schema initialization and rollback both failed",
+          `SQLite Receiver schema ${operation} and rollback both failed`,
           { cause: error },
         );
       }
@@ -351,9 +418,91 @@ export class SqliteReceiverStore {
           delivery_id, event_id, grant_id, delivery_target_id, status, created_at
         ) VALUES (?, ?, ?, ?, ?, ?)
       `),
-      deliveryByEventId: this.#database.prepare(
-        "SELECT * FROM receiver_deliveries WHERE event_id = ?",
-      ),
+      insertDeliveryState: this.#database.prepare(`
+        INSERT INTO receiver_delivery_states (
+          delivery_id, status, maximum_attempts, current_attempt, current_connector_id,
+          current_lease_token_digest, leased_at, lease_expires_at, effect_id,
+          effect_attestation_json, acknowledged_at, terminal_reason, updated_at
+        ) VALUES (?, ?, ?, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ?)
+      `),
+      deliveryByEventId: this.#database.prepare(`
+        ${DELIVERY_DETAIL_SELECT}
+        WHERE d.event_id = ?
+      `),
+      deliveryById: this.#database.prepare(`
+        ${DELIVERY_DETAIL_SELECT}
+        WHERE d.delivery_id = ?
+      `),
+      deliveryByEffectId: this.#database.prepare(`
+        SELECT delivery_id
+        FROM receiver_delivery_states
+        WHERE effect_id = ?
+      `),
+      deliveryByCurrentLeaseTokenDigest: this.#database.prepare(`
+        ${DELIVERY_DETAIL_SELECT}
+        WHERE s.current_lease_token_digest = ?
+      `),
+      hasDeliveryAttemptTokenDigest: this.#database.prepare(`
+        SELECT 1
+        FROM receiver_delivery_attempts
+        WHERE lease_token_digest = ?
+      `),
+      activeDeliveryByTarget: this.#database.prepare(`
+        ${DELIVERY_DETAIL_SELECT}
+        WHERE d.delivery_target_id = ?
+          AND s.status = 'leased'
+          AND s.lease_expires_at > ?
+        ORDER BY d.created_at, d.delivery_id
+        LIMIT 1
+      `),
+      nextDeliveryByTarget: this.#database.prepare(`
+        ${DELIVERY_DETAIL_SELECT}
+        WHERE d.delivery_target_id = ?
+          AND (
+            s.status = 'pending'
+            OR (s.status = 'leased' AND s.lease_expires_at <= ?)
+          )
+        ORDER BY d.created_at, d.delivery_id
+        LIMIT 1
+      `),
+      claimDelivery: this.#database.prepare(`
+        UPDATE receiver_delivery_states
+        SET status = 'leased', current_attempt = ?, current_connector_id = ?,
+            current_lease_token_digest = ?, leased_at = ?, lease_expires_at = ?,
+            effect_id = NULL, effect_attestation_json = NULL, acknowledged_at = NULL,
+            terminal_reason = NULL, updated_at = ?
+        WHERE delivery_id = ? AND status = ? AND current_attempt = ?
+          AND current_connector_id IS ?
+          AND current_lease_token_digest IS ?
+          AND lease_expires_at IS ?
+      `),
+      insertDeliveryAttempt: this.#database.prepare(`
+        INSERT INTO receiver_delivery_attempts (
+          delivery_id, attempt, connector_id, lease_token_digest, leased_at, lease_expires_at
+        ) VALUES (?, ?, ?, ?, ?, ?)
+      `),
+      cancelDelivery: this.#database.prepare(`
+        UPDATE receiver_delivery_states
+        SET status = 'cancelled', terminal_reason = ?, updated_at = ?
+        WHERE delivery_id = ? AND status = 'pending' AND current_attempt = 0
+      `),
+      exhaustDelivery: this.#database.prepare(`
+        UPDATE receiver_delivery_states
+        SET status = 'retry_exhausted', terminal_reason = ?, updated_at = ?
+        WHERE delivery_id = ? AND status = 'leased' AND current_attempt = ?
+          AND current_connector_id = ?
+          AND current_lease_token_digest = ?
+          AND lease_expires_at = ?
+      `),
+      acknowledgeDelivery: this.#database.prepare(`
+        UPDATE receiver_delivery_states
+        SET status = 'acknowledged', effect_id = ?, effect_attestation_json = ?,
+            acknowledged_at = ?, terminal_reason = NULL, updated_at = ?
+        WHERE delivery_id = ? AND status = ? AND current_attempt = ?
+          AND current_connector_id = ?
+          AND current_lease_token_digest = ?
+          AND lease_expires_at = ?
+      `),
     };
   }
 

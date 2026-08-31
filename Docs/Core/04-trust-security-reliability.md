@@ -1,7 +1,7 @@
 # Re-entry Core — Trust, Security, and Reliability
 
 **Role:** CANONICAL authority, security, and failure semantics  
-**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through ADR-0009; the v0.1 protocol, Host SDK, and bounded Receiver C1 authority are locally verified, while the specified Connector identity, lease, and effect-acknowledgement contract is not yet implemented and production consent, pairing, separate processes, and distributed topology remain unverified.  
+**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through ADR-0009; the v0.1 protocol, Host SDK, bounded Receiver C1 authority, and Connector delivery C2 are locally verified, while production consent, pairing, separate processes, real Host-effect verification, and distributed topology remain unverified.  
 **Last updated:** 2026-08-31
 
 ## 1. Security objective
@@ -240,8 +240,15 @@ The new Re-entry Core C1 independently verifies the ADR-0008 authority slice: a 
 creates no Grant, trusted approval creates one private Grant and public binding, and one valid
 event atomically commits its record, a private pending delivery, and run-budget consumption.
 Exact replay, injected rollback, and file close-and-reopen persistence pass locally on Node 24
-and Node 26. This does not prove a production consent session, OS-crash recovery, leasing,
-acknowledgement, external delivery, Agent activation, or distributed durability.
+and Node 26.
+
+Re-entry Core C2 independently verifies the ADR-0009 delivery slice in one process: an
+authenticated target-scoped claim creates one short digest-bound lease, exact response replay
+does not spend another attempt, expired workers are fenced, and only a trusted correlated Host-
+effect attestation acknowledges. Attempt bounds persist with each delivery; schema migration,
+rollback, token non-persistence, and file reopen pass locally. This does not prove production
+consent or pairing, an HTTP boundary, a separate Connector process, a real Host effect, OS-crash
+recovery, Agent activation, or distributed durability.
 
 D4 remains `INCONCLUSIVE` and supplies no Desktop restart continuity evidence. Therefore,
 current evidence supports bounded additive mechanism and service-contract claims, not a
@@ -262,10 +269,10 @@ delivery. Cloud Receiver acceptance, replay state, pending delivery, Receiver ru
 and grant run count commit atomically. Connector lease claim and acknowledgement use separate
 atomic transitions and never extend Host or Grant authority.
 
-ADR-0008 makes the first half exact, and C1 now verifies it locally: one authenticated event, one
+ADR-0008 makes the first half exact, and C1 verifies it locally: one authenticated event, one
 event record, one private pending delivery, and the `1 -> 0` Grant run reservation commit together
-before the Host receives acceptance. The lease and acknowledgement transition remains
-unimplemented.
+before the Host receives acceptance. ADR-0009 and C2 verify separate atomic lease and effect-
+acknowledgement transitions locally without claiming a network or process boundary.
 
 The MVP should prefer one durable datastore and an outbox worker. A separate broker is
 justified only when the selected runtime makes it necessary.

@@ -310,9 +310,9 @@ before adding either process shell or any Agent adapter.
   authority or claim that production pairing exists.
 - A Connector-generated 32-byte claim token becomes the lease token. Exact response-loss replay
   can return the same lease, while Receiver persistence keeps only its SHA-256 digest.
-- One short target-scoped lease, one active lease per target, compare-and-set fencing, Grant-
-  bounded expiry, and an explicit maximum attempt count prevent parallel or unbounded adapter
-  activation.
+- One short target-scoped lease, one active lease per target, compare-and-set fencing, Grant- and
+  Connector-identity-bounded expiry, and an explicit maximum attempt count prevent parallel or
+  unbounded adapter activation.
 - Delivery acknowledgement requires one trusted exact Host-effect attestation with outcome
   `effect_applied_awaiting_human`. Queue acceptance, Connector health, Agent start, adapter
   return, and caller completion strings are non-authoritative observations.
@@ -332,3 +332,57 @@ new core.
 then prove identity scope, claim replay, bounded reclamation, stale-worker fencing, late
 effect-acknowledgement convergence, rollback, version-1 migration, close-and-reopen behavior,
 token non-persistence, and Node 24 compatibility before adding service shells.
+
+### Increment C2b — Connector delivery state machine
+
+**Closure:** `locally_verified` on 2026-08-31.
+
+- `ReceiverCore` now composes an internal delivery state machine behind the trusted Connector-
+  identity and Host-effect-authority ports. The public facade accepts only opaque authority
+  tokens, a canonical client-generated claim token, and exact delivery identifiers; it accepts no
+  caller-supplied subject, target, progress state, policy callback, Agent object, or fallback.
+- One transaction returns an exact live claim replay or leases the oldest eligible delivery for
+  the attested target. Lease expiry is narrowed by policy, Grant expiry, and Connector identity
+  expiry. The per-delivery attempt maximum is snapshotted when the pending delivery is created,
+  so later Receiver configuration cannot widen existing activation authority.
+- Each claim-token digest is retained in a bounded attempt ledger. Exact response-loss replay
+  spends no attempt, an expired or replaced token cannot regain authority, one target cannot hold
+  parallel live leases, and an exhausted final lease can converge only through an effect confirmed
+  at or after lease issue and strictly before the end of its final authority window.
+- Acknowledgement requires one exact trusted Host-effect attestation with outcome
+  `effect_applied_awaiting_human`. Connector status strings, queue acceptance, adapter return, and
+  Agent narration are outside the input contract. Exact acknowledgement replay returns the prior
+  effect; a different lease, delivery, effect identity, or canonical attestation fails closed.
+- `SqliteReceiverStore` advances additively to schema version 2. It keeps immutable creation facts,
+  one constrained mutable state row, and a digest-only attempt ledger. Version-1 migration runs in
+  one `BEGIN IMMEDIATE` transaction and conservatively seeds existing deliveries with a one-attempt
+  maximum. Raw Connector, claim, lease, and effect tokens are not stored.
+- Runtime code is split by responsibility into the Receiver facade, delivery state machine,
+  shared strict validation, SQLite store, and versioned schema. The package still has zero runtime
+  dependencies; the delivery state machine and schema remain internal rather than new public
+  package surfaces.
+- The aggregate suite passed 40 of 40 tests on Node `v24.20.0` and Node `v26.5.0`. It covers
+  subject, target, Connector, expiry, and revocation scope; exact replay; bounded reclamation;
+  stale-worker fencing; late final-effect convergence; progress-field rejection; effect collision;
+  injected post-write rollback; persisted policy bounds; version-1 migration; raw-token absence;
+  and file close-and-reopen behavior.
+- Informational coverage was 89.98% lines, 73.32% branches, and 94.74% functions. No low-value
+  behavior or fallback was added to optimize the percentage.
+- `npm run test:conformance` passed 11 of 11 protocol tests. `npm ls --all` reported an empty
+  dependency tree. `npm pack --dry-run --json` selected 11 runtime, README, and vector files:
+  23,274 bytes compressed and 120,295 bytes unpacked. Root and Receiver imports loaded without
+  `node:sqlite`; the explicit store subpath loaded successfully.
+- `git diff --cached --check` passed. A relative-link audit resolved 44 of 44 links across the
+  seven owned documentation surfaces. English-only, actual private-key-header, and exact staged-
+  scope scans passed; no MVP, reference, research, scenario, or runtime-evidence file is part of
+  C2b.
+
+This proves ADR-0009 locally through deterministic authority fixtures, one process, SQLite
+transactions, migration, and a file close-and-reopen boundary. It does not prove production
+pairing, credential custody, HTTP, a separate Cloud Receiver or Local Connector process,
+concurrent process ownership, OS-crash recovery, a real Host effect, Agent activation,
+Browser/WebMCP re-entry, deployment, or distributed durability.
+
+**Next entry condition:** define and prove the smallest separate Cloud Receiver and outbound Local
+Connector process shells around the unchanged Core ports. Keep transport, production identity,
+and Agent adapter authority outside Receiver Core, and add no fallback path.
