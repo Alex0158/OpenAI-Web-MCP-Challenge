@@ -62,10 +62,18 @@ test("domain-neutral conformance profile completes one redacted process-isolated
   });
 });
 
-test("profile control rejects inherited commands and extended Host-effect context", async (t) => {
+test("profile control excludes test-only Grant control and rejects extended input", async (t) => {
   const child = spawnProfileProcess(new URL("../conformance/host-process.mjs", import.meta.url));
+  const receiver = spawnProfileProcess(
+    new URL("../conformance/receiver-process.mjs", import.meta.url),
+  );
   t.after(() => child.terminate());
+  t.after(() => receiver.terminate());
   await assert.rejects(child.request("constructor"), { code: "profile_command_unknown" });
+  await assert.rejects(
+    receiver.request("inspectGrant"),
+    { code: "profile_command_unknown" },
+  );
   await assert.rejects(
     child.request("createEffect", {
       correlationId: "correlation_conformance_001",
@@ -76,5 +84,6 @@ test("profile control rejects inherited commands and extended Host-effect contex
     }),
     { code: "profile_effect_context_invalid" },
   );
+  await receiver.close();
   await child.close();
 });

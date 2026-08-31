@@ -10,9 +10,22 @@ import {
 import { PROTOCOL_VERSION } from "../src/protocol.mjs";
 import { SqliteReceiverStore } from "../src/sqlite-receiver-store.mjs";
 
-export function createReceiverRole({ beforeHandleRequest } = {}) {
+export function createReceiverRole({
+  beforeHandleRequest,
+  createStore = ({ filename }) => new SqliteReceiverStore({ filename }),
+  grantControlAuthority,
+} = {}) {
   if (beforeHandleRequest !== undefined && typeof beforeHandleRequest !== "function") {
     throw profileError("profile_receiver_hook_invalid");
+  }
+  if (typeof createStore !== "function") {
+    throw profileError("profile_receiver_store_factory_invalid");
+  }
+  if (
+    grantControlAuthority !== undefined &&
+    typeof grantControlAuthority?.verifyControl !== "function"
+  ) {
+    throw profileError("profile_receiver_grant_control_invalid");
   }
 
   let receiver;
@@ -21,14 +34,14 @@ export function createReceiverRole({ beforeHandleRequest } = {}) {
   let configuration;
   const effects = new Map();
 
-  return {
+  const handlers = {
     async start(input) {
       if (server) throw profileError("profile_receiver_already_started");
       configuration = input;
       const publicKey = createPublicKey(input.publicKeyPem);
       const authenticatedAt = new Date(Date.now() - 1_000).toISOString();
       const connectorExpiresAt = new Date(Date.now() + 10 * 60_000).toISOString();
-      store = new SqliteReceiverStore({ filename: input.databasePath });
+      store = createStore({ filename: input.databasePath });
       receiver = new ReceiverCore({
         store,
         keyResolver({ issuerOrigin, keyId, purpose }) {
@@ -58,7 +71,7 @@ export function createReceiverRole({ beforeHandleRequest } = {}) {
             };
           },
         },
-        grantControlAuthority: {
+        grantControlAuthority: grantControlAuthority ?? {
           verifyControl() {
             throw new Error("Grant control is not configured in the conformance profile");
           },
@@ -87,7 +100,7 @@ export function createReceiverRole({ beforeHandleRequest } = {}) {
           },
         },
         maximumGrantLifetimeMs: 15 * 60_000,
-        leaseDurationMs: 2 * 60_000,
+        leaseDurationMs: input.leaseDurationMs ?? 2 * 60_000,
         maximumDeliveryAttempts: 3,
       });
 
@@ -139,6 +152,19 @@ export function createReceiverRole({ beforeHandleRequest } = {}) {
       return { stopped: true };
     },
   };
+
+  if (grantControlAuthority !== undefined) {
+    handlers.inspectGrant = (input) => {
+      requireReceiver(receiver);
+      return receiver.inspectGrant(input);
+    };
+    handlers.revokeGrant = (input) => {
+      requireReceiver(receiver);
+      return receiver.revokeGrant(input);
+    };
+  }
+
+  return handlers;
 
   async function closeReceiver() {
     if (server) {
