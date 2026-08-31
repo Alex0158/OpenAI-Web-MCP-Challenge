@@ -6,7 +6,7 @@
 **Demo web application:** TBD  
 **Final product name:** TBD  
 **Phase:** Re-entry Core foundation started under ADR-0006. Bounded local mechanism feasibility remains passed through P0, H1, H2a, and the synthetic H2 service contract; the authoritative `reentry-core/` implementation is not yet locally verified, both standalone App Server Desktop-Browser joins remain failed in the current build, and final-app selection, a supported Agent adapter, deployment, product value, and judge portability remain open.  
-**Controlling decisions:** [ADR-0002](../Decisions/ADR-0002-separate-mechanism-from-demo-app.md), [ADR-0003](../Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md), [ADR-0004](../Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md), [ADR-0005](../Decisions/ADR-0005-run-additive-durable-enrollment-spike.md), and [ADR-0006](../Decisions/ADR-0006-establish-reentry-core-development-baseline.md)
+**Controlling decisions:** [ADR-0002](../Decisions/ADR-0002-separate-mechanism-from-demo-app.md), [ADR-0003](../Decisions/ADR-0003-freeze-p0-technical-validation-mvp.md), [ADR-0004](../Decisions/ADR-0004-separate-event-protocol-from-agent-transport.md), [ADR-0005](../Decisions/ADR-0005-run-additive-durable-enrollment-spike.md), [ADR-0006](../Decisions/ADR-0006-establish-reentry-core-development-baseline.md), and [ADR-0007](../Decisions/ADR-0007-freeze-reentry-core-v0.1-contract-kernel.md)
 
 ## 1. Evidence chronology
 
@@ -249,7 +249,7 @@ live WebMCP session
 | Core problem class | **DECIDED** | Multi-stage web work breaks when page-scoped Agent sessions end before later business events |
 | Re-entry workflow mechanism | **DECIDED** | Enrollment, Grant, authenticated pending delivery, separate activation, canonical re-entry, dynamic tools, human boundary |
 | Re-entry Core identity and source baseline | **DECIDED; FOUNDATION IN PROGRESS** | ADR-0006 establishes `reentry-core/`, freezes MVP1/MVP2 as references, and selects one Receiver Core with Cloud Receiver and outbound Local Connector process shells |
-| Website Backend-to-Receiver event protocol | **DECIDED AS PROJECT-OWNED CONTRACT** | ADR-0004 separates typed event acceptance from platform-specific Agent activation |
+| Re-entry Core v0.1 contract kernel | **DECIDED; IMPLEMENTATION NOT YET VERIFIED** | ADR-0007 fixes the Manifest, opaque binding, detached Ed25519 event envelope, private receipt, strict limits, and process ports without selecting an Agent adapter |
 | Receiver-to-Agent continuation adapter | **UNSELECTED FOR PRODUCTION** | The current-build private Desktop bridge completed P0; Scheduled pull passed bounded current-build probes; neither is a documented production bridge |
 | Standalone App Server Browser join | **BOTH TESTED VARIANTS FAILED IN CURRENT BUILD** | The cold thread's Browser selector returned `iab-unavailable` before page access; that signal does not identify the absent precondition. Exact warm resume returned an active-writer rejection for the supplied task. The warm public artifact does not independently prove writer ownership or priming. These tested joins are not the selected Desktop adapter |
 | P0 technical MVP boundary | **PASSED** | One harness answered all five frozen questions in one clean correlated run under ADR-0003 |

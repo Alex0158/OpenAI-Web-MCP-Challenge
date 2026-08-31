@@ -1,7 +1,7 @@
 # Re-entry Core — System Design
 
 **Role:** CANONICAL domain-neutral architecture and contracts  
-**Status:** Canonical Re-entry Core architecture under ADR-0006; the concrete Agent continuation adapter remains unselected. Current as-built truth is owned by Core/00 and Core/05.  
+**Status:** Canonical Re-entry Core architecture under ADR-0006 with the v0.1 contract kernel fixed by ADR-0007; the concrete Agent continuation adapter remains unselected. Current as-built truth is owned by Core/00 and Core/05.  
 **Last updated:** 2026-08-31
 
 ## 1. System objective
@@ -146,7 +146,7 @@ The concrete adapter requires a separate ADR after runtime validation.
 
 ### Integration contract boundaries and deployment profiles
 
-The mechanism has two distinct integration contracts. They must be versioned, tested, and
+The mechanism has three distinct integration contracts. They must be versioned, tested, and
 documented separately.
 
 | Contract | Owner and consumer | Required responsibilities | Main portability question |
@@ -154,6 +154,18 @@ documented separately.
 | **Website Backend -> Receiver** | This project defines the Receiver contract; each host backend is an event issuer | Typed event schema, issuer authentication, Grant scope, state-version checks, and idempotency | Can another backend conform without bespoke Receiver control logic? |
 | **Cloud Receiver -> Local Connector** | Re-entry Core owns the delivery contract; a paired Connector consumes it | Device identity, outbound retrieval, lease, dispatch result, effect-backed acknowledgement, and revocation | Can accepted work survive offline and process-failure boundaries without device-control exposure? |
 | **Local Connector -> Agent runtime** | The selected Agent Continuation Adapter implements the platform boundary | Context capture, receipt persistence, bounded activation, Browser access, canonical-page re-entry, and Site Tool invocation | Can the chosen runtime provide these capabilities through a supported route? |
+
+ADR-0007 freezes the first Website Backend-to-Receiver kernel. The Host receives only an opaque
+`binding_id`; its canonical event body carries no Receiver `grant_id`, arbitrary prompt, goal,
+tool list, artifact, nonce, or separate idempotency key. The event uses `event_id` as its sole
+wire idempotency identity and an Ed25519 detached signature. Exact fields, limits, and rejected
+extensions are owned by ADR-0007 until the implementation and frozen vectors become the
+as-built contract.
+
+Receiver Core validates the signed issuer claim against the resolved Grant. It does not accept
+a caller-supplied workflow snapshot as independent proof of current Host truth. The live Host
+page still revalidates current identity, authorization, workflow state, state version, and
+artifact revision before any mutation.
 
 The Receiver's event algorithm is domain-neutral even when a deterministic fixture pins one
 workflow, event type, issuer, or development key. Generalizing the protocol means adding

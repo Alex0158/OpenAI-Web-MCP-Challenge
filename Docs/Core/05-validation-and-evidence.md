@@ -107,6 +107,7 @@ the missing value must not be inferred as zero or retroactively upgraded to a pa
 |---|---|---|
 | Core re-entry mechanism selected | VERIFIED AS DECISION | ADR-0002 |
 | Re-entry Core identity, source root, and target process shape selected | VERIFIED AS DECISION | ADR-0006; implementation and runtime proof remain separate |
+| Re-entry Core v0.1 contract kernel selected | VERIFIED AS DECISION | ADR-0007; code and frozen-vector conformance remain unverified |
 | Authoritative `reentry-core/` implementation | NOT YET VERIFIED | RECORE-001 protocol, authority, separate-process, durability, and performance gates |
 | Final host application and user selected | UNKNOWN | Accepted app-selection ADR |
 | Page source registers genuine Site Tools | VERIFIED FOR Q1 AND Q4 | The clean run discovered and invoked genuine page-defined Site Tools in both `INITIAL` and private-adapter-resumed `READY` |

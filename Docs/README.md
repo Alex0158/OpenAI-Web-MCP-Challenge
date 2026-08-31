@@ -56,6 +56,10 @@ accepts Re-entry Core as the authoritative application-neutral implementation ba
 freezes MVP1 and MVP2 as references, and selects one Receiver Core with Cloud Receiver and
 outbound Local Connector process shells.
 
+[`Decisions/ADR-0007-freeze-reentry-core-v0.1-contract-kernel.md`](Decisions/ADR-0007-freeze-reentry-core-v0.1-contract-kernel.md)
+freezes the strict v0.1 Manifest, opaque Host binding, detached Ed25519 event envelope, private
+receipt, process ports, bounded payloads, and rejected prompt-like fields.
+
 ## 3. Active development and closure
 
 - [`Development/README.md`](Development/README.md) — CANONICAL Re-entry Core development,

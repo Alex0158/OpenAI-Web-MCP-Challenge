@@ -1,7 +1,7 @@
 # Re-entry Core — Trust, Security, and Reliability
 
 **Role:** CANONICAL authority, security, and failure semantics  
-**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006; bounded P0/H1/H2 evidence exists, while the new core and distributed topology remain unverified.  
+**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 and ADR-0007; bounded P0/H1/H2 evidence exists, while the new core and distributed topology remain unverified.  
 **Last updated:** 2026-08-31
 
 ## 1. Security objective
@@ -102,22 +102,21 @@ still revalidate current identity, state, and revision.
 
 ## 6. Event authentication contract
 
-The signature is detached from the JSON body. The provisional mechanism-level headers are:
+The event signature is detached from the canonical JSON body. ADR-0007 fixes the v0.1 headers:
 
 - WebMCP-Reentry-Key-Id: issuer key identifier;
 - WebMCP-Reentry-Timestamp: signed delivery timestamp;
-- WebMCP-Reentry-Signature: signature or MAC over timestamp + "." + exact raw request body.
+- WebMCP-Reentry-Signature: Ed25519 signature over timestamp + "." + the exact canonical body.
 
-These are target header names, not the frozen P0 wire contract. P0 uses
+The Host signs with its Ed25519 private key. The Receiver resolves only an allowlisted public
+key by issuer origin, key ID, and purpose; it cannot forge Host data. P0 historically uses
 `X-Event-Timestamp` and `X-Event-Signature` with one pinned HMAC secret and no key-ID
 header.
 
-Verification requires bounded clock skew, exact raw bytes until validation completes, and
-constant-time comparison when a MAC is used.
-
-For a single-host MVP, HMAC-SHA-256 with a securely provisioned shared secret is acceptable.
-A multi-host design should prefer asymmetric signatures so verification does not require
-sharing an issuer's signing secret.
+Verification requires bounded clock skew, canonical decimal epoch seconds, exact raw bytes
+until validation completes, canonical unpadded base64url, and a key trusted for the resolved
+Grant issuer. Key provisioning may pin one challenge issuer; general rotation and origin
+ownership remain deferred.
 
 Do not place a signature inside the body and ambiguously claim to sign the entire body.
 
@@ -245,8 +244,10 @@ justified only when the selected runtime makes it necessary.
 
 ### Event data
 
-Include workflow identifiers, event type, versions, canonical URL, time, and the minimum
-event-specific identifier. Do not include the full domain artifact by default.
+Version `0.1` includes only the opaque binding, correlation, issuer, workflow, event identity
+and sequence, event type, state version, canonical URL, and time. It has no event-specific
+payload. Do not include a prompt, goal, Site Tool list, full domain artifact, raw Agent context,
+or Receiver Grant identity.
 
 ### Audit data
 

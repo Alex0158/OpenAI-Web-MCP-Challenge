@@ -23,6 +23,7 @@ Receiver, a working Codex wake path, a selected web app, or a judge-reproducible
 - ADR-0002 separates the mechanism from the final application.
 - ADR-0004 separates the event protocol from Agent runtime transport.
 - ADR-0006 establishes Re-entry Core, its source root, and target process topology.
+- ADR-0007 freezes the v0.1 protocol, cryptographic, binding, receipt, and module-port kernel.
 - Core/01 through Core/05 own the durable behavior, architecture, trust, and evidence contracts.
 - MVP1 is the authority, durability, delivery, and evidence reference.
 - MVP2 supplies selectively reusable modular seams and product-composition patterns only.
@@ -163,3 +164,25 @@ performance behavior.
 
 **Next entry condition:** begin Increment B with the zero-runtime-dependency Node 24 package,
 strict protocol kernel, narrow module exports, frozen vectors, and conformance tests.
+
+### Increment B1 — v0.1 contract freeze
+
+**Closure:** `specified` on 2026-08-31.
+
+- ADR-0007 fixes the first Manifest, public binding, detached event envelope, private receipt,
+  cryptographic boundary, strict limits, process ports, and rejected extension fields.
+- A local capability probe on the current Node `v26.5.0` runtime generated an Ed25519 key pair,
+  produced a 64-byte signature, verified the original payload, and rejected a modified payload.
+  This is not yet a Node 24 compatibility or cross-language conformance claim.
+- `git diff --check` passed.
+- A staged relative-link audit passed 105 of 105 links across the nine reconciled documents.
+- The English-only scan found no Han characters in the staged documents.
+- No `mvp/`, `References/`, scenario, candidate-review, or runtime-evidence file is part of this
+  increment.
+
+This proves a reviewable contract decision and current-truth reconciliation only. It does not
+prove protocol code, frozen vectors, Host SDK behavior, Receiver authority, process separation,
+durability, performance, Agent activation, Browser access, or WebMCP runtime behavior.
+
+**Next entry condition:** implement the zero-runtime-dependency protocol and Host SDK kernel,
+then verify strict positive, negative, boundary, tamper, and frozen-vector behavior.

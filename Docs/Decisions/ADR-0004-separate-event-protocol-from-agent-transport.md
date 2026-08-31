@@ -1,6 +1,6 @@
 # ADR-0004: Separate the Receiver Event Protocol from Agent Runtime Transport
 
-**Status:** Accepted for protocol and adapter separation; topology items 4 and 5 superseded by [ADR-0006](ADR-0006-establish-reentry-core-development-baseline.md)  
+**Status:** Accepted for protocol and adapter separation; topology items 4 and 5 are superseded by [ADR-0006](ADR-0006-establish-reentry-core-development-baseline.md), and the first exact wire kernel is owned by [ADR-0007](ADR-0007-freeze-reentry-core-v0.1-contract-kernel.md)  
 **Decision date:** 2026-08-30  
 **Decision owners:** Alex and project team  
 **Scope:** Receiver interoperability, deployment topology, and Agent adapter boundaries
