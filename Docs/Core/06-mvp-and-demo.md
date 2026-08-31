@@ -1,7 +1,7 @@
 # WebMCP Re-entry Workflow — Demo App Selection and Challenge MVP
 
 **Role:** CANONICAL app-selection framework and challenge execution target  
-**Status:** Re-entry Core foundation in progress; demo app and supported continuation adapter remain unselected  
+**Status:** Re-entry Core foundation baseline locally verified; broader program active; demo app and supported continuation adapter remain unselected  
 **Last updated:** 2026-08-31
 
 ## 1. Current decision boundary

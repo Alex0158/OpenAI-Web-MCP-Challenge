@@ -88,7 +88,7 @@ genuine WebMCP, deployment, or judge reproducibility.
 
 | ID | Scope | Status |
 |---|---|---|
-| [`RECORE-001`](RECORE-001-foundation.md) | Build the Re-entry Core baseline through protocol, Host, Receiver authority, and later process seams | `in_progress` |
+| [`RECORE-001`](RECORE-001-foundation.md) | Build the Re-entry Core baseline through protocol, Host, Receiver authority, process seams, and deterministic conformance profile | `locally_verified` |
 
 ## Lean implementation rules
 

@@ -1,9 +1,10 @@
 # RECORE-001: Re-entry Core Foundation
 
-**Role:** ACTIVE IMPLEMENTATION RECORD  
+**Role:** CLOSED IMPLEMENTATION RECORD  
 **Risk profile:** Assured — cross-process authority, consent, identity, durability, and Agent execution boundaries  
-**Status:** `in_progress`  
+**Status:** `locally_verified`  
 **Opened:** 2026-08-31  
+**Closed:** 2026-08-31  
 **Branch:** `codex/re-entry-core-foundation`  
 **Baseline:** `25634e08536d699f0e107ef0d58afa5fdad2b157`
 
@@ -656,3 +657,43 @@ No conformance profile source or direct execution evidence exists yet.
 deterministic Agent dispatch plus separate synthetic-effect gate, reuse those roles from the
 forced-restart test, and verify direct execution on Node 24 and the current runtime before any
 production shell or credential work.
+
+### Increment C6b — domain-neutral conformance/development profile
+
+**Closure:** `locally_verified` on 2026-08-31. RECORE-001 closes at its bounded target.
+
+- Implementation commit `6cf7feaa7c45ebd48b3e08d568d77b2515407b17` was pushed and matched
+  `origin/codex/re-entry-core-foundation` before this closure writeback.
+- `conformance/` now owns the single source-repository role composition and bounded runner. Host,
+  Receiver, and Connector execute in distinct child processes; only Receiver loads SQLite; event,
+  claim, and acknowledgement cross the existing HTTP routes; and fault injection remains in a
+  thin test-only Receiver wrapper.
+- The Connector claims one live lease and dispatches one credential-free deterministic Agent
+  activation. `accepted` does not acknowledge delivery: an acknowledgement with an unauthorized
+  effect fails first, then a separately correlated synthetic Host effect permits the exact final
+  acknowledgement.
+- The Host receives only delivery, event, correlation, and workflow identifiers for the synthetic
+  effect; it does not receive the lease token, private receipt, Connector credential, or Receiver
+  database. The public result excludes fixture tokens, keys, database paths, receipts, payloads,
+  exception messages, stacks, and child stderr.
+- Direct profile execution passes on Node `v24.20.0` and Node `v26.5.0`. Two focused profile tests
+  cover the complete redacted flow and inherited-command rejection; the existing forced-restart,
+  exact replay, acknowledgement-response-loss, and token-persistence test passes against the shared
+  role code.
+- The aggregate suite passes 56 of 56 tests on both runtimes; protocol conformance remains 11 of
+  11. The main package still reports no runtime dependency and selects 15 files, excluding
+  `conformance/` and `test/`: 31,395 bytes compressed and 162,489 bytes unpacked after the packed
+  README records the profile.
+
+This closes the RECORE-001 objective at `locally_verified`: the authoritative package, protocol,
+Host SDK, Receiver authority and persistence, Connector delivery and transport, deterministic
+Agent boundary, independently exercised non-production process profile, verification record, and
+development runbook are present and mutually reconciled. It does not close the Re-entry Core
+program or prove production process ownership, consent, pairing, credential custody, real Host
+effect, real Agent activation, Browser/WebMCP, selected-app behavior, deployment, judge
+reproducibility, or submission.
+
+**Next entry condition:** open a new bounded record for app-independent quality and weight work.
+Measure only material protocol, Receiver persistence/delivery, and source-profile startup costs;
+do not add runtime behavior, polling, production custody, or a selected-app requirement merely to
+create a benchmark.

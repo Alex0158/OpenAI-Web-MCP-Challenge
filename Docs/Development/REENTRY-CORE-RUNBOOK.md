@@ -93,6 +93,7 @@ node --version
 npm test
 npm run test:conformance
 npx --yes node@24.20.0 --test test/*.test.mjs
+node conformance/run.mjs
 npm run benchmark:protocol
 npm run benchmark:agent-adapter
 npm ls --omit=dev --all --json

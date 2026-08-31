@@ -1,7 +1,7 @@
 # Re-entry Core — Trust, Security, and Reliability
 
 **Role:** CANONICAL authority, security, and failure semantics  
-**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through ADR-0012; the v0.1 protocol, Host SDK, bounded Receiver C1 authority, Connector delivery C2, HTTP adapter, outbound Connector client, forced-restart test-process isolation, and deterministic Agent Adapter C4b are locally verified; ADR-0012 specifies a non-production conformance/development profile whose implementation remains pending; mid-transaction crash injection, production process ownership, consent and pairing, private context binding, real Agent activation, real Host-effect verification, and distributed topology remain unverified.  
+**Status:** Target Re-entry Core trust and reliability baseline under ADR-0006 through ADR-0012; the v0.1 protocol, Host SDK, bounded Receiver C1 authority, Connector delivery C2, HTTP adapter, outbound Connector client, forced-restart test-process isolation, deterministic Agent Adapter C4b, and non-production conformance/development profile C6b are locally verified; mid-transaction crash injection, production process ownership, consent and pairing, private context binding, real Agent activation, real Host-effect verification, and distributed topology remain unverified.  
 **Last updated:** 2026-08-31
 
 ## 1. Security objective
@@ -260,6 +260,13 @@ no-platform adapter. One live lease derives one immutable activation without Con
 effect, or raw context credentials. Unsupported, rejected, timeout, exception, malformed-result,
 and unknown-outcome paths return bounded observations and never retry or acknowledge. This does
 not prove a private context binding, real Agent activation, Browser, WebMCP, or Host effect.
+
+Re-entry Core C6 locally verifies the ADR-0012 source-repository profile with distinct Host,
+Receiver, and Connector children. Only the Receiver loads SQLite; event, claim, and acknowledgement
+use the existing HTTP boundary; Agent dispatch occurs once; and acknowledgement fails before a
+separate synthetic Host effect is authorized. Output excludes fixture tokens, keys, database paths,
+receipts, and child errors. This remains synthetic loopback evidence, not production consent,
+identity, credential custody, Host effect, Agent runtime, Browser, WebMCP, or service operation.
 
 D4 remains `INCONCLUSIVE` and supplies no Desktop restart continuity evidence. Therefore,
 current evidence supports bounded additive mechanism and service-contract claims, not a
