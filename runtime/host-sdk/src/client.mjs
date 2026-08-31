@@ -2,6 +2,299 @@ const PROMPT_OPTION_FIELDS = Object.freeze(["documentRef"]);
 const PROMPT_INPUT_FIELDS = Object.freeze(["title", "reason"]);
 const TITLE_MAX_BYTES = 120;
 const REASON_MAX_BYTES = 500;
+const PROMPT_CLASS = "webmcp-continuation";
+let promptSequence = 0;
+
+const PROMPT_STYLES = `
+  dialog.${PROMPT_CLASS}__dialog {
+    width: min(calc(100vw - 32px), 480px);
+    max-width: none;
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 28px;
+    background: transparent;
+    color: #f8fafc;
+    overflow: visible;
+    color-scheme: dark;
+  }
+
+  dialog.${PROMPT_CLASS}__dialog::backdrop {
+    background: rgb(3 7 18 / 68%);
+    backdrop-filter: blur(12px);
+    animation: ${PROMPT_CLASS}-backdrop-in 180ms ease-out both;
+  }
+
+  .${PROMPT_CLASS}__card {
+    position: relative;
+    padding: 10px;
+    border: 1px solid rgb(148 163 184 / 22%);
+    border-radius: 28px;
+    background:
+      radial-gradient(circle at 94% 0%, rgb(99 102 241 / 26%), transparent 36%),
+      linear-gradient(145deg, #17213f 0%, #0c142c 62%, #0a1024 100%);
+    box-shadow:
+      0 32px 90px rgb(2 6 23 / 52%),
+      0 8px 24px rgb(2 6 23 / 28%),
+      inset 0 1px 0 rgb(255 255 255 / 9%);
+    animation: ${PROMPT_CLASS}-card-in 220ms cubic-bezier(.2, .75, .25, 1) both;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .${PROMPT_CLASS}__surface {
+    padding: 24px 24px 20px;
+    border: 1px solid rgb(255 255 255 / 8%);
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgb(255 255 255 / 5%), rgb(255 255 255 / 1%));
+  }
+
+  .${PROMPT_CLASS}__topbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .${PROMPT_CLASS}__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .${PROMPT_CLASS}__mark {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgb(165 180 252 / 32%);
+    border-radius: 13px;
+    background: linear-gradient(145deg, #818cf8, #4f46e5 70%, #3730a3);
+    box-shadow: 0 8px 18px rgb(79 70 229 / 30%), inset 0 1px 0 rgb(255 255 255 / 35%);
+  }
+
+  .${PROMPT_CLASS}__mark-line {
+    display: block;
+    width: 18px;
+    height: 3px;
+    border-radius: 999px;
+    background: #eef2ff;
+    transform: translateX(-2px);
+  }
+
+  .${PROMPT_CLASS}__mark-line + .${PROMPT_CLASS}__mark-line {
+    width: 12px;
+    margin-top: 5px;
+    transform: translateX(2px);
+    opacity: .72;
+  }
+
+  .${PROMPT_CLASS}__eyebrow {
+    margin: 1px 0 4px;
+    color: #a5b4fc;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: .16em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .${PROMPT_CLASS}__brand-name {
+    margin: 0;
+    color: #e2e8f0;
+    font-size: 13px;
+    font-weight: 650;
+    letter-spacing: .01em;
+  }
+
+  .${PROMPT_CLASS}__close {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    margin: -2px -2px 0 0;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1;
+    transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
+  }
+
+  .${PROMPT_CLASS}__close:hover {
+    border-color: rgb(148 163 184 / 22%);
+    background: rgb(255 255 255 / 8%);
+    color: #f8fafc;
+  }
+
+  .${PROMPT_CLASS}__close:focus-visible,
+  .${PROMPT_CLASS}__button:focus-visible {
+    outline: 3px solid rgb(165 180 252 / 72%);
+    outline-offset: 3px;
+  }
+
+  .${PROMPT_CLASS}__title {
+    margin: 27px 0 10px;
+    color: #f8fafc;
+    font-size: clamp(24px, 5vw, 30px);
+    font-weight: 720;
+    letter-spacing: -.035em;
+    line-height: 1.08;
+  }
+
+  .${PROMPT_CLASS}__reason {
+    max-width: 38ch;
+    margin: 0;
+    color: #b6c2d9;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .${PROMPT_CLASS}__notice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 22px;
+    padding: 13px 14px;
+    border: 1px solid rgb(129 140 248 / 18%);
+    border-radius: 15px;
+    background: rgb(99 102 241 / 10%);
+  }
+
+  .${PROMPT_CLASS}__notice-icon {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 27px;
+    height: 27px;
+    border-radius: 9px;
+    background: rgb(129 140 248 / 18%);
+    color: #c7d2fe;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .${PROMPT_CLASS}__notice-copy {
+    display: grid;
+    gap: 2px;
+  }
+
+  .${PROMPT_CLASS}__notice-copy strong {
+    color: #e0e7ff;
+    font-size: 12px;
+    font-weight: 680;
+  }
+
+  .${PROMPT_CLASS}__notice-copy span {
+    color: #aeb9d0;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .${PROMPT_CLASS}__actions {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .${PROMPT_CLASS}__button {
+    min-height: 46px;
+    padding: 0 16px;
+    border: 1px solid rgb(148 163 184 / 24%);
+    border-radius: 13px;
+    background: rgb(255 255 255 / 5%);
+    color: #dbe5f5;
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 680;
+    letter-spacing: -.005em;
+    transition: transform 140ms ease, border-color 140ms ease, background 140ms ease, box-shadow 140ms ease;
+  }
+
+  .${PROMPT_CLASS}__button:hover {
+    transform: translateY(-1px);
+    border-color: rgb(165 180 252 / 40%);
+    background: rgb(255 255 255 / 9%);
+  }
+
+  .${PROMPT_CLASS}__button:active {
+    transform: translateY(0);
+  }
+
+  .${PROMPT_CLASS}__button--primary {
+    border-color: rgb(165 180 252 / 48%);
+    background: linear-gradient(135deg, #818cf8, #6366f1);
+    color: #ffffff;
+    box-shadow: 0 8px 18px rgb(79 70 229 / 28%), inset 0 1px 0 rgb(255 255 255 / 28%);
+  }
+
+  .${PROMPT_CLASS}__button--primary:hover {
+    border-color: rgb(199 210 254 / 72%);
+    background: linear-gradient(135deg, #a5b4fc, #818cf8);
+    box-shadow: 0 10px 22px rgb(79 70 229 / 38%), inset 0 1px 0 rgb(255 255 255 / 32%);
+  }
+
+  .${PROMPT_CLASS}__footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin: 14px 0 0;
+    color: #8f9db7;
+    font-size: 11px;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .${PROMPT_CLASS}__footer-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 0 4px rgb(52 211 153 / 10%);
+  }
+
+  @keyframes ${PROMPT_CLASS}-backdrop-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes ${PROMPT_CLASS}-card-in {
+    from { opacity: 0; transform: translateY(12px) scale(.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @media (max-width: 520px) {
+    .${PROMPT_CLASS}__surface {
+      padding: 21px 18px 17px;
+    }
+
+    .${PROMPT_CLASS}__actions {
+      grid-template-columns: 1fr;
+    }
+
+    .${PROMPT_CLASS}__button--primary {
+      order: -1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    dialog.${PROMPT_CLASS}__dialog::backdrop,
+    .${PROMPT_CLASS}__card {
+      animation: none;
+    }
+
+    .${PROMPT_CLASS}__button,
+    .${PROMPT_CLASS}__close {
+      transition: none;
+    }
+  }
+`;
 
 /**
  * Create the browser half of the SDK.
@@ -31,37 +324,104 @@ export function createContinuationPrompt(options = {}) {
     }
 
     const dialog = documentRef.createElement("dialog");
+    const style = documentRef.createElement("style");
+    const card = documentRef.createElement("div");
+    const surface = documentRef.createElement("div");
+    const topbar = documentRef.createElement("div");
+    const brand = documentRef.createElement("div");
+    const mark = documentRef.createElement("div");
+    const markLine = documentRef.createElement("span");
+    const markLineShort = documentRef.createElement("span");
+    const brandCopy = documentRef.createElement("div");
+    const eyebrow = documentRef.createElement("div");
+    const brandName = documentRef.createElement("div");
+    const closeButton = documentRef.createElement("button");
     const title = documentRef.createElement("h2");
     const reason = documentRef.createElement("p");
+    const notice = documentRef.createElement("div");
+    const noticeIcon = documentRef.createElement("span");
+    const noticeCopy = documentRef.createElement("div");
+    const noticeTitle = documentRef.createElement("strong");
+    const noticeReason = documentRef.createElement("span");
     const actions = documentRef.createElement("div");
     const approve = documentRef.createElement("button");
     const decline = documentRef.createElement("button");
+    const footer = documentRef.createElement("div");
+    const footerDot = documentRef.createElement("span");
+    const footerText = documentRef.createElement("span");
 
     if (typeof dialog.showModal !== "function") {
       throw new TypeError("Continuation prompt requires HTMLDialogElement.showModal");
     }
 
+    const instanceId = ++promptSequence;
+    style.textContent = PROMPT_STYLES;
+    dialog.className = `${PROMPT_CLASS}__dialog`;
+    card.className = `${PROMPT_CLASS}__card`;
+    surface.className = `${PROMPT_CLASS}__surface`;
+    topbar.className = `${PROMPT_CLASS}__topbar`;
+    brand.className = `${PROMPT_CLASS}__brand`;
+    mark.className = `${PROMPT_CLASS}__mark`;
+    markLine.className = `${PROMPT_CLASS}__mark-line`;
+    markLineShort.className = `${PROMPT_CLASS}__mark-line`;
+    brandCopy.className = `${PROMPT_CLASS}__brand-copy`;
+    eyebrow.className = `${PROMPT_CLASS}__eyebrow`;
+    brandName.className = `${PROMPT_CLASS}__brand-name`;
+    closeButton.className = `${PROMPT_CLASS}__close`;
+    title.className = `${PROMPT_CLASS}__title`;
+    reason.className = `${PROMPT_CLASS}__reason`;
+    notice.className = `${PROMPT_CLASS}__notice`;
+    noticeIcon.className = `${PROMPT_CLASS}__notice-icon`;
+    noticeCopy.className = `${PROMPT_CLASS}__notice-copy`;
+    actions.className = `${PROMPT_CLASS}__actions`;
+    approve.className = `${PROMPT_CLASS}__button ${PROMPT_CLASS}__button--primary`;
+    decline.className = `${PROMPT_CLASS}__button`;
+    footer.className = `${PROMPT_CLASS}__footer`;
+    footerDot.className = `${PROMPT_CLASS}__footer-dot`;
+
+    const titleId = `${PROMPT_CLASS}-title-${instanceId}`;
+    const reasonId = `${PROMPT_CLASS}-reason-${instanceId}`;
+    title.id = titleId;
+    reason.id = reasonId;
     title.textContent = input.title;
     reason.textContent = input.reason;
+    eyebrow.textContent = "Workflow continuation";
+    brandName.textContent = "Secure review request";
+    closeButton.textContent = "×";
+    closeButton.setAttribute("aria-label", "Close request");
+    closeButton.setAttribute("title", "Close request");
+    noticeIcon.textContent = "↗";
+    noticeTitle.textContent = "Review before continuing";
+    noticeReason.textContent = "Nothing happens until you choose.";
+    footerText.textContent = "You stay in control of this workflow";
     approve.type = "button";
-    approve.textContent = "Approve";
+    approve.textContent = "Approve & continue";
     decline.type = "button";
-    decline.textContent = "Decline";
-    dialog.setAttribute("aria-label", input.title);
-    dialog.style.cssText = "border:0;border-radius:12px;padding:24px;max-width:420px;box-shadow:0 20px 60px rgb(0 0 0 / 25%);";
-    actions.style.cssText = "display:flex;gap:8px;justify-content:flex-end;margin-top:20px;";
-    approve.style.cssText = "padding:8px 14px;";
-    decline.style.cssText = "padding:8px 14px;";
+    decline.textContent = "Not now";
+    dialog.setAttribute("aria-labelledby", titleId);
+    dialog.setAttribute("aria-describedby", reasonId);
+    dialog.setAttribute("aria-modal", "true");
 
+    mark.append(markLine, markLineShort);
+    brandCopy.append(eyebrow, brandName);
+    brand.append(mark, brandCopy);
+    topbar.append(brand, closeButton);
+    noticeCopy.append(noticeTitle, noticeReason);
+    notice.append(noticeIcon, noticeCopy);
     actions.append(decline, approve);
-    dialog.append(title, reason, actions);
+    footer.append(footerDot, footerText);
+    surface.append(topbar, title, reason, notice, actions, footer);
+    card.append(surface);
+    dialog.append(style, card);
     documentRef.body.append(dialog);
 
     return new Promise((resolve) => {
       active = { dialog, resolve };
       approve.addEventListener("click", () => settle("approve"), { once: true });
       decline.addEventListener("click", () => settle("decline"), { once: true });
+      closeButton.addEventListener("click", () => settle("decline"), { once: true });
       dialog.addEventListener("cancel", () => settle("decline"), { once: true });
+      dialog.addEventListener("close", () => settle("decline"), { once: true });
       dialog.showModal();
     });
 
@@ -77,12 +437,12 @@ export function createContinuationPrompt(options = {}) {
 
   function close() {
     if (active === undefined) return;
-    const dialog = active.dialog;
+    const current = active;
+    active = undefined;
+    const dialog = current.dialog;
     if (dialog.open && typeof dialog.close === "function") dialog.close();
     dialog.remove();
-    const resolve = active.resolve;
-    active = undefined;
-    resolve({ action: "decline" });
+    current.resolve({ action: "decline" });
   }
 }
 

@@ -1,12 +1,12 @@
 export const metadata = {
-  title: "Host SDK Preview",
-  description: "Manual browser test for the Host SDK prompt",
+  title: "Continuation SDK Preview",
+  description: "A polished browser preview for the WebMCP continuation SDK",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body style={{ margin: 0, fontFamily: "system-ui, sans-serif" }}>
+      <body style={{ margin: 0, background: "#080d1c", fontFamily: "system-ui, sans-serif" }}>
         {children}
       </body>
     </html>

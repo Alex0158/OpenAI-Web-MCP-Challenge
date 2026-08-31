@@ -14,9 +14,10 @@ test("browser prompt renders in the top-layer dialog and returns the user's deci
   const dialog = documentRef.body.children[0];
   assert.equal(dialog.tagName, "DIALOG");
   assert.equal(dialog.open, true);
-  assert.equal(dialog.children[0].textContent, "Continue this workflow?");
+  assert.equal(dialog.className, "webmcp-continuation__dialog");
+  assert.equal(findByText(dialog, "Continue this workflow?").tagName, "H2");
 
-  const approve = findByText(dialog, "Approve");
+  const approve = findByText(dialog, "Approve & continue");
   assert.ok(approve);
   approve.click();
   assert.deepEqual(await pending, { action: "approve" });
@@ -57,6 +58,8 @@ class FakeElement {
   open = false;
   style = {};
   textContent = "";
+  className = "";
+  id = "";
 
   constructor(tagName) {
     this.tagName = tagName.toUpperCase();
