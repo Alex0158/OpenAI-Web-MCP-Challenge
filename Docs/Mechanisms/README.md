@@ -26,10 +26,11 @@ or silently weaken them.
 For a change to one mechanism:
 
 1. read Core/00 for current project state;
-2. read the owning module contract;
-3. read its controlling ADRs;
-4. inspect current code and focused tests;
-5. read Development or Research only for the exact evidence or unresolved question involved.
+2. read the owning non-terminal Task when the work is registered;
+3. read the owning module contract;
+4. read its controlling ADRs;
+5. inspect current code and focused tests;
+6. read Development or Research only for the exact evidence or unresolved question involved.
 
 Do not read every historical record by default.
 
@@ -59,9 +60,10 @@ verify independently and one owner would reduce ambiguity.
 
 When a mechanism changes:
 
-1. record or supersede the durable decision;
-2. update this index and the owning module;
-3. update system-wide Core only if its contract or status changes;
-4. update code and focused tests;
-5. record evidence in Development, Research, Experiments, or the owning evidence directory; and
-6. reconcile README, app, deployment, and submission claims only at their proven level.
+1. update the owning Task lifecycle and next gate when applicable;
+2. record or supersede the durable decision;
+3. update this index and the owning module;
+4. update system-wide Core only if its contract or status changes;
+5. update code and focused tests;
+6. record evidence in Development, Research, Experiments, or the owning evidence directory; and
+7. reconcile README, app, deployment, and submission claims only at their proven level.

@@ -21,7 +21,12 @@ roles and precedence below.
 | **DEPRIORITIZED** | A preserved direction that is not part of the current project. |
 | **SUPERSEDED** | Replaced by a named newer source. Retained only for traceability. |
 
-## 2. Current mechanism core
+## 2. Flagship Big Picture and authority map
+
+`Docs/Core/` is the flagship Big Picture for current product direction, requirements,
+architecture, trust, evidence gates, app selection, and competition positioning. Decisions explain
+durable choices; Tasks control non-terminal work; Development records accepted execution and
+closure. Neither Decisions nor Development replaces the owning Core truth.
 
 | Document | Role | Owns |
 |---|---|---|
@@ -36,22 +41,28 @@ roles and precedence below.
 | [`Core/07-p0-technical-validation-mvp.md`](Core/07-p0-technical-validation-mvp.md) | CANONICAL | Frozen P0 implementation contract and dated verdict; not the current production architecture |
 | [`Core/08-competition-thesis-and-positioning.md`](Core/08-competition-thesis-and-positioning.md) | CANONICAL | Competition-facing thesis, value proposition, differentiation, judging posture, and claim hierarchy; underlying status remains in Core/00 and Core/05 |
 | [`Mechanisms/README.md`](Mechanisms/README.md) | CANONICAL MODULE INDEX | Stable Re-entry lifecycle and authority contracts, with code, test, and evidence routing |
-| [`Decisions/README.md`](Decisions/README.md) | DECISION INDEX | Accepted, superseded, and partially superseded durable choices through ADR-0015 |
-| [`Development/README.md`](Development/README.md) | CANONICAL | Development workflow, runbook, bounded work records, verification, and closure states |
+| [`Decisions/README.md`](Decisions/README.md) | DECISION INDEX | Accepted, superseded, and partially superseded durable choices through ADR-0016 |
+| [`Tasks/README.md`](Tasks/README.md) | CANONICAL TASK INDEX | Unified lifecycle for pending work, problems, defects, investigations, risks, decisions, and verification gaps |
+| [`Development/README.md`](Development/README.md) | CANONICAL | Program, implementation, verification, runbook, and closure records |
 | [`Challenge/README.md`](Challenge/README.md) | GOVERNING ROUTER | Current English routing for challenge constraints, volatile facts, and release refresh gates |
 | [`Scenarios/README.md`](Scenarios/README.md) | SUPPORTING | Concrete domain mappings that are not selected product truth |
 
 The [decision register](Decisions/README.md) owns the complete decision index. ADR-0001 is
 superseded by ADR-0002; ADR-0004 is partially superseded by ADR-0006 and ADR-0007; ADR-0006 through
-ADR-0015 control the current Re-entry Core source, topology, protocol, authority, delivery,
+ADR-0016 control the current Re-entry Core source, topology, protocol, authority, delivery,
 transport, deterministic Agent boundary, conformance, Grant control, private binding resolution,
-and modular documentation ownership. The index records decision status, not implementation or
-runtime proof.
+modular documentation ownership, and unified task lifecycle. The index records decision status,
+not implementation or runtime proof.
 
-## 3. Development and closure
+## 3. Tasks, development, and closure
+
+- [`Tasks/README.md`](Tasks/README.md) — CANONICAL lifecycle authority for every registered
+  non-terminal task, including problems and defects.
+- [`Tasks/TASK-001-select-host-application.md`](Tasks/TASK-001-select-host-application.md) — current
+  P0 task to produce and reconcile the application-selection ADR.
 
 - [`Development/README.md`](Development/README.md) — CANONICAL Re-entry Core development,
-  verification, evidence, and closure workflow plus the work-record index.
+  verification, evidence, runbook, and closure workflow plus the Program-record index.
 - [`Development/REENTRY-CORE-PROGRAM.md`](Development/REENTRY-CORE-PROGRAM.md) — accepted Program
   contract; the application-neutral Program is complete at `locally_verified`.
 - [`Development/REENTRY-CORE-RUNBOOK.md`](Development/REENTRY-CORE-RUNBOOK.md) — local resume,
@@ -60,8 +71,9 @@ runtime proof.
   [development index](Development/README.md). New selected-app or production work uses a new
   bounded record rather than silently widening a closed Core increment.
 
-These records control active scope and closure state. They do not override the owning Core or
-decision document and must not accumulate conversational history.
+Task records control task lifecycle and the next gate. Development records control accepted
+execution and closure detail. Neither overrides the owning Core, Mechanism, or Decision document,
+and neither may accumulate conversational history.
 
 ## 4. Mechanism modules
 
@@ -118,16 +130,18 @@ decision.
 7. Keep the dossier snapshots byte-identical. Import a new version as a new file rather than overwriting version 1.1.
 8. Select a host application only through a new ADR that specializes the domain-neutral Core requirements.
 9. Product, development, and submission artifacts are written in English. Conversation may use the user's language.
-10. Add every tracked decision and research record to its local index; keep this root map focused on category and authority routing.
+10. Add every tracked decision, task, and research record to its local index; keep this root map focused on category and authority routing.
 11. Follow the repository [collaboration and commit gates](../AGENTS.md) for every contributor integration, commit, merge, and push.
-12. Do not create a second cross-layer register for facts already owned by Core, Mechanisms, ADRs, Development, Research, or governing sources.
+12. Do not create a second cross-layer register for facts already owned by Core, Mechanisms, ADRs, Tasks, Development, Research, or governing sources.
+13. Register actionable non-terminal work in `Tasks/`; do not use Core, Research, or Development as an informal backlog.
 
 ## 10. Update sequence
 
 When a decision or implementation changes:
 
-1. Update or add the relevant decision record.
-2. Update the owning Core document.
-3. Update current status and the evidence ledger.
-4. Reconcile implementation, tests, demo evidence, and submission material.
-5. Check links and verify that no frozen reference changed.
+1. Update the registered task lifecycle and exact next gate when applicable.
+2. Update or add the relevant decision record.
+3. Update the owning Core or Mechanism document.
+4. Update current status and the evidence ledger.
+5. Reconcile implementation, tests, demo evidence, and submission material.
+6. Check links and verify that no frozen reference changed.

@@ -1,7 +1,7 @@
 # Decision Register
 
 **Role:** DECISION index  
-**Status:** Current through ADR-0015  
+**Status:** Current through ADR-0016  
 **Last updated:** 2026-08-31
 
 This directory records accepted durable choices and their consequences. A decision record owns
@@ -28,6 +28,7 @@ and runtime evidence.
 | [ADR-0013](ADR-0013-freeze-receiver-grant-control-and-revocation.md) | Accepted | Freeze Receiver Grant inspection, revocation, and race semantics |
 | [ADR-0014](ADR-0014-freeze-private-managed-context-binding-resolution.md) | Accepted | Freeze private managed-context binding resolution |
 | [ADR-0015](ADR-0015-adopt-modular-mechanism-documentation.md) | Accepted | Adopt modular mechanism documentation and canonical content-density rules |
+| [ADR-0016](ADR-0016-adopt-unified-task-authority.md) | Accepted | Adopt one unified lifecycle authority for pending work, problems, defects, and investigations |
 
 ## Decision rules
 

@@ -117,7 +117,8 @@ Experiments, and frozen evidence rather than this status file.
 
 ## 7. Current highest-leverage sequence
 
-1. Complete and accept the application-selection ADR using Core/06 and the candidate evidence.
+1. Complete [TASK-001](../Tasks/TASK-001-select-host-application.md) and accept the
+   application-selection ADR using Core/06 and the candidate evidence.
 2. Create a bounded selected-app Program and domain documentation layer.
 3. Implement one vertical Host workflow, normal human UI, Host Adapter, and genuine WebMCP tools.
 4. Validate and select one supported continuation adapter or explicitly narrow the demo claim.
