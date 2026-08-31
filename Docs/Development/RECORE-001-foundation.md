@@ -458,3 +458,45 @@ deployment; or a selected app.
 fixtures around these unchanged public subpaths. Prove signed event ingress, durable acceptance,
 Receiver restart, exact claim replay, effect-backed acknowledgement, and token non-persistence
 without adding runtime health, admin, test, or fallback routes.
+
+### Increment C3c — independent process and response-loss proof
+
+**Closure:** `locally_verified` on 2026-08-31.
+
+- One test-only harness starts independent Host, Receiver, and Connector child processes through
+  bounded IPC used only for readiness, authority setup, inspection, and teardown. It adds no
+  runtime health, admin, consent, test, or fallback route.
+- The Host child generates and retains its Ed25519 private key, returns only the public key, issues
+  the Manifest and event through `ReentryHostSdk`, and sends the signed envelope to the Receiver
+  HTTP route. The parent and the other children never receive the private key.
+- The Receiver child alone imports `node:sqlite`, opens the file-backed store, composes
+  `ReceiverCore` with deterministic test authorities, and binds the HTTP adapter to literal
+  loopback. The Host and Connector children and the test parent report no loaded SQLite module.
+- The Connector child imports only the outbound client surface. It retains one caller-created
+  claim token, reaches the Receiver only through HTTP, and reuses the exact token after restart.
+- A signed event returns `202` only after durable acceptance. Receiver close and restart preserves
+  exact event replay as duplicate, then a second restart preserves the exact private lease and
+  returns the repeated claim as duplicate without spending another attempt.
+- An unknown Host-effect token returns the bounded `403 host_effect_invalid`. With the fixed
+  test-only attestation installed through IPC, the Receiver commits acknowledgement before the
+  fixture deliberately destroys the HTTP response. After another Receiver restart, the Connector
+  repeats the exact acknowledgement and receives the same effect as duplicate.
+- After every process closes, byte scans of the SQLite database and any exact WAL/SHM sidecars find
+  no raw Connector, claim/lease, accepted effect, or rejected effect token.
+- The aggregate suite passes 48 of 48 tests on Node `v24.20.0` and Node `v26.5.0`; protocol
+  conformance remains 11 of 11. Informational coverage is 89.86% lines, 74.90% branches, and
+  97.20% functions.
+- Runtime package weight and dependencies are unchanged because every process shell is test-only:
+  zero runtime dependencies and 14 packed files at 28,508 bytes compressed and 146,580 bytes
+  unpacked.
+
+This proves the ADR-0010 test-process boundary, graceful file-backed restart, unknown network
+outcome convergence after a committed acknowledgement, and token non-persistence. It does not
+prove forced or mid-transaction termination, concurrent Receiver ownership, a production process
+supervisor, durable Connector credential or claim-token custody, TLS, production consent or
+pairing, a real Host-effect verifier, an Agent adapter, Browser/WebMCP re-entry, deployment, or a
+selected app.
+
+**Next entry condition:** prove one bounded forced-Receiver-termination recovery path and decide
+whether production single-owner enforcement needs a Core-adjacent contract. Do not add a daemon,
+supervisor, credential store, or fallback until that evidence identifies a necessary interface.

@@ -1,7 +1,7 @@
 # Re-entry Core — System Design
 
 **Role:** CANONICAL domain-neutral architecture and contracts  
-**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant, reservation, and pending-delivery authority, ADR-0009 fixes the locally verified Connector lease and effect-acknowledgement contract, and ADR-0010 fixes the locally verified HTTP adapter and outbound Connector client. Separate-process proof and the concrete Agent continuation adapter remain open. Current as-built truth is owned by Core/00 and Core/05.  
+**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant, reservation, and pending-delivery authority, ADR-0009 fixes the locally verified Connector lease and effect-acknowledgement contract, and ADR-0010 fixes the locally verified HTTP adapter, outbound Connector client, and test-process isolation. Production process shells and the concrete Agent continuation adapter remain open. Current as-built truth is owned by Core/00 and Core/05.  
 **Last updated:** 2026-08-31
 
 ## 1. System objective
@@ -180,8 +180,8 @@ Expired leases may be reclaimed only within a configured attempt bound; stale le
 Delivery becomes acknowledged only after a separate trusted authority verifies one exact Host
 effect correlated to the delivery, event, workflow, and human boundary. Queue acceptance,
 Connector health, adapter return, or `agent_started` and `completed` strings are not effect proof.
-Production pairing, credential custody, HTTP, separate processes, and Agent activation remain
-later boundaries.
+Production pairing, credential custody, and Agent activation remain later boundaries. ADR-0010
+owns HTTP and separate-process evidence without reopening the ADR-0009 authority contract.
 
 ADR-0010 fixes the first transport shell without changing those Core contracts. A Cloud adapter
 maps exactly three bounded JSON `POST` routes to event acceptance, delivery claim, and effect-
@@ -220,9 +220,11 @@ for a conforming backend to send a Receiver event.
 - ADR-0009 delivery behavior is as-built only behind deterministic identity and effect-authority
   ports in one process. No HTTP service, production pairing, separate Connector, real Host effect,
   Agent call, or distributed storage behavior is part of that evidence.
-- ADR-0010 HTTP mapping and outbound client pass bounded loopback tests, including redacted
-  failures, secure-origin checks, redirect rejection, timeouts, response bounds, and no automatic
-  retry. No independent Host/Receiver/Connector process or file-backed network restart has passed.
+- ADR-0010 HTTP mapping, outbound client, and one test-only process harness pass bounded loopback
+  tests. Independent Host, Receiver, and Connector children prove file-backed restart replay,
+  effect-gated acknowledgement, acknowledgement-response-loss convergence, and Receiver-only
+  SQLite ownership. No production process shell, forced termination, TLS, pairing, real Host
+  effect, Agent call, or distributed storage behavior has passed.
 - The private P0 Desktop adapter completed one controlled same-task join but is not a
   documented platform contract.
 - H1 Scheduled pull completed one bounded event-gated continuation and remains a

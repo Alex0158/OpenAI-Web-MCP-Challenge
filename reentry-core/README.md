@@ -1,6 +1,6 @@
 # Re-entry Core
 
-**Status:** v0.1 protocol, Host SDK, Receiver C1, Connector delivery C2, and transport C3b locally verified  
+**Status:** v0.1 protocol, Host SDK, Receiver C1, Connector delivery C2, and transport/process C3c locally verified  
 **Authority:** ADR-0006 through ADR-0010 and `Docs/Development/RECORE-001-foundation.md`
 
 This directory is the authoritative source for new application-neutral Re-entry Core behavior.
@@ -28,7 +28,8 @@ MVP1 and MVP2 remain unchanged references.
 - `src/local-connector-client.mjs` — outbound-only no-retry Connector client with secure-origin,
   timeout, response-size, redirect, and exact-response validation.
 - `src/receiver-http-contract.mjs` — internal route, field, and transport-limit constants.
-- `test/` — positive, negative, tamper, boundary, privacy, rollback, restart, and isolation tests.
+- `test/` — positive, negative, tamper, boundary, privacy, rollback, restart, and independent-
+  process tests; process fixtures are not runtime entrypoints.
 - `protocol/test-vectors/` — frozen interoperability inputs and outputs.
 
 ## Commands
@@ -38,6 +39,7 @@ npm test
 npm run test:conformance
 npm run benchmark:protocol
 node --test test/receiver-core.test.mjs test/sqlite-receiver-store.test.mjs
+node --test test/separate-process.test.mjs
 ```
 
 The package has zero runtime dependencies and targets Node 24 or newer.
@@ -51,14 +53,16 @@ target and subject isolation, replayable lease claims, bounded reclamation, stal
 effect-backed acknowledgement, transaction rollback, version-1 migration, and file
 close-and-reopen persistence. Focused transport tests also cover ordinary JSON request mapping,
 no-work responses, bounds, redacted failures, origin policy, redirects, timeouts, malformed or
-stale responses, and absence of automatic retry. It remains local evidence only.
+stale responses, and absence of automatic retry. One test-only harness runs Host, Receiver, and
+Connector children independently and verifies restart replay, effect gating, response-loss
+convergence, and token non-persistence. It remains local evidence only.
 
 The benchmark is a local regression baseline, not a throughput promise or service SLA.
 
 ## Current non-claims
 
 This kernel does not implement a production consent or pairing session, TLS listener or public
-Cloud Receiver service, separately running Local Connector, durable Connector credential or claim-
-token storage, real Host-effect verifier, Agent activation, Browser acquisition, WebMCP runtime
-access, deployment, or a selected Host application. Unsupported capability is not replaced by a
-hidden fallback.
+Cloud Receiver service, production Connector daemon, durable Connector credential or claim-token
+storage, real Host-effect verifier, Agent activation, Browser acquisition, WebMCP runtime access,
+deployment, or a selected Host application. Test child processes are evidence scaffolding, not
+shipping services. Unsupported capability is not replaced by a hidden fallback.
