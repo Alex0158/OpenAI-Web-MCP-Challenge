@@ -70,7 +70,9 @@ gap through a synthetic global binding, automatic retry, or generic adapter fram
 ## Acceptance and claim boundary
 
 - Resolution input contains only exact private Grant and configured adapter identifiers.
-- One valid live binding reaches one selected driver once.
+- One valid live binding reaches one selected driver once, after activation time is rechecked on
+  lookup completion.
+- A live binding must remain authoritative through the complete activation lease.
 - No active binding returns exact `managed_context_resume` unsupported status.
 - Expired binding rejects without driver invocation.
 - Authority and driver failures remain bounded unknown outcomes with no retry.

@@ -110,9 +110,13 @@ export function createAgentActivation(input) {
   });
 }
 
+export function validateAgentActivation(activation) {
+  return deepFreeze(normalizeActivation(activation));
+}
+
 export function validateAgentActivationResult(input) {
   requireExactRecord(input, VALIDATE_RESULT_FIELDS, "Agent result validation input");
-  const activation = normalizeActivation(input.activation);
+  const activation = validateAgentActivation(input.activation);
   return normalizeResult(input.result, activation);
 }
 

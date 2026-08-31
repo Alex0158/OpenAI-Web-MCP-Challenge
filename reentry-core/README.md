@@ -32,6 +32,9 @@ MVP1 and MVP2 remain unchanged references.
   timeout, response-size, redirect, and exact-response validation.
 - `src/agent-adapter.mjs` — credential-free lease-to-activation derivation, one-call bounded
   adapter dispatch, and explicit accepted, unsupported, rejected, or unknown outcomes.
+- `src/managed-context-adapter.mjs` — private Grant-to-context resolution through one configured
+  adapter authority and one selected driver, with no raw context locator in typed activation or
+  result surfaces.
 - `src/receiver-http-contract.mjs` — internal route, field, and transport-limit constants.
 - `conformance/` — source-repository-only domain-neutral Host, Receiver, Connector, deterministic
   Agent, and redacted orchestration profile; excluded from runtime exports and package files.
@@ -81,6 +84,10 @@ adds test-only response-loss injection. Both remain local evidence only.
 Deterministic Agent Adapter tests cover credential omission, expiry and correlation rejection,
 all bounded outcomes and unavailable capabilities, one-call behavior, timeout, exception,
 malformed result, immutability, and the no-effect/no-acknowledgement boundary.
+Managed-context adapter tests cover private `grant_id` lookup, exact adapter scoping, active,
+missing, expired, lease-shorter, late-resolution, mismatched, malformed, accessor, exception,
+timeout, and raw-reference non-disclosure behavior. The deterministic authority and driver do not
+prove capture, persistence, or real context activation.
 
 The Receiver benchmark uses file-backed SQLite with WAL and full synchronous durability. The
 profile benchmark cold-spawns the unchanged source conformance runner. Both emit bounded JSON and,

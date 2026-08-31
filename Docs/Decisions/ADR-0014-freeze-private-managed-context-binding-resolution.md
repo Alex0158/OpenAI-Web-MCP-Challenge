@@ -90,9 +90,11 @@ decides that representation and its storage protection. It must never appear in 
 typed result, error surface, Host response, Cloud Receiver state, log, trace, or public evidence.
 
 The record must match the exact requested Grant and configured adapter. `bound_at` cannot be in
-the future, and `expires_at` must be later than `bound_at`, later than the current time, and no
-later than the Receiver receipt expiry. An authority that has retired or revoked its local
-binding returns `null`; it does not return a second mutable revocation state for Core to merge.
+the future, and `expires_at` must be later than `bound_at`, later than the current time, cover the
+complete activation lease, and be no later than the Receiver receipt expiry. This prevents the
+driver from receiving a lease whose private target authority can expire before that lease does.
+An authority that has retired or revoked its local binding returns `null`; it does not return a
+second mutable revocation state for Core to merge.
 
 ### 4. Bound adapter composition
 
@@ -107,13 +109,15 @@ For each validated activation, it:
 
 1. reads only `activation.receipt.grant_id` as the lookup key;
 2. calls the configured authority once;
-3. returns `unsupported / required_capability_unavailable / managed_context_resume` when the
+3. rechecks activation time after lookup and never calls the driver if resolution crossed the
+   lease or receipt boundary;
+4. returns `unsupported / required_capability_unavailable / managed_context_resume` when the
    authority returns no active binding;
-4. rejects an expired binding without invoking the driver;
-5. treats malformed, mismatched, or failed authority resolution as an adapter failure whose
+5. rejects an expired binding without invoking the driver;
+6. treats malformed, mismatched, or failed authority resolution as an adapter failure whose
    outcome remains unknown under ADR-0011;
-6. calls `activateBoundContext` once with the immutable activation and private `bindingRef`; and
-7. returns the driver's existing ADR-0011 result for outer exact validation.
+7. calls `activateBoundContext` once with the immutable activation and private `bindingRef`; and
+8. returns the driver's existing ADR-0011 result for outer exact validation.
 
 There is no retry, adapter search, fresh-context substitution, process-global default binding,
 manual reconstruction, polling, or alternate transport. The driver cannot acknowledge delivery
@@ -187,8 +191,9 @@ Implementation must prove:
   data cannot supply `binding_ref`;
 - one active binding invokes one driver once and preserves existing result validation;
 - a missing binding returns exact `managed_context_resume` unsupported status with no driver call;
-- expired, malformed, mismatched, accessor-bearing, exception, and timeout cases fail visibly
-  without retry or fallback;
+- expired and lease-shorter bindings never reach the driver; malformed, mismatched,
+  accessor-bearing, exception, and timeout cases fail visibly without retry or fallback;
+- lookup completion at or after activation expiry never reaches the driver;
 - `binding_ref` is absent from activation, results, errors, bounded output, and tracked artifacts;
 - aggregate and protocol tests pass on Node 24 and the current runtime;
 - runtime dependencies remain zero and package expansion is exact and recorded; and
