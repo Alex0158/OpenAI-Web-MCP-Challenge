@@ -125,4 +125,10 @@ records; they are not DOCS-001 reopen conditions by themselves.
 - working-tree and staged whitespace checks passed;
 - the delivery contains documentation only and excludes the preserved candidate-app files.
 
-**Delivery:** implementation commit and remote-match evidence pending.
+**Delivery:**
+
+- implementation commit: `6b9b151dd4b596953010dd2f35549de19879df73`;
+- `origin/codex/re-entry-core-foundation` matched the implementation commit immediately after
+  push on 2026-08-31;
+- this follow-up documentation commit records closure evidence only. Its remote match is verified
+  after push because a commit cannot contain its own identifier.
