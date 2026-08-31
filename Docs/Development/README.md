@@ -92,6 +92,7 @@ genuine WebMCP, deployment, or judge reproducibility.
 | [`RECORE-002`](RECORE-002-quality-and-weight.md) | Measure bounded Receiver durability, source-profile startup, and package weight without changing runtime behavior | `locally_verified` |
 | [`RECORE-003`](RECORE-003-program-completion-audit.md) | Audit every Program completion gate and isolate the remaining application-neutral gaps from decision-gated runtime work | `locally_verified` |
 | [`RECORE-004`](RECORE-004-grant-control.md) | Implement Receiver-authenticated Grant inspection and atomic revocation without adding a production administration surface | `locally_verified` |
+| [`RECORE-005`](RECORE-005-separate-process-fault-matrix.md) | Verify bounded revocation, stale-worker, conflicting-effect, and mid-transaction termination behavior across test processes | `specified` |
 
 ## Lean implementation rules
 
