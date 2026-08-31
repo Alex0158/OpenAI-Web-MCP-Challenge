@@ -33,6 +33,8 @@ MVP1 and MVP2 remain unchanged references.
 - `src/receiver-http-contract.mjs` — internal route, field, and transport-limit constants.
 - `conformance/` — source-repository-only domain-neutral Host, Receiver, Connector, deterministic
   Agent, and redacted orchestration profile; excluded from runtime exports and package files.
+- `bench/` — bounded protocol, durable Receiver, Agent Adapter, and source-profile local regression
+  entrypoints; excluded from runtime exports and package files.
 - `test/` — positive, negative, tamper, boundary, privacy, rollback, restart, and independent-
   process tests; fault wrappers remain test-only.
 - `protocol/test-vectors/` — frozen interoperability inputs and outputs.
@@ -44,6 +46,8 @@ npm test
 npm run test:conformance
 npm run benchmark:protocol
 npm run benchmark:agent-adapter
+npm run benchmark:receiver
+npm run benchmark:profile
 node --test test/receiver-core.test.mjs test/sqlite-receiver-store.test.mjs
 node --test test/separate-process.test.mjs
 ```
@@ -74,7 +78,10 @@ Deterministic Agent Adapter tests cover credential omission, expiry and correlat
 all bounded outcomes and unavailable capabilities, one-call behavior, timeout, exception,
 malformed result, immutability, and the no-effect/no-acknowledgement boundary.
 
-The benchmarks are local regression baselines, not throughput promises or service SLAs.
+The Receiver benchmark uses file-backed SQLite with WAL and full synchronous durability. The
+profile benchmark cold-spawns the unchanged source conformance runner. Both emit bounded JSON and,
+like the protocol and Agent Adapter measurements, are local regression baselines rather than
+throughput promises, production latency, cross-machine comparisons, or service SLAs.
 
 ## Current non-claims
 
