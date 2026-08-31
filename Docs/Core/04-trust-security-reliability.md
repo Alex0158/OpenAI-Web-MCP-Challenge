@@ -176,6 +176,9 @@ The human decision produces a receipt correlated with the run and artifact.
 | Connector replays or steals a lease | Authenticated target, one active digest-bound claim token, expiry, bounded attempts, and atomic fencing | Preserve pending, retryable, or explicitly exhausted delivery |
 | Connector falsely reports completion | Trusted Host-effect attestation bound to delivery, event, workflow, and human boundary | Do not acknowledge |
 | Connector exposes inbound device control | Outbound-only protocol and no public local listener | No activation surface |
+| Adapter receives authority it does not need | Lease-derived typed activation omits Connector, lease, effect, and raw context credentials | Reject before dispatch |
+| Adapter failure creates duplicate activation | One bounded invocation; timeout, exception, or malformed result becomes explicit unknown outcome | No automatic retry or acknowledgement |
+| Adapter status is mistaken for a Host effect | ADR-0011 result is observation only; ADR-0009 effect authority remains exclusive | Keep delivery unacknowledged |
 | HTTP input is oversized, ambiguous, redirected, or malformed | Exact routes and parsed fields, bounded UTF-8 JSON, no query or content encoding, response bounds, and redirect rejection | Reject without Core transition or fallback |
 | Transport leaks credentials or internal failures | Tokens only in no-store request bodies, TLS except literal loopback, and code-only redacted errors | No token, payload, message, or stack disclosure |
 | Wrong user, tenant, or workflow resumes | Subject, origin, workflow, URL, and auth binding | Terminal run failure |

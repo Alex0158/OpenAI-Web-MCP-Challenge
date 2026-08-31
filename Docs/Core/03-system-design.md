@@ -1,7 +1,7 @@
 # Re-entry Core — System Design
 
 **Role:** CANONICAL domain-neutral architecture and contracts  
-**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant, reservation, and pending-delivery authority, ADR-0009 fixes the locally verified Connector lease and effect-acknowledgement contract, and ADR-0010 fixes the locally verified HTTP adapter, outbound Connector client, and forced-restart test-process isolation. Production process shells and the concrete Agent continuation adapter remain open. Current as-built truth is owned by Core/00 and Core/05.  
+**Status:** Canonical Re-entry Core architecture under ADR-0006; ADR-0007 fixes the v0.1 protocol, ADR-0008 fixes Receiver consent, Grant, reservation, and pending-delivery authority, ADR-0009 fixes the locally verified Connector lease and effect-acknowledgement contract, ADR-0010 fixes the locally verified HTTP adapter, outbound Connector client, and forced-restart test-process isolation, and ADR-0011 specifies the platform-neutral Agent activation boundary. Production process shells, ADR-0011 implementation, and the concrete Agent continuation adapter remain open. Current as-built truth is owned by Core/00 and Core/05.  
 **Last updated:** 2026-08-31
 
 ## 1. System objective
@@ -142,7 +142,12 @@ An abstraction over the selected Agent platform. Under the current planning prem
 6. enable the Agent to invoke those tools;
 7. emit correlated run, browser, tool, and failure evidence.
 
-The concrete adapter requires a separate ADR after runtime validation.
+ADR-0011 fixes the platform-neutral dispatch boundary: the Connector derives one immutable typed
+activation from a live lease, omits Connector and lease credentials, invokes one adapter once,
+and receives only a bounded `accepted`, `unsupported`, `rejected`, or `outcome_unknown` result.
+No result is Host-effect evidence or permission to acknowledge delivery. The concrete adapter,
+private context-binding lifecycle, and platform evidence still require a route-specific ADR after
+runtime validation.
 
 ### Integration contract boundaries and deployment profiles
 
@@ -190,6 +195,11 @@ loopback, validates bounded exact responses, follows no redirects, and never ret
 a claim token automatically. Consent, pairing, health, diagnostics, background polling, and Agent
 dispatch remain separate later boundaries.
 
+ADR-0011 fixes the Local Connector-to-Agent Adapter dispatch contract without selecting an Agent
+platform. The adapter receives no lease or Connector token, no prompt, and no raw context ID.
+Exceptions, timeouts, or malformed results become an explicit unknown outcome; the wrapper does
+not retry, fall back, call the Host, or acknowledge the delivery.
+
 The Receiver's event algorithm is domain-neutral even when a deterministic fixture pins one
 workflow, event type, issuer, or development key. Generalizing the protocol means adding
 configuration, issuer onboarding, key management, and lifecycle controls; it does not mean
@@ -226,6 +236,9 @@ for a conforming backend to send a Receiver event.
   and Receiver-only SQLite ownership. No mid-transaction crash injection, concurrent ownership,
   production process shell, TLS, pairing, real Host effect, Agent call, or distributed storage
   behavior has passed.
+- ADR-0011 specifies one typed credential-free activation and explicit result classifications.
+  Its code and deterministic contract evidence remain pending, and no concrete Agent platform is
+  selected.
 - The private P0 Desktop adapter completed one controlled same-task join but is not a
   documented platform contract.
 - H1 Scheduled pull completed one bounded event-gated continuation and remains a

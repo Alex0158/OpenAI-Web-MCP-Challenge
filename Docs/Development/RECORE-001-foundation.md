@@ -533,3 +533,29 @@ proving the shipping topology.
 durable Connector-custody mechanism only through a runtime-specific decision. Until then, continue
 with bounded Core quality, evidence reconciliation, and app-independent adapter gates rather than
 adding a daemon, lockfile, credential store, or fallback.
+
+### Increment C4a — Agent Adapter activation contract
+
+**Closure:** `specified` on 2026-08-31.
+
+- ADR-0011 fixes one immutable activation derived from a live leased delivery and private
+  continuation receipt. The adapter receives no Connector token, lease token, effect token, raw
+  managed-context identifier, prompt, goal, tool list, or Host artifact.
+- The result has four explicit classes: `accepted`, `unsupported`, `rejected`, and
+  `outcome_unknown`. `accepted` means only that the adapter accepted the typed dispatch; it does
+  not prove Agent start, Browser access, canonical-page navigation, WebMCP, a Host effect, or a
+  human boundary.
+- Invocation is bounded, calls one adapter once, and converts timeout, exception, or malformed
+  correlation into a visible unknown outcome. It performs no retry, fallback, Host call, effect
+  assertion, or delivery acknowledgement.
+- A deterministic adapter may prove the contract only. It cannot become a product fallback or
+  support a real platform claim.
+
+This is a contract decision only. No Agent Adapter module, deterministic adapter test, private
+binding lifecycle, Agent activation, Browser, WebMCP, Host effect, or acknowledgement behavior is
+yet implemented or locally verified under ADR-0011.
+
+**Next entry condition:** implement the smallest zero-dependency adapter boundary and deterministic
+contract tests, then prove strict input/result shape, expiry, correlation, immutable credential-
+free dispatch, every result class, one-call timeout/exception behavior, no fallback, and Node 24
+compatibility before selecting any concrete Agent platform.
