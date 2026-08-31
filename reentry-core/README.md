@@ -1,8 +1,8 @@
 # Re-entry Core
 
 **Status:** v0.1 protocol, Host SDK, Receiver C1, Connector delivery C2, transport/process C3d,
-and Agent Adapter contract C4b locally verified  
-**Authority:** ADR-0006 through ADR-0011 and `Docs/Development/RECORE-001-foundation.md`
+Agent Adapter contract C4b, and source-repository conformance profile C6b locally verified  
+**Authority:** ADR-0006 through ADR-0012 and `Docs/Development/RECORE-001-foundation.md`
 
 This directory is the authoritative source for new application-neutral Re-entry Core behavior.
 MVP1 and MVP2 remain unchanged references.
@@ -31,8 +31,10 @@ MVP1 and MVP2 remain unchanged references.
 - `src/agent-adapter.mjs` — credential-free lease-to-activation derivation, one-call bounded
   adapter dispatch, and explicit accepted, unsupported, rejected, or unknown outcomes.
 - `src/receiver-http-contract.mjs` — internal route, field, and transport-limit constants.
+- `conformance/` — source-repository-only domain-neutral Host, Receiver, Connector, deterministic
+  Agent, and redacted orchestration profile; excluded from runtime exports and package files.
 - `test/` — positive, negative, tamper, boundary, privacy, rollback, restart, and independent-
-  process tests; process fixtures are not runtime entrypoints.
+  process tests; fault wrappers remain test-only.
 - `protocol/test-vectors/` — frozen interoperability inputs and outputs.
 
 ## Commands
@@ -46,6 +48,12 @@ node --test test/receiver-core.test.mjs test/sqlite-receiver-store.test.mjs
 node --test test/separate-process.test.mjs
 ```
 
+From a source checkout, run the non-production conformance profile with:
+
+```bash
+node conformance/run.mjs
+```
+
 The package has zero runtime dependencies and targets Node 24 or newer.
 `SqliteReceiverStore` is available only through the `./sqlite-receiver-store` subpath, so the
 root, protocol, Host SDK, and Receiver Core imports do not load `node:sqlite` implicitly.
@@ -57,9 +65,11 @@ target and subject isolation, replayable lease claims, bounded reclamation, stal
 effect-backed acknowledgement, transaction rollback, version-1 migration, and file
 close-and-reopen persistence. Focused transport tests also cover ordinary JSON request mapping,
 no-work responses, bounds, redacted failures, origin policy, redirects, timeouts, malformed or
-stale responses, and absence of automatic retry. One test-only harness runs Host, Receiver, and
-Connector children independently and verifies forced-termination replay, effect gating,
-response-loss convergence, and token non-persistence. It remains local evidence only.
+stale responses, and absence of automatic retry. The source-repository conformance profile runs
+Host, Receiver, and Connector children independently, exercises one deterministic Agent dispatch,
+rejects acknowledgement before a separate synthetic Host effect, emits one redacted result, and
+cleans its exact temporary files. The forced-restart test reuses those role implementations and
+adds test-only response-loss injection. Both remain local evidence only.
 Deterministic Agent Adapter tests cover credential omission, expiry and correlation rejection,
 all bounded outcomes and unavailable capabilities, one-call behavior, timeout, exception,
 malformed result, immutability, and the no-effect/no-acknowledgement boundary.
@@ -72,5 +82,6 @@ This kernel does not implement a production consent or pairing session, TLS list
 Cloud Receiver service, production Connector daemon, durable Connector credential or claim-token
 storage, real Host-effect verifier, Agent activation, Browser acquisition, WebMCP runtime access,
 deployment, or a selected Host application. Test child processes are evidence scaffolding, not
-shipping services. The deterministic adapter is contract evidence, not a runtime fallback or a
-real Agent. Unsupported capability is not replaced by a hidden fallback.
+shipping services. The conformance profile uses synthetic authorities and is not a production
+service shell. The deterministic adapter is contract evidence, not a runtime fallback or a real
+Agent. Unsupported capability is not replaced by a hidden fallback.

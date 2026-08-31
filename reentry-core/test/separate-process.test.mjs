@@ -1,15 +1,15 @@
 import assert from "node:assert/strict";
-import { fork } from "node:child_process";
 import { mkdtemp, readFile, rmdir, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
+import { spawnProfileProcess as spawnFixture } from "./process-fixtures/child-rpc.mjs";
+
 const CONNECTOR_TOKEN = "connector_process_fixture_token";
 const DECISION_TOKEN = "decision_process_fixture_token";
 const CLAIM_TOKEN = Buffer.alloc(32, 11).toString("base64url");
 const WRONG_EFFECT_TOKEN = "wrong_effect_process_fixture_token";
-const PROCESS_TIMEOUT_MS = 5_000;
 
 test("independent processes recover exact event, lease, and effect state after forced Receiver termination", async (t) => {
   const directory = await mkdtemp(join(tmpdir(), "webmcp-reentry-process-"));
@@ -107,7 +107,7 @@ test("independent processes recover exact event, lease, and effect state after f
   assert.equal(replayedClaim.duplicate, true);
   assert.deepEqual(replayedClaim.lease, firstClaim.lease);
 
-  const effect = await host.request("applyEffect", { lease: replayedClaim.lease });
+  const effect = await host.request("createEffect", effectContext(replayedClaim.lease));
   await receiver.request("authorizeEffect", effect);
   await assert.rejects(
     connector.request("acknowledge", {
@@ -169,73 +169,12 @@ function receiverConfiguration({ databasePath, hostInfo, port }) {
   };
 }
 
-function spawnFixture(moduleUrl) {
-  const child = fork(moduleUrl, [], {
-    execArgv: [],
-    serialization: "json",
-    stdio: ["ignore", "ignore", "pipe", "ipc"],
-  });
-  let nextId = 0;
-  let exited = false;
-  let exitResult;
-  let stderr = "";
-  const pending = new Map();
-  const exitPromise = new Promise((resolve) => {
-    child.once("exit", (code, signal) => {
-      exited = true;
-      exitResult = { code, signal };
-      const reason = `fixture exited (${code ?? signal ?? "unknown"})${stderr ? `: ${stderr}` : ""}`;
-      for (const entry of pending.values()) {
-        clearTimeout(entry.timer);
-        entry.reject(new Error(reason));
-      }
-      pending.clear();
-      resolve(exitResult);
-    });
-  });
-  child.stderr.on("data", (chunk) => {
-    stderr = `${stderr}${chunk}`.slice(-8_192);
-  });
-  child.on("message", (message) => {
-    const entry = pending.get(message?.id);
-    if (!entry) return;
-    pending.delete(message.id);
-    clearTimeout(entry.timer);
-    if (message.ok) {
-      entry.resolve(message.result);
-      return;
-    }
-    const error = new Error(`fixture command failed: ${message.error?.code ?? "unknown"}`);
-    error.code = message.error?.code;
-    error.statusCode = message.error?.statusCode;
-    entry.reject(error);
-  });
-
+function effectContext(lease) {
   return {
-    request(command, payload = undefined) {
-      if (exited || !child.connected) return Promise.reject(new Error("fixture is not connected"));
-      const id = ++nextId;
-      return new Promise((resolve, reject) => {
-        const timer = setTimeout(() => {
-          pending.delete(id);
-          reject(new Error(`fixture command timed out: ${command}`));
-        }, PROCESS_TIMEOUT_MS);
-        pending.set(id, { resolve, reject, timer });
-        child.send({ id, command, payload });
-      });
-    },
-
-    async close() {
-      if (exited) return exitResult;
-      await this.request("stop");
-      return exitPromise;
-    },
-
-    async terminate() {
-      if (exited) return exitResult;
-      if (!child.kill("SIGTERM")) throw new Error("fixture termination signal was not sent");
-      return exitPromise;
-    },
+    correlationId: lease.continuation.correlation_id,
+    deliveryId: lease.delivery_id,
+    eventId: lease.event_id,
+    workflowId: lease.continuation.workflow_id,
   };
 }
 
