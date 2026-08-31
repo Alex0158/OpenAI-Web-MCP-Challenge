@@ -88,8 +88,11 @@ The event request is exactly the existing ADR-0007 event envelope:
 
 ```text
 body
-signature
+headers
 ```
+
+The `headers` object contains the three detached ADR-0007 key ID, timestamp, and signature
+fields. There is no top-level `signature` field.
 
 The claim request is exactly:
 

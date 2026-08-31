@@ -89,7 +89,14 @@ test("Cloud Receiver HTTP maps exact event, claim, no-work, and acknowledgement 
     },
   });
   const origin = await startAdapter(t, receiver);
-  const envelope = { body: "event-body", signature: { value: "signature" } };
+  const envelope = {
+    body: "event-body",
+    headers: {
+      "WebMCP-Reentry-Key-Id": "host_key_001",
+      "WebMCP-Reentry-Timestamp": "1788145500",
+      "WebMCP-Reentry-Signature": "detached_signature",
+    },
+  };
 
   const event = await post(origin, RECEIVER_HTTP_ROUTES.event, envelope, {
     contentType: "application/json; charset=utf-8",
