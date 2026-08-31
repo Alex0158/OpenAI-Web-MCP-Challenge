@@ -35,15 +35,18 @@ roles and precedence below.
 | [`Core/06-mvp-and-demo.md`](Core/06-mvp-and-demo.md) | CANONICAL | App-selection and demo target; the scorecard is a supporting heuristic |
 | [`Core/07-p0-technical-validation-mvp.md`](Core/07-p0-technical-validation-mvp.md) | CANONICAL | Frozen P0 implementation contract and dated verdict; not the current production architecture |
 | [`Core/08-competition-thesis-and-positioning.md`](Core/08-competition-thesis-and-positioning.md) | CANONICAL | Competition-facing thesis, value proposition, differentiation, judging posture, and claim hierarchy; underlying status remains in Core/00 and Core/05 |
-| [`Decisions/README.md`](Decisions/README.md) | DECISION INDEX | Accepted, superseded, and partially superseded durable choices through ADR-0014 |
+| [`Mechanisms/README.md`](Mechanisms/README.md) | CANONICAL MODULE INDEX | Stable Re-entry lifecycle and authority contracts, with code, test, and evidence routing |
+| [`Decisions/README.md`](Decisions/README.md) | DECISION INDEX | Accepted, superseded, and partially superseded durable choices through ADR-0015 |
 | [`Development/README.md`](Development/README.md) | CANONICAL | Development workflow, runbook, bounded work records, verification, and closure states |
+| [`Challenge/README.md`](Challenge/README.md) | GOVERNING ROUTER | Current English routing for challenge constraints, volatile facts, and release refresh gates |
 | [`Scenarios/README.md`](Scenarios/README.md) | SUPPORTING | Concrete domain mappings that are not selected product truth |
 
 The [decision register](Decisions/README.md) owns the complete decision index. ADR-0001 is
 superseded by ADR-0002; ADR-0004 is partially superseded by ADR-0006 and ADR-0007; ADR-0006 through
-ADR-0014 control the current Re-entry Core source, topology, protocol, authority, delivery,
-transport, deterministic Agent boundary, conformance, Grant control, and private binding
-resolution. The index records decision status, not implementation or runtime proof.
+ADR-0015 control the current Re-entry Core source, topology, protocol, authority, delivery,
+transport, deterministic Agent boundary, conformance, Grant control, private binding resolution,
+and modular documentation ownership. The index records decision status, not implementation or
+runtime proof.
 
 ## 3. Development and closure
 
@@ -60,16 +63,29 @@ resolution. The index records decision status, not implementation or runtime pro
 These records control active scope and closure state. They do not override the owning Core or
 decision document and must not accumulate conversational history.
 
-## 4. Challenge governance
+## 4. Mechanism modules
+
+- [`Mechanisms/README.md`](Mechanisms/README.md) — CANONICAL module map and ownership rules.
+- [`Mechanisms/01-host-integration-manifest-and-enrollment.md`](Mechanisms/01-host-integration-manifest-and-enrollment.md) — Host offer, Manifest, enrollment, and opaque binding contract.
+- [`Mechanisms/02-receiver-grant-and-event-authority.md`](Mechanisms/02-receiver-grant-and-event-authority.md) — Receiver-owned consent, Grant, event, and reservation authority.
+- [`Mechanisms/03-delivery-lease-and-local-connector.md`](Mechanisms/03-delivery-lease-and-local-connector.md) — outbound delivery, lease, acknowledgement, and Connector boundary.
+- [`Mechanisms/04-managed-context-and-agent-activation.md`](Mechanisms/04-managed-context-and-agent-activation.md) — private context resolution and replaceable Agent activation boundary.
+- [`Mechanisms/05-host-reentry-webmcp-and-human-boundary.md`](Mechanisms/05-host-reentry-webmcp-and-human-boundary.md) — canonical return, fresh WebMCP tools, bounded continuation, and human decision boundary.
+
+These contracts own stable module behavior and application obligations. They do not claim that a
+production process shell, supported Agent adapter, selected application, or deployment exists.
+
+## 5. Challenge governance
 
 These files remain active for the surfaces they own. They do not select the product.
 
+- [`Challenge/README.md`](Challenge/README.md) — GOVERNING ROUTER for current English challenge constraints and release refresh gates.
 - [`01-official-rules.md`](01-official-rules.md) — GOVERNING research copy of legal and submission constraints; refresh against live Devpost sources before relying on volatile facts.
 - [`02-submission-evaluation-strategy.md`](02-submission-evaluation-strategy.md) — SUPPORTING competition and evaluation strategy.
 - [`03-technical-build-verification.md`](03-technical-build-verification.md) — SUPPORTING general WebMCP implementation and verification guidance.
 - [`05-requirement-evidence-audit.md`](05-requirement-evidence-audit.md) — SUPPORTING audit of the earlier challenge research package.
 
-## 5. Technical research and evidence
+## 6. Technical research and evidence
 
 These files preserve current analyses, bounded evidence, conditional risk catalogs, and
 named-commit snapshots. The [Research index](Research/README.md) owns detailed routing by platform,
@@ -78,36 +94,23 @@ boundary controls its use; inclusion does not make a conclusion an active next s
 decision.
 
 
-## 6. Deprioritized ideation
+## 7. Deprioritized ideation
 
 - [`04-research-judgment-and-project-options.md`](04-research-judgment-and-project-options.md) is a DEPRIORITIZED broad option map. It no longer selects the active mechanism or application.
 - [`../References/Legacy-Ideation/README.md`](../References/Legacy-Ideation/README.md) records all earlier idea surfaces and their current status.
 - The `TwinSurface` framing remains useful background but is not the selected concept identity or novelty claim.
 
-## 7. Reference layer
+## 8. Reference layer
 
 - [`../References/TenderRelay/README.md`](../References/TenderRelay/README.md) — immutable dossier and tender reference package; not an app decision.
 - [`../References/WebMCP/00-source-index.md`](../References/WebMCP/00-source-index.md) — official and primary WebMCP source index.
 - [`../References/WebMCP_Analysis/README.md`](../References/WebMCP_Analysis/README.md) — broad WebMCP research dossier; supporting and partially historical.
 - [`../References/Other/`](../References/Other/) — supporter resources, conflicts, and unresolved external questions.
 
-## 8. Knowledge governance
-
-- [`Knowledge/README.md`](Knowledge/README.md) — cross-layer routing and non-destructive governance for high-value knowledge.
-- [`Knowledge/01-priority-and-classification.md`](Knowledge/01-priority-and-classification.md) — four attention levels and independent evidence metadata.
-- [`Knowledge/02-high-value-register.md`](Knowledge/02-high-value-register.md) — curated statements that can change a decision, claim, or next validation step.
-- [`Knowledge/03-source-reconciliation.md`](Knowledge/03-source-reconciliation.md) — source-family disposition, conflicts, and ordered cleanup backlog.
-- [`Knowledge/04-thread-and-memory-distillation.md`](Knowledge/04-thread-and-memory-distillation.md) — redacted synthesis of relevant Codex threads and Memory, without authority over current files.
-- [`Knowledge/05-challenge-governance-snapshot.md`](Knowledge/05-challenge-governance-snapshot.md) — English operational digest of challenge hard gates; the Official Rules remain controlling.
-
-The Knowledge package is additive. Core, ADR, governing, evidence, and immutable reference
-files retain ownership of their surfaces; the register provides cross-layer routing rather
-than a second source of truth.
-
 ## 9. Maintenance rules
 
 1. Put canonical project behavior and status in `Core/`, not in the frozen dossier.
-2. Use Core/00 and Core/05 for current implementation and evidence, Core/01–04 and Core/06 for target behavior and architecture, and Core/07 only for the frozen P0 contract and its dated outcome.
+2. Use Core/00 and Core/05 for current implementation and evidence, Core/01–04 and Core/06 for target behavior and architecture, `Mechanisms/` for stable module contracts, and Core/07 only for the frozen P0 contract and its dated outcome.
 3. Update `00-current-status.md` whenever phase, evidence, deployment, or submission truth changes.
 4. Record a new ADR before changing the core mechanism, selecting or changing the host app, changing the authority model, or moving the MVP boundary.
 5. Label statements as **VERIFIED**, **WORKING ASSUMPTION**, **INFERENCE**, **TARGET**, or **UNKNOWN** where status could affect a decision.
@@ -117,6 +120,7 @@ than a second source of truth.
 9. Product, development, and submission artifacts are written in English. Conversation may use the user's language.
 10. Add every tracked decision and research record to its local index; keep this root map focused on category and authority routing.
 11. Follow the repository [collaboration and commit gates](../AGENTS.md) for every contributor integration, commit, merge, and push.
+12. Do not create a second cross-layer register for facts already owned by Core, Mechanisms, ADRs, Development, Research, or governing sources.
 
 ## 10. Update sequence
 

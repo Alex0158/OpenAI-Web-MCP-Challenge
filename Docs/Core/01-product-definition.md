@@ -6,7 +6,8 @@
 
 This document defines the target concept and product boundary. Current implementation and
 evidence status are owned by [Core/00](00-current-status.md) and
-[Core/05](05-validation-and-evidence.md).
+[Core/05](05-validation-and-evidence.md). Stable lifecycle and authority contracts are owned by
+the [Mechanism index](../Mechanisms/README.md).
 
 ## 1. Concept in one sentence
 

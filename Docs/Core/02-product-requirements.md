@@ -12,7 +12,8 @@ host application is selected.
 
 These requirements define target behavior. They do not imply that every requirement is
 implemented or verified; current evidence status is owned by [Core/00](00-current-status.md)
-and [Core/05](05-validation-and-evidence.md).
+and [Core/05](05-validation-and-evidence.md). Detailed protocol, authority, delivery, activation,
+and re-entry contracts are routed through the [Mechanism index](../Mechanisms/README.md).
 
 ## 2. Abstract end-to-end journey
 

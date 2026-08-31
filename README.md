@@ -19,8 +19,10 @@ The canonical status and claim boundary are maintained in
 reentry-core/             current application-neutral contracts and reference implementation
 mvp/                      frozen MVP1 fixture, runbooks, and bounded evidence
 Docs/Core/                canonical product, architecture, trust, and evidence truth
+Docs/Mechanisms/          stable Re-entry lifecycle and authority module contracts
 Docs/Decisions/           accepted durable choices
 Docs/Development/         bounded implementation, verification, runbook, and closure records
+Docs/Challenge/           current English challenge routing and refresh gates
 Docs/Research/            supporting research and unresolved analysis
 Docs/Scenarios/           unselected application mappings
 Experiments/              isolated reproducible experiments and verdicts
@@ -146,17 +148,18 @@ Desktop-restart harness remains optional compatibility evidence.
 1. [`Docs/README.md`](Docs/README.md) — documentation map, authority, and maintenance rules.
 2. [`Docs/Core/00-current-status.md`](Docs/Core/00-current-status.md) — current truth, phase, assumptions, and next gate.
 3. [`reentry-core/README.md`](reentry-core/README.md) — current package surface, commands, evidence boundary, and non-claims.
-4. [`Docs/Development/README.md`](Docs/Development/README.md) — development workflow, runbook, Program records, and closure states.
-5. [`Docs/Core/08-competition-thesis-and-positioning.md`](Docs/Core/08-competition-thesis-and-positioning.md) — competition thesis, core value, positioning, judging posture, and claim hierarchy.
-6. [`Docs/Core/01-product-definition.md`](Docs/Core/01-product-definition.md) — concept, mechanism, application boundary, and claim boundary.
-7. [`Docs/Core/02-product-requirements.md`](Docs/Core/02-product-requirements.md) — domain-neutral workflow behavior and acceptance criteria.
-8. [`Docs/Core/03-system-design.md`](Docs/Core/03-system-design.md) — reusable architecture, lifecycle, contracts, and integration slots.
-9. [`Docs/Core/04-trust-security-reliability.md`](Docs/Core/04-trust-security-reliability.md) — authority, controls, and failure semantics.
-10. [`Docs/Core/05-validation-and-evidence.md`](Docs/Core/05-validation-and-evidence.md) — proof matrix and evidence gates.
-11. [`Docs/Core/06-mvp-and-demo.md`](Docs/Core/06-mvp-and-demo.md) — demo-app selection, challenge scope, build order, and proof rhythm.
-12. [`Docs/Core/07-p0-technical-validation-mvp.md`](Docs/Core/07-p0-technical-validation-mvp.md) — frozen technical-validation contract and Q1–Q5 proof boundary.
-13. [`Docs/Scenarios/README.md`](Docs/Scenarios/README.md) — concrete examples that do not select the final application.
-14. [`Docs/Knowledge/README.md`](Docs/Knowledge/README.md) — cross-layer priority model, high-value register, source reconciliation, and thread/Memory distillation.
+4. [`Docs/Mechanisms/README.md`](Docs/Mechanisms/README.md) — stable module contracts, code and test routing, and application obligations.
+5. [`Docs/Development/README.md`](Docs/Development/README.md) — development workflow, runbook, Program records, and closure states.
+6. [`Docs/Core/08-competition-thesis-and-positioning.md`](Docs/Core/08-competition-thesis-and-positioning.md) — competition thesis, core value, positioning, judging posture, and claim hierarchy.
+7. [`Docs/Core/01-product-definition.md`](Docs/Core/01-product-definition.md) — concept, mechanism, application boundary, and claim boundary.
+8. [`Docs/Core/02-product-requirements.md`](Docs/Core/02-product-requirements.md) — domain-neutral workflow behavior and acceptance criteria.
+9. [`Docs/Core/03-system-design.md`](Docs/Core/03-system-design.md) — reusable architecture, lifecycle, contracts, and integration slots.
+10. [`Docs/Core/04-trust-security-reliability.md`](Docs/Core/04-trust-security-reliability.md) — authority, controls, and failure semantics.
+11. [`Docs/Core/05-validation-and-evidence.md`](Docs/Core/05-validation-and-evidence.md) — proof matrix and evidence gates.
+12. [`Docs/Core/06-mvp-and-demo.md`](Docs/Core/06-mvp-and-demo.md) — demo-app selection, challenge scope, build order, and proof rhythm.
+13. [`Docs/Challenge/README.md`](Docs/Challenge/README.md) — current challenge constraints and release refresh gates.
+14. [`Docs/Core/07-p0-technical-validation-mvp.md`](Docs/Core/07-p0-technical-validation-mvp.md) — frozen technical-validation contract and Q1–Q5 proof boundary.
+15. [`Docs/Scenarios/README.md`](Docs/Scenarios/README.md) — concrete examples that do not select the final application.
 
 ## Source-of-truth hierarchy
 
@@ -165,9 +168,10 @@ Desktop-restart harness remains optional compatibility evidence.
 3. [`ADR-0006`](Docs/Decisions/ADR-0006-establish-reentry-core-development-baseline.md) controls the current source root, MVP reference freeze, and Receiver/Connector topology.
 4. `Docs/Core/00-current-status.md` controls current project status and evidence claims.
 5. Each named Core document controls its own product or system surface.
-6. Selected scenario and application decisions require a separate accepted ADR.
-7. The frozen TenderRelay dossier is an immutable concept reference, not a live specification or app decision.
-8. General WebMCP research and earlier ideas are supporting or historical references only.
+6. Each Mechanism document controls its named lifecycle and authority module within the Core invariants.
+7. Selected scenario and application decisions require a separate accepted ADR.
+8. The frozen TenderRelay dossier is an immutable concept reference, not a live specification or app decision.
+9. General WebMCP research and earlier ideas are supporting or historical references only.
 
 ## Preservation rule
 

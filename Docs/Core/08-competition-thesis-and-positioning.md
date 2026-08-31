@@ -242,7 +242,7 @@ The final entry must let a judge observe, without first learning the internal ar
 
 The live app, public repository, short narrated video, testing instructions, and submission
 description must all prove the same version and claim boundary. Volatile requirements are
-maintained in the [Challenge Governance Snapshot](../Knowledge/05-challenge-governance-snapshot.md)
+maintained through the [Challenge governance router](../Challenge/README.md)
 and must be refreshed against the live Official Rules before release.
 
 ## 11. Strategy guardrails

@@ -4,6 +4,9 @@
 **Status:** Application-neutral Re-entry Core Program complete at `locally_verified`; demo app and supported continuation adapter remain unselected  
 **Last updated:** 2026-08-31
 
+This document owns app selection and challenge-MVP shape. Stable application-neutral lifecycle
+contracts remain owned by the [Mechanism index](../Mechanisms/README.md).
+
 ## 1. Current decision boundary
 
 The challenge entry is centered on the re-entry workflow mechanism. The website that
