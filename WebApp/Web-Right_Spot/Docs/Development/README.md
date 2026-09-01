@@ -1,7 +1,7 @@
 # RightSpot Development and Closure
 
 **Role:** Big-picture roadmap, implementation, verification, collaboration, and closure routing  
-**Status:** Roadmap and thread-orchestration pilot documented; foundation and workflow-core are independently verified; `RS-WO-002-04` candidate adoption is recorded at T2 commit `68bbc69`, with dedicated independent verification pending
+**Status:** Roadmap and thread-orchestration pilot documented; foundation and workflow-core are independently verified; `RS-WO-002-04` candidate adoption is recorded at T2 commit `68bbc69`, with dedicated independent verification assigned
 
 ## Purpose
 
@@ -28,8 +28,9 @@ stale listing revisions were not rejected by both draft-update and submit comman
 checkpoint was a bounded Repairer on the domain workflow and focused test paths; its post-repair
 commit is `6e70c9f`, and the fresh independent Verifier returned `VERIFIED` against that frozen source.
 The main-thread candidate-adoption review for `RS-WO-002-04` is complete and the reconstructed
-three-path candidate is committed at T2 source `68bbc69`. The next action is dedicated independent
-verification before opening API or UI work; a fresh Builder is needed only if verification exposes a
+three-path candidate is committed at T2 source `68bbc69`. A dedicated read-only Verifier is now
+assigned against the frozen source; API or UI work remains closed until it returns. A fresh Builder is
+needed only if verification exposes a
 source or behavior gap that cannot be repaired within a separately bounded Work Order.
 Later Integrator work is opened only when its predecessor produces a concrete code failure or a
 verified source and evidence boundary.

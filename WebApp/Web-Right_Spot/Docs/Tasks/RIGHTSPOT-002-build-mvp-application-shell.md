@@ -18,8 +18,8 @@ The implementation must follow the accepted business rules in
 - Owner: Main RightSpot thread
 - Current increment: Implement and independently verify the bounded `RS-WO-002-04` persistence/application
   boundary after the independently verified workflow domain core.
-- Next gate: Independently verify the adopted `RS-WO-002-04` candidate from T2 commit `68bbc69` in a
-  dedicated Worktree; do not open the full API/UI surface as one assignment.
+- Next gate: Complete independent verification of the adopted `RS-WO-002-04` candidate from frozen
+  source `28105e4d` in a dedicated Worktree; do not open the full API/UI surface as one assignment.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -72,8 +72,9 @@ verification, integration, or parent-Task closure.
   post-repair implementation commit. The original `RS-WO-002-04` dispatch baseline was reviewed commit
   `178d8873dc9c4a28a11da313e8425a3a25316b71`; after reviewing the three-path implementation checks,
   the main thread adopted the exact candidate at T2 implementation commit `68bbc69`. The dedicated
-  verification checkout will be frozen at the post-writeback repository commit recorded when the
-  Verifier is dispatched. The candidate remains pending dedicated independent verification. The
+  verification checkout is frozen at repository commit `28105e4d81b5432e8e2bbf53b783732356bd9380`,
+  created after the candidate adoption writeback and before the Verifier dispatch. The candidate
+  remains pending dedicated independent verification. The
   user-authorized Side Chat learning file and process-only Pilot Runbook writeback are classified
   separately from product source. Source identity is checkpoint-scoped and path-owned; it is not a
   permanent full-document hash lock.
@@ -626,8 +627,8 @@ browser, deployment, external integration, or parent-Task closure.
 **Parent task:** `RIGHTSPOT-002`  
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch state:** `GATED` — `RS-WO-002-03` domain core is independently verified at `6e70c9f`; local persistence/application design is accepted in ADR-RS-0006  
-**Execution state:** `READY_FOR_VERIFICATION` — main-thread candidate adoption completed at T2 commit `68bbc69`; dedicated independent verification is pending
-**Owner:** Main RightSpot thread; one dedicated supporting task performs the read-only verification checkpoint
+**Execution state:** `ASSIGNED` — main-thread candidate adoption completed at T2 commit `68bbc69`; a dedicated read-only Verifier is assigned against frozen source `28105e4d`
+**Owner:** Main RightSpot thread; the dedicated supporting task performs the read-only verification checkpoint
 **Objective:** Persist the complete serializable `WorkflowState` in a deterministic local SQLite
 snapshot and expose one narrow application service above the verified domain core. Prove durable
 refresh-visible workflow continuity and atomic command/reset behavior without exposing HTTP, UI,
@@ -638,9 +639,10 @@ whose persisted identity/title was `RS-WO-002-01 — Foundation…`, while the p
 `RS-WO-002-04`; that handoff remains procedurally invalid. The main thread reviewed and adopted the
 exact three-path candidate at T2 commit `68bbc69`. The user-authorized Side Chat learning file and
 process-only Pilot Runbook writeback are not product source drift.  
-**Corrective execution mode:** Dedicated isolated Worktree from T2 commit `68bbc69`; no product
-writer is active and a dedicated read-only Verifier is the next supporting task.  
-**Next gate:** Dispatch and complete independent verification against `68bbc69`. A fresh Builder is
+**Corrective execution mode:** Dedicated isolated Worktree from frozen repository commit `28105e4d`,
+which contains the adopted T2 implementation commit `68bbc69`; no product writer is active.  
+**Next gate:** Await the dedicated Verifier's independent report against frozen source `28105e4d`.
+A fresh Builder is
 required only if the candidate's ownership, inputs, changed paths, or behavior cannot be reconstructed
 confidently, or if verification identifies a source gap requiring a new bounded implementation.
 
