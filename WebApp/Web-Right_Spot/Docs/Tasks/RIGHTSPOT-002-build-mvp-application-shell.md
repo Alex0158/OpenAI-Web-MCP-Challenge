@@ -1547,8 +1547,8 @@ verification or product-flow evidence.
 **Role:** Architecture Advisor  
 **Pre-dispatch status:** `GATED` — the workflow HTTP/DTO transport and shared shell are integrated,
 and the accepted UI/UX guidance is available  
-**Execution state:** `GATED` — current main-thread design checkpoint; no supporting task has been
-activated yet  
+**Execution state:** `ASSIGNED` — the read-only Architecture Advisor is establishing context and
+preparing the decomposition proposal  
 **Parallelization:** `SERIAL` as a planning gate before the next role-page Builder dispatches  
 **Owner:** Main RightSpot thread; one read-only Architecture Advisor  
 **Risk profile:** `Standard` — route/component ownership, shared-shell coupling, role isolation, and
@@ -1559,8 +1559,12 @@ transport and shell, identify the smallest shared seam if they cannot, and retur
 Work Order boundaries for main-thread approval.  
 **Next gate:** Main-thread review of the proposal. No role-page Builder may be dispatched from this
 Work Order until the main thread accepts or revises the proposed ownership and integration order.  
-**Dispatch state:** Not dispatched; the main thread will record the exact clean baseline, execution
-Worktree, and supporting-task identity before activation.  
+**Dispatch state:** Dispatched from clean source `a654658d2d50de24fd601f4fb863ec66e19bdff9`; execution
+Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-10-advisor`; package root
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-10-advisor/WebApp/Web-Right_Spot`; runtime-pin path
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-10-advisor/.node-version`; supporting-task identity
+`01a05b82-b89c-7210-9e23-9e4d56f53b46` (`local`). The dispatch returned a usable thread identity and
+the full prompt was persisted; no source write is authorized.  
 **Parent execution posture if blocked:** `PROGRESSING` unless the proposal exposes a material
 contract, role-policy, or shared-shell decision that requires the human owner.
 

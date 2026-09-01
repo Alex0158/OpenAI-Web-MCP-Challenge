@@ -8,6 +8,8 @@ returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in ADR-RS
 `RS-WO-002-07` is integrated at product commit `f700ba9`; `RS-WO-002-08` is integrated at product
 commit `006d2fd` after process re-baseline commit `8b77bdd`; `RS-WO-002-09` is integrated as bounded
 UI guidance. The next increment is bounded tenant and agent role-page delivery.
+The immediate planning checkpoint is `RS-WO-002-10`, a read-only Architecture Advisor review of
+whether those role pages can be dispatched as disjoint parallel Work Orders.
 
 ## Purpose
 

@@ -7,9 +7,13 @@ workflow-core, the `RS-WO-002-04` persistence/application boundary, the `RS-WO-0
 entry/listing discovery API, and the `RS-WO-002-07` workflow HTTP/DTO boundary independently verified;
 `RS-WO-002-06` Architecture Advisor reviewed and incorporated with revisions; ADR-RS-0008 accepted;
 `RS-WO-002-08` shared shell is integrated at product commit `006d2fd` after process re-baseline commit
-`8b77bdd`; `RS-WO-002-09` UI/UX review is integrated as bounded guidance; tenant/agent role pages are
+`8b77bdd`; `RS-WO-002-09` UI/UX review is integrated as bounded guidance; `RS-WO-002-10` Architecture
+Advisor is assigned to review the tenant/agent role-page decomposition; tenant/agent role pages are
 the next implementation slices
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
+**Current active Work Order:** `RS-WO-002-10` Architecture Advisor is assigned from clean baseline
+`a654658` to review the disjoint tenant and property-agent role-page decomposition. No role-page
+Builder has been dispatched yet.
 **Implementation:** Foundation Builder returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02` verification attempt was procedurally blocked by an out-of-scope OS temp artifact, then the corrected bounded rerun returned `VERIFIED` against the unchanged source/runtime identity; `RS-WO-002-03` found and repaired a listing-version guard defect in commit `6e70c9f`, and fresh independent verification returned `VERIFIED` against that frozen source; `RS-WO-002-04` candidate adoption completed at T2 commit `68bbc69`; its first dedicated Verifier attempt stopped before source checks because the dispatch prompt described the Worktree root incorrectly, then one corrected follow-up returned `VERIFIED` against frozen source `28105e4d`; `RS-WO-002-05` Builder returned `READY_FOR_VERIFICATION` with the required runtime, focused `35/35` checks, production build, and local API smoke passing; the candidate was integrated at T2 code commit `de169ce`, and a dedicated Verifier independently returned `VERIFIED` against clean snapshot `bc3bc42`; the read-only `RS-WO-002-06` Architecture Advisor returned `READY_FOR_REVIEW`, and the main thread accepted its decomposition with revisions in ADR-RS-0008; `RS-WO-002-07` candidate `d71fe3e` passed dedicated independent verification with foundation `6/6`, focused `9/9`, full direct `50/50`, build, HTTP, role/privacy, conflict, and no-mutation evidence and was integrated at product commit `f700ba9`; `RS-WO-002-08` is integrated at product commit `006d2fd` after a localized generated-output boundary incident was re-baselined in process commit `8b77bdd`; both originate from reviewed baseline `c758634`; `RS-WO-002-09` is integrated as bounded UI guidance
 
 ## 1. Executive status
@@ -104,6 +108,10 @@ final response can remain a normal application action.
 
 ## 5. Next gate
 
+The immediate gate is the read-only `RS-WO-002-10` Architecture Advisor review from clean baseline
+`a654658`; its output will determine whether the next tenant and agent Builders can be dispatched in
+parallel or whether a smaller shared-shell prerequisite must be serialized.
+
 The first `RS-WO-002-02` result is recorded as a procedural `BLOCKED`, and the corrected rerun is
 now `VERIFIED` against the unchanged source/runtime identity. The bounded `RS-WO-002-03` domain-core
 implementation and projection-isolation repair were independently checked against frozen commit
@@ -112,6 +120,10 @@ The eventual implementation remains without Cloud Receiver, WebMCP, Redis, or We
 dependencies.
 
 ## 5.1 Current Work Order boundary
+
+`RS-WO-002-10` is currently `ASSIGNED` with no source write; its execution Worktree and supporting
+task identity are recorded in the parent Task File. It is a planning gate, not role-page implementation
+or browser evidence.
 
 The parent `RIGHTSPOT-002` remains `in_progress`; the foundation Builder stopped after returning
 `READY_FOR_VERIFICATION`, the first `RS-WO-002-02` attempt was `BLOCKED` on a procedure boundary,
