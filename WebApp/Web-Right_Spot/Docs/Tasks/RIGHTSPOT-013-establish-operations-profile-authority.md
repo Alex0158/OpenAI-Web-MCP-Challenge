@@ -61,9 +61,9 @@ the verified Operations seam with no source write set.
 persistence, reset, time semantics, privacy, API, and UI boundaries; `Standard` for this read-only
 proposal.  
 **Supporting worker:** To be assigned by the main thread after task registration.  
-**Source baseline:** `c237ec83949bb4de4412775d296b564e370fa116` on `main`, captured after this task
-registration. The collaborator-owned dirty and untracked paths listed in current status remain outside
-this read-only Work Order.  
+**Source baseline:** `0f6cc8ebd7e27e9fe2241c5138873c103b136b58` on `main`, captured immediately before
+dispatch. The collaborator-owned dirty and untracked paths listed in current status remain outside this
+read-only Work Order.  
 **Ownership:** The Advisor may inspect and execute bounded read-only checks only. The main thread owns
 the decision, ADR, task updates, implementation, integration, and closure.
 
