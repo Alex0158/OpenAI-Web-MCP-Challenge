@@ -26,8 +26,9 @@ authority remains non-integrated. In
 parallel, `RS-WO-017-02` has passed independent verification as a frozen media primitive overlay but
 is not integrated; its verifier's unrelated persistent-fixture residual (`65/66`) was resolved by a
 separate test-only isolation correction and a current `66/66` rerun. The newly registered
-`RS-WO-018-01` workflow-integrity Builder (`Rawls`) and `RS-WO-019-01` tenant-time Builder (`Lagrange`)
-are in progress on disjoint write sets. Their boundaries are disjoint.
+`RS-WO-018-01` workflow-integrity candidate `f6997c3` and `RS-WO-019-01` tenant-time candidate
+`2c408e7` have completed Builder handoff and await independent verification on disjoint write sets.
+Their boundaries are disjoint.
 `RIGHTSPOT-013` accepted the
 Operations authority decision and is closed, and `RIGHTSPOT-014` accepted its media proposal and is
 closed. The Operations candidate is based on reviewed baseline `8fe5976`; the media asset baseline is

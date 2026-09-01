@@ -52,13 +52,15 @@ the relay projection into an Operations profile.
 ## RS-WO-018-01 — Repair expiry replay and slot relationships
 
 **Role:** Builder → independent Verifier  
-**Status:** `ASSIGNED`  
+**Status:** `READY_FOR_VERIFICATION`  
 **Parallelization:** `SERIAL_RELAY_DOMAIN_INTEGRITY` — owns the shared workflow source; do not run another worker against these paths  
 **Risk profile:** `Assured` — domain invariants and time/idempotency semantics affect all relay commands  
 **Source baseline:** `e92dc9c1102549e9197ebad114803eea1e96c06f` on `main`; current media candidate files and collaborator-owned documentation remain outside this Work Order  
-**Supporting worker:** Multi-agent relay-domain Builder `01a05e22-c046-79c1-ab4e-e0434c722c03` (`Rawls`)  
-**Dispatch state:** `IN_PROGRESS`  
-**Next gate:** Return one clean candidate commit with exactly the two allowed paths changed  
+**Supporting worker:** Multi-agent relay-domain Builder `01a05e22-c046-79c1-ab4e-e0434c722c03` (`Rawls`), closed after handoff  
+**Candidate source:** `f6997c3f37493c40ac8e79c9824b5a8379ed3207`, parent `e92dc9c1102549e9197ebad114803eea1e96c06f`  
+**Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-018-01-builder`  
+**Dispatch state:** `HANDOFF_COMPLETE`  
+**Next gate:** Independent verification of the frozen candidate; do not integrate or dispatch follow-on work  
 **Allowed write set:** `src/server/domain/workflow.ts`, `tests/domain/workflow.test.ts`  
 **Ownership:** The Builder owns only the two source/test paths. The main thread owns scope, source
 freeze, canonical writeback, integration, and closure.
@@ -112,6 +114,20 @@ application, API, foundation, typecheck, build, and diff checks available in the
 Return `READY_FOR_VERIFICATION` with the exact candidate commit/parent, clean status, two-path diff,
 behavioral decisions, focused and full test results, runtime identity, and explicit skipped evidence.
 Return `NEEDS_REVIEW` for any required scope expansion or unresolved expiry/idempotency policy.
+
+### Builder handoff evidence — 2026-09-01
+
+Builder `Rawls` returned `READY_FOR_VERIFICATION` at candidate
+`f6997c3f37493c40ac8e79c9824b5a8379ed3207`, parent
+`e92dc9c1102549e9197ebad114803eea1e96c06f`. Its isolated Worktree was clean and changed exactly:
+
+- `src/server/domain/workflow.ts`
+- `tests/domain/workflow.test.ts`
+
+The Builder reports expiry-aware replay, listing/time/holder validation, caller-input immutability,
+and preservation of normal idempotency, conflict, Happy Path, and partial projection fixtures.
+Pinned self-checks passed: focused `35/35`, all direct tests `65/65`, typecheck, production build,
+and `git diff --check`. No independent verification or integration claim is made.
 
 ## Acceptance criteria
 

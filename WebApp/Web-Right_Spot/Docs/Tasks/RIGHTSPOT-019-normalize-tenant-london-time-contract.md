@@ -34,13 +34,15 @@ deterministically before sending the existing DTO.
 ## RS-WO-019-01 — Repair tenant London-time input conversion
 
 **Role:** Builder → independent Verifier  
-**Status:** `ASSIGNED`  
+**Status:** `READY_FOR_VERIFICATION`  
 **Parallelization:** `PARALLEL_TENANT_TIME_REPAIR` — disjoint from workflow-domain, Operations, and media paths  
 **Risk profile:** `Assured` — incorrect time conversion changes user-visible scheduling instants  
 **Source baseline:** `e92dc9c1102549e9197ebad114803eea1e96c06f` on `main`; current media candidate files and collaborator-owned documentation remain outside this Work Order  
-**Supporting worker:** Multi-agent tenant-time Builder `01a05e22-1007-7f62-b983-e0d5973f00f3` (`Lagrange`)  
-**Dispatch state:** `IN_PROGRESS`  
-**Next gate:** Return one clean candidate with only the declared tenant helper/page/test paths changed  
+**Supporting worker:** Multi-agent tenant-time Builder `01a05e22-1007-7f62-b983-e0d5973f00f3` (`Lagrange`), closed after handoff  
+**Candidate source:** `2c408e77e99a2f38faffe27ffa8c7408fe1dc855`, parent `e92dc9c1102549e9197ebad114803eea1e96c06f`  
+**Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-019-01-builder`  
+**Dispatch state:** `HANDOFF_COMPLETE`  
+**Next gate:** Independent verification of the frozen candidate; do not integrate or dispatch follow-on work  
 **Allowed write set:** `src/ui/tenant/tenant-request-time.ts`, `src/ui/tenant/tenant-request-page.tsx`, `tests/ui/tenant-request-time.test.ts`  
 **Ownership:** The Builder owns only the declared tenant time helper/page/test paths. The main thread
 owns source freeze, integration, browser evidence, canonical writeback, and closure.
@@ -93,6 +95,22 @@ and behavior under at least `TZ=UTC` and `TZ=America/New_York` (or equivalent ex
 Return `READY_FOR_VERIFICATION` with exact candidate identity, changed paths, conversion policy,
 focused tests under multiple TZ settings, full checks, runtime identity, and explicit skipped browser
 evidence. Return `NEEDS_REVIEW` for any contract or dependency expansion.
+
+### Builder handoff evidence — 2026-09-01
+
+Builder `Lagrange` returned `READY_FOR_VERIFICATION` at candidate
+`2c408e77e99a2f38faffe27ffa8c7408fe1dc855`, parent
+`e92dc9c1102549e9197ebad114803eea1e96c06f`. Its isolated checkout was clean and changed exactly:
+
+- `src/ui/tenant/tenant-request-time.ts`
+- `src/ui/tenant/tenant-request-page.tsx`
+- `tests/ui/tenant-request-time.test.ts`
+
+The Builder reports explicit Europe/London wall-clock conversion, GMT/BST handling, rejection of
+spring-forward nonexistent and autumn fall-back ambiguous values, UTC round-trip editing, and no
+API/domain/DTO change. Pinned self-checks passed: focused/relevant `16/16`, full direct tests
+`68/68`, typecheck, production build, and `git diff --check`. No independent verification or
+integration claim is made.
 
 ## Acceptance criteria
 

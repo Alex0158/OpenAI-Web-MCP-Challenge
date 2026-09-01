@@ -35,7 +35,8 @@ integrated-source Field Desk regression `RS-WO-007-08` also passed; `RIGHTSPOT-0
 verified `RS-WO-011` seam is integrated, while `RS-WO-015-04` is the current Operations authority
 repair gate after candidate `39e67e1` failed fresh verification. `RS-WO-017-02` is independently verified but awaiting main-thread
 integration review against the completed `RS-WO-017-01` asset baseline. `RS-WO-018-01` and
-`RS-WO-019-01` are active Builder lanes. Prior
+`RS-WO-018-01` and `RS-WO-019-01` have completed Builder handoff and await independent verification.
+Prior
 verifier Worktree metadata mutations remain preserved and are not product source.
 
 ## 1. Roadmap purpose and authority
