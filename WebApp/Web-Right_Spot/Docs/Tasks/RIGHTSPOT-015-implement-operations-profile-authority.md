@@ -15,12 +15,13 @@
 - Owner: Main RightSpot thread
 - Objective: Implement and independently verify the smallest deterministic, multi-record Operations
   profile authority and reset boundary without changing the accepted relay application.
-- Current increment: `RS-WO-015-01` has returned a bounded Builder candidate for Operations domain
-  types, deterministic fixture generation, separate SQLite persistence, validation, and profile-local
-  reset; the main thread found and required one orphan-link validation amendment before handoff.
-- Next gate: `RS-WO-015-02` must independently verify the amended candidate before a projection
-  consumer, transport, route, UI, navigation, or WebMCP Work Order is registered.
-- Execution posture: `AUTHORITY_VERIFICATION_IN_PROGRESS`; this task is separate from the closed relay MVP,
+- Current increment: `RS-WO-015-03` is a bounded repair checkpoint for an independently discovered
+  Operations SQLite schema-shape validation gap. The original authority candidate remains frozen and
+  is not integrable until the repair and a fresh independent verification pass.
+- Next gate: Dispatch the repair against the exact failed candidate, then dispatch a new independent
+  verifier against the repaired source before a projection consumer, transport, route, UI, navigation,
+  or WebMCP Work Order is registered.
+- Execution posture: `AUTHORITY_REPAIR_REQUIRED`; this task is separate from the closed relay MVP,
   closed Field Desk lane, and unresolved Favourite/Information Request proposals.
 
 ## Accepted implementation boundary
@@ -47,7 +48,7 @@ Favourite records, Information Request records, contact data, or real user ident
 ## RS-WO-015-01 — Implement the Operations authority and profile-local reset
 
 **Role:** Builder  
-**Status:** `READY_FOR_VERIFICATION`  
+**Status:** `NEEDS_REVIEW` — independent verification found a gate-blocking schema-shape gap  
 **Parallelization:** `SERIAL_AUTHORITY_FOUNDATION` — may run beside read-only UI/asset analysis, but any later Operations projection or transport depends on this checkpoint  
 **Risk profile:** `Assured` — new persistence authority, deterministic fixture/reset, validation, and isolation require independent verification  
 **Supporting worker:** Multi-agent Operations authority Builder `01a05df7-a761-7423-9b85-e2a866f3a216` (`Herschel`), closed after handoff  
@@ -55,7 +56,7 @@ Favourite records, Information Request records, contact data, or real user ident
 **Candidate source:** `3f041a0d0477f2fba0aedb93c5e048d21334254d`, parent `8fe597689b4cfe9e118b9d0bd9a19dd83b94079e`  
 **Candidate Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-015-01-builder` (clean at handoff)  
 **Dispatch state:** `HANDOFF_COMPLETE`; the Builder self-check is not independent verification.  
-**Next gate:** Dispatch `RS-WO-015-02` against the exact candidate source; do not start a consumer task  
+**Next gate:** Repair the schema-shape validation gap in `RS-WO-015-03`; do not integrate or start a consumer task  
 **Ownership:** The Builder owns only the declared new Operations paths. The main thread owns source freeze, canonical writeback, integration, and closure.
 
 ### Required read set
@@ -169,14 +170,14 @@ browser, deployment, WebMCP, or consumer evidence is claimed here.
 ## RS-WO-015-02 — Independently verify the Operations authority candidate
 
 **Role:** Independent Verifier  
-**Status:** `ASSIGNED`  
+**Status:** `NEEDS_REVIEW` — independent verification completed with a gate-blocking finding  
 **Parallelization:** `SERIAL_AUTHORITY_VERIFICATION` — must complete before any Operations projection or consumer Work Order  
 **Risk profile:** `Assured` — verifies a new persistence authority, strict validation, reset atomicity, and relay isolation  
-**Supporting worker:** Multi-agent Independent Verifier `01a05e0d-4add-7f10-a659-85651c54629d` (`Anscombe`)  
+**Supporting worker:** Multi-agent Independent Verifier `01a05e0d-4add-7f10-a659-85651c54629d` (`Anscombe`), closed after report  
 **Source under verification:** `3f041a0d0477f2fba0aedb93c5e048d21334254d` with parent baseline `8fe597689b4cfe9e118b9d0bd9a19dd83b94079e`  
 **Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-015-01-builder`  
-**Dispatch state:** `ASSIGNED`; independent read-only verification is in progress  
-**Next gate:** Receive the verifier verdict against the exact candidate commit; no repair, integration, or consumer work in this checkpoint  
+**Dispatch state:** `COMPLETED_WITH_FINDING`; candidate is rejected for integration pending repair  
+**Next gate:** Dispatch `RS-WO-015-03` against the exact failed candidate, then run fresh independent verification; no integration or consumer work in this checkpoint  
 **Ownership:** The Verifier owns evidence only. The main thread owns any disposition, source freeze, integration, canonical writeback, and closure.
 
 ### Verifier read set
@@ -214,6 +215,58 @@ Return `VERIFIED` only when the exact candidate satisfies the accepted authority
 required evidence is independently reproduced. Return `NEEDS_REVIEW` for any source drift, scope
 violation, failed invariant, failed persistence/reset/isolation property, runtime mismatch, or
 environmental ambiguity. Stop after the evidence report; do not integrate or modify the candidate.
+
+### Independent verification finding — 2026-09-01
+
+`RS-WO-015-02` independently verified the candidate's exact five-path scope and all requested
+domain/persistence behavior, but returned `NEEDS_REVIEW` because existing-schema validation accepted a
+snapshot table with an unexpected sixth column. In a verifier-owned temporary database, adding
+`verifier_unexpected TEXT` to `rightspot_operations_snapshot` still allowed reopen. This is a
+gate-blocking incompatibility failure: the store checked table name/count and readable columns, but
+not the full expected schema shape. The temporary database was cleaned; relay and default Operations
+databases were not touched. No source was integrated.
+
+## RS-WO-015-03 — Repair Operations SQLite schema-shape validation
+
+**Role:** Repairer (original authority Builder)  
+**Status:** `READY_FOR_DISPATCH`  
+**Parallelization:** `SERIAL_AUTHORITY_REPAIR` — depends on the failed `RS-WO-015-02` evidence and must precede fresh verification  
+**Risk profile:** `Assured` — changes persistence compatibility validation and its focused test only  
+**Supporting worker:** To be assigned by resuming the original authority Builder after repair registration  
+**Source baseline:** Failed candidate `3f041a0d0477f2fba0aedb93c5e048d21334254d`; parent baseline `8fe597689b4cfe9e118b9d0bd9a19dd83b94079e`  
+**Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-015-01-builder`  
+**Dispatch state:** `READY_FOR_DISPATCH`  
+**Next gate:** Return a new exact repair commit with clean status and only the two declared paths changed; do not dispatch a consumer or claim verification  
+**Ownership:** The Repairer owns only the persistence validator and focused persistence test. The main thread owns source freeze, fresh verification, integration, canonical writeback, and closure.
+
+### Repair write set
+
+- `src/server/persistence/operations-store.ts`
+- `tests/persistence/operations-store.test.ts`
+
+Do not modify the Operations domain files, relay/shared source, routes, pages, UI, package/config,
+assets, canonical documents, or any other path. Use only test-owned temporary database files and clean
+only those artifacts through the test harness.
+
+### Required repair
+
+1. Validate the existing `rightspot_operations_snapshot` table's schema shape before accepting an
+   existing snapshot. At minimum, reject unexpected, missing, renamed, reordered, or incompatible
+   column definitions rather than relying only on a successful known-column SELECT. Preserve the
+   singleton-table and existing constraint expectations without recreating or replacing the database.
+2. Add a focused regression test proving that an extra column such as `verifier_unexpected` causes a
+   neutral `OperationsPersistenceError` on reopen, alongside any minimum shape cases needed by the
+   implementation. Do not weaken corrupt-state, reset rollback, reopen equivalence, or relay-isolation
+   tests.
+3. Keep the public behavior and all other authority semantics unchanged; this repair must remain a
+   persistence compatibility guard, not a schema redesign.
+
+### Repair return gate
+
+Return `READY_FOR_VERIFICATION` with the new candidate commit, parent, clean status, exact two-path
+delta, schema checks, focused/full test results, typecheck/build/diff results, and explicit no-claims
+about integration or consumer behavior. If exact schema validation requires a broader scope, return
+`NEEDS_REVIEW` without editing outside this write set.
 
 ## Closure gate
 
