@@ -16,13 +16,12 @@
 - Objective: Turn the accepted RightSpot Field Desk visual direction into a small, implementable
   shared UI foundation without expanding the rental MVP or changing product authority.
 - Current increment: The single-file shared CSS foundation is independently verified and integrated
-  at product commit `89a50c7`; its served runtime includes the candidate tokens. The isolated tenant
-  and agent role Builders have handed off clean frozen candidates at `63e4c3e` and `33a36f0`.
-- Next gate: Run `RS-WO-007-06` and `RS-WO-007-07` as independent Verifiers against those exact
-  candidate commits, then integrate the two disjoint candidates through the main thread.
-- Execution posture: `PARALLEL_ROLE_VERIFICATION_READY`; the CSS checkpoint is closed, both role
-  Builder outputs are frozen, and their verification lanes may run in parallel under the persistent
-  task/thread dispatch policy.
+  at product commit `89a50c7`; the tenant and agent role candidates were independently verified and
+  integrated at product commits `5abdaf3` and `a2f6a19` from frozen candidates `63e4c3e` and `33a36f0`.
+- Next gate: Freeze the combined integrated source and run an independent cross-role regression check
+  covering the shared Field Desk foundation plus tenant and agent surfaces before closing this task.
+- Execution posture: `PARALLEL_ROLE_CANDIDATES_INTEGRATED`; the disjoint Builder and Verifier lanes are
+  closed, the main thread owns the combined regression gate, and Operations seam work remains separate.
 
 ## Accepted product boundary
 
@@ -255,7 +254,7 @@ sequential after both Builder handoffs.
 ## RS-WO-007-04 — Refine the tenant Field Desk surfaces
 
 **Role:** Persistent Codex task/thread Builder → later independent Verifier  
-**Status:** `READY_FOR_VERIFICATION` — frozen candidate commit `63e4c3e`  
+**Status:** `INTEGRATED` — independently verified by `RS-WO-007-06`; product commit `5abdaf3`  
 **Parallelization:** `CONTRACT_PARALLEL_ROLE_UI` — may run in parallel with `RS-WO-007-05` only in
 the explicitly isolated Worktree recorded by the main thread; the shared CSS, shell, contracts, and
 runtime authority are read-only.  
@@ -264,6 +263,13 @@ runtime authority are read-only.
 the dispatch baseline is clean commit `3cc6a04287ebb639f71eebe94191559dd58ca9be`.  
 **Frozen source:** `63e4c3e2b6985439edd18f61d4905eb4134e521b`; the candidate Worktree is clean after
 the main-thread T2 freeze.  
+**Integration:** The main thread cherry-picked the verified candidate as product commit `5abdaf3`.
+The candidate changed only the four declared tenant UI paths. Independent verification used the
+same frozen source with Node `v24.20.0` / npm `11.19.0`; typecheck, 6/6 foundation tests, 22/22
+focused tenant/API tests, 57/57 direct aggregate tests, build, diff checks, isolated browser
+responsive/no-overflow/focus/contrast checks, tenant error/recovery/role boundaries, and no-mutation
+checks passed. Populated request/proposal/confirmation browser states and held loading visuals were
+not exercised because the verifier did not mutate workflow data; their contracts passed direct tests.
 **Supporting task/thread:** `01a05db4-6e9d-7e51-8ee1-9b7c62cc31d0` on host `local`.  
 **Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-007-04-tenant` on branch
 `rightspot/rs-wo-007-04-tenant`.  
@@ -325,7 +331,7 @@ Verifier phase.
 ## RS-WO-007-05 — Refine the agent Field Desk surfaces
 
 **Role:** Persistent Codex task/thread Builder → later independent Verifier  
-**Status:** `READY_FOR_VERIFICATION` — frozen candidate commit `33a36f0`  
+**Status:** `INTEGRATED` — independently verified by `RS-WO-007-07`; product commit `a2f6a19`  
 **Parallelization:** `CONTRACT_PARALLEL_ROLE_UI` — may run in parallel with `RS-WO-007-04` only in
 the explicitly isolated Worktree recorded by the main thread; the shared CSS, shell, contracts, and
 runtime authority are read-only.  
@@ -334,6 +340,13 @@ runtime authority are read-only.
 the dispatch baseline is clean commit `3cc6a04287ebb639f71eebe94191559dd58ca9be`.  
 **Frozen source:** `33a36f01bb4163c2d29d9ee95ae6e4e95f591ae2`; the candidate Worktree is clean after
 the main-thread T2 freeze.  
+**Integration:** The main thread cherry-picked the verified candidate as product commit `a2f6a19`.
+The candidate changed only the three declared agent UI paths. Independent verification used the same
+frozen source with Node `v24.20.0` / npm `11.19.0`; typecheck, 6/6 foundation tests, 38/38 relevant
+checks, build, diff checks, isolated browser responsive/no-overflow/focus/contrast checks, queue/empty/
+role denial/retry boundaries, and no-mutation checks passed. Request detail/review/preparation/send/
+conflict browser states were not exercised because the verifier fixture had no assigned request; the
+existing contracts passed static/direct checks.
 **Supporting task/thread:** `01a05db4-7764-7931-b474-ddbd977762ae` on host `local`.  
 **Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-007-05-agent` on branch
 `rightspot/rs-wo-007-05-agent`.  
@@ -396,7 +409,7 @@ Verifier phase.
 ## RS-WO-007-06 — Independently verify the tenant Field Desk candidate
 
 **Role:** Persistent Codex task/thread Verifier  
-**Status:** `ASSIGNED`  
+**Status:** `VERIFIED` — frozen source independently verified; integrated at product commit `5abdaf3`  
 **Parallelization:** `EVIDENCE_PARALLEL` — may run in parallel with `RS-WO-007-07` because it uses a
 separate frozen source snapshot, separate Worktree, and no product write set.  
 **Risk profile:** `Standard` — independent static, runtime, and browser verification of a bounded
@@ -453,7 +466,7 @@ after the report; do not dispatch repair or integration work.
 ## RS-WO-007-07 — Independently verify the agent Field Desk candidate
 
 **Role:** Persistent Codex task/thread Verifier  
-**Status:** `ASSIGNED`  
+**Status:** `VERIFIED` — frozen source independently verified; integrated at product commit `a2f6a19`  
 **Parallelization:** `EVIDENCE_PARALLEL` — may run in parallel with `RS-WO-007-06` because it uses a
 separate frozen source snapshot, separate Worktree, and no product write set.  
 **Risk profile:** `Standard` — independent static, runtime, and browser verification of a bounded

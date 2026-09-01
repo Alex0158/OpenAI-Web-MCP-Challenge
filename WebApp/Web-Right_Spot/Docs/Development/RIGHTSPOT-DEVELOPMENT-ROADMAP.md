@@ -5,17 +5,21 @@
 `RS-WO-005-01` has passed corrected independent verification and is integrated at local product
 commit `27f5391`; `RS-WO-007-01` is accepted as a read-only UI decomposition and `RS-WO-007-02` has
 passed final independent browser verification and is integrated at product commit `89a50c7` after
-two recorded procedural blocks were corrected. The next tenant and agent role slices are now
-dispatched as isolated persistent task/thread Work Orders from baseline `3cc6a04`. The prior
-out-of-scope tracked verifier mutation remains preserved.
+two recorded procedural blocks were corrected. The tenant and agent role slices were independently
+verified and integrated at product commits `5abdaf3` and `a2f6a19`; the next gate is an integrated
+cross-role regression check. `RS-WO-011-01` is concurrently implementing the accepted bounded
+Operations read-model seam in an isolated Worktree. The prior out-of-scope tracked verifier mutation
+remains preserved.
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-01, Europe/London
 
 **Current gate:** None for the accepted local MVP. `RS-WO-002-13` is integrated at product commit
 `3765747`, repaired `RS-WO-002-12` is integrated at `9348aa5`, `RS-WO-002-14` passed direct combined
 cross-role verification, and `RS-WO-002-15` passed the isolated browser walkthrough. The closure record
-is [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md). Prior verifier Worktree
-metadata mutations remain preserved and are not product source.
+is [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md). For the active post-MVP
+lane, `RS-WO-007-04`/`05` have passed independent verification and are integrated; only the fresh
+integrated-source Field Desk regression gate remains. Prior verifier Worktree metadata mutations
+remain preserved and are not product source.
 
 ## 1. Roadmap purpose and authority
 
@@ -34,7 +38,7 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
   Backbone, and implementation stack are accepted working baselines.
 - `RIGHTSPOT-001` established the product thesis and Backbone boundary and is closed.
 - `RIGHTSPOT-002` is closed for the accepted local MVP. Post-MVP work is admitted only through the
-  separately bounded `RIGHTSPOT-005` and `RIGHTSPOT-007` Task Files; their Work Orders remain in
+  separately bounded `RIGHTSPOT-005`, `RIGHTSPOT-007`, and accepted `RIGHTSPOT-011` Task Files; their Work Orders remain in
   those files and this roadmap is not their live queue.
 - The foundation package, runtime code, tests, and local reset/health composition now exist as an
   independently verified local baseline; no deployment configuration or Hackathon integration exists.
@@ -51,7 +55,7 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 3. Authoritative workflow core | Implement the Viewing Request state machine, availability lifecycle, role projections, version checks, audit facts, and explicit failures | Domain and Backbone checks pass without a browser or external service | Complete; post-repair source `6e70c9f` independently verified |
 | 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | Complete; `RS-WO-002-14` passed independent direct cross-role verification and `RS-WO-002-15` passed the isolated browser walkthrough against integrated source `9348aa50b63e3f4f46e77238ad370670383d9d6` |
 | 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Complete; closure record reconciled and `RIGHTSPOT-002` closed |
-| 6. Post-MVP product refinement | Resolve high-impact navigation friction and implement the accepted Field Desk visual foundation without changing workflow authority | Each bounded candidate is independently verified and integrated before the next shared-surface change | Active; `RS-WO-005-01` integrated at `27f5391`; `RS-WO-007-02` verified and integrated at `89a50c7`; tenant `RS-WO-007-04` and agent `RS-WO-007-05` are frozen at `63e4c3e`/`33a36f0`, with `RS-WO-007-06`/`RS-WO-007-07` assigned for independent verification; `RIGHTSPOT-011`/`RS-WO-011-01` is assigned as an isolated Operations read-model seam |
+| 6. Post-MVP product refinement | Resolve high-impact navigation friction and implement the accepted Field Desk visual foundation without changing workflow authority | Each bounded candidate is independently verified and integrated before the next shared-surface change | Active; `RS-WO-005-01` integrated at `27f5391`; `RS-WO-007-02` verified/integrated at `89a50c7`, tenant and agent slices independently verified/integrated at `5abdaf3`/`a2f6a19`; integrated regression remains; `RS-WO-011-01` is an isolated Operations read-model seam |
 | 7. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary refinement is stable and a new explicit integration decision exists | Deferred; not scheduled |
 
 ## 4. Roadmap operating rules
