@@ -1,3 +1,4 @@
+import { domainError } from "../domain/errors";
 import {
   DEFAULT_SNAPSHOT_TIMESTAMP,
   WorkflowStore,
@@ -43,10 +44,38 @@ export class WorkflowApplication {
     return this.store.readTenantProjection(actor, now);
   }
 
+  readTenantRequest(
+    actor: Actor,
+    now: string,
+  ): ProjectionOutcome<TenantProjection | null> {
+    const state = this.store.readState();
+    if (actor.role !== "tenant" || actor.id !== state.tenantId) {
+      throw domainError("FORBIDDEN", "Actor cannot read the tenant request");
+    }
+    if (!state.request) {
+      return { state, projection: null };
+    }
+    return this.store.readTenantProjection(actor, now);
+  }
+
   readAgentProjection(
     actor: Actor,
     now: string,
   ): ProjectionOutcome<AgentProjection> {
+    return this.store.readAgentProjection(actor, now);
+  }
+
+  readAgentQueue(
+    actor: Actor,
+    now: string,
+  ): ProjectionOutcome<AgentProjection | null> {
+    const state = this.store.readState();
+    if (actor.role !== "agent" || actor.id !== state.agentId) {
+      throw domainError("FORBIDDEN", "Actor cannot read the agent queue");
+    }
+    if (!state.request) {
+      return { state, projection: null };
+    }
     return this.store.readAgentProjection(actor, now);
   }
 
