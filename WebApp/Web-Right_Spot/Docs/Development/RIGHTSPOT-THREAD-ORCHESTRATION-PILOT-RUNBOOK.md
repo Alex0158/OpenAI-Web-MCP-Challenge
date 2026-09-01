@@ -495,9 +495,15 @@ Before dispatching, the main thread must:
 11. confirm the execution mode/worktree and, when using an existing supporting task, verify that its
     persisted title/history/current Work Order identity matches this dispatch;
 12. confirm that no credential, spend, deployment, publication, or external action is hidden in the
-    assignment; and
+    assignment;
 13. record the expected next gate, canonical writeback owner, and source-freeze point before sending
-   the prompt.
+    the prompt;
+14. resolve the declared main checkout root, execution Worktree root, package root, and runtime-pin
+    path to actual filesystem paths, then run the read-only root checks before the thread-tool call;
+    a prompt must not leave any of these identities implicit or inferred from another root; and
+15. if the Work Order relies on persisted fixtures or business snapshots, inspect the reset boundary
+    and state whether setup uses a fresh isolated database or the existing application-level reset;
+    do not dispatch a verifier with an unclassified reset procedure.
 
 ### 8.1.1 Dispatch transaction order
 
@@ -555,6 +561,12 @@ Worktree root while `package.json` is in a nested application, the dispatch must
 runtime-pin path and the exact package root independently. The worker reads `.node-version` from the
 declared runtime-pin path and runs npm/package commands from the declared package root; neither
 location may be inferred from the other.
+
+The main-thread preflight must resolve and execute the equivalent of
+`git -C <execution-worktree> rev-parse --show-toplevel`, `test -f <package-root>/package.json`,
+`test -f <package-root>/package-lock.json`, and `test -f <runtime-pin-path>`. A failed check is a
+dispatch preparation failure, not a reason to let the worker infer a path. The resolved values must
+be copied into the prompt and the Task File before the single dispatch call.
 
 ### 8.1.2 Execution baseline versus governance revision
 
@@ -618,6 +630,16 @@ created by the existing test suite and must be preserved without cleanup, while 
 restore, or commit `next-env.d.ts`; if a final diff remains, the worker stops and reports it for
 main-thread adjudication. When a production build is already available, prefer `next start` over
 `next dev` for runtime smoke so development-only file generation does not widen the checkpoint.
+
+Fixture setup is part of source and evidence identity. A foundation-only reset and an
+application/business reset are not interchangeable: the foundation reset may advance foundation
+generation without resetting an existing workflow snapshot, which can intentionally produce a
+persistence-generation mismatch and a `503` rather than the product's ordinary empty or missing
+state. A business-workflow verifier must use a fresh isolated database or the established
+application-level reset boundary, perform setup according to that boundary, and record the resulting
+fixture generation. It must not repeatedly apply a foundation-only reset to a database that already
+contains a business snapshot and then classify the resulting mismatch as a product defect. If the
+reset semantics are unclear, stop before product diagnosis and return a process/environment blocker.
 
 At T2, after the Builder stops, the main thread must:
 

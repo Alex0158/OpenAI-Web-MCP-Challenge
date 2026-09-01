@@ -21,11 +21,12 @@ Active Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT
 `VERIFIED` against frozen source `28105e4d`. `RS-WO-002-05` is independently verified against
 canonical snapshot `bc3bc42`. The read-only Architecture Advisor `RS-WO-002-06` returned
 `READY_FOR_REVIEW`; the main thread accepted its decomposition with revisions, froze the ordinary
-workflow HTTP/DTO contract in ADR-RS-0008, and dispatched only `RS-WO-002-07`, `RS-WO-002-08`, and
-`RS-WO-002-09` from reviewed baseline `c758634`. The first two are contract-parallel; the reviewer
-is read-only parallel. Tenant and agent role-page Builders remain gated until the transport and shared
-shell outputs are frozen and reviewed. The user-authorized Side Chat learning artifact and Pilot
-Runbook writeback are process-only changes, not product source drift.
+workflow HTTP/DTO contract in ADR-RS-0008, and dispatched `RS-WO-002-07`, `RS-WO-002-08`, and
+`RS-WO-002-09` from reviewed baseline `c758634`. `RS-WO-002-07` and `RS-WO-002-08` passed dedicated
+independent verification and are integrated at product commits `f700ba9` and `006d2fd`; the reviewer
+is integrated as bounded guidance. Tenant and agent role-page Builders are the next candidates, but
+their exact disjoint scopes must be reviewed before dispatch. The user-authorized Side Chat learning
+artifact and Pilot Runbook writeback are process-only changes, not product source drift.
 One registered Task has one Task File. A Work Order is a dispatch brief under that Task; normally
 there is one active Work Order per dependency chain, while explicitly independent slices may run in
 parallel under the same file. Builder, Verifier, Repairer, and Integrator are checkpoints, not

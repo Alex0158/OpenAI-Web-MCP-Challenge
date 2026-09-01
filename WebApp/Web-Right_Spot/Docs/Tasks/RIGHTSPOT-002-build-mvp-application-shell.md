@@ -16,11 +16,12 @@ The implementation must follow the accepted business rules in
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Execute the three accepted bounded interface slices: workflow transport,
-  shared shell, and UI/UX review, each from the reviewed baseline `c758634`.
-- Next gate: Receive and inspect the three supporting-task reports. Freeze and independently verify
-  each Builder candidate; keep tenant and agent role-page Builders gated until the transport and shell
-  outputs are frozen and reviewed.
+- Current increment: Reconcile the independently verified workflow HTTP/DTO boundary and shared
+  shell into the main branch, then open the next bounded tenant and agent role-page slices against
+  those stable interfaces.
+- Next gate: Complete canonical writeback for `RS-WO-002-07`, preserve the accepted `RS-WO-002-09`
+  UI guidance, and define the smallest disjoint tenant/agent page Work Orders. Their exact route,
+  component, test, and shared-boundary ownership must be reviewed before dispatch.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, ADR-RS-0008, and the accepted Requirements
   and Domain and Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, ADR-RS-0008, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -39,8 +40,8 @@ ordinary application slice. Its objective and closure evidence describe the pare
 current executable increment is narrower: implement and independently verify only the currently
 approved interface slices against stable contracts and disjoint ownership. The persistence,
 workflow-core, and discovery boundaries are independently verified; the ordinary workflow
-HTTP/DTO contract is accepted in ADR-RS-0008, but its implementation and UI consumers remain
-separate checkpoints. Later implementation, verification, repair, and integration remain sequential
+HTTP/DTO contract is accepted in ADR-RS-0008, and its implementation is now integrated; UI consumers
+remain separate checkpoints. Later implementation, verification, repair, and integration remain sequential
 checkpoints inside each bounded Work Order, not a second set of registered Tasks or a speculative
 backlog. If a checkpoint is blocked, the main thread may record and activate another Work Order in
 this same file only when it passes the pilot's independent-parallelization gate and does not depend
@@ -64,16 +65,17 @@ verification, integration, or parent-Task closure.
 
 - **Dispatch state:** `RS-WO-002-05` is independently verified against clean snapshot `bc3bc42`.
   `RS-WO-002-06` returned `READY_FOR_REVIEW`; the main thread accepted its useful decomposition with
-  revisions, recorded the local HTTP/DTO contract in ADR-RS-0008, and dispatched only `RS-WO-002-07`,
-  `RS-WO-002-08`, and `RS-WO-002-09` from baseline `c758634`. `RS-WO-002-09` returned
-  `READY_FOR_REVIEW` and its bounded checklist is now integrated as later UI guidance. Builder, Verifier, Repairer,
-  Integrator, Advisor, and reviewer roles remain checkpoints under this Task, not pre-registered
-  child Tasks. `RS-WO-002-08` returned `BLOCKED` on a generated-output boundary incident; the main
-  thread recorded the process re-baseline in `8b77bdd` and resumed the same task. Its product
-  candidate remains unverified and unintegrated.
-- **Baseline:** The actual repository root is `WebMCP_Challenge`; the latest verified product code
-  remains `de169ce`; the accepted workflow/interface documentation baseline was frozen in
-  `c758634` before dispatch. Each new Work Order records its own exact source identity. The
+  revisions, recorded the local HTTP/DTO contract in ADR-RS-0008, and dispatched `RS-WO-002-07`,
+  `RS-WO-002-08`, and `RS-WO-002-09` from baseline `c758634`. `RS-WO-002-07` and `RS-WO-002-08`
+  passed dedicated independent verification and are integrated at product commits `f700ba9` and
+  `006d2fd`; `RS-WO-002-09` returned `READY_FOR_REVIEW` and its bounded checklist is integrated as
+  later UI guidance. There is no active product writer at this checkpoint. Builder, Verifier,
+  Repairer, Integrator, Advisor, and reviewer roles remain checkpoints under this Task, not
+  pre-registered child Tasks.
+- **Baseline:** The actual repository root is `WebMCP_Challenge`; the latest integrated product code
+  is `f700ba9` (workflow transport plus the previously integrated shell); the accepted
+  workflow/interface documentation baseline was frozen in `c758634` before dispatch. Each new Work
+  Order records its own exact source identity. The
   user-authorized Side Chat learning file and process-only Pilot Runbook writeback are classified
   separately from product source. Source identity is checkpoint-scoped and path-owned; it is not a
   permanent full-document hash lock.
@@ -1160,9 +1162,9 @@ The main thread revised or rejected the following parts of the proposal:
 - do not add a UI kit, browser-test dependency, external service, or UI-owned business-state mock.
 
 The accepted contract is [ADR-RS-0008](../Decisions/ADR-RS-0008-ordinary-workflow-http-and-interface-contract.md).
-The next three Work Orders are registered below. Their dispatch transactions succeeded from the same
-clean baseline; their exact source identity and supporting-task identities are recorded below. Their
-outputs remain individually unverified until dedicated Verifier checkpoints complete.
+The three interface Work Orders below were dispatched from the same clean baseline. Their exact
+source identities and supporting-task identities are recorded below. The two implementation slices
+are now independently verified and integrated; the read-only review is integrated as guidance.
 
 ### RS-WO-002-07 — Implement the ordinary workflow HTTP and DTO boundary
 
@@ -1170,8 +1172,8 @@ outputs remain individually unverified until dedicated Verifier checkpoints comp
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — ADR-RS-0008 is accepted; the discovery API and its independent
 verification are complete  
-**Execution state:** `VERIFYING` — Builder handoff passed main-thread T2 path review; candidate
-`d71fe3e` is frozen and the dedicated independent Verifier is running  
+**Execution state:** `INTEGRATED` — candidate `d71fe3e` passed dedicated independent verification
+and was cherry-picked into the main branch at `f700ba9`  
 **Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-08`; `READ_ONLY_PARALLEL` with
 `RS-WO-002-09`  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent
@@ -1182,8 +1184,9 @@ workflow command/read composition
 the existing domain, application, session, and persistence authority. The result must make the
 tenant request and agent response operations callable by a human UI without adding UI, a second
 business state, or an external integration.  
-**Next gate:** Independent verification of the frozen T2 candidate; no product writer may modify the
-frozen source until the Verifier returns.  
+**Next gate:** Canonical writeback is complete for this Work Order. Its routes, DTOs, and application
+boundary are now stable inputs for the bounded tenant and agent role-page Work Orders; no further
+writer is open under this Work Order.  
 **Dispatch state:** Dispatched from clean detached source `c758634aa5d046e089e051ee74e463756b73a202`;
 execution Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-07-workflow-http`; supporting-task
 identity `01a05b57-e509-7392-90dd-09b056b463d7` (`local`). The initial task activation and the full
@@ -1192,11 +1195,17 @@ main-thread acknowledgement. The application/package root is the Worktree-relati
 `WebApp/Web-Right_Spot`; a follow-up correction was sent after the Builder identified an initial
 checkout-root/npm-root confusion, which only created external npm diagnostics and did not change the
 repository. The Builder then returned `READY_FOR_VERIFICATION`; main-thread T2 review committed the
-exact 15 authored paths at `d71fe3e`. The independent Verifier is dispatched in Worktree
+exact 15 authored paths at `d71fe3e`. The independent Verifier was dispatched in Worktree
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-07-verifier` with supporting-task identity
-`01a05b70-3a9a-7d50-af83-e71c5cfa0da7` (`local`). No source write is authorized during verification.  
-**Parent execution posture if blocked:** `CONSTRAINED` — the shared shell and read-only UI/UX review
-may continue, but tenant/agent role-page Builders remain gated.
+`01a05b70-3a9a-7d50-af83-e71c5cfa0da7` (`local`) and returned `VERIFIED`; the main thread
+cherry-picked the frozen candidate into main at `f700ba9`. The verifier reported exact Node
+`v24.20.0`/npm `11.19.0`, typecheck, foundation `6/6`, focused workflow `9/9`, full direct suite
+`50/50`, build, built-server HTTP smoke, role/error/privacy/conflict/no-mutation checks, and a clean
+exact-path audit. The package-root `.node-version` was absent because the runtime pin is at the
+execution Git root; the verifier used the prepared absolute runtime explicitly. No source write was
+authorized during verification.  
+**Parent execution posture if blocked:** `PROGRESSING` — this Work Order is integrated; role-page
+design and bounded dispatch may proceed against its frozen contract.
 
 #### Scope and ownership
 
@@ -1300,6 +1309,24 @@ Stop at `BLOCKED` if the contract requires a domain, persistence, fixture, auth,
 security decision; if an exact path is already owned; if source drift affects a semantic input; if
 the runtime/output boundary cannot be maintained; or if a failure can be hidden only by fallback
 state or a second authority. Do not broaden this into tenant/agent UI or future integration.
+
+#### Completed verification and integration record
+
+The dedicated Verifier returned `VERIFIED` against frozen HEAD
+`d71fe3e7145ff8d6db1853caa69ae44b1ca47ba3` from the isolated Worktree. It confirmed a clean tree,
+exactly the 15 declared authored paths, no forbidden or dependency changes, and no residual
+`next-env.d.ts` or external artifact. It independently passed the pinned runtime/package checks,
+typecheck, foundation `6/6`, focused workflow `9/9`, full direct suite `50/50`, production build,
+and built-server smoke. The HTTP matrix covered authentication and role boundaries, malformed and
+unknown bodies, missing requests, stale request/listing and fixture conflicts, invalid transitions,
+the tenant-to-agent ordinary flow through tenant confirmation, DTO privacy, persisted preparation
+derivation, idempotency, persistence-failure mapping, and no-mutation reads. The initial apparent
+missing-detail `503` was traced to verifier setup contamination from repeatedly applying the
+foundation-only reset to a database containing a workflow snapshot; clean application reset state
+passed the declared `404` contract. The main thread integrated the exact candidate at `f700ba9` and
+re-ran main-checkout typecheck, foundation tests `6/6`, and production build successfully. The
+remaining claim is limited to the workflow transport/DTO boundary; role-page browser UX and parent
+closure remain open.
 
 ### RS-WO-002-08 — Build the shared human application shell
 
@@ -1550,14 +1577,15 @@ confirmation or decline.
 The runnable foundation, `RS-WO-002-03` domain core, `RS-WO-002-04` durable workflow/application
 boundary, and `RS-WO-002-05` tenant entry/listing discovery API are independently verified. The
 `RS-WO-002-06` Architecture Advisor proposal returned `READY_FOR_REVIEW`; the main thread accepted
-it with revisions and froze the ordinary local workflow HTTP/DTO boundary in ADR-RS-0008. The only
-currently approved slices are `RS-WO-002-07` workflow transport, `RS-WO-002-08` shared shell, and
-`RS-WO-002-09` read-only UI/UX review. The first two are `CONTRACT_PARALLEL`; the reviewer is
-`READ_ONLY_PARALLEL`. Tenant and agent role-page Builders remain gated until the transport and shell
-outputs reach T2 and pass main-thread review. The parent Task must remain `in_progress` until the
-staged implementation, independent verification, integration, and canonical writeback gates for
-the complete ordinary application slice are complete without adding deferred WebRTC/Redis
-infrastructure.
+it with revisions and froze the ordinary local workflow HTTP/DTO boundary in ADR-RS-0008. The
+`RS-WO-002-07` workflow transport is independently verified and integrated at `f700ba9`; the
+`RS-WO-002-08` shared shell is independently verified and integrated at `006d2fd`; and
+`RS-WO-002-09` is integrated as read-only UI/UX guidance. The next gate is to design and review
+disjoint tenant and agent role-page Work Orders against these stable interfaces, then dispatch them
+only after the main thread confirms their exact ownership and acceptance criteria. The parent Task
+must remain `in_progress` until the staged implementation, independent verification, integration,
+browser walkthrough, and canonical writeback gates for the complete ordinary application slice are
+complete without adding deferred WebRTC/Redis infrastructure.
 
 ## Closure evidence
 
