@@ -7,6 +7,8 @@ not claim that the game is built or balanced.
   owner overrides, promoted working decisions, and remaining gates.
 - [`02-mechanism-boundary-and-chain-audit.md`](02-mechanism-boundary-and-chain-audit.md) — atomic
   mechanism, player capability, logic-chain coverage, cross-boundary findings, and decision gates.
+- [`03-roadmap-gap-audit.md`](03-roadmap-gap-audit.md) — roadmap-driven MVP decisions, edge cases,
+  full-game gates, and the next design order.
 
 ## Current concept checks
 

@@ -18,7 +18,7 @@ For the complete mechanism, capability, and cross-mechanism chain inventory, sta
 | `Mechanics/` | Atomic state transitions and rules under `detail-*`, plus cross-mechanism chains under `Chains/` | Canonical gameplay behavior |
 | `Characters/` | Player, shelter, soldiers, monsters, and role definitions | Canonical actor semantics |
 | `Design/` | Player experience, capability contracts, map presentation, dashboard, visual direction, and demo framing | Canonical experience intent |
-| `Engineering/` | Target stack, authority boundaries, persistence, simulation, operations, and WebMCP obligations | Target architecture until verified |
+| `Engineering/` | Target stack, authority boundaries, persistence, simulation, operations, WebMCP obligations, and delivery roadmap | Target architecture and roadmap until verified |
 | `Scenarios/` | Concrete examples that exercise the canonical rules | Supporting behavioral examples |
 | `Research/` | External observations and pattern references | Supporting evidence; never silently becomes product truth |
 | `Decisions/` | Accepted durable choices and consequences | Decision authority for named choices |

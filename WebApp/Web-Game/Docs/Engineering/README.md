@@ -11,6 +11,8 @@ proposed services, runtime, transport, or WebMCP tools exist.
   pathfinding, encounters, and ticks;
 - [`05-api-and-webmcp.md`](05-api-and-webmcp.md) — application commands and page-bound tools; and
 - [`06-operations-and-hosting.md`](06-operations-and-hosting.md) — always-on service, restart,
-  observability, and recovery targets; and
+  observability, and recovery targets;
 - [`07-hackathon-mvp-build-gate.md`](07-hackathon-mvp-build-gate.md) — proposed first vertical slice,
-  stack gate, and implementation exit criteria.
+  stack gate, and implementation exit criteria; and
+- [`08-development-roadmap-and-checkpoints.md`](08-development-roadmap-and-checkpoints.md) — sequenced
+  delivery checkpoints, dependencies, release gates, and closure evidence.

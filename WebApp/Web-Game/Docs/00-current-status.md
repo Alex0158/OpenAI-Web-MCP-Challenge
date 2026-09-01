@@ -2,26 +2,29 @@
 
 **Role:** Canonical current status for the game child application  
 **As of:** 2026-09-01, Europe/London  
-**Stage:** Documentation-first concept initialization  
+**Stage:** Documentation baseline and delivery roadmap; implementation not started  
 **Working title:** Sleepless Kingdom (provisional)  
 **Implementation:** Not started  
 **Outer host selection:** Unselected
 
 The owner intends to produce MVPs for this game and the separate RightSpot candidate before making
-the final concept selection. This child currently records the game concept only; implementation task
-decomposition has not started.
+the final concept selection. This child currently records the game concept and target delivery roadmap;
+implementation task creation has not started.
 
 ## Current outcome
 
-The blank `WebApp/Web-Game/` folder now has a modular documentation architecture and a preserved
-owner-source reference. The decomposition currently tracks 19 atomic mechanisms, 8 player-facing
-capabilities, and 11 cross-mechanism logic chains. The current game concept is coherent enough to
-proceed with a short MVP stack gate and a vertical-slice implementation. Full balance and production
-topology remain open. No implementation, deployment, runtime, or judge claim follows from this
-documentation work.
+The blank `WebApp/Web-Game/` folder now has a modular documentation architecture, a preserved
+owner-source reference, an accepted two-player MVP profile, and a sequenced delivery roadmap. The
+decomposition currently tracks 19 atomic mechanisms, 8 player-facing capabilities, and 11
+cross-mechanism logic chains. The concept is coherent enough to close the MVP contract and runtime
+capability gates before creating a bounded implementation task. Balance, production topology, exact
+event ordering, and several Re-entry authority details remain open. No implementation, deployment,
+runtime, or judge claim follows from this documentation work.
 
 The structural coverage result and cross-boundary gaps are recorded in
 [`Validation/02-mechanism-boundary-and-chain-audit.md`](Validation/02-mechanism-boundary-and-chain-audit.md).
+The roadmap-driven decisions and edge cases are recorded in
+[`Validation/03-roadmap-gap-audit.md`](Validation/03-roadmap-gap-audit.md).
 
 ## Working concept baseline
 
@@ -76,10 +79,12 @@ The structural coverage result and cross-boundary gaps are recorded in
 
 ## Recommended next step
 
-The concept documentation is sufficient to start a narrow implementation increment, but it is not a
-reason to freeze the complete production infrastructure. Take one short stack gate, then build one
-vertical slice immediately. Lock the authority and persistence contracts first; keep combat values,
-spawn rates, prices, and visual assets or polish as tunable MVP configuration.
+The next action is CP-01, a versioned MVP contract sheet that closes identity, coordinates, protected
+starts, event ordering, persistence versions, snapshot shape, and cargo settlement. Follow it with
+CP-02, a short capability and runtime probe for the selected Node worker, Canvas page, realtime
+transport, durable store, and genuine page-bound WebMCP surface. Only after those gates pass should a
+bounded implementation task be created. Keep combat values, spawn rates, prices, and visual assets or
+polish as tunable MVP configuration.
 
 The accepted first slice is: one seeded 128 × 128 map, two protected shelters at least 80 tiles
 apart, five soldiers per player, symmetric Wood and Rock nodes, one seeded monster, one gather
@@ -88,6 +93,9 @@ mission reissue, a causal dashboard history, and one event-to-page WebMCP read o
 must survive a browser disconnect and a local process restart by replaying durable world time. The
 build boundary and implementation profile are recorded in
 [`Engineering/07-hackathon-mvp-build-gate.md`](Engineering/07-hackathon-mvp-build-gate.md).
+
+The complete sequence, dependencies, release gates, and checkpoint closure packet are recorded in
+[`Engineering/08-development-roadmap-and-checkpoints.md`](Engineering/08-development-roadmap-and-checkpoints.md).
 
 ## Current non-claims
 

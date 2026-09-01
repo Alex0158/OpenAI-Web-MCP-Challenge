@@ -2,7 +2,7 @@
 
 **Working title:** Sleepless Kingdom (provisional)  
 **Role:** Persistent-world game candidate inside the WebMCP Challenge repository  
-**Stage:** Documentation-first concept baseline; implementation has not started  
+**Stage:** Documentation baseline and delivery roadmap; implementation has not started  
 **Outer selection:** The Re-entry Core host-application decision remains pending
 
 ## Product thesis
@@ -48,7 +48,7 @@ resource/tool tiers, shelter breach, and the conversion of exposed soldiers into
 - [`Docs/Design/`](Docs/Design/) — player experience, 8 capability contracts, map, dashboard, and
   presentation direction;
 - [`Docs/Engineering/`](Docs/Engineering/) — target stack, server architecture, persistence,
-  simulation efficiency, WebMCP, and hosting;
+  simulation efficiency, WebMCP, hosting, and the delivery roadmap;
 - [`Docs/Scenarios/`](Docs/Scenarios/) — concrete world and re-entry walkthroughs;
 - [`Docs/Research/`](Docs/Research/) — Starve.io and documentation-pattern references;
 - [`Docs/Decisions/`](Docs/Decisions/) — durable game and documentation choices; and
