@@ -25,9 +25,9 @@ revision writes. The bounded Repairer completed in post-repair commit `6e70c9f`,
 verification returned `VERIFIED`. The current checkpoint is the bounded persistence/application
 integration Work Order `RS-WO-002-04`. Its prompt was appended to the persisted `RS-WO-002-01`
 supporting thread, so the original handoff was held for a dispatch-identity correction. The main
-thread reconstructed and adopted the exact three-path candidate at T2 commit `68bbc69`; a dedicated
-read-only Verifier is now assigned against the frozen source, and the candidate remains unverified
-until it completes. The user-authorized Side Chat learning
+thread reconstructed and adopted the exact three-path candidate at T2 commit `68bbc69`; the first
+dedicated read-only Verifier attempt stopped before source checks because the prompt described the
+Worktree root incorrectly. The candidate remains unverified until a corrected run completes. The user-authorized Side Chat learning
 artifact and Pilot Runbook writeback are process-only changes, not product source drift.
 One registered Task has one Task File. A Work Order is a dispatch brief under that Task; normally
 there is one active Work Order per dependency chain, while explicitly independent slices may run in

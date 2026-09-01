@@ -18,15 +18,16 @@ The implementation must follow the accepted business rules in
 - Owner: Main RightSpot thread
 - Current increment: Implement and independently verify the bounded `RS-WO-002-04` persistence/application
   boundary after the independently verified workflow domain core.
-- Next gate: Complete independent verification of the adopted `RS-WO-002-04` candidate from frozen
-  source `28105e4d` in a dedicated Worktree; do not open the full API/UI surface as one assignment.
+- Next gate: Correct the verification checkout path and complete one clarified independent verification
+  attempt of the adopted `RS-WO-002-04` candidate from frozen source `28105e4d`; do not open the full
+  API/UI surface as one assignment.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, and the RightSpot Thread Orchestration Pilot Runbook govern any
   supporting-task dispatch under this parent.
-- Parent execution posture: `PROGRESSING` — the supporting-task identity correction is resolved by
-  main-thread candidate adoption at T2 commit `68bbc69`; the dedicated independent verification gate
-  remains open, and any additional work must pass the Pilot Runbook's ownership gates.
+- Parent execution posture: `CONSTRAINED` — the supporting-task identity correction is resolved by
+  main-thread candidate adoption at T2 commit `68bbc69`, but the first verification dispatch stopped
+  on a main-thread checkout-path error; the parent remains viable and safe main-thread work may continue.
 - Blocker reporting: the main thread reports the checkpoint-local blocker to the human owner and
   records its evidence, impact, owner, safe continuation, and resume condition here; this does not
   change the parent lifecycle to `blocked`.
@@ -627,7 +628,7 @@ browser, deployment, external integration, or parent-Task closure.
 **Parent task:** `RIGHTSPOT-002`  
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch state:** `GATED` — `RS-WO-002-03` domain core is independently verified at `6e70c9f`; local persistence/application design is accepted in ADR-RS-0006  
-**Execution state:** `ASSIGNED` — main-thread candidate adoption completed at T2 commit `68bbc69`; a dedicated read-only Verifier is assigned against frozen source `28105e4d`
+**Execution state:** `BLOCKED` — the dedicated Verifier stopped at a main-thread checkout-path error before source verification
 **Owner:** Main RightSpot thread; the dedicated supporting task performs the read-only verification checkpoint
 **Objective:** Persist the complete serializable `WorkflowState` in a deterministic local SQLite
 snapshot and expose one narrow application service above the verified domain core. Prove durable
@@ -637,12 +638,14 @@ authentication, or external integration yet. This Work Order is governed by
 **Dispatch state:** The original Builder prompt was sent to supporting thread `01a05a6e-5758-7961-b774-53c332e685ef`,
 whose persisted identity/title was `RS-WO-002-01 — Foundation…`, while the prompt identified
 `RS-WO-002-04`; that handoff remains procedurally invalid. The main thread reviewed and adopted the
-exact three-path candidate at T2 commit `68bbc69`. The user-authorized Side Chat learning file and
-process-only Pilot Runbook writeback are not product source drift.  
+exact three-path candidate at T2 commit `68bbc69`. The first dedicated Verifier dispatch was acknowledged
+against frozen source `28105e4d`, but its prompt incorrectly expected a nested `WebMCP_Challenge` directory
+inside the Git Worktree; the Verifier stopped before reading candidate source. The user-authorized Side
+Chat learning file and process-only Pilot Runbook writeback are not product source drift.  
 **Corrective execution mode:** Dedicated isolated Worktree from frozen repository commit `28105e4d`,
 which contains the adopted T2 implementation commit `68bbc69`; no product writer is active.  
-**Next gate:** Await the dedicated Verifier's independent report against frozen source `28105e4d`.
-A fresh Builder is
+**Next gate:** Send one corrected path clarification to the same identity-matching Verifier and await
+its independent report against frozen source `28105e4d`. A fresh Builder is
 required only if the candidate's ownership, inputs, changed paths, or behavior cannot be reconstructed
 confidently, or if verification identifies a source gap requiring a new bounded implementation.
 
@@ -695,6 +698,27 @@ contract, semantic read set, or implementation paths.
 - **Source identity:** local Git commit `68bbc69`; no external push or deployment was performed.
 - **Claim limit:** this is an adopted, unverified candidate. It does not claim independent
   verification, API/UI integration, browser behavior, deployment, or parent-task closure.
+
+#### Verification dispatch path blocker
+
+- **Status:** `BLOCKED` checkpoint; `CONSTRAINED` parent execution posture
+- **Affected owner:** the dedicated `RS-WO-002-04` Verifier handoff, adjudicated by the Main RightSpot thread
+- **Evidence:** the detached Worktree existed at the expected commit and was clean, but the prompt
+  incorrectly required a second `WebMCP_Challenge` directory inside that Worktree; the Verifier
+  reported that expected nested root was missing and ran no source checks
+- **First failing boundary:** checkout path resolution before candidate diff or test execution
+- **Failure class:** `PROCESS_DEFECT`
+- **Blocked claim/dependency:** independent verification of the adopted persistence/application candidate
+- **Impact on parent goal:** only the `RS-WO-002-04` verification claim is held; the parent goal and
+  independent main-thread analysis remain viable
+- **Safe continuation:** correct the prompt path, preserve the frozen Worktree, and continue bounded
+  main-thread architecture, review, research, or process work
+- **Forbidden continuation:** use the main checkout as a substitute, alter the frozen Worktree, or
+  classify the unexecuted verification as a code failure
+- **Recommended recovery:** send one concise path clarification to the same correctly identified
+  Verifier; do not create a duplicate Work Order or resend the full assignment
+- **Resume condition:** the Verifier confirms the Worktree itself is the Git root and then executes
+  the unchanged RS-WO-002-04 verification contract
 
 #### Scope and ownership
 
