@@ -78,6 +78,9 @@ with revisions. `RS-WO-007-02` is assigned to one CSS Builder against the review
 next gate is its `READY_FOR_VERIFICATION` handoff and independent verification. A separate,
 non-blocking `RS-WO-007-03` parallelism review is assigned to supporting worker
 `01a05d76-dac9-7283-9c2a-4166935f5043`; it may only inspect the future tenant/agent split.
+The newly surfaced `RIGHTSPOT-008` is classified as a pending decision proposal rather than a
+verified defect; its proposal-only `RS-WO-008-01` is assigned to supporting worker
+`01a05d79-ce45-7000-aa44-a3a1ecad95b0` and cannot authorize implementation until main-thread review.
 
 **Authoritative closure update:** The earlier checkpoint chronology below intentionally preserves the
 state at each historical handoff. It must not be read as reopening the current gate: `RS-WO-002-14`
