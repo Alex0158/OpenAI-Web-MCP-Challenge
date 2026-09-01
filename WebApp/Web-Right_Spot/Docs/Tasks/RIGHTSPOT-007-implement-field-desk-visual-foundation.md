@@ -16,12 +16,12 @@
 - Objective: Turn the accepted RightSpot Field Desk visual direction into a small, implementable
   shared UI foundation without expanding the rental MVP or changing product authority.
 - Current increment: The single-file shared CSS foundation is independently verified and integrated
-  at product commit `89a50c7`; its served runtime includes the candidate tokens. No tenant/agent page
-  Builder is dispatched yet.
-- Next gate: Complete the isolation preflight, then register only the next bounded tenant/agent role
-  Work Orders if their frozen source, runtime, and ownership boundaries remain safe.
-- Execution posture: `READY_FOR_NEXT_BOUNDED_WAVE`; the CSS checkpoint is closed, while independent
-  read-only proposal work and next-wave planning remain separate.
+  at product commit `89a50c7`; its served runtime includes the candidate tokens. The isolated tenant
+  and agent role Builders are now dispatched as the next bounded parallel wave.
+- Next gate: Let both Builders complete their narrow role slices, then independently verify each frozen
+  output and integrate the two disjoint candidates through the main thread.
+- Execution posture: `PARALLEL_ROLE_BUILDERS_ACTIVE`; the CSS checkpoint is closed and the two role
+  Builders are running in separate Worktrees under the persistent task/thread dispatch policy.
 
 ## Accepted product boundary
 
@@ -245,24 +245,25 @@ family may modify shared UI, global CSS, route wrappers, contracts, server/domai
 fixtures, configuration, or canonical documents.
 
 The current Codex project record is not itself a Git repository, so shared local-cwd parallel writes
-are not permitted. Before registering or dispatching the two future role Builders, the main thread
-must pass an isolation preflight from the actual nested Git root: use two explicitly recorded frozen
-Worktrees when their source identity and dirty-state boundary are reliable; otherwise use two
-temporary isolated copies with explicit source manifests; if neither is safe, serialize the role
-slices in the main checkout. The proposed future role Work Orders remain gated and are not yet
-registered or dispatched by this review.
+are not permitted. The main thread passed the isolation preflight from the actual nested Git root:
+two explicitly recorded clean Worktrees were created from baseline `3cc6a04287ebb639f71eebe94191559dd58ca9be`,
+with separate branches and disjoint role write sets. `RS-WO-007-04` and `RS-WO-007-05` are now
+registered and dispatched through persistent task/threads; their integration and verification remain
+sequential after both Builder handoffs.
 
 ## RS-WO-007-04 — Refine the tenant Field Desk surfaces
 
 **Role:** Persistent Codex task/thread Builder → later independent Verifier  
-**Status:** `READY_TO_DISPATCH`  
+**Status:** `ASSIGNED`  
 **Parallelization:** `CONTRACT_PARALLEL_ROLE_UI` — may run in parallel with `RS-WO-007-05` only in
 the explicitly isolated Worktree recorded by the main thread; the shared CSS, shell, contracts, and
 runtime authority are read-only.  
 **Risk profile:** `Standard` — visual refinement constrained to existing tenant UI modules.  
 **Dependency:** `RS-WO-007-02` is independently verified and integrated at product commit `89a50c7`;
-the dispatch baseline is the clean product/process commit immediately preceding activation and must
-be recorded with the final persistent task/thread receipt.  
+the dispatch baseline is clean commit `3cc6a04287ebb639f71eebe94191559dd58ca9be`.  
+**Supporting task/thread:** `01a05db4-6e9d-7e51-8ee1-9b7c62cc31d0` on host `local`.  
+**Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-007-04-tenant` on branch
+`rightspot/rs-wo-007-04-tenant`.  
 **Ownership:** The Builder owns only the four tenant UI paths below. The main thread owns all
 canonical writeback, integration, and closure.  
 
@@ -321,14 +322,16 @@ Verifier phase.
 ## RS-WO-007-05 — Refine the agent Field Desk surfaces
 
 **Role:** Persistent Codex task/thread Builder → later independent Verifier  
-**Status:** `READY_TO_DISPATCH`  
+**Status:** `ASSIGNED`  
 **Parallelization:** `CONTRACT_PARALLEL_ROLE_UI` — may run in parallel with `RS-WO-007-04` only in
 the explicitly isolated Worktree recorded by the main thread; the shared CSS, shell, contracts, and
 runtime authority are read-only.  
 **Risk profile:** `Standard` — visual refinement constrained to existing agent UI modules.  
 **Dependency:** `RS-WO-007-02` is independently verified and integrated at product commit `89a50c7`;
-the dispatch baseline is the clean product/process commit immediately preceding activation and must
-be recorded with the final persistent task/thread receipt.  
+the dispatch baseline is clean commit `3cc6a04287ebb639f71eebe94191559dd58ca9be`.  
+**Supporting task/thread:** `01a05db4-7764-7931-b474-ddbd977762ae` on host `local`.  
+**Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-007-05-agent` on branch
+`rightspot/rs-wo-007-05-agent`.  
 **Ownership:** The Builder owns only the three agent UI paths below. The main thread owns all
 canonical writeback, integration, and closure.  
 
