@@ -16,12 +16,13 @@ The implementation must follow the accepted business rules in
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Use the accepted role-page decomposition to complete the minimal shared role
-  frame, then dispatch the disjoint tenant and property-agent page slices in parallel against the
-  integrated transport and shell contracts.
-- Next gate: Execute and independently verify `RS-WO-002-11`, then freeze its shared seam and dispatch
-  only the approved tenant and agent Builders. Their exact route, component, test, and shared-boundary
-  ownership are recorded in the accepted architecture review.
+- Current increment: Independently verify the frozen `RS-WO-002-11` shared role-page frame candidate,
+  then integrate it only if the exact scope and evidence pass; afterwards dispatch the disjoint tenant
+  and property-agent page slices in parallel against the integrated transport and shell contracts.
+- Next gate: Complete the dedicated `RS-WO-002-11` Verifier checkpoint against candidate `f1f83c7`,
+  then freeze/integrate the shared seam and dispatch only the approved tenant and agent Builders. Their
+  exact route, component, test, and shared-boundary ownership are recorded in the accepted architecture
+  review.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, ADR-RS-0008, and the accepted Requirements
   and Domain and Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, ADR-RS-0008, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -70,8 +71,8 @@ verification, integration, or parent-Task closure.
   passed dedicated independent verification and are integrated at product commits `f700ba9` and
   `006d2fd`; `RS-WO-002-09` returned `READY_FOR_REVIEW` and its bounded checklist is integrated as
   later UI guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW`; the main thread accepted its
-  decomposition and opened the minimal serial shared-role-frame slice `RS-WO-002-11`, which is
-  currently assigned to its Builder. Builder, Verifier, Repairer, Integrator, Advisor, and reviewer
+  decomposition and opened the minimal serial shared-role-frame slice `RS-WO-002-11`. Its Builder
+  candidate is frozen at `f1f83c7`, and its dedicated Verifier is now dispatched. Builder, Verifier, Repairer, Integrator, Advisor, and reviewer
   roles remain checkpoints under this Task, not pre-registered child Tasks.
 - **Baseline:** The actual repository root is `WebMCP_Challenge`; the latest integrated product code
   is `f700ba9` (workflow transport plus the previously integrated shell); the accepted
@@ -1655,8 +1656,8 @@ independently verified and frozen. The suggestion to add a browser-test dependen
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — `RS-WO-002-10` decomposition is accepted; role-page Builders are
 gated on this shared seam  
-**Execution state:** `ASSIGNED` — the dedicated Builder is establishing context and preparing the
-shared role-page frame  
+**Execution state:** `VERIFYING` — the Builder returned `READY_FOR_VERIFICATION`; candidate `f1f83c7`
+is frozen and the dedicated Verifier is checking the exact shared-role-frame scope  
 **Parallelization:** `SERIAL` prerequisite for the tenant and agent role-page Builders  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one independent Verifier  
 **Risk profile:** `Standard` — shared session presentation, route semantics, and accessibility  
@@ -1664,14 +1665,19 @@ shared role-page frame
 semantics so tenant and agent pages can consume one session boundary without duplicating auth UX or
 editing shared files in parallel. Keep this seam presentation-only; it must not read, own, or mutate
 workflow, listing, queue, or decision state.  
-**Next gate:** Main-thread T2 review, then independent verification of the exact shared-shell candidate.
-Only after that candidate is verified may tenant and agent page Builders be dispatched in parallel.  
+**Next gate:** Complete the dedicated read-only verification against frozen candidate `f1f83c7`; only
+after it returns `VERIFIED` may the main thread integrate the seam and dispatch tenant and agent page
+Builders in parallel.  
 **Dispatch state:** Dispatched from clean source `7e8506f78c58927008672c1185115d7ecb90671a`; execution
 Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-11-shared-role-frame`; package root
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-11-shared-role-frame/WebApp/Web-Right_Spot`; runtime-pin
 path `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-11-shared-role-frame/.node-version`; supporting-task
 identity `01a05b8a-f781-7440-a503-5a6a59d29b67` (`local`). The dispatch returned a usable thread identity
-and the full prompt was persisted; no source write is authorized before context establishment.  
+and the full prompt was persisted; the Builder returned `READY_FOR_VERIFICATION` after exact T2 review,
+and the candidate was committed in that execution Worktree as `f1f83c7` without changing main. The
+independent Verifier was then dispatched with supporting-task identity `01a05b92-fc73-7042-bbcc-2f51be4a5767`
+(`local`) in Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-11-verifier`, detached at the
+candidate commit; no source write is authorized during verification.  
 **Parent execution posture if blocked:** `CONSTRAINED` for role-page implementation; independent
 read-only analysis and process work may continue.
 

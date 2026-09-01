@@ -26,7 +26,8 @@ workflow HTTP/DTO contract in ADR-RS-0008, and dispatched `RS-WO-002-07`, `RS-WO
 independent verification and are integrated at product commits `f700ba9` and `006d2fd`; the reviewer
 is integrated as bounded guidance. Tenant and agent role-page Builders are the next candidates, but
 their exact disjoint scopes must be reviewed before dispatch. `RS-WO-002-10` returned `READY_FOR_REVIEW`
-and its decomposition is accepted; `RS-WO-002-11` is the current assigned shared-frame prerequisite.
+and its decomposition is accepted; `RS-WO-002-11` Builder candidate `f1f83c7` is frozen and under
+independent verification as the current shared-frame prerequisite.
 The user-authorized Side Chat learning
 artifact and Pilot Runbook writeback are process-only changes, not product source drift.
 One registered Task has one Task File. A Work Order is a dispatch brief under that Task; normally

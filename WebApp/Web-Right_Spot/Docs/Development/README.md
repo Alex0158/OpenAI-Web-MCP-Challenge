@@ -7,9 +7,10 @@ API, and the `RS-WO-002-07` workflow HTTP/DTO boundary are independently verifie
 returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in ADR-RS-0008;
 `RS-WO-002-07` is integrated at product commit `f700ba9`; `RS-WO-002-08` is integrated at product
 commit `006d2fd` after process re-baseline commit `8b77bdd`; `RS-WO-002-09` is integrated as bounded
-UI guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW` and its decomposition was accepted; the
-immediate implementation checkpoint is the assigned serial shared role-page frame `RS-WO-002-11`,
-followed by bounded tenant and agent role-page delivery in parallel.
+UI guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW` and its decomposition was accepted;
+`RS-WO-002-11` Builder candidate `f1f83c7` is frozen and under independent verification as the serial
+shared role-page frame checkpoint, followed by bounded tenant and agent role-page delivery in parallel
+only after candidate integration.
 
 ## Purpose
 
@@ -49,8 +50,9 @@ are admitted from reviewed baseline `c758634`; `RS-WO-002-07` passed dedicated i
 verification at frozen `d71fe3e` and is integrated at product commit `f700ba9`; `RS-WO-002-08` passed
 dedicated independent verification after a generated-output boundary re-baseline in process commit
 `8b77bdd` and is integrated at product commit `006d2fd`; the reviewer output is integrated as guidance.
-Tenant and agent role-page Builders are now the next design/dispatch candidates, subject to an exact
-ownership and acceptance review. A fresh Builder is needed only if a later checkpoint exposes a
+`RS-WO-002-11` Builder returned `READY_FOR_VERIFICATION`; the exact four-path candidate is frozen at
+`f1f83c7`, and its dedicated Verifier is now the active checkpoint. Tenant and agent role-page Builders
+remain gated until that candidate passes. A fresh Builder is needed only if a later checkpoint exposes a
 source or behavior gap that cannot be repaired within a separately bounded Work Order. Later
 Integrator work is opened only when its predecessor produces a concrete code failure or a verified
 source and evidence boundary.
