@@ -270,6 +270,20 @@ decline delegation when the coordination cost exceeds the value. A slot is not f
 a worker has stopped responding; the main thread must classify that task's state and source before
 reusing the slot.
 
+### 7.5 Salvage candidate output after a process defect
+
+A coordination or provenance defect, such as a wrong supporting-task destination, invalidates the
+dispatch record but does not by itself prove that the resulting code is defective. The main thread
+may adopt an uncommitted candidate for a new T2 handoff only after it confirms that the original
+writer has stopped, the exact Work Order write set contains every authored change, the diff and
+focused checks are reviewable, and no source, authority, or external-output ambiguity remains. The
+main thread must establish a new source identity and require independent verification; adoption is
+not a Builder completion claim and must not silently include unrelated work.
+
+If the candidate's ownership, inputs, changed paths, or behavior cannot be reconstructed confidently,
+preserve it as evidence and keep the checkpoint blocked until a fresh Builder can work from a clean,
+explicitly identified baseline.
+
 ### 8. Use staged gates rather than an automatic loop
 
 The main thread classifies a result before dispatching the next task:

@@ -36,7 +36,7 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 1. Implementation readiness | Resolve and record the foundation toolchain, runtime, SQLite/reset, health-route, source-boundary, and verification profile | Main-thread decision gate complete and the first Builder Work Order is ready; the Node.js baseline situation is explicitly recorded | Complete |
 | 2. Runnable foundation | Create one local application composition with the accepted stack, server-side SQLite foundation, deterministic reset metadata, and reproducible commands | Builder output reconciled and independently verified | Complete; first Verifier attempt was procedurally blocked, corrected rerun verified |
 | 3. Authoritative workflow core | Implement the Viewing Request state machine, availability lifecycle, role projections, version checks, audit facts, and explicit failures | Domain and Backbone checks pass without a browser or external service | Complete; post-repair source `6e70c9f` independently verified |
-| 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | `RS-WO-002-04` implementation output held for supporting-thread identity correction; UI not started |
+| 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | `RS-WO-002-04` candidate held for main-thread adoption and independent verification after a supporting-thread identity defect; UI not started |
 | 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Not started |
 | 6. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary loop is stable and a new explicit integration decision exists | Deferred; not scheduled |
 
@@ -65,7 +65,8 @@ foundation is committed as `b06bd85`; `RS-WO-002-03` Builder and a bounded proje
 repair returned `READY_FOR_VERIFICATION`, and the T2 source is frozen at `a60001e`. Its independent
 Verifier found a bounded listing-version guard defect; the Repairer corrected it in `6e70c9f` within the
 domain workflow and focused domain test paths. Fresh independent verification returned `VERIFIED` against
-post-repair source `6e70c9f`. `RS-WO-002-04` now defines the one bounded persistence/application integration
-checkpoint; its bounded Builder output is held until the supporting-task identity is corrected and the
-source is re-baselined. The user-authorized Side Chat process lane is not product-source drift. Do not
-turn the full parent Task into one worker assignment or pre-create downstream role assignments.
+post-repair source `6e70c9f`. `RS-WO-002-04` now defines the bounded persistence/application integration
+checkpoint; its candidate output is held until the main thread completes candidate adoption, establishes
+a new T2 source identity, and opens correctly identified independent verification. The user-authorized
+Side Chat process lane is not product-source drift. Do not turn the full parent Task into one worker
+assignment or pre-create downstream role assignments.

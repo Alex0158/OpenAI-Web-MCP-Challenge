@@ -557,6 +557,28 @@ thread, may modify that source during verification. The main thread may update a
 process-only record outside the frozen implementation snapshot, but any change to the verified source
 requires a fresh handoff or re-verification.
 
+### 8.1.4 Candidate adoption after a coordination or provenance defect
+
+A wrong destination, mismatched thread identity, incomplete delivery receipt, or similar process
+defect invalidates the dispatch provenance; it does not automatically prove that the candidate code
+is defective. To avoid an unnecessary rebuild, the main thread may adopt an uncommitted candidate for
+T2 only after all of the following are true:
+
+1. the original worker is no longer writing and no other writer overlaps the candidate paths;
+2. the actual changed paths are exactly within the Work Order's worker write set;
+3. the main thread has inspected the diff and confirmed no forbidden path, semantic read drift,
+   hidden fallback, speculative dependency, or external artifact;
+4. the Work Order objective, acceptance criteria, runtime, and source limitations can be
+   reconstructed from current files and preserved evidence;
+5. the candidate's focused checks have been rerun or directly confirmed under the named runtime; and
+6. the adoption is recorded as an unverified candidate, with a new T2 source identity established
+   before independent verification.
+
+Candidate adoption is not a Builder completion claim, independent verification, or permission to
+silently commit unrelated work. If ownership, changed paths, source inputs, or behavior cannot be
+reconstructed confidently, discard neither the candidate nor its evidence; instead keep the
+checkpoint blocked and use a fresh Builder from a clean, explicitly identified baseline.
+
 ### 8.2 New supporting Codex task/thread activation
 
 A new supporting Codex task/thread does not inherit the main thread's complete conversation. It is

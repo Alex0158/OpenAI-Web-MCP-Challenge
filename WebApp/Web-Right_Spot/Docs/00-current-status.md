@@ -112,7 +112,7 @@ The parent `RIGHTSPOT-002` remains `in_progress`; the foundation Builder stopped
 and its corrected rerun is `VERIFIED` against the unchanged exact target Node.js runtime and
 execution manifest. `RS-WO-002-03` Builder and bounded Repairer returned `READY_FOR_VERIFICATION`,
 and T2 source is frozen at `a60001e`; the Verifier found a listing-version guard defect and the
-bounded Repairer completed it in post-repair commit `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` Builder output is held on the three-path persistence/application boundary until its supporting-thread identity is corrected and the source is re-baselined. Builder, Verifier, Repairer,
+bounded Repairer completed it in post-repair commit `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` Builder output is held on the three-path persistence/application boundary until the main thread completes candidate adoption, establishes a new T2 source identity, and opens correctly identified independent verification. A fresh Builder is needed only if the candidate cannot be reconstructed confidently. Builder, Verifier, Repairer,
 and Integrator remain sequential checkpoints of this same Task. The Side Chat process lane is
 user-authorized and must remain separate from product-source writes; no other RightSpot product
 writer or repairer is authorized. The main thread owns evidence writeback, Git closure, and the next

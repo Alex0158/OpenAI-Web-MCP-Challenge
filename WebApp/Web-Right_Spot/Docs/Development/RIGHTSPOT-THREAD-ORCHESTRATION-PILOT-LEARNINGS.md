@@ -263,3 +263,23 @@ workaround or silently changing the acceptance claim.
 **Promotion:** The parent-goal/checkpoint distinction, continuation gate, blocker-report contract,
 and bounded worker-pool rule are now part of ADR-RS-0004 and the Pilot Runbook. This entry remains the
 historical rationale; it is not an active task register.
+
+## 8. A provenance defect does not automatically require a rebuild
+
+**Status:** `Accepted into Runbook`  
+**Date:** 2026-09-01  
+**Source:** `RS-WO-002-04` wrong supporting-task identity and review of its preserved candidate output
+
+**Observation:** The `RS-WO-002-04` prompt was delivered through a supporting task whose persisted
+identity belonged to `RS-WO-002-01`. This made the dispatch provenance invalid, but the candidate files,
+scope, and focused checks could still be inspected independently. Treating every provenance defect as
+a code defect would discard potentially usable work and create avoidable rebuild cost.
+
+**Learning:** Classify the defect at the correct layer. When the main thread can reconstruct the
+candidate's ownership boundary, changed paths, source inputs, behavior, and focused evidence, it may
+adopt the candidate for a new T2 source identity and require fresh independent verification. If any
+of those facts remain ambiguous, preserve the candidate and evidence without deleting them, and use a
+fresh Builder from a clean identified baseline.
+
+**Promotion:** Candidate-adoption criteria are now part of ADR-RS-0004 and the Pilot Runbook. The
+`RS-WO-002-04` candidate remains unverified until that procedure is completed.

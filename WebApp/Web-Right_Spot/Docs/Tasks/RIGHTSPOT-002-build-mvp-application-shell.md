@@ -18,9 +18,9 @@ The implementation must follow the accepted business rules in
 - Owner: Main RightSpot thread
 - Current increment: Implement and independently verify the bounded `RS-WO-002-04` persistence/application
   boundary after the independently verified workflow domain core.
-- Next gate: Correct the `RS-WO-002-04` supporting-task identity, re-baseline the preserved bounded
-  Builder output in a dedicated Worktree, then independently verify it; do not open the full API/UI
-  surface as one assignment.
+- Next gate: Complete the main-thread candidate-adoption review for `RS-WO-002-04`, establish a new
+  T2 source identity in a dedicated Worktree, then independently verify it; do not open the full
+  API/UI surface as one assignment.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -634,9 +634,10 @@ whose persisted identity/title is `RS-WO-002-01 — Foundation…`, while the pr
 Side Chat learning file and process-only Pilot Runbook writeback are not product source drift.  
 **Corrective execution mode:** Dedicated isolated Worktree from the reviewed baseline; no corrected
 supporting-task identity has been established yet.  
-**Next gate:** Preserve the existing implementation output, establish a dedicated `RS-WO-002-04`
-supporting task and isolated Worktree, capture a new baseline, then review the exact diff and open an
-independent Verifier only after the correctly identified Builder returns `READY_FOR_VERIFICATION`.
+**Next gate:** Preserve the existing implementation output, complete the main-thread candidate-adoption
+review, establish a dedicated `RS-WO-002-04` verification task and isolated Worktree from a new T2
+baseline, then open an independent Verifier. A fresh Builder is required only if the candidate's
+ownership, inputs, changed paths, or behavior cannot be reconstructed confidently.
 
 #### Dispatch identity incident
 
@@ -667,9 +668,9 @@ contract, semantic read set, or implementation paths.
   process analysis, or another explicitly bounded slice with a disjoint stable boundary
 - **Forbidden continuation:** downstream code that depends on this persistence/application output,
   verification against the misidentified source, or any contract/acceptance change used to bypass it
-- **Recommended recovery:** establish a dedicated matching supporting task and isolated Worktree,
-  preserve/review the candidate output, capture a new baseline, and then reopen the Builder-to-Verifier
-  handoff
+- **Recommended recovery:** preserve and review the candidate output, establish a dedicated matching
+  verification task and isolated Worktree, capture a new T2 baseline, and then open independent
+  verification; use a fresh Builder only if candidate adoption fails its reconstruction criteria
 - **Resume condition:** the new supporting-task identity, source identity, exact write set, and
   completion-report contract are all confirmed before the Builder edits
 

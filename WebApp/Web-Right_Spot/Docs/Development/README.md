@@ -27,8 +27,9 @@ and the bounded workflow-core Builder plus one projection-isolation repair for `
 stale listing revisions were not rejected by both draft-update and submit commands, so the current
 checkpoint was a bounded Repairer on the domain workflow and focused test paths; its post-repair
 commit is `6e70c9f`, and the fresh independent Verifier returned `VERIFIED` against that frozen source.
-The current action is to correct the `RS-WO-002-04` supporting-task identity, preserve and review its
-implementation output, then re-baseline and complete the Work Order before opening API or UI work.
+The current action is to complete the main-thread candidate-adoption review for `RS-WO-002-04`,
+establish a new T2 source identity, and complete independent verification before opening API or UI
+work; a fresh Builder is only needed if the candidate cannot be reconstructed confidently.
 Later Integrator work is opened only when its predecessor produces a concrete code failure or a
 verified source and evidence boundary.
 
