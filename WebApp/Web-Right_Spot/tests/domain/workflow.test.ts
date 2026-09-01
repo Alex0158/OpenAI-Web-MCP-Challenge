@@ -209,6 +209,31 @@ test("stale request version and fixture generation fail without mutation", () =>
   assert.deepEqual(staleGeneration.state, state);
 });
 
+test("stale current listing revisions reject draft update and submit without mutation", () => {
+  const state = createDraft();
+  const staleListingState = JSON.parse(JSON.stringify(state)) as WorkflowState;
+  const listing = staleListingState.listings.find((candidate) => candidate.id === "listing-primary");
+  if (!listing) throw new Error("Expected primary listing fixture");
+  listing.version = 2;
+
+  const staleUpdate = executeCommand(staleListingState, command("UPDATE_REQUEST_DRAFT", {
+    commandId: "stale-listing-update-1",
+    expectedRequestVersion: staleListingState.request?.version,
+    expectedListingVersion: 1,
+    listingId: staleListingState.request?.listingId,
+    preferredTimes: [FIRST_TIME],
+  }), NOW);
+  assert.deepEqual(expectFailure(staleUpdate, "STALE_VERSION"), staleListingState);
+
+  const staleSubmit = executeCommand(staleListingState, command("SUBMIT_REQUEST", {
+    commandId: "stale-listing-submit-1",
+    expectedRequestVersion: staleListingState.request?.version,
+    expectedListingVersion: 1,
+    listingId: staleListingState.request?.listingId,
+  }), NOW);
+  assert.deepEqual(expectFailure(staleSubmit, "STALE_VERSION"), staleListingState);
+});
+
 test("invalid role, assignment, state, and arbitrary state are rejected", () => {
   const draft = createDraft();
   expectFailure(executeCommand(draft, command("SUBMIT_REQUEST", {

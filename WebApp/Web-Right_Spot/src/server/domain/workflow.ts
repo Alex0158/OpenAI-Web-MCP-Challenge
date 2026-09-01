@@ -220,6 +220,7 @@ function updateDraft(
   assertExpectedVersion(request.listingVersion, command.expectedListingVersion);
   assertRequestState(request, "TENANT_DRAFT");
   const listing = getPublishedListing(state, command.listingId);
+  assertExpectedVersion(listing.version, command.expectedListingVersion);
   if (listing.id !== request.listingId) {
     throw domainError("VALIDATION_FAILED", "Draft listing does not match the request");
   }
@@ -243,6 +244,7 @@ function submitRequest(
   assertExpectedVersion(request.listingVersion, command.expectedListingVersion);
   assertRequestState(request, "TENANT_DRAFT");
   const listing = getPublishedListing(state, command.listingId);
+  assertExpectedVersion(listing.version, command.expectedListingVersion);
   if (listing.id !== request.listingId) {
     throw domainError("VALIDATION_FAILED", "Submission listing does not match the request");
   }
