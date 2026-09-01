@@ -535,6 +535,14 @@ The status patch is therefore a post-acknowledgement truth update, not a precond
 The main thread should prepare the patch in advance and apply it immediately after acknowledgement;
 the patch itself must not become a multi-minute manual phase.
 
+Every dispatch that uses a detached Worktree must name the main checkout root and the execution
+Worktree root as two different fields. Relative source paths, `git status`, runtime commands, and
+source identity checks belong to the execution Worktree root. Before any other command, the worker
+must run `git rev-parse --show-toplevel` there and compare the result with the declared execution
+root. If they differ, or if the prompt gives only the main checkout root, the worker stops before
+source mutation and reports a path-identity blocker. The main thread must correct the same task
+identity; it must not silently retry against a different Worktree or create a replacement task.
+
 ### 8.1.2 Execution baseline versus governance revision
 
 Every dispatch records two identities and must not merge them into one undifferentiated manifest:

@@ -1319,7 +1319,10 @@ identity `01a05b58-a280-7ca0-8b19-df4bc78da099` (`local`). The Builder returned
 `READY_FOR_VERIFICATION`; main-thread T2 review committed the exact eight authored paths at
 `52a8f101b4de9f039261dd5c50e3094c8c948ae3`. The independent Verifier is dispatched in Worktree
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-08-verifier` with supporting-task identity
-`01a05b6a-4f17-7b33-a30c-1d761f1f4192` (`local`). No source write is authorized during verification.  
+`01a05b6a-4f17-7b33-a30c-1d761f1f4192` (`local`). Its first activation stopped before source
+checks because the prompt conflated the main checkout root with the execution Worktree root; the
+main thread sent a path-identity correction to the same task identity. No source write is
+authorized during verification.  
 **Parent execution posture if blocked:** `CONSTRAINED` — workflow transport and UI/UX review may
 continue; role-page Builders remain gated.
 
