@@ -1920,8 +1920,9 @@ media, agent management, or future integration.
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — the shared role-page frame, workflow transport, agent DTO contract,
 and UI/UX guidance are integrated and independently verified  
-**Execution state:** `ASSIGNED` — the dedicated agent Builder is establishing context and implementing
-the bounded agent-owned surface  
+**Execution state:** `READY_FOR_VERIFICATION` — the dedicated agent Builder completed the bounded
+agent-owned surface; candidate `169cb95d60d4d91c8cd89ef4b722f6fc379db97f` is frozen for independent
+verification  
 **Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-12`; route, component, helper, test, and CSS
 ownership are disjoint, while both consume the same frozen read-only contracts  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent Verifier  
@@ -1930,14 +1931,20 @@ ownership are disjoint, while both consume the same frozen read-only contracts
 the assigned request queue, inspect the authorized request and availability, start review, prepare a
 slot proposal or decline, and explicitly send the prepared human decision. Keep the server/application
 workflow authoritative and preserve the separation between preparation and consequence.  
-**Next gate:** Complete the bounded Builder handoff, then independently verify the frozen exact-path
-candidate before the agent output is integrated or described as end-to-end evidence.  
+**Next gate:** Complete the dedicated independent verification of the frozen exact-path candidate;
+integrate only after `VERIFIED`, or open a bounded repair if the Verifier reports a reproducible defect.  
 **Dispatch state:** Dispatched from clean baseline `8b33399ce5769bdb58cd08025ac2c1917675daf3`; execution
 Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-agent-ui`; package root
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-agent-ui/WebApp/Web-Right_Spot`; runtime-pin path
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-agent-ui/.node-version`; supporting-task identity
-`01a05ba2-3d53-7bd3-934c-6238237576fd` (`local`). The full prompt was persisted after the usable thread
-identity returned; no source write is authorized before context establishment.  
+`01a05ba2-3d53-7bd3-934c-6238237576fd` (`local`). The full Builder prompt was persisted after the usable
+thread identity returned; the Builder returned `READY_FOR_VERIFICATION` and the exact seven-path
+candidate was committed at `169cb95d60d4d91c8cd89ef4b722f6fc379db97f`. The dedicated independent
+Verifier is `01a05bae-de91-7252-b5ce-4a6a729441dd` (`local`) in Worktree
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-verifier`, detached at the candidate; its package root
+is `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-verifier/WebApp/Web-Right_Spot` and its runtime-pin
+path is `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-verifier/.node-version`. The full Verifier
+prompt was persisted after the usable thread identity returned; no source write is authorized.  
 **Parent execution posture if blocked:** `CONSTRAINED` only for the agent interface; the tenant interface,
 read-only analysis, and process work may continue if they do not consume a blocked agent write set.
 
