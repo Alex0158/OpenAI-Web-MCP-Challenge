@@ -84,8 +84,9 @@ non-blocking `RS-WO-007-03` parallelism review returned `READY_FOR_REVIEW` from 
 `01a05d76-dac9-7283-9c2a-4166935f5043`; main accepted its isolation revisions and has not registered
 or dispatched the future tenant/agent Builders.
 The newly surfaced `RIGHTSPOT-008` is classified as a pending decision proposal rather than a
-verified defect; its proposal-only `RS-WO-008-01` is assigned to supporting worker
-`01a05d79-ce45-7000-aa44-a3a1ecad95b0` and cannot authorize implementation until main-thread review.
+verified defect; its proposal-only `RS-WO-008-01` returned `READY_FOR_REVIEW` from supporting worker
+`01a05d79-ce45-7000-aa44-a3a1ecad95b0`. Main accepted it as review evidence with revisions; it
+cannot authorize implementation until joint review with `RIGHTSPOT-009`.
 The newly surfaced `RIGHTSPOT-009` is a separate pending decision proposal for Information Request
 and contact-preference semantics; its proposal-only `RS-WO-009-01` is assigned to supporting worker
 `01a05d7c-21b4-72f3-bbe8-1c34d1aee291` and cannot authorize implementation or outbound communication.
