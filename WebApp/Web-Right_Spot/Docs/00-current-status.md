@@ -23,10 +23,9 @@ remains before `RIGHTSPOT-007` can close.
 **Current active Work Orders:** `RS-WO-007-08` is assigned to independently verify the integrated
 Field Desk source; the bounded Operations seam `RS-WO-011-01` passed independent verification and is
 integrated at product commit `7ff0fbd`. Its verifier Worktree remains a historical evidence snapshot.
-`RS-WO-007-08` is assigned to an
-independent integrated-source Verifier in a separate evidence Worktree. `RS-WO-007-06` and
-`RS-WO-007-07` independently verified the frozen tenant/agent candidates and the main thread
-integrated them at `5abdaf3` and `a2f6a19`; their evidence Worktrees remain historical snapshots.
+The `RS-WO-007-08` Verifier uses a separate evidence Worktree. `RS-WO-007-06` and `RS-WO-007-07`
+independently verified the frozen tenant/agent candidates and the main thread integrated them at
+`5abdaf3` and `a2f6a19`; their evidence Worktrees remain historical snapshots.
 The shared CSS
 foundation `RS-WO-007-02` is already `VERIFIED` and integrated at product commit `89a50c7` after its
 final same-identity browser rerun corrected the stale served-build block under `RIGHTSPOT-007`;
@@ -87,7 +86,8 @@ separate ownership handling.
 The parent `RIGHTSPOT-002` is `closed` for the accepted local MVP. ADR-RS-0009 accepts the bounded
 Field Desk UI/UX direction and ADR-RS-0010 accepts Clerk as a gated external-auth candidate; neither
 decision reopens the MVP or authorizes external credential setup. The current implementation wave is
-the post-integration Field Desk regression gate plus the isolated `RS-WO-011-01` Operations seam.
+the post-integration Field Desk regression gate; the verified Operations seam is ready for a separately
+decided consumer boundary.
 
 **Current cross-role gate:** `RS-WO-005-01` passed corrected independent verification and is integrated
 at local commit `27f5391`; the known tracked metadata incident remains preserved. `RS-WO-007-02` is
