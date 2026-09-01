@@ -16,12 +16,13 @@
 - Objective: Implement and independently verify a privacy-safe, deterministic Agent Operations
   projection over existing `WorkflowState`, without adding a route, UI, persistence schema, or
   future Favourite/Information Request/WebMCP behavior.
-- Current increment: `RS-WO-011-01` is the only active implementation slice. It owns a new pure
-  projection module and focused tests; later API, dashboard, and WebMCP coupling remain deferred.
-- Next gate: Dispatch `RS-WO-011-01` in an isolated Worktree, freeze its candidate, then assign an
-  independent Verifier. Do not start a consumer or integration Work Order until this seam is verified.
-- Execution posture: `CONTRACT_SEAM_BUILDER_READY`; this task is intentionally independent of the
-  active Field Desk verification wave and the unresolved 008/009 semantic boundaries.
+- Current increment: `RS-WO-011-01` completed its bounded Builder handoff and is frozen at candidate
+  commit `5b05c78ec71c849a268b31cd49e72f9b3235587e`. It adds only the pure projection module and its
+  focused tests; later API, dashboard, and WebMCP coupling remain deferred.
+- Next gate: Run `RS-WO-011-02` as an independent Verifier against the frozen candidate. Do not start
+  a consumer or integration Work Order until this seam is verified.
+- Execution posture: `CONTRACT_SEAM_CANDIDATE_FROZEN`; this task remains independent of the active
+  Field Desk regression wave and the unresolved 008/009 semantic boundaries.
 
 ## Accepted implementation boundary
 
@@ -36,7 +37,7 @@ WebMCP capability, analytics warehouse, historical event model, or natural-langu
 ## RS-WO-011-01 — Implement the Operations projection seam
 
 **Role:** Persistent Codex task/thread Builder → later independent Verifier  
-**Status:** `ASSIGNED`  
+**Status:** `READY_FOR_VERIFICATION` — frozen candidate commit `5b05c78`  
 **Parallelization:** `CONTRACT_PARALLEL_NEW_MODULE` — may run in parallel with the active Field Desk
 Verifier Work Orders because it writes only new, isolated module/test paths and has no shared product
 write set.  
@@ -45,6 +46,8 @@ write set.
 `RIGHTSPOT-008` or `RIGHTSPOT-009`.  
 **Source baseline:** `53ad8398d9c356914230efc6de4cc07925d49e3c` on `main`; untracked
 collaborator-owned files remain outside the source set.  
+**Candidate source:** `5b05c78ec71c849a268b31cd49e72f9b3235587e`; exactly the two declared new paths
+are present and the Builder Worktree is clean after the main-thread T2 freeze.  
 **Supporting task/thread:** `01a05dd7-f126-7611-9a0e-b1c3deeacbde` on host `local`.  
 **Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-011-01-operations` on branch
 `rightspot/rs-wo-011-01-operations`.  
@@ -107,6 +110,64 @@ slots; and reject unauthorized actors without mutating state.
 Return `READY_FOR_VERIFICATION` with exact changed paths, source identity, diff summary, runtime,
 commands/results, privacy/status tests, known skipped evidence, and residual risks. Do not start the
 Verifier or any consumer/integration task.
+
+## RS-WO-011-02 — Independently verify the Operations projection seam
+
+**Role:** Independent Verifier  
+**Status:** `READY_TO_DISPATCH`  
+**Parallelization:** `EVIDENCE_ONLY` — may run beside `RS-WO-007-08` because it uses a detached
+snapshot and has no product write set.  
+**Risk profile:** `Standard` — code-level verification of a pure, privacy-bounded projection seam.  
+**Dependency:** `RS-WO-011-01` Builder handoff is frozen at candidate commit
+`5b05c78ec71c849a268b31cd49e72f9b3235587e`; do not verify the moving Builder branch.  
+**Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-011-02-operations-verifier`
+(detached HEAD at the frozen candidate).  
+**Supporting worker:** To be assigned by the main thread after this Work Order registration.  
+**Ownership:** The Verifier may inspect and execute only. The main thread owns repair, canonical
+writeback, integration, and closure.
+
+### Verifier objective
+
+Independently determine whether the frozen Operations projection candidate implements only the
+accepted ADR-RS-0011 seam: deterministic, assigned-agent-authorized, privacy-safe, non-mutating
+projection over the existing `WorkflowState`. Do not design or add a consumer.
+
+### Required read set
+
+- This Task File, ADR-RS-0011, and the frozen candidate commit.
+- `Docs/00-current-status.md`, `Docs/03-system-design.md`, `Docs/04-domain-and-data-model.md`,
+  `Docs/05-api-and-integration-contracts.md`, and `Docs/06-validation-and-evidence.md`.
+- Existing domain types/errors/workflow construction, relevant tests, package scripts, pinned runtime
+  guidance, and the Thread Orchestration Pilot Runbook.
+
+### Verification boundary
+
+- Confirm the exact frozen commit, detached clean status, and that exactly the two declared new paths
+  differ from the Builder baseline; no existing source, shared type, API contract, route, UI,
+  persistence, fixture, configuration, documentation, or Git metadata may change.
+- Use Node `24.20.0` / npm `11.19.0` and the existing lockfile. Run the focused projection tests,
+  `npm run typecheck`, `npm test`, `npm run build`, and `git diff --check`.
+- Inspect the projection and tests for assigned-agent authorization, exact existing status vocabulary,
+  deterministic ordering, empty/current/future/past slot behavior, input/output isolation, and absence
+  of tenant/private fields or synthetic Favourite/Information Request metrics.
+- Confirm the pure boundary has no SQLite, session/cookie access, HTTP, environment clock, input
+  mutation, hidden fallback, new dependency, or external side effect. Browser, server-start, route,
+  API, deployment, and dashboard claims are outside this Work Order and must remain unclaimed.
+
+### Forbidden actions
+
+- Do not edit source, tests, fixtures, dependencies, configuration, documentation, database files,
+  Git metadata, or the main checkout.
+- Do not repair failures, weaken checks, commit, push, deploy, start a server, or dispatch a follow-on
+  consumer task.
+- Do not treat an invocation mistake or an unavailable browser as a product defect; report it
+  separately while preserving exact evidence.
+
+### Return gate
+
+Return `VERIFIED`, `NEEDS_REPAIR`, or `BLOCKED` with exact source identity, changed-path result,
+commands/runtime, behavior/privacy evidence, skipped checks, residual risks, and recommended next
+gate. Stop after the report.
 
 ## Closure gate
 
