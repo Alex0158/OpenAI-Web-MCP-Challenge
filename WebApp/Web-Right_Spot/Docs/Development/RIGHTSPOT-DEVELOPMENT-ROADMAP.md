@@ -17,15 +17,20 @@ closed. Main-thread `RIGHTSPOT-017-01` reached `ASSET_GATE_READY`; `RS-WO-017-02
 verification and is integrated at `b7369bd`. `RS-WO-016-01` passed persistent re-gate, bounded repair,
 fresh independent verification, and is integrated at `edd7575`; `RS-WO-017-03` passed persistent re-gate,
 independent verification, and is integrated at `2a53917`, followed by the verified integrated browser
-gate `RS-WO-017-04`. The earlier transient candidates and failed 016 candidate remain preserved process
-evidence only. Exact path/hash and browser evidence are recorded in their Task Files. The earlier verifier's unrelated persistent-fixture residual (`65/66`) was resolved by
+gate `RS-WO-017-04`. The earlier transient candidates and failed 016 candidate remain process evidence
+only in their Task Files and named local-only archive refs; their physical Worktrees have been removed.
+Exact path/hash and browser evidence are recorded in their Task Files. The earlier verifier's unrelated persistent-fixture residual (`65/66`) was resolved by
 a separate test-only isolation correction and current full suites. `RIGHTSPOT-014` is closed after its
 read-only proposal review. `RIGHTSPOT-018` is independently verified, integrated at `5eef037`, and
 closed; `RIGHTSPOT-019` is independently verified, integrated at `6f52686`, and closed after its
 bounded browser/form regression passed. Their write sets do not overlap the Operations or media lanes. The
-prior out-of-scope tracked verifier mutation remains preserved.
+prior out-of-scope tracked verifier mutation remains preserved in the owning Task File; its physical
+verifier Worktree is no longer present.
 **Owner:** Main RightSpot thread  
-**As of:** 2026-09-01, Europe/London
+**As of:** 2026-09-02, Europe/London
+
+**Physical workspace:** Only the canonical Main Worktree remains. Historical candidate snapshots are
+retained as Task File evidence and local-only archive refs, not as active source or execution surfaces.
 
 **Current gate:** None for the accepted local MVP. `RS-WO-002-13` is integrated at product commit
 `3765747`, repaired `RS-WO-002-12` is integrated at `9348aa5`, `RS-WO-002-14` passed direct combined
@@ -40,7 +45,8 @@ verified and integrated at `2a53917`, and its integrated browser gate `RS-WO-017
 `RS-WO-018-01` is independently verified, integrated at `5eef037`, and closed. `RS-WO-019-01` is
 independently verified, integrated at `6f52686`, and closed after its bounded browser/form regression passed.
 Prior
-verifier Worktree metadata mutations remain preserved and are not product source.
+verifier Worktree metadata mutations remain preserved in the owning Task File and are not product
+source; their physical verifier Worktrees are no longer present.
 
 ## 1. Roadmap purpose and authority
 
@@ -65,6 +71,8 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
   independently verified local baseline; no deployment configuration or Hackathon integration exists.
 - The accepted local baseline is Next.js App Router, React, TypeScript, Node.js 24, and SQLite.
   Cloud Receiver, WebMCP, Redis, WebRTC media/signaling, and external services remain deferred.
+- Physical Worktree cleanup is complete: `git worktree list --porcelain` contains only the canonical
+  Main Worktree; historical candidate paths are evidence references, not current implementation lanes.
 
 ## 3. Roadmap milestones
 

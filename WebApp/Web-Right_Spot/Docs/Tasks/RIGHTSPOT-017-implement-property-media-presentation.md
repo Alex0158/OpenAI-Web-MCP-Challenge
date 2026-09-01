@@ -439,3 +439,12 @@ residual risk. Preserve local assets on rollback; do not delete them to hide a m
 
 Reopen if media becomes user-uploaded, remote, multi-image, video, property-evidence-bearing, agent-
 visible, or requires a new listing/media lifecycle or external service.
+
+## Physical Worktree archive record
+
+The alternative candidate formerly held at `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-017-03-regate`
+was captured as an archive-only commit `b8645e871084be3e4705095cd423908e63803fea` under local ref
+`refs/archive/rightspot/rs-wo-017-03-regate`, with parent baseline `5ae6573dce748e01c7a91e33b23dd05dfdeea896`
+and the exact three candidate paths recorded above. The physical Worktree was then removed during RightSpot
+workspace cleanup. The archive is evidence/recovery only, was not integrated or pushed, and the historical
+execution paths above remain factual records of the original execution context.

@@ -1035,6 +1035,36 @@ semantic read set. The main thread classifies the change and incorporates it int
 governance revision or evidence record. If no auxiliary write set is declared, the Side Chat returns
 the proposed text without editing the shared tree.
 
+### 9.5.1 Worktree closure and archive rule
+
+A physical Worktree is an execution surface, not an evidence register and not a Codex task record.
+When a Work Order closes, the main thread must classify its checkout before any cleanup:
+
+- `integrated/clean`: the intended output is in the canonical source and the checkout has no
+  independent material that must be retained;
+- `dirty/untracked`: the checkout contains candidate material or evidence whose exact paths and
+  recoverability still need to be assessed;
+- `rejected candidate`: the output is not product source, but its evidence may be needed for incident
+  review or recovery; or
+- `active dependency`: another task or verification lane still relies on the checkout.
+
+Only an `integrated/clean` Worktree, or a non-product checkout whose exact evidence has first been
+archived or otherwise proven recoverable, may be removed. Before removal, the main thread must resolve
+the exact target path, ownership, tracked/untracked/modified state, active-task dependency, and recovery
+source. It must not use Worktree removal to hide an ownership violation, discard an unresolved candidate,
+or imply that the Work Order or its evidence has been deleted.
+
+When candidate evidence is retained, prefer a named local-only archive ref and a durable record in the
+owning Task File. An archive ref is evidence/recovery only: it is not product source, does not reopen a
+closed Task, and must not be silently merged or committed as implementation. Worktree removal does not
+delete the Task File, Codex task/thread record, or unrelated branch refs unless a separate explicit
+decision authorizes that operation.
+
+After cleanup, verify `git worktree list --porcelain`, confirm the exact removed paths are absent, and
+update current-status, roadmap, and owning Task File references so historical paths are clearly marked
+as historical. Historical chronology may retain the old path and identity as evidence, but current-truth
+sections must not describe a removed Worktree as an active source or execution surface.
+
 ### 9.6 Work Order and supporting-task identity
 
 One supporting Codex task/thread represents one Work Order checkpoint. A thread's title, persisted

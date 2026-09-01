@@ -383,3 +383,11 @@ consumer must be registered as a separate Work Order or Task after the authority
 Reopen if the Operations profile must share relay state, requires history or real tenant/contact data,
 changes lifecycle vocabulary, cannot reset/reopen deterministically, or needs the relay seam,
 Favourite/Information Request semantics, or WebMCP before this authority is verified.
+
+## Physical Worktree archive record
+
+The historical rejected candidate formerly held at `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-015-01-builder`
+was preserved at local-only archive ref `refs/archive/rightspot/rs-wo-015-01-builder` pointing to
+`a9c8e79694c9b6c9f0b2214f15daa8c5f4cd41b1`, then its physical Worktree was removed during RightSpot
+workspace cleanup. The archive ref is evidence/recovery only, is not product source, and was not pushed.
+The historical Worktree paths above remain factual records of the original execution context.

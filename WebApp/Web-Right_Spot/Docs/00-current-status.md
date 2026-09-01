@@ -1,7 +1,13 @@
 # RightSpot — Current Status
 
 **Role:** Canonical current status for the RightSpot child application  
-**As of:** 2026-09-01, Europe/London  
+**As of:** 2026-09-02, Europe/London  
+**Physical workspace:** `git worktree list --porcelain` currently reports only the canonical Main
+Worktree at `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge` on `main`. Historical candidate snapshots
+are retained only in their owning Task Files and, where applicable, the local-only archive refs
+`refs/archive/rightspot/rs-wo-015-01-builder`, `refs/archive/rightspot/rs-wo-016-01-regate`, and
+`refs/archive/rightspot/rs-wo-017-03-regate`; these refs are evidence/recovery records, not product
+source or active execution surfaces. Worktree removal does not remove task records or branch refs.
 **Stage:** Accepted ordinary local MVP implemented and closed; runnable foundation, workflow-core, the
 `RS-WO-002-04` persistence/application boundary, the `RS-WO-002-05` tenant entry/listing discovery
 API, and the `RS-WO-002-07` workflow HTTP/DTO boundary independently verified;
@@ -25,9 +31,11 @@ Main integrated the repaired exact two-path projection at product commit `edd757
 passed persistent re-gate and independent verification and is integrated at product commit `2a53917`;
 the persistent integrated browser gate `RS-WO-017-04` then returned `VERIFIED` against that commit.
 `RIGHTSPOT-016` and `RIGHTSPOT-017` are therefore closed within their bounded outcomes. The original
-transient 016/017 overlays, the failed 016 candidate, and their evidence Worktrees remain preserved as
-historical process evidence and were not used as current source. No active product writer remains in
-these lanes; Main owns the canonical document writeback and any future separately registered consumer.
+transient 016/017 overlays and the failed 016 candidate are retained as historical process evidence in
+their owning Task Files and, where applicable, the named local-only archive refs recorded there. Their
+physical Worktrees have been removed and were never promoted to current source. No active product writer
+remains in these lanes; Main owns the canonical document writeback and any future separately registered
+consumer.
 `RIGHTSPOT-015` remains closed with its Operations authority integrated at `e7f30d5`; `RS-WO-017-02` is
 independently verified and integrated at `b7369bd`; `RS-WO-019-01` is independently verified, integrated
 at `6f52686`, and closed after its bounded browser/form regression; and `RS-WO-018-01` is independently
@@ -43,11 +51,13 @@ product claim.
 shared-workflow Work Order and is closed; `RIGHTSPOT-019` records the integrated London-time UI
 boundary repair and completed browser/form regression, and is closed.
 The bounded Operations seam `RS-WO-011-01` passed independent verification and is integrated at
-product commit `7ff0fbd`; its verifier Worktree remains a historical evidence snapshot.
+product commit `7ff0fbd`; its verifier evidence remains recorded in the owning Task File, and its
+physical Worktree was removed during the documented cleanup.
 `RS-WO-007-06`, `RS-WO-007-07`, and
 `RS-WO-007-08`
 independently verified the frozen tenant/agent candidates and the main thread integrated them at
-`5abdaf3` and `a2f6a19`; their evidence Worktrees remain historical snapshots.
+`5abdaf3` and `a2f6a19`; their evidence remains recorded in the owning Task Files, and their physical
+Worktrees were removed during the documented cleanup.
 The shared CSS
 foundation `RS-WO-007-02` is already `VERIFIED` and integrated at product commit `89a50c7` after its
 final same-identity browser rerun corrected the stale served-build block under `RIGHTSPOT-007`;
@@ -93,9 +103,11 @@ verified through the browser. The verification freeze is now closed.
 Repaired tenant candidate `52cba87c` passed final independent verification and is integrated at product
 commit `9348aa5`. Its predecessor candidate `eb1d62e1b33a045e683f64ba3d28930e9444cd25` had
 two verifier runs checkpoint-locally blocked by a tracked `.gitignore` mutation adding `.gstack/` outside
-the exact nine-path candidate; all prior verifier evidentiary Worktrees remain preserved.
+the exact nine-path candidate; the prior verifier evidence remains recorded in the owning Task File,
+and the physical verifier Worktrees were removed during the documented cleanup.
 The `RS-WO-002-13` agent candidate was independently verified and integrated at product commit `3765747`.
-Exact Worktrees and supporting-task identities remain recorded in the parent Task File.
+The parent Task File retains the exact historical Worktree paths and supporting-task identities; no
+listed historical Worktree is an active source.
 **Implementation:** Foundation Builder returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02` verification attempt was procedurally blocked by an out-of-scope OS temp artifact, then the corrected bounded rerun returned `VERIFIED` against the unchanged source/runtime identity; `RS-WO-002-03` found and repaired a listing-version guard defect in commit `6e70c9f`, and fresh independent verification returned `VERIFIED` against that frozen source; `RS-WO-002-04` candidate adoption completed at T2 commit `68bbc69`; its first dedicated Verifier attempt stopped before source checks because the dispatch prompt described the Worktree root incorrectly, then one corrected follow-up returned `VERIFIED` against frozen source `28105e4d`; `RS-WO-002-05` Builder returned `READY_FOR_VERIFICATION` with the required runtime, focused `35/35` checks, production build, and local API smoke passing; the candidate was integrated at T2 code commit `de169ce`, and a dedicated Verifier independently returned `VERIFIED` against clean snapshot `bc3bc42`; the read-only `RS-WO-002-06` Architecture Advisor returned `READY_FOR_REVIEW`, and the main thread accepted its decomposition with revisions in ADR-RS-0008; `RS-WO-002-07` candidate `d71fe3e` passed dedicated independent verification with foundation `6/6`, focused `9/9`, full direct `50/50`, build, HTTP, role/privacy, conflict, and no-mutation evidence and was integrated at product commit `f700ba9`; `RS-WO-002-08` is integrated at product commit `006d2fd` after a localized generated-output boundary incident was re-baselined in process commit `8b77bdd`; both originate from reviewed baseline `c758634`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-11` Builder returned `READY_FOR_VERIFICATION`, its exact four-path candidate passed dedicated independent verification, and the main thread integrated it at product commit `6a0b4b8`; `RS-WO-002-13` passed dedicated independent verification and is integrated at `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final independent verification and is integrated at `9348aa5`; `RS-WO-002-14` passed direct read-only combined cross-role verification and `RS-WO-002-15` passed the isolated browser walkthrough; closure evidence is reconciled in `RIGHTSPOT-MVP-CLOSURE-RECORD.md`
 
 **Latest role-page disposition:** `RS-WO-002-13` passed independent verification and was integrated
@@ -110,9 +122,10 @@ Field Desk UI/UX direction and ADR-RS-0010 accepts Clerk as a gated external-aut
 decision reopens the MVP or authorizes external credential setup. The Field Desk regression gate is
 closed; the current implementation wave is the independently verifiable Operations projection slice
 and tenant media consumer slice. The London-time browser/form regression is closed. The current
-016/017 candidates were produced through a transient execution path; their formal
-handoffs were not established and they remain unintegrated until candidate re-gating and a persistent
-independent verification lane re-establish the source identity.
+016/017 transient execution path and failed 016 candidate are historical process evidence only. Their
+accepted outcomes are already integrated and closed; evidence is retained in the owning Task Files and
+named local-only archive refs, while the physical candidate Worktrees have been removed. No candidate
+re-gating or persistent worker lane is currently pending for these closed tasks.
 The reviewed property-media asset baseline and Operations authority are complete and remain read-only
 inputs to those consumer slices.
 
@@ -166,8 +179,9 @@ Operations route, dashboard UI, reporting history, WebMCP, or external service.
 **Current post-MVP closure:** `RS-WO-016-01` is independently verified and integrated at `edd7575`;
 `RS-WO-017-03` is independently verified and integrated at `2a53917`, and `RS-WO-017-04` passed the
 integrated browser gate. `RIGHTSPOT-016` and `RIGHTSPOT-017` are closed within their bounded outcomes.
-The transient execution-path incident, the failed 016 candidate, and historical evidence Worktrees remain
-process evidence only; they do not authorize editing or silently absorbing candidate source. `RS-WO-019-01`
+The transient execution-path incident and failed 016 candidate remain process evidence only in the
+owning Task Files and named local-only archive refs; their physical Worktrees have been removed. They
+do not authorize editing or silently absorbing candidate source. `RS-WO-019-01`
 is integrated and closed at `6f52686` after its bounded browser/form regression passed.
 
 **Authoritative closure update:** The earlier checkpoint chronology below intentionally preserves the
@@ -310,14 +324,16 @@ Task File; tenant task `01a05ba2-34d4-7613-892d-c0776203073c` uses
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-agent-ui`; the tenant candidate
 `eb1d62e1b33a045e683f64ba3d28930e9444cd25` was superseded by repaired candidate
 `52cba87c00c3461793b22aa26974da5276d01b48`, which verifier task
-`01a05bb1-c38b-7a91-95aa-49475a057e43` independently verified from final Worktree
+`01a05bb1-c38b-7a91-95aa-49475a057e43` independently verified from historical final Worktree
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-verifier-final` with exact nine-path scope, Node
 `24.20.0`/npm `11.19.0`, foundation `6/6`, tenant focused `4/4`, full direct `54/54`, build, HTTP,
 and static evidence. Browser E2E was not run because available browser tooling could mutate tracked
-`.gitignore`; no browser claim is made. The earlier verifier Worktrees remain preserved with the
-out-of-scope `.gitignore` mutation adding `.gstack/`. The agent candidate `169cb95d60d4d91c8cd89ef4b722f6fc379db97f`
+`.gitignore`; no browser claim is made. The owning Task File retains the earlier verifier evidence and the
+out-of-scope `.gitignore` mutation adding `.gstack/`; those physical verifier Worktrees were removed
+during the documented cleanup. The agent candidate `169cb95d60d4d91c8cd89ef4b722f6fc379db97f`
 passed verifier task `01a05bae-de91-7252-b5ce-4a6a729441dd` and is integrated at product commit
-`3765747`; its verifier Worktree is `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-verifier`.
+`3765747`; its historical verifier path was `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-verifier`,
+and that physical Worktree was removed during the documented cleanup.
 
 The parent `RIGHTSPOT-002` is `closed` for the accepted local MVP; the foundation Builder stopped after returning
 `READY_FOR_VERIFICATION`, the first `RS-WO-002-02` attempt was `BLOCKED` on a procedure boundary,

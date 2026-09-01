@@ -4,7 +4,7 @@
 **Status:** Living record; entries require main-thread review before they can affect a rule  
 **Owner:** Main RightSpot thread  
 **Related procedure:** [RightSpot Thread Orchestration Pilot Runbook](RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-RUNBOOK.md)  
-**Last updated:** 2026-09-01, Europe/London
+**Last updated:** 2026-09-02, Europe/London
 
 ## 1. Purpose and authority
 
@@ -200,9 +200,13 @@ Worktree, and one-Work-Order/one-supporting-task rules are now in the Pilot Runb
 9.2, and 9.4–9.6. No new ADR is required because this is pilot operating procedure, not product
 architecture.
 
-**Remaining uncertainty:** The existing `RS-WO-002-04` implementation output remains preserved but
-must be reviewed and re-baselined under a dedicated supporting-task identity before independent
-verification.
+**Remaining uncertainty at entry time:** The existing `RS-WO-002-04` implementation output remained
+preserved but needed review and re-baselining under a dedicated supporting-task identity before
+independent verification.
+
+**Resolution:** The main thread later reconstructed and adopted the exact candidate under a new T2
+identity; the corrected persistent Verifier returned `VERIFIED` against frozen source `28105e4d`, and
+the accepted result is recorded as integrated in the current status and owning Task File.
 
 ## 5. Review rule for future entries
 
@@ -281,8 +285,10 @@ adopt the candidate for a new T2 source identity and require fresh independent v
 of those facts remain ambiguous, preserve the candidate and evidence without deleting them, and use a
 fresh Builder from a clean identified baseline.
 
-**Promotion:** Candidate-adoption criteria are now part of ADR-RS-0004 and the Pilot Runbook. The
-`RS-WO-002-04` candidate remains unverified until that procedure is completed.
+**Promotion:** Candidate-adoption criteria are now part of ADR-RS-0004 and the Pilot Runbook. At the
+time of this entry, the `RS-WO-002-04` candidate remained unverified until that procedure was completed;
+its subsequent corrected verification and integration are recorded in the current status and owning
+Task File.
 
 ## 9. Runtime executable and projectless-cwd identity must be explicit
 
@@ -384,3 +390,32 @@ RightSpot pilot operating rule; it does not change product authority or the oute
 **Remaining uncertainty:** The host may expose multiple execution mechanisms with similar role labels
 or summaries. The main thread must verify the returned task/thread identity and actual execution root
 at every formal dispatch rather than relying on the selected tool name or prompt wording.
+
+## 13. Physical Worktree closure is separate from task and evidence closure
+
+**Status:** `Accepted into Runbook`  
+**Date:** 2026-09-02  
+**Source:** RightSpot post-MVP Worktree cleanup and current repository readback
+
+**Observation:** After the accepted outcomes were integrated, the repository still contained many
+historical supporting Worktrees. The current documents described those paths as preserved evidence,
+which could be read as saying that they were still active execution surfaces. A Worktree can be
+removed without deleting its Task File, Codex task record, branch ref, or retained candidate evidence,
+but only after ownership, dependency, exact state, and recoverability are resolved.
+
+**Learning:** Treat physical Worktree lifecycle, task lifecycle, product-source lifecycle, and evidence
+lifecycle as separate records. Classify a closed checkout as integrated/clean, dirty/untracked,
+rejected candidate, or active dependency. Remove only a checkout whose product output is integrated
+and whose remaining evidence is recoverable; retain candidate evidence through a durable Task File
+record and, when useful, a named local-only archive ref. Current-truth documents must say whether a
+historical path is physical or archival, while historical chronology may retain the old path and task
+identity.
+
+**Promotion:** The Worktree closure/archive rule is now in Pilot Runbook section 9.5.1. The current
+RightSpot status, development routing, roadmap, task index, and updated owning Task Files now identify the
+single canonical Main Worktree and distinguish local-only archive refs from active source. No product
+architecture or outer-repository governance change is implied.
+
+**Remaining uncertainty:** Archive refs are local recovery aids and are not a substitute for an agreed
+remote backup or release artifact. If long-term retention becomes important, define that storage policy
+separately; do not silently push evidence refs or treat them as product branches.

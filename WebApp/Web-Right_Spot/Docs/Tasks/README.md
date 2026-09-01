@@ -50,8 +50,12 @@ lane and does not authorize implementation or canonical product writeback. `RIGH
 with its repaired projection independently verified and integrated at `edd7575`; `RIGHTSPOT-017` is
 closed with its tenant media consumer integrated at `2a53917` and its integrated browser gate verified.
 The failed 016 candidate and transient 016/017 execution records remain historical evidence and do not
-reopen either task. `RIGHTSPOT-019` is closed after its integrated repair passed the bounded browser/form
-regression gate.
+reopen either task. Their physical Worktrees have been removed; the recovery/evidence snapshots that
+remain necessary are referenced by the owning Task Files and local-only archive refs
+`refs/archive/rightspot/rs-wo-015-01-builder`, `refs/archive/rightspot/rs-wo-016-01-regate`, and
+`refs/archive/rightspot/rs-wo-017-03-regate`. These refs are evidence-only and do not authorize source
+editing or integration. `RIGHTSPOT-019` is closed after its integrated repair passed the bounded
+browser/form regression gate.
 
 Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, the corrected `RS-WO-002-02` rerun returned

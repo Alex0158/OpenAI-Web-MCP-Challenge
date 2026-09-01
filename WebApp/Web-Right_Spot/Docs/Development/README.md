@@ -15,7 +15,11 @@ independent verification and is integrated at product commit `9348aa5`; `RS-WO-0
 cross-role verification and `RS-WO-002-15` passed the isolated browser walkthrough. The durable closure
 record is [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md). Its predecessor verifier runs were
 checkpoint-locally blocked by an out-of-scope tracked verifier Worktree mutation, which remains preserved
-for separate ownership/recoverability handling.
+for separate ownership/recoverability handling; the physical verifier Worktree is no longer present.
+
+**Current physical workspace:** Only the canonical Main Worktree remains. Historical candidate snapshots
+are retained in the owning Task Files and named local-only archive refs as evidence/recovery records;
+they are not active product source or execution surfaces.
 
 ## Purpose
 
@@ -76,8 +80,8 @@ and `RIGHTSPOT-002` is closed for the accepted local MVP.
 closed after its bounded repair passed fresh independent verification and was integrated at `edd7575`.
 `RS-WO-017-03` is closed after independent verification and integration at `2a53917`, followed by the
 verified integrated browser gate `RS-WO-017-04`. The earlier transient overlays and failed 016 candidate
-remain preserved process evidence; their exact path/hash and browser evidence are recorded in the owning
-Task Files. No active implementation lane remains in this closure increment.
+remain process evidence in the owning Task Files and named local-only archive refs; their physical
+Worktrees have been removed. No active implementation lane remains in this closure increment.
 `RS-WO-019-01` is integrated and closed at `6f52686` after its bounded browser/form regression passed.
 The transient execution-path incident
 is process evidence and does not authorize editing or silently absorbing either candidate overlay.

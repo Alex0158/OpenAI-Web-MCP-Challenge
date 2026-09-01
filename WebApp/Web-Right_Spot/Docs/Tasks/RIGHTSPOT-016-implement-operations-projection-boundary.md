@@ -262,3 +262,12 @@ than reimplementing its filters or counts.
 Reopen if the Operations authority changes its lifecycle/time model, a query requires historical
 events or 008/009 signals, privacy scope changes, pagination/cursors become necessary, or a consumer
 cannot use the projection without changing relay or authority ownership.
+
+## Physical Worktree archive record
+
+The failed original candidate formerly held at `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-016-01-regate`
+was captured as an archive-only commit `198ec27154f41944aac76119824f1d4ca55b4952` under local ref
+`refs/archive/rightspot/rs-wo-016-01-regate`, with parent baseline `5ae6573dce748e01c7a91e33b23dd05dfdeea896`
+and the exact two candidate paths recorded above. The physical Worktree was then removed during RightSpot
+workspace cleanup. The archive is evidence/recovery only, was not integrated or pushed, and the historical
+execution paths above remain factual records of the original execution context.

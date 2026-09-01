@@ -4,12 +4,18 @@
 **Status:** Accepted local MVP closed; the delegated-work pilot remains experimental and opt-in.
 Current post-MVP state is maintained in [`Docs/00-current-status.md`](Docs/00-current-status.md) and
 [`Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`](Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md),
-not in this routing document. As of 2026-09-01, `RIGHTSPOT-015` is closed at product commit `e7f30d5`;
+not in this routing document. As of 2026-09-02, `RIGHTSPOT-015` is closed at product commit `e7f30d5`;
 `RS-WO-016-01` is independently verified and integrated at `edd7575`; `RS-WO-017-03` is independently
 verified and integrated at `2a53917`, with its integrated browser gate `RS-WO-017-04` also verified; and
 `RS-WO-019-01` is integrated at `6f52686` with its bounded browser/form evidence complete and is closed.
 The earlier 016/017 transient overlays and failed candidate remain process-incident evidence only; they
-must not be edited, staged, committed, or used as current source.
+must not be edited, staged, committed, or used as current source. Their physical Worktrees have been
+removed; the historical evidence is retained in the owning Task Files and named local-only archive refs.
+
+**Current physical workspace:** `git worktree list --porcelain` currently reports only the canonical
+Main Worktree at `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge` on `main`. Worktree removal does not
+remove Codex task records or branch refs. Re-run the command before relying on this snapshot for a new
+dispatch or cleanup decision.
 
 ## 1. Authority and reading order
 
