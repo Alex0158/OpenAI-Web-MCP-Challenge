@@ -14,16 +14,19 @@ independent verification and is integrated at product commit `3765747`; `RS-WO-0
 verification is checkpoint-locally blocked by an out-of-scope tracked verifier Worktree mutation
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current active Work Order:** `RS-WO-002-12` tenant discovery/request candidate remains frozen at
-`eb1d62e1b33a045e683f64ba3d28930e9444cd25` and its dedicated verifier is checkpoint-locally blocked
-by a tracked `.gitignore` mutation adding `.gstack/` outside the exact nine-path candidate. The
+`eb1d62e1b33a045e683f64ba3d28930e9444cd25`; its first verifier run was checkpoint-locally blocked
+by a tracked `.gitignore` mutation adding `.gstack/` outside the exact nine-path candidate, and the
+same verifier identity is now rerunning from a clean Worktree while the original evidence is preserved.
+The
 `RS-WO-002-13` agent candidate was independently verified and integrated at product commit `3765747`.
 Exact Worktrees and supporting-task identities remain recorded in the parent Task File.
 **Implementation:** Foundation Builder returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02` verification attempt was procedurally blocked by an out-of-scope OS temp artifact, then the corrected bounded rerun returned `VERIFIED` against the unchanged source/runtime identity; `RS-WO-002-03` found and repaired a listing-version guard defect in commit `6e70c9f`, and fresh independent verification returned `VERIFIED` against that frozen source; `RS-WO-002-04` candidate adoption completed at T2 commit `68bbc69`; its first dedicated Verifier attempt stopped before source checks because the dispatch prompt described the Worktree root incorrectly, then one corrected follow-up returned `VERIFIED` against frozen source `28105e4d`; `RS-WO-002-05` Builder returned `READY_FOR_VERIFICATION` with the required runtime, focused `35/35` checks, production build, and local API smoke passing; the candidate was integrated at T2 code commit `de169ce`, and a dedicated Verifier independently returned `VERIFIED` against clean snapshot `bc3bc42`; the read-only `RS-WO-002-06` Architecture Advisor returned `READY_FOR_REVIEW`, and the main thread accepted its decomposition with revisions in ADR-RS-0008; `RS-WO-002-07` candidate `d71fe3e` passed dedicated independent verification with foundation `6/6`, focused `9/9`, full direct `50/50`, build, HTTP, role/privacy, conflict, and no-mutation evidence and was integrated at product commit `f700ba9`; `RS-WO-002-08` is integrated at product commit `006d2fd` after a localized generated-output boundary incident was re-baselined in process commit `8b77bdd`; both originate from reviewed baseline `c758634`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-11` Builder returned `READY_FOR_VERIFICATION`, its exact four-path candidate passed dedicated independent verification, and the main thread integrated it at product commit `6a0b4b8`; `RS-WO-002-12` and `RS-WO-002-13` are the next disjoint role-page Builder slices
 
 **Latest role-page disposition:** `RS-WO-002-13` passed independent verification and was integrated
-at product commit `3765747`. `RS-WO-002-12` remains frozen and unintegrated because its dedicated
-verifier found a tracked `.gitignore` mutation adding `.gstack/` outside the declared nine-path scope;
-the parent remains `in_progress` and this checkpoint-local block must be resolved before tenant rerun.
+at product commit `3765747`. `RS-WO-002-12` remains frozen and unintegrated while its same-identity
+verifier recovery rerun uses a clean Worktree; the original tracked `.gitignore` mutation adding
+`.gstack/` outside the declared nine-path scope remains preserved for separate ownership handling.
+The parent remains `in_progress`.
 
 ## 1. Executive status
 
@@ -60,7 +63,7 @@ final response can remain a normal application action.
 | Preferred candidate set | **RightSpot and Sleepless Kingdom** | RightSpot is the current development target; outer formal selection remains pending |
 | Product thesis | **Provisional** | MVP scope accepted; user/problem and workflow value still need validation |
 | Primary slice | **MVP BUSINESS-RULES BASELINE** | Tenant request → agent review → slot proposal/decline → tenant response |
-| Human application shell | **AGENT ROLE PAGE INTEGRATED; TENANT ROLE PAGE BLOCKED AT VERIFICATION** | Workflow HTTP/DTO transport is integrated at `f700ba9`; shared demo-session shell is integrated at `006d2fd`; shared authenticated role-page frame is integrated at `6a0b4b8`; agent queue/response UI is integrated at `3765747`; tenant discovery/request UI remains frozen and unintegrated pending a clean verifier rerun |
+| Human application shell | **AGENT ROLE PAGE INTEGRATED; TENANT ROLE PAGE VERIFICATION RECOVERY IN PROGRESS** | Workflow HTTP/DTO transport is integrated at `f700ba9`; shared demo-session shell is integrated at `006d2fd`; shared authenticated role-page frame is integrated at `6a0b4b8`; agent queue/response UI is integrated at `3765747`; tenant discovery/request UI remains frozen and unintegrated pending the same verifier's clean rerun |
 | Domain model | **MVP BUSINESS-RULES BASELINE** | Viewing Request, Listing, Availability, roles, transitions, and audit boundaries |
 | Backbone | **LOGICAL BASELINE** | Modular-monolith responsibility is defined and remains the application authority |
 | Implementation stack | **FOUNDATION VERIFIED** | Next.js App Router, React, TypeScript, Node.js 24, and SQLite; the runnable foundation passed the corrected independent verification contract, without claiming product-flow or deployment readiness |
@@ -117,8 +120,8 @@ final response can remain a normal application action.
 
 ## 5. Next gate
 
-The immediate gate is to resolve the checkpoint-local tenant verifier Worktree block and re-run tenant
-verification for candidate `eb1d62e`. The agent candidate `169cb95d` has already passed independent
+The immediate gate is to complete the same-identity tenant verifier recovery rerun for candidate
+`eb1d62e` from the clean Worktree. The agent candidate `169cb95d` has already passed independent
 verification and is integrated at product commit `3765747`; the tenant and agent slices use the verified
 shared frame at `6a0b4b8` and stable transport, listing, and DTO boundaries.
 

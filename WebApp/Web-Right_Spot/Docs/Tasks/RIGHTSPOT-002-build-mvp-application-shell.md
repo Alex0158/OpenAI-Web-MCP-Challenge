@@ -1781,10 +1781,12 @@ unclaimed.
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — the shared role-page frame, listing discovery API, workflow
 transport, and tenant DTO contract are integrated and independently verified  
-**Execution state:** `BLOCKED` — the dedicated tenant Verifier completed the source, runtime, test,
-build, HTTP, and partial UI checks but could not return a terminal verification claim because its
-execution Worktree contains an out-of-scope tracked `.gitignore` mutation adding `.gstack/`; candidate
-`eb1d62e1b33a045e683f64ba3d28930e9444cd25` remains frozen and unintegrated  
+**Execution state:** `IN_PROGRESS` — the first dedicated tenant Verifier run was checkpoint-locally
+blocked by an out-of-scope tracked `.gitignore` mutation in its execution Worktree; the same Verifier
+identity is now rerunning from a newly created clean Worktree without touching the original evidence.
+Candidate `eb1d62e1b33a045e683f64ba3d28930e9444cd25` remains frozen and unintegrated  
+**Prior checkpoint result:** `BLOCKED` — the source, runtime, test, build, HTTP, and partial UI checks
+completed, but final scope readback found `.gstack/` added outside the exact nine-path candidate.  
 **Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-13`; route, component, helper, test, and CSS
 ownership are disjoint, while both consume the same frozen read-only contracts  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent Verifier  
@@ -1793,10 +1795,10 @@ ownership are disjoint, while both consume the same frozen read-only contracts
 seeded published listings, inspect one listing, create and submit the one bounded Viewing Request, and
 later read and respond to the agent's proposal or decline. Keep server workflow state authoritative;
 the UI may hold transient form input but must not invent transitions, identity, versions, or fallback data.  
-**Next gate:** Preserve the verifier Worktree mutation, complete the main-thread ownership/recoverability
-gate without an unapproved restore or deletion, then re-run this same dedicated verification against a
-clean exact-scope Worktree. The partial filter and draft-save observations remain unadjudicated product
-evidence; do not open source repair or integrate until the clean rerun classifies them.  
+**Next gate:** Complete the same Verifier identity's rerun against the clean exact-scope Worktree. The
+original mutation remains preserved for separate ownership/recoverability handling; the partial filter
+and draft-save observations remain unadjudicated product evidence. Do not open source repair or integrate
+until the clean rerun classifies them.  
 **Dispatch state:** Dispatched from clean baseline `8b33399ce5769bdb58cd08025ac2c1917675daf3`; execution
 Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-tenant-ui`; package root
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-tenant-ui/WebApp/Web-Right_Spot`; runtime-pin path
@@ -1815,7 +1817,10 @@ identity. The corrected run passed Node `24.20.0`/npm `11.19.0`, typecheck, foun
 tenant tests `4/4`, full direct suite `54/54`, build, bounded HTTP, and partial UI checks, but its final
 readback found the verifier Worktree's tracked `.gitignore` changed outside the nine-path candidate,
 adding `.gstack/`. The Verifier correctly stopped as `BLOCKED`; it also recorded possible filter and
-draft-save UI observations that require a clean rerun. No source repair or integration is authorized.  
+draft-save UI observations that require a clean rerun. The main thread preserved that Worktree and
+created `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-verifier-rerun` at the same candidate SHA,
+then sent the recovery prompt to the same Verifier identity `01a05bb1-c38b-7a91-95aa-49475a057e43`.
+The rerun result is pending; no source repair or integration is authorized.  
 **Parent execution posture if blocked:** `CONSTRAINED` only for the tenant interface; the agent interface,
 read-only analysis, and process work may continue if they do not consume a blocked tenant write set.
 

@@ -15,10 +15,10 @@ ADR-RS-0008; `RS-WO-002-07` workflow transport is independently verified at `d71
 at product commit `f700ba9`; `RS-WO-002-08` is integrated at product commit `006d2fd` after a
 localized generated-output boundary incident was re-baselined in process commit `8b77bdd`; and
 `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-13` passed dedicated independent
-verification and is integrated at product commit `3765747`; `RS-WO-002-12` remains frozen and
-checkpoint-locally blocked because its verifier Worktree contains an out-of-scope tracked
-`.gitignore` mutation adding `.gstack/`. The next gate is to resolve that ownership/recoverability
-boundary, re-run tenant verification, and then complete combined role-page verification.
+verification and is integrated at product commit `3765747`; `RS-WO-002-12` remains frozen while its
+same-identity verifier recovery rerun uses a clean Worktree after the original out-of-scope tracked
+`.gitignore` mutation adding `.gstack/` was preserved. The next gate is to complete tenant verification
+and then complete combined role-page verification.
 
 ## 1. Authority and reading order
 
