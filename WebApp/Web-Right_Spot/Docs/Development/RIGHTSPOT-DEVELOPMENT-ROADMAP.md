@@ -1,7 +1,7 @@
 # RightSpot Development Roadmap
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
-**Status:** Phase 3 complete — authoritative workflow domain core independently verified; the Phase 4 persistence/application boundary, `RS-WO-002-05` discovery API, and `RS-WO-002-07` workflow HTTP/DTO boundary are independently verified; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in ADR-RS-0008; `RS-WO-002-07` is integrated at product commit `f700ba9`; `RS-WO-002-08` is integrated at product commit `006d2fd` after process re-baseline commit `8b77bdd`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-10` returned `READY_FOR_REVIEW` and its decomposition is accepted; `RS-WO-002-11` candidate `f1f83c7` is frozen and under independent verification as the shared-frame increment before parallel tenant and agent role-page delivery
+**Status:** Phase 3 complete — authoritative workflow domain core independently verified; the Phase 4 persistence/application boundary, `RS-WO-002-05` discovery API, and `RS-WO-002-07` workflow HTTP/DTO boundary are independently verified; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in ADR-RS-0008; `RS-WO-002-07` is integrated at product commit `f700ba9`; `RS-WO-002-08` is integrated at product commit `006d2fd` after process re-baseline commit `8b77bdd`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-10` returned `READY_FOR_REVIEW` and its decomposition is accepted; `RS-WO-002-11` candidate `f1f83c7` passed independent verification and is integrated at product commit `6a0b4b8`; `RS-WO-002-12` and `RS-WO-002-13` are the next disjoint tenant and agent role-page Builder slices
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-01, Europe/London
 
@@ -36,7 +36,7 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 1. Implementation readiness | Resolve and record the foundation toolchain, runtime, SQLite/reset, health-route, source-boundary, and verification profile | Main-thread decision gate complete and the first Builder Work Order is ready; the Node.js baseline situation is explicitly recorded | Complete |
 | 2. Runnable foundation | Create one local application composition with the accepted stack, server-side SQLite foundation, deterministic reset metadata, and reproducible commands | Builder output reconciled and independently verified | Complete; first Verifier attempt was procedurally blocked, corrected rerun verified |
 | 3. Authoritative workflow core | Implement the Viewing Request state machine, availability lifecycle, role projections, version checks, audit facts, and explicit failures | Domain and Backbone checks pass without a browser or external service | Complete; post-repair source `6e70c9f` independently verified |
-| 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | `RS-WO-002-04` persistence/application boundary independently verified at T2 source `28105e4d` (candidate `68bbc69`); `RS-WO-002-05` tenant entry/listing discovery API independently verified at T2 code `de169ce` from snapshot `bc3bc42`; ADR-RS-0008 freezes the ordinary workflow HTTP/DTO boundary; `RS-WO-002-07` workflow transport independently verified at frozen `d71fe3e` and integrated at `f700ba9`; `RS-WO-002-08` shared shell passed dedicated independent verification after process re-baseline `8b77bdd` and is integrated at `006d2fd`; `RS-WO-002-09` UI/UX review is integrated as guidance; tenant and agent role-page UI not started |
+| 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | `RS-WO-002-04` persistence/application boundary independently verified at T2 source `28105e4d` (candidate `68bbc69`); `RS-WO-002-05` tenant entry/listing discovery API independently verified at T2 code `de169ce` from snapshot `bc3bc42`; ADR-RS-0008 freezes the ordinary workflow HTTP/DTO boundary; `RS-WO-002-07` workflow transport independently verified at frozen `d71fe3e` and integrated at `f700ba9`; `RS-WO-002-08` shared shell passed dedicated independent verification after process re-baseline `8b77bdd` and is integrated at `006d2fd`; `RS-WO-002-09` UI/UX review is integrated as guidance; `RS-WO-002-11` shared role-page frame is independently verified and integrated at `6a0b4b8`; tenant and agent role-page UI are the active disjoint Builder slices |
 | 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Not started |
 | 6. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary loop is stable and a new explicit integration decision exists | Deferred; not scheduled |
 
@@ -73,12 +73,14 @@ identity-matching Verifier returned `VERIFIED` against frozen source `28105e4d`.
 independently verified at T2 code commit `de169ce` from canonical snapshot `bc3bc42`. The read-only
 `RS-WO-002-06` Architecture Advisor returned `READY_FOR_REVIEW`; the main thread accepted its
 decomposition with revisions and froze the ordinary workflow HTTP/DTO contract in ADR-RS-0008. The
-current gate is to design and review the bounded tenant and agent role-page Work Orders against the
-integrated workflow transport `f700ba9` and shared shell `006d2fd`. `RS-WO-002-08` reached product
+current gate is to dispatch the accepted bounded tenant and agent role-page Work Orders `RS-WO-002-12`
+and `RS-WO-002-13` against the integrated workflow transport `f700ba9`, shared shell `006d2fd`, and
+shared role frame `6a0b4b8`. `RS-WO-002-08` reached product
 integration after a generated-output boundary incident was re-baselined in process commit `8b77bdd`;
 `RS-WO-002-09` UI/UX review is integrated as guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW`
 and its role-page split is accepted; `RS-WO-002-11` Builder returned `READY_FOR_VERIFICATION`, candidate
-`f1f83c7` is frozen, and its dedicated Verifier is the current gate. The tenant and agent pages must retain disjoint
+`f1f83c7` passed dedicated verification and is integrated at `6a0b4b8`. `RS-WO-002-12` and `RS-WO-002-13`
+are now the two disjoint Builder slices. The tenant and agent pages must retain disjoint
 route/component/test ownership, consume the existing HTTP/DTO boundary, and remain separately
 verifiable before their outputs are coupled. The integrated shell and transport do not authorize
 opening the full API/UI surface as one assignment. The user-authorized Side Chat process lane is not

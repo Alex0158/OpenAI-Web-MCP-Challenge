@@ -16,13 +16,11 @@ The implementation must follow the accepted business rules in
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Independently verify the frozen `RS-WO-002-11` shared role-page frame candidate,
-  then integrate it only if the exact scope and evidence pass; afterwards dispatch the disjoint tenant
-  and property-agent page slices in parallel against the integrated transport and shell contracts.
-- Next gate: Complete the dedicated `RS-WO-002-11` Verifier checkpoint against candidate `f1f83c7`,
-  then freeze/integrate the shared seam and dispatch only the approved tenant and agent Builders. Their
-  exact route, component, test, and shared-boundary ownership are recorded in the accepted architecture
-  review.
+- Current increment: Implement the disjoint tenant and property-agent role-page slices in parallel
+  against the verified shared role frame, workflow transport, listing discovery API, and DTO contracts.
+- Next gate: Dispatch `RS-WO-002-12` and `RS-WO-002-13` as separate Builders, review each frozen candidate
+  independently, then run their dedicated Verifiers before any cross-role integration or browser Happy
+  Path claim. Their exact route, component, test, and shared-boundary ownership are recorded below.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, ADR-RS-0008, and the accepted Requirements
   and Domain and Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, ADR-RS-0008, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -72,10 +70,12 @@ verification, integration, or parent-Task closure.
   `006d2fd`; `RS-WO-002-09` returned `READY_FOR_REVIEW` and its bounded checklist is integrated as
   later UI guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW`; the main thread accepted its
   decomposition and opened the minimal serial shared-role-frame slice `RS-WO-002-11`. Its Builder
-  candidate is frozen at `f1f83c7`, and its dedicated Verifier is now dispatched. Builder, Verifier, Repairer, Integrator, Advisor, and reviewer
+  candidate `f1f83c7` passed dedicated independent verification and is integrated at product commit
+  `6a0b4b8`. The next two Work Orders are the disjoint tenant and agent page slices recorded below.
+  Builder, Verifier, Repairer, Integrator, Advisor, and reviewer
   roles remain checkpoints under this Task, not pre-registered child Tasks.
 - **Baseline:** The actual repository root is `WebMCP_Challenge`; the latest integrated product code
-  is `f700ba9` (workflow transport plus the previously integrated shell); the accepted
+  is `6a0b4b8` (workflow transport, shared shell, and shared role-page frame); the accepted
   workflow/interface documentation baseline was frozen in `c758634` before dispatch. Each new Work
   Order records its own exact source identity. The
   user-authorized Side Chat learning file and process-only Pilot Runbook writeback are classified
@@ -87,7 +87,8 @@ verification, integration, or parent-Task closure.
 - **Worker restrictions:** The foundation, domain-core, persistence/application, and discovery
   writers have stopped. The currently assigned slices have separate ownership: `RS-WO-002-07` owns
   workflow HTTP/DTO paths, `RS-WO-002-08` owns the shared human shell paths, `RS-WO-002-09` is
-  read-only, and `RS-WO-002-11` owns the shared role-page frame paths. Every checkpoint must classify
+  read-only, `RS-WO-002-11` owns the shared role-page frame paths, `RS-WO-002-12` owns tenant page
+  paths, and `RS-WO-002-13` owns agent page paths. Every checkpoint must classify
   the declared read, worker-write, main-thread-writeback,
   forbidden, and generated sets path-by-path; no worker may modify canonical authority, the Git
   index, or generated state outside explicitly ignored runtime paths. No worker may commit, push,
@@ -1560,8 +1561,8 @@ human-flow completeness
 implementation slices. Determine whether both role pages can be built in parallel from the integrated
 transport and shell, identify the smallest shared seam if they cannot, and return exact disjoint
 Work Order boundaries for main-thread approval.  
-**Next gate:** Execute the accepted serial shared-role-frame Work Order `RS-WO-002-11`; role-page
-Builders remain gated until that shared seam is frozen and independently verified.  
+**Next gate:** `RS-WO-002-11` is integrated and its shared seam is verified; the accepted disjoint
+tenant and agent role-page Work Orders `RS-WO-002-12` and `RS-WO-002-13` may now be dispatched in parallel.  
 **Dispatch state:** Dispatched from clean source `a654658d2d50de24fd601f4fb863ec66e19bdff9`; execution
 Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-10-advisor`; package root
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-10-advisor/WebApp/Web-Right_Spot`; runtime-pin path
@@ -1647,8 +1648,9 @@ The main thread also accepts the Advisor's minimal serial prerequisite, with the
 scope: generalize the shared authenticated role-page frame, provide the signed-in role workspace
 entry link, and make `SessionNav`'s current-route semantics correct outside `/`. This is an
 implementation seam, not a product-scope expansion; it must not read or mutate workflow state. The
-Advisor's proposed tenant and agent path sets remain design guidance until `RS-WO-002-11` is
-independently verified and frozen. The suggestion to add a browser-test dependency is not adopted.
+Advisor's proposed tenant and agent path sets were refined into the exact `RS-WO-002-12` and
+`RS-WO-002-13` Work Orders after `RS-WO-002-11` was independently verified and integrated. The
+suggestion to add a browser-test dependency is not adopted.
 
 ### RS-WO-002-11 — Generalize the authenticated role-page frame
 
@@ -1656,8 +1658,8 @@ independently verified and frozen. The suggestion to add a browser-test dependen
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — `RS-WO-002-10` decomposition is accepted; role-page Builders are
 gated on this shared seam  
-**Execution state:** `VERIFYING` — the Builder returned `READY_FOR_VERIFICATION`; candidate `f1f83c7`
-is frozen and the dedicated Verifier is checking the exact shared-role-frame scope  
+**Execution state:** `INTEGRATED` — candidate `f1f83c75cdfab4c782e0481e4c5b335c0d7c1ea0` passed
+dedicated independent verification and was cherry-picked into main at product commit `6a0b4b8`  
 **Parallelization:** `SERIAL` prerequisite for the tenant and agent role-page Builders  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one independent Verifier  
 **Risk profile:** `Standard` — shared session presentation, route semantics, and accessibility  
@@ -1665,9 +1667,8 @@ is frozen and the dedicated Verifier is checking the exact shared-role-frame sco
 semantics so tenant and agent pages can consume one session boundary without duplicating auth UX or
 editing shared files in parallel. Keep this seam presentation-only; it must not read, own, or mutate
 workflow, listing, queue, or decision state.  
-**Next gate:** Complete the dedicated read-only verification against frozen candidate `f1f83c7`; only
-after it returns `VERIFIED` may the main thread integrate the seam and dispatch tenant and agent page
-Builders in parallel.  
+**Next gate:** This Work Order is integrated. Dispatch the disjoint tenant and agent page Builders in
+parallel against the verified shared seam, then independently verify each before cross-role integration.  
 **Dispatch state:** Dispatched from clean source `7e8506f78c58927008672c1185115d7ecb90671a`; execution
 Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-11-shared-role-frame`; package root
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-11-shared-role-frame/WebApp/Web-Right_Spot`; runtime-pin
@@ -1677,9 +1678,10 @@ and the full prompt was persisted; the Builder returned `READY_FOR_VERIFICATION`
 and the candidate was committed in that execution Worktree as `f1f83c7` without changing main. The
 independent Verifier was then dispatched with supporting-task identity `01a05b92-fc73-7042-bbcc-2f51be4a5767`
 (`local`) in Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-11-verifier`, detached at the
-candidate commit; no source write is authorized during verification.  
-**Parent execution posture if blocked:** `CONSTRAINED` for role-page implementation; independent
-read-only analysis and process work may continue.
+candidate commit, and returned `VERIFIED`; the main thread integrated it at product commit `6a0b4b8`.
+No source write was authorized during verification.  
+**Parent execution posture if blocked:** `PROGRESSING` — this shared seam is verified and the two
+disjoint role-page Work Orders may proceed.
 
 #### Scope and ownership
 
@@ -1757,6 +1759,290 @@ or product-contract changes; if a shared path has another owner; if an external 
 or if a behavior can pass only through mock business state, hidden fallback, or client-authoritative
 role logic. Do not widen this Work Order into role pages.
 
+#### Main-thread verification and integration record
+
+The independent Verifier returned `VERIFIED` against candidate
+`f1f83c75cdfab4c782e0481e4c5b335c0d7c1ea0` from the detached Worktree. It confirmed the exact four
+authored paths, a clean source, no forbidden/package/canonical/generated-source mutation, pinned Node
+`24.20.0` and npm `11.19.0`, `npm ci`, typecheck, foundation `6/6`, focused session/listing `7/7`,
+full existing suite `50/50`, production build, built-server health/session/logout smoke, role-link and
+`aria-current` behavior, keyboard focus, narrow/wide no-overflow behavior, and no page/console errors.
+The role paths remained intentionally `404` because they are outside this Work Order. The main thread
+cherry-picked the exact candidate into main at product commit `6a0b4b8` and re-ran main-checkout
+typecheck, foundation `6/6`, and production build successfully. The shared frame is now a stable
+read-only input for `RS-WO-002-12` and `RS-WO-002-13`; tenant/agent end-to-end and parent closure remain
+unclaimed.
+
+### RS-WO-002-12 — Build the tenant discovery and request interface
+
+**Parent task:** `RIGHTSPOT-002`  
+**Role:** Builder → Verifier (sequential checkpoints)  
+**Pre-dispatch status:** `GATED` — the shared role-page frame, listing discovery API, workflow
+transport, and tenant DTO contract are integrated and independently verified  
+**Execution state:** `GATED` — not dispatched; the main thread is preparing the exact tenant-owned
+surface and will assign one dedicated Builder followed by one independent Verifier  
+**Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-13`; route, component, helper, test, and CSS
+ownership are disjoint, while both consume the same frozen read-only contracts  
+**Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent Verifier  
+**Risk profile:** `Standard` — tenant presentation, request freshness, and user-facing mutation feedback  
+**Objective:** Implement the smallest usable tenant surface for the ordinary Happy Path: browse the
+seeded published listings, inspect one listing, create and submit the one bounded Viewing Request, and
+later read and respond to the agent's proposal or decline. Keep server workflow state authoritative;
+the UI may hold transient form input but must not invent transitions, identity, versions, or fallback data.  
+**Next gate:** Dispatch only after the main thread records the final source baseline and supporting-task
+identity. The Builder must return a frozen exact-path candidate; an independent Verifier must pass it
+before the tenant output is integrated or described as end-to-end evidence.  
+**Dispatch state:** Not dispatched. The exact execution Worktree, package root, runtime pin, and task
+identity will be recorded here after the dispatch returns a usable thread identity.  
+**Parent execution posture if blocked:** `CONSTRAINED` only for the tenant interface; the agent interface,
+read-only analysis, and process work may continue if they do not consume a blocked tenant write set.
+
+#### Scope and ownership
+
+**Read set:** Repository instructions and Engineering controls; RightSpot `RUNBOOK.md`; the Pilot
+Runbook; current status; this Task File; Requirements; System Design; API and Integration Contracts;
+Validation and Evidence; ADR-RS-0001 through ADR-RS-0008; `RS-WO-002-09` UI/UX guidance; the integrated
+`RolePageFrame`, shared session primitives, listing routes, workflow routes, workflow DTO contract, and
+the existing domain/application tests.
+
+**Worker write set — exact authored paths:**
+
+- `app/tenant/page.tsx`;
+- `app/tenant/listings/[listingId]/page.tsx`;
+- `app/tenant/requests/page.tsx`;
+- `src/ui/tenant/tenant-discovery-page.tsx`;
+- `src/ui/tenant/tenant-listing-page.tsx`;
+- `src/ui/tenant/tenant-request-page.tsx`;
+- `src/ui/tenant/tenant-api.ts`;
+- `src/ui/tenant/tenant.module.css`; and
+- `tests/ui/tenant-api.test.ts`.
+
+No other authored path may be added. The Builder owns only tenant UI and its focused helper tests;
+it must not add a second test script or testing dependency.
+
+**Main-thread orchestration writeback set:** this Task File, `Docs/00-current-status.md`,
+`Docs/Tasks/README.md`, `Docs/Development/README.md`, `Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`,
+and `RUNBOOK.md`. The Builder must not edit these files.
+
+**Auxiliary process-only set:** none.
+
+**Forbidden set:** all `src/ui/shared/**` paths, including `role-page-frame.tsx`, `session-api.ts`,
+`session-nav.tsx`, and `status-banner.tsx`; all `src/ui/agent/**` and `app/agent/**` paths; `app/layout.tsx`;
+`app/page.tsx`; `app/globals.css`; all API route, application, domain, persistence, fixture, script,
+contract, ADR, canonical-document, Git, deployment, and external paths; package manifests and lockfiles;
+new dependencies; browser-test installation; WebMCP, Cloud Receiver, Redis, WebRTC, production auth,
+and commercial scope. No commit, push, deploy, publication, or follow-on dispatch is allowed.
+
+**Generated set:** existing ignored `.next/`, `node_modules/`, `*.tsbuildinfo`, and `var/test/**` outputs
+only; preserve them and do not create screenshots, reports, `/tmp`, home-directory, or external artifacts.
+
+#### Dependencies and assumptions
+
+- `RolePageFrame` is the shared session and role boundary. Tenant pages must pass
+  `requiredRole="tenant"` and must not duplicate session resolution or accept a client-selected actor.
+- Listing reads use the existing `GET /api/listings` and `GET /api/listings/:listingId` contracts. Filter
+  query names and bounded values remain server-defined; the UI must encode query values and display the
+  authoritative returned `fixtureGeneration` and listing DTOs.
+- Request reads and mutations use only the existing tenant workflow routes: `GET /api/tenant/request`,
+  `POST /api/tenant/request`, `PATCH /api/tenant/request`, `POST /api/tenant/request/submit`,
+  `POST /api/tenant/request/confirm`, and `POST /api/tenant/request/decline`. A contract gap is a
+  `BLOCKED` result, not permission to edit the transport.
+- The fixture allows one request. If a current request already targets another listing, the UI must
+  explain that the existing request is the active one and link to the request surface; it must not invent
+  a second request or silently switch the listing.
+- Draft input contains one to three ordered timestamp values and an optional bounded tenant note. A
+  form may use deterministic, user-editable `datetime-local` controls and convert them to ordered ISO
+  timestamps; it must not silently discard invalid or duplicate values.
+- Each mutation sends a fresh bounded `commandId` and the latest authoritative fixture/request/listing
+  versions. After a successful response, replace the displayed workflow snapshot from the response;
+  do not increment versions or state locally.
+- A `409` refetches the relevant authoritative tenant view and presents a bounded stale/conflict message;
+  it must not blindly replay the command, choose another listing/slot, or claim success. `401`, `403`,
+  `404`, `400`, and `503` remain visible neutral error states.
+- The listing `imageKey` is an opaque seeded key. No external image host, map, video, media asset, or
+  fabricated property data is required; a deterministic local visual placeholder may be used without
+  turning it into a second listing authority. Favourites are deferred and are not part of this Work Order.
+
+#### Acceptance criteria
+
+- `/tenant` renders a role-protected listing catalogue with loading, error/retry, empty, filter, and
+  result states. Each card shows the returned title, area/address, rent, bedrooms, size, availability,
+  and a link to the detail route without hard-coded listing records.
+- `/tenant/listings/[listingId]` reads the authoritative listing, presents its bounded facts and a
+  deterministic media placeholder if useful, and provides a clear draft editor with save-draft and
+  explicit submit actions. It does not submit until the input satisfies the one-to-three ordered-time
+  rule and does not hide server validation errors.
+- `/tenant/requests` reads the tenant DTO and timeline, supports the normal empty state, shows the
+  current listing/request status and tenant-safe response, and offers confirm/decline only for a current
+  `SLOT_PROPOSED` response. Terminal states are visibly read-only; agent preparation and internal notes
+  never appear.
+- The ordinary UI can traverse browse → listing detail → create draft → submit → request dashboard,
+  and, when the agent response exists, dashboard → confirm or decline using the existing HTTP contract.
+  This is a consumer implementation claim only until integrated browser verification proves the full loop.
+- Components render children through the integrated `RolePageFrame`; they do not create a client state
+  machine, infer role from URL, read client storage, use mock business state, or mutate workflow state
+  through any path other than the declared tenant routes.
+- All controls have labels, semantic headings/landmarks, visible keyboard focus, usable pending/error
+  states, and narrow/wide layout behavior without global CSS edits or horizontal overflow.
+- `tenant-api.ts` has focused tests for success parsing, neutral API errors, query encoding, strict mutation
+  payload construction, and the declared response/error boundary. Existing typecheck, foundation tests,
+  build, and a bounded browser/manual smoke pass under Node `v24.20.0`.
+- No agent UI, server/contract change, external integration, deployment, WebMCP/Cloud Receiver readiness,
+  or parent-Task closure claim is made.
+
+#### Verification and return
+
+Use the exact runtime and a frozen T2 candidate. The Builder returns `READY_FOR_VERIFICATION`,
+`NEEDS_REPAIR`, or `BLOCKED` with exact source identity, paths, commands, results, generated state,
+claim boundary, and residual risks. The independent Verifier must inspect the exact nine-path scope and
+run the pinned install/typecheck, foundation and focused helper checks, build, bounded built-server
+session/API smoke, and the tenant UI route/accessibility/error/conflict checks. The Verifier must use
+fresh isolated workflow state when testing mutation flows and must not confuse an empty request with an
+error. Neither checkpoint may edit source, docs, commit, push, deploy, dispatch another task, or claim
+the complete cross-role Happy Path before integration.
+
+#### Stop conditions
+
+Stop at `BLOCKED` if the tenant surface requires an API/DTO/domain/persistence/fixture/role-policy,
+shared-shell, global-CSS, dependency, or product-contract change; if another worker owns an exact path;
+if the one-request fixture cannot express the intended flow; if the runtime/output boundary cannot be
+maintained; or if a behavior can pass only through mock data, hidden fallback, client-authoritative role,
+or local state/version invention. Do not broaden this Work Order into favourites, chat, payments, maps,
+media, agent management, or future integration.
+
+### RS-WO-002-13 — Build the property-agent queue and decision interface
+
+**Parent task:** `RIGHTSPOT-002`  
+**Role:** Builder → Verifier (sequential checkpoints)  
+**Pre-dispatch status:** `GATED` — the shared role-page frame, workflow transport, agent DTO contract,
+and UI/UX guidance are integrated and independently verified  
+**Execution state:** `GATED` — not dispatched; the main thread is preparing the exact agent-owned
+surface and will assign one dedicated Builder followed by one independent Verifier  
+**Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-12`; route, component, helper, test, and CSS
+ownership are disjoint, while both consume the same frozen read-only contracts  
+**Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent Verifier  
+**Risk profile:** `Standard` — agent queue visibility, human response decisions, and private-field safety  
+**Objective:** Implement the smallest usable property-agent surface for the ordinary Happy Path: read
+the assigned request queue, inspect the authorized request and availability, start review, prepare a
+slot proposal or decline, and explicitly send the prepared human decision. Keep the server/application
+workflow authoritative and preserve the separation between preparation and consequence.  
+**Next gate:** Dispatch only after the main thread records the final source baseline and supporting-task
+identity. The Builder must return a frozen exact-path candidate; an independent Verifier must pass it
+before the agent output is integrated or described as end-to-end evidence.  
+**Dispatch state:** Not dispatched. The exact execution Worktree, package root, runtime pin, and task
+identity will be recorded here after the dispatch returns a usable thread identity.  
+**Parent execution posture if blocked:** `CONSTRAINED` only for the agent interface; the tenant interface,
+read-only analysis, and process work may continue if they do not consume a blocked agent write set.
+
+#### Scope and ownership
+
+**Read set:** Repository instructions and Engineering controls; RightSpot `RUNBOOK.md`; the Pilot
+Runbook; current status; this Task File; Requirements; System Design; API and Integration Contracts;
+Validation and Evidence; ADR-RS-0001 through ADR-RS-0008; `RS-WO-002-09` UI/UX guidance; the integrated
+`RolePageFrame`, shared session primitives, workflow routes, workflow DTO contract, and existing
+domain/application tests.
+
+**Worker write set — exact authored paths:**
+
+- `app/agent/page.tsx`;
+- `app/agent/requests/[requestId]/page.tsx`;
+- `src/ui/agent/agent-dashboard-page.tsx`;
+- `src/ui/agent/agent-request-page.tsx`;
+- `src/ui/agent/agent-api.ts`;
+- `src/ui/agent/agent.module.css`; and
+- `tests/ui/agent-api.test.ts`.
+
+No other authored path may be added. The Builder owns only agent UI and its focused helper tests;
+it must not add a second test script or testing dependency.
+
+**Main-thread orchestration writeback set:** this Task File, `Docs/00-current-status.md`,
+`Docs/Tasks/README.md`, `Docs/Development/README.md`, `Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`,
+and `RUNBOOK.md`. The Builder must not edit these files.
+
+**Auxiliary process-only set:** none.
+
+**Forbidden set:** all `src/ui/shared/**` paths, including `role-page-frame.tsx`, `session-api.ts`,
+`session-nav.tsx`, and `status-banner.tsx`; all `src/ui/tenant/**` and `app/tenant/**` paths; `app/layout.tsx`;
+`app/page.tsx`; `app/globals.css`; all API route, application, domain, persistence, fixture, script,
+contract, ADR, canonical-document, Git, deployment, and external paths; package manifests and lockfiles;
+new dependencies; browser-test installation; WebMCP, Cloud Receiver, Redis, WebRTC, production auth,
+and commercial scope. No commit, push, deploy, publication, or follow-on dispatch is allowed.
+
+**Generated set:** existing ignored `.next/`, `node_modules/`, `*.tsbuildinfo`, and `var/test/**` outputs
+only; preserve them and do not create screenshots, reports, `/tmp`, home-directory, or external artifacts.
+
+#### Dependencies and assumptions
+
+- `RolePageFrame` is the shared session and role boundary. Agent pages must pass
+  `requiredRole="agent"` and must not duplicate session resolution or accept a client-selected actor.
+- Queue and detail reads use only `GET /api/agent/requests` and `GET /api/agent/requests/:requestId`.
+  Queue empty is a normal result; missing detail is a visible `404` state. GET operations must not mutate
+  workflow state.
+- Agent commands use only `POST /api/agent/requests/:requestId/review`,
+  `PUT /api/agent/requests/:requestId/preparation`, and
+  `POST /api/agent/requests/:requestId/send`. A contract gap is a `BLOCKED` result, not permission to
+  edit the transport, DTO, domain, or persistence boundary.
+- The server derives actor, assignment, request identity, state transition, and final send kind. The UI
+  may choose a bounded available slot or an agent decline preparation, but it must not submit a terminal
+  state or arbitrary request/actor identity.
+- Preparation and send are visibly separate actions. Preparing a response remains `AGENT_REVIEWING`;
+  only the explicit send action may produce `SLOT_PROPOSED` or `AGENT_DECLINED`. A proposal can select
+  only a returned slot whose current status is `AVAILABLE`; if it becomes unavailable, surface `409` and
+  refetch rather than silently choosing another slot.
+- Each mutation sends a fresh bounded `commandId`, current authoritative `fixtureGeneration`, and the
+  latest request version. After a successful response, replace the displayed snapshot from the response;
+  do not increment versions or state locally. A `409` refetches and presents a bounded conflict message.
+- Agent-only `preparedResponse` and `internalReviewNote` may be displayed only within the agent surface;
+  the UI must not copy them into a tenant response or expose credentials, actor IDs, raw persistence state,
+  processed commands, or assignment internals.
+
+#### Acceptance criteria
+
+- `/agent` renders a role-protected queue with loading, error/retry, empty, refresh, bounded state counts,
+  and request links based only on the returned `AgentQueueResponse`; it does not manufacture a queue item.
+- `/agent/requests/[requestId]` reads and displays the assigned request, agent-safe listing/status,
+  preferred times, tenant note, bounded availability, and current workflow state. It provides a clear
+  start-review action for `REQUEST_SUBMITTED`, without exposing tenant identity beyond the accepted DTO.
+- During `AGENT_REVIEWING`, the page provides a bounded preparation form for an available slot proposal
+  or agent decline, optional tenant-facing note, and optional internal review note. It renders the saved
+  preparation and keeps `Prepare response` separate from `Send response`.
+- Send is enabled only when the authoritative DTO contains a prepared response; the UI does not accept a
+  client-selected terminal state and does not auto-send after preparation. After send, the response and
+  state are read from the server result and the terminal/proposed surface becomes appropriately read-only.
+- The ordinary UI can traverse queue → request detail → start review → prepare → explicit send, while
+  preserving the consequential agent decision as a visible human action. This is a consumer claim only
+  until integrated browser verification proves the full cross-role loop.
+- Components render through the integrated `RolePageFrame`; they do not create a client state machine,
+  infer role from URL, read client storage, use mock business state, or mutate workflow state outside the
+  declared agent routes.
+- All controls have labels, semantic headings/landmarks, visible keyboard focus, usable pending/error/
+  conflict states, and narrow/wide layout behavior without global CSS edits or horizontal overflow.
+- `agent-api.ts` has focused tests for success parsing, neutral API errors, strict command payloads, queue
+  empty/detail behavior, and the declared response/error boundary. Existing typecheck, foundation tests,
+  build, and a bounded browser/manual smoke pass under Node `v24.20.0`.
+- No tenant UI, server/contract change, external integration, deployment, WebMCP/Cloud Receiver readiness,
+  or parent-Task closure claim is made.
+
+#### Verification and return
+
+Use the exact runtime and a frozen T2 candidate. The Builder returns `READY_FOR_VERIFICATION`,
+`NEEDS_REPAIR`, or `BLOCKED` with exact source identity, paths, commands, results, generated state,
+claim boundary, and residual risks. The independent Verifier must inspect the exact seven-path scope and
+run the pinned install/typecheck, foundation and focused helper checks, build, bounded built-server
+session/API smoke, and the agent UI route/accessibility/error/conflict checks. The Verifier must use
+fresh isolated workflow state when testing mutation flows and must verify that preparation and send remain
+separate. Neither checkpoint may edit source, docs, commit, push, deploy, dispatch another task, or claim
+the complete cross-role Happy Path before integration.
+
+#### Stop conditions
+
+Stop at `BLOCKED` if the agent surface requires an API/DTO/domain/persistence/fixture/role-policy,
+shared-shell, global-CSS, dependency, or product-contract change; if another worker owns an exact path;
+if preparation/send cannot preserve the human decision boundary; if the runtime/output boundary cannot
+be maintained; or if a behavior can pass only through mock data, hidden fallback, client-authoritative
+role, automatic send, or local state/version invention. Do not broaden this Work Order into listing CRUD,
+tenant administration, chat, calendar, payments, media, or future integration.
+
 ## Parent objective — not the current Builder scope
 
 The following is the complete parent-Task outcome. It must not be sent to one Builder or Verifier as a
@@ -1796,9 +2082,11 @@ boundary, and `RS-WO-002-05` tenant entry/listing discovery API are independentl
 it with revisions and froze the ordinary local workflow HTTP/DTO boundary in ADR-RS-0008. The
 `RS-WO-002-07` workflow transport is independently verified and integrated at `f700ba9`; the
 `RS-WO-002-08` shared shell is independently verified and integrated at `006d2fd`; and
-`RS-WO-002-09` is integrated as read-only UI/UX guidance. The next gate is to design and review
-disjoint tenant and agent role-page Work Orders against these stable interfaces, then dispatch them
-only after the main thread confirms their exact ownership and acceptance criteria. The parent Task
+`RS-WO-002-09` is integrated as read-only UI/UX guidance, and `RS-WO-002-11` is integrated at product
+commit `6a0b4b8` after dedicated independent verification. The next gate is to dispatch the accepted
+disjoint tenant and agent role-page Work Orders `RS-WO-002-12` and `RS-WO-002-13` against these stable
+interfaces, then independently verify each before their outputs are integrated or used for a cross-role
+browser claim. The parent Task
 must remain `in_progress` until the staged implementation, independent verification, integration,
 browser walkthrough, and canonical writeback gates for the complete ordinary application slice are
 complete without adding deferred WebRTC/Redis infrastructure.
