@@ -1,7 +1,7 @@
 # Navigation and Pathfinding
 
 **Mechanism:** M09
-**Status:** Implementation target; movement values are open
+**Status:** MVP route and movement contract accepted; production path tuning is open
 **Authority:** This file owns route and movement semantics. Engineering owns the efficient execution
 strategy; migration owns the moving home anchor.
 
@@ -9,8 +9,9 @@ strategy; migration owns the moving home anchor.
 
 A mission route contains a source anchor, target coordinate or entity reference, walkability version,
 waypoints, estimated travel time, and route status. The route is a plan, not a teleport permission.
-Movement consumes world time according to soldier speed, equipment, terrain, and any carried siege
-loadout.
+Movement consumes world time according to the accepted G2 soldier speed of 3 logical tiles per world
+second. Production terrain cost, equipment modifiers, and any carried siege loadout remain future
+rules.
 
 ## Path planning
 
@@ -30,7 +31,8 @@ hidden current position automatically. A returning soldier targets the shelter's
 
 The server owns walkability and collision. The browser may animate movement between accepted
 snapshots, but it cannot cross blocked cells, overlap a protected shelter, or claim arrival early.
-The exact terrain cost, collision radius, formation spacing, and stuck recovery are `OPEN`.
+For G2, a blocked or unsafe route makes one bounded replan attempt and then enters `WAITING_REVIEW`;
+the exact terrain cost, collision radius, formation spacing, and siege stuck recovery are `OPEN`.
 
 ## Invariants
 
@@ -41,7 +43,7 @@ The exact terrain cost, collision radius, formation spacing, and stuck recovery 
 
 ## Open decisions
 
-- movement speed formula and terrain modifiers;
+- production movement speed formula and terrain modifiers;
 - waypoint granularity and replanning threshold;
 - siege formation spacing and obstacle handling;
 - stale target search radius; and
@@ -53,4 +55,3 @@ The exact terrain cost, collision radius, formation spacing, and stuck recovery 
 - [`detail-08-mission-dispatch-return-and-recall.md`](detail-08-mission-dispatch-return-and-recall.md);
 - [`detail-10-player-exploration-fog-and-intelligence.md`](detail-10-player-exploration-fog-and-intelligence.md); and
 - [`detail-17-shelter-migration-and-veil.md`](detail-17-shelter-migration-and-veil.md).
-

@@ -1,7 +1,7 @@
 # Resource Extraction, Cargo, and Deposit
 
 **Mechanism:** M11
-**Status:** Working decision; numerical balance is open
+**Status:** MVP economy contract accepted; production balance is open
 **Authority:** This file owns the resource-to-cargo-to-coin lifecycle. World generation owns nodes;
 loot owns hostile transfer; upgrades own tool progression.
 
@@ -39,8 +39,8 @@ capacity, detection, or combat risk.
 
 Cargo belongs to the soldier until the shelter deposit transaction commits. Every cargo record has
 owner, source node, typed quantity, acquisition time, capacity usage, and current mission attempt.
-The initial capacity model is finite; the accepted MVP uses five equal-weight slots while a full
-typed-weight model remains `OPEN`.
+The accepted MVP uses five equal-weight slots, one unit every two world seconds, Wood at one coin,
+and Rock at three coins. A full typed-weight model remains `OPEN` for later progression.
 
 When capacity is reached, the mission enters `RETURNING`. A forced recall queues the same return.
 Cargo remains exposed during travel and can be transferred or destroyed by combat.
@@ -66,11 +66,10 @@ return travel, capacity, and expected loss risk.
 
 ## Open decisions
 
-- capacity units and typed-resource weights;
-- conversion values and extraction durations;
-- partial extraction at node depletion;
-- node reservation or competition policy; and
-- whether monster value enters cargo or credits a direct coin reward.
+- production capacity and typed-resource weights;
+- production conversion values and extraction durations;
+- later node reservation or competition policy; and
+- whether future monster species create cargo, direct coin, or world-drop value.
 
 ## Related documents
 

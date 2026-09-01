@@ -164,7 +164,7 @@ Until then, the documentation is structurally complete and the unchosen values r
 The structural checks for this increment reported:
 
 - 19 `detail-*.md` files, 11 numbered chain files, and 8 numbered capability files;
-- 103 Markdown files in the child tree;
+- 105 Markdown files in the child tree;
 - zero missing relative Markdown links;
 - zero CJK characters outside the intentionally fenced raw-source quotations; and
 - zero missing required sections in mechanism, chain, and capability detail files.

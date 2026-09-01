@@ -1,7 +1,7 @@
 # World Generation and Resource Spawn
 
 **Mechanism:** M02
-**Status:** Target design; numerical tuning is open
+**Status:** MVP fixture generation accepted; production generation tuning is open
 **Authority:** This file owns generated world actors and node lifecycle. World lore owns fiction;
 Engineering owns storage and worker execution.
 
@@ -44,9 +44,9 @@ uses a small set of regions and a small state machine; a full navmesh is not req
 
 Initial placement and migration destinations must be walkable, non-overlapping, and outside the
 minimum separation radius from another shelter. For the accepted MVP, the generator places two
-symmetrical protected starts at least 80 logical tiles apart on the 128 × 128 map. Production
-protected-start duration, separation tuning, blocked terrain, and whether a destination may be
-discovered before arrival remain `OPEN`.
+symmetrical protected starts at `(16,64)` and `(112,64)` on the 128 × 128 map, with a 12-tile
+protected-start radius that ends at first dispatch or 120 world seconds. Production separation
+tuning, blocked terrain, and whether a destination may be discovered before arrival remain `OPEN`.
 
 ## Invariants
 

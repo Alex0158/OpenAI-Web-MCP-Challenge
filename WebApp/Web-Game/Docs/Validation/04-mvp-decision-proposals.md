@@ -1,15 +1,16 @@
 # MVP Decision Proposals
 
-**Role:** Proposed decision pack for the first playable slice  
-**Status:** `PROPOSED`; not promoted to accepted product truth  
+**Role:** Decision pack for the first playable slice  
+**Status:** OWNER-ACCEPTED MVP DEFAULTS; recorded in `SK-MVP-0.1`  
 **Date:** 2026-09-01  
 **Scope:** Sleepless Kingdom game child only
 
 ## Purpose
 
-This pack turns the roadmap gaps into concrete, reviewable defaults. It is the input to CP-01, the
-versioned MVP contract sheet. A proposal becomes product truth only when the owner promotes it and
-the owning mechanic, chain, scenario, current status, and decision record agree.
+This pack turned the roadmap gaps into concrete, reviewable defaults. The owner has accepted the
+defaults and they are now recorded in CP-01's versioned MVP contract sheet. The owning mechanic,
+chain, scenario, current status, and decision record must still remain synchronized as implementation
+evidence arrives.
 
 The goal is a small, deterministic world that feels alive while the page is closed. Every rule below
 is judged by four tests:
@@ -21,7 +22,7 @@ is judged by four tests:
 
 ## Inputs and boundaries
 
-The proposals reconcile the accepted MVP profile in
+This pack reconciles the accepted MVP profile in
 [`Engineering/07-hackathon-mvp-build-gate.md`](../Engineering/07-hackathon-mvp-build-gate.md), the
 delivery sequence in [`Engineering/08-development-roadmap-and-checkpoints.md`](../Engineering/08-development-roadmap-and-checkpoints.md),
 the mechanism and chain owners, and the external Starve.io presentation observations in
@@ -35,7 +36,7 @@ Those remain post-G2 work unless the owner explicitly changes the release bounda
 
 ## Decision summary
 
-| Gap | Proposed default | Player-facing consequence | Verify at |
+| Gap | Accepted MVP default | Player-facing consequence | Verify at |
 |---|---|---|---|
 | G-MVP-01 Identity and session | Use two deterministic fixture players with opaque `player_id` values. Bind each page session, command, and WebMCP tool to its shelter owner. | The player always sees one shelter and cannot accidentally issue another player's command. | CP-01 / CP-02 |
 | G-MVP-02 Coordinates and distance | Use integer logical tiles. Shelter starts are `(16,64)` and `(112,64)` on a 128 × 128 map; the accepted separation is Euclidean distance; the camera is 32 × 20 tiles. | The world is visibly larger than one screen and two players have meaningful travel space. | CP-01 / CP-07 |
@@ -44,7 +45,7 @@ Those remain post-G2 work unless the owner explicitly changes the release bounda
 | G-MVP-05 Downtime catch-up | Persist `world_time`. On restart, advance to the current server time; replay consequential milestones individually and collapse routine extraction/respawn/projection work into bounded batches. | Closing the page or restarting the worker never pauses the world or causes a burst of duplicate events. | CP-01 / CP-06 |
 | G-MVP-06 Same-time ordering | At a world-second boundary: apply movement and home-boundary deposits; lock new contacts; apply extraction only to soldiers still eligible; resolve one combat round; settle death/respawn/reissue; then apply timers, projections, snapshots, and outbox delivery. | A soldier that has crossed home is banked before danger; every other simultaneous result has one visible order. | CP-01 / CP-06 / CP-15 |
 | G-MVP-07 Monster re-engagement | Ordinary death keeps `soldier_id`, clears field cargo, creates a new `mission_attempt_id`, and reissues the repeatable mission. Try one route around the last danger cell; use `WAITING_REVIEW` if no safe route exists. | The soldier resumes its job without teleporting or being trapped in an invisible death loop. | CP-01 / CP-11 |
-| G-MVP-08 Mission terminal states | Use `TRAVELING`, `WORKING`, `RETURNING`, `WAITING_REVIEW`, `RESIDENT`, and `TERMINAL`. Empty target returns partial cargo; recall queues return; siege is reserved to end on death. | Every mission row has a clear next state and reason instead of disappearing. | CP-01 / CP-09 |
+| G-MVP-08 Mission terminal states | Use `TRAVELLING`, `WORKING`, `RETURNING`, `WAITING_REVIEW`, `AT_SHELTER`, and `TERMINAL`. Empty target returns partial cargo; recall queues return; siege is reserved to end on death. | Every mission row has a clear next state and reason instead of disappearing. | CP-01 / CP-09 |
 | G-MVP-09 Cargo boundary | Capacity is five equal-weight slots. Wood and Rock occupy one slot each. Extraction stops at capacity; coins exist only after an atomic shelter deposit. | The dashboard can show exactly what is at risk and why a death removed it. | CP-01 / CP-10 |
 | G-MVP-10 Snapshot and resync | Send a full authoritative snapshot on connect/resync, then sequenced snapshots around 10 Hz with `snapshot_id`, `world_time`, and entity revisions. Mutations use typed HTTP commands. | A dropped connection shows stale status and then cleanly replaces local state; it never invents progress. | CP-01 / CP-08 |
 | G-MVP-11 Persistence versions | Version schema, snapshots, and events. Reject incompatible versions visibly; do not perform an unverified live migration during the judge run. | Recovery failure is explicit and diagnosable instead of silently corrupting a world. | CP-01 / CP-05 |
@@ -64,12 +65,12 @@ remain tunable after the first trace.
 
 ## Owner review status
 
-**As of 2026-09-01:** The owner agreed with the other recommendations in this pack, including the
-gatherer-versus-hunter combat contrast and showing the other shelter as a discovered landmark while
-keeping active PvP attack commands outside G2. Two terms remain pending clarification before CP-01 can
-promote the complete pack: the G2 Re-entry action and the protected-start boundary.
+**As of 2026-09-01:** The owner accepted all twenty MVP defaults in this pack, including the
+gatherer-versus-hunter combat contrast, the discovered-landmark presentation, the automatic bounded
+Re-entry recall, and the 12-tile/120-second protected start. CP-01 now records these choices as
+`SK-MVP-0.1`; runtime and browser evidence remain future gates.
 
-## Proposed combat and economy profile
+## Accepted combat and economy profile
 
 ### Combat
 
@@ -113,22 +114,24 @@ risk_adjusted_rate = (success_probability × deposited_coin - expected_field_los
 
 The G2 acceptance target is not a perfect economy. It is that the player can understand why a nearby
 Rock run may be worth more while a threatened Wood run may be safer, and that the monster event can
-remove exposed cargo before deposit. Any later tuning must preserve the cargo-to-deposit boundary.
+remove exposed cargo before deposit. A hunter victory clears the seeded threat and emits
+`MonsterDefeated` without adding a third resource or direct coin reward. Any later tuning must
+preserve the cargo-to-deposit boundary.
 
 ## Cross-mechanism chain contracts
 
 ### Dispatch to deposit
 
 ```text
-RESIDENT
+AT_SHELTER
   -> dispatch(role, tool, target, route, expected_revision)
-  -> TRAVELING
+  -> TRAVELLING
   -> WORKING
   -> cargo += extracted_unit  [until capacity or target depletion]
   -> RETURNING              [full pack, recall, or terminal work]
   -> home boundary crossed
   -> atomic deposit and coin projection
-  -> RESIDENT
+  -> AT_SHELTER
 ```
 
 The page shows the current phase, route, cargo, ETA, and return trigger. A forced recall changes the
@@ -151,7 +154,7 @@ field soldier observes monster
   -> Re-entry delivery after eligibility/cooldown check
   -> Agent returns to canonical page
   -> fresh inspect_mission_history
-  -> one bounded recall action or visible prepared result
+  -> force_recall_soldier result when the current revision permits it
 ```
 
 The event payload carries an opaque binding, event id, world time, affected entity versions, and a
@@ -195,15 +198,15 @@ death card reads as a chain: “Gatherer S-001 reached Node R-001, carried 2 Roc
 Monster M-001 at world time 42, lost 2 Rock, respawned at Shelter P-001, and received mission attempt
 003.” The exact visual copy can change; the causal fields cannot.
 
-## Decisions that still need owner confirmation
+## Owner-confirmed product choices
 
-The following are the only high-impact product choices I recommend reviewing before promotion. The
-terms are defined here so the review is about behavior rather than vocabulary.
+The following choices were reviewed because they change the game feel or the competition thesis. The
+terms are defined here so the contract is about behavior rather than vocabulary.
 
 ### Re-entry action
 
 Re-entry is the Agent returning to the canonical game page after a backend event, not a soldier
-returning to its shelter. The proposed G2 flow is:
+returning to its shelter. The accepted G2 flow is:
 
 ```text
 page closed
@@ -211,44 +214,46 @@ page closed
   -> CargoLostToMonster is committed and delivered
   -> Agent returns to the game page
   -> Agent reads fresh mission history and current revisions
-  -> Agent invokes or prepares force_recall_soldier
+  -> Agent executes force_recall_soldier when the current revision permits it
 ```
 
 `force_recall_soldier` is a bounded, server-validated command. It queues the soldier's normal return,
-does not teleport it, does not change its role, and does not create coins. The recommended choice is
-to let the Agent execute this one low-consequence recovery action under the existing user grant;
-migration, siege, destructive upgrades, and irreversible recovery remain human-confirmed.
+does not teleport it, does not change its role, and does not create coins. The accepted choice is to
+let the Agent execute this one low-consequence recovery action under the existing user grant when the
+current revision permits it; an unavailable capability or stale command returns a visible typed
+result. Migration, siege, destructive upgrades, and irreversible recovery remain human-confirmed.
 
 ### Protected start
 
-Protected start is an onboarding shield around the initial shelter. Under the proposal, hostile
+Protected start is an onboarding shield around the initial shelter. Under the accepted contract, hostile
 monster contact is rejected within 12 logical tiles until the player's first field dispatch or 120
 world seconds, whichever comes first. The page shows the active shield and the condition that will end
 it. This is separate from migration's veil: it does not hide the shelter, protect already-dispatched
-soldiers, or make the whole map safe. PvP attack commands are outside G2, so the proposal only defines
+soldiers, or make the whole map safe. PvP attack commands are outside G2, so the contract only defines
 the monster-start boundary at this stage.
 
-1. whether the G2 Re-entry action may auto-execute `force_recall_soldier`, or must stop at a prepared
-   action for human confirmation;
-2. whether the 12-tile/120-second protected-start rule feels sufficiently safe without removing the
-   first meaningful risk;
-3. whether a gatherer losing and a hunter winning against the seeded monster creates the intended
-   emotional contrast; and
-4. whether the G2 page should show the other shelter as a discovered world landmark while keeping
-   all active PvP attack commands disabled until the post-G2 slice.
+1. The G2 Re-entry action may auto-execute `force_recall_soldier` under the existing user grant. It
+   remains a normal server command; migration, siege, destructive upgrades, and irreversible recovery
+   require human confirmation.
+2. The protected-start rule uses 12 tiles and ends at the first dispatch or 120 world seconds. It
+   protects onboarding without protecting field soldiers indefinitely.
+3. A gatherer losing and a hunter winning against the seeded monster is the accepted first-trace
+   emotional and strategic contrast.
+4. The G2 page may show the other shelter as a discovered world landmark while all active PvP attack
+   commands remain disabled until the post-G2 slice.
 
 Everything else in this pack is an engineering or verification default that can be changed through a
-recorded CP-01 decision if the prototype produces contrary evidence.
+recorded contract revision if the prototype produces contrary evidence.
 
 ## Promotion checklist
 
-Before CP-01 closes, the owner and implementation record must:
+For CP-01 and every later contract revision, the implementation record must:
 
-1. mark each proposal `ACCEPTED`, `REVISED`, or `DEFERRED`;
+1. retain the owner decision as `ACCEPTED`, or record a named `REVISED` or `DEFERRED` decision;
 2. assign one authority file to every accepted field;
 3. update the affected mechanism detail, chain, scenario, and current status;
 4. add state, event, idempotency, revision, and failure cases to the versioned contract; and
 5. leave the full-game gaps explicitly outside the G2 non-goal boundary.
 
-Until that checklist is complete, this file remains a proposal and the current game remains
-documentation-only.
+The defaults are accepted, while the current game remains documentation-only until CP-02 and the
+implementation checkpoints provide runtime evidence.

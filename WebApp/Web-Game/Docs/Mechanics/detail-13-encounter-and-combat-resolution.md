@@ -1,7 +1,7 @@
 # Encounter and Combat Resolution
 
 **Mechanism:** M13
-**Status:** Combat framework accepted; numbers open for co-design
+**Status:** G2 deterministic combat contract accepted; full-game balance is open
 **Authority:** This file owns detection-to-contact locking and combat resolution. Loot, defense, and
 breach own their settlement consequences.
 
@@ -37,13 +37,16 @@ The same explainable framework applies to soldier-versus-soldier, soldier-versus
 - shelter and turret contribution for an assault; and
 - party aggregation and diminishing return for a siege group.
 
-The current placeholder is:
+The accepted G2 contract is:
 
 ```text
-damage = max(1, effective_attack × matchup_modifier + tool_power - effective_defense)
+damage = max(1, attack + weapon_power + matchup_bonus - defense)
 ```
 
-It communicates the intended relationship but is not final balance.
+G2 resolves one round per world second, uses speed for initiative with ascending entity-id tie-breaks,
+and has no random rolls, critical hits, or hidden party modifier. The accepted actor values are in
+[`../Engineering/09-mvp-contract-sheet.md`](../Engineering/09-mvp-contract-sheet.md). Full-game
+matchups, party aggregation, retreat, and siege modifiers remain open.
 
 ## Resolution
 
@@ -77,9 +80,9 @@ soldiers remain independent; they do not form a hidden collaboration group when 
 
 ## Open decisions
 
-- base HP, attack, defense, speed, and tool values;
-- round cadence, initiative, randomness, and critical effects;
-- role matchup modifiers and monster bonuses;
+- production base HP, attack, defense, speed, and tool values;
+- future round randomness and critical effects;
+- full-game role matchups and monster bonuses;
 - party aggregation and retreat threshold; and
 - the exact assault commitment point during migration.
 

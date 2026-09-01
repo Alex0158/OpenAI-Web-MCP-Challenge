@@ -76,8 +76,9 @@ The first slice should prove one complete causal loop with deliberately small co
 4. Show the route, cargo, combat result, loss cause, respawn, and next valid action in dashboard
    history.
 5. Deliver that causal event through the outbox, return to the canonical page, reread current state,
-   and perform or prepare one bounded WebMCP action. Keep migration, siege, and destructive upgrades
-   behind the human boundary.
+   and execute the bounded `force_recall_soldier` WebMCP action under the accepted grant when the
+   current revision permits it. A missing capability or stale command must be visible; migration,
+   siege, and destructive upgrades stay behind the human boundary.
 6. Disconnect the browser and restart the local worker. The recovered state must follow durable
    world time without duplicating the encounter, cargo loss, respawn, or event delivery.
 

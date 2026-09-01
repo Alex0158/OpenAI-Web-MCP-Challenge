@@ -1,6 +1,6 @@
 # Chain C10: World Tick to Persistence
 
-**Status:** Target implementation; runtime continuity is unverified
+**Status:** MVP clock and ordering accepted; runtime continuity is unverified
 
 ## Trigger and outcome
 
@@ -34,12 +34,12 @@ not proof. Candidate events include all domain events listed by the owning mecha
 
 ## Open decisions
 
-World-time rate, replay batch, catch-up cap, same-time tie-break order, active-region approximation,
-and snapshot cadence remain `OPEN`.
+Production replay cap, active-region approximation, long-offline presentation, and hosted snapshot
+cadence remain `OPEN`. MVP world-time rate, bounded catch-up, same-time order, and local snapshot
+target are fixed by [`../../Engineering/09-mvp-contract-sheet.md`](../../Engineering/09-mvp-contract-sheet.md).
 
 ## Related mechanisms
 
 - [`../detail-01-world-clock-and-continuity.md`](../detail-01-world-clock-and-continuity.md);
 - [`../detail-02-world-generation-and-resource-spawn.md`](../detail-02-world-generation-and-resource-spawn.md); and
 - [`../../Engineering/03-persistence-world-clock-and-events.md`](../../Engineering/03-persistence-world-clock-and-events.md).
-

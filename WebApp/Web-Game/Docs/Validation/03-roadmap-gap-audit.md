@@ -1,7 +1,7 @@
 # Roadmap-Driven Design Gap Audit
 
 **Role:** Validation record produced by the delivery-roadmap review  
-**Status:** VERIFIED planning audit; listed decisions remain `OPEN` or `RECOMMENDED`  
+**Status:** VERIFIED planning audit; all twenty MVP defaults owner-accepted, runtime evidence pending  
 **Date:** 2026-09-01  
 **Scope:** Sleepless Kingdom game child only
 
@@ -12,9 +12,9 @@ as a forcing function. Every checkpoint was reviewed for an input, an authoritat
 transition, a persistence boundary, an observable result, and a failure or recovery path. A missing
 choice is recorded here instead of being silently invented in code.
 
-Concrete defaults for the gaps are proposed in
-[`04-mvp-decision-proposals.md`](04-mvp-decision-proposals.md). That file is a proposal pack for
-CP-01; it is not accepted product truth until the owner promotes each decision.
+Concrete defaults for the gaps are recorded in
+[`04-mvp-decision-proposals.md`](04-mvp-decision-proposals.md). That pack is now owner-accepted and
+is captured by the `SK-MVP-0.1` contract; runtime evidence remains a later gate.
 
 The review does not change the product thesis. It confirms that the concept is coherent enough for a
 contract gate and a runtime capability probe, while separating the two-player demonstration from the
@@ -23,27 +23,28 @@ larger PvP, siege, migration, breach, progression, and leaderboard game.
 ## Findings
 
 The existing mechanism, capability, and chain documents cover the intended player loop. The roadmap
-exposed 20 MVP decisions that must be closed before implementation can be trusted. It also exposed
-eight full-game decisions that should remain outside the first vertical slice. None of these findings
-requires adding a feature to the MVP; most require naming a default, an ordering rule, or an evidence
-boundary.
+exposed 20 MVP decisions that were required before implementation could be trusted. The owner has
+accepted the defaults in `04-mvp-decision-proposals.md` and they are now recorded in the `SK-MVP-0.1`
+contract. The audit also exposed eight full-game decisions that should remain outside the first
+vertical slice. None of these findings requires adding a feature to the MVP; most require naming a
+default, an ordering rule, or an evidence boundary.
 
-## MVP decisions to close before implementation
+## MVP decisions audited and closed at design level
 
-| Gap | Decision required | Recommended simple default | Roadmap gate |
+| Gap | Decision boundary | Accepted MVP default | Roadmap gate |
 |---|---|---|---|
 | G-MVP-01 | Player/session identity and fixture ownership | Use two deterministic fixture players with opaque `player_id` values; bind every command and page tool to a server session and shelter owner | CP-01 |
 | G-MVP-02 | Coordinate and distance semantics | Use integer logical tiles; use Euclidean distance for the 80-tile separation; start shelters at `(16,64)` and `(112,64)`; use a documented 32 × 20 camera viewport | CP-01 |
 | G-MVP-03 | Protected-start boundary | Protect each start shelter and its 12-tile radius from hostile monster contact until the first dispatch or 120 world seconds, whichever comes first | CP-01 |
 | G-MVP-04 | Node placement and contention | Place one 20-unit Wood node and one 20-unit Rock node 12–20 tiles from each start; do not reserve nodes; the authoritative extraction transaction wins each unit | CP-01 |
 | G-MVP-05 | Offline and downtime catch-up | On restart, advance from persisted `world_time` to current time deterministically; apply consequential events individually and routine respawn/projection work in bounded summaries | CP-01 / CP-06 |
-| G-MVP-06 | Same-time event order | Resolve contact/combat, shelter boundary and deposit, death/respawn, migration, extraction/respawn, then projections and outbox delivery at one world-second boundary | CP-01 / CP-06 |
+| G-MVP-06 | Same-time event order | Apply movement and home-boundary deposit, lock contacts, extract only eligible soldiers, resolve one combat round, settle death/respawn/reissue, then timers, projections, and outbox delivery at one world-second boundary | CP-01 / CP-06 |
 | G-MVP-07 | Monster re-engagement after death | Reissue the same soldier identity and mission; make one route attempt around the last danger cell; if no safe route exists, enter `WAITING_REVIEW` instead of looping | CP-01 / CP-11 |
 | G-MVP-08 | Mission terminal states | Empty or depleted targets return the soldier with partial cargo; an unreachable route becomes `WAITING_REVIEW`; recall preserves role and cargo while queuing travel; siege ends on death | CP-01 / CP-09 |
 | G-MVP-09 | Cargo boundary and mixed cargo | Extract only remaining capacity; Wood and Rock share equal-weight slots; no resource converts to coins until the shelter deposit transaction commits | CP-01 / CP-10 |
 | G-MVP-10 | Realtime snapshot and resync contract | Send a full snapshot on connect/resync, then sequenced 10 Hz snapshots carrying `snapshot_id`, `world_time`, and entity revisions; use typed HTTP commands for mutations | CP-01 / CP-08 |
 | G-MVP-11 | Persistence and version compatibility | Version schema, snapshots, and events; reject incompatible versions with a visible recovery state; do not perform live schema migration during the judge run | CP-01 / CP-05 |
-| G-MVP-12 | Re-entry eligibility and grant | Only `CargoLostToMonster` is eligible in G2; bind the event to an opaque player/shelter reference; `inspect` is automatic while `prepare/execute recall` uses the existing bounded grant | CP-01 / CP-14 |
+| G-MVP-12 | Re-entry eligibility and grant | Only `CargoLostToMonster` is eligible in G2; bind the event to an opaque player/shelter reference; `inspect` is automatic and the Agent may execute `force_recall_soldier` under the bounded grant | CP-01 / CP-14 |
 | G-MVP-13 | WebMCP unavailable behavior | Keep the human dashboard fully usable; show the exact capability result and offer no silent simulated tool success | CP-02 / CP-13 |
 | G-MVP-14 | Demo choreography and reset | Fix the seed, two fixture players, one deterministic monster route, and a reset command that creates a new world without manual database edits | CP-02 / CP-16 |
 | G-MVP-15 | Basic session and command security | Use opaque session tokens, ownership checks, command rate limits, and server-side reward validation; never accept client coins, cargo, positions, or hidden cells | CP-01 / CP-15 |
@@ -55,8 +56,8 @@ boundary.
 
 The recommendations are deliberately conservative. They make the first story deterministic and
 reviewable without claiming that production balance, authentication, or world scale has been solved.
-Each recommendation can be changed at CP-01 if the owner records the reason and updates the affected
-mechanism, chain, scenario, and checkpoint.
+Any change now requires a recorded contract revision and updates to the affected mechanism, chain,
+scenario, and checkpoint.
 
 ## Full-game gates revealed by the roadmap
 
@@ -90,14 +91,14 @@ These decisions are real product work, but they should follow the local G2 proof
 
 ## Decision order
 
-Close G-MVP-01 through G-MVP-06 in CP-01 because identity, coordinates, protection, placement,
-recovery, and ordering are the kernel contracts. Close G-MVP-07 through G-MVP-11 while implementing
-the simulation and ledger foundation. Close G-MVP-12 through G-MVP-20 before the Re-entry and hosted
-gates. Review the full-game gaps after CP-16, when two-player telemetry and a real event trace exist.
+G-MVP-01 through G-MVP-20 are now closed at the design level by CP-01. CP-02 must prove the selected
+runtime, page capability, and disposable persistence probe before implementation begins. The simulation
+and ledger checkpoints must then provide evidence for the same contracts. Review the full-game gaps
+after CP-16, when two-player telemetry and a real event trace exist.
 
-The next safe action is therefore CP-01, a versioned MVP contract sheet, followed by CP-02, a short
-capability and runtime probe. Starting broad feature coding before those two gates would turn the
-remaining unknowns into hidden implementation policy and make later recovery more expensive.
+The next safe action is therefore CP-02, a short capability and runtime probe. Starting broad feature
+coding before that gate would turn unverified runtime assumptions into hidden implementation policy and
+make later recovery more expensive.
 
 ## Scope conclusion
 

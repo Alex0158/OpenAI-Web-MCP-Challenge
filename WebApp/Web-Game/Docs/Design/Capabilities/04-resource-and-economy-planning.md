@@ -1,6 +1,6 @@
 # Capability: Resource and Economy Planning
 
-**Status:** Working design; balance values are open
+**Status:** G2 economy contract accepted; production balance is open
 
 ## Goal
 
@@ -20,7 +20,8 @@ capacity or issues recall, and receives coins only after shelter deposit. Higher
 resource tiers and multiply lower-tier yield according to the accepted formula.
 
 Failure includes depleted nodes, invalid tools, route loss, combat cargo transfer, monster cargo
-destruction, and capacity overflow once that policy is accepted.
+destruction, and the accepted full-capacity return boundary. Production overflow and typed-weight
+rules remain future decisions.
 
 ## Boundaries
 
@@ -33,4 +34,3 @@ or bank cargo. The browser cannot credit the wallet.
 - Logic: [`../../Mechanics/Chains/02-dispatch-to-deposit.md`](../../Mechanics/Chains/02-dispatch-to-deposit.md) and
   [`../../Mechanics/Chains/03-encounter-to-loot.md`](../../Mechanics/Chains/03-encounter-to-loot.md); and
 - Presentation: [`../03-dashboard-and-operations.md`](../03-dashboard-and-operations.md).
-

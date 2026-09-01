@@ -1,7 +1,7 @@
 # Mission Dispatch, Return, and Recall
 
 **Mechanism:** M08
-**Status:** Working decision; retry semantics are open
+**Status:** MVP mission lifecycle accepted; future retry semantics are open
 **Authority:** This file owns the mission state machine and command transitions. Roles, navigation,
 cargo, and combat own their linked rules.
 
@@ -53,7 +53,8 @@ At `DEPOSITING`, the server settles cargo into the shelter wallet, records the c
 marks a repeatable gathering or hunting mission complete or eligible for restart. A siege is one-shot:
 success, failed assault, retreat, or soldier death ends the attempt. An ordinary death respawns the
 same identity at home and reissues its repeatable gathering or hunting assignment under the mission's
-recorded restart policy; no new role selection is required for that continuation.
+recorded restart policy; no new role selection is required for that continuation. In G2, the accepted
+reissue keeps the role and resource target and creates a fresh route and `mission_attempt_id`.
 
 ## Failure and cancellation
 
@@ -71,10 +72,10 @@ the next valid action.
 
 ## Open decisions
 
-- partial extraction and partial return behavior;
 - retry after a stale resource or failed siege;
-- whether a repeatable mission keeps the same target or requests a fresh observation; and
-- which mission events are continuation-eligible for Re-entry Core.
+- whether a later repeatable mission requests a fresh target observation;
+- siege-specific terminal and retry policy; and
+- post-G2 continuation eligibility beyond the accepted `CargoLostToMonster` event.
 
 ## Related documents
 

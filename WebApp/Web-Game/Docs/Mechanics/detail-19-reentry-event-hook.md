@@ -1,7 +1,7 @@
 # Event and Re-entry Game Hook
 
 **Mechanism:** M19
-**Status:** Target integration; runtime delivery is unverified
+**Status:** G2 Re-entry boundary accepted; runtime delivery is unverified
 **Authority:** This file owns the game-facing event eligibility and continuation payload. The outer
 Re-entry Core owns consent, Receiver delivery, private Agent context, and adapter behavior;
 Engineering owns implementation contracts.
@@ -28,9 +28,9 @@ Candidate domain events include:
 - `MigrationStarted` and `MigrationCompleted`; and
 - `ResourceBelowThreshold`.
 
-Not every event should wake an Agent. Eligibility must consider user grant, event severity, dedupe,
-cooldown, and whether a meaningful bounded action is available. The final event vocabulary and
-eligibility matrix are `OPEN`.
+For G2, only `CargoLostToMonster` is continuation-eligible. One pending continuation is allowed per
+shelter with a 60-world-second cooldown and `event_id` deduplication. Broader event eligibility and
+the production matrix remain `OPEN`.
 
 ## Causal payload
 
@@ -42,8 +42,9 @@ includes raw Agent context, credentials, arbitrary prompt text, or hidden game s
 
 After the outer continuation path accepts delivery, the Agent returns to the canonical shelter page.
 The page exposes current, permission-checked WebMCP tools. The Agent rereads shelter state, missions,
-threats, cargo, and history before preparing or executing one bounded action. Examples include
-reviewing a death, queuing a recall, setting a defense posture, or preparing migration.
+threats, cargo, and history before executing the accepted bounded `force_recall_soldier` action. The
+command queues normal travel, preserves role and cargo, and does not create coins. Migration, siege,
+destructive upgrades, and irreversible recovery remain human-confirmed.
 
 High-consequence actions such as migration, siege, destructive upgrades, or irreversible recovery
 remain subject to the final human boundary. The game remains fully playable by a human when WebMCP or
@@ -65,11 +66,11 @@ list is not runtime evidence.
 
 ## Open decisions
 
-- event eligibility and grants;
-- exact tool names and authority matrix;
-- automatic versus preparation-only commands;
-- dedupe and continuation cooldown; and
-- the minimum causal history shown to the Agent and human.
+- post-G2 event eligibility and grants;
+- exact production tool names and authority matrix;
+- future automatic versus preparation-only commands;
+- production dedupe and continuation policy; and
+- the minimum causal history for future event types.
 
 ## Related documents
 
@@ -77,4 +78,3 @@ list is not runtime evidence.
 - [`../Blueprint/02-core-concept-and-competition-thesis.md`](../Blueprint/02-core-concept-and-competition-thesis.md);
 - [`../Design/Capabilities/07-event-driven-agent-continuation.md`](../Design/Capabilities/07-event-driven-agent-continuation.md); and
 - [`Chains/08-event-to-reentry-action.md`](Chains/08-event-to-reentry-action.md).
-

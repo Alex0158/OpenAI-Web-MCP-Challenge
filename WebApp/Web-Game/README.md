@@ -2,7 +2,7 @@
 
 **Working title:** Sleepless Kingdom (provisional)  
 **Role:** Persistent-world game candidate inside the WebMCP Challenge repository  
-**Stage:** Documentation baseline and delivery roadmap; implementation has not started  
+**Stage:** CP-01 MVP contract closed; implementation has not started  
 **Outer selection:** The Re-entry Core host-application decision remains pending
 
 ## Product thesis

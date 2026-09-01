@@ -88,18 +88,21 @@ only after CP-16 is verified locally.
   repository validators pass.
 - **Current result:** Committed locally as `0791304`; no implementation claim follows.
 
-### CP-01 — MVP contract sheet (`PLANNED; NEXT DESIGN GATE`)
+### CP-01 — MVP contract sheet (`VERIFIED LOCAL; OWNER-ACCEPTED`)
 
 - **Scope:** Freeze the first-slice IDs, states, event names, revisions, clock units, coordinate
   conventions, snapshot shape, command envelope, and cargo settlement cases in one implementation
   contract.
-- **Depends on:** CP-00, the gap audit in `Validation/03-roadmap-gap-audit.md`, and the proposed
+- **Depends on:** CP-00, the gap audit in `Validation/03-roadmap-gap-audit.md`, and the owner-accepted
   defaults in `Validation/04-mvp-decision-proposals.md`.
 - **Acceptance:** Every field has one owner, every state transition has an idempotency key or entity
   version, and the contract names deposit-versus-death, restart, reconnect, and duplicate-event order.
 - **Verify:** Static cross-reference against `Mechanics/detail-*`, `Mechanics/Chains/`,
   `Engineering/05-api-and-webmcp.md`, and `Engineering/03-persistence-world-clock-and-events.md`.
-- **Exit artifact:** A versioned contract document and a bounded `GAME-001` implementation task.
+- **Exit artifact:** [`09-mvp-contract-sheet.md`](09-mvp-contract-sheet.md) and
+  [`../Decisions/ADR-GAME-0006-mvp-contract-and-reentry-boundary.md`](../Decisions/ADR-GAME-0006-mvp-contract-and-reentry-boundary.md).
+  The bounded implementation task remains deferred until CP-02 passes, as required by the child
+  documentation-first stage.
 
 ### CP-02 — capability and runtime probe (`PLANNED; RISKEST EARLY CHECK`)
 
@@ -242,13 +245,13 @@ only after CP-16 is verified locally.
 
 - **Scope:** Map `CargoLostToMonster` to one typed outbox event, preserve the opaque binding, deliver
   through the existing Receiver boundary, return to the canonical page, reread current state, and
-  prepare or execute the bounded recall action under the existing grant.
+  execute the bounded recall action under the existing grant when the current revision permits it.
 - **Depends on:** CP-05, CP-11, and CP-13.
 - **Acceptance:** Delivery is at-least-once but domain effect is exactly-once; event contains causal
   history without prompts or credentials; Agent context cannot replace page state; human review remains
   required for migration, siege, and destructive actions.
 - **Verify:** Separate-process delivery, duplicate delivery, delayed page return, missing capability,
-  and visible prepared-versus-committed result.
+  stale revision, and a visible committed or typed-rejected command result.
 
 ## Phase 5 — local verification and demo closure
 
@@ -340,5 +343,5 @@ the failure behind an undocumented fallback.
 - [`05-api-and-webmcp.md`](05-api-and-webmcp.md) — page tools and Re-entry boundary; and
 - [`../Validation/03-roadmap-gap-audit.md`](../Validation/03-roadmap-gap-audit.md) — unresolved design,
   logic, and operational decisions surfaced by this roadmap; and
-- [`../Validation/04-mvp-decision-proposals.md`](../Validation/04-mvp-decision-proposals.md) — proposed
-  defaults, UX chain contracts, and CP-01 promotion checklist.
+- [`../Validation/04-mvp-decision-proposals.md`](../Validation/04-mvp-decision-proposals.md) — accepted
+  defaults, UX chain contracts, and contract revision checklist.

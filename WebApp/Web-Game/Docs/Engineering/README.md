@@ -16,3 +16,5 @@ proposed services, runtime, transport, or WebMCP tools exist.
   stack gate, and implementation exit criteria; and
 - [`08-development-roadmap-and-checkpoints.md`](08-development-roadmap-and-checkpoints.md) — sequenced
   delivery checkpoints, dependencies, release gates, and closure evidence.
+- [`09-mvp-contract-sheet.md`](09-mvp-contract-sheet.md) — normative G2 identities, states, events,
+  commands, settlement, snapshots, and causal acceptance stories.

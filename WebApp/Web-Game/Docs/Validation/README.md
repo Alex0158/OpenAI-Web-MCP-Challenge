@@ -9,8 +9,8 @@ not claim that the game is built or balanced.
   mechanism, player capability, logic-chain coverage, cross-boundary findings, and decision gates.
 - [`03-roadmap-gap-audit.md`](03-roadmap-gap-audit.md) — roadmap-driven MVP decisions, edge cases,
   full-game gates, and the next design order.
-- [`04-mvp-decision-proposals.md`](04-mvp-decision-proposals.md) — recommended defaults, chain
-  contracts, UX acceptance, and promotion checklist for CP-01.
+- [`04-mvp-decision-proposals.md`](04-mvp-decision-proposals.md) — owner-accepted defaults, chain
+  contracts, UX acceptance, and contract revision checklist.
 
 ## Current concept checks
 

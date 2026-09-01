@@ -1,7 +1,7 @@
 # Monster State and Targeting
 
 **Mechanism:** M12
-**Status:** Working decision; cargo loss and monster continuity are clarified
+**Status:** MVP seeded-monster contract accepted; full targeting and species policy remain open
 **Authority:** This file owns monster state, target selection, and monster movement. Combat owns
 resolution; breach owns soldier conversion.
 
@@ -27,14 +27,17 @@ A species may target a player, soldier, shelter, resource activity, or nearby ev
 a pursuit decision; entering the engagement radius starts combat. Speed, patrol radius, attack power,
 and retreat threshold differ by species and level.
 
-The target policy must specify how a monster switches targets, whether it remembers a last position,
-and what happens when the target enters a shelter or migration veil. These are `OPEN` details.
+For G2, the seeded monster follows one deterministic patrol lane, can contact a field soldier after
+the protected-start boundary ends, and remains in its normal state machine after killing a soldier.
+Production target switching, last-position memory, shelter interaction, and migration veil behavior
+remain `OPEN` details.
 
 ## Monster value and death
 
-A hunter can deliberately target a monster. Defeating one may create typed value or a coin reward
-according to the accepted economy rule. Monster death emits a world event and removes the active
-monster entity after all cargo or reward settlement is committed.
+A hunter can deliberately target the seeded monster. In G2, defeating it clears the active threat and
+emits `MonsterDefeated` without adding a third resource or direct coin reward; future species value or
+world drops are post-G2 rules. Monster death removes the active monster entity after settlement is
+committed.
 
 If a monster kills a soldier, the soldier's unbanked cargo is destroyed in that combat transaction;
 it is not transferred to the monster and does not become a world drop in this baseline. Ordinary
@@ -57,10 +60,10 @@ old roster.
 
 ## Open decisions
 
-- species count and exact stats;
-- target priority and target switching;
-- shelter and veil interaction;
-- monster loot/currency representation.
+- production species count and exact stats;
+- production target priority and target switching;
+- shelter and veil interaction; and
+- future monster loot/currency representation beyond the G2 threat-clearing result.
 
 ## Related documents
 

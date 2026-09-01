@@ -1,11 +1,12 @@
 # Chain C04: Monster Hunt to Reward
 
-**Status:** Working design; monster value and target policy are open
+**Status:** G2 seeded-hunt chain accepted; future monster value and target policy are open
 
 ## Trigger and outcome
 
-A hunter receives a monster target and attempts to turn a generated or corrupted world actor into
-value. The chain ends in a monster reward, a hunter death and cargo loss, or a changed target state.
+A hunter receives a monster target and attempts to resolve a generated or corrupted world actor. In
+G2 the chain ends in a cleared seeded threat with no direct reward, a hunter death and cargo loss, or
+a changed target state; a future contract may add a monster value path.
 
 ## Ordered flow
 
@@ -13,7 +14,8 @@ value. The chain ends in a monster reward, a hunter death and cargo loss, or a c
 2. `M09` moves the hunter toward the target while `M12` changes the monster through patrol, alert,
    chase, and attack states.
 3. Sensor contact enters `M13` combat with the hunter's monster matchup modifier.
-4. If the hunter wins, `M14` settles the monster's typed value, coin reward, or future world drop.
+4. If the hunter wins in G2, `M12` removes the seeded threat and emits `MonsterDefeated`; no third
+   resource or direct coin reward is created. Future species value or world drops remain post-G2.
 5. The hunter returns through C02 and deposits any cargo.
 6. If the monster wins, C07 settles cargo loss and same-identity respawn unless breach state applies.
 
@@ -31,7 +33,8 @@ killing monster continues under its normal state machine. Candidate events are `
 
 ## Open decisions
 
-Species, target switching, reward representation, and any future monster drop remain `OPEN`.
+Production species, target switching, reward representation, and any future monster drop remain
+`OPEN`.
 
 ## Related mechanisms
 

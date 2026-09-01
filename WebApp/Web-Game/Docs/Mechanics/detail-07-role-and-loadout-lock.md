@@ -1,7 +1,7 @@
 # Role and Loadout Lock
 
 **Mechanism:** M07
-**Status:** Working decision; equipment balance is open
+**Status:** MVP role/loadout and combat values accepted; later equipment balance is open
 **Authority:** This file owns the role-to-loadout contract. Mission lifecycle owns dispatch and
 return; combat owns numerical resolution.
 
@@ -41,8 +41,10 @@ assigned role or allow it to equip a sword mid-route.
 - A guard's defensive equipment contributes to shelter defense and is not a field mission by
   default.
 
-The exact tool power, role modifiers, weight, durability, and whether equipment can be repaired are
-`OPEN`. A role must never silently gain the benefits of an uncarried tool.
+The G2 tool power and role modifiers are fixed by
+[`../Engineering/09-mvp-contract-sheet.md`](../Engineering/09-mvp-contract-sheet.md). Future tool
+weight, durability, repair, and additional-role values remain `OPEN`. A role must never silently gain
+the benefits of an uncarried tool.
 
 ## Invariants
 
@@ -53,7 +55,7 @@ The exact tool power, role modifiers, weight, durability, and whether equipment 
 
 ## Open decisions
 
-- exact tool power, weight, durability, and repair behavior;
+- later tool tiers, weight, durability, and repair behavior;
 - whether future roles may share a loadout; and
 - the precise guard contribution to shelter defense.
 

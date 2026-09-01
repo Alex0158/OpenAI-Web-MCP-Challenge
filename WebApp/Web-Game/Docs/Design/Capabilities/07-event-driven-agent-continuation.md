@@ -1,24 +1,25 @@
 # Capability: Event-Driven Agent Continuation
 
-**Status:** Target integration; runtime proof is absent
+**Status:** G2 boundary accepted; runtime proof is absent
 
 ## Goal
 
 Let a user-authorized Agent return after a meaningful backend event, reread the living game state, and
-prepare or execute one bounded next action through the current page.
+execute one bounded next action through the current page. In G2, that action is the accepted
+`force_recall_soldier` command.
 
 ## Entry and visible state
 
-The user grants eligible future continuation conditions. A domain event such as soldier death, cargo
-loss, attack, breach, migration completion, return, or a resource threshold can become a continuation
-candidate. The Agent sees an opaque binding, current page state, mission history, threats, and current
-WebMCP tools after re-entry.
+The user grants eligible future continuation conditions. In G2, only `CargoLostToMonster` can create a
+continuation. The Agent sees an opaque binding, current page state, mission history, threats, and
+current WebMCP tools after re-entry.
 
 ## Actions and outcomes
 
-The Agent can inspect, review, recall, set a bounded defense posture, or prepare migration/siege
-according to the final authority matrix. The backend validates all commands and returns the new version,
-causal result, or typed failure. High-consequence actions stop at the designed human boundary.
+The Agent can inspect and execute the bounded `force_recall_soldier` action under the accepted grant.
+The backend validates the command and returns the new version, causal result, or typed failure; an
+unsupported capability is reported visibly and leaves the human dashboard usable.
+Migration, siege, destructive upgrades, and irreversible recovery stop at the designed human boundary.
 
 ## Boundaries
 
@@ -32,4 +33,3 @@ playable by humans when the continuation path is unavailable.
 - Logic: [`../../Mechanics/Chains/08-event-to-reentry-action.md`](../../Mechanics/Chains/08-event-to-reentry-action.md);
 - Engineering: [`../../Engineering/05-api-and-webmcp.md`](../../Engineering/05-api-and-webmcp.md); and
 - Product thesis: [`../../Blueprint/02-core-concept-and-competition-thesis.md`](../../Blueprint/02-core-concept-and-competition-thesis.md).
-

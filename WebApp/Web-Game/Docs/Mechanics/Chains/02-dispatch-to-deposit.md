@@ -1,6 +1,6 @@
 # Chain C02: Dispatch to Deposit
 
-**Status:** Working decision; retry and partial-success rules are open
+**Status:** G2 chain accepted; future retry rules are open
 
 ## Trigger and outcome
 
@@ -29,17 +29,19 @@ ends in shelter coins, exposed cargo loss, a retryable mission state, or a termi
 ## Invariants and events
 
 No coin exists before deposit. Cargo remains exposed until deposit, and one mission attempt cannot
-deposit the same cargo twice. Candidate events are `MissionStarted`, `MissionAutoReturned`,
-`MissionRecalled`, `ResourceExtracted`, `CargoDeposited`, and `MissionCompleted`.
+deposit the same cargo twice. The G2 event vocabulary is `MissionDispatched`, `MissionWorking`,
+`CargoExtracted`, `MissionAutoReturned`, `MissionRecalled`, `CargoDeposited`, `CoinsCredited`,
+`ResourceDepleted`, and `MissionReissued`; full-game aliases or terminal events require a contract
+revision.
 
 ## Open decisions
 
-Capacity units, partial node depletion, partial extraction, failed-target retry, and fresh-target
-selection after restart remain `OPEN`.
+Failed-target retry, future fresh-target selection after restart, and siege-specific retry remain
+`OPEN`. G2 capacity, partial node depletion, partial extraction, and deposit ordering are fixed by
+[`../../Engineering/09-mvp-contract-sheet.md`](../../Engineering/09-mvp-contract-sheet.md).
 
 ## Related mechanisms
 
 - [`../detail-08-mission-dispatch-return-and-recall.md`](../detail-08-mission-dispatch-return-and-recall.md);
 - [`../detail-09-navigation-and-pathfinding.md`](../detail-09-navigation-and-pathfinding.md); and
 - [`../detail-11-resource-extraction-cargo-and-deposit.md`](../detail-11-resource-extraction-cargo-and-deposit.md).
-
