@@ -17,13 +17,14 @@ against the integrated source with full direct, built-server HTTP, and browser e
 is closed for the accepted local MVP. Its verifier Worktrees also exposed an out-of-scope tracked
 tooling mutation preserved as procedure evidence. The Field Desk shared CSS, tenant surfaces, and
 agent surfaces have since passed their respective independent verification gates and are integrated
-at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; an integrated cross-role regression gate
-remains before `RIGHTSPOT-007` can close.
+at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression passed at frozen source
+`4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current active Work Orders:** `RS-WO-007-08` is assigned to independently verify the integrated
-Field Desk source; the bounded Operations seam `RS-WO-011-01` passed independent verification and is
-integrated at product commit `7ff0fbd`. Its verifier Worktree remains a historical evidence snapshot.
-The `RS-WO-007-08` Verifier uses a separate evidence Worktree. `RS-WO-007-06` and `RS-WO-007-07`
+**Current active Work Orders:** `RS-WO-013-01` is ready to dispatch as a read-only Architecture/Data
+Authority proposal for the next Operations profile boundary. The bounded Operations seam
+`RS-WO-011-01` passed independent verification and is integrated at product commit `7ff0fbd`; its
+verifier Worktree remains a historical evidence snapshot. `RS-WO-007-06`, `RS-WO-007-07`, and
+`RS-WO-007-08`
 independently verified the frozen tenant/agent candidates and the main thread integrated them at
 `5abdaf3` and `a2f6a19`; their evidence Worktrees remain historical snapshots.
 The shared CSS
@@ -85,15 +86,15 @@ verified the same primary path through the browser UI. The original tracked
 separate ownership handling.
 The parent `RIGHTSPOT-002` is `closed` for the accepted local MVP. ADR-RS-0009 accepts the bounded
 Field Desk UI/UX direction and ADR-RS-0010 accepts Clerk as a gated external-auth candidate; neither
-decision reopens the MVP or authorizes external credential setup. The current implementation wave is
-the post-integration Field Desk regression gate; the verified Operations seam is ready for a separately
-decided consumer boundary.
+decision reopens the MVP or authorizes external credential setup. The Field Desk regression gate is
+closed; the current implementation wave is the read-only `RIGHTSPOT-013` Operations profile authority
+proposal, while the verified Operations seam remains available for later consumer design.
 
 **Current cross-role gate:** `RS-WO-005-01` passed corrected independent verification and is integrated
 at local commit `27f5391`; the known tracked metadata incident remains preserved. `RS-WO-007-02` is
 verified and integrated at `89a50c7`; the tenant and agent role candidates were independently verified
-and integrated at `5abdaf3` and `a2f6a19`. A fresh integrated-source cross-role regression check is
-still required before closing `RIGHTSPOT-007`; the accepted MVP cross-role gate remains closed:
+and integrated at `5abdaf3` and `a2f6a19`; `RS-WO-007-08` independently verified the integrated
+Field Desk source. `RIGHTSPOT-007` is closed; the accepted MVP cross-role gate remains closed:
 `RS-WO-002-14` passed direct read-only verification of the integrated
 tenant-to-agent HTTP Happy Path, including role privacy, mutation ordering, and bounded failures.
 `RS-WO-002-15` passed the isolated browser walkthrough with no browser error or warning logs. The
@@ -105,12 +106,12 @@ closed `RS-WO-005-01` checkpoint; it remains procedure evidence and is outside t
 write set.
 
 **Current implementation lane:** `RIGHTSPOT-007`'s Architecture/UI Advisor proposal is accepted
-with revisions. `RS-WO-007-02` passed static/build and final browser verification and is integrated
-at product commit `89a50c7`; its rebuilt served runtime shows the candidate tokens. `RS-WO-007-04`
-and `RS-WO-007-05` were frozen as clean candidate commits `63e4c3e` and `33a36f0`, independently
-verified by `RS-WO-007-06` and `RS-WO-007-07`, and integrated at product commits `5abdaf3` and
-`a2f6a19`. `RS-WO-007-08` is now assigned for the fresh integrated-source regression gate before
-closure. A separate,
+with revisions and the Field Desk implementation is closed. `RS-WO-007-02` passed static/build and
+final browser verification and is integrated at product commit `89a50c7`; its rebuilt served runtime
+shows the candidate tokens. `RS-WO-007-04` and `RS-WO-007-05` were frozen as clean candidate commits
+`63e4c3e` and `33a36f0`, independently verified by `RS-WO-007-06` and `RS-WO-007-07`, and integrated
+at product commits `5abdaf3` and `a2f6a19`; `RS-WO-007-08` independently verified the integrated
+source. A separate,
 non-blocking `RS-WO-007-03` parallelism review returned `READY_FOR_REVIEW` from supporting worker
 `01a05d76-dac9-7283-9c2a-4166935f5043`; main accepted its isolation revisions and used them to
 register and dispatch the two role Builders.

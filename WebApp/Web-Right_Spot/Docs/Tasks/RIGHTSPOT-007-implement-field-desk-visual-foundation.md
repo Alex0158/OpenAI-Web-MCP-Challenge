@@ -1,7 +1,7 @@
 # RIGHTSPOT-007: Implement the accepted Field Desk visual foundation
 
 **Type:** `implementation`  
-**Lifecycle:** `in_progress`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for the next demo-ready product increment  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-01  
@@ -10,18 +10,18 @@
 ## Task Control
 
 - Type: `implementation`
-- Lifecycle: `in_progress`
+- Lifecycle: `closed`
 - Priority: `P1`
 - Owner: Main RightSpot thread
 - Objective: Turn the accepted RightSpot Field Desk visual direction into a small, implementable
   shared UI foundation without expanding the rental MVP or changing product authority.
-- Current increment: The single-file shared CSS foundation is independently verified and integrated
-  at product commit `89a50c7`; the tenant and agent role candidates were independently verified and
-  integrated at product commits `5abdaf3` and `a2f6a19` from frozen candidates `63e4c3e` and `33a36f0`.
-- Next gate: Freeze the combined integrated source and run an independent cross-role regression check
-  covering the shared Field Desk foundation plus tenant and agent surfaces before closing this task.
-- Execution posture: `PARALLEL_ROLE_CANDIDATES_INTEGRATED`; the disjoint Builder and Verifier lanes are
-  closed, the main thread owns the combined regression gate, and Operations seam work remains separate.
+- Current increment: The shared CSS foundation and the disjoint tenant/agent role candidates were
+  independently verified and integrated at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`.
+  Integrated-source regression `RS-WO-007-08` then passed against frozen source `4f8a1be`.
+- Next gate: None for this task. Any further UI change requires a new bounded Task File or an explicit
+  Work Order with a fresh source baseline.
+- Execution posture: `CLOSED_VERIFIED`; the Field Desk visual refinement is closed within the accepted
+  behavior-preserving scope. Operations seam work is separate.
 
 ## Accepted product boundary
 
@@ -524,7 +524,7 @@ after the report; do not dispatch repair or integration work.
 ## RS-WO-007-08 — Independently verify the integrated Field Desk surfaces
 
 **Role:** Independent Verifier  
-**Status:** `ASSIGNED`  
+**Status:** `VERIFIED`  
 **Parallelization:** `EVIDENCE_ONLY` — may run beside `RS-WO-011-01` because it has no product write
 set and uses a frozen detached source snapshot.  
 **Risk profile:** `Standard` — integrated-source regression verification after two disjoint role
@@ -535,6 +535,14 @@ integrated. The frozen integrated source is main commit
 **Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-007-08-field-desk-verifier`
 (detached HEAD at the frozen integrated source).  
 **Supporting worker:** Multi-agent Verifier `01a05de1-07ea-7772-a7ec-5bb1ec3ef244` (`Newton`).  
+**Verification result:** Frozen source `4f8a1be6c232c4f1c456097c3892231bbd77721a` remained detached
+and clean. Node `v24.20.0` / npm `11.19.0`, `npm ci`, typecheck, foundation `6/6`, full direct tests
+`57/57`, build, diff checks, exact integrated UI-path presence, role/error/retry browser paths,
+responsive `390x844`/`768x1024`/`1440x900`, no-overflow, focus, contrast, same-origin resources,
+served CSS tokens, and the explicit human-send boundary passed. Populated request/proposal/
+confirmation browser states and transient loading visuals were not exercised because the fixture had
+no assigned request and the verifier did not manufacture data. Deployment, WebMCP, external auth,
+and production-readiness claims remain out of scope.
 **Ownership:** The Verifier may inspect and execute only. The main thread owns any repair decision,
 canonical writeback, integration, and closure.
 
@@ -608,7 +616,7 @@ after the report.
 
 ## Closure gate
 
-Close this task only after the main thread has accepted the decomposition, integrated the bounded
+This task is closed after the main thread accepted the decomposition, integrated the bounded
 shared/tenant/agent candidates, recorded the independent results for `RS-WO-007-02` through
-`RS-WO-007-07`, and independently verifies the combined source through `RS-WO-007-08`. A reviewed
-proposal or isolated candidate result alone is not Field Desk implementation completion.
+`RS-WO-007-07`, and independently verified the combined source through `RS-WO-007-08`. Any residual
+fixture-coverage gap is recorded as a claim limit, not silently promoted to evidence.
