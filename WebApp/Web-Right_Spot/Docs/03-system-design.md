@@ -86,15 +86,19 @@ state machines or duplicate request truth in the UI.
 ### 3.1 Application shell
 
 Owns the tenant marketplace surface, agent management surface, navigation, visible state, forms,
-loading states, and human decision controls.
+loading states, and human decision controls. The accepted presentation baseline is the RightSpot
+Field Desk direction in [ADR-RS-0009](Decisions/ADR-RS-0009-ui-ux-visual-system-and-navigation.md);
+it is a UI boundary and does not become a second workflow authority.
 
 ### 3.2 Identity and role boundary
 
-Resolves the current synthetic participant and role, then applies tenant or property-agent
-permissions to every read and write. The initial implementation may use a deliberately bounded
-demo authentication mode with seeded role selection, but it must not blur the two roles. The agent
-queue is a direct projection of application state and may be refreshed manually; notification
-delivery is not part of the MVP.
+Resolves the current participant and role, then applies tenant or property-agent permissions to
+every read and write. The accepted local MVP uses a deliberately bounded demo authentication mode
+with seeded role selection. The next external-auth candidate is Clerk behind the provider boundary
+in [ADR-RS-0010](Decisions/ADR-RS-0010-external-authentication-boundary.md); provider identity must
+map to a local `AppUser` and stable `Actor`, while RightSpot remains authoritative for role,
+assignment, privacy, and workflow authorization. The agent queue is a direct projection of
+application state and may be refreshed manually; notification delivery is not part of the MVP.
 
 ### 3.3 Domain and workflow core
 
@@ -167,8 +171,7 @@ Cloud Receiver, WebMCP, WebRTC, or Redis.
 
 - production normalized business schema and migration strategy (the local MVP snapshot boundary is
   accepted in ADR-RS-0006);
-- authentication/session model;
 - background event or notification mechanism;
 - deployment and environment configuration;
-- accessibility and responsive UI baseline; and
+- exact external provider setup, SDK compatibility, and credential gate; and
 - the exact later boundary for Hackathon integration.

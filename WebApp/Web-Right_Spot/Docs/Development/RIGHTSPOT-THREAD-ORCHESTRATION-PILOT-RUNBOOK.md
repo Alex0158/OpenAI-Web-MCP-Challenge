@@ -926,6 +926,44 @@ automatically reusable for a different Work Order. If the identity does not matc
 new assignment to the old thread. Establish a dedicated supporting task/thread and record its
 identity before dispatch.
 
+### 9.6.1 Duplicate-dispatch preflight
+
+Before creating a supporting task or sending a first prompt, the main thread must resolve the exact
+Work Order identity from the canonical Task File and inspect the current supporting-task registry or
+thread list for that same identity. This is a dispatch idempotency check, not a source-manifest check.
+
+- If one supporting task is already `ASSIGNED`, `IN_PROGRESS`, `READY_FOR_VERIFICATION`, `NEEDS_REPAIR`,
+  `BLOCKED`, `VERIFIED`, or `INTEGRATED`, do not create another worker for the same checkpoint.
+  Follow the recorded identity and inspect its current status first.
+- If the existing thread is still running, do not append a second implementation prompt. Wait for its
+  checkpoint result or use the approved same-identity continuation only when the Work Order explicitly
+  calls for it.
+- If a create/send result is ambiguous, retain the Work Order's pre-dispatch state until the original
+  outcome is resolved; never treat uncertainty as permission to resend.
+- If a duplicate is created accidentally, the main thread records both thread identities, designates
+  one canonical execution identity, and stops the duplicate before it writes or verifies source. The
+  duplicate's report is procedural evidence only; it does not create a second candidate, checkpoint,
+  or verification claim.
+- A duplicate-dispatch incident must be reviewed separately from product source drift. Do not solve it
+by overwriting, reverting, merging, or deleting the candidate source.
+
+### 9.6.2 Browser-tooling isolation preflight
+
+Browser verification in a shared Git checkout has a distinct metadata risk from product source
+verification. Before invoking a browser helper, the main thread or Verifier must choose one of these
+boundaries:
+
+- a clean isolated verification worktree containing the frozen candidate; or
+- a non-repository working directory that can reach the already-running local app and cannot resolve
+  the submission repository as its metadata target.
+
+Capture repository status before and after the browser run. A helper-generated `.gstack/`, cache,
+lockfile, ignore-rule, or other tracked metadata change is an immediate procedural `BLOCKED` result.
+Do not restore, delete, or overwrite the path in the Verifier. Preserve the exact diff, classify it as
+tooling/procedure evidence, and rerun only after the browser boundary is isolated or the main thread
+has separately resolved the ownership and recoverability decision. Passing product/browser assertions
+before that hard stop remains evidence, not a `VERIFIED` checkpoint.
+
 ## 10. Lifecycle and handoff states
 
 ### 10.1 Supporting-task states

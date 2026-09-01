@@ -1,7 +1,7 @@
 # RightSpot Tasks
 
 **Role:** Canonical bounded task routing for the RightSpot child application  
-**Status:** Closed for the accepted local MVP; reopen only under the recorded reopen condition
+**Status:** Active for post-MVP decision proposals; `RIGHTSPOT-002` remains closed for the accepted local MVP
 
 RightSpot tasks own local product and implementation work. They do not authorize changes to the
 outer Core, public deployment, credentials, or Hackathon submission. Keep the queue small and
@@ -11,9 +11,24 @@ The outer repository [`Docs/Tasks/README.md`](../../../../Docs/Tasks/README.md) 
 authority for task admission, control fields, lifecycle, and routing. This local index narrows that
 authority to RightSpot; it does not create a second task system.
 
-## Current task
+## Current tasks
 
 - [`RIGHTSPOT-002 — Build the MVP application shell`](RIGHTSPOT-002-build-mvp-application-shell.md)
+- [`RIGHTSPOT-003 — Define the rental marketplace UI/UX visual system`](RIGHTSPOT-003-define-ui-ux-visual-system.md)
+- [`RIGHTSPOT-004 — Define the external authentication boundary`](RIGHTSPOT-004-define-external-authentication-boundary.md)
+- [`RIGHTSPOT-005 — Route signed-in users to the role workspace`](RIGHTSPOT-005-fix-post-login-workspace-navigation.md)
+- [`RIGHTSPOT-006 — Integrate the provider-backed authentication boundary`](RIGHTSPOT-006-integrate-provider-backed-authentication-boundary.md)
+- [`RIGHTSPOT-007 — Implement the accepted Field Desk visual foundation`](RIGHTSPOT-007-implement-field-desk-visual-foundation.md)
+
+`RIGHTSPOT-002` is terminal and remains unchanged. `RIGHTSPOT-003` and `RIGHTSPOT-004` are bounded
+ read-only decision tasks opened for proposal work only; they are now closed after the main thread
+ accepted ADR-RS-0009 and ADR-RS-0010. They did not reopen or widen the accepted MVP implementation.
+`RIGHTSPOT-005` is a verified navigation defect whose Builder candidate and corrected independent
+verification are complete; main-thread integration/Git closure is pending after the preserved tracked
+metadata incident from attempt 01;
+`RIGHTSPOT-006` is pending behind the explicit external credential gate and does not authorize
+provider setup or authentication source changes; `RIGHTSPOT-007` has an accepted read-only Advisor
+decomposition and a gated single-file shared CSS Work Order, but no visual Builder is dispatched.
 
 Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, the corrected `RS-WO-002-02` rerun returned
@@ -48,6 +63,10 @@ declared and user-authorized.
 browser evidence are reconciled in the
 [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](../Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md), and
 `RIGHTSPOT-002` is closed.
+
+**Current post-MVP gates:** `RS-WO-005-01` is verified and awaiting main-thread integration/Git
+closure; `RS-WO-007-01` is ready for review and `RS-WO-007-02` is gated behind the 005 integration
+checkpoint.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.

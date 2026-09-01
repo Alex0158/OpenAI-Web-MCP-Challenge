@@ -1,10 +1,10 @@
 # RightSpot Development Roadmap
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
-**Status:** Phase 5 complete for the accepted local MVP — authoritative workflow domain core, application
-boundaries, role pages, integrated cross-role path, and isolated browser walkthrough are independently
-verified; `RS-WO-002-14` passed direct verification, `RS-WO-002-15` passed the browser walkthrough, and
-the parent Task is closed. The prior out-of-scope tracked verifier mutation remains preserved
+**Status:** Phase 5 is complete for the accepted local MVP. Phase 6 post-MVP refinement is active:
+`RS-WO-005-01` has passed corrected independent verification and is in main-thread integration/Git
+closure review; `RS-WO-007-01` is accepted as a read-only UI decomposition and `RS-WO-007-02` is
+gated. The prior out-of-scope tracked verifier mutation remains preserved
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-01, Europe/London
 
@@ -30,8 +30,9 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 - The rental-only product thesis, primary tenant-to-agent workflow, business rules, logical
   Backbone, and implementation stack are accepted working baselines.
 - `RIGHTSPOT-001` established the product thesis and Backbone boundary and is closed.
-- `RIGHTSPOT-002` is the single pending parent implementation task. Its current Work Order is
-  recorded inside that Task File; it is not split into a collection of future parent tasks.
+- `RIGHTSPOT-002` is closed for the accepted local MVP. Post-MVP work is admitted only through the
+  separately bounded `RIGHTSPOT-005` and `RIGHTSPOT-007` Task Files; their Work Orders remain in
+  those files and this roadmap is not their live queue.
 - The foundation package, runtime code, tests, and local reset/health composition now exist as an
   independently verified local baseline; no deployment configuration or Hackathon integration exists.
 - The accepted local baseline is Next.js App Router, React, TypeScript, Node.js 24, and SQLite.
@@ -47,7 +48,8 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 3. Authoritative workflow core | Implement the Viewing Request state machine, availability lifecycle, role projections, version checks, audit facts, and explicit failures | Domain and Backbone checks pass without a browser or external service | Complete; post-repair source `6e70c9f` independently verified |
 | 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | Complete; `RS-WO-002-14` passed independent direct cross-role verification and `RS-WO-002-15` passed the isolated browser walkthrough against integrated source `9348aa50b63e3f4f46e77238ad370670383d9d6` |
 | 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Complete; closure record reconciled and `RIGHTSPOT-002` closed |
-| 6. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary loop is stable and a new explicit integration decision exists | Deferred; not scheduled |
+| 6. Post-MVP product refinement | Resolve high-impact navigation friction and implement the accepted Field Desk visual foundation without changing workflow authority | Each bounded candidate is independently verified and integrated before the next shared-surface change | Active; `RS-WO-005-01` verified and under integration/Git closure review; `RS-WO-007-02` gated |
+| 7. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary refinement is stable and a new explicit integration decision exists | Deferred; not scheduled |
 
 ## 4. Roadmap operating rules
 
@@ -74,6 +76,12 @@ fresh database against integrated source `9348aa50b63e3f4f46e77238ad370670383d9d
 evidence is recorded in [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md), and
 `RIGHTSPOT-002` is closed. Future work requires a new explicit scope decision.
 
+The current post-MVP scope is now explicitly admitted: `RIGHTSPOT-005` addresses verified
+role-aware post-login navigation, and `RIGHTSPOT-007` implements the accepted Field Desk direction
+starting with a shared CSS foundation. These increments do not reopen the accepted MVP closure or
+authorize external authentication, WebMCP, Cloud Receiver, deployment, or commercial-marketplace
+scope.
+
 ### Historical execution chronology
 
 The first `RS-WO-002-02` attempt is recorded as a procedural block, and the corrected output-boundary
@@ -90,8 +98,8 @@ identity-matching Verifier returned `VERIFIED` against frozen source `28105e4d`.
 independently verified at T2 code commit `de169ce` from canonical snapshot `bc3bc42`. The read-only
 `RS-WO-002-06` Architecture Advisor returned `READY_FOR_REVIEW`; the main thread accepted its
 decomposition with revisions and froze the ordinary workflow HTTP/DTO contract in ADR-RS-0008. The
-direct `RS-WO-002-14` combined cross-role verification passed; the current gate is the isolated browser
-walkthrough and closure-evidence review. Repaired tenant candidate
+direct `RS-WO-002-14` combined cross-role verification passed; at that historical checkpoint the
+remaining gate was the isolated browser walkthrough and closure-evidence review. Repaired tenant candidate
 `52cba87c` is integrated at product commit `9348aa5`, and the agent role-page candidate `169cb95d` is
 integrated at product commit `3765747`. Both use the integrated workflow transport `f700ba9`, shared
 shell `006d2fd`, and shared role frame `6a0b4b8`. `RS-WO-002-08` reached product

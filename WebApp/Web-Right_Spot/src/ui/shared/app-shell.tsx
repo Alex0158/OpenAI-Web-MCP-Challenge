@@ -28,6 +28,11 @@ const ROLE_LABELS = {
   agent: "Property agent",
 } as const;
 
+const ROLE_WORKSPACE_HREFS = {
+  tenant: "/tenant",
+  agent: "/agent",
+} as const;
+
 export default function AppShell() {
   const [session, setSession] = useState<SessionView>({ actor: null, isLoading: true });
   const [pendingRole, setPendingRole] = useState<SessionRole | null>(null);
@@ -40,6 +45,10 @@ export default function AppShell() {
     void readSession()
       .then((actor) => {
         if (!isCurrent) return;
+        if (actor) {
+          window.location.replace(ROLE_WORKSPACE_HREFS[actor.role]);
+          return;
+        }
         setSession({ actor, isLoading: false });
       })
       .catch((error: unknown) => {
@@ -60,10 +69,7 @@ export default function AppShell() {
     try {
       const actor = await createSession(role);
       setSession({ actor, isLoading: false });
-      setBanner({
-        tone: "success",
-        message: `Signed in as ${ROLE_LABELS[actor.role]}. The server resolved actor ${actor.id}.`,
-      });
+      window.location.replace(ROLE_WORKSPACE_HREFS[actor.role]);
     } catch (error: unknown) {
       setBanner({ tone: "error", message: sessionErrorMessage(error, "sign in") });
     } finally {
