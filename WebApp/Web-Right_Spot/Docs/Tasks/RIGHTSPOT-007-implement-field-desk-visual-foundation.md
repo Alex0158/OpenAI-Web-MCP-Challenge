@@ -521,6 +521,73 @@ Return `VERIFIED`, `NEEDS_REPAIR`, or `BLOCKED` with the exact source identity, 
 commands/runtime, browser evidence, skipped checks, residual risks, and recommended next gate. Stop
 after the report; do not dispatch repair or integration work.
 
+## RS-WO-007-08 — Independently verify the integrated Field Desk surfaces
+
+**Role:** Independent Verifier  
+**Status:** `READY_TO_DISPATCH`  
+**Parallelization:** `EVIDENCE_ONLY` — may run beside `RS-WO-011-01` because it has no product write
+set and uses a frozen detached source snapshot.  
+**Risk profile:** `Standard` — integrated-source regression verification after two disjoint role
+candidates were adopted.  
+**Dependency:** `RS-WO-007-02`, `RS-WO-007-04`, and `RS-WO-007-05` are independently verified and
+integrated. The frozen integrated source is main commit
+`4f8a1be6c232c4f1c456097c3892231bbd77721a`.  
+**Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-007-08-field-desk-verifier`
+(detached HEAD at the frozen integrated source).  
+**Supporting worker:** To be assigned by the main thread after this Work Order registration.  
+**Ownership:** The Verifier may inspect and execute only. The main thread owns any repair decision,
+canonical writeback, integration, and closure.
+
+### Verifier objective
+
+Independently determine whether the integrated Field Desk source still preserves the accepted rental
+MVP behavior and role boundaries after the shared CSS, tenant, and agent visual candidates were
+integrated. Verify the combined source as it exists at the frozen commit; do not repair, reinterpret,
+or expand the product.
+
+### Required read set
+
+- This Task File, ADR-RS-0009, and the frozen integrated source commit.
+- `Docs/00-current-status.md`, `Docs/03-system-design.md`, `Docs/05-api-and-integration-contracts.md`,
+  and `Docs/06-validation-and-evidence.md`.
+- The shared shell, global CSS, tenant and agent route wrappers, role API modules, current tests,
+  package scripts, and the Builder/Verifier evidence recorded in `RS-WO-007-02` through `RS-WO-007-07`.
+- Repository and workspace instructions, including the applicable `AGENTS.md` files and the RightSpot
+  Thread Orchestration Pilot Runbook.
+
+### Verification boundary
+
+- Confirm the exact frozen commit, clean detached status, and that no source changes occur during the
+  run. Treat the current main checkout and its local server on port `3100` as out of bounds.
+- Confirm the integrated product source includes the expected shared CSS plus the four tenant UI paths
+  and three agent UI paths, with no unexpected authored source mutation attributable to this gate.
+- Use Node `24.20.0` / npm `11.19.0` and the existing lockfile. Run `npm run typecheck`, `npm test`,
+  the relevant direct UI/API checks available in the repository, `npm run build`, and `git diff --check`.
+- Run a bounded production-server/browser walkthrough on isolated port `3116` when available. Cover
+  signed-out and wrong-role boundaries, tenant discovery/detail/request routes, agent queue/request
+  routes, loading/empty/error/retry states that can be reached without inventing data, responsive
+  layouts near `390x844`, `768x1024`, and `1440x900`, keyboard focus, contrast, and no horizontal
+  overflow. Confirm that the explicit human send boundary remains visible and unchanged.
+- Report populated request/proposal/confirmation or other fixture-dependent states as unexercised if
+  they cannot be reached without mutating workflow data; do not manufacture evidence or mutate the
+  database merely to improve coverage.
+- Check for new features, remote assets, dependencies, hidden fallback behavior, role/privacy
+  regressions, shared-contract changes, or stale-served-build attribution problems.
+
+### Forbidden actions
+
+- Do not edit source, tests, fixtures, dependencies, configuration, documentation, database files,
+  Git metadata, or the main checkout.
+- Do not repair failures, weaken checks, commit, push, deploy, restart or use port `3100`, or dispatch
+  a follow-on task.
+- Do not claim integrated browser or cross-role evidence from static inspection alone.
+
+### Return gate
+
+Return `VERIFIED`, `NEEDS_REPAIR`, or `BLOCKED` with exact source identity, commands/runtime, changed
+path result, browser evidence, skipped evidence, residual risks, and a recommended next gate. Stop
+after the report.
+
 ## Acceptance criteria for this task
 
 1. The main thread has a reviewed, evidence-backed shared/tenant/agent ownership map.
@@ -541,6 +608,7 @@ after the report; do not dispatch repair or integration work.
 
 ## Closure gate
 
-Close this task only after the main thread accepts the decomposition, registers only the next bounded
-implementation Work Orders, and independently verifies the resulting shared foundation. A reviewed
-proposal alone is not implementation completion.
+Close this task only after the main thread has accepted the decomposition, integrated the bounded
+shared/tenant/agent candidates, recorded the independent results for `RS-WO-007-02` through
+`RS-WO-007-07`, and independently verifies the combined source through `RS-WO-007-08`. A reviewed
+proposal or isolated candidate result alone is not Field Desk implementation completion.
