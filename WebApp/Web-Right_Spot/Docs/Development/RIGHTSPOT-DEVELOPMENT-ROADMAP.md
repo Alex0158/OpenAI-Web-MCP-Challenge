@@ -7,8 +7,9 @@
 
 **Current gate:** `RS-WO-002-13` is integrated at product commit `3765747`, and repaired `RS-WO-002-12`
 candidate `52cba87c` passed final independent verification and is integrated at product commit `9348aa5`.
-The read-only `RS-WO-002-14` combined cross-role verification is active; prior verifier Worktree
-metadata mutations remain preserved and are not product source.
+The read-only `RS-WO-002-14` combined cross-role verification passed direct HTTP/static checks; the next
+gate is an isolated browser walkthrough before closure review. Prior verifier Worktree metadata mutations
+remain preserved and are not product source.
 
 ## 1. Roadmap purpose and authority
 
@@ -41,7 +42,7 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 1. Implementation readiness | Resolve and record the foundation toolchain, runtime, SQLite/reset, health-route, source-boundary, and verification profile | Main-thread decision gate complete and the first Builder Work Order is ready; the Node.js baseline situation is explicitly recorded | Complete |
 | 2. Runnable foundation | Create one local application composition with the accepted stack, server-side SQLite foundation, deterministic reset metadata, and reproducible commands | Builder output reconciled and independently verified | Complete; first Verifier attempt was procedurally blocked, corrected rerun verified |
 | 3. Authoritative workflow core | Implement the Viewing Request state machine, availability lifecycle, role projections, version checks, audit facts, and explicit failures | Domain and Backbone checks pass without a browser or external service | Complete; post-repair source `6e70c9f` independently verified |
-| 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | `RS-WO-002-04` persistence/application boundary independently verified at T2 source `28105e4d` (candidate `68bbc69`); `RS-WO-002-05` tenant entry/listing discovery API independently verified at T2 code `de169ce` from snapshot `bc3bc42`; ADR-RS-0008 freezes the ordinary workflow HTTP/DTO boundary; `RS-WO-002-07` workflow transport independently verified at frozen `d71fe3e` and integrated at `f700ba9`; `RS-WO-002-08` shared shell passed dedicated independent verification after process re-baseline `8b77bdd` and is integrated at `006d2fd`; `RS-WO-002-09` UI/UX review is integrated as guidance; `RS-WO-002-11` shared role-page frame is independently verified and integrated at `6a0b4b8`; `RS-WO-002-13` agent role-page candidate passed dedicated independent verification and is integrated at `3765747`; repaired `RS-WO-002-12` tenant role-page candidate passed final independent verification at `52cba87c` and is integrated at `9348aa5`; `RS-WO-002-14` combined cross-role verification is in progress |
+| 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | `RS-WO-002-04` persistence/application boundary independently verified at T2 source `28105e4d` (candidate `68bbc69`); `RS-WO-002-05` tenant entry/listing discovery API independently verified at T2 code `de169ce` from snapshot `bc3bc42`; ADR-RS-0008 freezes the ordinary workflow HTTP/DTO boundary; `RS-WO-002-07` workflow transport independently verified at frozen `d71fe3e` and integrated at `f700ba9`; `RS-WO-002-08` shared shell passed dedicated independent verification after process re-baseline `8b77bdd` and is integrated at `006d2fd`; `RS-WO-002-09` UI/UX review is integrated as guidance; `RS-WO-002-11` shared role-page frame is independently verified and integrated at `6a0b4b8`; `RS-WO-002-13` agent role-page candidate passed dedicated independent verification and is integrated at `3765747`; repaired `RS-WO-002-12` tenant role-page candidate passed final independent verification at `52cba87c` and is integrated at `9348aa5`; `RS-WO-002-14` direct cross-role verification passed; browser walkthrough and closure evidence remain open |
 | 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Not started |
 | 6. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary loop is stable and a new explicit integration decision exists | Deferred; not scheduled |
 
@@ -78,7 +79,8 @@ identity-matching Verifier returned `VERIFIED` against frozen source `28105e4d`.
 independently verified at T2 code commit `de169ce` from canonical snapshot `bc3bc42`. The read-only
 `RS-WO-002-06` Architecture Advisor returned `READY_FOR_REVIEW`; the main thread accepted its
 decomposition with revisions and froze the ordinary workflow HTTP/DTO contract in ADR-RS-0008. The
-current gate is the read-only `RS-WO-002-14` combined cross-role verification; repaired tenant candidate
+direct `RS-WO-002-14` combined cross-role verification passed; the current gate is the isolated browser
+walkthrough and closure-evidence review. Repaired tenant candidate
 `52cba87c` is integrated at product commit `9348aa5`, and the agent role-page candidate `169cb95d` is
 integrated at product commit `3765747`. Both use the integrated workflow transport `f700ba9`, shared
 shell `006d2fd`, and shared role frame `6a0b4b8`. `RS-WO-002-08` reached product

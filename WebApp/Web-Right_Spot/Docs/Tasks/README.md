@@ -28,7 +28,7 @@ is integrated as bounded guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW`
 and its decomposition is accepted; `RS-WO-002-11` candidate `f1f83c7` passed independent verification
 and is integrated at `6a0b4b8`; `RS-WO-002-13` passed independent verification and is integrated at
 product commit `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final independent
-verification and is integrated at product commit `9348aa5`; `RS-WO-002-14` is the active read-only
+verification and is integrated at product commit `9348aa5`; `RS-WO-002-14` passed the read-only direct
 combined cross-role verification checkpoint. Its predecessor verifier runs were checkpoint-locally
 blocked by a tracked `.gitignore` mutation adding `.gstack/` outside the declared candidate scope; the
 original evidence remains preserved for separate ownership/recoverability handling. No separate
@@ -41,6 +41,10 @@ parallel under the same file. Builder, Verifier, Repairer, and Integrator are ch
 additional registered Tasks. Do not turn this file into a speculative backlog or a second active-work
 register. The parent remains `in_progress` when a checkpoint is locally blocked but safe parent-goal
 work remains; the Side Chat process lane is separately declared and user-authorized.
+
+**Current gate:** `RS-WO-002-14` passed direct read-only combined cross-role verification. The next
+checkpoint is the isolated browser walkthrough and closure-evidence review; the parent remains
+`in_progress` until those claims are reconciled.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.

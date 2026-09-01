@@ -16,11 +16,12 @@ The implementation must follow the accepted business rules in
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Independently verify the integrated tenant and agent role pages as one cross-role
-  ordinary Happy Path against the frozen main source.
-- Next gate: Complete `RS-WO-002-14` read-only cross-role verification, then adjudicate any bounded
-  findings before browser walkthrough or parent closure claims. Both role-page candidates are integrated;
-  exact route, component, test, and shared-boundary ownership remain recorded below.
+- Current increment: Reconcile the completed `RS-WO-002-14` direct cross-role verification, then obtain
+  the smallest remaining browser walkthrough and closure evidence for the ordinary local application loop.
+- Next gate: Run the browser walkthrough against a fresh isolated built server, reconcile its evidence,
+  and only then decide whether the parent has sufficient closure evidence. Both role-page candidates and
+  the integrated cross-role HTTP path are verified; exact route, component, test, and shared-boundary
+  ownership remain recorded below.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, ADR-RS-0008, and the accepted Requirements
   and Domain and Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, ADR-RS-0008, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -2107,7 +2108,7 @@ tenant administration, chat, calendar, payments, media, or future integration.
 **Pre-dispatch status:** `GATED` — `RS-WO-002-12` and `RS-WO-002-13` passed dedicated independent
 verification and their outputs are integrated into the main source at product commits `9348aa5` and
 `3765747`  
-**Execution state:** `IN_PROGRESS` — the dedicated read-only Verifier is executing against source
+**Execution state:** `VERIFIED` — the dedicated read-only Verifier completed against source
 from the frozen main commit `9348aa50b63e3f4f46e77238ad370670383d9d6d`  
 **Parallelization:** `INTEGRATION_SERIAL` — this checkpoint consumes both integrated role-page outputs;
 no tenant or agent source writer may modify the frozen source while it runs  
@@ -2119,15 +2120,35 @@ Happy Path from tenant discovery through agent decision and back to tenant confi
 while preserving the existing HTTP/DTO, role-privacy, server-authority, one-request, stale-version, and
 preparation-versus-send boundaries. This is a verification checkpoint, not a repair or feature-expansion
 assignment.  
-**Next gate:** Reconcile the Verifier result; if `VERIFIED`, open only the smallest browser walkthrough
-or closure-evidence checkpoint still required. If `NEEDS_REPAIR`, diagnose and open a bounded Repairer;
-if `BLOCKED`, report the procedure blocker without changing the parent to globally blocked.  
-**Dispatch state:** Dispatched after the full prompt was persisted. Execution Worktree / Git root:
+**Next gate:** The direct result is reconciled as `VERIFIED`; open only the smallest browser walkthrough
+or closure-evidence checkpoint still required. If later evidence exposes a bounded product defect,
+diagnose and open a bounded Repairer; if browser procedure is blocked, report that checkpoint-local
+blocker without changing the parent to globally blocked.  
+**Dispatch state:** Completed after the full prompt was persisted and the result was reconciled. Execution Worktree / Git root:
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-14-verifier`; package root:
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-14-verifier/WebApp/Web-Right_Spot`; runtime-pin path:
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-14-verifier/.node-version`; supporting-task identity
 `01a05be4-ec55-75b1-9240-99e6d2e5c0ec` (`local`, nickname `Lorentz`). The Worktree was created detached
 and clean at the exact frozen commit; no source or document write is authorized.  
+
+#### Independent verification result
+
+The dedicated Verifier returned `VERIFIED` against the exact detached source
+`9348aa50b63e3f4f46e77238ad370670383d9d6` in Worktree
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-14-verifier`; its final Git status/diff was clean.
+Pinned Node `24.20.0`/npm `11.19.0`, `npm ci`, typecheck, foundation `6/6`, all ten direct test files
+`57/57`, and production build passed. A fresh logical fixture began at generation `1` with three seeded
+listings and all slots available. The built-server cross-role HTTP path passed in order: tenant login,
+filtered listing collection, detail, draft `v1`, explicit submit `v2`, tenant status, agent login, queue,
+detail, review `v3`, preparation `v4` while still `AGENT_REVIEWING`, explicit send `v5` to `SLOT_PROPOSED`,
+tenant refresh, and explicit confirm `v6` to `VIEWING_CONFIRMED`; slot lifecycle was
+`AVAILABLE → HELD_FOR_PROPOSAL → CONFIRMED`. The verifier also passed `401`, `403`, `404`, neutral
+`400`, one-request, stale request-version and fixture-generation `409`, tenant privacy, and fresh command
+ID checks. The decline branch was covered by existing direct API/domain tests but was not run through the
+built server. Browser E2E was skipped and is not claimed; only direct HTTP/static evidence is recorded.
+Only permitted ignored generated artifacts were produced, and the first aggregate-test invocation's zsh
+argument-splitting error was corrected before the passing `57/57` run. This result closes the cross-role
+direct-verification checkpoint only; browser walkthrough, deployment, and parent closure remain open.
 
 #### Scope and ownership
 

@@ -18,7 +18,8 @@ localized generated-output boundary incident was re-baselined in process commit 
 verification and is integrated at product commit `3765747`; repaired `RS-WO-002-12` candidate
 `52cba87c` passed final independent verification and is integrated at product commit `9348aa5`. The
 original out-of-scope tracked `.gitignore` mutations from verifier Worktrees remain preserved as
-procedure evidence. The next gate is the read-only `RS-WO-002-14` combined role-page verification.
+procedure evidence. `RS-WO-002-14` passed direct read-only combined role-page verification; the next
+gate is an isolated browser walkthrough and closure-evidence review.
 
 ## 1. Authority and reading order
 
