@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import RolePageFrame from "../shared/role-page-frame";
 import {
   readListings,
@@ -26,21 +26,23 @@ export default function TenantDiscoveryPage() {
   const [data, setData] = useState<TenantListingsResponse | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const latestRequestId = useRef(0);
 
   useEffect(() => {
+    const requestId = ++latestRequestId.current;
     let active = true;
     setIsLoading(true);
     void readListings(appliedFilters)
       .then((nextData) => {
-        if (!active) return;
+        if (!active || requestId !== latestRequestId.current) return;
         setData(nextData);
         setError(null);
       })
       .catch((nextError: unknown) => {
-        if (active) setError(nextError);
+        if (active && requestId === latestRequestId.current) setError(nextError);
       })
       .finally(() => {
-        if (active) setIsLoading(false);
+        if (active && requestId === latestRequestId.current) setIsLoading(false);
       });
     return () => { active = false; };
   }, [appliedFilters]);
