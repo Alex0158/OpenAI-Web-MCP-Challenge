@@ -2107,7 +2107,7 @@ tenant administration, chat, calendar, payments, media, or future integration.
 **Pre-dispatch status:** `GATED` — `RS-WO-002-12` and `RS-WO-002-13` passed dedicated independent
 verification and their outputs are integrated into the main source at product commits `9348aa5` and
 `3765747`  
-**Execution state:** `GATED` — dispatch only after a clean detached verification Worktree is created
+**Execution state:** `IN_PROGRESS` — the dedicated read-only Verifier is executing against source
 from the frozen main commit `9348aa50b63e3f4f46e77238ad370670383d9d6d`  
 **Parallelization:** `INTEGRATION_SERIAL` — this checkpoint consumes both integrated role-page outputs;
 no tenant or agent source writer may modify the frozen source while it runs  
@@ -2122,8 +2122,12 @@ assignment.
 **Next gate:** Reconcile the Verifier result; if `VERIFIED`, open only the smallest browser walkthrough
 or closure-evidence checkpoint still required. If `NEEDS_REPAIR`, diagnose and open a bounded Repairer;
 if `BLOCKED`, report the procedure blocker without changing the parent to globally blocked.  
-**Dispatch state:** Not dispatched. The main thread must record the exact detached Worktree, package
-root, runtime-pin path, task identity, and prompt persistence before execution.
+**Dispatch state:** Dispatched after the full prompt was persisted. Execution Worktree / Git root:
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-14-verifier`; package root:
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-14-verifier/WebApp/Web-Right_Spot`; runtime-pin path:
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-14-verifier/.node-version`; supporting-task identity
+`01a05be4-ec55-75b1-9240-99e6d2e5c0ec` (`local`, nickname `Lorentz`). The Worktree was created detached
+and clean at the exact frozen commit; no source or document write is authorized.  
 
 #### Scope and ownership
 
