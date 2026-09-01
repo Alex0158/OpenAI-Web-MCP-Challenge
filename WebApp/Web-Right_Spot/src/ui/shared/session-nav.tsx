@@ -5,6 +5,7 @@ type SessionNavProps = {
   isLoading: boolean;
   isSigningOut: boolean;
   onLogout: () => void;
+  currentPath?: string;
 };
 
 const ROLE_LABELS = {
@@ -17,6 +18,7 @@ export default function SessionNav({
   isLoading,
   isSigningOut,
   onLogout,
+  currentPath = "/",
 }: SessionNavProps) {
   const sessionMessage = isLoading
     ? "Checking demo session"
@@ -26,7 +28,7 @@ export default function SessionNav({
 
   return (
     <nav className="session-nav" aria-label="Primary navigation">
-      <a className="brand" href="/" aria-current="page">
+      <a className="brand" href="/" aria-current={currentPath === "/" ? "page" : undefined}>
         <span className="brand-mark" aria-hidden="true">RS</span>
         <span>RightSpot</span>
       </a>

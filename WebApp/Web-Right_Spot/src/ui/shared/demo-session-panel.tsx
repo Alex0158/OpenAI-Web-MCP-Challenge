@@ -12,6 +12,11 @@ const ROLE_LABELS = {
   agent: "Property agent",
 } as const;
 
+const ROLE_WORKSPACE_HREFS = {
+  tenant: "/tenant",
+  agent: "/agent",
+} as const;
+
 export default function DemoSessionPanel({
   actor,
   isLoading,
@@ -48,8 +53,11 @@ export default function DemoSessionPanel({
             <dd>{ROLE_LABELS[actor.role]}</dd>
           </div>
         </dl>
+        <a className="button button-primary" href={ROLE_WORKSPACE_HREFS[actor.role]}>
+          Open {ROLE_LABELS[actor.role]} workspace
+        </a>
         <p className="panel-note">
-          This shared shell confirms the demo session only. Role-specific workflow pages will be added in a later phase.
+          Use the workspace link above to continue. This shared shell confirms the demo session only; it does not create or display workflow data.
         </p>
       </section>
     );

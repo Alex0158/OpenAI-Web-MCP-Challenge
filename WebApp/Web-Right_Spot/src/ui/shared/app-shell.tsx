@@ -95,6 +95,7 @@ export default function AppShell() {
           isLoading={session.isLoading}
           isSigningOut={isSigningOut}
           onLogout={handleLogout}
+          currentPath="/"
         />
       </header>
 
@@ -107,7 +108,7 @@ export default function AppShell() {
               RightSpot is a bounded demo for a tenant and a property agent moving one viewing request through a human-controlled workflow.
             </p>
             <p className="hero-boundary">
-              This landing surface establishes session context only. Listings, requests, queues, and decisions are not implemented here yet.
+              This landing surface establishes session context only. The signed-in workspace link is the handoff for role-specific surfaces; listings, requests, queues, and decisions do not belong to this shell.
             </p>
           </div>
 
@@ -140,8 +141,8 @@ export default function AppShell() {
             </article>
             <article className="capability-card">
               <span className="capability-index" aria-hidden="true">03</span>
-              <h3>Workflow boundary</h3>
-              <p>Future role workspaces will consume their own contracts without making this shell a business-state owner.</p>
+              <h3>Role workspace boundary</h3>
+              <p>The signed-in workspace link hands off to a role-specific surface without making this shell a business-state owner.</p>
             </article>
           </div>
         </section>
