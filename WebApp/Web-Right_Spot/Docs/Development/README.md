@@ -94,7 +94,8 @@ applications.
 The current post-MVP route is now implementation-ready for one bounded increment: the main thread
 jointly reviewed `RS-WO-008-01` and `RS-WO-009-01`, accepted the Favourite boundary in ADR-RS-0013,
 deferred the PII-sensitive Information Request boundary, and registered `RIGHTSPOT-020`. Its first
-contract/data Work Order is not dispatched yet. `RIGHTSPOT-006` remains credential-gated,
+contract/data Work Order `RS-WO-020-01` is dispatched to Builder `Ramanujan`; no UI slice is active yet.
+`RIGHTSPOT-006` remains credential-gated,
 `RIGHTSPOT-010` remains a later Operations/WebMCP decision gate, and `RIGHTSPOT-012` is a non-blocking
 read-only audit lane. The authoritative sequence is maintained in the [development roadmap](RIGHTSPOT-DEVELOPMENT-ROADMAP.md#31-current-next-route).
 

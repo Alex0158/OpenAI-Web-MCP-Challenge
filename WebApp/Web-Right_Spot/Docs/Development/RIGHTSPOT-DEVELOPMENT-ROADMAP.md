@@ -4,7 +4,8 @@
 **Status:** Phase 5 is complete for the accepted local MVP, and the Phase 6 post-MVP closure increment
 is complete. The joint review of `RS-WO-008-01` and `RS-WO-009-01` accepted ADR-RS-0013 for the
 bounded Favourite increment, deferred the PII-sensitive Information Request boundary, and registered
-`RIGHTSPOT-020`; no product implementation Work Order is active yet.
+`RIGHTSPOT-020`; its serial contract/data Work Order `RS-WO-020-01` is active, with no UI slice
+admitted yet.
 `RS-WO-005-01` has passed corrected independent verification and is integrated at local product
 commit `27f5391`; `RS-WO-007-01` is accepted as a read-only UI decomposition and `RS-WO-007-02` has
 passed final independent browser verification and is integrated at product commit `89a50c7` after
@@ -95,8 +96,8 @@ The accepted local MVP and the Phase 6 post-MVP closure increment are complete. 
 bounded implementation sequence, not an open-ended implementation wave:
 
 1. Keep the reviewed documentation/procedure baseline and unrelated collaborator changes separate.
-2. Implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; capture a fresh
-   Main baseline and dispatch its first serial contract/data Work Order.
+2. Implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; its serial
+   contract/data Work Order `RS-WO-020-01` is active against Main baseline `c0f9e8c`.
 3. After the contract/data handoff, tenant and agent UI may run in parallel only with disjoint paths;
    shared navigation, listing-card/detail integration, and global CSS remain serialized.
 4. Freeze the integrated source before independent verification, then reconcile evidence and retire

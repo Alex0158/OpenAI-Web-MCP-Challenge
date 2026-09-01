@@ -1,7 +1,7 @@
 # RIGHTSPOT-020: Implement tenant favourites and agent listing-interest
 
 **Type:** `implementation`  
-**Lifecycle:** `pending`  
+**Lifecycle:** `in_progress`  
 **Priority:** `P1` for the next bounded post-MVP product increment  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-02  
@@ -10,15 +10,78 @@
 ## Task control
 
 - Type: `implementation`
-- Lifecycle: `pending`
-- Execution posture: `REGISTERED_NOT_DISPATCHED`
+- Lifecycle: `in_progress`
+- Execution posture: `BUILDER_ACTIVE`
 - Current increment: Implement the accepted tenant Favourite relationship and privacy-preserving
   agent listing-interest projection as one bounded product outcome.
-- Next gate: Main thread may dispatch the first serial contract/data Work Order after a fresh source
-  baseline and exact path ownership are recorded. No Builder, Verifier, or temporary Worktree is active
-  for this Task yet.
+- Next gate: `RS-WO-020-01` must return `READY_FOR_VERIFICATION` or `BLOCKED`; Main then reviews the
+  exact candidate diff before any UI slice is considered.
 - Parent role: This is one registered Task File. Builder, Verifier, Repairer, and Integrator are
   checkpoints under this file, not additional Tasks.
+
+## RS-WO-020-01 — Favourite contract/data foundation
+
+**Role:** Domain, persistence, application, API, and focused-test Builder  
+**Status:** `ASSIGNED` — Builder active  
+**Parallelization:** `SERIAL_FIRST` — no other RightSpot product writer is admitted against these shared contract/state paths  
+**Risk profile:** `High` for data/role/privacy boundaries; bounded implementation scope  
+**Supporting worker:** `Ramanujan`, multi-agent `01a05f63-c270-7dc0-aa47-9c3a2b19a2e1`  
+**Source baseline:** Main `c0f9e8c7d7bda9894c137ebb846c011a5cef21eb`; the Main working tree also contains unrelated Game, `next-env.d.ts`, and owner-held RightSpot untracked changes that are outside this Work Order  
+**Ownership:** The Builder may edit only the exact code/test paths below. Main owns task status, canonical documentation, candidate review, integration, independent verification, and closure.
+
+### Objective
+
+Implement only the server-side Favourite contract/data foundation. This slice must make the accepted
+Favourite semantics executable and testable, but must not implement tenant or agent UI.
+
+### Allowed write set
+
+```text
+src/server/domain/favourites.ts
+src/server/domain/favourite-projections.ts
+src/server/domain/types.ts
+src/server/domain/errors.ts
+src/server/domain/workflow.ts
+src/server/persistence/workflow-store.ts
+src/server/persistence/reset.ts
+src/server/application/workflow.ts
+src/server/application/favourites.ts
+src/server/application/favourite-views.ts
+src/server/application/favourites-http.ts
+src/shared/contracts/favourites-api.ts
+app/api/tenant/favourites/route.ts
+app/api/tenant/favourites/[listingId]/route.ts
+app/api/agent/listing-interest/route.ts
+tests/domain/favourites.test.ts
+tests/application/favourites.test.ts
+tests/persistence/favourites-migration.test.ts
+tests/api/favourites.test.ts
+```
+
+Existing paths in this set may be changed only for Favourite state plumbing and must preserve the
+existing Viewing Request behavior. New paths must remain inside the listed directories.
+
+### Forbidden scope
+
+- Any tenant/agent page, UI component, navigation, shared shell, global CSS, asset, or generated output.
+- Any `InformationRequest`, contact profile/snapshot, notification, marketing, email, phone, WhatsApp,
+  external auth, WebMCP, Cloud Receiver, Re-entry, deployment, or Operations-profile behavior.
+- Any package manifest, lockfile, environment file, database artifact, canonical document, Task File,
+  ADR, AGENTS file, README, Git commit/push/branch, Worktree management, deletion, or source cleanup.
+- Any new listing lifecycle state, archive/hard-delete/relist model, all-time analytics, or second store.
+
+### Required Builder checks
+
+- Capture actual repository/package root, branch, HEAD, runtime, dirty paths, and candidate identity.
+- Preserve v1-to-v2 migration, deterministic reset, fixture generation, atomic SQLite writes, command
+  idempotency/fingerprint, expected-version conflicts, server-derived tenant identity, and role-safe DTOs.
+- Prove published-only first save, retained unavailable Favourite, current-versus-available aggregate
+  semantics, tenant/wrong-agent isolation, no private-field leakage, and unchanged Viewing Request tests.
+- Run focused tests and relevant existing regression/typecheck checks with exact results. Do not claim
+  browser, deployment, WebMCP, external communication, or production privacy evidence.
+- Return `READY_FOR_VERIFICATION` only with exact changed paths, diff/scope self-review, test results,
+  residual risks, and claim limits. Return `BLOCKED` instead of guessing if the baseline or ownership
+  boundary is not reproducible.
 
 ## Objective
 
@@ -83,8 +146,8 @@ Deliver the smallest coherent Favourite experience for the current three-listing
 
 ## Planned checkpoint decomposition
 
-These are bounded planning slices, not active Work Orders until the main thread registers their exact
-baseline and dispatches them:
+The contract/data slice above is the active `RS-WO-020-01`. The UI and shared-integration slices below
+remain planning slices and cannot start until the contract/data handoff is independently reviewed.
 
 ### Contract/data slice — serial first
 
@@ -179,6 +242,7 @@ that cannot be serialized, an external provider, or a source baseline that canno
 
 ## Current evidence and closure
 
-No product code, Work Order, candidate branch, temporary Worktree, or browser evidence has been created
-for this Task. Closure requires independently verified source, Main integration, canonical document
+`RS-WO-020-01` is dispatched to the supporting Builder, but no candidate code has been integrated into
+Main and no independent verification or browser evidence exists yet. Closure requires the Builder
+handoff, exact candidate review, independent verification, Main integration, canonical document
 reconciliation, and the exact non-claims above.

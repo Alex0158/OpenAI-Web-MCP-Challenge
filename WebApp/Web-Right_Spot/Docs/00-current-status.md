@@ -157,7 +157,8 @@ register and dispatch the two role Builders.
 The newly surfaced `RIGHTSPOT-008` proposal-only `RS-WO-008-01` returned `READY_FOR_REVIEW` from
 supporting worker `01a05d79-ce45-7000-aa44-a3a1ecad95b0`. Main jointly reviewed it with `RS-WO-009-01`,
 accepted the bounded Favourite direction in ADR-RS-0013, and closed the proposal task; its separate
-implementation Task is `RIGHTSPOT-020` and has not been dispatched.
+implementation Task is `RIGHTSPOT-020`. `RS-WO-020-01` is now dispatched to Builder `Ramanujan`
+(`01a05f63-c270-7dc0-aa47-9c3a2b19a2e1`) for the serial contract/data slice; no UI slice is active.
 `RIGHTSPOT-009` was reviewed with `RIGHTSPOT-008` after `RS-WO-009-01` returned `READY_FOR_REVIEW`
 from `01a05d7c-21b4-72f3-bbe8-1c34d1aee291`. It is closed as `REVIEWED_DEFERRED`: the Information
 Request boundary remains proposal evidence only because contact/PII authority, retention, and agent
@@ -297,12 +298,11 @@ closed parent or override the current closure statement above.
 ## 5.1 Current post-MVP route
 
 The accepted local MVP and the Phase 6 post-MVP closure increment are complete. No product
-implementation Work Order is active. The next route is the bounded `RIGHTSPOT-020` implementation
-lane:
+implementation Work Order is active. The current bounded `RIGHTSPOT-020` implementation lane is:
 
 1. keep the reviewed documentation/procedure baseline and unrelated collaborator work separate;
-2. implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; its first step is
-   a fresh Main baseline followed by one serial contract/data Work Order;
+2. implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; `RS-WO-020-01` is
+   the active serial contract/data Builder slice against Main baseline `c0f9e8c`;
 3. after that contract handoff, tenant and agent UI may run in parallel only with disjoint paths;
 4. serialize shared navigation, listing-card/detail integration, global CSS, source freeze, Main
    integration, and Worktree retirement;
