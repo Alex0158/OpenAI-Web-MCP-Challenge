@@ -18,6 +18,7 @@ import {
   updateTenantDraft,
 } from "./tenant-api";
 import type { TenantApiError } from "./tenant-api";
+import { londonWallTimeToUtcIso, utcIsoToLondonInput } from "./tenant-request-time";
 import styles from "./tenant.module.css";
 
 export default function TenantRequestPage() {
@@ -253,12 +254,12 @@ export function TenantRequestEditor({
     }
     const isoTimes: string[] = [];
     for (const time of times) {
-      const date = new Date(time);
-      if (Number.isNaN(date.valueOf())) {
-        setError("Each preferred time must be a valid date and time.");
+      try {
+        isoTimes.push(londonWallTimeToUtcIso(time));
+      } catch (errorValue: unknown) {
+        setError(errorValue instanceof Error ? errorValue.message : "Each preferred time must be a valid date and time.");
         return null;
       }
-      isoTimes.push(date.toISOString());
     }
     if (isoTimes.some((time, index) => index > 0 && time <= isoTimes[index - 1]!)) {
       setError("Preferred times must be in strictly increasing order; duplicate times are not accepted.");
@@ -438,10 +439,7 @@ function signature(times: string[], note: string): string {
 }
 
 function toInputDateTime(value: string): string {
-  const date = new Date(value);
-  if (Number.isNaN(date.valueOf())) return "";
-  const pad = (part: number) => String(part).padStart(2, "0");
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  return utcIsoToLondonInput(value);
 }
 
 function formatDateTime(value: string): string {
