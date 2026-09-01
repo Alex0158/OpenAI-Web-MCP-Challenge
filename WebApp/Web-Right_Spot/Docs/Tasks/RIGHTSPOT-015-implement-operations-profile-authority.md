@@ -1,7 +1,7 @@
 # RIGHTSPOT-015: Implement the Operations profile authority
 
 **Type:** `implementation`  
-**Lifecycle:** `in_progress`  
+**Lifecycle:** `closed`
 **Priority:** `P1` for the next RightSpot Operations demonstration increment  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-01  
@@ -10,18 +10,17 @@
 ## Task Control
 
 - Type: `implementation`
-- Lifecycle: `in_progress`
+- Lifecycle: `closed`
 - Priority: `P1`
 - Owner: Main RightSpot thread
 - Objective: Implement and independently verify the smallest deterministic, multi-record Operations
   profile authority and reset boundary without changing the accepted relay application.
-- Current increment: `RS-WO-015-04` is the bounded follow-up repair checkpoint for a table-level
-  singleton-constraint gap found during fresh verification of `RS-WO-015-03`. Candidate `39e67e1`
-  remains rejected and non-integrated; the new repair must be independently verified from its exact
-  parent before any authority consumer proceeds.
-- Next gate: Repair and freshly verify the table-level constraint boundary before a projection consumer,
-  transport, route, UI, navigation, or WebMCP Work Order is registered.
-- Execution posture: `AUTHORITY_REPAIR_REQUIRED`; this task is separate from the closed relay MVP,
+- Current increment: `RS-WO-015-04` passed fresh independent verification and was integrated as the
+  complete Operations authority at product commit `e7f30d5`. The previously rejected candidates
+  `3f041a0` and `39e67e1` remain historical evidence only.
+- Next gate: `RIGHTSPOT-016` may now begin its separate pure projection checkpoint; no transport,
+  route, UI, navigation, or WebMCP consumer is implied by this closure.
+- Execution posture: `CLOSED`; this task is separate from the closed relay MVP,
   closed Field Desk lane, and unresolved Favourite/Information Request proposals.
 
 ## Accepted implementation boundary
@@ -299,15 +298,16 @@ No candidate or relay/default database was modified by the verifier, and no sour
 ## RS-WO-015-04 — Repair table-level Operations singleton constraints
 
 **Role:** Repairer (original authority Builder)  
-**Status:** `READY_FOR_VERIFICATION`  
+**Status:** `INTEGRATED`  
 **Parallelization:** `SERIAL_AUTHORITY_REPAIR` — depends on the fresh `RS-WO-015-03` finding and must precede another verifier  
 **Risk profile:** `Assured` — existing-schema compatibility must protect the authority's singleton and generation invariants  
 **Supporting worker:** Operations authority Repairer `01a05df7-a761-7423-9b85-e2a866f3a216` (`Herschel`), closed after handoff  
 **Source baseline:** Rejected candidate `39e67e1d9a1c7764b34cc2dad241f9441db26c57`; parent `3f041a0d0477f2fba0aedb93c5e048d21334254d`  
 **Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-015-01-builder`  
 **Candidate source:** `a9c8e79694c9b6c9f0b2214f15daa8c5f4cd41b1`, parent `39e67e1d9a1c7764b34cc2dad241f9441db26c57`  
-**Dispatch state:** `HANDOFF_COMPLETE`  
-**Next gate:** Fresh independent verification of the exact frozen candidate; do not integrate or dispatch an Operations consumer  
+**Independent verifier:** Multi-agent read-only Verifier `01a05e2c-6f8c-7011-8e4c-aa48984b5ce4` (`Maxwell`), closed after report  
+**Dispatch state:** `INDEPENDENTLY_VERIFIED_AND_INTEGRATED`  
+**Next gate:** Parent task closure is recorded; `RIGHTSPOT-016` is the separate next projection task  
 **Ownership:** The Repairer owns only `src/server/persistence/operations-store.ts` and
 `tests/persistence/operations-store.test.ts`. The main thread owns source freeze, verification,
 integration, canonical writeback, and closure.
@@ -351,6 +351,26 @@ rejects same-column schemas that omit or weaken those checks without recreating,
 or probing the database. Pinned Node `24.20.0` / npm `11.19.0` self-checks passed: focused Operations
 `12/12`, foundation `6/6`, all direct TypeScript tests `74/74`, typecheck, build, and diff check.
 These are Builder checks only; no independent verification or integration claim is made.
+
+### Independent verification result — 2026-09-01
+
+Verifier `Maxwell` returned `VERIFIED` for the exact frozen repair candidate. It independently
+reproduced valid reopen, exact column-shape rejection, missing/renamed/reordered/incompatible column
+rejection, missing or weakened singleton/positive-generation constraint rejection before any probe
+row, corrupt/incompatible failure, reset/reopen equivalence, atomic rollback, stable file identity,
+and Operations-only isolation from relay persistence. Pinned checks passed: Operations `12/12`,
+foundation `6/6`, all direct TypeScript tests `74/74`, typecheck, build, and diff check. No source
+edits or default database changes were made; no consumer, HTTP, UI, browser, WebMCP, or deployment
+evidence was claimed.
+
+### Main-thread integration and closure result — 2026-09-01
+
+Because the candidate was a repair on top of two rejected, non-integrated predecessors, the main thread
+combined the authority base and both repairs into one exact five-path integration at product commit
+`e7f30d5`. Post-integration checks passed: Operations focused `12/12`, all direct TypeScript tests
+`87/87`, foundation `6/6`, `npm run typecheck`, `npm run build`, and `git diff --check`. This closes
+the authority task and unlocks the separately registered projection task; it does not authorize a
+transport or UI consumer.
 
 ## Closure gate
 

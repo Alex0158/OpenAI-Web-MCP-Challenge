@@ -1,7 +1,7 @@
 # RIGHTSPOT-016: Implement the governed Operations projection
 
 **Type:** `implementation`  
-**Lifecycle:** `pending`  
+**Lifecycle:** `in_progress`  
 **Priority:** `P1` for the first manual Operations read surface  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-01  
@@ -10,19 +10,18 @@
 ## Task Control
 
 - Type: `implementation`
-- Lifecycle: `pending`
+- Lifecycle: `in_progress`
 - Priority: `P1`
 - Owner: Main RightSpot thread
 - Objective: Project the verified Operations authority into a deterministic, privacy-safe contract
   for the first manual read surface without adding HTTP, routes, UI, navigation, WebMCP, or relay
   behavior.
-- Current increment: `RS-WO-016-01` is registered but `GATED`; it may start only after the Operations
-  profile authority and reset checkpoint is independently verified and integrated.
-- Next gate: Freeze the actual `OperationsProfileState` types from `RIGHTSPOT-015`, then dispatch one
-  exact projection Builder. A separate transport Work Order follows only after this projection is
-  independently verified.
-- Execution posture: `WAITING_ON_AUTHORITY`; no supporting worker is assigned and no source change is
-  authorized by this registration.
+- Current increment: `RS-WO-016-01` is ready to implement against the independently verified and
+  integrated Operations authority at product commit `e7f30d5`.
+- Next gate: Dispatch one exact pure projection Builder. A separate transport Work Order follows only
+  after this projection is independently verified and integrated.
+- Execution posture: `READY_FOR_BUILDER_DISPATCH`; no transport, route, UI, navigation, or WebMCP source
+  is authorized by this registration.
 
 ## Accepted projection boundary
 
@@ -40,12 +39,12 @@ remains a separate closed boundary.
 ## RS-WO-016-01 — Implement the governed Operations projection
 
 **Role:** Builder  
-**Pre-dispatch status:** `GATED`  
-**Parallelization:** `SERIAL_AFTER_AUTHORITY` — no source write set is active until `RS-WO-015-01` is verified and integrated  
+**Pre-dispatch status:** `READY_FOR_DISPATCH`  
+**Parallelization:** `SERIAL_AFTER_AUTHORITY` — the authority is now verified/integrated; only the new projection write set is active  
 **Risk profile:** `Standard` — pure projection and query validation, with privacy and time-boundary checks  
-**Supporting worker:** To be assigned only after the authority checkpoint closes  
-**Source baseline:** To be captured at dispatch from the integrated Operations authority; collaborator-owned dirty and untracked paths remain outside this Work Order  
-**Dispatch state:** `NOT_DISPATCHED`  
+**Supporting worker:** To be assigned by the main thread  
+**Source baseline:** `e7f30d5703d0d51f8980407717a4fbc197a69732` on `main`, the integrated Operations authority baseline; collaborator-owned dirty and untracked paths remain outside this Work Order  
+**Dispatch state:** `READY_FOR_DISPATCH`  
 **Next gate:** Return `READY_FOR_VERIFICATION` with exact candidate source identity; do not start transport, route, UI, or WebMCP work  
 **Ownership:** The Builder owns only the new projection module and focused tests. The main thread owns source freeze, canonical writeback, integration, and closure.
 
