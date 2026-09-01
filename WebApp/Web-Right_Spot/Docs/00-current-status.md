@@ -2,7 +2,7 @@
 
 **Role:** Canonical current status for the RightSpot child application  
 **As of:** 2026-09-01, Europe/London  
-**Stage:** MVP scope, business-rules, Backbone, and implementation-stack baseline; runnable foundation and workflow-core independently verified, persistence/application integration next
+**Stage:** MVP scope, business-rules, Backbone, and implementation-stack baseline; runnable foundation and workflow-core independently verified, `RS-WO-002-04` ready for bounded persistence/application dispatch
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Implementation:** Foundation Builder returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02` verification attempt was procedurally blocked by an out-of-scope OS temp artifact, then the corrected bounded rerun returned `VERIFIED` against the unchanged source/runtime identity; `RS-WO-002-03` found and repaired a listing-version guard defect in commit `6e70c9f`, and fresh independent verification returned `VERIFIED` against that frozen source
 
@@ -91,6 +91,8 @@ final response can remain a normal application action.
 - What exact user pain and audience will RightSpot validate?
 - What concrete session implementation, transport, and deployment profile should implement the
   accepted logical contracts?
+- Whether the local MVP snapshot should later be replaced by a normalized production schema and
+  migration strategy.
 - What accessibility and responsive layout baseline should the application use?
 - Which future Hackathon integration is necessary after the ordinary product loop works?
 
@@ -99,7 +101,7 @@ final response can remain a normal application action.
 The first `RS-WO-002-02` result is recorded as a procedural `BLOCKED`, and the corrected rerun is
 now `VERIFIED` against the unchanged source/runtime identity. The bounded `RS-WO-002-03` domain-core
 implementation and projection-isolation repair were independently checked against frozen commit
-`a60001e`; the bounded Repairer completed the exact two-path repair in `6e70c9f`; fresh independent verification returned `VERIFIED`. The next gate is to define one bounded persistence/application integration checkpoint. Do not start another writer, pre-create downstream role assignments, or
+`a60001e`; the bounded Repairer completed the exact two-path repair in `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` is now defined and gated for one bounded persistence/application Builder dispatch. Do not start another writer, pre-create downstream role assignments, or
 claim the parent Task is closed.
 The eventual implementation remains without Cloud Receiver, WebMCP, Redis, or WebRTC media
 dependencies.
@@ -111,7 +113,7 @@ The parent `RIGHTSPOT-002` remains `in_progress`; the foundation Builder stopped
 and its corrected rerun is `VERIFIED` against the unchanged exact target Node.js runtime and
 execution manifest. `RS-WO-002-03` Builder and bounded Repairer returned `READY_FOR_VERIFICATION`,
 and T2 source is frozen at `a60001e`; the Verifier found a listing-version guard defect and the
-bounded Repairer completed it in post-repair commit `6e70c9f`; fresh independent verification returned `VERIFIED`. Builder, Verifier, Repairer,
+bounded Repairer completed it in post-repair commit `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` is gated for Builder dispatch. Builder, Verifier, Repairer,
 and Integrator remain sequential checkpoints of this same Task. No other product writer or repairer is active; the main
 thread owns evidence writeback, Git closure, and the next checkpoint dispatch.
 

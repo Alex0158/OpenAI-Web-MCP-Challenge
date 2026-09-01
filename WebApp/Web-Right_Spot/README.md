@@ -3,8 +3,8 @@
 **Role:** Independent child application inside the WebMCP Challenge repository  
 **Working identity:** RightSpot — the rental-workflow candidate previously documented as
 `Rental Marketplace Relay`  
-**Status:** MVP design and implementation-stack baseline; implementation not started  
-**Implementation:** Not started  
+**Status:** MVP design plus independently verified foundation and workflow-domain baseline; application integration not started
+**Implementation:** Foundation and workflow domain core verified; persistence, application services, API, and UI remain to be built
 **Formal outer app-selection decision:** Pending
 
 ## Purpose
@@ -111,6 +111,7 @@ branch in the first demo.
 - [`Docs/Decisions/ADR-RS-0004-thread-orchestration-pilot.md`](Docs/Decisions/ADR-RS-0004-thread-orchestration-pilot.md) — scoped experimental delegated-work decision;
 - [`Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`](Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md) — the Big Roadmap for implementation, validation, and closure;
 - [`Docs/Decisions/ADR-RS-0003-implementation-stack-and-realtime-boundary.md`](Docs/Decisions/ADR-RS-0003-implementation-stack-and-realtime-boundary.md) — accepted implementation stack, Redis boundary, and WebRTC positioning;
+- [`Docs/Decisions/ADR-RS-0006-durable-workflow-and-application-boundary.md`](Docs/Decisions/ADR-RS-0006-durable-workflow-and-application-boundary.md) — accepted local durable workflow snapshot and application-service boundary;
 - [`Docs/Tasks/README.md`](Docs/Tasks/README.md) — bounded RightSpot work items; and
 - [`Docs/Development/README.md`](Docs/Development/README.md) — implementation and verification records.
 

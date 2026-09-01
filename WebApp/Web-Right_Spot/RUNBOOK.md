@@ -6,8 +6,8 @@ the foundation Builder returned `READY_FOR_VERIFICATION`, the first independent 
 procedurally blocked, and the corrected rerun returned `VERIFIED`; the bounded domain-core Builder and
 projection-isolation repair returned `READY_FOR_VERIFICATION`, with T2 source commit `a60001e` frozen;
 independent verification found a bounded listing-version guard defect; the bounded Repairer completed
-in `6e70c9f`, and fresh independent verification returned `VERIFIED`; persistence/application integration
-is the next bounded design gate
+in `6e70c9f`, and fresh independent verification returned `VERIFIED`; `RS-WO-002-04` is the next gated
+persistence/application integration checkpoint
 
 ## 1. Authority and reading order
 
@@ -26,6 +26,8 @@ The optional delegated-work procedure is recorded in
 [`Docs/Development/RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-RUNBOOK.md`](Docs/Development/RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-RUNBOOK.md)
 and governed by
 [`Docs/Decisions/ADR-RS-0004-thread-orchestration-pilot.md`](Docs/Decisions/ADR-RS-0004-thread-orchestration-pilot.md).
+The local durable workflow/application boundary is governed by
+[`Docs/Decisions/ADR-RS-0006-durable-workflow-and-application-boundary.md`](Docs/Decisions/ADR-RS-0006-durable-workflow-and-application-boundary.md).
 
 RightSpot documents define the child application's product and architecture truth. The outer
 repository remains authoritative for shared engineering rules, Hackathon constraints, the

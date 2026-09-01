@@ -1,7 +1,7 @@
 # RightSpot Development and Closure
 
 **Role:** Big-picture roadmap, implementation, verification, collaboration, and closure routing  
-**Status:** Roadmap and thread-orchestration pilot documented; foundation and workflow-core are independently verified; persistence/application integration is the next bounded design gate
+**Status:** Roadmap and thread-orchestration pilot documented; foundation and workflow-core are independently verified; `RS-WO-002-04` is the gated persistence/application integration checkpoint
 
 ## Purpose
 
@@ -27,8 +27,7 @@ and the bounded workflow-core Builder plus one projection-isolation repair for `
 stale listing revisions were not rejected by both draft-update and submit commands, so the current
 checkpoint was a bounded Repairer on the domain workflow and focused test paths; its post-repair
 commit is `6e70c9f`, and the fresh independent Verifier returned `VERIFIED` against that frozen source.
-The next action is to define one bounded persistence/application integration checkpoint before
-opening API or UI work.
+The next action is to dispatch and independently verify `RS-WO-002-04` before opening API or UI work.
 Later Integrator work is opened only when its predecessor produces a concrete code failure or a
 verified source and evidence boundary.
 

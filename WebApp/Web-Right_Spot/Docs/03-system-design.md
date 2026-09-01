@@ -162,8 +162,8 @@ Cloud Receiver, WebMCP, WebRTC, or Redis.
 
 ## 7. Open architecture decisions
 
-- concrete application service and repository module layout;
-- business schema and production migration strategy;
+- production normalized business schema and migration strategy (the local MVP snapshot boundary is
+  accepted in ADR-RS-0006);
 - authentication/session model;
 - background event or notification mechanism;
 - deployment and environment configuration;

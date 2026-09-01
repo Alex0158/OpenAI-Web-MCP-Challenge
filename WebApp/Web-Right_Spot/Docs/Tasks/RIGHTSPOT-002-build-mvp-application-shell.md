@@ -18,11 +18,11 @@ The implementation must follow the accepted business rules in
 - Owner: Main RightSpot thread
 - Current increment: Define the next bounded persistence/application integration checkpoint after the
   independently verified workflow domain core.
-- Next gate: Main-thread design and dispatch of one bounded persistence/application integration
-  checkpoint; do not open the full API/UI surface as one assignment.
+- Next gate: Dispatch the gated `RS-WO-002-04` bounded Builder, then independently verify its frozen
+  output; do not open the full API/UI surface as one assignment.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
-- Process authority: ADR-RS-0004, ADR-RS-0005, and the RightSpot Thread Orchestration Pilot Runbook govern any
+- Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, and the RightSpot Thread Orchestration Pilot Runbook govern any
   supporting-task dispatch under this parent.
 
 ## Parent-task boundary and current Work Order
@@ -65,7 +65,7 @@ verification, integration, or parent-Task closure.
   permanent full-document hash lock.
 - **Read before action:** Repository `AGENTS.md` and Engineering controls, RightSpot `RUNBOOK.md`,
   `Docs/00-current-status.md`, the relevant product/domain/API/validation documents, ADR-RS-0001
-  through ADR-RS-0005, and the Thread Orchestration Pilot Runbook.
+  through ADR-RS-0006, and the Thread Orchestration Pilot Runbook.
 - **Worker restrictions:** The foundation Builder and domain-core Builder/Repairer have stopped.
   The next Verifier may inspect and run only the frozen source, with no authored mutable paths. It
   must classify the declared read, worker-write, main-thread-writeback, forbidden, and generated
@@ -603,6 +603,110 @@ expiry, role/assignment/state guards, projections, idempotency, audit continuity
 errors remain covered. No authored path changed during verification. Generated output stayed within
 ignored RightSpot paths. This verifies only the bounded domain-core checkpoint, not persistence/API/UI,
 browser, deployment, external integration, or parent-Task closure.
+
+### RS-WO-002-04 — Establish the durable workflow and application boundary
+
+**Parent task:** `RIGHTSPOT-002`  
+**Role:** Builder → Verifier (sequential checkpoints)  
+**Pre-dispatch state:** `GATED` — `RS-WO-002-03` domain core is independently verified at `6e70c9f`; local persistence/application design is accepted in ADR-RS-0006  
+**Execution state:** `GATED` — ready for bounded Builder dispatch  
+**Owner:** Main RightSpot thread; one supporting task may implement the exact bounded write set  
+**Objective:** Persist the complete serializable `WorkflowState` in a deterministic local SQLite
+snapshot and expose one narrow application service above the verified domain core. Prove durable
+refresh-visible workflow continuity and atomic command/reset behavior without exposing HTTP, UI,
+authentication, or external integration yet. This Work Order is governed by
+[ADR-RS-0006](../Decisions/ADR-RS-0006-durable-workflow-and-application-boundary.md).
+**Next gate:** Main thread dispatches the bounded Builder, then reviews the exact diff and opens an
+independent Verifier only after the Builder returns `READY_FOR_VERIFICATION`.
+
+#### Scope and ownership
+
+**Read set:** RightSpot `RUNBOOK.md`, `Docs/00-current-status.md`, `Docs/03-system-design.md`,
+`Docs/04-domain-and-data-model.md`, `Docs/05-api-and-integration-contracts.md`,
+`Docs/06-validation-and-evidence.md`, ADR-RS-0001 through ADR-RS-0006, the existing foundation
+modules, and all verified domain/projection modules.
+
+**Worker write set — exact authored paths:**
+
+- `WebApp/Web-Right_Spot/src/server/persistence/workflow-store.ts`;
+- `WebApp/Web-Right_Spot/src/server/application/workflow.ts`; and
+- `WebApp/Web-Right_Spot/tests/application/workflow.test.ts`.
+
+**Main-thread orchestration writeback set:** current status, roadmap, task index, this Task File,
+and Runbook process/evidence sections only. The main thread may record lifecycle and evidence but
+must not change this Work Order's objective, acceptance criteria, runtime, dependencies, authority,
+or path sets while the Builder is active.
+
+**Forbidden set:** all existing domain files under `src/server/domain/`; foundation files under
+`src/server/persistence/sqlite.ts`, `src/server/persistence/reset.ts`, and
+`src/server/application/health.ts`; app pages/routes; package manifests and lockfile; config; ADRs
+and product/domain contracts; `scripts/reset-db.ts`; Git index; any path outside RightSpot; and
+any commit, push, deploy, publish, external message, or follow-on dispatch. No `reentry-core`, Cloud
+Receiver, WebMCP, Redis, WebRTC, ORM, migration framework, external SQLite package, auth provider,
+or in-memory fallback.
+
+**Generated set:** only existing ignored RightSpot output (`node_modules/`, `.next/`,
+`*.tsbuildinfo`, `var/rightspot.sqlite*`, and isolated `var/test/` files). No external `/tmp`, home,
+or broad temporary output; do not delete pre-existing artifacts.
+
+#### Implementation contract
+
+- Reuse the existing server-only `node:sqlite` foundation and default database path. The workflow
+  store owns one singleton, versioned snapshot table for serialized `WorkflowState`; it must not
+  create a second database or normalized business-table family in this checkpoint.
+- On first open, seed a missing snapshot from the verified domain fixture at the current foundation
+  generation. A present corrupt, incompatible, or unparseable snapshot must fail visibly with a
+  neutral persistence error; never silently replace it or fall back to memory.
+- Provide durable read, command-apply, projection-read, and development-reset behavior. Domain
+  transitions and role authorization remain delegated to `executeCommand`, `evaluateExpiry`,
+  `readTenantProjection`, and `readAgentProjection`; the store owns serialization and transaction
+  boundaries only.
+- A command application and any resulting expiry write must be atomic. A rejected command must not
+  persist a mutation unless the domain evaluation itself produced a permitted expiry transition.
+  Transaction failure must roll back and must not leak SQL, paths, stack traces, credentials, or
+  private role context.
+- Reset must preserve the established first-reset generation semantics, write a fresh deterministic
+  seeded snapshot, update the foundation generation and snapshot atomically, and never delete or
+  recreate the database file.
+- The application service must accept explicit actors, commands, and injected time; expose tenant
+  and assigned-agent projections through the verified projection layer; and avoid duplicating any
+  workflow rule. It must not choose arbitrary state, trust client-provided state, or implement a
+  session/authentication provider.
+- Keep returned states and projections detached from the stored snapshot. Do not persist role-
+  specific projections as separate competing records.
+
+#### Acceptance criteria
+
+- Fresh isolated database open creates the workflow snapshot at the current foundation generation
+  with the deterministic seeded listings/slots, no request, empty audit, and no processed commands.
+- A successful `CREATE_REQUEST_DRAFT` and `SUBMIT_REQUEST` through the application boundary survive
+  store close/reopen with the same request state, version, listing revision, audit facts, and command
+  idempotency record.
+- A stale request or listing revision, invalid actor, invalid transition, unavailable slot, and
+  bounded-input failure return the verified domain error and leave durable business state unchanged.
+- Repeating the same completed command after reopen is idempotent and does not add a second audit
+  fact or consequence; conflicting reuse fails without mutation.
+- A sent proposal that expires on a relevant persisted read transitions to `EXPIRED`, releases the
+  exact held slot, increments the request version once, and survives reopen with the expiry fact.
+- The development reset returns generation `1` on a fresh store and increments exactly once on each
+  later successful reset, leaves no request, and remains visible after reopen. Failed reset rolls
+  back without a partial generation or snapshot update.
+- Tenant and agent projection reads preserve role authorization and private-note exclusion. Corrupt
+  snapshot input fails visibly without a fallback or diagnostic leakage.
+- The focused tests run against isolated file-backed SQLite paths and prove no authored files outside
+  the three-path worker write set changed. No route, browser, API wire format, UI, login, deployment,
+  Cloud Receiver, WebMCP, Redis, or WebRTC behavior is claimed.
+
+#### Required verification and return
+
+Use exact Node.js `v24.20.0`, npm `11.19.0`, and
+`/Users/alex/.local/share/rightspot/node-v24.20.0-darwin-arm64/bin/node`. Run `npm run typecheck`,
+`npm test` with foundation count separate, `./node_modules/.bin/tsx --test tests/application/workflow.test.ts`,
+and `git diff --check`. Inspect status and diff by ownership class. The Builder must not run or
+start the independent Verifier and must not edit canonical documents. Return exactly one of
+`READY_FOR_VERIFICATION`, `NEEDS_REPAIR`, or `BLOCKED` with source identity, changed/generated
+paths, runtime, commands/results, transaction/reset evidence, skipped claims, residual risks, and
+the narrow claim boundary. A Builder report never means independent verification or parent closure.
 
 #### Stop conditions and report
 
