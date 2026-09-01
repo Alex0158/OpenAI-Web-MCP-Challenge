@@ -18,16 +18,15 @@ The implementation must follow the accepted business rules in
 - Owner: Main RightSpot thread
 - Current increment: Implement and independently verify the bounded `RS-WO-002-04` persistence/application
   boundary after the independently verified workflow domain core.
-- Next gate: Complete the main-thread candidate-adoption review for `RS-WO-002-04`, establish a new
-  T2 source identity in a dedicated Worktree, then independently verify it; do not open the full
-  API/UI surface as one assignment.
+- Next gate: Independently verify the adopted `RS-WO-002-04` candidate from T2 commit `68bbc69` in a
+  dedicated Worktree; do not open the full API/UI surface as one assignment.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, and the RightSpot Thread Orchestration Pilot Runbook govern any
   supporting-task dispatch under this parent.
-- Parent execution posture: `CONSTRAINED` — the `RS-WO-002-04` checkpoint is held for a
-  supporting-task identity correction; the parent goal remains viable, while any additional work
-  must pass the Pilot Runbook's independent-parallelization and ownership gates.
+- Parent execution posture: `PROGRESSING` — the supporting-task identity correction is resolved by
+  main-thread candidate adoption at T2 commit `68bbc69`; the dedicated independent verification gate
+  remains open, and any additional work must pass the Pilot Runbook's ownership gates.
 - Blocker reporting: the main thread reports the checkpoint-local blocker to the human owner and
   records its evidence, impact, owner, safe continuation, and resume condition here; this does not
   change the parent lifecycle to `blocked`.
@@ -70,8 +69,14 @@ verification, integration, or parent-Task closure.
 - **Baseline:** The actual repository root is `WebMCP_Challenge`; the frozen implementation source
   for the next gate is post-repair commit `6e70c9f`, whose parent T2 source was `a60001e`. The
   six modified canonical documents are main-thread process-only writeback and are not part of the
-  post-repair implementation commit. The current `RS-WO-002-04` dispatch baseline is reviewed commit
-`178d8873dc9c4a28a11da313e8425a3a25316b71`; the Builder completed its three-path implementation checks, but the prompt was appended to the persisted `RS-WO-002-01` supporting thread, so the result is held for a dispatch-identity correction. The user-authorized Side Chat learning file and process-only Pilot Runbook writeback are classified separately from product source. Source identity is checkpoint-scoped and path-owned; it is not a permanent full-document hash lock.
+  post-repair implementation commit. The original `RS-WO-002-04` dispatch baseline was reviewed commit
+  `178d8873dc9c4a28a11da313e8425a3a25316b71`; after reviewing the three-path implementation checks,
+  the main thread adopted the exact candidate at T2 implementation commit `68bbc69`. The dedicated
+  verification checkout will be frozen at the post-writeback repository commit recorded when the
+  Verifier is dispatched. The candidate remains pending dedicated independent verification. The
+  user-authorized Side Chat learning file and process-only Pilot Runbook writeback are classified
+  separately from product source. Source identity is checkpoint-scoped and path-owned; it is not a
+  permanent full-document hash lock.
 - **Read before action:** Repository `AGENTS.md` and Engineering controls, RightSpot `RUNBOOK.md`,
   `Docs/00-current-status.md`, the relevant product/domain/API/validation documents, ADR-RS-0001
   through ADR-RS-0006, and the Thread Orchestration Pilot Runbook.
@@ -621,23 +626,23 @@ browser, deployment, external integration, or parent-Task closure.
 **Parent task:** `RIGHTSPOT-002`  
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch state:** `GATED` — `RS-WO-002-03` domain core is independently verified at `6e70c9f`; local persistence/application design is accepted in ADR-RS-0006  
-**Execution state:** `BLOCKED` — bounded Builder completed its implementation checks, but the dispatch used the wrong supporting-task identity  
-**Owner:** Main RightSpot thread; one supporting task may implement the exact bounded write set  
+**Execution state:** `READY_FOR_VERIFICATION` — main-thread candidate adoption completed at T2 commit `68bbc69`; dedicated independent verification is pending
+**Owner:** Main RightSpot thread; one dedicated supporting task performs the read-only verification checkpoint
 **Objective:** Persist the complete serializable `WorkflowState` in a deterministic local SQLite
 snapshot and expose one narrow application service above the verified domain core. Prove durable
 refresh-visible workflow continuity and atomic command/reset behavior without exposing HTTP, UI,
 authentication, or external integration yet. This Work Order is governed by
 [ADR-RS-0006](../Decisions/ADR-RS-0006-durable-workflow-and-application-boundary.md).
-**Dispatch state:** Builder prompt was sent to supporting thread `01a05a6e-5758-7961-b774-53c332e685ef`,
-whose persisted identity/title is `RS-WO-002-01 — Foundation…`, while the prompt identified
-`RS-WO-002-04`; the Builder returned `BLOCKED` after completing its local checks. The user-authorized
-Side Chat learning file and process-only Pilot Runbook writeback are not product source drift.  
-**Corrective execution mode:** Dedicated isolated Worktree from the reviewed baseline; no corrected
-supporting-task identity has been established yet.  
-**Next gate:** Preserve the existing implementation output, complete the main-thread candidate-adoption
-review, establish a dedicated `RS-WO-002-04` verification task and isolated Worktree from a new T2
-baseline, then open an independent Verifier. A fresh Builder is required only if the candidate's
-ownership, inputs, changed paths, or behavior cannot be reconstructed confidently.
+**Dispatch state:** The original Builder prompt was sent to supporting thread `01a05a6e-5758-7961-b774-53c332e685ef`,
+whose persisted identity/title was `RS-WO-002-01 — Foundation…`, while the prompt identified
+`RS-WO-002-04`; that handoff remains procedurally invalid. The main thread reviewed and adopted the
+exact three-path candidate at T2 commit `68bbc69`. The user-authorized Side Chat learning file and
+process-only Pilot Runbook writeback are not product source drift.  
+**Corrective execution mode:** Dedicated isolated Worktree from T2 commit `68bbc69`; no product
+writer is active and a dedicated read-only Verifier is the next supporting task.  
+**Next gate:** Dispatch and complete independent verification against `68bbc69`. A fresh Builder is
+required only if the candidate's ownership, inputs, changed paths, or behavior cannot be reconstructed
+confidently, or if verification identifies a source gap requiring a new bounded implementation.
 
 #### Dispatch identity incident
 
@@ -645,34 +650,49 @@ The persisted supporting task was originally activated for `RS-WO-002-01` and re
 history. A later `send_message_to_thread` delivered a prompt whose content was `RS-WO-002-04`; the
 content scope was bounded correctly, but the supporting-task identity did not match the Work Order.
 This is a process/provenance defect, not evidence that the implementation behavior is wrong. The
-three intended implementation paths remain uncommitted and must not be deleted or silently promoted
-to a verified result.
+three intended implementation paths were preserved, reviewed, and committed as the unverified T2
+candidate `68bbc69`; they must not be treated as independently verified until the dedicated Verifier
+completes.
 
 During the same period, the user-authorized Side Chat created the non-canonical learning record and
 made a process-only Pilot Runbook writeback. Those paths are recorded as an auxiliary process lane;
 they do not invalidate the product execution baseline, provided they do not change the Work Order's
 contract, semantic read set, or implementation paths.
 
-#### Current blocker report
+#### Resolved blocker report
 
-- **Status:** `BLOCKED` checkpoint; `CONSTRAINED` parent execution posture
+- **Status:** resolved checkpoint blocker; `PROGRESSING` parent execution posture
 - **Affected owner:** `RS-WO-002-04` Builder handoff, adjudicated by the Main RightSpot thread
 - **Evidence:** the persisted destination retains the `RS-WO-002-01` title/history while the delivered
-  prompt identifies `RS-WO-002-04`; the three intended implementation paths remain uncommitted
+  prompt identifies `RS-WO-002-04`; main-thread review found the exact three intended implementation
+  paths and committed them at T2 `68bbc69`
 - **First failing boundary:** supporting-task identity/provenance, before T2 source handoff
 - **Failure class:** process/ownership defect
-- **Blocked claim/dependency:** clean `RS-WO-002-04` Builder handoff and independent verification
-- **Impact on parent goal:** Phase 4 persistence/application progress is held; the overall MVP goal,
-  documentation analysis, and other non-overlapping read-only preparation remain viable
+- **Blocked claim/dependency:** the original clean `RS-WO-002-04` Builder handoff was invalid; dedicated
+  independent verification remains pending
+- **Impact on parent goal:** the original phase-4 checkpoint was held until candidate adoption; the
+  provenance blocker is resolved, while the overall MVP goal remains in progress
 - **Safe continuation:** main-thread architecture, UI/UX, code-quality, verification-matrix, and
   process analysis, or another explicitly bounded slice with a disjoint stable boundary
 - **Forbidden continuation:** downstream code that depends on this persistence/application output,
   verification against the misidentified source, or any contract/acceptance change used to bypass it
-- **Recommended recovery:** preserve and review the candidate output, establish a dedicated matching
-  verification task and isolated Worktree, capture a new T2 baseline, and then open independent
-  verification; use a fresh Builder only if candidate adoption fails its reconstruction criteria
-- **Resume condition:** the new supporting-task identity, source identity, exact write set, and
-  completion-report contract are all confirmed before the Builder edits
+- **Recommended recovery:** completed by preserving and reviewing the candidate, establishing T2
+  source `68bbc69`, and preparing a dedicated matching verification task and isolated Worktree
+- **Resume condition:** the dedicated Verifier must reproduce the required result against `68bbc69`
+  before the persistence/application checkpoint is accepted or downstream work opens
+
+#### Candidate-adoption record
+
+- **Adoption basis:** the original writer had stopped; the exact Work Order write set contained all
+  authored changes; the candidate matched the declared inputs and acceptance criteria; and the main
+  thread reproduced the focused checks.
+- **Adopted paths:** `src/server/persistence/workflow-store.ts`,
+  `src/server/application/workflow.ts`, and `tests/application/workflow.test.ts` only.
+- **Evidence:** Node.js `v24.20.0`, npm `11.19.0`, typecheck, foundation tests `6/6`, application tests
+  `8/8`, repository validators, sensitive scan, and staged `git diff --check` passed.
+- **Source identity:** local Git commit `68bbc69`; no external push or deployment was performed.
+- **Claim limit:** this is an adopted, unverified candidate. It does not claim independent
+  verification, API/UI integration, browser behavior, deployment, or parent-task closure.
 
 #### Scope and ownership
 

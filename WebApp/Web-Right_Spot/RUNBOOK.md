@@ -6,8 +6,8 @@ the foundation Builder returned `READY_FOR_VERIFICATION`, the first independent 
 procedurally blocked, and the corrected rerun returned `VERIFIED`; the bounded domain-core Builder and
 projection-isolation repair returned `READY_FOR_VERIFICATION`, with T2 source commit `a60001e` frozen;
 independent verification found a bounded listing-version guard defect; the bounded Repairer completed
-in `6e70c9f`, and fresh independent verification returned `VERIFIED`; `RS-WO-002-04` persistence/application
-Builder output is held after a supporting-thread identity mismatch
+in `6e70c9f`, and fresh independent verification returned `VERIFIED`; `RS-WO-002-04` candidate adoption
+completed at T2 commit `68bbc69`, with dedicated independent verification pending
 
 ## 1. Authority and reading order
 

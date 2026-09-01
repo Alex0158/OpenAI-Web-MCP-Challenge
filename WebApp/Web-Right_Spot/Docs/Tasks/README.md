@@ -23,10 +23,11 @@ The same checkpoint's corrected read-only rerun returned `VERIFIED`. The bounded
 source was frozen at `a60001e`, and its independent Verifier returned `NEEDS_REPAIR` for stale listing
 revision writes. The bounded Repairer completed in post-repair commit `6e70c9f`, and fresh independent
 verification returned `VERIFIED`. The current checkpoint is the bounded persistence/application
-integration Work Order `RS-WO-002-04`. Its Builder completed checks, but the prompt was appended to
-the persisted `RS-WO-002-01` supporting thread, so the result is held for a dispatch-identity
-correction. The user-authorized Side Chat learning artifact and Pilot Runbook writeback are
-process-only changes, not product source drift.
+integration Work Order `RS-WO-002-04`. Its prompt was appended to the persisted `RS-WO-002-01`
+supporting thread, so the original handoff was held for a dispatch-identity correction. The main
+thread reconstructed and adopted the exact three-path candidate at T2 commit `68bbc69`; it remains
+unverified until a dedicated read-only Verifier completes. The user-authorized Side Chat learning
+artifact and Pilot Runbook writeback are process-only changes, not product source drift.
 One registered Task has one Task File. A Work Order is a dispatch brief under that Task; normally
 there is one active Work Order per dependency chain, while explicitly independent slices may run in
 parallel under the same file. Builder, Verifier, Repairer, and Integrator are checkpoints, not

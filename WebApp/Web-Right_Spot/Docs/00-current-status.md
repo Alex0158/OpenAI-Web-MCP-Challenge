@@ -2,9 +2,9 @@
 
 **Role:** Canonical current status for the RightSpot child application  
 **As of:** 2026-09-01, Europe/London  
-**Stage:** MVP scope, business-rules, Backbone, and implementation-stack baseline; runnable foundation and workflow-core independently verified, `RS-WO-002-04` Builder output held after a supporting-thread identity mismatch
+**Stage:** MVP scope, business-rules, Backbone, and implementation-stack baseline; runnable foundation and workflow-core independently verified, `RS-WO-002-04` candidate adopted at T2 commit `68bbc69` and awaiting dedicated independent verification
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Implementation:** Foundation Builder returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02` verification attempt was procedurally blocked by an out-of-scope OS temp artifact, then the corrected bounded rerun returned `VERIFIED` against the unchanged source/runtime identity; `RS-WO-002-03` found and repaired a listing-version guard defect in commit `6e70c9f`, and fresh independent verification returned `VERIFIED` against that frozen source
+**Implementation:** Foundation Builder returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02` verification attempt was procedurally blocked by an out-of-scope OS temp artifact, then the corrected bounded rerun returned `VERIFIED` against the unchanged source/runtime identity; `RS-WO-002-03` found and repaired a listing-version guard defect in commit `6e70c9f`, and fresh independent verification returned `VERIFIED` against that frozen source; `RS-WO-002-04` candidate adoption completed at T2 commit `68bbc69`, with independent verification still pending
 
 ## 1. Executive status
 
@@ -47,11 +47,11 @@ final response can remain a normal application action.
 | Implementation stack | **FOUNDATION VERIFIED** | Next.js App Router, React, TypeScript, Node.js 24, and SQLite; the runnable foundation passed the corrected independent verification contract, without claiming product-flow or deployment readiness |
 | Foundation runtime readiness | **PREPARED / VERIFIED** | Exact arm64 Node.js `v24.20.0` is prepared outside the repository and passed version, npm, archive-checksum, and `node:sqlite` smoke checks; the default shell remains `v26.5.0`, and the Builder used the exact target runtime |
 | Realtime / WebRTC | **DEFERRED FEATURE SEAM** | Future Remote Viewing is possible without making WebRTC or signaling an MVP dependency |
-| Delegated development | **EXPERIMENTAL PILOT — TASK-OWNED** | `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; corrected `RS-WO-002-02` rerun returned `VERIFIED`; `RS-WO-002-03` bounded repair commit `6e70c9f` passed fresh independent verification |
+| Delegated development | **EXPERIMENTAL PILOT — TASK-OWNED** | `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; corrected `RS-WO-002-02` rerun returned `VERIFIED`; `RS-WO-002-03` bounded repair commit `6e70c9f` passed fresh independent verification; `RS-WO-002-04` candidate adopted at `68bbc69`, awaiting dedicated verification |
 | Cloud Receiver | **Not a first-phase dependency** | Future integration boundary only |
 | WebMCP | **Not a first-phase design center** | Later Hackathon integration boundary |
 | Runtime / deployment | **Not started** | No service, hosting, credentials, or public URL |
-| Evidence | **FOUNDATION + DOMAIN CORE VERIFIED** | Foundation and the bounded workflow domain core passed independent verification; persistence, API, UI, browser, deployment, and product-flow evidence remain open |
+| Evidence | **FOUNDATION + DOMAIN CORE VERIFIED; PERSISTENCE CANDIDATE PENDING** | Foundation and the bounded workflow domain core passed independent verification; the persistence/application candidate is committed but not yet independently verified; API, UI, browser, deployment, and product-flow evidence remain open |
 
 ## 3. Confirmed working inputs
 
@@ -101,7 +101,7 @@ final response can remain a normal application action.
 The first `RS-WO-002-02` result is recorded as a procedural `BLOCKED`, and the corrected rerun is
 now `VERIFIED` against the unchanged source/runtime identity. The bounded `RS-WO-002-03` domain-core
 implementation and projection-isolation repair were independently checked against frozen commit
-`a60001e`; the bounded Repairer completed the exact two-path repair in `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` Builder completed implementation checks, but its prompt was appended to the persisted `RS-WO-002-01` supporting thread, so the result is held for a dispatch-identity correction. The parent execution posture is `CONSTRAINED`, not globally blocked: the main thread may continue safe read-only analysis or independently bounded work, but no overlapping product writer or downstream dependent assignment may start before the dispatch-identity gate is resolved. The user-authorized Side Chat learning file and process-only Runbook writeback are classified separately and are not product source drift. Do not pre-create downstream role assignments or claim the parent Task is closed.
+`a60001e`; the bounded Repairer completed the exact two-path repair in `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` was initially held because its prompt was appended to the persisted `RS-WO-002-01` supporting thread. The main thread reconstructed the exact three-path candidate, adopted it at T2 commit `68bbc69`, and resolved the provenance blocker. The parent execution posture is now `PROGRESSING`: a dedicated read-only Verifier is the next gate, while downstream API/UI assignments remain closed until that checkpoint passes. The user-authorized Side Chat learning file and process-only Runbook writeback are classified separately and are not product source drift. Do not claim persistence/application verification or parent closure yet.
 The eventual implementation remains without Cloud Receiver, WebMCP, Redis, or WebRTC media
 dependencies.
 
@@ -112,7 +112,7 @@ The parent `RIGHTSPOT-002` remains `in_progress`; the foundation Builder stopped
 and its corrected rerun is `VERIFIED` against the unchanged exact target Node.js runtime and
 execution manifest. `RS-WO-002-03` Builder and bounded Repairer returned `READY_FOR_VERIFICATION`,
 and T2 source is frozen at `a60001e`; the Verifier found a listing-version guard defect and the
-bounded Repairer completed it in post-repair commit `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` Builder output is held on the three-path persistence/application boundary until the main thread completes candidate adoption, establishes a new T2 source identity, and opens correctly identified independent verification. A fresh Builder is needed only if the candidate cannot be reconstructed confidently. Builder, Verifier, Repairer,
+bounded Repairer completed it in post-repair commit `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` candidate adoption is complete for the three-path persistence/application boundary at T2 commit `68bbc69`; a dedicated read-only Verifier is pending. A fresh Builder is needed only if the candidate cannot be reconstructed confidently or verification identifies a source gap that requires a new bounded implementation checkpoint. Builder, Verifier, Repairer,
 and Integrator remain sequential checkpoints of this same Task. The Side Chat process lane is
 user-authorized and must remain separate from product-source writes; no other RightSpot product
 writer or repairer is authorized. The main thread owns evidence writeback, Git closure, and the next
