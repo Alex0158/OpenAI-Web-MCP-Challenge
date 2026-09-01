@@ -524,7 +524,7 @@ after the report; do not dispatch repair or integration work.
 ## RS-WO-007-08 — Independently verify the integrated Field Desk surfaces
 
 **Role:** Independent Verifier  
-**Status:** `READY_TO_DISPATCH`  
+**Status:** `ASSIGNED`  
 **Parallelization:** `EVIDENCE_ONLY` — may run beside `RS-WO-011-01` because it has no product write
 set and uses a frozen detached source snapshot.  
 **Risk profile:** `Standard` — integrated-source regression verification after two disjoint role
@@ -534,7 +534,7 @@ integrated. The frozen integrated source is main commit
 `4f8a1be6c232c4f1c456097c3892231bbd77721a`.  
 **Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-007-08-field-desk-verifier`
 (detached HEAD at the frozen integrated source).  
-**Supporting worker:** To be assigned by the main thread after this Work Order registration.  
+**Supporting worker:** Multi-agent Verifier `01a05de1-07ea-7772-a7ec-5bb1ec3ef244` (`Newton`).  
 **Ownership:** The Verifier may inspect and execute only. The main thread owns any repair decision,
 canonical writeback, integration, and closure.
 

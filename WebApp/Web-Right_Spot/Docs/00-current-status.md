@@ -21,9 +21,10 @@ at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; an integrated cross-role
 remains before `RIGHTSPOT-007` can close.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current active Work Orders:** `RS-WO-011-01` is the active server-only Operations projection seam
-in an isolated Worktree with no overlapping product write set. `RS-WO-007-06` and `RS-WO-007-07`
-independently verified the frozen tenant/agent candidates and the main thread integrated them at
-`5abdaf3` and `a2f6a19`; their evidence Worktrees remain historical verification snapshots.
+in an isolated Worktree with no overlapping product write set. `RS-WO-007-08` is assigned to an
+independent integrated-source Verifier in a separate evidence Worktree. `RS-WO-007-06` and
+`RS-WO-007-07` independently verified the frozen tenant/agent candidates and the main thread
+integrated them at `5abdaf3` and `a2f6a19`; their evidence Worktrees remain historical snapshots.
 The shared CSS
 foundation `RS-WO-007-02` is already `VERIFIED` and integrated at product commit `89a50c7` after its
 final same-identity browser rerun corrected the stale served-build block under `RIGHTSPOT-007`;
@@ -106,7 +107,8 @@ with revisions. `RS-WO-007-02` passed static/build and final browser verificatio
 at product commit `89a50c7`; its rebuilt served runtime shows the candidate tokens. `RS-WO-007-04`
 and `RS-WO-007-05` were frozen as clean candidate commits `63e4c3e` and `33a36f0`, independently
 verified by `RS-WO-007-06` and `RS-WO-007-07`, and integrated at product commits `5abdaf3` and
-`a2f6a19`. A fresh integrated-source regression gate remains before closure. A separate,
+`a2f6a19`. `RS-WO-007-08` is now assigned for the fresh integrated-source regression gate before
+closure. A separate,
 non-blocking `RS-WO-007-03` parallelism review returned `READY_FOR_REVIEW` from supporting worker
 `01a05d76-dac9-7283-9c2a-4166935f5043`; main accepted its isolation revisions and used them to
 register and dispatch the two role Builders.
