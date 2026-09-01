@@ -15,12 +15,13 @@
 - Owner: Main RightSpot thread
 - Objective: Implement and independently verify the smallest deterministic, multi-record Operations
   profile authority and reset boundary without changing the accepted relay application.
-- Current increment: `RS-WO-015-01` is a bounded Builder checkpoint for Operations domain types,
-  deterministic fixture generation, separate SQLite persistence, validation, and profile-local reset.
-- Next gate: The Builder candidate must pass an independent Verifier before a projection consumer,
-  transport, route, UI, navigation, or WebMCP Work Order is registered.
-- Execution posture: `DISPATCHED_BUILDER`; this task is separate from the closed relay MVP, closed Field Desk lane,
-  and unresolved Favourite/Information Request proposals.
+- Current increment: `RS-WO-015-01` has returned a bounded Builder candidate for Operations domain
+  types, deterministic fixture generation, separate SQLite persistence, validation, and profile-local
+  reset; the main thread found and required one orphan-link validation amendment before handoff.
+- Next gate: Dispatch `RS-WO-015-02` to independently verify the amended candidate before a projection
+  consumer, transport, route, UI, navigation, or WebMCP Work Order is registered.
+- Execution posture: `BUILDER_HANDOFF_COMPLETE`; this task is separate from the closed relay MVP,
+  closed Field Desk lane, and unresolved Favourite/Information Request proposals.
 
 ## Accepted implementation boundary
 
@@ -46,13 +47,15 @@ Favourite records, Information Request records, contact data, or real user ident
 ## RS-WO-015-01 — Implement the Operations authority and profile-local reset
 
 **Role:** Builder  
-**Pre-dispatch status:** `GATED`  
+**Status:** `READY_FOR_VERIFICATION`  
 **Parallelization:** `SERIAL_AUTHORITY_FOUNDATION` — may run beside read-only UI/asset analysis, but any later Operations projection or transport depends on this checkpoint  
 **Risk profile:** `Assured` — new persistence authority, deterministic fixture/reset, validation, and isolation require independent verification  
-**Supporting worker:** Multi-agent Operations authority Builder `01a05df7-a761-7423-9b85-e2a866f3a216` (`Herschel`)  
+**Supporting worker:** Multi-agent Operations authority Builder `01a05df7-a761-7423-9b85-e2a866f3a216` (`Herschel`), closed after handoff  
 **Source baseline:** `8fe597689b4cfe9e118b9d0bd9a19dd83b94079e` on `main`, captured immediately before dispatch; collaborator-owned dirty and untracked paths remain outside this Work Order  
-**Dispatch state:** `ASSIGNED` after the supporting worker identity was returned; the main thread has not yet received the Builder handoff.  
-**Next gate:** Return `READY_FOR_VERIFICATION` with an exact candidate commit/source identity; do not start a Verifier or any consumer task  
+**Candidate source:** `3f041a0d0477f2fba0aedb93c5e048d21334254d`, parent `8fe597689b4cfe9e118b9d0bd9a19dd83b94079e`  
+**Candidate Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-015-01-builder` (clean at handoff)  
+**Dispatch state:** `HANDOFF_COMPLETE`; the Builder self-check is not independent verification.  
+**Next gate:** Dispatch `RS-WO-015-02` against the exact candidate source; do not start a consumer task  
 **Ownership:** The Builder owns only the declared new Operations paths. The main thread owns source freeze, canonical writeback, integration, and closure.
 
 ### Required read set
@@ -144,6 +147,73 @@ Builder self-check is not independent verification.
 Return `READY_FOR_VERIFICATION` with the exact candidate source identity, changed-path list, fixture
 record summary, validation rules, persistence/reset/reopen/isolation evidence, runtime commands and
 results, known limitations, and explicit claims not made. Stop after handoff.
+
+### Builder handoff evidence — 2026-09-01
+
+The amended candidate is `READY_FOR_VERIFICATION`. The amendment adds the reverse integrity check
+that every unselected `AVAILABLE` slot references an existing listing, plus a focused rejection test.
+Relative to the declared baseline, the candidate still changes exactly these five allowed paths:
+
+- `src/server/domain/operations-profile-types.ts`
+- `src/server/domain/operations-profile.ts`
+- `src/server/persistence/operations-store.ts`
+- `tests/domain/operations-profile.test.ts`
+- `tests/persistence/operations-store.test.ts`
+
+Builder self-check used Node `24.20.0` / npm `11.19.0`: Operations domain/persistence `10/10`, all
+TypeScript tests `72/72`, `npm run typecheck`, `npm test` `6/6`, `npm run build`, and
+`git diff --check` passed. The self-check also reported clean-room/reopen equivalence,
+Operations-only reset isolation, and reset rollback. No independent verification, route/API/UI,
+browser, deployment, WebMCP, or consumer evidence is claimed here.
+
+## RS-WO-015-02 — Independently verify the Operations authority candidate
+
+**Role:** Independent Verifier  
+**Status:** `READY_FOR_DISPATCH`  
+**Parallelization:** `SERIAL_AUTHORITY_VERIFICATION` — must complete before any Operations projection or consumer Work Order  
+**Risk profile:** `Assured` — verifies a new persistence authority, strict validation, reset atomicity, and relay isolation  
+**Supporting worker:** Not yet assigned  
+**Source under verification:** `3f041a0d0477f2fba0aedb93c5e048d21334254d` with parent baseline `8fe597689b4cfe9e118b9d0bd9a19dd83b94079e`  
+**Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-015-01-builder`  
+**Dispatch state:** `READY_FOR_DISPATCH`  
+**Next gate:** Dispatch an independent read-only verifier against the exact candidate commit; no repair, integration, or consumer work in this checkpoint  
+**Ownership:** The Verifier owns evidence only. The main thread owns any disposition, source freeze, integration, canonical writeback, and closure.
+
+### Verifier read set
+
+- This Task File and ADR-RS-0012.
+- The exact candidate commit and its five changed paths; do not rely on the Builder report as evidence.
+- Existing relay domain/persistence source, `src/server/persistence/sqlite.ts`, package scripts, pinned
+  Node/npm guidance, and existing tests needed to confirm relay isolation.
+- No consumer, route, API, UI, navigation, WebMCP, deployment, or external-service behavior should be inferred from this checkpoint.
+
+### Verifier write set
+
+None. The verifier must not edit, repair, commit, push, reset, delete, or rebaseline the candidate.
+Use only test-owned temporary database files and remove only those artifacts through the verifier
+harness. Report any environmental or ownership conflict as `NEEDS_REVIEW` rather than changing scope.
+
+### Required independent evidence
+
+1. Confirm the candidate commit, parent, clean source identity, exact five-path scope, and no relay/shared
+   source or package/config/document changes.
+2. Inspect and test deterministic six-listing/four-request/seven-slot fixture coverage, metadata,
+   assigned-agent preservation, legal states, strict record relationships, unknown/orphan rejection,
+   and absence of tenant/contact/private/unsupported records.
+3. Verify separate `var/rightspot-operations.sqlite` authority behavior: empty-file seed, existing-file
+   validation, corrupt/incompatible failure, clean-room reopen equivalence, atomic reset generation,
+   reset rollback, stable file identity, and no relay database/generation mutation.
+4. Run the pinned Node `24.20.0` / npm `11.19.0` focused Operations tests, foundation tests, full direct
+   TypeScript tests, `npm run typecheck`, `npm run build`, and `git diff --check` where available.
+5. Explicitly report skipped browser/HTTP/consumer/WebMCP evidence; do not convert Builder self-check
+   or a passing build into independent verification of later surfaces.
+
+### Verifier return gate
+
+Return `VERIFIED` only when the exact candidate satisfies the accepted authority boundary and all
+required evidence is independently reproduced. Return `NEEDS_REVIEW` for any source drift, scope
+violation, failed invariant, failed persistence/reset/isolation property, runtime mismatch, or
+environmental ambiguity. Stop after the evidence report; do not integrate or modify the candidate.
 
 ## Closure gate
 
