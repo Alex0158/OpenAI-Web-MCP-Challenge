@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import RolePageFrame from "../shared/role-page-frame";
+import ListingMedia from "../shared/listing-media";
 import {
   readListing,
   readTenantRequest,
@@ -87,11 +88,7 @@ function ListingDetailContent({
   return (
     <div className={styles.detailLayout}>
       <section className={styles.detailCard} aria-labelledby="listing-facts-title">
-        <div className={styles.mediaPlaceholderLarge} role="img" aria-label={`Seeded property placeholder for ${listing.title} in ${listing.area}`}>
-          <span className={styles.mediaKicker}>Seeded property view</span>
-          <strong>{listing.area}</strong>
-          <span className={styles.mediaIndex}>RightSpot field note</span>
-        </div>
+        <ListingMedia listingId={listing.id} imageKey={listing.imageKey} variant="detail" />
         <div className={styles.detailCopy}>
           <div className={styles.detailHeading}>
             <div>

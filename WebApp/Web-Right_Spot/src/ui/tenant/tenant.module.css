@@ -203,85 +203,6 @@
   align-items: flex-start;
 }
 
-.mediaPlaceholder,
-.mediaPlaceholderLarge {
-  position: relative;
-  display: flex;
-  overflow: hidden;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 1.15rem;
-  border-bottom: 1px solid var(--line);
-  background: var(--surface-muted);
-  color: var(--accent-strong);
-  isolation: isolate;
-}
-
-.mediaPlaceholder {
-  min-height: 12rem;
-}
-
-.mediaPlaceholderLarge {
-  min-height: 21rem;
-  padding: clamp(1.25rem, 3vw, 1.8rem);
-}
-
-.mediaPlaceholder::before,
-.mediaPlaceholderLarge::before {
-  position: absolute;
-  z-index: -1;
-  right: 12%;
-  bottom: -1px;
-  width: 56%;
-  height: 70%;
-  border: 1px solid var(--accent);
-  border-bottom: 0;
-  content: "";
-  opacity: 0.34;
-}
-
-.mediaPlaceholder::after,
-.mediaPlaceholderLarge::after {
-  position: absolute;
-  z-index: -1;
-  right: 30%;
-  bottom: 0;
-  width: 1px;
-  height: 58%;
-  background: var(--accent);
-  content: "";
-  opacity: 0.28;
-}
-
-.mediaPlaceholder strong,
-.mediaPlaceholderLarge strong {
-  max-width: 12ch;
-  font-family: Georgia, "Times New Roman", Times, serif;
-  font-size: clamp(1.75rem, 3vw, 2.7rem);
-  font-weight: 600;
-  letter-spacing: -0.04em;
-  line-height: 1;
-}
-
-.mediaKicker {
-  margin-bottom: 0.45rem;
-  font-size: 0.7rem;
-  font-weight: 820;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.mediaIndex {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  color: var(--soft-ink);
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .cardHeading > div,
 .detailHeading > div,
 .requestHeading > div,
@@ -1077,10 +998,6 @@
     grid-column: auto;
     grid-row: auto;
   }
-
-  .mediaPlaceholderLarge {
-    min-height: 17rem;
-  }
 }
 
 @media (max-width: 680px) {
@@ -1129,14 +1046,6 @@
   .detailPrice,
   .responseDeadline strong {
     text-align: left;
-  }
-
-  .mediaPlaceholder {
-    min-height: 11rem;
-  }
-
-  .mediaPlaceholderLarge {
-    min-height: 14rem;
   }
 
   .factGrid {

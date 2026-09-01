@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import RolePageFrame from "../shared/role-page-frame";
+import ListingMedia from "../shared/listing-media";
 import {
   readListings,
   TenantApiError,
@@ -230,13 +231,9 @@ function ListingResults({
         <span>{hasAppliedFilters ? "Filtered shortlist" : "Full local catalogue"}</span>
       </div>
       <div className={styles.listingGrid}>
-        {data.listings.map((listing, index) => (
+        {data.listings.map((listing) => (
           <article className={styles.listingCard} key={listing.id}>
-            <div className={styles.mediaPlaceholder} aria-hidden="true">
-              <span className={styles.mediaKicker}>Seeded rental</span>
-              <strong>{listing.area}</strong>
-              <span className={styles.mediaIndex}>{String(index + 1).padStart(2, "0")}</span>
-            </div>
+            <ListingMedia listingId={listing.id} imageKey={listing.imageKey} variant="card" />
             <div className={styles.cardBody}>
               <div className={styles.cardHeading}>
                 <div>
