@@ -18,3 +18,4 @@ mvp/var/
 
 mvp/evidence/latest-trace.jsonl
 mvp/evidence/h1-latest-trace.jsonl
+.gstack/
