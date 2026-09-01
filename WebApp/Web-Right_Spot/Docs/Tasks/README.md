@@ -29,8 +29,9 @@ thread reconstructed and adopted the exact three-path candidate at T2 commit `68
 dedicated read-only Verifier attempt stopped before source checks because the prompt described the
 Worktree root incorrectly, and one corrected follow-up to the same identity-matching Verifier
 returned `VERIFIED` against frozen source `28105e4d`. The next bounded Work Order,
-`RS-WO-002-05`, is gated in the parent Task File for dispatch; the user-authorized Side Chat learning
-artifact and Pilot Runbook writeback are process-only changes, not product source drift.
+`RS-WO-002-05`, is assigned from clean baseline `9ff14de` in the parent Task File; the user-authorized
+Side Chat learning artifact and Pilot Runbook writeback are process-only changes, not product source
+drift.
 One registered Task has one Task File. A Work Order is a dispatch brief under that Task; normally
 there is one active Work Order per dependency chain, while explicitly independent slices may run in
 parallel under the same file. Builder, Verifier, Repairer, and Integrator are checkpoints, not

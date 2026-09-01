@@ -18,8 +18,8 @@ The implementation must follow the accepted business rules in
 - Owner: Main RightSpot thread
 - Current increment: Implement and independently verify the bounded `RS-WO-002-05` tenant entry and
   listing discovery API from the verified `RS-WO-002-04` persistence/application boundary.
-- Next gate: Dispatch the dedicated `RS-WO-002-05` Builder from a captured clean source baseline; do
-  not open the full API/UI surface as one assignment.
+- Next gate: Complete the dedicated `RS-WO-002-05` Builder checkpoint, freeze its output, and send
+  it for independent verification; do not open the full API/UI surface as one assignment.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -865,7 +865,7 @@ documents, commit, push, deploy, or start the Verifier.
 **Parent task:** `RIGHTSPOT-002`  
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — `RS-WO-002-04` is independently verified against frozen source `28105e4d`; the synthetic listing discovery decision is accepted in ADR-RS-0007  
-**Execution state:** `NOT_STARTED`  
+**Execution state:** `ASSIGNED` — dedicated Builder task created; activation confirmation follows the canonical writeback  
 **Owner:** Main RightSpot thread; one dedicated supporting task performs each bounded checkpoint  
 **Risk profile:** `Assured` — cross-layer read authority, demo session boundary, and Next.js route adapters  
 **Objective:** Make the first tenant-facing entry and discovery capability runnable through a bounded
@@ -873,10 +873,12 @@ local demo session and tenant-authorized JSON API. The slice must expose the det
 listing catalogue and detail facts from one application read boundary, without implementing request
 commands, agent operations, UI pages, or external authentication. This Work Order is governed by
 [ADR-RS-0007](../Decisions/ADR-RS-0007-synthetic-listing-discovery-boundary.md).
-**Dispatch state:** Not dispatched; the source baseline, isolated Worktree, supporting-task identity,
-and exact runtime profile must be recorded before activation.  
-**Next gate:** Dispatch one dedicated Builder against a clean source snapshot, then freeze its output
-for independent verification. No request API, agent API, or UI Work Order opens from this brief alone.
+**Dispatch state:** Dispatched from clean detached source baseline `9ff14dead8f5dda77fa53e250029cdee2c45f925`;
+the dedicated Worktree is `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-05-builder`, whose root is
+the Git root and whose initial state is detached and clean. The supporting-task identity is dedicated
+to this Work Order and is not an existing-task follow-up.  
+**Next gate:** Complete the Builder checkpoint, then freeze its output for independent verification.
+No request API, agent API, or UI Work Order opens from this brief alone.
 
 #### Scope and ownership
 

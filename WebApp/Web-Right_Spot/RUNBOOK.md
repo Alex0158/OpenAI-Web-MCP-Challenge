@@ -9,7 +9,7 @@ independent verification found a bounded listing-version guard defect; the bound
 in `6e70c9f`, and fresh independent verification returned `VERIFIED`; `RS-WO-002-04` candidate adoption
 completed at T2 commit `68bbc69`; after one procedural Worktree-path correction, the dedicated
 independent Verifier returned `VERIFIED` against frozen source `28105e4d`; the next bounded
-`RS-WO-002-05` tenant entry/listing discovery API is gated for dispatch
+`RS-WO-002-05` tenant entry/listing discovery API Builder is assigned from clean baseline `9ff14de`
 
 ## 1. Authority and reading order
 
