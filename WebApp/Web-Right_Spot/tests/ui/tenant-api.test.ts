@@ -1,0 +1,163 @@
+import assert from "node:assert/strict";
+import { test } from "node:test";
+
+import {
+  buildCreateDraftPayload,
+  buildDecisionPayload,
+  buildListingsUrl,
+  buildSubmitPayload,
+  buildUpdateDraftPayload,
+  readListings,
+  readTenantRequest,
+  TenantApiError,
+} from "../../src/ui/tenant/tenant-api";
+
+const originalFetch = globalThis.fetch;
+
+test.afterEach(() => {
+  globalThis.fetch = originalFetch;
+});
+
+test("listing reads encode only the bounded server filter names", async () => {
+  let requestedUrl = "";
+  globalThis.fetch = async (input) => {
+    requestedUrl = String(input);
+    return jsonResponse({
+      fixtureGeneration: 4,
+      listings: [{
+        id: "listing-primary",
+        version: 2,
+        title: "Canal House",
+        address: "1 Example Walk",
+        area: "King's Cross",
+        monthlyRentGbp: 2200,
+        bedrooms: 2,
+        sizeSqM: 61,
+        availableFrom: "2026-09-15",
+        description: "A synthetic listing.",
+        imageKey: "listing-primary-image",
+        assignedAgentId: "must-not-cross-boundary",
+      }],
+    });
+  };
+
+  const response = await readListings({ area: "King's Cross", maxRent: 2500, minSizeSqM: 50, availableFrom: "2026-09-20" });
+  assert.equal(requestedUrl, "/api/listings?area=King%27s+Cross&maxRent=2500&minSizeSqM=50&availableFrom=2026-09-20");
+  assert.equal(response.fixtureGeneration, 4);
+  assert.equal(response.listings[0]?.id, "listing-primary");
+  assert.equal("assignedAgentId" in (response.listings[0] ?? {}), false);
+  assert.equal(buildListingsUrl({ area: "A/B" }), "/api/listings?area=A%2FB");
+});
+
+test("successful tenant request parsing keeps the tenant-safe response boundary", async () => {
+  globalThis.fetch = async () => jsonResponse({
+    fixtureGeneration: 2,
+    request: {
+      id: "request-1",
+      listingId: "listing-primary",
+      preferredTimes: ["2026-09-03T10:00:00.000Z"],
+      tenantNote: "A bounded note",
+      state: "SLOT_PROPOSED",
+      version: 7,
+      response: { kind: "SLOT_PROPOSAL", slotId: "slot-primary-1", tenantNote: "Please confirm." },
+      proposalExpiresAt: "2026-09-02T10:00:00.000Z",
+      preparedResponse: { kind: "AGENT_DECLINE" },
+      internalReviewNote: "must-not-cross-boundary",
+    },
+    listing: {
+      id: "listing-primary",
+      version: 1,
+      title: "Canal House",
+      address: "1 Example Walk",
+      area: "King's Cross",
+      monthlyRentGbp: 2200,
+      bedrooms: 2,
+      sizeSqM: 61,
+      availableFrom: "2026-09-15",
+      description: "A synthetic listing.",
+      imageKey: "listing-primary-image",
+    },
+    timeline: [{ sequence: 1, operation: "SEND_SLOT_PROPOSAL", fromState: "AGENT_REVIEWING", toState: "SLOT_PROPOSED", requestVersion: 7 }],
+  });
+
+  const response = await readTenantRequest();
+  assert.equal(response.request?.state, "SLOT_PROPOSED");
+  assert.deepEqual(response.request?.response, { kind: "SLOT_PROPOSAL", slotId: "slot-primary-1", tenantNote: "Please confirm." });
+  assert.equal("preparedResponse" in (response.request ?? {}), false);
+  assert.equal("internalReviewNote" in (response.request ?? {}), false);
+});
+
+test("mutation builders construct strict payloads with no client authority fields", () => {
+  assert.deepEqual(buildCreateDraftPayload({
+    commandId: "create-1",
+    fixtureGeneration: 3,
+    listingId: "listing-primary",
+    expectedListingVersion: 1,
+    preferredTimes: ["2026-09-03T10:00:00.000Z"],
+  }), {
+    commandId: "create-1",
+    fixtureGeneration: 3,
+    listingId: "listing-primary",
+    expectedListingVersion: 1,
+    preferredTimes: ["2026-09-03T10:00:00.000Z"],
+  });
+  assert.deepEqual(buildUpdateDraftPayload({
+    commandId: "update-1",
+    fixtureGeneration: 3,
+    expectedRequestVersion: 1,
+    expectedListingVersion: 1,
+    preferredTimes: ["2026-09-03T10:00:00.000Z"],
+    tenantNote: "A note",
+  }), {
+    commandId: "update-1",
+    fixtureGeneration: 3,
+    expectedRequestVersion: 1,
+    expectedListingVersion: 1,
+    preferredTimes: ["2026-09-03T10:00:00.000Z"],
+    tenantNote: "A note",
+  });
+  assert.deepEqual(buildSubmitPayload({
+    commandId: "submit-1",
+    fixtureGeneration: 3,
+    expectedRequestVersion: 1,
+    expectedListingVersion: 1,
+  }), {
+    commandId: "submit-1",
+    fixtureGeneration: 3,
+    expectedRequestVersion: 1,
+    expectedListingVersion: 1,
+  });
+  assert.deepEqual(buildDecisionPayload({
+    commandId: "decision-1",
+    fixtureGeneration: 3,
+    expectedRequestVersion: 4,
+  }), {
+    commandId: "decision-1",
+    fixtureGeneration: 3,
+    expectedRequestVersion: 4,
+  });
+});
+
+test("neutral API errors preserve status and never expose raw server internals", async () => {
+  globalThis.fetch = async () => jsonResponse({
+    error: { code: "STALE_VERSION", message: "Workflow version is stale", internal: "/private/path" },
+  }, 409);
+  await assert.rejects(
+    () => readTenantRequest(),
+    (error: unknown) => {
+      assert.ok(error instanceof TenantApiError);
+      assert.equal(error.status, 409);
+      assert.equal(error.code, "STALE_VERSION");
+      assert.equal(error.message, "Workflow version is stale");
+      assert.equal(error.message.includes("private"), false);
+      return true;
+    },
+  );
+});
+
+function jsonResponse(body: unknown, status = 200): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "content-type": "application/json" },
+  });
+}
