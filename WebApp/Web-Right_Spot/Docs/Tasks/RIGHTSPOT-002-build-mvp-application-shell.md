@@ -68,10 +68,11 @@ verification, integration, or parent-Task closure.
   `RS-WO-002-08`, and `RS-WO-002-09` from baseline `c758634`. `RS-WO-002-09` returned
   `READY_FOR_REVIEW` and its bounded checklist is now integrated as later UI guidance. Builder, Verifier, Repairer,
   Integrator, Advisor, and reviewer roles remain checkpoints under this Task, not pre-registered
-  child Tasks.
+  child Tasks. `RS-WO-002-08` returned `BLOCKED` on a generated-output boundary incident; its
+  product candidate remains unverified and unintegrated pending the documented process re-baseline.
 - **Baseline:** The actual repository root is `WebMCP_Challenge`; the latest verified product code
-  remains `de169ce`, and the main-thread documentation decision is being frozen in the next local
-  Git commit before dispatch. Each new Work Order records its own exact source identity. The
+  remains `de169ce`; the accepted workflow/interface documentation baseline was frozen in
+  `c758634` before dispatch. Each new Work Order records its own exact source identity. The
   user-authorized Side Chat learning file and process-only Pilot Runbook writeback are classified
   separately from product source. Source identity is checkpoint-scoped and path-owned; it is not a
   permanent full-document hash lock.
@@ -1298,7 +1299,8 @@ state or a second authority. Do not broaden this into tenant/agent UI or future 
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — the verified demo-session endpoints and ADR-RS-0008 shell boundary
 are available  
-**Execution state:** `ASSIGNED` — dedicated Builder task dispatched; no Verifier has started  
+**Execution state:** `BLOCKED` — Builder reported a generated-output boundary incident; no Verifier
+has started and no product candidate is adopted  
 **Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-07`; `READ_ONLY_PARALLEL` with
 `RS-WO-002-09`  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent
@@ -1347,8 +1349,22 @@ the roadmap, API/decision documents, and `RUNBOOK.md`. The Builder must not edit
 external fonts/services/media; fixture or mock business state; canonical documents; Git index;
 commit/push/deploy/publication; and Cloud Receiver, WebMCP, Redis, WebRTC media, or production auth.
 
-**Generated set:** existing ignored `.next/`, `node_modules/`, and `*.tsbuildinfo` only. No authored
-test dependency or external/generated asset is permitted.
+**Generated set:** existing ignored `.next/`, `node_modules/`, `*.tsbuildinfo`, and uniquely named
+`var/test/*.sqlite` files created by the existing test suite. If `next dev` creates the exact
+untracked helper files `WebApp/Web-Right_Spot/AGENTS.md` and
+`WebApp/Web-Right_Spot/CLAUDE.md`, they are permitted as ephemeral tool output after provenance
+inspection; preserve them but do not edit, delete, restore, commit, or promote them into T2 source.
+The tracked `next-env.d.ts` is tool-maintained metadata: a transient Next mutation may be observed,
+but the Builder must not manually edit, restore, or commit it; a final diff is a stop condition for
+main-thread adjudication. No other authored test dependency or external/generated asset is permitted.
+
+**Execution note:** Before this generated-set clarification, the Builder's safety hook blocked an
+attempted cleanup of the two Next-generated helper files and the Builder restored the tracked
+`next-env.d.ts` without leaving a diff. The existing tests also created ignored `var/test/*.sqlite`
+outputs that were not previously listed. The main thread verified the exact generated content and
+provenance, preserved the artifacts in the isolated Worktree, and amended this Work Order/runbook
+before any continuation. This is a process-boundary incident, not a product-code claim; the Builder
+must resume with the clarified boundary and preferably use the already-built app with `next start`.
 
 #### Dependencies and assumptions
 

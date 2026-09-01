@@ -582,6 +582,22 @@ contract section and the process-only section separately. A process-only writeba
 the execution baseline; a semantic contract or authority change does and requires a stop and
 re-baseline. The main thread must not guess when the boundary is ambiguous.
 
+Tooling may create untracked instruction or metadata files outside the usual build-output paths. For
+example, the pinned Next.js toolchain may create `WebApp/Web-Right_Spot/AGENTS.md` and
+`WebApp/Web-Right_Spot/CLAUDE.md` when `next dev` runs. A worker must not delete, restore, or commit
+such files merely to make the tree match an assumed generated set. The main thread must verify their
+provenance and exact content, then either declare those exact paths as ephemeral generated output
+that is preserved but excluded from T2 source adoption, or stop and re-gate the Work Order. They do
+not become source identity, canonical instructions, or product scope unless explicitly reviewed and
+adopted.
+
+The same rule applies to command-created runtime state: ignored `var/test/*.sqlite` files may be
+created by the existing test suite and must be preserved without cleanup, while tracked
+`next-env.d.ts` may be touched by Next as tool-maintained metadata. A worker must not manually edit,
+restore, or commit `next-env.d.ts`; if a final diff remains, the worker stops and reports it for
+main-thread adjudication. When a production build is already available, prefer `next start` over
+`next dev` for runtime smoke so development-only file generation does not widen the checkpoint.
+
 At T2, after the Builder stops, the main thread must:
 
 1. confirm there is no remaining writer;
