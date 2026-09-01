@@ -1,7 +1,7 @@
 # RIGHTSPOT-011: Implement the bounded Agent Operations read-model seam
 
 **Type:** `implementation`  
-**Lifecycle:** `in_progress`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for the next independent post-MVP product seam  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-01  
@@ -10,7 +10,7 @@
 ## Task Control
 
 - Type: `implementation`
-- Lifecycle: `in_progress`
+- Lifecycle: `closed`
 - Priority: `P1`
 - Owner: Main RightSpot thread
 - Objective: Implement and independently verify a privacy-safe, deterministic Agent Operations
@@ -21,8 +21,9 @@
   projection module and its focused tests; later API, dashboard, and WebMCP coupling remain deferred.
 - Next gate: The main thread must decide and register a separate consumer boundary before any route,
   API, dashboard, or WebMCP work begins. The verified seam alone does not authorize a consumer.
-- Execution posture: `CONTRACT_SEAM_VERIFIED_INTEGRATED`; this task remains independent of the active
-  Field Desk regression wave and the unresolved 008/009 semantic boundaries.
+- Execution posture: `CONTRACT_SEAM_VERIFIED_INTEGRATED`; this bounded seam outcome is closed and
+  remains independent of the unresolved 008/009 semantic boundaries. Any future route, dashboard, or
+  WebMCP consumer requires its own reviewed boundary and Work Order.
 
 ## Accepted implementation boundary
 

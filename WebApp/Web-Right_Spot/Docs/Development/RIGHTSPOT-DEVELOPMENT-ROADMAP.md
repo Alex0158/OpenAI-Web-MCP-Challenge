@@ -9,9 +9,9 @@ two recorded procedural blocks were corrected. The tenant and agent role slices 
 verified and integrated at product commits `5abdaf3` and `a2f6a19`; `RS-WO-007-08` passed as the
 integrated cross-role regression check and `RIGHTSPOT-007` is closed. `RS-WO-011-01` passed independent
 verification and is integrated at product commit `7ff0fbd`; its read-model seam remains separate from
-any future consumer. `RS-WO-013-01` is ready to dispatch as a read-only Operations profile authority
-proposal is assigned to an independent Advisor. The prior out-of-scope tracked verifier mutation
-remains preserved.
+any future consumer. `RS-WO-013-01` is assigned to an independent Advisor for a read-only Operations
+profile authority proposal; no consumer implementation is authorized yet. The prior out-of-scope
+tracked verifier mutation remains preserved.
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-01, Europe/London
 
@@ -19,9 +19,11 @@ remains preserved.
 `3765747`, repaired `RS-WO-002-12` is integrated at `9348aa5`, `RS-WO-002-14` passed direct combined
 cross-role verification, and `RS-WO-002-15` passed the isolated browser walkthrough. The closure record
 is [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md). For the active post-MVP
-lane, `RS-WO-007-04`/`05` have passed independent verification and are integrated; only the fresh
-integrated-source Field Desk regression gate remains. Prior verifier Worktree metadata mutations
-remain preserved and are not product source.
+lane, `RS-WO-007-04`/`05` have passed independent verification and are integrated, and the fresh
+integrated-source Field Desk regression `RS-WO-007-08` also passed; `RIGHTSPOT-007` is closed. The
+verified `RS-WO-011` seam is integrated, while `RS-WO-013-01` is the current assigned read-only
+architecture gate. Prior verifier Worktree metadata mutations remain preserved and are not product
+source.
 
 ## 1. Roadmap purpose and authority
 

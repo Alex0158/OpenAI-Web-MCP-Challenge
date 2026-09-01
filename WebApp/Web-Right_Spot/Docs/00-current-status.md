@@ -133,7 +133,7 @@ Advisor; both proposal records await main-thread review.
 completed its exact two-path Builder handoff at `5b05c78`, `RS-WO-011-02` independently verified it,
 and the main thread integrated it at product commit `7ff0fbd`. The seam remains a server-side contract
 only; no Operations route, dashboard, WebMCP, or future 008/009 metric is authorized.
-It may add a pure projection module and focused tests against the existing workflow state without
+Its pure projection module and focused tests are available against the existing workflow state without
 waiting for the unresolved Favourite or Information Request semantics. It does not authorize an
 Operations route, dashboard UI, reporting history, WebMCP, or external service.
 
