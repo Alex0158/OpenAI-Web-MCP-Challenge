@@ -243,6 +243,43 @@ test("expiry evaluates on relevant reads, releases the held slot, and is auditab
   assert.equal(tenantRead.state.slots[0]?.status, "AVAILABLE");
 });
 
+test("post-expiry send replay fails with the expired state and preserves expiry effects", () => {
+  const readyToSend = prepareSlot(startReview(submit(createDraft())));
+  const sendCommand = command("SEND_SLOT_PROPOSAL", {
+    commandId: "send-1",
+    actor: AGENT,
+    expectedRequestVersion: readyToSend.request?.version,
+  });
+  const proposed = expectSuccess(executeCommand(readyToSend, sendCommand, NOW));
+  const beforeReplay = structuredClone(proposed);
+
+  const replay = executeCommand(proposed, sendCommand, "2026-09-02T09:00:00.000Z");
+
+  assert.equal(replay.ok, false);
+  if (replay.ok) throw new Error("Expected expired replay failure");
+  assert.equal(replay.error.code, "EXPIRED");
+  assert.equal(replay.state.request?.state, "EXPIRED");
+  assert.equal(replay.state.request?.version, beforeReplay.request!.version + 1);
+  assert.equal(replay.state.slots[0]?.status, "AVAILABLE");
+  assert.equal(replay.state.slots[0]?.heldByRequestId, undefined);
+  assert.equal(replay.state.audit.at(-1)?.operation, "EXPIRE_PROPOSAL");
+  assert.deepEqual(proposed, beforeReplay);
+
+  const persistedExpired = structuredClone(replay.state);
+  const persistedReplay = executeCommand(
+    persistedExpired,
+    sendCommand,
+    "2026-09-02T10:00:00.000Z",
+  );
+  assert.equal(persistedReplay.ok, false);
+  if (persistedReplay.ok) throw new Error("Expected persisted expired replay failure");
+  assert.equal(persistedReplay.error.code, "EXPIRED");
+  assert.equal(persistedReplay.state.request?.state, "EXPIRED");
+  assert.equal(persistedReplay.state.request?.version, replay.state.request?.version);
+  assert.equal(persistedReplay.state.audit.length, replay.state.audit.length);
+  assert.deepEqual(persistedExpired, replay.state);
+});
+
 test("send rechecks exact slot availability and never substitutes another slot", () => {
   let state = prepareSlot(startReview(submit(createDraft())));
   state.slots[0]!.status = "CONFIRMED";
@@ -256,6 +293,82 @@ test("send rechecks exact slot availability and never substitutes another slot",
   assert.equal(unchanged.request?.version, state.request?.version);
   assert.equal(unchanged.request?.preparedResponse?.kind, "SLOT_PROPOSAL");
   assert.equal(unchanged.slots[1]?.status, "AVAILABLE");
+});
+
+test("slot validation rejects unknown listings and non-positive durations without mutation", () => {
+  for (const [label, slot] of [
+    ["unknown-listing", {
+      id: "slot-invalid-listing",
+      listingId: "listing-missing",
+      startsAt: FIRST_TIME,
+      endsAt: SECOND_TIME,
+      status: "AVAILABLE" as const,
+    }],
+    ["reversed-time", {
+      id: "slot-reversed",
+      listingId: "listing-primary",
+      startsAt: SECOND_TIME,
+      endsAt: FIRST_TIME,
+      status: "AVAILABLE" as const,
+    }],
+    ["equal-time", {
+      id: "slot-equal",
+      listingId: "listing-primary",
+      startsAt: FIRST_TIME,
+      endsAt: FIRST_TIME,
+      status: "AVAILABLE" as const,
+    }],
+  ] as const) {
+    const state = createInitialWorkflowState();
+    state.slots.push(slot);
+    const before = structuredClone(state);
+    const failed = executeCommand(state, command("START_AGENT_REVIEW", {
+      commandId: `invalid-slot-${label}`,
+      actor: AGENT,
+      expectedRequestVersion: 0,
+    }), NOW);
+    assert.equal(failed.ok, false, label);
+    if (failed.ok) throw new Error("Expected invalid slot failure");
+    assert.equal(failed.error.code, "VALIDATION_FAILED", label);
+    assert.deepEqual(failed.state, before, label);
+    assert.deepEqual(state, before, label);
+  }
+});
+
+test("slot validation rejects impossible holder relationships without mutation", () => {
+  const base = sendSlot(prepareSlot(startReview(submit(createDraft()))));
+  for (const [label, mutate] of [
+    ["available-holder", (state: WorkflowState) => {
+      state.slots[0]!.status = "AVAILABLE";
+      state.slots[0]!.heldByRequestId = state.request!.id;
+    }],
+    ["confirmed-holder", (state: WorkflowState) => {
+      state.slots[0]!.status = "CONFIRMED";
+      state.slots[0]!.heldByRequestId = state.request!.id;
+    }],
+    ["unrelated-holder", (state: WorkflowState) => {
+      state.slots[0]!.status = "HELD_FOR_PROPOSAL";
+      state.slots[0]!.heldByRequestId = "request-other";
+    }],
+    ["missing-holder", (state: WorkflowState) => {
+      state.slots[0]!.status = "HELD_FOR_PROPOSAL";
+      delete state.slots[0]!.heldByRequestId;
+    }],
+  ] as const) {
+    const state = structuredClone(base);
+    mutate(state);
+    const before = structuredClone(state);
+    const failed = executeCommand(state, command("START_AGENT_REVIEW", {
+      commandId: `invalid-holder-${label}`,
+      actor: AGENT,
+      expectedRequestVersion: state.request?.version,
+    }), NOW);
+    assert.equal(failed.ok, false, label);
+    if (failed.ok) throw new Error("Expected invalid holder failure");
+    assert.equal(failed.error.code, "VALIDATION_FAILED", label);
+    assert.deepEqual(failed.state, before, label);
+    assert.deepEqual(state, before, label);
+  }
 });
 
 test("stale request version and fixture generation fail without mutation", () => {

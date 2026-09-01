@@ -77,26 +77,36 @@ export function executeCommand(
     return failure(source, asDomainError(error, "VALIDATION_FAILED", "Invalid workflow command"));
   }
 
+  const evaluated = evaluateExpiry(source, now);
   const fingerprint = fingerprintCommand(command);
-  const processed = source.processedCommands.find(
+  const processed = evaluated.state.processedCommands.find(
     (entry) => entry.commandId === command.commandId,
   );
   if (processed) {
     if (processed.fingerprint !== fingerprint) {
       return failure(
-        source,
+        evaluated.state,
         domainError("COMMAND_CONFLICT", "Command identifier was already used with different input"),
+      );
+    }
+
+    if (
+      command.type === "SEND_SLOT_PROPOSAL"
+      && processed.result.requestState === "SLOT_PROPOSED"
+      && evaluated.state.request?.state === "EXPIRED"
+    ) {
+      return failure(
+        evaluated.state,
+        domainError("EXPIRED", "Viewing request proposal has expired"),
       );
     }
 
     return {
       ok: true,
-      state: source,
+      state: evaluated.state,
       result: { ...processed.result, idempotent: true },
     };
   }
-
-  const evaluated = evaluateExpiry(source, now);
 
   try {
     const next = executeNewCommand(evaluated, command, now);
@@ -629,8 +639,13 @@ function validateWorkflowState(state: WorkflowState): void {
   }
   for (const slot of state.slots) {
     validateIdentifier(slot.id, "slot identifier");
-    if (!Number.isFinite(Date.parse(slot.startsAt)) || !Number.isFinite(Date.parse(slot.endsAt))) {
+    const startsAt = Date.parse(slot.startsAt);
+    const endsAt = Date.parse(slot.endsAt);
+    if (!Number.isFinite(startsAt) || !Number.isFinite(endsAt)) {
       throw domainError("VALIDATION_FAILED", "Invalid slot timestamp");
+    }
+    if (endsAt <= startsAt) {
+      throw domainError("VALIDATION_FAILED", "Slot end must be after slot start");
     }
     if (![
       "AVAILABLE",
@@ -638,6 +653,20 @@ function validateWorkflowState(state: WorkflowState): void {
       "CONFIRMED",
     ].includes(slot.status)) {
       throw domainError("VALIDATION_FAILED", "Invalid slot state");
+    }
+    if (!state.listings.some((listing) => listing.id === slot.listingId)) {
+      throw domainError("VALIDATION_FAILED", "Slot listing reference is invalid");
+    }
+    if (slot.heldByRequestId !== undefined) {
+      validateIdentifier(slot.heldByRequestId, "slot holder request identifier");
+      if (slot.status === "AVAILABLE" || slot.status === "CONFIRMED") {
+        throw domainError("VALIDATION_FAILED", "Only a held slot may have a request holder");
+      }
+      if (state.request && slot.heldByRequestId !== state.request.id) {
+        throw domainError("VALIDATION_FAILED", "Slot holder does not match the current request");
+      }
+    } else if (state.request && slot.status === "HELD_FOR_PROPOSAL") {
+      throw domainError("VALIDATION_FAILED", "Held slot must identify the current request");
     }
   }
   if (state.request) {
