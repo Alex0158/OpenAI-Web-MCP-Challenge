@@ -299,14 +299,15 @@ No candidate or relay/default database was modified by the verifier, and no sour
 ## RS-WO-015-04 — Repair table-level Operations singleton constraints
 
 **Role:** Repairer (original authority Builder)  
-**Status:** `READY_FOR_DISPATCH`  
+**Status:** `READY_FOR_VERIFICATION`  
 **Parallelization:** `SERIAL_AUTHORITY_REPAIR` — depends on the fresh `RS-WO-015-03` finding and must precede another verifier  
 **Risk profile:** `Assured` — existing-schema compatibility must protect the authority's singleton and generation invariants  
-**Supporting worker:** To be assigned by resuming Operations authority Repairer `01a05df7-a761-7423-9b85-e2a866f3a216` (`Herschel`)  
+**Supporting worker:** Operations authority Repairer `01a05df7-a761-7423-9b85-e2a866f3a216` (`Herschel`), closed after handoff  
 **Source baseline:** Rejected candidate `39e67e1d9a1c7764b34cc2dad241f9441db26c57`; parent `3f041a0d0477f2fba0aedb93c5e048d21334254d`  
 **Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-015-01-builder`  
-**Dispatch state:** `READY_FOR_DISPATCH`  
-**Next gate:** Return a new clean repair commit with exactly the two persistence/test paths changed; then run a fresh independent verifier  
+**Candidate source:** `a9c8e79694c9b6c9f0b2214f15daa8c5f4cd41b1`, parent `39e67e1d9a1c7764b34cc2dad241f9441db26c57`  
+**Dispatch state:** `HANDOFF_COMPLETE`  
+**Next gate:** Fresh independent verification of the exact frozen candidate; do not integrate or dispatch an Operations consumer  
 **Ownership:** The Repairer owns only `src/server/persistence/operations-store.ts` and
 `tests/persistence/operations-store.test.ts`. The main thread owns source freeze, verification,
 integration, canonical writeback, and closure.
@@ -334,6 +335,22 @@ weaken constraints for compatibility. Return `READY_FOR_VERIFICATION` with the n
 parent, clean status, exact two-path diff, constraint checks, pinned test results, and no integration
 claims; return `NEEDS_REVIEW` if semantic constraint validation requires a broader path or unresolved
 SQLite policy.
+
+### Builder handoff evidence — 2026-09-01
+
+Repairer `Herschel` returned `READY_FOR_VERIFICATION` at candidate
+`a9c8e79694c9b6c9f0b2214f15daa8c5f4cd41b1`, parent
+`39e67e1d9a1c7764b34cc2dad241f9441db26c57`. The isolated Worktree was clean and changed exactly:
+
+- `src/server/persistence/operations-store.ts`
+- `tests/persistence/operations-store.test.ts`
+
+The repair validates the authoritative `sqlite_schema.sql` constraints in addition to column shape,
+including singleton `CHECK (id = 1)` and positive-generation `CHECK (fixture_generation >= 1)`, and
+rejects same-column schemas that omit or weaken those checks without recreating, migrating, replacing,
+or probing the database. Pinned Node `24.20.0` / npm `11.19.0` self-checks passed: focused Operations
+`12/12`, foundation `6/6`, all direct TypeScript tests `74/74`, typecheck, build, and diff check.
+These are Builder checks only; no independent verification or integration claim is made.
 
 ## Closure gate
 

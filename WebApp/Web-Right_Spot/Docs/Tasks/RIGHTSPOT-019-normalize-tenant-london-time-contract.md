@@ -14,9 +14,9 @@
   existing server/API UTC instant contract.
 - Current increment: `RS-WO-019-01` is the bounded tenant request time conversion repair. It does not
   add calendar integration, a timezone selector, or a new backend time model.
-- Next gate: independent verification under multiple host timezone settings, then main-thread
-  integration and tenant/browser regression evidence.
-- Execution posture: `READY_FOR_BUILDER_DISPATCH`.
+- Next gate: bounded browser/form regression against the integrated source; the backend/API contract
+  remains unchanged.
+- Execution posture: `INTEGRATED_AWAITING_BROWSER_VERIFICATION`.
 - This task is disjoint from workflow-domain, Operations, and media write sets.
 
 ## Verified defect
@@ -34,15 +34,16 @@ deterministically before sending the existing DTO.
 ## RS-WO-019-01 — Repair tenant London-time input conversion
 
 **Role:** Builder → independent Verifier  
-**Status:** `READY_FOR_VERIFICATION`  
+**Status:** `INTEGRATED_AWAITING_BROWSER_VERIFICATION`  
 **Parallelization:** `PARALLEL_TENANT_TIME_REPAIR` — disjoint from workflow-domain, Operations, and media paths  
 **Risk profile:** `Assured` — incorrect time conversion changes user-visible scheduling instants  
 **Source baseline:** `e92dc9c1102549e9197ebad114803eea1e96c06f` on `main`; current media candidate files and collaborator-owned documentation remain outside this Work Order  
 **Supporting worker:** Multi-agent tenant-time Builder `01a05e22-1007-7f62-b983-e0d5973f00f3` (`Lagrange`), closed after handoff  
 **Candidate source:** `2c408e77e99a2f38faffe27ffa8c7408fe1dc855`, parent `e92dc9c1102549e9197ebad114803eea1e96c06f`  
 **Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-019-01-builder`  
-**Dispatch state:** `HANDOFF_COMPLETE`  
-**Next gate:** Independent verification of the frozen candidate; do not integrate or dispatch follow-on work  
+**Independent verifier:** Multi-agent read-only Verifier `01a05e28-2cf4-76d1-9f42-a38c08830f43` (`Nash`), closed after report  
+**Dispatch state:** `INDEPENDENTLY_VERIFIED_AND_INTEGRATED`  
+**Next gate:** Browser/form regression against the integrated source; do not expand the time contract  
 **Allowed write set:** `src/ui/tenant/tenant-request-time.ts`, `src/ui/tenant/tenant-request-page.tsx`, `tests/ui/tenant-request-time.test.ts`  
 **Ownership:** The Builder owns only the declared tenant time helper/page/test paths. The main thread
 owns source freeze, integration, browser evidence, canonical writeback, and closure.
@@ -111,6 +112,23 @@ spring-forward nonexistent and autumn fall-back ambiguous values, UTC round-trip
 API/domain/DTO change. Pinned self-checks passed: focused/relevant `16/16`, full direct tests
 `68/68`, typecheck, production build, and `git diff --check`. No independent verification or
 integration claim is made.
+
+### Independent verification result — 2026-09-01
+
+Verifier `Nash` returned `VERIFIED` for the exact frozen three-path candidate. It independently
+confirmed Europe/London wall-clock conversion under GMT/BST, UTC and non-UK host timezone settings,
+UTC round-trip editing, invalid input handling, spring-forward gap rejection, autumn overlap rejection,
+ordering/draft/API preservation, and no cross-layer scope expansion. Pinned checks passed: focused
+`6/6`, relevant tenant/API `10/10`, all direct `68/68`, typecheck, build, and diff check. Browser,
+deployment, WebMCP, Cloud Receiver, auth, WebRTC, Redis, and closure evidence were explicitly not
+claimed.
+
+### Main-thread integration result — 2026-09-01
+
+The exact three-path candidate was integrated at product commit `6f52686`. Against the current source,
+the main thread reran the full direct suite `75/75`, `npm run typecheck`, `npm run build`, and
+`git diff --check`; all passed. A browser/form regression remains intentionally open because the task
+closure gate requires observing the integrated editor and actual submission boundary.
 
 ## Acceptance criteria
 

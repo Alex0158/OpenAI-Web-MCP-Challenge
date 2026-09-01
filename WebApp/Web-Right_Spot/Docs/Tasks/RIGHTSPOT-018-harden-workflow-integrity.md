@@ -1,7 +1,7 @@
 # RIGHTSPOT-018: Harden relay workflow integrity
 
 **Type:** `defect`  
-**Lifecycle:** `in_progress`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for trustworthy Viewing Request state and future Operations consumers  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-01  
@@ -11,12 +11,10 @@
 
 - Objective: correct two independently reproduced relay-domain integrity defects without redesigning
   the state machine, persistence model, or Operations profile.
-- Current increment: `RS-WO-018-01` is the single bounded Builder checkpoint for expiry-aware command
-  replay and relational availability-slot validation. It owns the shared workflow source, so the two
-  fixes are intentionally serialized inside one candidate rather than assigned to concurrent workers.
-- Next gate: independent verification of the exact candidate, then main-thread integration and a
-  post-integration regression run.
-- Execution posture: `READY_FOR_BUILDER_DISPATCH`.
+- Current increment: `RS-WO-018-01` passed independent verification and is integrated at product
+  commit `5eef037`. Its post-integration regression is green.
+- Next gate: None for this bounded defect task. Reopen only under the documented policy changes below.
+- Execution posture: `CLOSED`.
 - This task is independent of the Operations authority candidate, media primitive overlay, and tenant
   timezone task. No worker may modify another task's write set.
 
@@ -52,15 +50,16 @@ the relay projection into an Operations profile.
 ## RS-WO-018-01 — Repair expiry replay and slot relationships
 
 **Role:** Builder → independent Verifier  
-**Status:** `READY_FOR_VERIFICATION`  
+**Status:** `INTEGRATED`  
 **Parallelization:** `SERIAL_RELAY_DOMAIN_INTEGRITY` — owns the shared workflow source; do not run another worker against these paths  
 **Risk profile:** `Assured` — domain invariants and time/idempotency semantics affect all relay commands  
 **Source baseline:** `e92dc9c1102549e9197ebad114803eea1e96c06f` on `main`; current media candidate files and collaborator-owned documentation remain outside this Work Order  
 **Supporting worker:** Multi-agent relay-domain Builder `01a05e22-c046-79c1-ab4e-e0434c722c03` (`Rawls`), closed after handoff  
 **Candidate source:** `f6997c3f37493c40ac8e79c9824b5a8379ed3207`, parent `e92dc9c1102549e9197ebad114803eea1e96c06f`  
 **Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-018-01-builder`  
-**Dispatch state:** `HANDOFF_COMPLETE`  
-**Next gate:** Independent verification of the frozen candidate; do not integrate or dispatch follow-on work  
+**Independent verifier:** Multi-agent read-only Verifier `01a05e28-0330-7e20-b165-f909a1c1fb26` (`Parfit`), closed after report  
+**Dispatch state:** `INDEPENDENTLY_VERIFIED_AND_INTEGRATED`  
+**Next gate:** Parent task closure is recorded; no follow-on work under this Work Order  
 **Allowed write set:** `src/server/domain/workflow.ts`, `tests/domain/workflow.test.ts`  
 **Ownership:** The Builder owns only the two source/test paths. The main thread owns scope, source
 freeze, canonical writeback, integration, and closure.
@@ -128,6 +127,23 @@ The Builder reports expiry-aware replay, listing/time/holder validation, caller-
 and preservation of normal idempotency, conflict, Happy Path, and partial projection fixtures.
 Pinned self-checks passed: focused `35/35`, all direct tests `65/65`, typecheck, production build,
 and `git diff --check`. No independent verification or integration claim is made.
+
+### Independent verification result — 2026-09-01
+
+Verifier `Parfit` returned `VERIFIED` for the exact frozen candidate. It independently confirmed the
+two-path scope, expiry-aware replay result/state/slot/audit behavior, persisted-expired behavior,
+unknown-listing and invalid-duration rejection, impossible holder/status rejection, input immutability,
+and preservation of legal idempotency and Happy Paths. Pinned checks passed: relevant `51/51`, all
+direct `65/65`, foundation `6/6`, typecheck, build, and diff check. Browser, deployment, WebMCP, Cloud
+Receiver, auth, WebRTC, Redis, and consumer evidence were explicitly not claimed.
+
+### Main-thread integration and closure result — 2026-09-01
+
+The exact two-path candidate was integrated at product commit `5eef037`. Against the resulting source,
+the main thread reran the full direct suite `75/75`, `npm run typecheck`, `npm run build`, and
+`git diff --check`; all passed. This satisfies the task's independent-verification, integration, and
+post-integration domain/API/projection regression gate. No browser claim is needed for this domain-only
+task, and no Operations consumer was started from it.
 
 ## Acceptance criteria
 

@@ -20,24 +20,23 @@ agent surfaces have since passed their respective independent verification gates
 at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression passed at frozen source
 `4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current active Work Orders:** `RS-WO-015-04` is required after fresh verification found that
-candidate `39e67e1` still accepts an existing table without its singleton constraint; the Operations
-authority remains non-integrated. In
-parallel, `RS-WO-017-02` has passed independent verification as a frozen media primitive overlay but
-is not integrated; its verifier's unrelated persistent-fixture residual (`65/66`) was resolved by a
-separate test-only isolation correction and a current `66/66` rerun. The newly registered
-`RS-WO-018-01` workflow-integrity candidate `f6997c3` and `RS-WO-019-01` tenant-time candidate
-`2c408e7` have completed Builder handoff and await independent verification on disjoint write sets.
-Their boundaries are disjoint.
+**Current active Work Orders:** `RS-WO-015-04` produced candidate `a9c8e79` and is awaiting fresh
+independent verification after repairing the Operations table-level singleton/positive-generation
+constraint gap; the Operations authority remains non-integrated. `RS-WO-017-02` passed independent
+verification and is integrated at `b7369bd`; `RS-WO-017-03` is now ready to dispatch for tenant
+listing consumer wiring. `RS-WO-019-01` passed independent verification and is integrated at
+`6f52686`, with only its bounded browser/form regression gate open. `RS-WO-018-01` passed independent
+verification, is integrated at `5eef037`, and is closed. These lanes have disjoint write sets.
 `RIGHTSPOT-013` accepted the
 Operations authority decision and is closed, and `RIGHTSPOT-014` accepted its media proposal and is
 closed. The Operations candidate is based on reviewed baseline `8fe5976`; the media asset baseline is
 committed at `760b88f`.
 The next Operations projection Task `RIGHTSPOT-016` is registered but remains GATED behind the
 `RIGHTSPOT-015` authority repair and fresh verification; it has no assigned worker. The reviewed
-media manifest and local asset pack remain frozen read-only inputs to the `RS-WO-017-02` integration
-gate. `RIGHTSPOT-018` records two independently reproduced relay-domain defects in one serialized
-shared-workflow Work Order; `RIGHTSPOT-019` records the independent London-time UI boundary defect.
+media manifest, local asset pack, and integrated primitive remain bounded inputs to `RS-WO-017-03`.
+`RIGHTSPOT-018` records two independently reproduced relay-domain defects in one serialized
+shared-workflow Work Order and is closed; `RIGHTSPOT-019` records the integrated London-time UI
+boundary repair with browser/form evidence still pending.
 The bounded Operations seam `RS-WO-011-01` passed independent verification and is integrated at
 product commit `7ff0fbd`; its verifier Worktree remains a historical evidence snapshot.
 `RS-WO-007-06`, `RS-WO-007-07`, and

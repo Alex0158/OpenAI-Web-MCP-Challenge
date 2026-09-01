@@ -15,16 +15,13 @@
 - Owner: Main RightSpot thread
 - Objective: Replace the two current tenant listing media placeholders with reviewed, deterministic,
   local synthetic property imagery without changing listing DTOs, routes, workflow, or authentication.
-- Current increment: `RS-WO-017-02` is the bounded shared media primitive checkpoint. The
-  main-thread-controlled `RS-WO-017-01` asset gate is complete, and its three-file manifest and
-  local WebP pack are frozen read-only inputs. The candidate has passed independent verification,
-  with one unrelated persistent-fixture full-suite failure recorded as residual evidence; it remains
-  an untracked frozen overlay and is not integrated.
-- Next gate: Integrate the independently verified primitive candidate only after the main thread
-  reviews the residual full-suite failure; tenant wiring and integrated browser verification remain
-  later checkpoints under this Task.
-  tenant wiring and integrated browser verification remain later checkpoints under this Task.
-- Execution posture: `MEDIA_PRIMITIVE_VERIFIED_PENDING_INTEGRATION`; no tenant page or global CSS source is
+- Current increment: `RS-WO-017-03` is the bounded tenant-consumer checkpoint. The
+  main-thread-controlled `RS-WO-017-01` asset gate is complete, and `RS-WO-017-02` has passed
+  independent verification and is integrated at product commit `b7369bd`. Its manifest, local WebP
+  pack, and shared primitive are frozen read-only inputs for tenant wiring.
+- Next gate: Dispatch `RS-WO-017-03` against the integrated primitive; `RS-WO-017-04` remains the
+  later independent browser/rendering gate.
+- Execution posture: `TENANT_MEDIA_WIRING_READY`; no agent page, global CSS, API, or domain source is
   authorized in this checkpoint.
 
 ## Accepted implementation boundary
@@ -42,13 +39,13 @@ legal status. A visible disclosure must say that the image is synthetic/illustra
 ## RS-WO-017-01 — Generate, review, and import the local asset pack
 
 **Role:** Main-thread Asset Producer/Reviewer  
-**Status:** `ASSET_GATE_READY`  
+**Status:** `ASSET_GATE_COMPLETE`  
 **Parallelization:** `SERIAL_ASSET_GATE` — must finish before the shared media primitive or tenant wiring uses the assets  
 **Risk profile:** `Standard` — local generated files and manifest provenance, with no product-domain change  
 **Supporting worker:** None; binary generation and content review remain main-thread-owned  
 **Source baseline:** `f93ae6b` product source plus the reviewed media proposal baseline `8fe5976`; collaborator-owned dirty and untracked paths remain outside this Work Order  
-**Dispatch state:** `READY_FOR_BUILDER_DISPATCH`  
-**Next gate:** Dispatch `RS-WO-017-02` with the asset pack and manifest frozen as read-only inputs  
+**Dispatch state:** `COMPLETE`  
+**Next gate:** The asset pack and manifest are frozen read-only inputs; `RS-WO-017-02` is integrated and `RS-WO-017-03` is the next consumer gate  
 **Ownership:** The main thread owns generation/import/review. No supporting worker may alter the asset pack or manifest during this gate.
 
 ### Intended asset write set
@@ -105,7 +102,7 @@ The manifest records `OpenAI built-in image generation` as the provenance method
 states that no external source was imported. This is a generation record, not a legal licensing
 opinion. The pinned Node `24.20.0` / npm `11.19.0` runtime verified all manifest hashes and
 `npm run typecheck` passed. UI rendering, browser loading/error behavior, and accessibility remain
-unverified until `RS-WO-017-02` through `RS-WO-017-04`.
+unverified until `RS-WO-017-03` and `RS-WO-017-04`.
 
 ### Forbidden actions
 
@@ -128,14 +125,14 @@ after `ASSET_GATE_READY` may the main thread dispatch the shared media primitive
 ### RS-WO-017-02 — Implement the shared listing media primitive
 
 **Role:** Builder → independent Verifier  
-**Status:** `VERIFIED` — integration pending  
+**Status:** `INTEGRATED`  
 **Parallelization:** `PARALLEL_MEDIA_PRIMITIVE` — disjoint from Operations authority verification and the later tenant integration  
 **Risk profile:** `Standard` — shared UI primitive with explicit asset resolution and bounded failure behavior  
 **Supporting worker:** Multi-agent shared media primitive Builder `01a05e0f-62bb-7c03-a68a-12956ef5169a` (`Darwin`), closed after handoff  
 **Independent verifier:** Multi-agent read-only Verifier `01a05e1c-7bd7-7a33-8921-3b562a279003` (`Halley`), closed after report  
 **Source baseline:** `fd4b3e67d884571d7c3a2b9ba3ee43329f57883e` on `main`, captured immediately before dispatch; the reviewed asset baseline is `760b88f`  
-**Dispatch state:** `VERIFIED`; the Builder returned a candidate overlay, not a commit, and the independent verifier accepted the bounded candidate  
-**Next gate:** Main-thread integration review; no tenant wiring in this checkpoint  
+**Dispatch state:** `INDEPENDENTLY_VERIFIED_AND_INTEGRATED`; the frozen overlay was accepted and integrated at `b7369bd`  
+**Next gate:** `RS-WO-017-03` tenant wiring; no tenant wiring was included in this checkpoint  
 **Ownership:** The Builder owns only the three declared primitive/test paths. The main thread owns manifest/assets, source freeze, integration, canonical writeback, and closure.  
 **Allowed write set:** `src/ui/shared/listing-media.tsx`, `src/ui/shared/listing-media.module.css`, `tests/ui/listing-media.test.ts`  
 **Dependency:** `RS-WO-017-01 ASSET_GATE_READY`  
@@ -147,11 +144,10 @@ after `ASSET_GATE_READY` may the main thread dispatch the shared media primitive
 
 ### Builder handoff evidence — 2026-09-01
 
-The Builder returned `READY_FOR_VERIFICATION` and the three declared paths exist as an untracked
-candidate overlay in the main checkout. This is a known handoff exception: no tracked code was
-integrated, no file was staged, and the main thread has not edited the candidate paths. They are
-frozen read-only until the independent verifier completes. The candidate is identified by the
-dispatch baseline plus exact path/content hashes rather than a commit:
+At Builder handoff, the three declared paths existed as an untracked candidate overlay in the main
+checkout. This was a known handoff exception: no tracked code was integrated, no file was staged, and
+the main thread had not edited the candidate paths. The candidate was identified by the dispatch
+baseline plus exact path/content hashes rather than a commit:
 
 | Candidate path | SHA-256 |
 |---|---|
@@ -160,8 +156,9 @@ dispatch baseline plus exact path/content hashes rather than a commit:
 | `tests/ui/listing-media.test.ts` | `6831175fefd8097770dbec305acdf9942341e1432a6bf085918234936d7a5dce` |
 
 The verifier must confirm these exact paths and hashes before testing, re-check them after testing,
-and report any candidate drift as a handoff failure. The committed manifest and WebP assets remain
-read-only inputs. No candidate commit, tenant/browser evidence, or integration claim exists yet.
+and report any candidate drift as a handoff failure. The committed manifest and WebP assets remained
+read-only inputs at handoff. The later independent verification and integration result is recorded
+below; this handoff section makes no browser or tenant-integration claim.
 
 ### Independent verification result — 2026-09-01
 
@@ -191,6 +188,19 @@ focused checks remain green. The earlier `65/66` result remains historical verif
 the current baseline residual is resolved. This correction does not add a media integration or browser
 claim.
 
+### Main-thread integration result — 2026-09-01
+
+The three frozen candidate paths retained their recorded content hashes and were staged as an exact
+allowlist. The main thread integrated only those paths at product commit `b7369bd`:
+
+- `src/ui/shared/listing-media.tsx`
+- `src/ui/shared/listing-media.module.css`
+- `tests/ui/listing-media.test.ts`
+
+After integration, the current source passed the media-focused checks and the full direct suite
+`75/75`, `npm run typecheck`, `npm run build`, and `git diff --check`. This proves the primitive is
+integrated; tenant discovery/detail rendering and browser evidence remain separate gates.
+
 ### Builder instructions
 
 - Read the global and repository instructions, this Task File, ADR-RS-0009, the reviewed manifest,
@@ -219,11 +229,37 @@ evidence. Do not integrate the candidate or modify the asset pack.
 ### RS-WO-017-03 — Replace tenant listing placeholders
 
 **Role:** Builder → independent Verifier  
-**Status:** `GATED`  
+**Status:** `READY_FOR_DISPATCH`  
+**Parallelization:** `PARALLEL_TENANT_MEDIA_CONSUMER` — disjoint from Operations, workflow-domain, and tenant-request time paths; owns the two tenant listing consumers and their local module CSS only  
 **Allowed write set:** `src/ui/tenant/tenant-discovery-page.tsx`, `src/ui/tenant/tenant-listing-page.tsx`, `src/ui/tenant/tenant.module.css`  
 **Dependency:** `RS-WO-017-02` independently verified and integrated  
 **Boundary:** Replace only the two current placeholders with the shared primitive; preserve listing
   data, request flow, responsive/accessibility requirements, and technical disclosure boundaries.
+
+#### Builder instructions
+
+- Read the repository instructions, this Task File, ADR-RS-0009, the reviewed manifest/assets, the
+  integrated `src/ui/shared/listing-media.tsx` primitive, and both current tenant listing consumers.
+- Replace only the discovery-card and listing-detail media placeholders. Resolve each image through
+  the primitive using the authoritative listing ID and exact manifest `imageKey`; do not construct
+  URLs, select by array position, substitute another listing/version, or add a remote fallback.
+- Preserve all existing listing data, filters, links, request CTA/flow, versions, loading/error
+  behavior, semantic structure, and role/privacy boundaries. Keep the synthetic/illustrative
+  disclosure visible wherever an asset is presented, including the bounded unavailable state.
+- Use only `tenant.module.css` for consumer layout adjustments. Keep the primitive's fixed 3:2
+  contract, readable text, keyboard/focus behavior, responsive behavior at existing breakpoints, and
+  reduced-motion safety. Do not edit `app/globals.css` or the shared primitive/manifest/assets.
+- Add focused tests for both consumer call sites, exact listing/image identity, disclosure, and
+  missing/error behavior. Run pinned relevant/full direct tests, typecheck, build, and diff checks;
+  browser rendering, network observation, and integrated media closure are later verifier evidence.
+
+#### Forbidden actions and return gate
+
+Do not modify API/DTO/domain/persistence/routes/auth/Operations/workflow/time source, package/config,
+assets, manifest, shared primitive, canonical documents, or generated output. Do not add a gallery,
+upload, video, image service, lazy fallback, or new dependency. Return `READY_FOR_VERIFICATION` with
+the exact candidate identity, three-path diff, tests/checks, and explicit skipped browser evidence;
+return `NEEDS_REVIEW` if a fourth path or a public contract change is required.
 
 ### RS-WO-017-04 — Verify integrated property media
 
