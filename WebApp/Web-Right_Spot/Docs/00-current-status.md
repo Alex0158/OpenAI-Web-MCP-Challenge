@@ -22,15 +22,15 @@ at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression pa
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current active Work Orders:** `RS-WO-015-01` has returned candidate `3f041a0` from Operations
 authority Builder `Herschel`, and `RS-WO-015-02` is assigned to independent Verifier `Anscombe`; in parallel,
-main-thread `RS-WO-017-01` has reached `ASSET_GATE_READY` and is ready to dispatch the shared media
-primitive Builder. Their write boundaries are disjoint. `RIGHTSPOT-013` accepted the
+main-thread `RS-WO-017-01` has reached `ASSET_GATE_READY`, and `RS-WO-017-02` is assigned to shared
+media primitive Builder `Darwin`; their write boundaries are disjoint. `RIGHTSPOT-013` accepted the
 Operations authority decision and is closed, and `RIGHTSPOT-014` accepted its media proposal and is
 closed. The Operations candidate is based on reviewed baseline `8fe5976`; the media asset baseline is
 committed at `760b88f`.
 The next Operations projection Task `RIGHTSPOT-016` is registered but remains GATED behind the
 `RS-WO-015-02` authority verification is in progress under `Anscombe`. The next media primitive
-`RS-WO-017-02` is ready for main-thread dispatch with the reviewed manifest and local asset pack
-frozen as read-only inputs; it has no assigned worker yet.
+`RS-WO-017-02` is in progress against the reviewed manifest and local asset pack frozen as read-only
+inputs.
 The bounded Operations seam `RS-WO-011-01` passed independent verification and is integrated at
 product commit `7ff0fbd`; its verifier Worktree remains a historical evidence snapshot.
 `RS-WO-007-06`, `RS-WO-007-07`, and
@@ -98,8 +98,8 @@ The parent `RIGHTSPOT-002` is `closed` for the accepted local MVP. ADR-RS-0009 a
 Field Desk UI/UX direction and ADR-RS-0010 accepts Clerk as a gated external-auth candidate; neither
 decision reopens the MVP or authorizes external credential setup. The Field Desk regression gate is
 closed; the current implementation wave is independent verification of the Operations authority
-candidate alongside the reviewed property-media asset baseline. The verified Operations seam remains
-available for later consumer design.
+candidate alongside the active shared media primitive Builder. The reviewed property-media asset
+baseline is complete, and the verified Operations seam remains available for later consumer design.
 
 **Current cross-role gate:** `RS-WO-005-01` passed corrected independent verification and is integrated
 at local commit `27f5391`; the known tracked metadata incident remains preserved. `RS-WO-007-02` is

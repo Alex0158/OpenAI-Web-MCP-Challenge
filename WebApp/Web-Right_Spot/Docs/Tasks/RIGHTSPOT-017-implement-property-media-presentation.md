@@ -20,8 +20,8 @@
   local WebP pack are frozen read-only inputs.
 - Next gate: The primitive candidate must pass independent verification before tenant integration;
   tenant wiring and integrated browser verification remain later checkpoints under this Task.
-- Execution posture: `MEDIA_PRIMITIVE_BUILDER_READY`; no tenant page or global CSS source is authorized
-  in this checkpoint.
+- Execution posture: `MEDIA_PRIMITIVE_BUILDER_IN_PROGRESS`; no tenant page or global CSS source is
+  authorized in this checkpoint.
 
 ## Accepted implementation boundary
 
@@ -124,13 +124,13 @@ after `ASSET_GATE_READY` may the main thread dispatch the shared media primitive
 ### RS-WO-017-02 — Implement the shared listing media primitive
 
 **Role:** Builder → independent Verifier  
-**Status:** `READY_FOR_DISPATCH`  
+**Status:** `ASSIGNED`  
 **Parallelization:** `PARALLEL_MEDIA_PRIMITIVE` — disjoint from Operations authority verification and the later tenant integration  
 **Risk profile:** `Standard` — shared UI primitive with explicit asset resolution and bounded failure behavior  
-**Supporting worker:** Not yet assigned  
-**Source baseline:** To be captured immediately before dispatch; `RS-WO-017-01` asset baseline is committed at `760b88f`  
-**Dispatch state:** `READY_FOR_DISPATCH`  
-**Next gate:** Dispatch one Builder against the frozen reviewed manifest and local WebP pack; no tenant wiring or integration in this checkpoint  
+**Supporting worker:** Multi-agent shared media primitive Builder `01a05e0f-62bb-7c03-a68a-12956ef5169a` (`Darwin`)  
+**Source baseline:** `fd4b3e67d884571d7c3a2b9ba3ee43329f57883e` on `main`, captured immediately before dispatch; the reviewed asset baseline is `760b88f`  
+**Dispatch state:** `ASSIGNED`; Builder execution is in progress  
+**Next gate:** Return `READY_FOR_VERIFICATION` with an exact candidate commit; no tenant wiring or integration in this checkpoint  
 **Ownership:** The Builder owns only the three declared primitive/test paths. The main thread owns manifest/assets, source freeze, integration, canonical writeback, and closure.  
 **Allowed write set:** `src/ui/shared/listing-media.tsx`, `src/ui/shared/listing-media.module.css`, `tests/ui/listing-media.test.ts`  
 **Dependency:** `RS-WO-017-01 ASSET_GATE_READY`  
