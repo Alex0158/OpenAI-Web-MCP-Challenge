@@ -17,8 +17,9 @@ against the integrated source with full direct, built-server HTTP, and browser e
 is closed for the accepted local MVP. Its verifier Worktrees also exposed an out-of-scope tracked
 tooling mutation preserved as procedure evidence.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current active Work Order:** `RS-WO-007-02` is `GATED` under `RIGHTSPOT-007`; no visual Builder is
-dispatched. The preceding `RS-WO-005-01` navigation candidate was independently `VERIFIED` by
+**Current active Work Order:** `RS-WO-007-02` is `ASSIGNED` under `RIGHTSPOT-007` to supporting worker
+`01a05d75-0116-75e3-807d-a19c6669e659` (`Turing`, local multi-agent Builder); it may modify only
+`app/globals.css`. No tenant/agent page Builder is dispatched. The preceding `RS-WO-005-01` navigation candidate was independently `VERIFIED` by
 Verifier task `01a05d5d-d796-72f0-baad-ca00d8e7ab4e` and integrated at local product commit `27f5391`.
 Verifier attempt 01 was procedurally `BLOCKED` after browser tooling added the tracked repository
 metadata line `+.gstack/` to `.gitignore`; the candidate source hash was unchanged and the main thread
@@ -37,8 +38,8 @@ declared shared-shell write set and corrected independent verification returned 
 preserved `.gitignore` incident is procedure evidence, not a product defect.
 The read-only UI decomposition Work Order `RS-WO-007-01` is complete in supporting task
 `01a05d5f-cb85-7cf3-96b4-edf0f5891b6d` on host `local` and accepted with revisions; its next
-single-file CSS Work Order `RS-WO-007-02` is gated behind the frozen navigation checkpoint and has no
-Builder dispatched.
+single-file CSS Work Order `RS-WO-007-02` is assigned to the bounded CSS Builder above against T0
+commit `04fb595`; its independent Verifier is not yet dispatched.
 Repaired tenant candidate `52cba87c` passed final independent verification and is integrated at product
 commit `9348aa5`. Its predecessor candidate `eb1d62e1b33a045e683f64ba3d28930e9444cd25` had
 two verifier runs checkpoint-locally blocked by a tracked `.gitignore` mutation adding `.gstack/` outside
@@ -57,24 +58,24 @@ separate ownership handling.
 The parent `RIGHTSPOT-002` is `closed` for the accepted local MVP. ADR-RS-0009 accepts the bounded
 Field Desk UI/UX direction and ADR-RS-0010 accepts Clerk as a gated external-auth candidate; neither
 decision reopens the MVP or authorizes external credential setup. The current implementation wave is
-the isolated `RS-WO-005-01` navigation repair.
+the isolated `RS-WO-007-02` shared CSS foundation.
 
 **Current cross-role gate:** `RS-WO-005-01` passed corrected independent verification and is integrated
-at local commit `27f5391`; the known tracked metadata incident remains preserved. The next active gate
-is `RS-WO-007-02`, the shared CSS foundation. The accepted MVP cross-role gate remains closed:
+at local commit `27f5391`; the known tracked metadata incident remains preserved. `RS-WO-007-02` is
+now assigned as the sole shared-CSS write checkpoint. The accepted MVP cross-role gate remains closed:
 `RS-WO-002-14` passed direct read-only verification of the integrated
 tenant-to-agent HTTP Happy Path, including role privacy, mutation ordering, and bounded failures.
 `RS-WO-002-15` passed the isolated browser walkthrough with no browser error or warning logs. The
 implementation, browser evidence, and parent closure record are complete for the accepted local MVP.
 
 The preserved tooling incident is not a product source defect and must not be fixed by reverting or
-deleting `.gitignore` without an explicit ownership/recoverability decision. It pauses only the
-`RS-WO-005-01` verification checkpoint; the read-only `RIGHTSPOT-007` UI decomposition remains safe
-to review, but no visual Builder may touch the frozen navigation source.
+deleting `.gitignore` without an explicit ownership/recoverability decision. It no longer pauses the
+closed `RS-WO-005-01` checkpoint; it remains procedure evidence and is outside the `RS-WO-007-02`
+write set.
 
-**Current parallel advisory lane:** `RIGHTSPOT-007`'s Architecture/UI Advisor proposal is accepted
-with revisions. No visual Builder has been dispatched; `RS-WO-007-02` remains gated until the main
-thread captures the post-navigation T2 identity and confirms the shared CSS boundary.
+**Current implementation lane:** `RIGHTSPOT-007`'s Architecture/UI Advisor proposal is accepted
+with revisions. `RS-WO-007-02` is assigned to one CSS Builder against the reviewed T0 commit; the
+next gate is its `READY_FOR_VERIFICATION` handoff and independent verification.
 
 **Authoritative closure update:** The earlier checkpoint chronology below intentionally preserves the
 state at each historical handoff. It must not be read as reopening the current gate: `RS-WO-002-14`

@@ -17,10 +17,10 @@
   shared UI foundation without expanding the rental MVP or changing product authority.
 - Current increment: Advisor decomposition is complete; the next visual source change is a gated,
   single-file shared CSS foundation.
-- Next gate: Dispatch `RS-WO-007-02` only after the main thread captures a fresh T2 identity from the
-  integrated navigation commit and confirms that the preserved metadata incident is excluded from
-  the product source baseline.
-- Execution posture: `PROGRESSING` while the independent `RS-WO-005-01` verification runs.
+- Next gate: Receive the `RS-WO-007-02` Builder handoff, freeze its exact CSS candidate, then dispatch
+  an independent Verifier against the frozen post-Builder source identity.
+- Execution posture: `PROGRESSING`; the single CSS Builder is assigned and no tenant/agent page
+  Builder is dispatched.
 
 ## Accepted product boundary
 
@@ -112,12 +112,18 @@ these constraints:
 ## RS-WO-007-02 — Implement the shared Field Desk CSS foundation
 
 **Role:** Builder → Verifier (sequential checkpoints)  
-**Status:** `GATED`  
+**Status:** `ASSIGNED`  
 **Parallelization:** `SERIAL_SHARED_CSS` — sole writer for the global visual token and primitive layer.  
 **Risk profile:** `Standard` — behavior-preserving CSS change with a narrow authored path.  
 **Dependency:** `RS-WO-005-01` passed independent verification and is integrated at local product
-  commit `27f5391`; the main thread must still capture a fresh T2 identity before dispatch.  
-**Source baseline:** A new main-thread T2 source identity captured after the navigation checkpoint.
+  commit `27f5391`; the main thread captured a fresh T0 identity after closure.  
+**Supporting worker:** `01a05d75-0116-75e3-807d-a19c6669e659` (`Turing`, local multi-agent Builder).  
+**Source baseline:** `04fb59565680f8df544bb345ffa29aeb31a2fdb6` on `main`; `app/globals.css` SHA-256
+`639eb5c940d67c05d842f813bcf2b78cbdd18f7ac5b71985a887a003c0587448` before dispatch.  
+**T0 dirty-state limitation:** unrelated `.gitignore`, `Docs/Tasks/README.md`, untracked
+`Docs/Tasks/RIGHTSPOT-008-define-favourites-and-listing-interest-boundary.md`, and owner-held
+`Docs/Reference/RIGHTSPOT-GOAL-PROMPT-HISTORY.md` remain outside this Work Order and must not be
+modified, staged, restored, or treated as product source.
 
 ### Worker write set
 
