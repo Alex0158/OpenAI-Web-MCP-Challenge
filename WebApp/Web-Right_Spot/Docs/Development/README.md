@@ -21,8 +21,8 @@ baseline, implementation-stack decision, and a bounded foundation implementation
 returned `READY_FOR_VERIFICATION`; the first independent Verifier checkpoint recorded in
 [RIGHTSPOT-002](../Tasks/RIGHTSPOT-002-build-mvp-application-shell.md) completed the functional
 checks but returned `BLOCKED` after its procedure created an out-of-bound OS temp artifact. A
-corrected rerun of the same checkpoint returned `VERIFIED`; the next gate is Git closure and a
-bounded workflow-core design. Later Repairer or Integrator
+corrected rerun of the same checkpoint returned `VERIFIED`; Git closure is recorded in `b06bd85`,
+and the next bounded workflow-core Builder checkpoint `RS-WO-002-03` is defined and gated. Later Repairer or Integrator
 work is opened only when its predecessor produces a concrete code failure or a verified source and
 evidence boundary.
 

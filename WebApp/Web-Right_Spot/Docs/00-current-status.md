@@ -2,9 +2,9 @@
 
 **Role:** Canonical current status for the RightSpot child application  
 **As of:** 2026-09-01, Europe/London  
-**Stage:** MVP scope, business-rules, Backbone, and implementation-stack baseline; runnable foundation independently verified, product workflow core not started
+**Stage:** MVP scope, business-rules, Backbone, and implementation-stack baseline; runnable foundation independently verified, next workflow-core Builder checkpoint gated
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Implementation:** Foundation Builder returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02` verification attempt was procedurally blocked by an out-of-scope OS temp artifact, then the corrected bounded rerun returned `VERIFIED` against the unchanged source/runtime identity
+**Implementation:** Foundation Builder returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02` verification attempt was procedurally blocked by an out-of-scope OS temp artifact, then the corrected bounded rerun returned `VERIFIED` against the unchanged source/runtime identity; `RS-WO-002-03` domain-core Builder is defined and gated
 
 ## 1. Executive status
 
@@ -47,7 +47,7 @@ final response can remain a normal application action.
 | Implementation stack | **FOUNDATION VERIFIED** | Next.js App Router, React, TypeScript, Node.js 24, and SQLite; the runnable foundation passed the corrected independent verification contract, without claiming product-flow or deployment readiness |
 | Foundation runtime readiness | **PREPARED / VERIFIED** | Exact arm64 Node.js `v24.20.0` is prepared outside the repository and passed version, npm, archive-checksum, and `node:sqlite` smoke checks; the default shell remains `v26.5.0`, and the Builder used the exact target runtime |
 | Realtime / WebRTC | **DEFERRED FEATURE SEAM** | Future Remote Viewing is possible without making WebRTC or signaling an MVP dependency |
-| Delegated development | **EXPERIMENTAL PILOT — TASK-OWNED** | `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02` Verifier attempt was blocked procedurally; its corrected read-only rerun returned `VERIFIED` |
+| Delegated development | **EXPERIMENTAL PILOT — TASK-OWNED** | `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; corrected `RS-WO-002-02` rerun returned `VERIFIED`; `RS-WO-002-03` is the gated next Builder checkpoint |
 | Cloud Receiver | **Not a first-phase dependency** | Future integration boundary only |
 | WebMCP | **Not a first-phase design center** | Later Hackathon integration boundary |
 | Runtime / deployment | **Not started** | No service, hosting, credentials, or public URL |
@@ -97,9 +97,9 @@ final response can remain a normal application action.
 ## 5. Next gate
 
 The first `RS-WO-002-02` result is recorded as a procedural `BLOCKED`, and the corrected rerun is
-now `VERIFIED` against the unchanged source/runtime identity. Reconcile the verified baseline and
-Git closure before opening the next bounded workflow-core checkpoint; do not pre-create downstream
-role assignments or claim the parent Task is closed.
+now `VERIFIED` against the unchanged source/runtime identity. The bounded `RS-WO-002-03` domain-core
+Builder is defined and gated; dispatch it only after the task specification and verified Git baseline
+are recorded. Do not pre-create downstream role assignments or claim the parent Task is closed.
 The eventual implementation remains without Cloud Receiver, WebMCP, Redis, or WebRTC media
 dependencies.
 
@@ -108,9 +108,10 @@ dependencies.
 The parent `RIGHTSPOT-002` remains `in_progress`; the foundation Builder stopped after returning
 `READY_FOR_VERIFICATION`, the first `RS-WO-002-02` attempt was `BLOCKED` on a procedure boundary,
 and its corrected rerun is `VERIFIED` against the unchanged exact target Node.js runtime and
-execution manifest. Builder, Verifier, Repairer, and Integrator remain sequential checkpoints of
-this same Task. No product writer or repairer is active; the main thread owns evidence writeback,
-Git closure, and the next checkpoint design.
+execution manifest. `RS-WO-002-03` is gated for the next bounded domain-core Builder. Builder,
+Verifier, Repairer, and Integrator remain sequential checkpoints of this same Task. No product writer
+or repairer is active; the main thread owns evidence writeback, Git closure, and the next checkpoint
+dispatch.
 
 ## 6. Non-claims
 

@@ -18,7 +18,8 @@ authority to RightSpot; it does not create a second task system.
 The current Work Order is recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, and the first `RS-WO-002-02` Verifier attempt
 returned `BLOCKED` because its procedure created an output outside the declared RightSpot boundary.
-The same checkpoint's corrected read-only rerun is now assigned. One registered Task has one Task
+The same checkpoint's corrected read-only rerun returned `VERIFIED`. The next bounded Work Order
+`RS-WO-002-03` is defined and `GATED` for the authoritative workflow domain core. One registered Task has one Task
 File. A Work Order is only the current dispatch brief under that Task; Builder, Verifier, Repairer,
 and Integrator are sequential checkpoints, not additional registered Tasks. Do not turn this file
 into a backlog of future Work Orders or a second active-work register. The parent remains

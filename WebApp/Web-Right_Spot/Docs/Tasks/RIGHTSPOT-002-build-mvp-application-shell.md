@@ -16,10 +16,10 @@ The implementation must follow the accepted business rules in
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Establish the runnable local foundation as the first executable checkpoint
-  toward the accepted tenant-to-agent Happy Path.
-- Next gate: Reconcile the verified foundation evidence and Git baseline, then define and gate
-  only the next bounded workflow-core checkpoint before opening any product writer.
+- Current increment: Implement the authoritative workflow domain core as the next executable
+  checkpoint toward the accepted tenant-to-agent Happy Path.
+- Next gate: Dispatch the gated `RS-WO-002-03` domain-core Builder against the committed verified
+  foundation, then require an independent Verifier before opening persistence, API, or UI work.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
 - Process authority: ADR-RS-0004 and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -34,12 +34,12 @@ product workflow. Later implementation, verification, repair, and integration re
 checkpoints inside this Task File, not a second set of registered Tasks or a backlog of independent
 Work Orders.
 
-The current increment is one bounded Builder Work Order followed by one independent Verifier
-checkpoint for the runnable foundation. The main thread completed the Builder preflight and
-dispatched that Work Order. The Builder stopped after returning `READY_FOR_VERIFICATION`; the first
-Verifier attempt reproduced all functional checks but returned `BLOCKED` because its assertion wrote
-to an OS temp path outside the declared RightSpot output boundary. The corrected rerun returned
-`VERIFIED`; no code writer or repairer is active.
+The runnable foundation increment is complete: the Builder stopped after returning
+`READY_FOR_VERIFICATION`, the first Verifier attempt was procedurally `BLOCKED` because its assertion
+wrote to an OS temp path outside the declared RightSpot output boundary, and the corrected rerun
+returned `VERIFIED` against the unchanged source/runtime identity. The next increment is the bounded
+`RS-WO-002-03` domain-core Builder Work Order; it is gated but not yet assigned. No code writer or
+repairer is active.
 
 Do not send this parent Task's full objective to one Builder. Do not treat a worker result as
 verification, integration, or parent-Task closure.
@@ -48,8 +48,9 @@ verification, integration, or parent-Task closure.
 
 - **Dispatch state:** `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02`
   attempt returned `BLOCKED` on a verification-procedure boundary, and the corrected rerun returned
-  `VERIFIED` at the unchanged execution baseline. Builder, Verifier, Repairer, and Integrator are
-  sequential checkpoints of this Task, not pre-registered child Tasks.
+  `VERIFIED` at the unchanged execution baseline. `RS-WO-002-03` is the next `GATED` domain-core
+  Builder checkpoint. Builder, Verifier, Repairer, and Integrator are sequential checkpoints of this
+  Task, not pre-registered child Tasks.
 - **Baseline:** The actual repository root is `WebMCP_Challenge`; the RightSpot documentation and
   Builder foundation output are untracked in the worktree. The source baseline is identified by
   exact implementation-path hashes rather than `HEAD` alone.
@@ -435,10 +436,98 @@ and persisted by the existing Verifier task. The corrected rerun returned `VERIF
 integration checkpoint is opened for the foundation. This was a sequential rerun of the same Work
 Order, not a new registered Task or Task File.
 
+### RS-WO-002-03 — Implement the authoritative workflow domain core
+
+**Parent task:** `RIGHTSPOT-002`  
+**Role:** Builder  
+**Pre-dispatch state:** `GATED` — the runnable foundation is independently verified and committed as `b06bd85`  
+**Execution state:** `GATED`  
+**Owner:** Main RightSpot thread; one assigned supporting Codex task performs the bounded implementation  
+**Objective:** Implement a transport- and persistence-agnostic TypeScript workflow kernel that
+enforces the accepted RightSpot Viewing Request state machine, availability lifecycle, role
+authorization, revision/generation guards, bounded inputs, idempotent completed commands, audit
+facts, and tenant/agent projections. The kernel must be directly testable without Next.js, React,
+SQLite, a browser, a session provider, or an external service.
+**Next gate:** Builder returns `READY_FOR_VERIFICATION`, `NEEDS_REPAIR`, or `BLOCKED`; the main thread
+then dispatches a separate read-only domain Verifier. No persistence, API, session, or UI Work Order
+opens before this checkpoint is independently verified.
+
+#### Scope and implementation contract
+
+The Builder may create only these authored paths:
+
+- `WebApp/Web-Right_Spot/src/server/domain/types.ts`;
+- `WebApp/Web-Right_Spot/src/server/domain/errors.ts`;
+- `WebApp/Web-Right_Spot/src/server/domain/workflow.ts`;
+- `WebApp/Web-Right_Spot/src/server/domain/projections.ts`; and
+- `WebApp/Web-Right_Spot/tests/domain/workflow.test.ts`.
+
+The Builder must not modify the foundation files, package manifests, lockfile, configuration,
+existing foundation test, canonical documents, or Git index. Generated output may occur only in the
+existing ignored RightSpot paths. No new dependency is authorized.
+
+The kernel should expose a small serializable state and command boundary, with an injected `now`
+value and explicit actor identity/role. Exact function names may be chosen by the Builder, but the
+implementation must make these facts observable in tests:
+
+- `TENANT_DRAFT` → `REQUEST_SUBMITTED` requires the assigned tenant, a published listing, the
+  expected listing/request version and fixture generation, one to three ordered preferred times,
+  and a bounded tenant note;
+- the assigned agent may move `REQUEST_SUBMITTED` → `AGENT_REVIEWING`;
+- agent preparation may create or replace a bounded slot proposal or decline response while staying
+  in `AGENT_REVIEWING`; preparation does not hold a slot or expose a consequence;
+- sending a prepared available slot moves to `SLOT_PROPOSED`, holds that exact slot, and sets a
+  deterministic 24-hour expiry from the injected clock;
+- sending a prepared decline moves to terminal `AGENT_DECLINED` with an optional bounded
+  tenant-facing reason;
+- the owning tenant may confirm an unexpired proposal (`VIEWING_CONFIRMED`) or decline it
+  (`TENANT_DECLINED`), with the exact held slot confirmed or released;
+- an expired proposal moves to `EXPIRED` and releases its held slot on the relevant domain read/write
+  evaluation; no scheduler is introduced;
+- no terminal state transitions, arbitrary state values, unavailable-slot substitution, or
+  preparation-as-consequence are allowed;
+- every successful state-changing command increments the request version once and emits one
+  non-sensitive audit fact; repeated completion of the same command identifier is idempotent and
+  does not add a second audit fact, while a conflicting command fails without mutation;
+- stale request versions and stale fixture generations fail visibly without overwriting newer state;
+- actor role, tenant ownership, agent assignment, current state, input bounds, and slot/listing
+  ownership are checked by the kernel rather than delegated to a future UI; and
+- the tenant projection excludes agent-only review notes and internal fields, while the agent
+  projection excludes credentials, raw private context, and unrelated requests.
+
+The domain error surface must distinguish at least `FORBIDDEN`, `NOT_FOUND`, `VALIDATION_FAILED`,
+`STALE_VERSION`, `FIXTURE_GENERATION_CONFLICT`, `INVALID_TRANSITION`, `SLOT_UNAVAILABLE`, and
+`EXPIRED`. Errors must be serializable and must not contain stack traces, credentials, or hidden
+integration context.
+
+#### Required focused verification
+
+The Builder must run the exact target Node.js `v24.20.0` and report:
+
+- `npm run typecheck`;
+- existing foundation `npm test` with its result kept separate; and
+- `./node_modules/.bin/tsx --test tests/domain/workflow.test.ts`.
+
+The focused tests must cover the primary proposal path, agent-decline branch, tenant-decline branch,
+expiry/release, unavailable-slot failure, stale version/generation failure, invalid role/state,
+preparation versus send, bounded input validation, role-private projection exclusion, audit/version
+continuity, and repeated completed-command idempotency. No browser, SQLite schema, route, login,
+deployment, Cloud Receiver, WebMCP, Redis, or WebRTC claim is part of this Work Order.
+
+#### Stop conditions and report
+
+Stop and return `BLOCKED` if the accepted business rules or domain authority need to change, an exact
+path cannot be kept isolated, a new dependency or persistence/API decision is required, or another
+writer appears. Do not add fixtures to the SQLite foundation, wire the kernel into a route, implement
+authentication, or start the tenant/agent UI. Return a supporting-thread report beginning with
+`READY_FOR_VERIFICATION`, `NEEDS_REPAIR`, or `BLOCKED`, listing exact changed/generated paths,
+commands/results, skipped claims, residual risks, and the boundary of the claim. Do not edit canonical
+documents, commit, push, deploy, or start the Verifier.
+
 ## Parent objective — not the current Builder scope
 
-The following is the complete parent-Task outcome. It must not be sent to the Verifier as a product
-implementation assignment; only the bounded foundation checkpoint is dispatchable at this stage.
+The following is the complete parent-Task outcome. It must not be sent to one Builder or Verifier as a
+single assignment; only the bounded current Work Order is dispatchable at each sequential gate.
 
 Implement the smallest stable RightSpot application that completes the accepted ordinary human
 Happy Path: tenant discovery and request submission, agent review and response, then tenant
@@ -467,11 +556,11 @@ confirmation or decline.
 
 ## Next gate
 
-The runnable foundation is independently verified. Reconcile the evidence and Git baseline, then
-define only the next bounded workflow-core checkpoint. The parent Task must remain `in_progress`
-until the staged implementation, independent verification, integration, and canonical writeback
-gates for the complete ordinary application slice are complete without adding deferred WebRTC/Redis
-infrastructure.
+The runnable foundation is independently verified and `RS-WO-002-03` is the gated next increment.
+Dispatch only this bounded domain-core Builder, then independently verify it before opening
+persistence/API/UI work. The parent Task must remain `in_progress` until the staged implementation,
+independent verification, integration, and canonical writeback gates for the complete ordinary
+application slice are complete without adding deferred WebRTC/Redis infrastructure.
 
 ## Closure evidence
 
