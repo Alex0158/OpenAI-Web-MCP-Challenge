@@ -52,7 +52,7 @@ their route, component, CSS, test, and integration ownership is explicit.
 ## RS-WO-007-01 — Decompose the Field Desk implementation boundary
 
 **Role:** Architecture/UI Advisor  
-**Status:** `READY_FOR_REVIEW`  
+**Status:** `ACCEPTED_WITH_REVISIONS`  
 **Parallelization:** `READ_ONLY_ADVISORY` — may run beside independent verification; it must not edit
   the frozen navigation candidate or any authored source.  
 **Risk profile:** `Standard` — bounded implementation decomposition with no behavior mutation.  
@@ -208,7 +208,7 @@ asset, or behavior change.
 ## RS-WO-007-03 — Revalidate the post-CSS tenant/agent parallel execution boundary
 
 **Role:** Parallelism/Architecture Advisor  
-**Status:** `READY_FOR_REVIEW`  
+**Status:** `ACCEPTED_WITH_REVISIONS`  
 **Parallelization:** `READ_ONLY_ADVISORY` — may inspect the live source while the CSS Builder works;
 it must not write source or canonical records.  
 **Risk profile:** `Standard` — execution-boundary review only; no product behavior change.  
@@ -251,6 +251,139 @@ Worktrees when their source identity and dirty-state boundary are reliable; othe
 temporary isolated copies with explicit source manifests; if neither is safe, serialize the role
 slices in the main checkout. The proposed future role Work Orders remain gated and are not yet
 registered or dispatched by this review.
+
+## RS-WO-007-04 — Refine the tenant Field Desk surfaces
+
+**Role:** Persistent Codex task/thread Builder → later independent Verifier  
+**Status:** `READY_TO_DISPATCH`  
+**Parallelization:** `CONTRACT_PARALLEL_ROLE_UI` — may run in parallel with `RS-WO-007-05` only in
+the explicitly isolated Worktree recorded by the main thread; the shared CSS, shell, contracts, and
+runtime authority are read-only.  
+**Risk profile:** `Standard` — visual refinement constrained to existing tenant UI modules.  
+**Dependency:** `RS-WO-007-02` is independently verified and integrated at product commit `89a50c7`;
+the dispatch baseline is the clean product/process commit immediately preceding activation and must
+be recorded with the final persistent task/thread receipt.  
+**Ownership:** The Builder owns only the four tenant UI paths below. The main thread owns all
+canonical writeback, integration, and closure.  
+
+### Builder objective
+
+Apply the accepted RightSpot Field Desk direction to the existing tenant discovery, listing-detail,
+and request-dashboard surfaces so the local rental Happy Path feels calm, credible, practical, and
+human-operated rather than AI-generated. Preserve the existing markup contracts and every current
+tenant behavior. This is a visual refinement slice, not a feature or workflow redesign.
+
+### Allowed write set
+
+- `src/ui/tenant/tenant-discovery-page.tsx`
+- `src/ui/tenant/tenant-listing-page.tsx`
+- `src/ui/tenant/tenant-request-page.tsx`
+- `src/ui/tenant/tenant.module.css`
+
+### Required read set
+
+- This Task File and accepted ADR-RS-0009.
+- `Docs/00-current-status.md`, `Docs/03-system-design.md`, `Docs/05-api-and-integration-contracts.md`,
+  and `Docs/06-validation-and-evidence.md`.
+- `src/ui/shared/` and the tenant route wrappers under `app/tenant/`.
+- `src/ui/tenant/tenant-api.ts`, existing package scripts, and current tests.
+- The integrated `app/globals.css` candidate and the `RS-WO-007-03` ownership proposal.
+
+### Required behavior and acceptance
+
+- Preserve listing reads, filter validation, listing-detail navigation, draft editing, explicit
+  Viewing Request submission, request status, refresh/retry behavior, and all existing role/session
+  boundaries.
+- Improve hierarchy, spacing, grouping, action clarity, empty/loading/error feedback, listing-card
+  readability, and request-dashboard scanning using the existing Field Desk tokens and local CSS.
+- Preserve accessible labels, semantic headings, visible keyboard focus, usable control sizing,
+  responsive behavior at approximately `390x844`, `768x1024`, and `1440x900`, and reduced-motion
+  behavior. Do not introduce remote assets or a visual dependency.
+- Run the relevant typecheck/build and focused existing checks; record visual claims that require the
+  later independent Verifier rather than claiming them from static inspection.
+
+### Forbidden scope and stop conditions
+
+- Do not modify `app/globals.css`, `src/ui/shared/`, route wrappers, `tenant-api.ts`, agent files,
+  server/domain/persistence code, contracts, tests, fixtures, package metadata, configuration,
+  assets, database files, or any documentation.
+- Do not add Favourites, Information Requests, authentication, chat, maps, payments, WebMCP, Cloud
+  Receiver, WebRTC, new routes, new APIs, or new product behavior.
+- Stop and return `NEEDS_REVIEW` if the visual result requires shared DOM, a contract change, an
+  asset/dependency, or a behavior fix outside this write set.
+
+### Builder return gate
+
+Return `READY_FOR_VERIFICATION` with exact changed paths, source identity, diff summary, checks,
+known skipped browser evidence, and residual risks. Do not commit, modify the index, or start the
+Verifier phase.
+
+## RS-WO-007-05 — Refine the agent Field Desk surfaces
+
+**Role:** Persistent Codex task/thread Builder → later independent Verifier  
+**Status:** `READY_TO_DISPATCH`  
+**Parallelization:** `CONTRACT_PARALLEL_ROLE_UI` — may run in parallel with `RS-WO-007-04` only in
+the explicitly isolated Worktree recorded by the main thread; the shared CSS, shell, contracts, and
+runtime authority are read-only.  
+**Risk profile:** `Standard` — visual refinement constrained to existing agent UI modules.  
+**Dependency:** `RS-WO-007-02` is independently verified and integrated at product commit `89a50c7`;
+the dispatch baseline is the clean product/process commit immediately preceding activation and must
+be recorded with the final persistent task/thread receipt.  
+**Ownership:** The Builder owns only the three agent UI paths below. The main thread owns all
+canonical writeback, integration, and closure.  
+
+### Builder objective
+
+Apply the accepted RightSpot Field Desk direction to the existing agent queue and request workspace
+so a property agent can scan work, understand the current state, prepare a bounded response, and see
+the consequential send action clearly. Preserve the current workflow authority and human decision
+boundary. This is a visual refinement slice, not an operations dashboard or feature expansion.
+
+### Allowed write set
+
+- `src/ui/agent/agent-dashboard-page.tsx`
+- `src/ui/agent/agent-request-page.tsx`
+- `src/ui/agent/agent.module.css`
+
+### Required read set
+
+- This Task File and accepted ADR-RS-0009.
+- `Docs/00-current-status.md`, `Docs/03-system-design.md`, `Docs/05-api-and-integration-contracts.md`,
+  and `Docs/06-validation-and-evidence.md`.
+- `src/ui/shared/` and the agent route wrappers under `app/agent/`.
+- `src/ui/agent/agent-api.ts`, existing package scripts, and current tests.
+- The integrated `app/globals.css` candidate and the `RS-WO-007-03` ownership proposal.
+
+### Required behavior and acceptance
+
+- Preserve queue reads, request-detail reads, review preparation, slot selection, tenant-facing note,
+  private review note, explicit send action, conflict refresh, retry behavior, and every current
+  role/privacy boundary.
+- Improve hierarchy, spacing, state distinction, action sequencing, availability scanning, loading/
+  error feedback, and the separation between preparation and consequential send using the existing
+  Field Desk tokens and local CSS.
+- Preserve accessible labels, semantic headings, visible keyboard focus, usable control sizing,
+  responsive behavior at approximately `390x844`, `768x1024`, and `1440x900`, and reduced-motion
+  behavior. Do not introduce remote assets or a visual dependency.
+- Run the relevant typecheck/build and focused existing checks; record that the current fixture may
+  not provide an assigned request for every browser path.
+
+### Forbidden scope and stop conditions
+
+- Do not modify `app/globals.css`, `src/ui/shared/`, route wrappers, `agent-api.ts`, tenant files,
+  server/domain/persistence code, contracts, tests, fixtures, package metadata, configuration,
+  assets, database files, or any documentation.
+- Do not add Agent Operations Insights, Favourites, Information Requests, authentication, chat,
+  WebMCP, Cloud Receiver, WebRTC, new routes, new APIs, or new product behavior.
+- Do not hide, automate, or merge the human send decision into preparation. Stop and return
+  `NEEDS_REVIEW` if the visual result requires shared DOM, a contract change, an asset/dependency, or
+  a behavior fix outside this write set.
+
+### Builder return gate
+
+Return `READY_FOR_VERIFICATION` with exact changed paths, source identity, diff summary, checks,
+known skipped browser evidence, and residual risks. Do not commit, modify the index, or start the
+Verifier phase.
 
 ## Acceptance criteria for this task
 

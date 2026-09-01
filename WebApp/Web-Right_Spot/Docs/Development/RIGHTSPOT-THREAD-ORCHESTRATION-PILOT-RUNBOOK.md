@@ -120,6 +120,29 @@ thread must classify the dependency before deciding serial or parallel execution
 The parallelization decision must answer whether each worker can produce a useful result against a
 stable read contract, not whether all later integration work has disappeared.
 
+### 3.2 Dispatch channel and continuation rule
+
+The default execution channel for a formal RightSpot Work Order is a persistent supporting Codex
+task/thread. A Builder, Verifier, Repairer, or formal Advisor that needs a durable identity,
+independent source state, a later handoff, or a possible follow-up must run in that task/thread. Use
+`create_thread` for a newly authorized execution task and `send_message_to_thread` only for an
+identity-matched existing task. The task/thread is an execution container; the RightSpot Task File
+remains the project ledger and canonical source of scope.
+
+A transient subagent may be used only for a bounded auxiliary activity such as a short read-only
+preflight, one-off comparison, or disposable analysis that does not own source, verification, repair,
+integration, or a formal evidence gate. Its output may inform the main thread, but it does not replace
+the formal task/thread identity, Work Order report, or independent verification record. Historical
+pilot workers that used another execution mechanism remain valid evidence for their completed
+checkpoints and do not change this forward-looking default.
+
+Dispatch is asynchronous. After sending a prompt, the main thread continues non-overlapping PM work:
+queue audit, proposal classification, architecture review, next Work Order design, safe read-only
+checks, and preparation of later integration. It should use a bounded wait only when a result is a
+hard dependency for the next action. A blocker in one worker pauses that lane, not the parent Goal;
+the main thread records the blocker and continues every safe independent lane. Source freeze and
+ownership rules still prohibit conflicting writes while a Verifier is active.
+
 ## 4. Authority and source of truth
 
 ### 4.1 Authority hierarchy
