@@ -143,6 +143,44 @@ hard dependency for the next action. A blocker in one worker pauses that lane, n
 the main thread records the blocker and continues every safe independent lane. Source freeze and
 ownership rules still prohibit conflicting writes while a Verifier is active.
 
+### 3.3 Decision gates are not blanket implementation gates
+
+A pending feature decision does not automatically prohibit every preparatory or independently
+bounded implementation slice. The main thread must split the feature into the narrowest useful
+stages and gate each stage against the decision it actually needs:
+
+1. **Authority and contract stage:** resolve product authority, ownership, authorization, lifecycle,
+   privacy, failure semantics, and versioning. This stage may be read-only analysis, an ADR, or a
+   contract-only Work Order. It must not silently invent unresolved policy.
+2. **Neutral seam stage:** define the smallest typed contract, port, selector, event shape, or
+   adapter boundary that is already supported by accepted authority. It may be implemented before
+   the complete feature when its invariants are explicit and its exact write set is isolated.
+3. **Bounded module stage:** implement one domain, application, persistence, or presentation slice
+   against the frozen contract. The slice must have its own acceptance claim and must state which
+   integration behavior remains deferred.
+4. **Adapter and coupling stage:** connect independently completed slices through the named contract.
+   Shared semantic files, routes, persistence stores, and end-to-end behavior are integrated by a
+   serialized main-thread-owned Work Order or by explicitly isolated Worktrees.
+5. **Verification stage:** verify the frozen coupled candidate and its affected contracts. A
+   Builder may be complete while the parent feature remains `integration_pending` or
+   `verification_pending`.
+
+The main thread owns clarification. It should decide low-risk presentation and implementation
+details from existing authority, record material assumptions, and ask the human only when the
+choice changes product authority, user-visible policy, PII/retention, external side effects, or an
+irreversible data decision. A worker must not guess those choices.
+
+“Open for later coupling” means that the contract is stable and versionable while its producer or
+consumer is not yet connected; it does not mean that the contract is semantically undefined. Every
+such seam must state its fields, ownership, authorization, lifecycle, error/empty behavior,
+versioning, and explicit non-goals. Unsupported future behavior must be visible as deferred or
+unavailable rather than represented by guessed defaults or fake success.
+
+The main thread should therefore dispatch useful contract, seam, module, test, or read-only
+projection work whenever the relevant boundary is stable, even if the parent feature is not yet
+complete. It must serialize only the unresolved authority or shared-write boundary, not the entire
+feature by default.
+
 ## 4. Authority and source of truth
 
 ### 4.1 Authority hierarchy
