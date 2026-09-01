@@ -101,6 +101,25 @@ preflight, research activity, or implementation slice that only advances the cur
 under the existing Task File. A dependent stage remains serialized until its prerequisite contract,
 source, or evidence is stable.
 
+“Independently executable” does not mean “has no logical relationship to any other work.” The main
+thread must classify the dependency before deciding serial or parallel execution:
+
+- **Hard dependency:** the worker cannot make a meaningful bounded change until an upstream output,
+  authority decision, schema, or contract exists. Keep it serial.
+- **Contract dependency:** the upstream shape is documented and stable, while its implementation or
+  verification is still in progress. A consumer may work in parallel against that explicit contract,
+  with integration and any end-to-end claim remaining gated.
+- **Integration dependency:** two outputs must later be coupled, but each can be built and tested in
+  isolation. Run them in parallel and serialize only the integration boundary.
+- **Evidence dependency:** a Verifier must use a frozen source snapshot, but may run in parallel with
+  a disjoint Builder or read-only Advisor using another isolated snapshot.
+- **Shared-write dependency:** workers touch the same mutable path or semantic contract. Partition
+  ownership, serialize the writers, or use isolated Worktrees followed by explicit main-thread
+  integration; never rely on simultaneous edits to a shared tree.
+
+The parallelization decision must answer whether each worker can produce a useful result against a
+stable read contract, not whether all later integration work has disappeared.
+
 ## 4. Authority and source of truth
 
 ### 4.1 Authority hierarchy
@@ -213,8 +232,12 @@ Reviewer identifies risks and required changes but does not silently modify the 
 The factory may use specialist variants when their output has a clear decision or evidence boundary:
 
 - **Advisor:** produces bounded, evidence-backed product, architecture, process, or code-quality
-  analysis. An Advisor returns facts, inferences, alternatives, and a recommendation; it does not
-  become a second decision authority or edit product source by default.
+  analysis. An Advisor returns facts, inferences, alternatives, a recommendation, dependency
+  classification, and a proposed next gate; it does not become a second decision authority or edit
+  product source by default.
+- **Architecture Advisor:** is an Advisor specialization that maps module, route, page, contract,
+  ownership, and integration boundaries. It may propose parallel Work Orders, but the main thread
+  must review and accept the proposal before those Work Orders are dispatched.
 - **UI/UX reviewer:** evaluates the tenant/agent human flow, information hierarchy, accessibility
   baseline, and demo clarity. It may recommend changes, but does not silently expand product scope.
 - **QA/browser verifier:** exercises the actual user-facing route and reports reproducible browser
@@ -250,9 +273,23 @@ has multiple files or because more threads are available.
 
 ### 6.3 Do not parallelize dependent work
 
-Do not dispatch a consumer before its contract, schema, fixture, or authority is stable. Do not
-run verification while a writer is still changing the same source. Do not dispatch two writers to
-the same shared contract unless the file ownership is explicit and mechanically isolated.
+Do not dispatch a consumer before its contract, schema, fixture, or authority is stable. Do not run
+verification while a writer is still changing the same source snapshot. Do not dispatch two writers
+to the same shared contract without explicit ownership and mechanical isolation.
+
+Do not treat a later integration dependency as a hard implementation dependency. A Builder may
+implement a bounded consumer against a stable documented contract while the producer is being
+verified, provided that:
+
+1. the consumer's read contract is explicit and versionable;
+2. its exact mutable paths are disjoint from the producer and verifier source snapshots;
+3. the Work Order states that integration and end-to-end claims remain pending;
+4. a contract change has a defined impact and rework path; and
+5. the main thread owns the eventual coupling and source reconciliation.
+
+Separate tenant and agent pages are therefore candidates for parallel work, not automatic proof of
+parallel safety. The decision depends on the route/view contract, shared-shell ownership, test
+surface, and integration boundary.
 
 ### 6.4 Continue the parent goal when a checkpoint is blocked
 
@@ -337,6 +374,8 @@ Each Work Order must state:
 - package/runtime permissions and any approved dependency set;
 - declared read, worker-write, main-thread-writeback, auxiliary process-only, forbidden, and
   generated sets;
+- parallelization classification (`SERIAL`, `CONTRACT_PARALLEL`, `READ_ONLY_PARALLEL`, or
+  `INTEGRATION_SERIAL`) and the named integration owner/order;
 - execution mode/worktree and supporting-task identity;
 - affected roles, modules, state, data, and claims;
 - explicit non-goals;
@@ -357,7 +396,7 @@ Project-authored Work Orders must be written in English. Use this structure:
 **Parent task:** <RightSpot task>
 **Role:** Builder | Verifier | Repairer | Integrator | Reviewer | Advisor | UI/UX reviewer | QA/browser verifier
 **Pre-dispatch status:** DRAFT | GATED
-**Execution state:** NOT_STARTED | ASSIGNED | IN_PROGRESS | READY_FOR_VERIFICATION | NEEDS_REPAIR | BLOCKED | VERIFIED | INTEGRATED
+**Execution state:** NOT_STARTED | ASSIGNED | IN_PROGRESS | READY_FOR_REVIEW | READY_FOR_VERIFICATION | NEEDS_REPAIR | BLOCKED | VERIFIED | INTEGRATED
 **Owner:** <main thread or supporting task>
 **Dispatch state:** <not dispatched | dispatched at <source identity>>
 **Next gate:** <condition that returns control to the main thread>
@@ -579,6 +618,26 @@ silently commit unrelated work. If ownership, changed paths, source inputs, or b
 reconstructed confidently, discard neither the candidate nor its evidence; instead keep the
 checkpoint blocked and use a fresh Builder from a clean, explicitly identified baseline.
 
+### 8.1.5 Parallelization gate
+
+Before activating more than one Work Order in a dependency set, the main thread records:
+
+1. the dependency class for each pair of Work Orders: hard, contract, integration, evidence, or
+   shared-write;
+2. the stable read contract or frozen source each worker will use;
+3. each worker's exact mutable paths and the proof that those paths do not overlap;
+4. the shared files, semantic inputs, generated outputs, and canonical sections that remain owned by
+   one writer;
+5. the integration owner, order, conflict rule, and condition for accepting each output;
+6. the claim that may be made while one output is still unverified; and
+7. the local blocker and repair path if the producer contract changes.
+
+The gate passes when every active worker can make bounded progress without mutating another worker's
+source or semantic inputs, and when the main thread can integrate or re-baseline the outputs without
+guessing. A read-only Architecture Advisor and a Verifier may pass this gate together. A tenant UI
+Builder and an agent UI Builder may pass it when their route/component/test ownership is explicit,
+even if their eventual API integration remains sequential.
+
 ### 8.2 New supporting Codex task/thread activation
 
 A new supporting Codex task/thread does not inherit the main thread's complete conversation. It is
@@ -791,6 +850,7 @@ Use these states for execution records:
 | `ASSIGNED` | Work Order is approved and dispatched | Worker establishes context |
 | `IN_PROGRESS` | Worker is executing within scope | No parallel overlap on owned paths |
 | `READY_FOR_VERIFICATION` | Worker believes acceptance criteria and self-check pass | Stop; wait for independent verification |
+| `READY_FOR_REVIEW` | Read-only Advisor or Reviewer completed its bounded proposal or review | Stop; main thread reviews the evidence and recommendation |
 | `NEEDS_REPAIR` | A confirmed defect blocks acceptance | Main diagnoses and sends one repair scope |
 | `BLOCKED` | Authority, dependency, environment, or external input prevents progress | Stop and report the blocker |
 | `VERIFIED` | Independent verifier reproduced the required result | Main decides integration gate |
@@ -1166,11 +1226,18 @@ checks. The Verifier reports pass/fail without repairing the shell.
 If a code defect is confirmed, send one bounded repair prompt to the responsible Builder. If the
 issue is architectural, environmental, or unknown, stop for main-thread triage instead.
 
-### Phase 4 — Contract stabilization
+### Phase 4 — Contract stabilization and bounded parallel delivery
 
-After the foundation and shared contracts are verified, decide whether tenant and agent surfaces
-have genuinely independent file and test boundaries. Do not parallelize them merely because they
-are separate screens.
+After the foundation and relevant contracts are documented or frozen, the main thread actively maps
+the ordinary user journeys by persona, page, route, component, and application boundary. Separate
+screens alone do not prove parallel safety, but tenant and agent interfaces are valid parallel
+candidates when their route/component/test ownership is disjoint, shared-shell ownership is named,
+and the integration contract is explicit.
+
+A bounded Architecture Advisor may run read-only in parallel with a Verifier to propose the next
+parallel set. The main thread reviews that proposal before dispatching the corresponding Builders.
+Builders may work against a stable API or view contract while its producer is being verified; the
+result remains unintegrated until the producer evidence and the main-thread coupling checks pass.
 
 ### Phase 5 — Coupling and closure
 

@@ -121,6 +121,14 @@ research activity, or implementation slice that only advances the current parent
 bounded Work Order under that parent. A dependent stage remains serialized until its prerequisite
 contract, source, or evidence is stable.
 
+For this decision, “independently executable” means “able to make bounded progress against a stable
+read contract with disjoint ownership,” not “having no logical relationship to other work.” A
+contract or integration dependency may therefore be parallelized when the source baseline, mutable
+paths, integration owner, and pending claim boundary are explicit. A hard dependency or overlapping
+shared write remains serialized. A read-only Advisor may propose such a decomposition, but the main
+thread retains the final decision and must accept the proposal before dispatching the resulting
+Builders.
+
 ### 5. Separate completion states
 
 A worker result must never be treated as complete product delivery merely because its task stopped.

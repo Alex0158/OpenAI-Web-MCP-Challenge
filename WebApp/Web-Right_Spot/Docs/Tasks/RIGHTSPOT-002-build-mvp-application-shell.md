@@ -16,10 +16,10 @@ The implementation must follow the accepted business rules in
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Implement and independently verify the bounded `RS-WO-002-05` tenant entry and
-  listing discovery API from the verified `RS-WO-002-04` persistence/application boundary.
-- Next gate: Complete the dedicated `RS-WO-002-05` Builder checkpoint, freeze its output, and send
-  it for independent verification; do not open the full API/UI surface as one assignment.
+- Current increment: Independently verify the Builder-delivered `RS-WO-002-05` tenant entry and
+  listing discovery API while preparing the first bounded parallel interface decomposition.
+- Next gate: Dispatch the frozen `RS-WO-002-05` Verifier and the read-only `RS-WO-002-06`
+  Architecture Advisor in parallel; review both outputs before opening tenant/agent UI Builders.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -865,7 +865,7 @@ documents, commit, push, deploy, or start the Verifier.
 **Parent task:** `RIGHTSPOT-002`  
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — `RS-WO-002-04` is independently verified against frozen source `28105e4d`; the synthetic listing discovery decision is accepted in ADR-RS-0007  
-**Execution state:** `ASSIGNED` — dedicated Builder task created; activation confirmation follows the canonical writeback  
+**Execution state:** `READY_FOR_VERIFICATION` — dedicated Builder returned the required handoff state and the candidate is frozen for independent verification  
 **Owner:** Main RightSpot thread; one dedicated supporting task performs each bounded checkpoint  
 **Risk profile:** `Assured` — cross-layer read authority, demo session boundary, and Next.js route adapters  
 **Objective:** Make the first tenant-facing entry and discovery capability runnable through a bounded
@@ -876,9 +876,39 @@ commands, agent operations, UI pages, or external authentication. This Work Orde
 **Dispatch state:** Dispatched from clean detached source baseline `9ff14dead8f5dda77fa53e250029cdee2c45f925`;
 the dedicated Worktree is `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-05-builder`, whose root is
 the Git root and whose initial state is detached and clean. The supporting-task identity is dedicated
-to this Work Order and is not an existing-task follow-up.  
-**Next gate:** Complete the Builder checkpoint, then freeze its output for independent verification.
-No request API, agent API, or UI Work Order opens from this brief alone.
+to this Work Order and is not an existing-task follow-up. The Builder candidate was committed in that
+Worktree at `eb659f4` and integrated by the main thread at T2 code commit `de169ce`; no independent
+verification or parent closure claim is made.  
+**Next gate:** Dispatch a dedicated independent Verifier against the frozen candidate, then classify
+the result before integration. The read-only `RS-WO-002-06` Architecture Advisor may run in parallel
+against the same stable candidate; no tenant/agent UI Builder opens from this brief alone.
+
+#### Builder handoff and T2 source freeze
+
+The dedicated Builder returned `READY_FOR_VERIFICATION`. The main thread inspected the actual
+Worktree and confirmed exactly the 14 declared worker paths changed, with no package, persistence,
+canonical-document, UI, external-service, or forbidden-path change. The Builder candidate is now
+frozen as local code source `de169ce` on `main` (originating from worker commit `eb659f4`); the
+canonical lifecycle writeback is owned by the main thread.
+
+Builder evidence recorded for the handoff:
+
+- Node.js `v24.20.0` and npm `11.19.0` using the approved absolute runtime path;
+- `npm ci --no-audit --no-fund` passed with 33 packages installed;
+- `npm run typecheck` passed;
+- the existing foundation aggregate passed `6/6`;
+- focused domain/application/API coverage passed `35/35` after one over-specific test-message
+  assertion was narrowed to the public status/code contract;
+- `npm run build` passed and recognized all three dynamic routes;
+- built-server smoke passed for tenant session `200`, filtered collection `200`, detail `200`,
+  agent access `403`, and no assignment exposure; and
+- `git diff --check` and corrected sensitive/CJK scope scans passed.
+
+The initial sensitive-scan attempt used a zsh-special variable and executed no scan or write; the
+corrected read-only scan passed. This is a Builder handoff deviation, not independent evidence.
+The claim remains limited to the local discovery/session API candidate; it does not claim independent
+verification, browser/UI behavior, request or agent operations, deployment, WebMCP, Cloud Receiver,
+Redis, WebRTC, or parent-task closure.
 
 #### Scope and ownership
 
@@ -992,6 +1022,73 @@ authoritative and tenant-safe, a declared path is already owned by another write
 runtime/output boundary cannot be maintained. Do not weaken role checks, expose the full workflow
 snapshot, silently substitute a listing, or add a compatibility fallback.
 
+### RS-WO-002-06 — Design the parallel tenant/agent interface execution set
+
+**Parent task:** `RIGHTSPOT-002`  
+**Role:** Architecture Advisor  
+**Pre-dispatch status:** `GATED` — the `RS-WO-002-05` candidate is frozen at T2 code commit `de169ce`; the proposal must be reviewed by the main thread before any UI Builder dispatch  
+**Execution state:** `GATED` — not yet dispatched  
+**Parallelization:** `READ_ONLY_PARALLEL` with the `RS-WO-002-05` Verifier; no authored source write  
+**Owner:** Main RightSpot thread; one dedicated supporting task produces the bounded proposal  
+**Risk profile:** `Standard` — cross-surface decomposition and ownership planning without code mutation  
+**Objective:** Produce an evidence-backed decomposition of the ordinary RightSpot Happy Path into
+bounded tenant-interface, agent-interface, shared-shell, API, and integration Work Orders. Classify
+each dependency as hard, contract, integration, evidence, or shared-write; identify exact route,
+page, component, test, and application ownership; and recommend the first safe parallel execution
+set for main-thread review.
+**Next gate:** Main-thread adversarial review accepts, revises, or rejects the proposal. No Builder
+may be dispatched from this brief until the main thread records the accepted boundaries and contracts.
+
+#### Scope and ownership
+
+**Read set:** repository instructions and Engineering controls; RightSpot `RUNBOOK.md`; the Pilot
+Runbook; `Docs/00-current-status.md`; the parent Task File; Requirements; System Design; Domain and
+Data Model; API and Integration Contracts; Validation and Evidence; ADR-RS-0001 through ADR-RS-0007;
+current source/tests at T2 code commit `de169ce`; and the accepted MVP Happy Path.
+
+**Worker write set:** none. The Advisor returns a proposal in its supporting-task report and must
+not edit code, tests, package files, canonical documents, ADRs, the Task File, the Runbook, the Git
+index, or any external path.
+
+**Main-thread writeback set:** this Work Order's status/evidence section and, only after review,
+the appropriate Task File, Runbook, ADR, roadmap, or non-authoritative design record sections.
+
+**Forbidden set:** implementation, route/page/component creation, API contract mutation, domain or
+schema mutation, fixture duplication, UI mock data becoming business authority, dispatching another
+task, Git commit/push, deployment, external communication, and Cloud Receiver, WebMCP, Redis,
+WebRTC, production-auth, or unrelated commercial scope.
+
+**Generated set:** none; no authored or generated output is needed beyond the supporting-task report.
+
+#### Proposal contract
+
+The Advisor must return:
+
+- verified current-state facts and their source identity;
+- tenant and agent user-journey decomposition, including page and route ownership;
+- shared-shell and shared-component ownership with a single writer for each shared path;
+- API/application/domain consumers and stable contracts each surface may consume;
+- a dependency matrix using hard, contract, integration, evidence, and shared-write categories;
+- exact proposed Work Order boundaries, read sets, write sets, forbidden sets, generated sets, and
+  integration owner/order;
+- the recommended first parallel set and why each member passes the parallelization gate;
+- the conditions that would force serialization, re-baselining, repair, or rework;
+- acceptance criteria and non-goals for each proposed Builder slice;
+- challenge of any current rule or decomposition that is unnecessarily strict; and
+- one recommendation, alternatives considered, residual risks, and the next main-thread decision.
+
+The proposal must preserve one authoritative domain/application source, must not claim that a
+contract-based UI slice is integrated or verified, and must keep the accepted rental-only MVP and
+ordinary human Happy Path as the scope boundary.
+
+#### Verification and return
+
+The Advisor must confirm the actual checkout/root and T2 source identity, use read-only inspection,
+and distinguish verified facts, inferences, recommendations, and unresolved decisions. It returns
+`READY_FOR_REVIEW` when the bounded proposal is complete or `BLOCKED` when the authority, source, or
+scope cannot be established. `READY_FOR_REVIEW` is not code verification and does not authorize a
+Builder or integration by itself.
+
 ## Parent objective — not the current Builder scope
 
 The following is the complete parent-Task outcome. It must not be sent to one Builder or Verifier as a
@@ -1026,10 +1123,14 @@ confirmation or decline.
 ## Next gate
 
 The runnable foundation, `RS-WO-002-03` domain core, and `RS-WO-002-04` durable workflow/application
-boundary are independently verified. The next gate is the bounded `RS-WO-002-05` tenant entry and
-listing discovery API described above. The parent Task must remain `in_progress` until the staged
-implementation, independent verification, integration, and canonical writeback gates for the
-complete ordinary application slice are complete without adding deferred WebRTC/Redis infrastructure.
+boundary are independently verified. `RS-WO-002-05` has produced a frozen tenant entry and listing
+discovery API candidate at T2 code commit `de169ce`; its dedicated independent Verifier is the next
+checkpoint. In parallel, the read-only `RS-WO-002-06` Architecture Advisor may propose bounded
+tenant/agent interface Work Orders. The main thread must review that proposal and record exact
+ownership and contract boundaries before dispatching UI Builders. The parent Task must remain
+`in_progress` until the staged implementation, independent verification, integration, and canonical
+writeback gates for the complete ordinary application slice are complete without adding deferred
+WebRTC/Redis infrastructure.
 
 ## Closure evidence
 

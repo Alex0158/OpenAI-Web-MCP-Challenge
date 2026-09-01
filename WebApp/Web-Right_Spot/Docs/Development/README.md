@@ -1,7 +1,7 @@
 # RightSpot Development and Closure
 
 **Role:** Big-picture roadmap, implementation, verification, collaboration, and closure routing  
-**Status:** Roadmap and thread-orchestration pilot documented; foundation, workflow-core, and the `RS-WO-002-04` persistence/application boundary are independently verified; `RS-WO-002-05` tenant entry/listing discovery API Builder is assigned from clean baseline `9ff14de`
+**Status:** Roadmap and thread-orchestration pilot documented; foundation, workflow-core, and the `RS-WO-002-04` persistence/application boundary are independently verified; `RS-WO-002-05` tenant entry/listing discovery API Builder returned `READY_FOR_VERIFICATION` and its candidate is frozen at T2 code commit `de169ce`; `RS-WO-002-06` Architecture Advisor is gated as the next read-only parallel planning slice
 
 ## Purpose
 
@@ -32,11 +32,14 @@ three-path candidate is committed at T2 source `68bbc69`. Its first dedicated re
 attempt stopped before source checks because the prompt described the Worktree root incorrectly; a
 corrected follow-up to the same identity-matching Verifier then returned `VERIFIED` against frozen
 source `28105e4d`. API or UI work remains closed until the next bounded slice is executed. The
-`RS-WO-002-05` boundary is defined in the parent Task and ADR-RS-0007, and its dedicated Builder is
-now assigned from the clean detached baseline. A fresh Builder is needed only if a later checkpoint
-exposes a source or behavior gap that cannot be repaired within a separately bounded Work Order.
-Later Integrator work is opened only when its predecessor produces a concrete code failure or a
-verified source and evidence boundary.
+`RS-WO-002-05` Builder returned `READY_FOR_VERIFICATION`; the exact 14-path candidate is frozen at
+T2 code commit `de169ce` and awaits independent verification. The next read-only planning slice is
+`RS-WO-002-06`, whose Architecture Advisor will propose contract-based tenant/agent interface
+boundaries and shared-path ownership for main-thread review. No UI Builder is authorized until that
+review records the accepted boundaries. A fresh Builder is needed only if a later checkpoint exposes
+a source or behavior gap that cannot be repaired within a separately bounded Work Order. Later
+Integrator work is opened only when its predecessor produces a concrete code failure or a verified
+source and evidence boundary.
 
 The experimental delegated-work procedure is
 [RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-RUNBOOK](RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-RUNBOOK.md).
