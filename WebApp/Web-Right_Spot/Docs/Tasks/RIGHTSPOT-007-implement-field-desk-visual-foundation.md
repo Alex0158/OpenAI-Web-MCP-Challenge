@@ -17,10 +17,10 @@
   shared UI foundation without expanding the rental MVP or changing product authority.
 - Current increment: Advisor decomposition is complete; the next visual source change is a gated,
   single-file shared CSS foundation.
-- Next gate: Receive the `RS-WO-007-02` Builder handoff, freeze its exact CSS candidate, then dispatch
-  an independent Verifier against the frozen post-Builder source identity.
-- Execution posture: `PROGRESSING`; the single CSS Builder is assigned and no tenant/agent page
-  Builder is dispatched.
+- Next gate: Dispatch an independent Verifier against the frozen post-Builder CSS candidate, then
+  reconcile the verification result before any role-page implementation is considered.
+- Execution posture: `PROGRESSING`; the CSS Builder returned `READY_FOR_VERIFICATION`, and no
+  tenant/agent page Builder is dispatched.
 
 ## Accepted product boundary
 
@@ -112,7 +112,7 @@ these constraints:
 ## RS-WO-007-02 — Implement the shared Field Desk CSS foundation
 
 **Role:** Builder → Verifier (sequential checkpoints)  
-**Status:** `ASSIGNED`  
+**Status:** `READY_FOR_VERIFICATION`  
 **Parallelization:** `SERIAL_SHARED_CSS` — sole writer for the global visual token and primitive layer.  
 **Risk profile:** `Standard` — behavior-preserving CSS change with a narrow authored path.  
 **Dependency:** `RS-WO-005-01` passed independent verification and is integrated at local product
@@ -120,10 +120,18 @@ these constraints:
 **Supporting worker:** `01a05d75-0116-75e3-807d-a19c6669e659` (`Turing`, local multi-agent Builder).  
 **Source baseline:** `04fb59565680f8df544bb345ffa29aeb31a2fdb6` on `main`; `app/globals.css` SHA-256
 `639eb5c940d67c05d842f813bcf2b78cbdd18f7ac5b71985a887a003c0587448` before dispatch.  
+**Post-Builder T2 identity:** Main-thread handoff observed at `HEAD=c92eb3773e1d6e3dd1944657f877c244ae516210`;
+`app/globals.css` SHA-256 is `bb85c353b3943b1267f361b3a4e677bc3e4ce7db09250984085471c7409a957c`.
+The candidate is the only product source change in this checkpoint.  
+**Builder evidence:** `READY_FOR_VERIFICATION`; Node `v24.20.0`, npm `11.19.0`, typecheck,
+foundation `6/6`, focused UI `7/7`, build, `git diff --check`, and CSS variable/class compatibility
+scan passed. Browser/rendered responsive, keyboard, full-suite, and complete contrast evidence remain
+for the independent Verifier.  
 **T0 dirty-state limitation:** unrelated `.gitignore`, `Docs/Tasks/README.md`, untracked
-`Docs/Tasks/RIGHTSPOT-008-define-favourites-and-listing-interest-boundary.md`, and owner-held
-`Docs/Reference/RIGHTSPOT-GOAL-PROMPT-HISTORY.md` remain outside this Work Order and must not be
-modified, staged, restored, or treated as product source.
+`Docs/Tasks/RIGHTSPOT-008-define-favourites-and-listing-interest-boundary.md`, untracked
+`Docs/Tasks/RIGHTSPOT-009-define-information-request-and-contact-preference-boundary.md`, and
+owner-held `Docs/Reference/RIGHTSPOT-GOAL-PROMPT-HISTORY.md` remain outside this Work Order and must
+not be modified, staged, restored, or treated as product source.
 
 ### Worker write set
 
