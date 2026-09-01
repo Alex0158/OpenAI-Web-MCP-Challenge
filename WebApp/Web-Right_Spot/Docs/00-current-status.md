@@ -18,8 +18,8 @@ is closed for the accepted local MVP. Its verifier Worktrees also exposed an out
 tooling mutation preserved as procedure evidence.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current active Work Orders:** `RS-WO-007-04` tenant and `RS-WO-007-05` agent Builders have handed
-off clean frozen candidates at commits `63e4c3e` and `33a36f0`; their independent Verifier Work
-Orders `RS-WO-007-06` and `RS-WO-007-07` are the next dispatchable evidence lanes. The shared CSS
+off clean frozen candidates at commits `63e4c3e` and `33a36f0`; independent Verifier Work Orders
+`RS-WO-007-06` and `RS-WO-007-07` are now assigned in separate evidence Worktrees. The shared CSS
 foundation `RS-WO-007-02` is already `VERIFIED` and integrated at product commit `89a50c7` after its
 final same-identity browser rerun corrected the stale served-build block under `RIGHTSPOT-007`;
 Builder `01a05d75-0116-75e3-807d-a19c6669e659` (`Turing`, local multi-agent) changed only
@@ -31,6 +31,10 @@ contrast passed; its residual risk is limited to an unassigned agent request-det
 The tenant Builder task/thread is `01a05db4-6e9d-7e51-8ee1-9b7c62cc31d0` on branch
 `rightspot/rs-wo-007-04-tenant`, and the agent Builder task/thread is
 `01a05db4-7764-7931-b474-ddbd977762ae` on branch `rightspot/rs-wo-007-05-agent`. The preceding
+tenant Verifier is task/thread `01a05dd1-4e8c-7571-9f3a-5ca13f24e00e` using
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-007-06-tenant-verifier`, and the agent Verifier is
+task/thread `01a05dd1-4604-7c23-a477-43caadae0ea8` using
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-007-07-agent-verifier`. The preceding
 `RS-WO-005-01` navigation candidate was independently `VERIFIED` by
 Verifier task `01a05d5d-d796-72f0-baad-ca00d8e7ab4e` and integrated at local product commit `27f5391`.
 Verifier attempt 01 was procedurally `BLOCKED` after browser tooling added the tracked repository
@@ -94,7 +98,7 @@ write set.
 with revisions. `RS-WO-007-02` passed static/build and final browser verification and is integrated
 at product commit `89a50c7`; its rebuilt served runtime shows the candidate tokens. `RS-WO-007-04`
 and `RS-WO-007-05` are frozen as clean candidate commits `63e4c3e` and `33a36f0` in isolated
-Worktrees with disjoint tenant/agent write sets; `RS-WO-007-06` and `RS-WO-007-07` are ready for
+Worktrees with disjoint tenant/agent write sets; `RS-WO-007-06` and `RS-WO-007-07` are assigned to
 independent verification before integration. A separate,
 non-blocking `RS-WO-007-03` parallelism review returned `READY_FOR_REVIEW` from supporting worker
 `01a05d76-dac9-7283-9c2a-4166935f5043`; main accepted its isolation revisions and used them to

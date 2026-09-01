@@ -396,7 +396,7 @@ Verifier phase.
 ## RS-WO-007-06 — Independently verify the tenant Field Desk candidate
 
 **Role:** Persistent Codex task/thread Verifier  
-**Status:** `READY_TO_DISPATCH`  
+**Status:** `ASSIGNED`  
 **Parallelization:** `EVIDENCE_PARALLEL` — may run in parallel with `RS-WO-007-07` because it uses a
 separate frozen source snapshot, separate Worktree, and no product write set.  
 **Risk profile:** `Standard` — independent static, runtime, and browser verification of a bounded
@@ -405,6 +405,7 @@ tenant presentation candidate.
 `63e4c3e2b6985439edd18f61d4905eb4134e521b`; do not verify the moving Builder Worktree.  
 **Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-007-06-tenant-verifier` (detached
 HEAD at the frozen candidate commit).  
+**Supporting task/thread:** `01a05dd1-4e8c-7571-9f3a-5ca13f24e00e` on host `local`.  
 **Ownership:** The Verifier may inspect and execute only. The main thread owns all repair, canonical
 writeback, integration, and closure.
 
@@ -452,7 +453,7 @@ after the report; do not dispatch repair or integration work.
 ## RS-WO-007-07 — Independently verify the agent Field Desk candidate
 
 **Role:** Persistent Codex task/thread Verifier  
-**Status:** `READY_TO_DISPATCH`  
+**Status:** `ASSIGNED`  
 **Parallelization:** `EVIDENCE_PARALLEL` — may run in parallel with `RS-WO-007-06` because it uses a
 separate frozen source snapshot, separate Worktree, and no product write set.  
 **Risk profile:** `Standard` — independent static, runtime, and browser verification of a bounded
@@ -461,6 +462,7 @@ agent presentation candidate.
 `33a36f01bb4163c2d29d9ee95ae6e4e95f591ae2`; do not verify the moving Builder Worktree.  
 **Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-007-07-agent-verifier` (detached
 HEAD at the frozen candidate commit).  
+**Supporting task/thread:** `01a05dd1-4604-7c23-a477-43caadae0ea8` on host `local`.  
 **Ownership:** The Verifier may inspect and execute only. The main thread owns all repair, canonical
 writeback, integration, and closure.
 
