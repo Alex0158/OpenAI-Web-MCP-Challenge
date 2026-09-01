@@ -1,0 +1,83 @@
+import { domainError } from "./errors";
+import { evaluateExpiry } from "./workflow";
+import {
+  type Actor,
+  type AgentProjection,
+  type Listing,
+  type ProjectionOutcome,
+  type TenantProjection,
+  type WorkflowState,
+} from "./types";
+
+export function readTenantProjection(
+  state: WorkflowState,
+  actor: Actor,
+  now: string,
+): ProjectionOutcome<TenantProjection> {
+  if (actor.role !== "tenant" || actor.id !== state.tenantId) {
+    throw domainError("FORBIDDEN", "Actor cannot read the tenant projection");
+  }
+  const evaluated = evaluateExpiry(state, now);
+  const request = evaluated.state.request;
+  if (!request || request.tenantId !== actor.id) {
+    throw domainError("NOT_FOUND", "Viewing request was not found");
+  }
+  const listing = getListing(evaluated.state, request.listingId);
+
+  return {
+    state: evaluated.state,
+    projection: {
+      request: {
+        id: request.id,
+        listingId: request.listingId,
+        preferredTimes: [...request.preferredTimes],
+        tenantNote: request.tenantNote,
+        state: request.state,
+        version: request.version,
+        response: request.sentResponse ? cloneRequest(request.sentResponse) : undefined,
+        proposalExpiresAt: request.proposalExpiresAt,
+      },
+      listing: { ...listing },
+      timeline: evaluated.state.audit.map((entry) => ({ ...entry })),
+    },
+  };
+}
+
+export function readAgentProjection(
+  state: WorkflowState,
+  actor: Actor,
+  now: string,
+): ProjectionOutcome<AgentProjection> {
+  if (actor.role !== "agent" || actor.id !== state.agentId) {
+    throw domainError("FORBIDDEN", "Actor cannot read the agent projection");
+  }
+  const evaluated = evaluateExpiry(state, now);
+  const request = evaluated.state.request;
+  if (!request || request.agentId !== actor.id) {
+    throw domainError("NOT_FOUND", "Viewing request was not found");
+  }
+  const listing = getListing(evaluated.state, request.listingId);
+
+  return {
+    state: evaluated.state,
+    projection: {
+      request: cloneRequest(request),
+      listing: { ...listing },
+      availability: evaluated.state.slots
+        .filter((slot) => slot.listingId === listing.id)
+        .map((slot) => ({ ...slot })),
+    },
+  };
+}
+
+function getListing(state: WorkflowState, listingId: string): Listing {
+  const listing = state.listings.find((candidate) => candidate.id === listingId);
+  if (!listing) {
+    throw domainError("NOT_FOUND", "Listing was not found");
+  }
+  return listing;
+}
+
+function cloneRequest<T>(request: T): T {
+  return JSON.parse(JSON.stringify(request)) as T;
+}
