@@ -127,8 +127,8 @@ claimed.
 
 The exact three-path candidate was integrated at product commit `6f52686`. Against the current source,
 the main thread reran the full direct suite `75/75`, `npm run typecheck`, `npm run build`, and
-`git diff --check`; all passed. A browser/form regression remains intentionally open because the task
-closure gate requires observing the integrated editor and actual submission boundary.
+`git diff --check`; all passed. The subsequent bounded browser/form regression against this integrated
+source passed; its evidence is recorded below.
 
 ### Main-thread browser/form regression result — 2026-09-01
 
