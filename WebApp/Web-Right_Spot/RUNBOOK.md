@@ -6,8 +6,8 @@ the foundation Builder returned `READY_FOR_VERIFICATION`, the first independent 
 procedurally blocked, and the corrected rerun returned `VERIFIED`; the bounded domain-core Builder and
 projection-isolation repair returned `READY_FOR_VERIFICATION`, with T2 source commit `a60001e` frozen;
 independent verification found a bounded listing-version guard defect; the bounded Repairer completed
-in `6e70c9f`, and fresh independent verification returned `VERIFIED`; `RS-WO-002-04` is the next gated
-persistence/application integration checkpoint
+in `6e70c9f`, and fresh independent verification returned `VERIFIED`; `RS-WO-002-04` persistence/application
+Builder is blocked by an unresolved shared-tree ownership conflict
 
 ## 1. Authority and reading order
 

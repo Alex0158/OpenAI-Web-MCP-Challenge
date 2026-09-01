@@ -4,7 +4,7 @@
 **Lifecycle:** `in_progress`  
 **Priority:** P0 for RightSpot  
 **Owner:** Main RightSpot thread  
-**Depends on:** [ADR-RS-0001](../Decisions/ADR-RS-0001-mvp-scope-and-primary-flow.md), [ADR-RS-0002](../Decisions/ADR-RS-0002-logical-backbone-boundary.md), [ADR-RS-0003](../Decisions/ADR-RS-0003-implementation-stack-and-realtime-boundary.md)
+**Depends on:** [ADR-RS-0001](../Decisions/ADR-RS-0001-mvp-scope-and-primary-flow.md), [ADR-RS-0002](../Decisions/ADR-RS-0002-logical-backbone-boundary.md), [ADR-RS-0003](../Decisions/ADR-RS-0003-implementation-stack-and-realtime-boundary.md), [ADR-RS-0006](../Decisions/ADR-RS-0006-durable-workflow-and-application-boundary.md)
 
 The implementation must follow the accepted business rules in
 [Requirements](../02-requirements.md) and the
@@ -16,10 +16,10 @@ The implementation must follow the accepted business rules in
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Define the next bounded persistence/application integration checkpoint after the
-  independently verified workflow domain core.
-- Next gate: Dispatch the gated `RS-WO-002-04` bounded Builder, then independently verify its frozen
-  output; do not open the full API/UI surface as one assignment.
+- Current increment: Implement and independently verify the bounded `RS-WO-002-04` persistence/application
+  boundary after the independently verified workflow domain core.
+- Next gate: Resolve the `RS-WO-002-04` shared-tree ownership conflict, re-baseline the bounded
+  Builder output, then independently verify it; do not open the full API/UI surface as one assignment.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -29,9 +29,9 @@ The implementation must follow the accepted business rules in
 
 This record is the single registered parent Task and the one Task File for the complete first
 ordinary application slice. Its objective and closure evidence describe the parent outcome. The
-current executable increment is narrower: establish and independently verify the authoritative
-workflow domain core before opening persistence, API, or UI work. Later implementation, verification,
-repair, and integration remain sequential
+current executable increment is narrower: implement and independently verify the bounded
+`RS-WO-002-04` persistence/application boundary before opening the wider API or UI surface. Later
+implementation, verification, repair, and integration remain sequential
 checkpoints inside this Task File, not a second set of registered Tasks or a backlog of independent
 Work Orders.
 
@@ -42,8 +42,8 @@ returned `VERIFIED` against the unchanged source/runtime identity. `RS-WO-002-03
 one bounded projection-isolation repair was completed, and T2 source review produced candidate commit
 `186e98a`. The independent Verifier found a listing-version guard defect; the bounded Repairer fixed
 it in post-repair commit `6e70c9f`, limited to the domain workflow and focused domain test paths. Fresh
-independent verification returned `VERIFIED` against that frozen source. The next increment is a
-main-thread-defined bounded persistence/application integration checkpoint.
+independent verification returned `VERIFIED` against that frozen source. `RS-WO-002-04` is the current
+bounded persistence/application integration checkpoint.
 
 Do not send this parent Task's full objective to one Builder. Do not treat a worker result as
 verification, integration, or parent-Task closure.
@@ -61,17 +61,19 @@ verification, integration, or parent-Task closure.
 - **Baseline:** The actual repository root is `WebMCP_Challenge`; the frozen implementation source
   for the next gate is post-repair commit `6e70c9f`, whose parent T2 source was `a60001e`. The
   six modified canonical documents are main-thread process-only writeback and are not part of the
-  post-repair implementation commit. Source identity is checkpoint-scoped and path-owned; it is not a
+  post-repair implementation commit. The current `RS-WO-002-04` dispatch baseline is reviewed commit
+`178d8873dc9c4a28a11da313e8425a3a25316b71`; the Builder completed its three-path implementation checks but the checkpoint is blocked by an unexpected untracked learning file and Pilot Runbook change from another active task. Source identity is checkpoint-scoped and path-owned; it is not a
   permanent full-document hash lock.
 - **Read before action:** Repository `AGENTS.md` and Engineering controls, RightSpot `RUNBOOK.md`,
   `Docs/00-current-status.md`, the relevant product/domain/API/validation documents, ADR-RS-0001
   through ADR-RS-0006, and the Thread Orchestration Pilot Runbook.
-- **Worker restrictions:** The foundation Builder and domain-core Builder/Repairer have stopped.
-  The next Verifier may inspect and run only the frozen source, with no authored mutable paths. It
-  must classify the declared read, worker-write, main-thread-writeback, forbidden, and generated
-  sets path-by-path; it must not modify code, canonical documents, the Git index, or generated state
-  outside explicitly ignored runtime paths. Short response-body assertions must use shell variables
-  or an exact file under `var/test/`; `/tmp` and other external paths are not permitted. No worker may
+- **Worker restrictions:** The foundation and domain-core writers have stopped. The current
+  `RS-WO-002-04` Builder may modify only its three declared persistence/application/test paths; after
+  it stops, the independent Verifier will have no authored mutable paths. Every checkpoint must
+  classify the declared read, worker-write, main-thread-writeback, forbidden, and generated sets
+  path-by-path; no worker may modify canonical authority, the Git index, or generated state outside
+  explicitly ignored runtime paths. Short response-body assertions must use shell variables or an
+  exact file under `var/test/`; `/tmp` and other external paths are not permitted. No worker may
   commit, push, deploy, publish, perform external actions, expand product scope, or change canonical
   authority.
 - **Worker writeback:** The Builder returns its completion report in the supporting thread. It does
@@ -609,14 +611,16 @@ browser, deployment, external integration, or parent-Task closure.
 **Parent task:** `RIGHTSPOT-002`  
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch state:** `GATED` — `RS-WO-002-03` domain core is independently verified at `6e70c9f`; local persistence/application design is accepted in ADR-RS-0006  
-**Execution state:** `GATED` — ready for bounded Builder dispatch  
+**Execution state:** `BLOCKED` — bounded Builder completed its implementation checks but stopped on an unresolved shared-tree ownership conflict  
 **Owner:** Main RightSpot thread; one supporting task may implement the exact bounded write set  
 **Objective:** Persist the complete serializable `WorkflowState` in a deterministic local SQLite
 snapshot and expose one narrow application service above the verified domain core. Prove durable
 refresh-visible workflow continuity and atomic command/reset behavior without exposing HTTP, UI,
 authentication, or external integration yet. This Work Order is governed by
 [ADR-RS-0006](../Decisions/ADR-RS-0006-durable-workflow-and-application-boundary.md).
-**Next gate:** Main thread dispatches the bounded Builder, then reviews the exact diff and opens an
+**Dispatch state:** Builder dispatched from reviewed baseline `178d8873dc9c4a28a11da313e8425a3a25316b71`; it returned `BLOCKED` after observing an untracked learning file and Pilot Runbook change from another active task during the checkpoint.  
+**Next gate:** Resolve and record ownership of the unexpected paths, confirm the other writer is
+stopped, re-baseline the bounded Builder checkpoint, then review the exact diff and open an
 independent Verifier only after the Builder returns `READY_FOR_VERIFICATION`.
 
 #### Scope and ownership

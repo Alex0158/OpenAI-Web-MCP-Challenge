@@ -22,8 +22,9 @@ The same checkpoint's corrected read-only rerun returned `VERIFIED`. The bounded
 `RS-WO-002-03` Builder and one projection-isolation repair returned `READY_FOR_VERIFICATION`; its T2
 source was frozen at `a60001e`, and its independent Verifier returned `NEEDS_REPAIR` for stale listing
 revision writes. The bounded Repairer completed in post-repair commit `6e70c9f`, and fresh independent
-verification returned `VERIFIED`. The next checkpoint is the gated bounded persistence/application
-integration Work Order `RS-WO-002-04`, defined inside the same Task File.
+verification returned `VERIFIED`. The current checkpoint is the bounded persistence/application
+integration Work Order `RS-WO-002-04`, whose Builder completed checks but is `BLOCKED` by an
+unexpected shared-tree learning artifact and Pilot Runbook change from another active task.
 One registered Task has one Task File. A Work Order is only the current dispatch brief under that Task; Builder, Verifier, Repairer,
 and Integrator are sequential checkpoints, not additional registered Tasks. Do not turn this file
 into a backlog of future Work Orders or a second active-work register. The parent remains
