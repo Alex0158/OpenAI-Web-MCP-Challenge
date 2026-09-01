@@ -11,7 +11,7 @@ UI guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW` and its decomposition wa
 `RS-WO-002-11` candidate `f1f83c7` passed independent verification and is integrated at product commit
 `6a0b4b8` as the shared role-page frame; `RS-WO-002-13` passed independent verification and is
 integrated at product commit `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final
-independent verification and awaits main-thread T2 integration. Its predecessor verifier runs were
+independent verification and is integrated at product commit `9348aa5`. Its predecessor verifier runs were
 checkpoint-locally blocked by an out-of-scope tracked verifier Worktree mutation, which remains preserved
 for separate ownership/recoverability handling.
 
@@ -56,7 +56,8 @@ dedicated independent verification after a generated-output boundary re-baseline
 `RS-WO-002-11` Builder returned `READY_FOR_VERIFICATION`; the exact four-path candidate `f1f83c7` passed
 dedicated independent verification and is integrated at product commit `6a0b4b8`. `RS-WO-002-13` is
 integrated at product commit `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final
-independent verification and awaits main-thread T2 integration. A fresh Builder is needed only if a later checkpoint exposes a
+independent verification and is integrated at product commit `9348aa5`. `RS-WO-002-14` is the active
+read-only combined cross-role verification checkpoint. A fresh Builder is needed only if a later checkpoint exposes a
 source or behavior gap that cannot be repaired within a separately bounded Work Order. Later
 Integrator work is opened only when its predecessor produces a concrete code failure or a verified
 source and evidence boundary.

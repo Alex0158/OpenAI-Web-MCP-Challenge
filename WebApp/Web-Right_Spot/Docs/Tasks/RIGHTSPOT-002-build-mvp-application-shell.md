@@ -16,20 +16,18 @@ The implementation must follow the accepted business rules in
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Integrate the independently verified tenant role-page candidate, then run the
-  combined cross-role integration checks against the already integrated agent role page.
-- Next gate: Complete main-thread T2 review and integration of the verified `RS-WO-002-12` candidate
-  `52cba87c`, then run a combined cross-role integration check before any complete browser Happy Path
-  claim. The independently verified `RS-WO-002-13` agent candidate is already integrated; exact route,
-  component, test, and shared-boundary ownership remain recorded below.
+- Current increment: Independently verify the integrated tenant and agent role pages as one cross-role
+  ordinary Happy Path against the frozen main source.
+- Next gate: Complete `RS-WO-002-14` read-only cross-role verification, then adjudicate any bounded
+  findings before browser walkthrough or parent closure claims. Both role-page candidates are integrated;
+  exact route, component, test, and shared-boundary ownership remain recorded below.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, ADR-RS-0008, and the accepted Requirements
   and Domain and Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, ADR-RS-0008, and the RightSpot Thread Orchestration Pilot Runbook govern any
   supporting-task dispatch under this parent.
-- Parent execution posture: `PROGRESSING` — `RS-WO-002-13` passed independent verification and is
-  integrated; repaired `RS-WO-002-12` candidate `52cba87c` passed final independent verification and is
-  ready for main-thread T2 integration. The parent remains open and can proceed through the combined
-  cross-role verification gate.
+- Parent execution posture: `PROGRESSING` — `RS-WO-002-13` and repaired `RS-WO-002-12` passed
+  independent verification and are integrated at product commits `3765747` and `9348aa5`. The parent
+  remains open and can proceed through the combined cross-role verification gate.
 - Blocker reporting: the main thread reports the checkpoint-local blocker to the human owner and
   records its evidence, impact, owner, safe continuation, and resume condition here; this does not
   change the parent lifecycle to `blocked`.
@@ -1782,8 +1780,8 @@ unclaimed.
 **Pre-dispatch status:** `GATED` — the shared role-page frame, listing discovery API, workflow
 transport, and tenant DTO contract are integrated and independently verified  
 **Execution state:** `VERIFIED` — the final same-identity independent Verifier verified repaired
-candidate `52cba87c00c3461793b22aa26974da5276d01b48` from its clean exact-scope Worktree. The tenant
-output remains unintegrated pending main-thread T2 review and integration.  
+candidate `52cba87c00c3461793b22aa26974da5276d01b48` from its clean exact-scope Worktree; the main
+thread integrated the tenant Builder and repair commits at product commits `821de46` and `9348aa5`.  
 **Prior checkpoint result:** `BLOCKED` — the source, runtime, test, build, HTTP, and partial UI checks
 completed, but final scope readback found `.gstack/` added outside the exact nine-path candidate.  
 **Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-13`; route, component, helper, test, and CSS
@@ -1794,9 +1792,9 @@ ownership are disjoint, while both consume the same frozen read-only contracts
 seeded published listings, inspect one listing, create and submit the one bounded Viewing Request, and
 later read and respond to the agent's proposal or decline. Keep server workflow state authoritative;
 the UI may hold transient form input but must not invent transitions, identity, versions, or fallback data.  
-**Next gate:** Main-thread T2 review and integration of verified candidate `52cba87c`, followed by
-combined cross-role verification. The original verifier Worktrees and `.gitignore` diffs remain
-preserved for separate ownership/recoverability handling; they are not product source.  
+**Next gate:** Complete the read-only combined cross-role verification in `RS-WO-002-14`. The original
+verifier Worktrees and `.gitignore` diffs remain preserved for separate ownership/recoverability
+handling; they are not product source.  
 **Dispatch state:** Dispatched from clean baseline `8b33399ce5769bdb58cd08025ac2c1917675daf3`; execution
 Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-tenant-ui`; package root
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-tenant-ui/WebApp/Web-Right_Spot`; runtime-pin path
@@ -1823,15 +1821,18 @@ produced a reproducible `Southwark` filter/render divergence, which the main thr
 bounded product repair. Repairer task `01a05bca-aba1-70c1-8be3-782030f7673f` was stopped after no
 timely handoff; its one-file patch was reviewed and committed by the main thread as T2 candidate
 `52cba87c00c3461793b22aa26974da5276d01b48` in Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-repair`.
- A clean final verifier Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-verifier-final` was
- created at that candidate, and the same Verifier identity was dispatched for final independent
- verification. The final run returned `VERIFIED` against candidate `52cba87c`: exact nine-path scope and
- clean status; Node `24.20.0`/npm `11.19.0`; `npm ci`; typecheck; foundation `6/6`; tenant focused `4/4`;
- full direct suite `54/54`; production build; health, auth, role, listing/filter/detail, empty-request,
- draft, one-request, submit, stale-conflict, and tenant-privacy HTTP checks. The repair's stale-response
- guard was statically confirmed. Browser E2E was not run because the available browser tooling can mutate
- tracked `.gitignore`; no browser claim is made. This result authorizes only main-thread T2 integration,
- not combined-flow verification or parent closure.  
+A clean final verifier Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-verifier-final` was
+created at that candidate, and the same Verifier identity was dispatched for final independent
+verification. The final run returned `VERIFIED` against candidate `52cba87c`: exact nine-path scope and
+clean status; Node `24.20.0`/npm `11.19.0`; `npm ci`; typecheck; foundation `6/6`; tenant focused `4/4`;
+full direct suite `54/54`; production build; health, auth, role, listing/filter/detail, empty-request,
+draft, one-request, submit, stale-conflict, and tenant-privacy HTTP checks. The repair's stale-response
+guard was statically confirmed. Browser E2E was not run because the available browser tooling can mutate
+tracked `.gitignore`; no browser claim is made. This result authorizes only main-thread T2 integration,
+not combined-flow verification or parent closure. The main thread then cherry-picked the Builder
+candidate as `821de46` and the repair as `9348aa5`, ran pinned Node `24.20.0`/npm `11.19.0` typecheck,
+foundation `6/6`, tenant and agent focused tests `7/7`, isolated full direct suite `57/57`, and
+production build successfully.  
 **Parent execution posture if blocked:** `CONSTRAINED` only for the tenant interface; the agent interface,
 read-only analysis, and process work may continue if they do not consume a blocked tenant write set.
 
@@ -1965,9 +1966,9 @@ ownership are disjoint, while both consume the same frozen read-only contracts
 the assigned request queue, inspect the authorized request and availability, start review, prepare a
 slot proposal or decline, and explicitly send the prepared human decision. Keep the server/application
 workflow authoritative and preserve the separation between preparation and consequence.  
-**Next gate:** Main-thread T2 review and integration of the verified seven-path candidate, followed by
-combined cross-role verification. The independent result does not claim browser E2E, the complete
-tenant-to-agent loop, deployment, or parent closure.  
+**Next gate:** Complete the read-only combined cross-role verification in `RS-WO-002-14`. The independent
+result and main integration do not claim browser E2E, the complete tenant-to-agent loop, deployment, or
+parent closure.  
 **Dispatch state:** Dispatched from clean baseline `8b33399ce5769bdb58cd08025ac2c1917675daf3`; execution
 Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-agent-ui`; package root
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-agent-ui/WebApp/Web-Right_Spot`; runtime-pin path
@@ -1984,8 +1985,9 @@ because the projectless output directory was used as the Git root, and the main 
 to the same Verifier identity. The corrected run verified exact seven-path scope and clean state with
 Node `24.20.0`/npm `11.19.0`, foundation `6/6`, focused agent tests `3/3`, full direct suite `53/53`,
 build, HTTP role/error/conflict/privacy evidence, and static UI checks. Browser interaction was unavailable
-and is explicitly outside the claim; no verifier mutation occurred. Main-thread integration is now the
-next gate.  
+and is explicitly outside the claim; no verifier mutation occurred. The main thread cherry-picked the
+verified candidate at product commit `3765747` and re-ran the integrated main-checkout checks; the
+combined cross-role verification in `RS-WO-002-14` is now the next gate.  
 **Parent execution posture if blocked:** `CONSTRAINED` only for the agent interface; the tenant interface,
 read-only analysis, and process work may continue if they do not consume a blocked agent write set.
 
@@ -2097,6 +2099,106 @@ if preparation/send cannot preserve the human decision boundary; if the runtime/
 be maintained; or if a behavior can pass only through mock data, hidden fallback, client-authoritative
 role, automatic send, or local state/version invention. Do not broaden this Work Order into listing CRUD,
 tenant administration, chat, calendar, payments, media, or future integration.
+
+### RS-WO-002-14 — Verify the integrated cross-role Happy Path
+
+**Parent task:** `RIGHTSPOT-002`  
+**Role:** Verifier (read-only)  
+**Pre-dispatch status:** `GATED` — `RS-WO-002-12` and `RS-WO-002-13` passed dedicated independent
+verification and their outputs are integrated into the main source at product commits `9348aa5` and
+`3765747`  
+**Execution state:** `GATED` — dispatch only after a clean detached verification Worktree is created
+from the frozen main commit `9348aa50b63e3f4f46e77238ad370670383d9d6d`  
+**Parallelization:** `INTEGRATION_SERIAL` — this checkpoint consumes both integrated role-page outputs;
+no tenant or agent source writer may modify the frozen source while it runs  
+**Owner:** Main RightSpot thread; one dedicated read-only Verifier  
+**Risk profile:** `High` — cross-role session continuity, workflow mutation ordering, and evidence claim
+boundary  
+**Objective:** Independently verify that the integrated local application carries the ordinary human
+Happy Path from tenant discovery through agent decision and back to tenant confirmation or decline,
+while preserving the existing HTTP/DTO, role-privacy, server-authority, one-request, stale-version, and
+preparation-versus-send boundaries. This is a verification checkpoint, not a repair or feature-expansion
+assignment.  
+**Next gate:** Reconcile the Verifier result; if `VERIFIED`, open only the smallest browser walkthrough
+or closure-evidence checkpoint still required. If `NEEDS_REPAIR`, diagnose and open a bounded Repairer;
+if `BLOCKED`, report the procedure blocker without changing the parent to globally blocked.  
+**Dispatch state:** Not dispatched. The main thread must record the exact detached Worktree, package
+root, runtime-pin path, task identity, and prompt persistence before execution.
+
+#### Scope and ownership
+
+**Read set:** Repository instructions and Engineering controls; RightSpot `RUNBOOK.md`; the Pilot
+Runbook; current status; this Task File; Requirements; System Design; API and Integration Contracts;
+Validation and Evidence; ADR-RS-0001 through ADR-RS-0008; all integrated tenant/agent/shared UI,
+application, domain, persistence, route, contract, fixture, and test files.
+
+**Worker write set:** None. This is a read-only verification checkpoint.
+
+**Main-thread orchestration writeback set:** this Task File, `Docs/00-current-status.md`,
+`Docs/Tasks/README.md`, `Docs/Development/README.md`, `Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`,
+and `RUNBOOK.md`.
+
+**Forbidden set:** every authored source, test, package, lockfile, canonical document, Git index,
+branch, deployment, external, or sibling-project path; no repair, formatting, dependency installation
+into source, commit, push, deploy, or follow-on dispatch. If browser tooling changes a tracked path such
+as `.gitignore`, stop as `BLOCKED`, preserve the evidence, and do not restore or delete it.
+
+**Generated set:** only ignored `node_modules/`, `.next/`, `*.tsbuildinfo`, `var/rightspot.sqlite*`,
+and `var/test/**` inside the declared execution Worktree/package root. Do not create `/tmp`, home,
+repository-root, screenshot, report, or other external artifacts.
+
+#### Dependencies and assumptions
+
+- The source under test is the exact integrated main commit
+  `9348aa50b63e3f4f46e77238ad370670383d9d6d`; do not silently substitute a different branch, checkout,
+  package root, or runtime.
+- Use the prepared absolute Node `24.20.0` and npm `11.19.0` binaries, or an explicitly validated PATH
+  resolving to those exact versions. The nested package root is
+  `WebApp/Web-Right_Spot`; the detached Worktree root is the Git root.
+- Start from a fresh isolated application database in the Worktree. Do not foundation-reset a database
+  after business workflow state has been created and then interpret a generation mismatch as a product
+  defect. Preserve the normal state lifecycle while exercising the flow.
+- The verifier must inspect the accepted route/DTO contracts and existing test fixtures before composing
+  requests. It must use fresh command IDs and authoritative versions returned by the server; never
+  invent state, actor identity, versions, or a fallback response.
+- Direct HTTP/static evidence and browser evidence are separate claims. Browser interaction may run only
+  if the tooling is proven not to mutate tracked files within the declared boundary; otherwise omit it
+  and report it as unavailable.
+
+#### Acceptance criteria
+
+- Pinned install, typecheck, foundation tests, the full direct suite, and production build pass from the
+  frozen source. The full direct suite must run from a fresh isolated cwd/database so fixture generation
+  starts at the expected baseline.
+- A fresh built server returns health/readiness success and exposes the integrated tenant, agent, and
+  workflow routes without external services. Unauthenticated and wrong-role requests return the bounded
+  `401`/`403` outcomes, and unknown resources return bounded `404` outcomes.
+- One tenant session can browse the seeded listings, apply a bounded filter, inspect a listing, create a
+  draft request, explicitly submit it, and read the resulting tenant-safe request status.
+- One agent session can read the assigned queue, inspect the request, start review, prepare a proposal,
+  and explicitly send it. Preparation must not itself cause the terminal workflow consequence.
+- The same tenant session can read the agent response and confirm it (or a separately reset run can
+  exercise decline), with authoritative status, versions, and timeline visible after each mutation.
+- The cross-role flow preserves one-request enforcement, role privacy, stale/conflict handling, neutral
+  error mapping, and no hidden client-authoritative transition or automatic send.
+- If browser interaction is safely available, record the actual role/session/navigation/control states;
+  otherwise explicitly mark browser E2E as not run. Never call HTTP or static evidence browser E2E.
+
+#### Verification and return
+
+Use the exact frozen source and runtime. Capture the actual Git root, package root, commit, clean status,
+runtime versions, commands, results, generated paths, server lifecycle, flow identifiers, skipped checks,
+and claim boundary. Return exactly one of `VERIFIED`, `NEEDS_REPAIR`, or `BLOCKED`. Do not edit source,
+tests, canonical documents, or Git state; do not repair a finding or start another task.
+
+#### Stop conditions
+
+Stop at `BLOCKED` if source drift, a second writer, wrong root/runtime, unapproved dependency or external
+service, output outside the generated set, browser tooling mutation, unclear reset semantics, or a
+required product/contract/security/persistence decision appears. Return `NEEDS_REPAIR` only for a
+reproducible product defect within an existing integrated ownership boundary. Do not broaden this Work
+Order into UI redesign, favourites, chat, payments, deployment, WebMCP, Cloud Receiver, Redis, WebRTC,
+or parent closure.
 
 ## Parent objective — not the current Builder scope
 

@@ -28,7 +28,8 @@ is integrated as bounded guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW`
 and its decomposition is accepted; `RS-WO-002-11` candidate `f1f83c7` passed independent verification
 and is integrated at `6a0b4b8`; `RS-WO-002-13` passed independent verification and is integrated at
 product commit `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final independent
-verification and awaits main-thread T2 integration. Its predecessor verifier runs were checkpoint-locally
+verification and is integrated at product commit `9348aa5`; `RS-WO-002-14` is the active read-only
+combined cross-role verification checkpoint. Its predecessor verifier runs were checkpoint-locally
 blocked by a tracked `.gitignore` mutation adding `.gstack/` outside the declared candidate scope; the
 original evidence remains preserved for separate ownership/recoverability handling. No separate
 registered Task or Task File is created for that repair or recovery.

@@ -16,9 +16,9 @@ at product commit `f700ba9`; `RS-WO-002-08` is integrated at product commit `006
 localized generated-output boundary incident was re-baselined in process commit `8b77bdd`; and
 `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-13` passed dedicated independent
 verification and is integrated at product commit `3765747`; repaired `RS-WO-002-12` candidate
-`52cba87c` passed final independent verification and awaits main-thread T2 integration. The original
-out-of-scope tracked `.gitignore` mutations from verifier Worktrees remain preserved as procedure
-evidence. The next gate is tenant integration and then combined role-page verification.
+`52cba87c` passed final independent verification and is integrated at product commit `9348aa5`. The
+original out-of-scope tracked `.gitignore` mutations from verifier Worktrees remain preserved as
+procedure evidence. The next gate is the read-only `RS-WO-002-14` combined role-page verification.
 
 ## 1. Authority and reading order
 

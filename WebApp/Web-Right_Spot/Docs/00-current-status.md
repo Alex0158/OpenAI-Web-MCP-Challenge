@@ -11,22 +11,23 @@ entry/listing discovery API, and the `RS-WO-002-07` workflow HTTP/DTO boundary i
 Advisor decomposition is accepted; `RS-WO-002-11` candidate `f1f83c7` passed independent verification
 and is integrated at product commit `6a0b4b8`; `RS-WO-002-13` agent role-page candidate passed
 independent verification and is integrated at product commit `3765747`; `RS-WO-002-12` tenant role-page
-candidate `52cba87c` passed final independent verification and is ready for main-thread T2 integration;
+candidate `52cba87c` passed final independent verification and is integrated at product commit `9348aa5`;
 its verifier Worktrees also exposed an out-of-scope tracked tooling mutation preserved as procedure evidence
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current active Work Order:** `RS-WO-002-12` repaired tenant discovery/request candidate
-`52cba87c00c3461793b22aa26974da5276d01b48` passed final independent verification and remains unintegrated
-pending main-thread T2 review. Its predecessor candidate `eb1d62e1b33a045e683f64ba3d28930e9444cd25` had
+**Current active Work Order:** `RS-WO-002-14` read-only cross-role verification runs against the
+integrated tenant and agent role pages at product commit `9348aa50b63e3f4f46e77238ad370670383d9d6d`.
+Repaired tenant candidate `52cba87c` passed final independent verification and is integrated at product
+commit `9348aa5`. Its predecessor candidate `eb1d62e1b33a045e683f64ba3d28930e9444cd25` had
 two verifier runs checkpoint-locally blocked by a tracked `.gitignore` mutation adding `.gstack/` outside
 the exact nine-path candidate; all prior verifier evidentiary Worktrees remain preserved.
 The `RS-WO-002-13` agent candidate was independently verified and integrated at product commit `3765747`.
 Exact Worktrees and supporting-task identities remain recorded in the parent Task File.
-**Implementation:** Foundation Builder returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02` verification attempt was procedurally blocked by an out-of-scope OS temp artifact, then the corrected bounded rerun returned `VERIFIED` against the unchanged source/runtime identity; `RS-WO-002-03` found and repaired a listing-version guard defect in commit `6e70c9f`, and fresh independent verification returned `VERIFIED` against that frozen source; `RS-WO-002-04` candidate adoption completed at T2 commit `68bbc69`; its first dedicated Verifier attempt stopped before source checks because the dispatch prompt described the Worktree root incorrectly, then one corrected follow-up returned `VERIFIED` against frozen source `28105e4d`; `RS-WO-002-05` Builder returned `READY_FOR_VERIFICATION` with the required runtime, focused `35/35` checks, production build, and local API smoke passing; the candidate was integrated at T2 code commit `de169ce`, and a dedicated Verifier independently returned `VERIFIED` against clean snapshot `bc3bc42`; the read-only `RS-WO-002-06` Architecture Advisor returned `READY_FOR_REVIEW`, and the main thread accepted its decomposition with revisions in ADR-RS-0008; `RS-WO-002-07` candidate `d71fe3e` passed dedicated independent verification with foundation `6/6`, focused `9/9`, full direct `50/50`, build, HTTP, role/privacy, conflict, and no-mutation evidence and was integrated at product commit `f700ba9`; `RS-WO-002-08` is integrated at product commit `006d2fd` after a localized generated-output boundary incident was re-baselined in process commit `8b77bdd`; both originate from reviewed baseline `c758634`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-11` Builder returned `READY_FOR_VERIFICATION`, its exact four-path candidate passed dedicated independent verification, and the main thread integrated it at product commit `6a0b4b8`; `RS-WO-002-13` passed dedicated independent verification and is integrated at `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final independent verification and awaits main-thread T2 integration
+**Implementation:** Foundation Builder returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02` verification attempt was procedurally blocked by an out-of-scope OS temp artifact, then the corrected bounded rerun returned `VERIFIED` against the unchanged source/runtime identity; `RS-WO-002-03` found and repaired a listing-version guard defect in commit `6e70c9f`, and fresh independent verification returned `VERIFIED` against that frozen source; `RS-WO-002-04` candidate adoption completed at T2 commit `68bbc69`; its first dedicated Verifier attempt stopped before source checks because the dispatch prompt described the Worktree root incorrectly, then one corrected follow-up returned `VERIFIED` against frozen source `28105e4d`; `RS-WO-002-05` Builder returned `READY_FOR_VERIFICATION` with the required runtime, focused `35/35` checks, production build, and local API smoke passing; the candidate was integrated at T2 code commit `de169ce`, and a dedicated Verifier independently returned `VERIFIED` against clean snapshot `bc3bc42`; the read-only `RS-WO-002-06` Architecture Advisor returned `READY_FOR_REVIEW`, and the main thread accepted its decomposition with revisions in ADR-RS-0008; `RS-WO-002-07` candidate `d71fe3e` passed dedicated independent verification with foundation `6/6`, focused `9/9`, full direct `50/50`, build, HTTP, role/privacy, conflict, and no-mutation evidence and was integrated at product commit `f700ba9`; `RS-WO-002-08` is integrated at product commit `006d2fd` after a localized generated-output boundary incident was re-baselined in process commit `8b77bdd`; both originate from reviewed baseline `c758634`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-11` Builder returned `READY_FOR_VERIFICATION`, its exact four-path candidate passed dedicated independent verification, and the main thread integrated it at product commit `6a0b4b8`; `RS-WO-002-13` passed dedicated independent verification and is integrated at `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final independent verification and is integrated at `9348aa5`; `RS-WO-002-14` is the active read-only combined cross-role verification checkpoint
 
 **Latest role-page disposition:** `RS-WO-002-13` passed independent verification and was integrated
 at product commit `3765747`. Repaired `RS-WO-002-12` candidate `52cba87c` passed final independent
-verification and remains unintegrated pending main-thread T2 review; the original tracked `.gitignore`
-mutation adding `.gstack/` outside the declared nine-path scope remains preserved for separate ownership handling.
+verification and is integrated at product commit `9348aa5`; the original tracked `.gitignore` mutation
+adding `.gstack/` outside the declared nine-path scope remains preserved for separate ownership handling.
 The parent remains `in_progress`.
 
 ## 1. Executive status
@@ -64,13 +65,13 @@ final response can remain a normal application action.
 | Preferred candidate set | **RightSpot and Sleepless Kingdom** | RightSpot is the current development target; outer formal selection remains pending |
 | Product thesis | **Provisional** | MVP scope accepted; user/problem and workflow value still need validation |
 | Primary slice | **MVP BUSINESS-RULES BASELINE** | Tenant request → agent review → slot proposal/decline → tenant response |
-| Human application shell | **AGENT ROLE PAGE INTEGRATED; TENANT ROLE PAGE VERIFIED, INTEGRATION PENDING** | Workflow HTTP/DTO transport is integrated at `f700ba9`; shared demo-session shell is integrated at `006d2fd`; shared authenticated role-page frame is integrated at `6a0b4b8`; agent queue/response UI is integrated at `3765747`; repaired tenant discovery/request candidate `52cba87c` passed final independent verification and remains unintegrated pending main-thread T2 review |
+| Human application shell | **TENANT AND AGENT ROLE PAGES INTEGRATED; CROSS-ROLE VERIFICATION IN PROGRESS** | Workflow HTTP/DTO transport is integrated at `f700ba9`; shared demo-session shell is integrated at `006d2fd`; shared authenticated role-page frame is integrated at `6a0b4b8`; agent queue/response UI is integrated at `3765747`; repaired tenant discovery/request candidate `52cba87c` is integrated at `9348aa5` |
 | Domain model | **MVP BUSINESS-RULES BASELINE** | Viewing Request, Listing, Availability, roles, transitions, and audit boundaries |
 | Backbone | **LOGICAL BASELINE** | Modular-monolith responsibility is defined and remains the application authority |
 | Implementation stack | **FOUNDATION VERIFIED** | Next.js App Router, React, TypeScript, Node.js 24, and SQLite; the runnable foundation passed the corrected independent verification contract, without claiming product-flow or deployment readiness |
 | Foundation runtime readiness | **PREPARED / VERIFIED** | Exact arm64 Node.js `v24.20.0` is prepared outside the repository and passed version, npm, archive-checksum, and `node:sqlite` smoke checks; the default shell remains `v26.5.0`, and the Builder used the exact target runtime |
 | Realtime / WebRTC | **DEFERRED FEATURE SEAM** | Future Remote Viewing is possible without making WebRTC or signaling an MVP dependency |
-| Delegated development | **EXPERIMENTAL PILOT — TASK-OWNED** | `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; corrected `RS-WO-002-02` rerun returned `VERIFIED`; `RS-WO-002-03` bounded repair commit `6e70c9f` passed fresh independent verification; `RS-WO-002-04` candidate `68bbc69` passed dedicated verification against frozen source `28105e4d`; `RS-WO-002-05` candidate is frozen at T2 code commit `de169ce` and passed dedicated independent verification against snapshot `bc3bc42`; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted/revised decomposition is recorded in ADR-RS-0008; `RS-WO-002-07` candidate `d71fe3e` passed dedicated independent verification and is integrated at `f700ba9`; `RS-WO-002-08` is integrated at `006d2fd` after process re-baseline `8b77bdd`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-11` candidate `f1f83c7` passed dedicated independent verification and is integrated at `6a0b4b8`; `RS-WO-002-13` candidate `169cb95d` passed dedicated independent verification and is integrated at `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final independent verification and is awaiting main-thread T2 integration |
+| Delegated development | **EXPERIMENTAL PILOT — TASK-OWNED** | `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; corrected `RS-WO-002-02` rerun returned `VERIFIED`; `RS-WO-002-03` bounded repair commit `6e70c9f` passed fresh independent verification; `RS-WO-002-04` candidate `68bbc69` passed dedicated verification against frozen source `28105e4d`; `RS-WO-002-05` candidate is frozen at T2 code commit `de169ce` and passed dedicated independent verification against snapshot `bc3bc42`; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted/revised decomposition is recorded in ADR-RS-0008; `RS-WO-002-07` candidate `d71fe3e` passed dedicated independent verification and is integrated at `f700ba9`; `RS-WO-002-08` is integrated at `006d2fd` after process re-baseline `8b77bdd`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-11` candidate `f1f83c7` passed dedicated independent verification and is integrated at `6a0b4b8`; `RS-WO-002-13` candidate `169cb95d` passed dedicated independent verification and is integrated at `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final independent verification and is integrated at `9348aa5`; `RS-WO-002-14` is the active read-only cross-role verification checkpoint |
 | Cloud Receiver | **Not a first-phase dependency** | Future integration boundary only |
 | WebMCP | **Not a first-phase design center** | Later Hackathon integration boundary |
 | Runtime / deployment | **Not started** | No service, hosting, credentials, or public URL |
@@ -121,26 +122,30 @@ final response can remain a normal application action.
 
 ## 5. Next gate
 
-The immediate gate is main-thread T2 review and integration of repaired tenant candidate `52cba87c`,
-followed by combined cross-role verification. The agent candidate `169cb95d` has already passed
-independent verification and is integrated at product commit `3765747`; the tenant and agent slices use
-the verified shared frame at `6a0b4b8` and stable transport, listing, and DTO boundaries.
+The immediate gate is the read-only `RS-WO-002-14` combined cross-role verification against integrated
+source `9348aa50b63e3f4f46e77238ad370670383d9d6d`. The agent candidate `169cb95d` is integrated at
+product commit `3765747`, the repaired tenant candidate `52cba87c` is integrated at `9348aa5`, and both
+slices use the verified shared frame at `6a0b4b8` and stable transport, listing, and DTO boundaries.
+
+The remaining paragraph records the earlier checkpoint sequence for audit context; the current gate is
+the `RS-WO-002-14` statement above.
 
 The first `RS-WO-002-02` result is recorded as a procedural `BLOCKED`, and the corrected rerun is
 now `VERIFIED` against the unchanged source/runtime identity. The bounded `RS-WO-002-03` domain-core
 implementation and projection-isolation repair were independently checked against frozen commit
 `a60001e`; the bounded Repairer completed the exact two-path repair in `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` was initially held because its prompt was appended to the persisted `RS-WO-002-01` supporting thread. The main thread reconstructed the exact three-path candidate and adopted it at T2 commit `68bbc69`. The first dedicated Verifier dispatch then stopped before source checks because the prompt incorrectly expected a nested `WebMCP_Challenge` directory inside the detached Worktree; one corrected follow-up to the same identity-matching Verifier returned `VERIFIED` against frozen source `28105e4d`. The parent execution posture is now `PROGRESSING`, not globally blocked: `RS-WO-002-05` Builder returned `READY_FOR_VERIFICATION`, its exact 14-path candidate was integrated at T2 code commit `de169ce`, and its dedicated independent Verifier returned `VERIFIED` against canonical snapshot `bc3bc42`. The read-only `RS-WO-002-06` Architecture Advisor returned `READY_FOR_REVIEW`; the main thread accepted its decomposition with revisions and froze the ordinary workflow HTTP/DTO contract in ADR-RS-0008. `RS-WO-002-07` candidate `d71fe3e` passed dedicated independent verification, including foundation `6/6`, focused `9/9`, full direct `50/50`, build, built-server HTTP, role/privacy/conflict, and no-mutation evidence, and is integrated at product commit `f700ba9`; `RS-WO-002-08` passed dedicated independent verification after a generated-output boundary re-baseline in process commit `8b77bdd` and is integrated at product commit `006d2fd`; `RS-WO-002-09` is integrated as bounded guidance; `RS-WO-002-11` candidate `f1f83c7` passed dedicated independent verification and is integrated at product commit `6a0b4b8`. The next gate is to complete the assigned disjoint tenant and agent role-page Work Orders `RS-WO-002-12` and `RS-WO-002-13`, then independently verify and integrate each before the cross-role browser walkthrough. The user-authorized Side Chat learning file and process-only Runbook writeback are classified separately and are not product source drift. Do not claim complete product-flow or parent closure from this checkpoint alone.
-The authoritative role-page disposition is final independent verification of repaired tenant candidate
-`52cba87c` for `RS-WO-002-12`, after `RS-WO-002-13` passed independent verification and was integrated
-at `3765747`; tenant integration and combined verification remain required. The eventual implementation remains
+The authoritative role-page disposition is integrated tenant and agent role pages: repaired tenant
+candidate `52cba87c` for `RS-WO-002-12` is integrated at `9348aa5`, after `RS-WO-002-13` passed
+independent verification and was integrated at `3765747`; combined verification remains required. The eventual implementation remains
 without Cloud Receiver, WebMCP, Redis, or WebRTC media
 dependencies.
 
 ## 5.1 Current Work Order boundary
 
 Current checkpoint: repaired tenant candidate `52cba87c` passed final independent verification from
-`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-verifier-final`. Main-thread T2 integration is the
-next gate; combined cross-role verification and browser E2E remain open, and browser E2E is not claimed.
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-verifier-final` and is integrated at product commit
+`9348aa5`. `RS-WO-002-14` is the active combined cross-role verification gate; browser E2E remains open
+and is not claimed.
 
 `RS-WO-002-10` returned `READY_FOR_REVIEW` with no source mutation, and the main thread accepted its
 decomposition. `RS-WO-002-11` Builder returned `READY_FOR_VERIFICATION`; T2 review froze the exact
