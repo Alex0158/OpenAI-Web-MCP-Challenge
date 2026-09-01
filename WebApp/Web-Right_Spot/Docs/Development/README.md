@@ -4,10 +4,9 @@
 **Status:** Roadmap and thread-orchestration pilot documented; foundation, workflow-core, the
 `RS-WO-002-04` persistence/application boundary, and the `RS-WO-002-05` tenant entry/listing
 discovery API are independently verified; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted
-decomposition is recorded in ADR-RS-0008; `RS-WO-002-07`, `RS-WO-002-08`, and `RS-WO-002-09` are the
-current assigned slices from reviewed baseline `c758634`
-`RS-WO-002-08` was re-baselined and resumed in process commit `8b77bdd` after a localized
-generated-output boundary incident; `RS-WO-002-09` is integrated as bounded UI guidance.
+decomposition is recorded in ADR-RS-0008; `RS-WO-002-07` is under independent verification from
+reviewed baseline `c758634`; `RS-WO-002-08` is integrated at product commit `006d2fd` after process
+re-baseline commit `8b77bdd`; `RS-WO-002-09` is integrated as bounded UI guidance.
 
 ## Purpose
 
@@ -43,11 +42,12 @@ candidate is frozen at T2 code commit `de169ce` and its dedicated independent Ve
 `READY_FOR_REVIEW`; the main thread accepted its contract-based decomposition with revisions and
 recorded the ordinary workflow HTTP/DTO contract in ADR-RS-0008. Only the three current slices
 `RS-WO-002-07` (workflow transport), `RS-WO-002-08` (shared shell), and `RS-WO-002-09` (UI/UX review)
-are admitted from reviewed baseline `c758634`; `RS-WO-002-08` briefly returned `BLOCKED` on a
-generated-output boundary incident and resumed from process re-baseline commit `8b77bdd`; the
+are admitted from reviewed baseline `c758634`; `RS-WO-002-07` remains under independent
+verification; `RS-WO-002-08` passed dedicated independent verification after a generated-output
+boundary re-baseline in process commit `8b77bdd` and is integrated at product commit `006d2fd`; the
 reviewer output is integrated as guidance. Tenant
-and agent role-page Builders remain gated until the transport and shell
-outputs are frozen and reviewed. A fresh Builder is needed only if a later checkpoint exposes a
+and agent role-page Builders remain gated until the transport passes T2 review and the main thread
+opens their bounded Work Orders. A fresh Builder is needed only if a later checkpoint exposes a
 source or behavior gap that cannot be repaired within a separately bounded Work Order. Later
 Integrator work is opened only when its predecessor produces a concrete code failure or a verified
 source and evidence boundary.

@@ -1307,9 +1307,8 @@ state or a second authority. Do not broaden this into tenant/agent UI or future 
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — the verified demo-session endpoints and ADR-RS-0008 shell boundary
 are available  
-**Execution state:** `VERIFYING` — Builder handoff passed main-thread T2 path review; candidate
-`52a8f101b4de9f039261dd5c50e3094c8c948ae3` is frozen and the dedicated independent Verifier is
-running  
+**Execution state:** `INTEGRATED` — the frozen candidate passed dedicated independent verification
+and was cherry-picked into the main branch at `006d2fd`  
 **Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-07`; `READ_ONLY_PARALLEL` with
 `RS-WO-002-09`  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent
@@ -1318,8 +1317,8 @@ Verifier
 **Objective:** Replace the static placeholder with a minimal, accessible, responsive human shell
 that can establish and end a bounded tenant or agent demo session. It must provide shared navigation
 and status feedback without implementing either role's business pages or owning workflow state.  
-**Next gate:** Independent verification of the frozen T2 candidate; no product writer may modify
-the frozen source until the Verifier returns.  
+**Next gate:** The shared shell is integrated; later tenant/agent role-page Work Orders may consume
+its session boundary, but the ordinary workflow remains open and parent closure is not claimed.  
 **Dispatch state:** Dispatched from clean detached source `c758634aa5d046e089e051ee74e463756b73a202`;
 execution Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-08-shared-shell`; supporting-task
 identity `01a05b58-a280-7ca0-8b19-df4bc78da099` (`local`). The Builder returned
@@ -1328,8 +1327,9 @@ identity `01a05b58-a280-7ca0-8b19-df4bc78da099` (`local`). The Builder returned
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-08-verifier` with supporting-task identity
 `01a05b6a-4f17-7b33-a30c-1d761f1f4192` (`local`). Its first activation stopped before source
 checks because the prompt conflated the main checkout root with the execution Worktree root; the
-main thread sent a path-identity correction to the same task identity. No source write is
-authorized during verification.  
+main thread sent a path-identity correction to the same task identity. The Verifier returned
+`VERIFIED`; the main thread cherry-picked the frozen product candidate into main at `006d2fd`. No
+source write was authorized during verification.  
 **Parent execution posture if blocked:** `CONSTRAINED` — workflow transport and UI/UX review may
 continue; role-page Builders remain gated.
 
@@ -1420,6 +1420,19 @@ canonical documents, add a UI dependency, commit, push, deploy, or dispatch anot
 Stop at `BLOCKED` if session behavior requires real authentication, a workflow contract, a new
 dependency, shared business state, or a role-page decision; if another writer owns a declared path;
 or if a design request would expand beyond the minimum shell and session surface.
+
+#### Completed verification and integration record
+
+- Dedicated Verifier `01a05b6a-4f17-7b33-a30c-1d761f1f4192` returned `VERIFIED` against frozen HEAD
+  `52a8f101b4de9f039261dd5c50e3094c8c948ae3`.
+- Exact Node `v24.20.0` / npm `11.19.0`, `npm ci`, typecheck, foundation tests `6/6`, build,
+  production `next start` smoke, session status/error matrix, browser interaction, responsive
+  375/1280 viewport, focus, reduced-motion, no-overflow, privacy, dependency, and forbidden-path
+  checks passed. The two initial verifier assertions were corrected and the actual contract passed.
+- The exact eight-path product candidate was integrated into the main branch as `006d2fd`.
+  Generated output was not adopted as source. The remaining claim is limited to the shared shell and
+  bounded demo-session UX; role pages, full workflow integration, deployment, WebMCP, Cloud Receiver,
+  Redis, WebRTC, production authentication, and parent closure remain open.
 
 ### RS-WO-002-09 — Review the human interface baseline and future page boundaries
 
