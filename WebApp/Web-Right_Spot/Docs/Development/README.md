@@ -1,7 +1,7 @@
 # RightSpot Development and Closure
 
 **Role:** Big-picture roadmap, implementation, verification, collaboration, and closure routing  
-**Status:** Roadmap and thread-orchestration pilot documented; foundation, workflow-core, and the `RS-WO-002-04` persistence/application boundary are independently verified; the latest frozen verification source is `28105e4d`
+**Status:** Roadmap and thread-orchestration pilot documented; foundation, workflow-core, and the `RS-WO-002-04` persistence/application boundary are independently verified; `RS-WO-002-05` tenant entry/listing discovery API is gated for dispatch
 
 ## Purpose
 
@@ -31,9 +31,10 @@ The main-thread candidate-adoption review for `RS-WO-002-04` is complete and the
 three-path candidate is committed at T2 source `68bbc69`. Its first dedicated read-only Verifier
 attempt stopped before source checks because the prompt described the Worktree root incorrectly; a
 corrected follow-up to the same identity-matching Verifier then returned `VERIFIED` against frozen
-source `28105e4d`. API or UI work remains closed until the next bounded slice is designed. A fresh
-Builder is needed only if a later checkpoint exposes a source or behavior gap that cannot be repaired
-within a separately bounded Work Order.
+source `28105e4d`. API or UI work remains closed until the next bounded slice is executed. The
+`RS-WO-002-05` boundary is defined in the parent Task and ADR-RS-0007; a fresh Builder is needed only
+if a later checkpoint exposes a source or behavior gap that cannot be repaired within a separately
+bounded Work Order.
 Later Integrator work is opened only when its predecessor produces a concrete code failure or a
 verified source and evidence boundary.
 

@@ -16,10 +16,10 @@ The implementation must follow the accepted business rules in
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Design the next bounded transport/session or API consumer slice from the
-  independently verified `RS-WO-002-04` persistence/application boundary.
-- Next gate: Design one bounded transport/session or API consumer slice from the verified persistence/
-  application boundary; do not open the full API/UI surface as one assignment.
+- Current increment: Implement and independently verify the bounded `RS-WO-002-05` tenant entry and
+  listing discovery API from the verified `RS-WO-002-04` persistence/application boundary.
+- Next gate: Dispatch the dedicated `RS-WO-002-05` Builder from a captured clean source baseline; do
+  not open the full API/UI surface as one assignment.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -649,10 +649,9 @@ identity-matching Verifier then returned `VERIFIED` against frozen source `28105
 Side Chat learning file and process-only Pilot Runbook writeback are not product source drift.  
 **Corrective execution mode:** Dedicated isolated Worktree from frozen repository commit `28105e4d`,
 which contains the adopted T2 implementation commit `68bbc69`; no product writer is active.  
-**Next gate:** Design one bounded transport/session or API consumer slice from the verified
-persistence/application boundary. Do not open the full API/UI surface as one assignment. A fresh
-Builder is required only if a later checkpoint identifies a source gap requiring a new bounded
-implementation.
+**Next gate:** `RS-WO-002-05` is the next bounded tenant entry and listing discovery API slice. Do not
+open the full API/UI surface as one assignment. A fresh Builder is required only if a later
+checkpoint identifies a source gap requiring a new bounded implementation.
 
 #### Dispatch identity incident
 
@@ -861,6 +860,136 @@ authentication, or start the tenant/agent UI. Return a supporting-thread report 
 commands/results, skipped claims, residual risks, and the boundary of the claim. Do not edit canonical
 documents, commit, push, deploy, or start the Verifier.
 
+### RS-WO-002-05 — Establish the local tenant entry and listing discovery API
+
+**Parent task:** `RIGHTSPOT-002`  
+**Role:** Builder → Verifier (sequential checkpoints)  
+**Pre-dispatch status:** `GATED` — `RS-WO-002-04` is independently verified against frozen source `28105e4d`; the synthetic listing discovery decision is accepted in ADR-RS-0007  
+**Execution state:** `NOT_STARTED`  
+**Owner:** Main RightSpot thread; one dedicated supporting task performs each bounded checkpoint  
+**Risk profile:** `Assured` — cross-layer read authority, demo session boundary, and Next.js route adapters  
+**Objective:** Make the first tenant-facing entry and discovery capability runnable through a bounded
+local demo session and tenant-authorized JSON API. The slice must expose the deterministic synthetic
+listing catalogue and detail facts from one application read boundary, without implementing request
+commands, agent operations, UI pages, or external authentication. This Work Order is governed by
+[ADR-RS-0007](../Decisions/ADR-RS-0007-synthetic-listing-discovery-boundary.md).
+**Dispatch state:** Not dispatched; the source baseline, isolated Worktree, supporting-task identity,
+and exact runtime profile must be recorded before activation.  
+**Next gate:** Dispatch one dedicated Builder against a clean source snapshot, then freeze its output
+for independent verification. No request API, agent API, or UI Work Order opens from this brief alone.
+
+#### Scope and ownership
+
+**Read set:** Repository `AGENTS.md` and Engineering controls, RightSpot `RUNBOOK.md`,
+`Docs/00-current-status.md`, `Docs/02-requirements.md`, `Docs/03-system-design.md`,
+`Docs/04-domain-and-data-model.md`, `Docs/05-api-and-integration-contracts.md`,
+`Docs/06-validation-and-evidence.md`, ADR-RS-0001 through ADR-RS-0007, the verified domain,
+persistence, and application modules, and the parent Task File.
+
+**Worker write set — exact authored paths:**
+
+- `src/server/domain/types.ts`;
+- `src/server/domain/workflow.ts`;
+- `src/server/domain/projections.ts`;
+- `src/server/application/workflow.ts`;
+- `src/server/application/listings.ts`;
+- `src/server/application/demo-session.ts`;
+- `src/server/application/http.ts`;
+- `app/api/session/route.ts`;
+- `app/api/listings/route.ts`;
+- `app/api/listings/[listingId]/route.ts`;
+- `tests/domain/workflow.test.ts`;
+- `tests/application/listings.test.ts`;
+- `tests/application/demo-session.test.ts`; and
+- `tests/api/listings.test.ts`.
+
+New paths are permitted only where listed above. The Builder may choose exact exported function names
+inside those paths, but must preserve the stated route and DTO contracts.
+
+**Main-thread orchestration writeback set:** this Task File, `Docs/00-current-status.md`,
+`Docs/Tasks/README.md`, `Docs/Development/README.md`, `Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`,
+and `RUNBOOK.md`. The main thread owns lifecycle, evidence, source-freeze, integration, and Git
+closure writeback; the Builder must not edit them.
+
+**Forbidden set:** all package manifests and lockfiles; `app/page.tsx` and `app/layout.tsx`; health,
+reset, and SQLite foundation modules; workflow persistence modules; request command behavior beyond
+the existing verified domain; agent queue or response operations; canonical documents and ADRs;
+scripts; Git index; any path outside RightSpot; and Cloud Receiver, WebMCP, Redis, WebRTC, ORM,
+migration framework, external auth provider, external property/media service, or in-memory business
+state.
+
+**Generated set:** only existing ignored RightSpot output (`node_modules/`, `.next/`,
+`*.tsbuildinfo`, `var/rightspot.sqlite*`, and isolated `var/test/` files). No `/tmp`, home-directory,
+or external output is permitted.
+
+#### Product and API contract
+
+- Extend the persisted synthetic `Listing` record with only the ADR-RS-0007 fields: title, synthetic
+  address, area, monthly rent in GBP, bedroom count, size in square metres, available-from date,
+  bounded description, and local `imageKey`. Keep exactly three published deterministic fixture
+  listings and preserve listing version and agent assignment semantics.
+- Add a tenant-safe application read boundary for listing collection and detail. It must accept only
+  the seeded tenant actor, return published listings in fixture order, support bounded `area`,
+  `maxRent`, `minSizeSqM`, and `availableFrom` filters, return `NOT_FOUND` for unknown/unpublished
+  detail, and omit `assignedAgentId` from tenant DTOs. Reads must not alter request, audit, version,
+  expiry, or fixture state.
+- Add a deliberately bounded demo session resolver with an allowlist for the seeded tenant and agent
+  identities. The session is a local demonstration mechanism, not production authentication: no
+  passwords, registration, signing keys, external provider, or client-trusted arbitrary role token.
+- Expose `POST /api/session` with body `{"role":"tenant"|"agent"}`, `GET /api/session`, and
+  `DELETE /api/session`. Use one HttpOnly, SameSite=Lax, Path=/ cookie with a bounded local lifetime;
+  accept only server-issued allowlisted demo values, return `401` when absent/invalid, and return
+  bounded JSON without credentials or diagnostics.
+- Expose `GET /api/listings` and `GET /api/listings/:listingId`. Both require a valid tenant demo
+  session; an agent session returns `403`. Use a thin route adapter over the application read
+  boundary. Return deterministic JSON containing the fixture generation and tenant-safe listing data;
+  do not expose agent assignment or internal workflow state.
+- Map malformed filters/body, unauthenticated access, forbidden role, missing listing, and persistence
+  failure to visible bounded responses (`400`, `401`, `403`, `404`, and `503` respectively) with no
+  stack traces, SQL, filesystem paths, cookies, or private role context. Do not add a generic fallback
+  response that masks an unsupported or failed operation.
+
+#### Acceptance criteria
+
+- A fresh application read returns exactly three deterministic published listing records with stable
+  titles, areas, rental facts, available dates, descriptions, and local image keys; no external URL
+  or live property data is required.
+- Tenant listing collection supports the four bounded filters, preserves fixture order, excludes
+  unpublished entries, rejects invalid filter values visibly, and never mutates the workflow state.
+- Tenant detail returns the same authoritative revision and discovery facts for a published listing;
+  unknown or unpublished detail returns `NOT_FOUND` without mutation.
+- Tenant-facing listing DTOs omit `assignedAgentId`; the existing tenant request projection remains
+  role-safe and the agent projection retains only its authorized assignment context.
+- Valid demo session selection resolves exactly one seeded actor; invalid or forged cookie values do
+  not grant a role, switching requires a new session action, and logout clears the cookie.
+- The two listing routes consume the application boundary, enforce the session role, return the
+  declared status/error shape, and do not create a request or write an audit entry.
+- Existing foundation and workflow behavior remains green, including exact listing revision checks,
+  reset generation, role authorization, and durable workflow persistence.
+- Focused tests cover metadata validation, filters, detail/role isolation, session lifecycle, route
+  error mapping, and no-mutation behavior. No request-command, agent-queue, UI, browser, deployment,
+  Cloud Receiver, WebMCP, Redis, WebRTC, or production-auth claim is made.
+
+#### Required verification and return
+
+Use exact Node.js `v24.20.0`, npm `11.19.0`, and
+`/Users/alex/.local/share/rightspot/node-v24.20.0-darwin-arm64/bin/node`. Run `npm ci --no-audit
+--no-fund` only when dependencies are absent, `npm run typecheck`, `npm test` with the foundation
+count separate, the focused domain/application/API tests, `npm run build`, and `git diff --check`.
+Inspect the exact path set, source identity, generated output, route contracts, and sensitive/CJK
+scope before returning. The Builder returns exactly `READY_FOR_VERIFICATION`, `NEEDS_REPAIR`, or
+`BLOCKED` with commands/results, runtime, source identity, changed/generated paths, claim boundary,
+and residual risks. The Builder must not edit canonical documents, commit, push, deploy, start the
+Verifier, or expand into request/agent/UI behavior.
+
+#### Stop conditions
+
+Stop and return `BLOCKED` if the accepted domain or ADR needs to change, session semantics require
+real authentication, route behavior needs a new external dependency, the listing source cannot stay
+authoritative and tenant-safe, a declared path is already owned by another writer, or the exact
+runtime/output boundary cannot be maintained. Do not weaken role checks, expose the full workflow
+snapshot, silently substitute a listing, or add a compatibility fallback.
+
 ## Parent objective — not the current Builder scope
 
 The following is the complete parent-Task outcome. It must not be sent to one Builder or Verifier as a
@@ -894,12 +1023,11 @@ confirmation or decline.
 
 ## Next gate
 
-The runnable foundation and `RS-WO-002-03` domain core are independently verified; the bounded repair
-for the listing-version guard defect is committed as `6e70c9f`. The next gate is to define one bounded
-persistence/application integration checkpoint before opening the wider API/UI surface. The
-parent Task must remain `in_progress` until the staged implementation, independent verification,
-integration, and canonical writeback gates for the complete ordinary application slice are complete
-without adding deferred WebRTC/Redis infrastructure.
+The runnable foundation, `RS-WO-002-03` domain core, and `RS-WO-002-04` durable workflow/application
+boundary are independently verified. The next gate is the bounded `RS-WO-002-05` tenant entry and
+listing discovery API described above. The parent Task must remain `in_progress` until the staged
+implementation, independent verification, integration, and canonical writeback gates for the
+complete ordinary application slice are complete without adding deferred WebRTC/Redis infrastructure.
 
 ## Closure evidence
 

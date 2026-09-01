@@ -1,7 +1,7 @@
 # RightSpot — Domain and Data Model
 
 **Role:** Domain vocabulary, business rules, state machine, and privacy boundary  
-**Status:** MVP business-rules baseline accepted; storage shape and implementation details remain open
+**Status:** MVP business-rules baseline accepted; durable workflow persistence and the synthetic listing discovery boundary are accepted local implementation decisions
 
 ## 1. Core entities
 
@@ -17,6 +17,23 @@
 The first fixture may contain three to five published listings so discovery feels credible. The
 judged walkthrough uses one primary listing and one request. All listing and availability data is
 synthetic.
+
+### 1.1 Listing discovery record
+
+The local discovery boundary uses the minimum synthetic fields needed for listing cards, bounded
+filters, and a detail view:
+
+- stable identifier, revision, publication status, and assigned agent identifier;
+- title, synthetic address, and area;
+- monthly rent in GBP, bedroom count, and size in square metres;
+- ISO available-from date;
+- bounded description; and
+- a stable local `imageKey` rather than an external image URL.
+
+The tenant-facing listing shape omits the internal assigned agent identifier. The agent-authorized
+shape may retain it for assignment checks. The catalogue remains deterministic, contains three
+published entries in fixture order, and does not imply live property ingestion or production media
+storage.
 
 ## 2. MVP business rules
 

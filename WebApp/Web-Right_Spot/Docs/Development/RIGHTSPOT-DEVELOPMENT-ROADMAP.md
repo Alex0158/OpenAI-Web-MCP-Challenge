@@ -36,7 +36,7 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 1. Implementation readiness | Resolve and record the foundation toolchain, runtime, SQLite/reset, health-route, source-boundary, and verification profile | Main-thread decision gate complete and the first Builder Work Order is ready; the Node.js baseline situation is explicitly recorded | Complete |
 | 2. Runnable foundation | Create one local application composition with the accepted stack, server-side SQLite foundation, deterministic reset metadata, and reproducible commands | Builder output reconciled and independently verified | Complete; first Verifier attempt was procedurally blocked, corrected rerun verified |
 | 3. Authoritative workflow core | Implement the Viewing Request state machine, availability lifecycle, role projections, version checks, audit facts, and explicit failures | Domain and Backbone checks pass without a browser or external service | Complete; post-repair source `6e70c9f` independently verified |
-| 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | `RS-WO-002-04` persistence/application boundary independently verified at T2 source `28105e4d` (candidate `68bbc69`); API/UI not started |
+| 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | `RS-WO-002-04` persistence/application boundary independently verified at T2 source `28105e4d` (candidate `68bbc69`); `RS-WO-002-05` tenant entry/listing discovery API gated; UI not started |
 | 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Not started |
 | 6. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary loop is stable and a new explicit integration decision exists | Deferred; not scheduled |
 
@@ -69,8 +69,8 @@ post-repair source `6e70c9f`. `RS-WO-002-04` now defines the bounded persistence
 checkpoint; the main thread reconstructed and adopted its exact three-path candidate at T2 source
 `68bbc69`. Its first dedicated independent Verifier attempt stopped before source checks because the
 dispatch prompt described the Worktree root incorrectly; one corrected follow-up to the same
-identity-matching Verifier returned `VERIFIED` against frozen source `28105e4d`. The next gate is to
-design one bounded transport/session or API consumer slice; this does not authorize opening the full
-API/UI surface as one assignment. The user-authorized Side Chat process lane is not product-source
-drift.
+identity-matching Verifier returned `VERIFIED` against frozen source `28105e4d`. The next gate is the
+gated `RS-WO-002-05` tenant entry and listing discovery API slice; this does not authorize opening the
+full API/UI surface as one assignment. The user-authorized Side Chat process lane is not
+product-source drift.
 Do not turn the full parent Task into one worker assignment or pre-create downstream role assignments.
