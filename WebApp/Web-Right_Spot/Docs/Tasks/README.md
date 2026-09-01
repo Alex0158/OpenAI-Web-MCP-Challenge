@@ -28,7 +28,8 @@ unexpected shared-tree learning artifact and Pilot Runbook change from another a
 One registered Task has one Task File. A Work Order is only the current dispatch brief under that Task; Builder, Verifier, Repairer,
 and Integrator are sequential checkpoints, not additional registered Tasks. Do not turn this file
 into a backlog of future Work Orders or a second active-work register. The parent remains
-`in_progress`; no product writer or repairer is active.
+`in_progress`; no other RightSpot product writer or repairer is authorized, while the unrelated
+active task's process-write ownership remains unresolved.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.
