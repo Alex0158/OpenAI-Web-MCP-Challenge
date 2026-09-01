@@ -5,7 +5,7 @@
 `RS-WO-002-04` persistence/application boundary, and the `RS-WO-002-05` tenant entry/listing
 discovery API are independently verified; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted
 decomposition is recorded in ADR-RS-0008; `RS-WO-002-07`, `RS-WO-002-08`, and `RS-WO-002-09` are the
-current gated slices
+current assigned slices from reviewed baseline `c758634`
 
 ## Purpose
 
@@ -39,9 +39,9 @@ source `28105e4d`. The `RS-WO-002-05` Builder returned `READY_FOR_VERIFICATION`;
 candidate is frozen at T2 code commit `de169ce` and its dedicated independent Verifier returned
 `VERIFIED` against clean snapshot `bc3bc42`. The read-only planning slice `RS-WO-002-06` returned
 `READY_FOR_REVIEW`; the main thread accepted its contract-based decomposition with revisions and
-recorded the ordinary workflow HTTP/DTO contract in ADR-RS-0008. Only the three current gated slices
-`RS-WO-002-07` (workflow transport), `RS-WO-002-08` (shared shell), and `RS-WO-002-09` (UI/UX
-review) are admitted. Tenant and agent role-page Builders remain gated until the transport and shell
+recorded the ordinary workflow HTTP/DTO contract in ADR-RS-0008. Only the three current assigned
+slices `RS-WO-002-07` (workflow transport), `RS-WO-002-08` (shared shell), and `RS-WO-002-09` (UI/UX
+review) are admitted from reviewed baseline `c758634`. Tenant and agent role-page Builders remain gated until the transport and shell
 outputs are frozen and reviewed. A fresh Builder is needed only if a later checkpoint exposes a
 source or behavior gap that cannot be repaired within a separately bounded Work Order. Later
 Integrator work is opened only when its predecessor produces a concrete code failure or a verified

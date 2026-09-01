@@ -11,7 +11,8 @@ completed at T2 commit `68bbc69`; after one procedural Worktree-path correction,
 independent Verifier returned `VERIFIED` against frozen source `28105e4d`; the `RS-WO-002-05` tenant
 entry/listing discovery API candidate `de169ce` was independently verified from canonical snapshot
 `bc3bc42`; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in
-ADR-RS-0008; `RS-WO-002-07`, `RS-WO-002-08`, and `RS-WO-002-09` are the current gated slices
+ADR-RS-0008; `RS-WO-002-07`, `RS-WO-002-08`, and `RS-WO-002-09` are assigned from reviewed baseline
+`c758634`
 
 ## 1. Authority and reading order
 

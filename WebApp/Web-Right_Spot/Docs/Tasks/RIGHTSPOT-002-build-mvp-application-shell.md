@@ -16,12 +16,11 @@ The implementation must follow the accepted business rules in
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Adjudicate the completed `RS-WO-002-06` Architecture Advisor proposal, freeze
-  the ordinary workflow HTTP/DTO contract, and open only the first three bounded interface slices:
-  workflow transport, shared shell, and UI/UX review.
-- Next gate: Record the accepted contract and exact ownership before dispatching `RS-WO-002-07`,
-  `RS-WO-002-08`, and `RS-WO-002-09`. Keep tenant and agent role-page Builders gated until the
-  transport and shell outputs are frozen and reviewed.
+- Current increment: Execute the three accepted bounded interface slices: workflow transport,
+  shared shell, and UI/UX review, each from the reviewed baseline `c758634`.
+- Next gate: Receive and inspect the three supporting-task reports. Freeze and independently verify
+  each Builder candidate; keep tenant and agent role-page Builders gated until the transport and shell
+  outputs are frozen and reviewed.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, ADR-RS-0008, and the accepted Requirements
   and Domain and Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, ADR-RS-0008, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -65,8 +64,8 @@ verification, integration, or parent-Task closure.
 
 - **Dispatch state:** `RS-WO-002-05` is independently verified against clean snapshot `bc3bc42`.
   `RS-WO-002-06` returned `READY_FOR_REVIEW`; the main thread accepted its useful decomposition with
-  revisions, recorded the local HTTP/DTO contract in ADR-RS-0008, and opened only `RS-WO-002-07`,
-  `RS-WO-002-08`, and `RS-WO-002-09` as currently gated Work Orders. Builder, Verifier, Repairer,
+  revisions, recorded the local HTTP/DTO contract in ADR-RS-0008, and dispatched only `RS-WO-002-07`,
+  `RS-WO-002-08`, and `RS-WO-002-09` from baseline `c758634`. Builder, Verifier, Repairer,
   Integrator, Advisor, and reviewer roles remain checkpoints under this Task, not pre-registered
   child Tasks.
 - **Baseline:** The actual repository root is `WebMCP_Challenge`; the latest verified product code
@@ -79,7 +78,7 @@ verification, integration, or parent-Task closure.
   `Docs/00-current-status.md`, the relevant product/domain/API/validation documents, ADR-RS-0001
   through ADR-RS-0008, and the Thread Orchestration Pilot Runbook.
 - **Worker restrictions:** The foundation, domain-core, persistence/application, and discovery
-  writers have stopped. The currently gated slices have separate ownership: `RS-WO-002-07` owns
+  writers have stopped. The currently assigned slices have separate ownership: `RS-WO-002-07` owns
   workflow HTTP/DTO paths, `RS-WO-002-08` owns the shared human shell paths, and `RS-WO-002-09` is
   read-only. Every checkpoint must classify the declared read, worker-write, main-thread-writeback,
   forbidden, and generated sets path-by-path; no worker may modify canonical authority, the Git
@@ -1158,9 +1157,9 @@ The main thread revised or rejected the following parts of the proposal:
 - do not add a UI kit, browser-test dependency, external service, or UI-owned business-state mock.
 
 The accepted contract is [ADR-RS-0008](../Decisions/ADR-RS-0008-ordinary-workflow-http-and-interface-contract.md).
-The next three Work Orders are registered below as `GATED`; their exact source identity and supporting
-task identity will be recorded only after the dispatch transaction succeeds. Their outputs remain
-individually unverified until dedicated Verifier checkpoints complete.
+The next three Work Orders are registered below. Their dispatch transactions succeeded from the same
+clean baseline; their exact source identity and supporting-task identities are recorded below. Their
+outputs remain individually unverified until dedicated Verifier checkpoints complete.
 
 ### RS-WO-002-07 — Implement the ordinary workflow HTTP and DTO boundary
 
@@ -1168,7 +1167,7 @@ individually unverified until dedicated Verifier checkpoints complete.
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — ADR-RS-0008 is accepted; the discovery API and its independent
 verification are complete  
-**Execution state:** `GATED` — not dispatched  
+**Execution state:** `ASSIGNED` — dedicated Builder task dispatched; no Verifier has started  
 **Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-08`; `READ_ONLY_PARALLEL` with
 `RS-WO-002-09`  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent
@@ -1181,6 +1180,11 @@ tenant request and agent response operations callable by a human UI without addi
 business state, or an external integration.  
 **Next gate:** Builder handoff; the main thread inspects exact paths and freezes the candidate before
 dispatching the dedicated Verifier.  
+**Dispatch state:** Dispatched from clean detached source `c758634aa5d046e089e051ee74e463756b73a202`;
+execution Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-07-workflow-http`; supporting-task
+identity `01a05b57-e509-7392-90dd-09b056b463d7` (`local`). The initial task activation and the full
+Work Order prompt were persisted to this dedicated task; no source write was authorized before the
+main-thread acknowledgement.  
 **Parent execution posture if blocked:** `CONSTRAINED` — the shared shell and read-only UI/UX review
 may continue, but tenant/agent role-page Builders remain gated.
 
@@ -1293,7 +1297,7 @@ state or a second authority. Do not broaden this into tenant/agent UI or future 
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — the verified demo-session endpoints and ADR-RS-0008 shell boundary
 are available  
-**Execution state:** `GATED` — not dispatched  
+**Execution state:** `ASSIGNED` — dedicated Builder task dispatched; no Verifier has started  
 **Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-07`; `READ_ONLY_PARALLEL` with
 `RS-WO-002-09`  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent
@@ -1304,6 +1308,10 @@ that can establish and end a bounded tenant or agent demo session. It must provi
 and status feedback without implementing either role's business pages or owning workflow state.  
 **Next gate:** Builder handoff; main-thread path review and source freeze before independent UI
 verification.  
+**Dispatch state:** Dispatched from clean detached source `c758634aa5d046e089e051ee74e463756b73a202`;
+execution Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-08-shared-shell`; supporting-task
+identity `01a05b58-a280-7ca0-8b19-df4bc78da099` (`local`). No source write was authorized before the
+main-thread acknowledgement.  
 **Parent execution posture if blocked:** `CONSTRAINED` — workflow transport and UI/UX review may
 continue; role-page Builders remain gated.
 
@@ -1387,7 +1395,7 @@ or if a design request would expand beyond the minimum shell and session surface
 **Role:** UI/UX reviewer  
 **Pre-dispatch status:** `GATED` — the ordinary contract is accepted; implementation review is
 read-only and does not wait for role pages  
-**Execution state:** `GATED` — not dispatched  
+**Execution state:** `ASSIGNED` — dedicated read-only reviewer task dispatched  
 **Parallelization:** `READ_ONLY_PARALLEL` with `RS-WO-002-07` and `RS-WO-002-08`  
 **Owner:** Main RightSpot thread; one dedicated read-only supporting task  
 **Risk profile:** `Standard` — human-flow clarity, accessibility, responsive baseline, and ownership
@@ -1397,6 +1405,9 @@ and the later tenant and agent Happy Path pages, including information hierarchy
 responsive behavior, demo narrative, and exact ownership boundaries.  
 **Next gate:** Main-thread review of the checklist; it may refine later page Work Orders but cannot
 authorize scope expansion or silently change ADR-RS-0008.  
+**Dispatch state:** Dispatched from clean detached source `c758634aa5d046e089e051ee74e463756b73a202`;
+execution Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-09-ui-review`; supporting-task
+identity `01a05b58-9ba4-7321-9c66-84477c44d359` (`local`). The reviewer has no authored write set.  
 **Parent execution posture if blocked:** `PROGRESSING` unless the review reveals a material product,
 privacy, or accessibility decision requiring the human owner's input.
 
