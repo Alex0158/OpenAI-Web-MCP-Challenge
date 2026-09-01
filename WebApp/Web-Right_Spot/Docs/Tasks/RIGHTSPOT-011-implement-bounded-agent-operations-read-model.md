@@ -36,15 +36,18 @@ WebMCP capability, analytics warehouse, historical event model, or natural-langu
 ## RS-WO-011-01 — Implement the Operations projection seam
 
 **Role:** Persistent Codex task/thread Builder → later independent Verifier  
-**Status:** `READY_TO_DISPATCH`  
+**Status:** `ASSIGNED`  
 **Parallelization:** `CONTRACT_PARALLEL_NEW_MODULE` — may run in parallel with the active Field Desk
 Verifier Work Orders because it writes only new, isolated module/test paths and has no shared product
 write set.  
 **Risk profile:** `Standard` — pure read-model logic with an explicit privacy and non-mutation gate.  
 **Dependency:** ADR-RS-0011 and the accepted existing `WorkflowState`/`Actor` types; no dependency on
 `RIGHTSPOT-008` or `RIGHTSPOT-009`.  
-**Source baseline:** Main-thread baseline will be captured immediately before dispatch from the
-reviewed main commit; untracked collaborator-owned files remain outside the source set.  
+**Source baseline:** `53ad8398d9c356914230efc6de4cc07925d49e3c` on `main`; untracked
+collaborator-owned files remain outside the source set.  
+**Supporting task/thread:** `01a05dd7-f126-7611-9a0e-b1c3deeacbde` on host `local`.  
+**Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-011-01-operations` on branch
+`rightspot/rs-wo-011-01-operations`.  
 **Ownership:** The Builder owns only the new projection module and its directly necessary focused
 tests. The main thread owns canonical writeback, source freeze, integration, and closure.
 

@@ -120,9 +120,11 @@ or canonical product writeback. `RS-WO-009-01` also returned `READY_FOR_REVIEW` 
 Advisor; both proposal records await main-thread review.
 
 `RIGHTSPOT-011` accepts ADR-RS-0011's bounded Agent Operations read-model seam. Its only current
-Work Order, `RS-WO-011-01`, may add a pure projection module and focused tests against the existing
-workflow state without waiting for the unresolved Favourite or Information Request semantics. It
-does not authorize an Operations route, dashboard UI, reporting history, WebMCP, or external service.
+Work Order, `RS-WO-011-01`, is assigned to task/thread `01a05dd7-f126-7611-9a0e-b1c3deeacbde` in
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-011-01-operations` from frozen baseline `53ad839`.
+It may add a pure projection module and focused tests against the existing workflow state without
+waiting for the unresolved Favourite or Information Request semantics. It does not authorize an
+Operations route, dashboard UI, reporting history, WebMCP, or external service.
 
 **Authoritative closure update:** The earlier checkpoint chronology below intentionally preserves the
 state at each historical handoff. It must not be read as reopening the current gate: `RS-WO-002-14`
