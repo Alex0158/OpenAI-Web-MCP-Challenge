@@ -12,6 +12,10 @@ as a forcing function. Every checkpoint was reviewed for an input, an authoritat
 transition, a persistence boundary, an observable result, and a failure or recovery path. A missing
 choice is recorded here instead of being silently invented in code.
 
+Concrete defaults for the gaps are proposed in
+[`04-mvp-decision-proposals.md`](04-mvp-decision-proposals.md). That file is a proposal pack for
+CP-01; it is not accepted product truth until the owner promotes each decision.
+
 The review does not change the product thesis. It confirms that the concept is coherent enough for a
 contract gate and a runtime capability probe, while separating the two-player demonstration from the
 larger PvP, siege, migration, breach, progression, and leaderboard game.
@@ -19,7 +23,7 @@ larger PvP, siege, migration, breach, progression, and leaderboard game.
 ## Findings
 
 The existing mechanism, capability, and chain documents cover the intended player loop. The roadmap
-exposed 18 MVP decisions that must be closed before implementation can be trusted. It also exposed
+exposed 20 MVP decisions that must be closed before implementation can be trusted. It also exposed
 eight full-game decisions that should remain outside the first vertical slice. None of these findings
 requires adding a feature to the MVP; most require naming a default, an ordering rule, or an evidence
 boundary.
@@ -46,6 +50,8 @@ boundary.
 | G-MVP-16 | Presentation and browser boundary | Target desktop WASD first; make Canvas device-pixel-ratio aware; expose React text equivalents, reconnect state, and a mobile-later note | CP-02 / CP-12 |
 | G-MVP-17 | Process topology | Use one Node process with clear modules locally; hosted deployment uses a long-running worker and durable database, with no timer owned by a serverless request | CP-02 / CP-17 |
 | G-MVP-18 | Evidence and redaction | Capture redacted IDs, revisions, world times, capability results, restart steps, and browser evidence; never include secrets, credentials, or raw Agent context | CP-03 / CP-16 / CP-18 |
+| G-MVP-19 | Deterministic combat contract | Use one round per world second, the readable additive damage formula, speed initiative with entity-id tie-break, and no random or hidden party modifier in G2 | CP-01 / CP-11 |
+| G-MVP-20 | Economy calibration | Use Wood = 1 coin, Rock = 3 coins, five equal-weight slots, one unit per 2 seconds, 20-unit nodes, and 30-second respawn; defer Gold and yield multipliers | CP-01 / CP-10 / CP-16 |
 
 The recommendations are deliberately conservative. They make the first story deterministic and
 reviewable without claiming that production balance, authentication, or world scale has been solved.
@@ -86,7 +92,7 @@ These decisions are real product work, but they should follow the local G2 proof
 
 Close G-MVP-01 through G-MVP-06 in CP-01 because identity, coordinates, protection, placement,
 recovery, and ordering are the kernel contracts. Close G-MVP-07 through G-MVP-11 while implementing
-the simulation and ledger foundation. Close G-MVP-12 through G-MVP-18 before the Re-entry and hosted
+the simulation and ledger foundation. Close G-MVP-12 through G-MVP-20 before the Re-entry and hosted
 gates. Review the full-game gaps after CP-16, when two-player telemetry and a real event trace exist.
 
 The next safe action is therefore CP-01, a versioned MVP contract sheet, followed by CP-02, a short
@@ -96,6 +102,5 @@ remaining unknowns into hidden implementation policy and make later recovery mor
 ## Scope conclusion
 
 The roadmap is implementable as a staged MVP. The concept does not need another top-level feature to
-become coherent; it needs explicit defaults at the 18 MVP boundaries above, then evidence that the
+become coherent; it needs explicit defaults at the 20 MVP boundaries above, then evidence that the
 world, cargo ledger, restart path, and page-bound Re-entry action behave as one causal system.
-

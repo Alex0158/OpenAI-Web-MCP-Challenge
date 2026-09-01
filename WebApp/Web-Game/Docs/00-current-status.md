@@ -25,6 +25,8 @@ The structural coverage result and cross-boundary gaps are recorded in
 [`Validation/02-mechanism-boundary-and-chain-audit.md`](Validation/02-mechanism-boundary-and-chain-audit.md).
 The roadmap-driven decisions and edge cases are recorded in
 [`Validation/03-roadmap-gap-audit.md`](Validation/03-roadmap-gap-audit.md).
+Recommended defaults and chain-level UX contracts for closing those decisions are recorded in
+[`Validation/04-mvp-decision-proposals.md`](Validation/04-mvp-decision-proposals.md).
 
 ## Working concept baseline
 
@@ -79,8 +81,9 @@ The roadmap-driven decisions and edge cases are recorded in
 
 ## Recommended next step
 
-The next action is CP-01, a versioned MVP contract sheet that closes identity, coordinates, protected
-starts, event ordering, persistence versions, snapshot shape, and cargo settlement. Follow it with
+The next action is CP-01, a versioned MVP contract sheet that reviews the proposed defaults and closes
+identity, coordinates, protected starts, event ordering, persistence versions, snapshot shape, combat,
+economy, and cargo settlement. Follow it with
 CP-02, a short capability and runtime probe for the selected Node worker, Canvas page, realtime
 transport, durable store, and genuine page-bound WebMCP surface. Only after those gates pass should a
 bounded implementation task be created. Keep combat values, spawn rates, prices, and visual assets or

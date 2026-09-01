@@ -93,7 +93,8 @@ only after CP-16 is verified locally.
 - **Scope:** Freeze the first-slice IDs, states, event names, revisions, clock units, coordinate
   conventions, snapshot shape, command envelope, and cargo settlement cases in one implementation
   contract.
-- **Depends on:** CP-00 and the gap audit in `Validation/03-roadmap-gap-audit.md`.
+- **Depends on:** CP-00, the gap audit in `Validation/03-roadmap-gap-audit.md`, and the proposed
+  defaults in `Validation/04-mvp-decision-proposals.md`.
 - **Acceptance:** Every field has one owner, every state transition has an idempotency key or entity
   version, and the contract names deposit-versus-death, restart, reconnect, and duplicate-event order.
 - **Verify:** Static cross-reference against `Mechanics/detail-*`, `Mechanics/Chains/`,
@@ -338,4 +339,6 @@ the failure behind an undocumented fallback.
   vertical-slice contract;
 - [`05-api-and-webmcp.md`](05-api-and-webmcp.md) — page tools and Re-entry boundary; and
 - [`../Validation/03-roadmap-gap-audit.md`](../Validation/03-roadmap-gap-audit.md) — unresolved design,
-  logic, and operational decisions surfaced by this roadmap.
+  logic, and operational decisions surfaced by this roadmap; and
+- [`../Validation/04-mvp-decision-proposals.md`](../Validation/04-mvp-decision-proposals.md) — proposed
+  defaults, UX chain contracts, and CP-01 promotion checklist.
