@@ -27,7 +27,7 @@ independent verification and are integrated at product commits `f700ba9` and `00
 is integrated as bounded guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW`
 and its decomposition is accepted; `RS-WO-002-11` candidate `f1f83c7` passed independent verification
 and is integrated at `6a0b4b8`; `RS-WO-002-12` and `RS-WO-002-13` are the accepted disjoint tenant and
-agent role-page Builder slices assigned in parallel; the agent candidate is now frozen for independent verification.
+agent and tenant role-page Builder slices are frozen for dedicated independent verification.
 The user-authorized Side Chat learning
 artifact and Pilot Runbook writeback are process-only changes, not product source drift.
 One registered Task has one Task File. A Work Order is a dispatch brief under that Task; normally

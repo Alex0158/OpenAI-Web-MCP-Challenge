@@ -1780,8 +1780,9 @@ unclaimed.
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — the shared role-page frame, listing discovery API, workflow
 transport, and tenant DTO contract are integrated and independently verified  
-**Execution state:** `ASSIGNED` — the dedicated tenant Builder is establishing context and implementing
-the bounded tenant-owned surface  
+**Execution state:** `READY_FOR_VERIFICATION` — the dedicated tenant Builder completed the bounded
+tenant-owned surface; candidate `eb1d62e1b33a045e683f64ba3d28930e9444cd25` is frozen for independent
+verification  
 **Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-13`; route, component, helper, test, and CSS
 ownership are disjoint, while both consume the same frozen read-only contracts  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent Verifier  
@@ -1790,14 +1791,20 @@ ownership are disjoint, while both consume the same frozen read-only contracts
 seeded published listings, inspect one listing, create and submit the one bounded Viewing Request, and
 later read and respond to the agent's proposal or decline. Keep server workflow state authoritative;
 the UI may hold transient form input but must not invent transitions, identity, versions, or fallback data.  
-**Next gate:** Complete the bounded Builder handoff, then independently verify the frozen exact-path
-candidate before the tenant output is integrated or described as end-to-end evidence.  
+**Next gate:** Complete the dedicated independent verification of the frozen exact-path candidate;
+integrate only after `VERIFIED`, or open a bounded repair if the Verifier reports a reproducible defect.  
 **Dispatch state:** Dispatched from clean baseline `8b33399ce5769bdb58cd08025ac2c1917675daf3`; execution
 Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-tenant-ui`; package root
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-tenant-ui/WebApp/Web-Right_Spot`; runtime-pin path
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-tenant-ui/.node-version`; supporting-task identity
-`01a05ba2-34d4-7613-892d-c0776203073c` (`local`). The full prompt was persisted after the usable thread
-identity returned; no source write is authorized before context establishment.  
+`01a05ba2-34d4-7613-892d-c0776203073c` (`local`). The full Builder prompt was persisted after the usable
+thread identity returned; the Builder returned `READY_FOR_VERIFICATION` and the exact nine-path
+candidate was committed at `eb1d62e1b33a045e683f64ba3d28930e9444cd25`. The dedicated independent
+Verifier is `01a05bb1-c38b-7a91-95aa-49475a057e43` (`local`) in Worktree
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-verifier`, detached at the candidate; its package root
+is `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-verifier/WebApp/Web-Right_Spot` and its runtime-pin
+path is `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-verifier/.node-version`. The full Verifier
+prompt was persisted after the usable thread identity returned; no source write is authorized.  
 **Parent execution posture if blocked:** `CONSTRAINED` only for the tenant interface; the agent interface,
 read-only analysis, and process work may continue if they do not consume a blocked tenant write set.
 
@@ -1944,7 +1951,10 @@ Verifier is `01a05bae-de91-7252-b5ce-4a6a729441dd` (`local`) in Worktree
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-verifier`, detached at the candidate; its package root
 is `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-verifier/WebApp/Web-Right_Spot` and its runtime-pin
 path is `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-verifier/.node-version`. The full Verifier
-prompt was persisted after the usable thread identity returned; no source write is authorized.  
+prompt was persisted after the usable thread identity returned; its first attempt stopped procedurally
+because the projectless output directory was used as the Git root; the main thread sent a correction to
+the same Verifier identity, which must now re-run preflight from the declared Worktree. No source write
+is authorized.  
 **Parent execution posture if blocked:** `CONSTRAINED` only for the agent interface; the tenant interface,
 read-only analysis, and process work may continue if they do not consume a blocked agent write set.
 
