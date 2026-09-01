@@ -1,7 +1,7 @@
 # RightSpot Development Roadmap
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
-**Status:** Phase 3 complete — authoritative workflow domain core independently verified; the Phase 4 persistence/application boundary and `RS-WO-002-05` discovery API are independently verified; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in ADR-RS-0008; `RS-WO-002-07` and `RS-WO-002-08` are assigned from reviewed baseline `c758634`, while `RS-WO-002-09` is integrated as bounded UI guidance; the ordinary human application loop is not started
+**Status:** Phase 3 complete — authoritative workflow domain core independently verified; the Phase 4 persistence/application boundary and `RS-WO-002-05` discovery API are independently verified; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in ADR-RS-0008; `RS-WO-002-07` and `RS-WO-002-08` are assigned from reviewed baseline `c758634`, with `RS-WO-002-08` resumed after process re-baseline commit `8b77bdd`; `RS-WO-002-09` is integrated as bounded UI guidance; the ordinary human application loop is not started
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-01, Europe/London
 
@@ -74,8 +74,9 @@ independently verified at T2 code commit `de169ce` from canonical snapshot `bc3b
 `RS-WO-002-06` Architecture Advisor returned `READY_FOR_REVIEW`; the main thread accepted its
 decomposition with revisions and froze the ordinary workflow HTTP/DTO contract in ADR-RS-0008. The
 current gate is the two assigned bounded slices `RS-WO-002-07` workflow transport and
-`RS-WO-002-08` shared shell from baseline `c758634`; `RS-WO-002-09` UI/UX review is integrated as
-guidance. The first two are contract-parallel. Tenant and agent role-page Builders remain gated until the transport and shell
+`RS-WO-002-08` shared shell from baseline `c758634`; `RS-WO-002-08` briefly returned `BLOCKED` on a
+generated-output boundary incident and resumed after process re-baseline commit `8b77bdd`;
+`RS-WO-002-09` UI/UX review is integrated as guidance. The first two are contract-parallel. Tenant and agent role-page Builders remain gated until the transport and shell
 outputs reach T2 and pass main-thread review. This does not authorize opening the full API/UI surface
 as one assignment. The user-authorized Side Chat process lane is not product-source drift.
 Do not turn the full parent Task into one worker assignment or pre-create downstream role assignments.

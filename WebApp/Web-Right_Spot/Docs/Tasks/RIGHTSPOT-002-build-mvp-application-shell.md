@@ -68,8 +68,9 @@ verification, integration, or parent-Task closure.
   `RS-WO-002-08`, and `RS-WO-002-09` from baseline `c758634`. `RS-WO-002-09` returned
   `READY_FOR_REVIEW` and its bounded checklist is now integrated as later UI guidance. Builder, Verifier, Repairer,
   Integrator, Advisor, and reviewer roles remain checkpoints under this Task, not pre-registered
-  child Tasks. `RS-WO-002-08` returned `BLOCKED` on a generated-output boundary incident; its
-  product candidate remains unverified and unintegrated pending the documented process re-baseline.
+  child Tasks. `RS-WO-002-08` returned `BLOCKED` on a generated-output boundary incident; the main
+  thread recorded the process re-baseline in `8b77bdd` and resumed the same task. Its product
+  candidate remains unverified and unintegrated.
 - **Baseline:** The actual repository root is `WebMCP_Challenge`; the latest verified product code
   remains `de169ce`; the accepted workflow/interface documentation baseline was frozen in
   `c758634` before dispatch. Each new Work Order records its own exact source identity. The
@@ -1299,8 +1300,8 @@ state or a second authority. Do not broaden this into tenant/agent UI or future 
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — the verified demo-session endpoints and ADR-RS-0008 shell boundary
 are available  
-**Execution state:** `BLOCKED` — Builder reported a generated-output boundary incident; no Verifier
-has started and no product candidate is adopted  
+**Execution state:** `ASSIGNED` — the same Builder task resumed after process re-baseline commit
+`8b77bdd`; no Verifier has started and no product candidate is adopted  
 **Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-07`; `READ_ONLY_PARALLEL` with
 `RS-WO-002-09`  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent
@@ -1363,8 +1364,8 @@ attempted cleanup of the two Next-generated helper files and the Builder restore
 `next-env.d.ts` without leaving a diff. The existing tests also created ignored `var/test/*.sqlite`
 outputs that were not previously listed. The main thread verified the exact generated content and
 provenance, preserved the artifacts in the isolated Worktree, and amended this Work Order/runbook
-before any continuation. This is a process-boundary incident, not a product-code claim; the Builder
-must resume with the clarified boundary and preferably use the already-built app with `next start`.
+before resuming the same task. This is a process-boundary incident, not a product-code claim; the
+Builder resumed with the clarified boundary and should use the already-built app with `next start`.
 
 #### Dependencies and assumptions
 

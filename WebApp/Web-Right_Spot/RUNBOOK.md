@@ -11,8 +11,9 @@ completed at T2 commit `68bbc69`; after one procedural Worktree-path correction,
 independent Verifier returned `VERIFIED` against frozen source `28105e4d`; the `RS-WO-002-05` tenant
 entry/listing discovery API candidate `de169ce` was independently verified from canonical snapshot
 `bc3bc42`; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in
-ADR-RS-0008; `RS-WO-002-07` and `RS-WO-002-08` are assigned from reviewed baseline `c758634`,
-while `RS-WO-002-09` is integrated as bounded UI guidance
+ADR-RS-0008; `RS-WO-002-07` is assigned and `RS-WO-002-08` was re-baselined and resumed in the
+same task after a localized generated-output boundary incident recorded in process commit
+`8b77bdd`, from reviewed baseline `c758634`; `RS-WO-002-09` is integrated as bounded UI guidance
 
 ## 1. Authority and reading order
 

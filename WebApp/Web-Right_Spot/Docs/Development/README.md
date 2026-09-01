@@ -6,6 +6,8 @@
 discovery API are independently verified; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted
 decomposition is recorded in ADR-RS-0008; `RS-WO-002-07`, `RS-WO-002-08`, and `RS-WO-002-09` are the
 current assigned slices from reviewed baseline `c758634`
+`RS-WO-002-08` was re-baselined and resumed in process commit `8b77bdd` after a localized
+generated-output boundary incident; `RS-WO-002-09` is integrated as bounded UI guidance.
 
 ## Purpose
 
@@ -41,7 +43,9 @@ candidate is frozen at T2 code commit `de169ce` and its dedicated independent Ve
 `READY_FOR_REVIEW`; the main thread accepted its contract-based decomposition with revisions and
 recorded the ordinary workflow HTTP/DTO contract in ADR-RS-0008. Only the three current slices
 `RS-WO-002-07` (workflow transport), `RS-WO-002-08` (shared shell), and `RS-WO-002-09` (UI/UX review)
-are admitted from reviewed baseline `c758634`; the reviewer output is integrated as guidance. Tenant
+are admitted from reviewed baseline `c758634`; `RS-WO-002-08` briefly returned `BLOCKED` on a
+generated-output boundary incident and resumed from process re-baseline commit `8b77bdd`; the
+reviewer output is integrated as guidance. Tenant
 and agent role-page Builders remain gated until the transport and shell
 outputs are frozen and reviewed. A fresh Builder is needed only if a later checkpoint exposes a
 source or behavior gap that cannot be repaired within a separately bounded Work Order. Later
