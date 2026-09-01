@@ -2,16 +2,16 @@
 
 **Role:** Product validation, test strategy, and claim boundary  
 **Status:** Validation plan; the runnable foundation, workflow domain core, durable application
-boundary, tenant discovery API, workflow HTTP/DTO transport, shared shell, and shared role-page frame
-are independently verified or integrated, while the ordinary role-page product workflow remains
-unverified
+boundary, tenant discovery API, workflow HTTP/DTO transport, shared shell, shared role-page frame,
+accepted ordinary role-page product workflow, and post-MVP shared CSS foundation are independently
+verified or integrated.
 
 ## 1. Current evidence level
 
 The current RightSpot evidence includes a local foundation implementation, an independently verified
 workflow domain core, durable application boundary, tenant discovery API, workflow HTTP/DTO transport,
-shared shell, and shared role-page frame, plus main-thread reproduction and corrected independent
-Verifier reruns. The first
+shared shell, shared role-page frame, and the accepted ordinary tenant-to-agent role-page workflow,
+plus main-thread reproduction and corrected independent Verifier reruns. The first
 foundation attempt is retained as procedurally `BLOCKED` because one assertion wrote outside the
 declared RightSpot output boundary; the corrected rerun returned `VERIFIED` with the same source
 manifest and no external output. The outer Re-entry Core's tests and frozen MVP evidence do not prove
@@ -81,6 +81,21 @@ The first implementation does not need exhaustive failure testing. It does need 
 guardrails to prevent a broken walkthrough: invalid role access, missing request, invalid draft,
 stale write, invalid state transition, unavailable slot, expired proposal, failed reset, duplicate
 submission, and accidental cross-role data exposure.
+
+## 4.1 Post-MVP shared CSS evidence
+
+`RS-WO-007-02` is independently `VERIFIED` and integrated at product commit `89a50c7`. The
+same-identity verifier observed the committed CSS candidate and unchanged source boundary before and
+after the run. Typecheck, foundation tests `6/6`, build, and `git diff --check` passed; the fresh
+served bundle exposed the candidate Field Desk tokens. Signed-out and role redirects, seeded tenant
+listing discovery, mobile listing detail, `390x844`/`768x1024`/`1440x900` layout checks, no horizontal
+overflow, keyboard focus, control sizing, reduced-motion rule presence, and rendered contrast
+samples passed. Browser execution used an isolated non-repository directory and produced no source,
+documentation, test, database, or Git metadata mutation.
+
+The agent request-detail consequence path was not exercised because the current fixture queue has no
+assigned request. This is a residual evidence boundary, not a CSS defect; deployment, WebMCP, and
+external authentication remain non-claims.
 
 ## 4. Candidate kill tests
 

@@ -17,11 +17,15 @@ against the integrated source with full direct, built-server HTTP, and browser e
 is closed for the accepted local MVP. Its verifier Worktrees also exposed an out-of-scope tracked
 tooling mutation preserved as procedure evidence.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current active Work Order:** `RS-WO-007-02` is `READY_FOR_VERIFICATION` under `RIGHTSPOT-007`;
+**Current active Work Order:** `RS-WO-007-02` is `VERIFIED` and integrated at product commit
+`89a50c7` after its final same-identity browser rerun corrected the stale served-build block under
+`RIGHTSPOT-007`;
 Builder `01a05d75-0116-75e3-807d-a19c6669e659` (`Turing`, local multi-agent) changed only
 `app/globals.css`, whose post-Builder SHA-256 is `bb85c353b3943b1267f361b3a4e677bc3e4ce7db09250984085471c7409a957c`.
-Independent Verifier `01a05d82-ba0f-7963-9975-200e1fabb962` (`Hooke`) is assigned against the
-frozen T2 candidate.
+Independent Verifier `01a05d82-ba0f-7963-9975-200e1fabb962` (`Hooke`) verified the corrected frozen
+T2 candidate at `HEAD=89a50c7119c366728c5e4a4cfc022788ddf39f00`. Static checks, typecheck, foundation
+tests, build, source identity, served CSS token evidence, responsive browser checks, focus, and
+contrast passed; its residual risk is limited to an unassigned agent request-detail fixture.
 No tenant/agent page Builder is dispatched. The preceding `RS-WO-005-01` navigation candidate was independently `VERIFIED` by
 Verifier task `01a05d5d-d796-72f0-baad-ca00d8e7ab4e` and integrated at local product commit `27f5391`.
 Verifier attempt 01 was procedurally `BLOCKED` after browser tooling added the tracked repository
@@ -41,9 +45,13 @@ declared shared-shell write set and corrected independent verification returned 
 preserved `.gitignore` incident is procedure evidence, not a product defect.
 The read-only UI decomposition Work Order `RS-WO-007-01` is complete in supporting task
 `01a05d5f-cb85-7cf3-96b4-edf0f5891b6d` on host `local` and accepted with revisions; its next
-single-file CSS Work Order `RS-WO-007-02` is ready for independent verification against T2
-commit `c92eb3773e1d6e3dd1944657f877c244ae516210` plus its declared CSS candidate; its Verifier is
-assigned and the source is frozen.
+single-file CSS Work Order `RS-WO-007-02` is verified and integrated at product commit `89a50c7`
+against candidate commit `89a50c7119c366728c5e4a4cfc022788ddf39f00`; attempt 01 was
+procedurally blocked when main-thread process commits moved the Git ref during verification. The
+candidate hash was unchanged, the block was recorded, and corrected attempt 02 passed all static/build
+checks but was blocked because the existing server served pre-candidate CSS. The candidate was then
+captured in `89a50c7`, rebuilt, restarted, observed serving the expected tokens, and independently
+verified through the browser. The verification freeze is now closed.
 Repaired tenant candidate `52cba87c` passed final independent verification and is integrated at product
 commit `9348aa5`. Its predecessor candidate `eb1d62e1b33a045e683f64ba3d28930e9444cd25` had
 two verifier runs checkpoint-locally blocked by a tracked `.gitignore` mutation adding `.gstack/` outside
@@ -78,8 +86,8 @@ closed `RS-WO-005-01` checkpoint; it remains procedure evidence and is outside t
 write set.
 
 **Current implementation lane:** `RIGHTSPOT-007`'s Architecture/UI Advisor proposal is accepted
-with revisions. `RS-WO-007-02` is frozen at T2 and its Verifier is assigned; the next gate is its
-Verifier result. A separate,
+with revisions. `RS-WO-007-02` passed static/build and final browser verification and is integrated
+at product commit `89a50c7`; its rebuilt served runtime shows the candidate tokens. A separate,
 non-blocking `RS-WO-007-03` parallelism review returned `READY_FOR_REVIEW` from supporting worker
 `01a05d76-dac9-7283-9c2a-4166935f5043`; main accepted its isolation revisions and has not registered
 or dispatched the future tenant/agent Builders.
@@ -88,8 +96,14 @@ verified defect; its proposal-only `RS-WO-008-01` returned `READY_FOR_REVIEW` fr
 `01a05d79-ce45-7000-aa44-a3a1ecad95b0`. Main accepted it as review evidence with revisions; it
 cannot authorize implementation until joint review with `RIGHTSPOT-009`.
 The newly surfaced `RIGHTSPOT-009` is a separate pending decision proposal for Information Request
-and contact-preference semantics; its proposal-only `RS-WO-009-01` is assigned to supporting worker
-`01a05d7c-21b4-72f3-bbe8-1c34d1aee291` and cannot authorize implementation or outbound communication.
+and contact-preference semantics; its proposal-only `RS-WO-009-01` returned `READY_FOR_REVIEW` from
+supporting worker `01a05d7c-21b4-72f3-bbe8-1c34d1aee291` and cannot authorize implementation or
+outbound communication.
+`RIGHTSPOT-010` is a separate pending Agent Operations Insights/WebMCP boundary proposal; its
+read-only `RS-WO-010-01` returned `READY_FOR_REVIEW` from `01a05d88-8907-7063-8c93-030e296c9df0`
+(`Leibniz`) and cannot authorize dashboard implementation, WebMCP registration, reporting changes,
+or canonical product writeback. `RS-WO-009-01` also returned `READY_FOR_REVIEW` from its assigned
+Advisor; both proposal records await main-thread review.
 
 **Authoritative closure update:** The earlier checkpoint chronology below intentionally preserves the
 state at each historical handoff. It must not be read as reopening the current gate: `RS-WO-002-14`

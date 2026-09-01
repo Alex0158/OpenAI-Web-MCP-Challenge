@@ -677,6 +677,14 @@ thread, may modify that source during verification. The main thread may update a
 process-only record outside the frozen implementation snapshot, but any change to the verified source
 requires a fresh handoff or re-verification.
 
+The T3 freeze is also a Git-ref freeze for the checkpoint. After the Verifier is dispatched, the main
+thread must not create a commit, amend a commit, rebase, switch the verified branch, or otherwise move
+the source reference used by the handoff, even when the intended change is process-only documentation.
+Declared process-only writeback may remain uncommitted and outside the verified source paths while the
+Verifier runs. If an intentional process or source change requires a commit or changes the declared
+identity, stop the verification, record a procedural `BLOCKED` result, capture the new identity, and
+assign a fresh verification run; do not ask the Verifier to infer whether the ref movement was harmless.
+
 ### 8.1.4 Candidate adoption after a coordination or provenance defect
 
 A wrong destination, mismatched thread identity, incomplete delivery receipt, or similar process
@@ -1084,6 +1092,26 @@ Do not restore or delete the metadata from the worker. A later rerun must either
 tool from an explicitly isolated, permitted output boundary while the application server remains tied
 to the frozen source, or omit browser interaction and state that browser evidence is unavailable. Static
 UI, direct HTTP, and source-scope evidence must not be presented as browser E2E evidence.
+
+The served-runtime identity is part of browser evidence. A healthy endpoint or an unchanged Git ref is
+not sufficient if the running server was built before the frozen candidate. Before a browser claim, the
+Verifier must rebuild or otherwise prove that the served bundle includes the candidate's source identity
+(for example, a candidate CSS token or build fingerprint). If the served output reflects an older
+candidate, stop as procedural `BLOCKED`, preserve the static/direct evidence separately, and rerun only
+after restarting the server from the frozen source. Do not classify stale served output as a product
+defect or as browser pass evidence.
+
+### 12.1.2 Prompt closure and commit timing
+
+Once a Verifier returns a final result, the main thread should promptly reconcile the evidence in the
+owning Task File and any affected current-status, validation, or roadmap record. If the result is
+`VERIFIED`, stage only the known owner-controlled product and process paths, create the smallest
+appropriate local commit, and immediately verify the new `HEAD`, working-tree boundary, and relevant
+runtime health. Do not leave a completed candidate and its closure record indefinitely dirty while
+starting unrelated analysis. This timing rule does not override the Git-ref freeze: no commit,
+amend, rebase, branch switch, or process-document write is allowed while the Verifier checkpoint is
+still active. A `NEEDS_REPAIR` or `BLOCKED` result is recorded and triaged instead of being committed
+as verified.
 
 ### 12.2 Verification selection
 

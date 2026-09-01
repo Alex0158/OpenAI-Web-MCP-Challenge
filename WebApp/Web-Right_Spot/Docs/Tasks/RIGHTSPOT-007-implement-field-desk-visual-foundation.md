@@ -15,12 +15,13 @@
 - Owner: Main RightSpot thread
 - Objective: Turn the accepted RightSpot Field Desk visual direction into a small, implementable
   shared UI foundation without expanding the rental MVP or changing product authority.
-- Current increment: Advisor decomposition is complete; the next visual source change is a gated,
-  single-file shared CSS foundation.
-- Next gate: Dispatch an independent Verifier against the frozen post-Builder CSS candidate, then
-  reconcile the verification result before any role-page implementation is considered.
-- Execution posture: `PROGRESSING`; the CSS Builder returned `READY_FOR_VERIFICATION`, and no
-  tenant/agent page Builder is dispatched.
+- Current increment: The single-file shared CSS foundation is independently verified and integrated
+  at product commit `89a50c7`; its served runtime includes the candidate tokens. No tenant/agent page
+  Builder is dispatched yet.
+- Next gate: Complete the isolation preflight, then register only the next bounded tenant/agent role
+  Work Orders if their frozen source, runtime, and ownership boundaries remain safe.
+- Execution posture: `READY_FOR_NEXT_BOUNDED_WAVE`; the CSS checkpoint is closed, while independent
+  read-only proposal work and next-wave planning remain separate.
 
 ## Accepted product boundary
 
@@ -112,7 +113,7 @@ these constraints:
 ## RS-WO-007-02 — Implement the shared Field Desk CSS foundation
 
 **Role:** Builder → Verifier (sequential checkpoints)  
-**Status:** `READY_FOR_VERIFICATION`  
+**Status:** `VERIFIED` — independently verified and integrated at product commit `89a50c7`  
 **Parallelization:** `SERIAL_SHARED_CSS` — sole writer for the global visual token and primitive layer.  
 **Risk profile:** `Standard` — behavior-preserving CSS change with a narrow authored path.  
 **Dependency:** `RS-WO-005-01` passed independent verification and is integrated at local product
@@ -120,21 +121,60 @@ these constraints:
 **Supporting worker:** `01a05d75-0116-75e3-807d-a19c6669e659` (`Turing`, local multi-agent Builder).  
 **Source baseline:** `04fb59565680f8df544bb345ffa29aeb31a2fdb6` on `main`; `app/globals.css` SHA-256
 `639eb5c940d67c05d842f813bcf2b78cbdd18f7ac5b71985a887a003c0587448` before dispatch.  
-**Post-Builder T2 identity:** Main-thread handoff observed at `HEAD=c92eb3773e1d6e3dd1944657f877c244ae516210`;
-`app/globals.css` SHA-256 is `bb85c353b3943b1267f361b3a4e677bc3e4ce7db09250984085471c7409a957c`.
-The candidate is the only product source change in this checkpoint.  
+**Initial post-Builder T2 identity:** Main-thread handoff was observed at
+`HEAD=c92eb3773e1d6e3dd1944657f877c244ae516210`; `app/globals.css` SHA-256 is
+`bb85c353b3943b1267f361b3a4e677bc3e4ce7db09250984085471c7409a957c`. The candidate was the only
+product source change in this checkpoint.  
+**Verification attempt 01:** `BLOCKED` by process-only source-identity drift. Hooke observed the
+verification start at `HEAD=f4e62b2...` and a later final read at `HEAD=c15b879...` after the main
+thread committed process/document records. The CSS candidate hash and `app-shell.tsx` hash were
+unchanged; no product verification checks were run and no verifier source mutation occurred. This
+was not classified as a CSS defect.  
+**Corrected T2 identity:** After the block was recorded, the main thread re-baselined the unchanged
+candidate at `HEAD=b63ee351f3856829d049177d3ea1b68618cc206a` with the same CSS hash. The current
+process-only records are frozen and the main thread must not commit, amend, or edit the verified
+source/reference until the corrected run returns.  
+**Verification attempt 02:** `BLOCKED` by stale served runtime evidence. Hooke verified the frozen
+`HEAD=b63ee351f3856829d049177d3ea1b68618cc206a` and unchanged hashes before and after the run;
+`npm run typecheck`, `npm test` (6/6), `git diff --check`, `npm run build`, and the static CSS audit
+passed. The existing server returned healthy HTTP responses but served the pre-candidate CSS tokens
+(`--paper: #f7faf8`, `--ink: #15231f`, `--accent: #176b58`, `--focus: #e06d2f`) instead of the
+candidate tokens, so browser/rendered evidence could not be attributed to this CSS. No source,
+tests, docs, database, or Git metadata changed. This is not classified as a CSS defect.  
+**Recovery action after attempt 02:** The main thread captured the unchanged CSS candidate in
+`89a50c7119c366728c5e4a4cfc022788ddf39f00`, rebuilt the application, restarted the local server,
+and confirmed that the served bundle contains the candidate tokens. No product source was changed
+by this recovery action.  
+**Final corrected verification:** Hooke reused the committed candidate and freshly served runtime for
+the final browser/rendered verification and returned `VERIFIED`. The Git-ref freeze was released only
+after that result; the main thread then performed the closure writeback.  
+**Candidate source commit verified:** `89a50c7119c366728c5e4a4cfc022788ddf39f00` captures the
+unchanged CSS candidate and is integrated as product commit `89a50c7`.
 **Builder evidence:** `READY_FOR_VERIFICATION`; Node `v24.20.0`, npm `11.19.0`, typecheck,
 foundation `6/6`, focused UI `7/7`, build, `git diff --check`, and CSS variable/class compatibility
-scan passed. Browser/rendered responsive, keyboard, full-suite, and complete contrast evidence remain
-for the independent Verifier.  
+scan passed. The final independent Verifier evidence is recorded below.  
 **T0 dirty-state limitation:** unrelated `.gitignore`, `Docs/Tasks/README.md`, untracked
 `Docs/Tasks/RIGHTSPOT-008-define-favourites-and-listing-interest-boundary.md`, untracked
 `Docs/Tasks/RIGHTSPOT-009-define-information-request-and-contact-preference-boundary.md`, and
 owner-held `Docs/Reference/RIGHTSPOT-GOAL-PROMPT-HISTORY.md` remain outside this Work Order and must
 not be modified, staged, restored, or treated as product source.
 **Verifier worker:** `01a05d82-ba0f-7963-9975-200e1fabb962` (`Hooke`, local multi-agent Verifier).  
-**Verification status:** `ASSIGNED`; the Verifier must use the frozen T2 candidate and an isolated
-non-repository browser working directory.
+**Verification status:** `VERIFIED` by the same-identity independent Verifier against candidate
+commit `89a50c7119c366728c5e4a4cfc022788ddf39f00` and an isolated non-repository browser working
+directory. The candidate is integrated at product commit `89a50c7`; the main thread must not treat
+the earlier procedural blocks as product defects.
+
+**Final verification evidence:** Hooke observed `HEAD=89a50c7119c366728c5e4a4cfc022788ddf39f00`,
+the candidate CSS SHA-256 `bb85c353b3943b1267f361b3a4e677bc3e4ce7db09250984085471c7409a957c`, and
+the shared shell SHA-256 `df1ec440f4cd54008214989327ed25f74e1c0ecde314887a087ef285b60ed7e3` unchanged
+before and after verification. Node `v24.20.0`, npm `11.19.0`, typecheck, foundation tests `6/6`,
+`git diff --check`, and build passed. The served bundle exposed the candidate tokens; signed-out,
+tenant, agent, redirect, listing, mobile detail, desktop/tablet/mobile layout, no-overflow,
+keyboard/focus, reduced-motion rule, and rendered contrast checks passed. Browser cwd was the
+isolated `/var/tmp/rightspot-browser-rs-wo-007-02-eSLyUQ`; no source, docs, tests, database, or Git
+metadata mutation occurred. Residual risk is limited to the unexercised agent request-detail path
+because the current fixture queue has no assigned request; deployment, WebMCP, and external auth
+remain unclaimed.
 
 ### Worker write set
 
