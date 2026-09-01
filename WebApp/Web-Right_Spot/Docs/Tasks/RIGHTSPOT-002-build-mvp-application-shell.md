@@ -1170,7 +1170,8 @@ outputs remain individually unverified until dedicated Verifier checkpoints comp
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — ADR-RS-0008 is accepted; the discovery API and its independent
 verification are complete  
-**Execution state:** `ASSIGNED` — dedicated Builder task dispatched; no Verifier has started  
+**Execution state:** `VERIFYING` — Builder handoff passed main-thread T2 path review; candidate
+`d71fe3e` is frozen and the dedicated independent Verifier is running  
 **Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-08`; `READ_ONLY_PARALLEL` with
 `RS-WO-002-09`  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent
@@ -1181,8 +1182,8 @@ workflow command/read composition
 the existing domain, application, session, and persistence authority. The result must make the
 tenant request and agent response operations callable by a human UI without adding UI, a second
 business state, or an external integration.  
-**Next gate:** Builder handoff; the main thread inspects exact paths and freezes the candidate before
-dispatching the dedicated Verifier.  
+**Next gate:** Independent verification of the frozen T2 candidate; no product writer may modify the
+frozen source until the Verifier returns.  
 **Dispatch state:** Dispatched from clean detached source `c758634aa5d046e089e051ee74e463756b73a202`;
 execution Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-07-workflow-http`; supporting-task
 identity `01a05b57-e509-7392-90dd-09b056b463d7` (`local`). The initial task activation and the full
@@ -1190,7 +1191,10 @@ Work Order prompt were persisted to this dedicated task; no source write was aut
 main-thread acknowledgement. The application/package root is the Worktree-relative
 `WebApp/Web-Right_Spot`; a follow-up correction was sent after the Builder identified an initial
 checkout-root/npm-root confusion, which only created external npm diagnostics and did not change the
-repository.  
+repository. The Builder then returned `READY_FOR_VERIFICATION`; main-thread T2 review committed the
+exact 15 authored paths at `d71fe3e`. The independent Verifier is dispatched in Worktree
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-07-verifier` with supporting-task identity
+`01a05b70-3a9a-7d50-af83-e71c5cfa0da7` (`local`). No source write is authorized during verification.  
 **Parent execution posture if blocked:** `CONSTRAINED` — the shared shell and read-only UI/UX review
 may continue, but tenant/agent role-page Builders remain gated.
 
