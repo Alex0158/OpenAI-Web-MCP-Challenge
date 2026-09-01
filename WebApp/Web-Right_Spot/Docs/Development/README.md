@@ -9,8 +9,9 @@ returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in ADR-RS
 commit `006d2fd` after process re-baseline commit `8b77bdd`; `RS-WO-002-09` is integrated as bounded
 UI guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW` and its decomposition was accepted;
 `RS-WO-002-11` candidate `f1f83c7` passed independent verification and is integrated at product commit
-`6a0b4b8` as the shared role-page frame. The immediate implementation slices are the bounded tenant and
-agent role-page deliveries in parallel.
+`6a0b4b8` as the shared role-page frame; `RS-WO-002-13` passed independent verification and is
+integrated at product commit `3765747`; `RS-WO-002-12` remains frozen and checkpoint-locally blocked
+by an out-of-scope tracked verifier Worktree mutation pending ownership/recoverability handling.
 
 ## Purpose
 

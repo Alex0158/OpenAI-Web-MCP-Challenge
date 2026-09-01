@@ -313,3 +313,25 @@ before tests, build, HTTP, or browser checks.
 **Remaining uncertainty:** The local prepared runtime path is currently verified for this machine;
 future hosts may require a different absolute path. The version and executable path must therefore
 be re-resolved at each dispatch rather than copied from historical records.
+
+## 10. Tracked tooling metadata is still an ownership boundary
+
+**Status:** `Accepted into Runbook`  
+**Date:** 2026-09-01  
+**Source:** `RS-WO-002-12` independent verification final readback
+
+**Observation:** The Tenant Verifier completed the candidate's source, runtime, test, build, HTTP,
+and partial UI checks, but its final Worktree readback found a tracked `.gitignore` mutation adding
+`.gstack/` outside the declared nine authored paths. The mutation was not part of the candidate and
+could not be safely attributed to the Verifier or removed by it. The correct result was checkpoint
+`BLOCKED`, not `VERIFIED` and not a product repair.
+
+**Learning:** The ownership boundary covers tracked repository metadata as well as product source.
+Final source readback must classify every tracked mutation against the Work Order's exact path sets.
+If tooling or another actor changes an undeclared tracked path, preserve the exact diff, stop the
+affected checkpoint, and let the main thread resolve ownership and recoverability under the deletion
+gate. Re-run the same verification only after a clean, exact-scope source identity is available; do
+not restore, delete, commit, or silently absorb the mutation from the worker.
+
+**Promotion:** The Pilot Runbook now treats undeclared tracked tooling metadata changes as ownership
+violations and requires a checkpoint-local `BLOCKED` result with separate main-thread handling.

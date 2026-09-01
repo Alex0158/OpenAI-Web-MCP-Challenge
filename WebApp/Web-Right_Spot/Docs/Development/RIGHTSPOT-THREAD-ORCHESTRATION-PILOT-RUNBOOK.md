@@ -883,6 +883,14 @@ without invalidating the product execution baseline. A semantic, overlapping, or
 requires re-baselining or serialization. The main thread must not guess and must not use destructive
 reset or cleanup to hide the violation.
 
+A tooling-generated change to a tracked path is still an ownership violation unless that path was
+explicitly declared in the Work Order. This includes repository metadata such as `.gitignore`. A
+Verifier must report `BLOCKED` when its final readback finds such a mutation, even if the candidate
+source and all product checks are clean. The worker must preserve the exact diff and must not restore,
+delete, or commit it. The main thread resolves ownership and recoverability separately, then re-runs
+the same checkpoint from a clean, exact-scope source identity; it must not turn the metadata incident
+into a product repair.
+
 ### 9.5 Live analysis and auxiliary process lane
 
 The main thread is the live control plane: it owns current-state adjudication, Work Order design,

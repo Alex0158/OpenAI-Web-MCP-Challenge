@@ -26,8 +26,11 @@ workflow HTTP/DTO contract in ADR-RS-0008, and dispatched `RS-WO-002-07`, `RS-WO
 independent verification and are integrated at product commits `f700ba9` and `006d2fd`; the reviewer
 is integrated as bounded guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW`
 and its decomposition is accepted; `RS-WO-002-11` candidate `f1f83c7` passed independent verification
-and is integrated at `6a0b4b8`; `RS-WO-002-12` and `RS-WO-002-13` are the accepted disjoint tenant and
-agent and tenant role-page Builder slices are frozen for dedicated independent verification.
+and is integrated at `6a0b4b8`; `RS-WO-002-13` passed independent verification and is integrated at
+product commit `3765747`; `RS-WO-002-12` remains frozen and checkpoint-locally blocked because its
+dedicated verifier Worktree contains a tracked `.gitignore` mutation adding `.gstack/` outside the
+declared candidate scope. The tenant checkpoint must be re-verified after the ownership/recoverability
+gate; no separate registered Task or Task File is created for that recovery.
 The user-authorized Side Chat learning
 artifact and Pilot Runbook writeback are process-only changes, not product source drift.
 One registered Task has one Task File. A Work Order is a dispatch brief under that Task; normally
