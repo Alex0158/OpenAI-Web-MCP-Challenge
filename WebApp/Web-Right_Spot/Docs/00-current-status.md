@@ -19,7 +19,9 @@ tooling mutation preserved as procedure evidence.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current active Work Orders:** `RS-WO-007-04` tenant and `RS-WO-007-05` agent Builders have handed
 off clean frozen candidates at commits `63e4c3e` and `33a36f0`; independent Verifier Work Orders
-`RS-WO-007-06` and `RS-WO-007-07` are now assigned in separate evidence Worktrees. The shared CSS
+`RS-WO-007-06` and `RS-WO-007-07` are now assigned in separate evidence Worktrees. `RS-WO-011-01`
+is a separate ready-to-dispatch server-only Operations projection seam with no overlapping write set.
+The shared CSS
 foundation `RS-WO-007-02` is already `VERIFIED` and integrated at product commit `89a50c7` after its
 final same-identity browser rerun corrected the stale served-build block under `RIGHTSPOT-007`;
 Builder `01a05d75-0116-75e3-807d-a19c6669e659` (`Turing`, local multi-agent) changed only
@@ -116,6 +118,11 @@ read-only `RS-WO-010-01` returned `READY_FOR_REVIEW` from `01a05d88-8907-7063-8c
 (`Leibniz`) and cannot authorize dashboard implementation, WebMCP registration, reporting changes,
 or canonical product writeback. `RS-WO-009-01` also returned `READY_FOR_REVIEW` from its assigned
 Advisor; both proposal records await main-thread review.
+
+`RIGHTSPOT-011` accepts ADR-RS-0011's bounded Agent Operations read-model seam. Its only current
+Work Order, `RS-WO-011-01`, may add a pure projection module and focused tests against the existing
+workflow state without waiting for the unresolved Favourite or Information Request semantics. It
+does not authorize an Operations route, dashboard UI, reporting history, WebMCP, or external service.
 
 **Authoritative closure update:** The earlier checkpoint chronology below intentionally preserves the
 state at each historical handoff. It must not be read as reopening the current gate: `RS-WO-002-14`
