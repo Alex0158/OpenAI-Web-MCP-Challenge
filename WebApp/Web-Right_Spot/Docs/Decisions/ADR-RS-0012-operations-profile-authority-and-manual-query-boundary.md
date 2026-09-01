@@ -1,6 +1,6 @@
 # ADR-RS-0012: Operations Profile Authority and Manual Query Boundary
 
-**Status:** Accepted — bounded post-MVP authority decision; implementation gated  
+**Status:** Accepted — bounded post-MVP authority decision; authority and projection slices integrated, transport/UI still gated  
 **Decision date:** 2026-09-01  
 **Decision owner:** Main RightSpot thread
 
@@ -172,12 +172,12 @@ Operations authority + profile reset
         -> separate WebMCP decision and page-authored tools
 ```
 
-The authority/persistence slice is the next implementation increment. It may add only new
-Operations-specific domain, persistence, and focused test files and must not change relay source,
-shared workflow types, existing HTTP contracts, routes, pages, dependencies, or WebMCP. A later
-projection must use new Operations-specific paths rather than overload the verified relay
-`operations-projection.ts`. Transport, page, navigation, and WebMCP are separate gates with explicit
-ownership and source freezes.
+The authority/persistence slice is integrated at `e7f30d5`, and the governed projection slice is
+independently verified and integrated at `edd7575`. Those slices add only Operations-specific domain,
+persistence, projection, and focused test paths; relay source, shared workflow types, existing HTTP
+contracts, routes, pages, dependencies, and WebMCP remain unchanged. Future transport, page,
+navigation, and WebMCP work remains separately gated with explicit ownership and source freezes, and
+must consume the verified projection rather than reimplement its filters or counts.
 
 ## Alternatives considered
 
@@ -222,8 +222,9 @@ SQL-like interface.
 
 ## Validation and reopen triggers
 
-The authority implementation must prove deterministic generation, atomic Operations-only reset,
-reopen equivalence, invalid-state failure, assigned-agent scope, no relay mutation, and record-derived
-data. Reopen this decision if the profile must share relay state, requires historical events or real
-tenant/contact data, needs Favourite/Information Request metrics, introduces a new lifecycle state,
-or proposes WebMCP before manual page verification.
+The authority and projection implementations are verified for deterministic generation, atomic
+Operations-only reset, reopen equivalence, invalid-state failure, assigned-agent scope, no relay
+mutation, privacy-safe record-derived data, bounded filters, London calendar-day age semantics, and
+explicit empty/truncated results. Reopen this decision if the profile must share relay state, requires
+historical events or real tenant/contact data, needs Favourite/Information Request metrics, introduces
+a new lifecycle state, or proposes WebMCP before manual page verification.

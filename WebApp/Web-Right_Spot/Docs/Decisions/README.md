@@ -29,6 +29,7 @@ The current working decisions are:
 - [`ADR-RS-0009 — RightSpot Field Desk UI/UX and navigation baseline`](ADR-RS-0009-ui-ux-visual-system-and-navigation.md); and
 - [`ADR-RS-0010 — External authentication boundary`](ADR-RS-0010-external-authentication-boundary.md).
 - [`ADR-RS-0011 — Bounded Agent Operations read-model seam`](ADR-RS-0011-bounded-agent-operations-read-model-seam.md).
+- [`ADR-RS-0012 — Operations Profile Authority and Manual Query Boundary`](ADR-RS-0012-operations-profile-authority-and-manual-query-boundary.md).
 
 They define a RightSpot internal MVP baseline. They do not replace the outer project's formal
 application-selection ADR or authorize changes to the outer Re-entry Core.
