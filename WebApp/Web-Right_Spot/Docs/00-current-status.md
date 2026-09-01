@@ -20,8 +20,9 @@ agent surfaces have since passed their respective independent verification gates
 at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; an integrated cross-role regression gate
 remains before `RIGHTSPOT-007` can close.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current active Work Orders:** `RS-WO-011-02` is assigned to independently verify the frozen
-server-only Operations projection seam in an isolated Worktree with no overlapping product write set.
+**Current active Work Orders:** `RS-WO-007-08` is assigned to independently verify the integrated
+Field Desk source; the bounded Operations seam `RS-WO-011-01` passed independent verification and is
+integrated at product commit `7ff0fbd`. Its verifier Worktree remains a historical evidence snapshot.
 `RS-WO-007-08` is assigned to an
 independent integrated-source Verifier in a separate evidence Worktree. `RS-WO-007-06` and
 `RS-WO-007-07` independently verified the frozen tenant/agent candidates and the main thread
@@ -128,9 +129,9 @@ or canonical product writeback. `RS-WO-009-01` also returned `READY_FOR_REVIEW` 
 Advisor; both proposal records await main-thread review.
 
 `RIGHTSPOT-011` accepts ADR-RS-0011's bounded Agent Operations read-model seam. `RS-WO-011-01`
-completed its exact two-path Builder handoff and is frozen at candidate `5b05c78`; `RS-WO-011-02`
-is assigned to independent Verifier `01a05de3-4a06-7522-8b35-3c5ec4daab05` in
-`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-011-02-operations-verifier`.
+completed its exact two-path Builder handoff at `5b05c78`, `RS-WO-011-02` independently verified it,
+and the main thread integrated it at product commit `7ff0fbd`. The seam remains a server-side contract
+only; no Operations route, dashboard, WebMCP, or future 008/009 metric is authorized.
 It may add a pure projection module and focused tests against the existing workflow state without
 waiting for the unresolved Favourite or Information Request semantics. It does not authorize an
 Operations route, dashboard UI, reporting history, WebMCP, or external service.

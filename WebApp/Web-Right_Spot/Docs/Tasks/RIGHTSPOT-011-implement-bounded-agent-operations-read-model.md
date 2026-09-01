@@ -16,12 +16,12 @@
 - Objective: Implement and independently verify a privacy-safe, deterministic Agent Operations
   projection over existing `WorkflowState`, without adding a route, UI, persistence schema, or
   future Favourite/Information Request/WebMCP behavior.
-- Current increment: `RS-WO-011-01` completed its bounded Builder handoff and is frozen at candidate
-  commit `5b05c78ec71c849a268b31cd49e72f9b3235587e`. It adds only the pure projection module and its
-  focused tests; later API, dashboard, and WebMCP coupling remain deferred.
-- Next gate: Run `RS-WO-011-02` as an independent Verifier against the frozen candidate. Do not start
-  a consumer or integration Work Order until this seam is verified.
-- Execution posture: `CONTRACT_SEAM_CANDIDATE_FROZEN`; this task remains independent of the active
+- Current increment: `RS-WO-011-01` was independently verified and integrated at product commit
+  `7ff0fbd` from frozen candidate `5b05c78ec71c849a268b31cd49e72f9b3235587e`. It adds only the pure
+  projection module and its focused tests; later API, dashboard, and WebMCP coupling remain deferred.
+- Next gate: The main thread must decide and register a separate consumer boundary before any route,
+  API, dashboard, or WebMCP work begins. The verified seam alone does not authorize a consumer.
+- Execution posture: `CONTRACT_SEAM_VERIFIED_INTEGRATED`; this task remains independent of the active
   Field Desk regression wave and the unresolved 008/009 semantic boundaries.
 
 ## Accepted implementation boundary
@@ -37,7 +37,7 @@ WebMCP capability, analytics warehouse, historical event model, or natural-langu
 ## RS-WO-011-01 — Implement the Operations projection seam
 
 **Role:** Persistent Codex task/thread Builder → later independent Verifier  
-**Status:** `READY_FOR_VERIFICATION` — frozen candidate commit `5b05c78`  
+**Status:** `INTEGRATED` — independently verified; product commit `7ff0fbd`  
 **Parallelization:** `CONTRACT_PARALLEL_NEW_MODULE` — may run in parallel with the active Field Desk
 Verifier Work Orders because it writes only new, isolated module/test paths and has no shared product
 write set.  
@@ -48,6 +48,12 @@ write set.
 collaborator-owned files remain outside the source set.  
 **Candidate source:** `5b05c78ec71c849a268b31cd49e72f9b3235587e`; exactly the two declared new paths
 are present and the Builder Worktree is clean after the main-thread T2 freeze.  
+**Integration:** The main thread cherry-picked the verified candidate as product commit `7ff0fbd`.
+The candidate added only the two declared paths. The independent Verifier used the frozen source
+with Node `v24.20.0` / npm `11.19.0`; focused projection tests `5/5`, foundation tests `6/6`,
+typecheck, build, diff checks, exact scope, authorization/privacy/status, deterministic ordering,
+input/output isolation, and pure-boundary scans passed. No route, server, API, dashboard, browser,
+deployment, WebMCP, Cloud Receiver, or external-service claim is made from this seam.
 **Supporting task/thread:** `01a05dd7-f126-7611-9a0e-b1c3deeacbde` on host `local`.  
 **Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-011-01-operations` on branch
 `rightspot/rs-wo-011-01-operations`.  
@@ -114,7 +120,7 @@ Verifier or any consumer/integration task.
 ## RS-WO-011-02 — Independently verify the Operations projection seam
 
 **Role:** Independent Verifier  
-**Status:** `ASSIGNED`  
+**Status:** `VERIFIED` — candidate independently verified and integrated at `7ff0fbd`  
 **Parallelization:** `EVIDENCE_ONLY` — may run beside `RS-WO-007-08` because it uses a detached
 snapshot and has no product write set.  
 **Risk profile:** `Standard` — code-level verification of a pure, privacy-bounded projection seam.  
