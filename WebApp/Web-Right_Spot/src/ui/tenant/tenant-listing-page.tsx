@@ -40,12 +40,23 @@ export default function TenantListingPage({ listingId }: { listingId: string }) 
       eyebrow="Listing detail"
       description="The facts below come from the tenant listing service. A request is saved separately and only submitted through an explicit action."
     >
-      {isLoading ? <div className={styles.loadingState} role="status" aria-busy="true">Loading listing and request context…</div> : null}
+      {isLoading ? (
+        <div className={`${styles.feedbackState} ${styles.loadingState}`} role="status" aria-live="polite" aria-busy="true">
+          <span className={styles.feedbackMarker} aria-hidden="true" />
+          <div>
+            <h2>Preparing the listing</h2>
+            <p>RightSpot is loading the property facts and your current request context together.</p>
+          </div>
+        </div>
+      ) : null}
       {!isLoading && error ? (
-        <div className={styles.emptyState} role="alert">
-          <h2>Listing details are unavailable</h2>
-          <p>{tenantApiErrorMessage(error, "load this listing")}</p>
-          <button className="button button-quiet" type="button" onClick={load}>Retry</button>
+        <div className={`${styles.feedbackState} ${styles.errorState}`} role="alert">
+          <span className={styles.feedbackMarker} aria-hidden="true" />
+          <div>
+            <h2>Listing details are unavailable</h2>
+            <p>{tenantApiErrorMessage(error, "load this listing")}</p>
+            <button className="button button-quiet" type="button" onClick={load}>Retry listing</button>
+          </div>
         </div>
       ) : null}
       {!isLoading && !error && listingData && requestData ? (
@@ -76,30 +87,53 @@ function ListingDetailContent({
   return (
     <div className={styles.detailLayout}>
       <section className={styles.detailCard} aria-labelledby="listing-facts-title">
-        <div className={styles.mediaPlaceholderLarge} aria-label={`Local placeholder for seeded image key ${listing.imageKey}`}>
-          <span>{listing.imageKey}</span>
+        <div className={styles.mediaPlaceholderLarge} role="img" aria-label={`Seeded property placeholder for ${listing.title} in ${listing.area}`}>
+          <span className={styles.mediaKicker}>Seeded property view</span>
+          <strong>{listing.area}</strong>
+          <span className={styles.mediaIndex}>RightSpot field note</span>
         </div>
         <div className={styles.detailCopy}>
-          <p className="eyebrow">{listing.area}</p>
-          <h2 id="listing-facts-title">{listing.title}</h2>
+          <div className={styles.detailHeading}>
+            <div>
+              <p className="eyebrow">{listing.area}</p>
+              <h2 id="listing-facts-title">{listing.title}</h2>
+              <p className={styles.address}>{listing.address}</p>
+            </div>
+            <p className={styles.detailPrice}>
+              <strong>£{listing.monthlyRentGbp.toLocaleString("en-GB")}</strong>
+              <span>per month</span>
+            </p>
+          </div>
           <p className={styles.lede}>{listing.description}</p>
-          <p className={styles.mutedCopy}>{listing.address}</p>
+          <div className={styles.availabilityStrip}>
+            <span>Available from</span>
+            <strong>{formatDate(listing.availableFrom)}</strong>
+          </div>
           <dl className={styles.detailFacts}>
-            <div><dt>Monthly rent</dt><dd>£{listing.monthlyRentGbp.toLocaleString("en-GB")}</dd></div>
             <div><dt>Bedrooms</dt><dd>{listing.bedrooms}</dd></div>
             <div><dt>Size</dt><dd>{listing.sizeSqM} m²</dd></div>
-            <div><dt>Available from</dt><dd>{formatDate(listing.availableFrom)}</dd></div>
-            <div><dt>Listing version</dt><dd>{listing.version}</dd></div>
           </dl>
-          <p className={styles.technicalNote}>Fixture generation {listingData.fixtureGeneration} · image key is a local opaque seed</p>
+          <details className={styles.technicalDisclosure}>
+            <summary>Demo record details</summary>
+            <dl className={styles.technicalFacts}>
+              <div><dt>Listing version</dt><dd>{listing.version}</dd></div>
+              <div><dt>Fixture generation</dt><dd>{listingData.fixtureGeneration}</dd></div>
+              <div><dt>Local image key</dt><dd>{listing.imageKey}</dd></div>
+            </dl>
+          </details>
         </div>
       </section>
 
       {requestTargetsAnotherListing ? (
         <section className={styles.noticeCard} aria-labelledby="existing-request-title">
-          <p className="eyebrow">One request per fixture</p>
-          <h2 id="existing-request-title">Your active request is for another listing</h2>
-          <p>You cannot create a second Viewing Request in this demo fixture. Open the request dashboard to see and manage the existing one.</p>
+          <div className={styles.noticeHeading}>
+            <span aria-hidden="true">01</span>
+            <div>
+              <p className="eyebrow">Current request</p>
+              <h2 id="existing-request-title">Your active request is for another listing</h2>
+            </div>
+          </div>
+          <p className={styles.noticeCopy}>This bounded demo keeps one Viewing Request in play. Open the request dashboard to review the existing home and its latest status.</p>
           <a className="button button-primary" href="/tenant/requests">Open request dashboard</a>
         </section>
       ) : canEditDraft ? (
@@ -112,9 +146,14 @@ function ListingDetailContent({
         />
       ) : (
         <section className={styles.noticeCard} aria-labelledby="request-already-sent-title">
-          <p className="eyebrow">Viewing Request</p>
-          <h2 id="request-already-sent-title">This listing already has a {formatState(request?.state)} request</h2>
-          <p>The submitted request is read-only from this listing page. Continue from the tenant request dashboard for the current response.</p>
+          <div className={styles.noticeHeading}>
+            <span aria-hidden="true">01</span>
+            <div>
+              <p className="eyebrow">Viewing Request</p>
+              <h2 id="request-already-sent-title">This listing already has a {formatState(request?.state)} request</h2>
+            </div>
+          </div>
+          <p className={styles.noticeCopy}>The submitted request is read-only here. Continue from the tenant request dashboard to see the current response and any permitted next action.</p>
           <a className="button button-primary" href="/tenant/requests">Open request dashboard</a>
         </section>
       )}

@@ -78,6 +78,8 @@ export default function TenantDiscoveryPage() {
     setAppliedFilters({});
   }
 
+  const hasAppliedFilters = Object.keys(appliedFilters).length > 0;
+
   return (
     <RolePageFrame
       requiredRole="tenant"
@@ -91,47 +93,57 @@ export default function TenantDiscoveryPage() {
           <div>
             <p className="eyebrow">Discovery</p>
             <h2 id="listing-search-title">A small, focused catalogue</h2>
+            <p className={styles.sectionIntro}>Compare the practical facts first, then open one home to prepare a viewing request.</p>
           </div>
-          <p className={styles.mutedCopy}>Synthetic listings · GBP · local demo</p>
+          <p className={styles.catalogueNote}>Seeded London rentals <span aria-hidden="true">·</span> GBP</p>
         </div>
 
         <form className={styles.filterForm} onSubmit={applyFilters} aria-label="Filter listings">
-          <label>
-            Area
-            <input
-              value={filters.area}
-              onChange={(event) => setFilters({ ...filters, area: event.target.value })}
-              placeholder="e.g. Shoreditch"
-            />
-          </label>
-          <label>
-            Maximum rent (GBP)
-            <input
-              inputMode="numeric"
-              type="number"
-              min="1"
-              value={filters.maxRent}
-              onChange={(event) => setFilters({ ...filters, maxRent: event.target.value })}
-            />
-          </label>
-          <label>
-            Minimum size (m²)
-            <input
-              inputMode="numeric"
-              type="number"
-              min="1"
-              value={filters.minSizeSqM}
-              onChange={(event) => setFilters({ ...filters, minSizeSqM: event.target.value })}
-            />
-          </label>
-          <label>
-            Available by
-            <input
-              type="date"
-              value={filters.availableFrom}
-              onChange={(event) => setFilters({ ...filters, availableFrom: event.target.value })}
-            />
-          </label>
+          <div className={styles.filterHeading}>
+            <div>
+              <p className="eyebrow">Search criteria</p>
+              <h3>Narrow the shortlist</h3>
+            </div>
+            <p>All fields are optional. Apply the combination that matters for this move.</p>
+          </div>
+          <div className={styles.filterGrid}>
+            <label>
+              Area
+              <input
+                value={filters.area}
+                onChange={(event) => setFilters({ ...filters, area: event.target.value })}
+                placeholder="e.g. Shoreditch"
+              />
+            </label>
+            <label>
+              Maximum rent (GBP)
+              <input
+                inputMode="numeric"
+                type="number"
+                min="1"
+                value={filters.maxRent}
+                onChange={(event) => setFilters({ ...filters, maxRent: event.target.value })}
+              />
+            </label>
+            <label>
+              Minimum size (m²)
+              <input
+                inputMode="numeric"
+                type="number"
+                min="1"
+                value={filters.minSizeSqM}
+                onChange={(event) => setFilters({ ...filters, minSizeSqM: event.target.value })}
+              />
+            </label>
+            <label>
+              Available by
+              <input
+                type="date"
+                value={filters.availableFrom}
+                onChange={(event) => setFilters({ ...filters, availableFrom: event.target.value })}
+              />
+            </label>
+          </div>
           <div className={styles.formActions}>
             <button className="button button-primary" type="submit">Apply filters</button>
             <button className="button button-quiet" type="button" onClick={clearFilters}>Clear</button>
@@ -145,7 +157,9 @@ export default function TenantDiscoveryPage() {
         <ListingResults
           data={data}
           error={error instanceof TenantApiError ? error : null}
+          hasAppliedFilters={hasAppliedFilters}
           isLoading={isLoading}
+          onClear={clearFilters}
           onRetry={() => setAppliedFilters({ ...appliedFilters })}
         />
       </section>
@@ -156,62 +170,99 @@ export default function TenantDiscoveryPage() {
 type ListingResultsProps = {
   data: TenantListingsResponse | null;
   error: unknown;
+  hasAppliedFilters: boolean;
   isLoading: boolean;
+  onClear: () => void;
   onRetry: () => void;
 };
 
 function ListingResults({
   data,
   error,
+  hasAppliedFilters,
   isLoading,
+  onClear,
   onRetry,
 }: ListingResultsProps) {
   if (isLoading) {
-    return <div className={styles.loadingState} role="status" aria-live="polite" aria-busy="true">Loading available rentals…</div>;
+    return (
+      <div className={`${styles.feedbackState} ${styles.loadingState}`} role="status" aria-live="polite" aria-busy="true">
+        <span className={styles.feedbackMarker} aria-hidden="true" />
+        <div>
+          <h3>Checking the current catalogue</h3>
+          <p>RightSpot is loading the available seeded rentals for this search.</p>
+        </div>
+      </div>
+    );
   }
   if (error) {
     return (
-      <div className={styles.emptyState} role="alert">
-        <h3>Listings could not be loaded</h3>
-        <p>{tenantApiErrorMessage(error, "load listings")}</p>
-        <button className="button button-quiet" type="button" onClick={onRetry}>Retry</button>
+      <div className={`${styles.feedbackState} ${styles.errorState}`} role="alert">
+        <span className={styles.feedbackMarker} aria-hidden="true" />
+        <div>
+          <h3>Listings could not be loaded</h3>
+          <p>{tenantApiErrorMessage(error, "load listings")}</p>
+          <button className="button button-quiet" type="button" onClick={onRetry}>Retry catalogue</button>
+        </div>
       </div>
     );
   }
   if (!data) return null;
   if (data.listings.length === 0) {
     return (
-      <div className={styles.emptyState} role="status">
-        <h3>No listings match those filters</h3>
-        <p>Try a wider area, rent range, size, or availability date.</p>
-      </div>
+      <section className={styles.feedbackState} aria-labelledby="no-listings-title" aria-live="polite">
+        <span className={styles.feedbackMarker} aria-hidden="true" />
+        <div>
+          <h3 id="no-listings-title">No listings match those filters</h3>
+          <p>Try a wider area, rent range, size, or availability date.</p>
+          <button className="button button-quiet" type="button" onClick={onClear}>Clear filters</button>
+        </div>
+      </section>
     );
   }
   return (
     <div className={styles.resultsBlock} aria-live="polite">
       <div className={styles.resultsMeta}>
-        <span>{data.listings.length} seeded {data.listings.length === 1 ? "listing" : "listings"}</span>
-        <span>Fixture generation {data.fixtureGeneration}</span>
+        <div>
+          <span className={styles.resultCount}>{data.listings.length}</span>
+          <span>available seeded {data.listings.length === 1 ? "home" : "homes"}</span>
+        </div>
+        <span>{hasAppliedFilters ? "Filtered shortlist" : "Full local catalogue"}</span>
       </div>
       <div className={styles.listingGrid}>
-        {data.listings.map((listing) => (
+        {data.listings.map((listing, index) => (
           <article className={styles.listingCard} key={listing.id}>
-            <div className={styles.mediaPlaceholder} aria-hidden="true"><span>{listing.imageKey}</span></div>
+            <div className={styles.mediaPlaceholder} aria-hidden="true">
+              <span className={styles.mediaKicker}>Seeded rental</span>
+              <strong>{listing.area}</strong>
+              <span className={styles.mediaIndex}>{String(index + 1).padStart(2, "0")}</span>
+            </div>
             <div className={styles.cardBody}>
-              <p className="eyebrow">{listing.area}</p>
-              <h3>{listing.title}</h3>
-              <p className={styles.mutedCopy}>{listing.address}</p>
+              <div className={styles.cardHeading}>
+                <div>
+                  <p className="eyebrow">{listing.area}</p>
+                  <h3>{listing.title}</h3>
+                </div>
+                <p className={styles.cardPrice}>
+                  <strong>£{listing.monthlyRentGbp.toLocaleString("en-GB")}</strong>
+                  <span>per month</span>
+                </p>
+              </div>
+              <p className={styles.address}>{listing.address}</p>
               <dl className={styles.factGrid}>
-                <div><dt>Rent</dt><dd>£{listing.monthlyRentGbp.toLocaleString("en-GB")} / month</dd></div>
                 <div><dt>Bedrooms</dt><dd>{listing.bedrooms}</dd></div>
                 <div><dt>Size</dt><dd>{listing.sizeSqM} m²</dd></div>
                 <div><dt>Available</dt><dd>{formatDate(listing.availableFrom)}</dd></div>
               </dl>
-              <a className="button button-primary" href={`/tenant/listings/${encodeURIComponent(listing.id)}`}>View listing</a>
+              <a className="button button-primary" href={`/tenant/listings/${encodeURIComponent(listing.id)}`}>View full listing</a>
             </div>
           </article>
         ))}
       </div>
+      <details className={styles.technicalDisclosure}>
+        <summary>Demo record details</summary>
+        <p>Fixture generation {data.fixtureGeneration}. Listing media remains a local seeded placeholder.</p>
+      </details>
     </div>
   );
 }
