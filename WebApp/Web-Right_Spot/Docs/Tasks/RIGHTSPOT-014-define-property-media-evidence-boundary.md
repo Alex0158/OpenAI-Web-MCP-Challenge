@@ -1,7 +1,7 @@
 # RIGHTSPOT-014: Define the property-media evidence boundary
 
 **Type:** `decision`  
-**Lifecycle:** `in_progress`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for evaluator-facing visual credibility, independent of the Operations authority lane  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-01  
@@ -10,7 +10,7 @@
 ## Task Control
 
 - Type: `decision`
-- Lifecycle: `in_progress`
+- Lifecycle: `closed`
 - Priority: `P1`
 - Owner: Main RightSpot thread
 - Objective: Define the smallest truthful local property-media contract that replaces the current
@@ -18,9 +18,8 @@
 - Current increment: `RS-WO-014-01` is a read-only UI/Asset Direction proposal. It must establish the
   asset manifest, listing-to-asset identity, alt-text and presentation rules, loading/error behavior,
   and the exact later implementation split before any binary asset or UI source is changed.
-- Next gate: The main thread reviews the proposal and either registers a bounded asset/UI implementation
-  slice or records a defer/reject disposition with its residual visual risk.
-- Execution posture: `READ_ONLY_UI_ASSET_ADVISOR`; this task must not reopen the closed MVP or modify
+- Next gate: `RIGHTSPOT-017` owns the bounded asset and tenant media implementation sequence.
+- Execution posture: `REVIEWED_ACCEPTED_CLOSED`; this task does not reopen the closed MVP or modify
   the Operations, authentication, WebMCP, Cloud Receiver, or workflow boundaries.
 
 ## Why this task exists
@@ -52,12 +51,12 @@ implementation authorization:
 ## RS-WO-014-01 — Define the property-media asset and presentation boundary
 
 **Role:** UI/UX and Asset Direction Advisor  
-**Status:** `ASSIGNED`  
+**Status:** `VERIFIED_PROPOSAL`  
 **Parallelization:** `READ_ONLY_PARALLEL` — may run beside `RS-WO-015-01`; it has no source write set and does not depend on Operations data  
 **Risk profile:** `Standard` for proposal; later implementation touches binary assets, tenant/agent presentation paths, accessibility, and browser evidence  
 **Supporting worker:** Multi-agent UI/UX and Asset Direction Advisor `01a05df7-a6dc-7ad1-93f9-fe8ca7c2ecda` (`Carson`)  
 **Source baseline:** `8fe597689b4cfe9e118b9d0bd9a19dd83b94079e` on `main`, captured immediately before dispatch; the collaborator-owned dirty and untracked files listed in current status remain outside this Work Order  
-**Dispatch state:** `ASSIGNED` after the supporting worker identity was returned; the main thread has not yet received the Advisor handoff.  
+**Dispatch state:** `COMPLETED` with `READY_FOR_REVIEW`; the main thread reviewed the proposal and registered `RIGHTSPOT-017`.  
 **Ownership:** The Advisor may inspect only. The main thread owns the decision, asset generation/import, source changes, canonical writeback, integration, and closure.
 
 ### Required read set
@@ -115,6 +114,22 @@ unresolved decisions, and non-goals. It must cover:
 Return `READY_FOR_REVIEW` or `BLOCKED` with exact source identity, consumer map, manifest proposal,
 truth/accessibility rules, failure behavior, future path ownership, implementation sequence, and claim
 limits. Stop after the report; the main thread owns all follow-on decisions and changes.
+
+## Main-thread review disposition
+
+`RS-WO-014-01` returned `READY_FOR_REVIEW` from UI/UX and Asset Direction Advisor
+`01a05df7-a6dc-7ad1-93f9-fe8ca7c2ecda` (`Carson`) against reviewed baseline
+`8fe597689b4cfe9e118b9d0bd9a19dd83b94079e`. The read-only review confirmed that only tenant
+discovery and tenant listing detail currently render listing media placeholders; no local or remote
+image assets exist, and the current `imageKey` is only a validated string carried by the DTO.
+
+The main thread accepts the recommendation with these bounded decisions: three explicit local
+synthetic assets, one per current listing; an allowlisted manifest keyed by both listing ID and
+`imageKey`; fixed 3:2 presentation; native image semantics and visible synthetic disclosure; no
+cross-listing/default/older-version fallback; no remote media, runtime generation, agent media, or
+full media lifecycle. Asset provenance, content review, dimensions, hashes, and final wording remain
+an explicit gate in `RIGHTSPOT-017`; the proposal itself made no browser, copyright, or rendering
+claim.
 
 ## Closure gate
 

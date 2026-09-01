@@ -11,9 +11,10 @@ integrated cross-role regression check and `RIGHTSPOT-007` is closed. `RS-WO-011
 verification and is integrated at product commit `7ff0fbd`; its read-model seam remains separate from
 any future consumer. `RS-WO-013-01` returned `READY_FOR_REVIEW`, its bounded authority decision is
 accepted in ADR-RS-0012, and `RIGHTSPOT-013` is closed. `RS-WO-015-01` is assigned to an Operations
-authority Builder, while independent read-only `RS-WO-014-01` is assigned to an Asset Direction
-Advisor; the next projection Task `RIGHTSPOT-016` is registered but GATED behind authority
-verification. No Operations consumer implementation is authorized yet. The prior out-of-scope
+authority Builder, while main-thread `RS-WO-017-01` owns the reviewed local asset gate;
+`RIGHTSPOT-014` is closed after its read-only proposal review. The next projection Task
+`RIGHTSPOT-016` is registered but GATED behind authority verification. No Operations consumer
+implementation is authorized yet. The prior out-of-scope
 tracked verifier mutation remains preserved.
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-01, Europe/London
@@ -25,7 +26,7 @@ is [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md). For the
 lane, `RS-WO-007-04`/`05` have passed independent verification and are integrated, and the fresh
 integrated-source Field Desk regression `RS-WO-007-08` also passed; `RIGHTSPOT-007` is closed. The
 verified `RS-WO-011` seam is integrated, while `RS-WO-015-01` is the current assigned Operations
-authority implementation gate and `RS-WO-014-01` is an independent read-only asset proposal. Prior
+authority implementation gate and `RS-WO-017-01` is the main-thread asset gate. Prior
 verifier Worktree metadata mutations remain preserved and are not product source.
 
 ## 1. Roadmap purpose and authority
@@ -62,7 +63,7 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 3. Authoritative workflow core | Implement the Viewing Request state machine, availability lifecycle, role projections, version checks, audit facts, and explicit failures | Domain and Backbone checks pass without a browser or external service | Complete; post-repair source `6e70c9f` independently verified |
 | 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | Complete; `RS-WO-002-14` passed independent direct cross-role verification and `RS-WO-002-15` passed the isolated browser walkthrough against integrated source `9348aa50b63e3f4f46e77238ad370670383d9d6` |
 | 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Complete; closure record reconciled and `RIGHTSPOT-002` closed |
-| 6. Post-MVP product refinement | Resolve high-impact navigation friction, strengthen visual credibility, and add a truthful Operations foundation without changing relay workflow authority | Each bounded candidate is independently verified and integrated before the next shared-surface change | Active; `RS-WO-005-01` integrated at `27f5391`; `RIGHTSPOT-007` closed after `RS-WO-007-08` integrated regression; `RS-WO-011-01`/`02` verified and integrated at `7ff0fbd` as a server-only relay seam; `RIGHTSPOT-013` closed with ADR-RS-0012; `RS-WO-015-01` and `RS-WO-014-01` assigned |
+| 6. Post-MVP product refinement | Resolve high-impact navigation friction, strengthen visual credibility, and add a truthful Operations foundation without changing relay workflow authority | Each bounded candidate is independently verified and integrated before the next shared-surface change | Active; `RS-WO-005-01` integrated at `27f5391`; `RIGHTSPOT-007` closed after `RS-WO-007-08` integrated regression; `RS-WO-011-01`/`02` verified and integrated at `7ff0fbd` as a server-only relay seam; `RIGHTSPOT-013` and `RIGHTSPOT-014` closed with their accepted decisions; `RS-WO-015-01` assigned and `RS-WO-017-01` main-thread controlled; `RIGHTSPOT-016` remains gated |
 | 7. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary refinement is stable and a new explicit integration decision exists | Deferred; not scheduled |
 
 ## 4. Roadmap operating rules
