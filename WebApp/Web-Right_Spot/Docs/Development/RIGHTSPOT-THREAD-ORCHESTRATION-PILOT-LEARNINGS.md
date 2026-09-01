@@ -283,3 +283,33 @@ fresh Builder from a clean identified baseline.
 
 **Promotion:** Candidate-adoption criteria are now part of ADR-RS-0004 and the Pilot Runbook. The
 `RS-WO-002-04` candidate remains unverified until that procedure is completed.
+
+## 9. Runtime executable and projectless-cwd identity must be explicit
+
+**Status:** `Accepted into Runbook`  
+**Date:** 2026-09-01  
+**Source:** `RS-WO-002-12` and `RS-WO-002-13` independent verification dispatches
+
+**Observation:** Both role-page Verifier dispatches exposed a different layer of the same
+execution-identity gap. A projectless Verifier initially treated its Codex output directory as the
+repository and stopped before verification. After the Worktree was corrected, the Tenant Verifier
+still saw Node `26.5.0` from shell `PATH` even though the Worktree `.node-version` required `24.20.0`.
+The Builder had succeeded only because its prompt named the prepared absolute Node/npm binaries;
+the Verifier prompts named the version file but not the executable resolution.
+
+**Learning:** A runtime pin and a task `cwd` are declarations, not proof of selection. Dispatch
+identity must include the execution Worktree, package root, runtime-pin path, exact Node/npm
+executables, and expected versions. Main preflight validates all of them; every worker command uses
+the Worktree or package root explicitly. A projectless output directory must never be used as source
+identity, and a shell-resolved alternate runtime must never be accepted as silent fallback. These
+are procedure/environment failures, not product defects, and the same supporting task should be
+corrected when its source identity remains intact.
+
+**Promotion:** The Pilot Runbook now requires runtime executable resolution and explicit separation
+of projectless output directories from execution Worktrees in sections 7.1 and 8.1.1. The next
+dispatch prompt must include the prepared absolute binaries and the worker must prove their versions
+before tests, build, HTTP, or browser checks.
+
+**Remaining uncertainty:** The local prepared runtime path is currently verified for this machine;
+future hosts may require a different absolute path. The version and executable path must therefore
+be re-resolved at each dispatch rather than copied from historical records.

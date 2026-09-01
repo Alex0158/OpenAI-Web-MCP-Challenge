@@ -372,6 +372,8 @@ Each Work Order must state:
 - required documents to read;
 - dependencies and prerequisite outputs;
 - package/runtime permissions and any approved dependency set;
+- runtime executable resolution, including the exact Node.js and npm binary paths and expected
+  versions, when the shell selector is not guaranteed to honor the version file;
 - declared read, worker-write, main-thread-writeback, auxiliary process-only, forbidden, and
   generated sets;
 - parallelization classification (`SERIAL`, `CONTRACT_PARALLEL`, `READ_ONLY_PARALLEL`, or
@@ -562,11 +564,31 @@ runtime-pin path and the exact package root independently. The worker reads `.no
 declared runtime-pin path and runs npm/package commands from the declared package root; neither
 location may be inferred from the other.
 
+The runtime version file is declarative; it does not prove that the shell selected the requested
+runtime. When the environment has more than one Node.js installation, the dispatch must also name
+the exact executable paths (at minimum the Node.js and npm binaries) and the expected versions. The
+main thread must validate those binaries before dispatch. The worker must run package commands with
+the named binaries, or with an explicitly prepared PATH that resolves to those same binaries, and
+must report `BLOCKED` if the exact runtime cannot be selected. It must not silently substitute a
+different Node.js version merely because `node` or `npm` is available on PATH.
+
+A projectless Codex task may start with a `cwd` or output directory outside the repository. That
+directory is only the task's conversation/output surface, never the execution Worktree or Git root.
+The prompt must state this distinction explicitly, and every source, Git, runtime, package, test,
+and browser command must use the declared execution Worktree as its `workdir` (with the declared
+package root used only for package commands). A successful `pwd` in the projectless output
+directory is not source identity evidence. If a worker starts in that directory, it must change to
+or explicitly target the declared Worktree before any source inspection; otherwise it stops with a
+procedural `BLOCKED` result. The main thread corrects the same task identity and does not create a
+replacement task solely for this routing error.
+
 The main-thread preflight must resolve and execute the equivalent of
 `git -C <execution-worktree> rev-parse --show-toplevel`, `test -f <package-root>/package.json`,
-`test -f <package-root>/package-lock.json`, and `test -f <runtime-pin-path>`. A failed check is a
-dispatch preparation failure, not a reason to let the worker infer a path. The resolved values must
-be copied into the prompt and the Task File before the single dispatch call.
+`test -f <package-root>/package-lock.json`, and `test -f <runtime-pin-path>`. When an executable
+path is declared, it must also run the equivalent of `test -x <node-binary>`, `test -x <npm-binary>`,
+`<node-binary> --version`, and `<npm-binary> --version`. A failed check is a dispatch preparation
+failure, not a reason to let the worker infer a path. The resolved values must be copied into the
+prompt and the Task File before the single dispatch call.
 
 ### 8.1.2 Execution baseline versus governance revision
 
