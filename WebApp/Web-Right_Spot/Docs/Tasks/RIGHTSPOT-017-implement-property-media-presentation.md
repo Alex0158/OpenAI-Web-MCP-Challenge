@@ -15,13 +15,13 @@
 - Owner: Main RightSpot thread
 - Objective: Replace the two current tenant listing media placeholders with reviewed, deterministic,
   local synthetic property imagery without changing listing DTOs, routes, workflow, or authentication.
-- Current increment: `RS-WO-017-01` has completed the main-thread-controlled asset
-  provenance/generation/import gate. The three-file manifest and review evidence are now available
-  before any UI Builder uses them.
-- Next gate: Dispatch one shared media primitive Builder. Tenant integration and independent browser
-  verification remain later checkpoints under this Task.
-- Execution posture: `ASSET_GATE_READY`; UI source remains frozen until the shared primitive Builder is
-  dispatched with the reviewed manifest as a read-only input.
+- Current increment: `RS-WO-017-02` is the bounded shared media primitive Builder checkpoint. The
+  main-thread-controlled `RS-WO-017-01` asset gate is complete, and its three-file manifest and
+  local WebP pack are frozen read-only inputs.
+- Next gate: The primitive candidate must pass independent verification before tenant integration;
+  tenant wiring and integrated browser verification remain later checkpoints under this Task.
+- Execution posture: `MEDIA_PRIMITIVE_BUILDER_READY`; no tenant page or global CSS source is authorized
+  in this checkpoint.
 
 ## Accepted implementation boundary
 
@@ -119,12 +119,19 @@ Record `ASSET_GATE_READY` or `ASSET_GATE_BLOCKED` in the main-thread task histor
 dimensions, SHA-256 values, provenance/content review, format decision, and any skipped evidence. Only
 after `ASSET_GATE_READY` may the main thread dispatch the shared media primitive Builder.
 
-## Later checkpoints (not dispatched)
+## Follow-on checkpoints
 
 ### RS-WO-017-02 — Implement the shared listing media primitive
 
 **Role:** Builder → independent Verifier  
-**Status:** `GATED`  
+**Status:** `READY_FOR_DISPATCH`  
+**Parallelization:** `PARALLEL_MEDIA_PRIMITIVE` — disjoint from Operations authority verification and the later tenant integration  
+**Risk profile:** `Standard` — shared UI primitive with explicit asset resolution and bounded failure behavior  
+**Supporting worker:** Not yet assigned  
+**Source baseline:** To be captured immediately before dispatch; `RS-WO-017-01` asset baseline is committed at `760b88f`  
+**Dispatch state:** `READY_FOR_DISPATCH`  
+**Next gate:** Dispatch one Builder against the frozen reviewed manifest and local WebP pack; no tenant wiring or integration in this checkpoint  
+**Ownership:** The Builder owns only the three declared primitive/test paths. The main thread owns manifest/assets, source freeze, integration, canonical writeback, and closure.  
 **Allowed write set:** `src/ui/shared/listing-media.tsx`, `src/ui/shared/listing-media.module.css`, `tests/ui/listing-media.test.ts`  
 **Dependency:** `RS-WO-017-01 ASSET_GATE_READY`  
 **Boundary:** Native `<img>`, exact manifest resolution, fixed 3:2 frame, loading/error/missing/mismatch
@@ -132,6 +139,30 @@ after `ASSET_GATE_READY` may the main thread dispatch the shared media primitive
   or global CSS edits.  
 **Verification:** Focused manifest/error tests, typecheck, build, diff, responsive/accessibility static
   checks, and isolated browser asset/failure evidence.
+
+### Builder instructions
+
+- Read the global and repository instructions, this Task File, ADR-RS-0009, the reviewed manifest,
+  and the current tenant listing DTO/page consumers before editing. Treat the manifest and WebP files
+  as read-only source inputs.
+- Resolve media only through the exported exact `listingId` + `imageKey` allowlist lookup. An unknown
+  pair, missing file, or image load error must render a current-listing-bound `Image unavailable`
+  state and must never substitute another listing, another version, a default, or a remote URL.
+- Use a native `<img>` with manifest-provided scene-only `alt`, explicit synthetic/illustrative
+  disclosure, manifest `objectPosition`, `loading` appropriate to the caller, and asynchronous decode.
+  The primitive must not infer or expose facts from the image.
+- Keep the frame at a stable 3:2 ratio with local module CSS only; preserve usable responsive cropping,
+  visible focus/contrast, and reduced-motion safety. Do not edit `app/globals.css` or tenant pages in
+  this checkpoint.
+- Add focused tests for exact resolution, unknown/mismatched identity, disclosure/alt contract, and
+  bounded missing/error behavior without adding a browser, network, domain, route, or dependency
+  surface. Run the pinned checks available in the environment and stop at the Builder handoff.
+
+### Builder return gate
+
+Return `READY_FOR_VERIFICATION` with the exact candidate commit, clean status, changed paths, asset
+manifest identity used, focused test results, typecheck/build/diff results, and explicit skipped
+tenant/browser/integrated evidence. Do not integrate the candidate or modify the asset pack.
 
 ### RS-WO-017-03 — Replace tenant listing placeholders
 
