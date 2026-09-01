@@ -75,6 +75,7 @@ test("session routes issue, resolve, replace, and clear bounded demo sessions", 
 });
 
 test("listing collection route enforces tenant role and bounded filter input", async () => {
+  const expectedFixtureGeneration = readFixtureGeneration();
   const tenantCookie = await sessionCookie("tenant");
   const all = getListings(new Request("http://localhost/api/listings", {
     headers: { cookie: tenantCookie },
@@ -84,7 +85,7 @@ test("listing collection route enforces tenant role and bounded filter input", a
     fixtureGeneration: number;
     listings: Array<Record<string, unknown>>;
   };
-  assert.equal(allBody.fixtureGeneration, 1);
+  assert.equal(allBody.fixtureGeneration, expectedFixtureGeneration);
   assert.deepEqual(allBody.listings.map(({ id }) => id), [
     "listing-primary",
     "listing-north",
@@ -218,4 +219,13 @@ function requireCookie(response: Response): string {
   const cookie = setCookie.split(";", 1)[0];
   assert.ok(cookie);
   return cookie;
+}
+
+function readFixtureGeneration(): number {
+  const application = new WorkflowApplication();
+  try {
+    return application.readState().fixtureGeneration;
+  } finally {
+    application.close();
+  }
 }

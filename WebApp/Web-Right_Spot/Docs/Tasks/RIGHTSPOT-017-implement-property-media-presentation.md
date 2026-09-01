@@ -15,12 +15,16 @@
 - Owner: Main RightSpot thread
 - Objective: Replace the two current tenant listing media placeholders with reviewed, deterministic,
   local synthetic property imagery without changing listing DTOs, routes, workflow, or authentication.
-- Current increment: `RS-WO-017-02` is the bounded shared media primitive Builder checkpoint. The
+- Current increment: `RS-WO-017-02` is the bounded shared media primitive checkpoint. The
   main-thread-controlled `RS-WO-017-01` asset gate is complete, and its three-file manifest and
-  local WebP pack are frozen read-only inputs.
-- Next gate: The primitive candidate must pass independent verification before tenant integration;
+  local WebP pack are frozen read-only inputs. The candidate has passed independent verification,
+  with one unrelated persistent-fixture full-suite failure recorded as residual evidence; it remains
+  an untracked frozen overlay and is not integrated.
+- Next gate: Integrate the independently verified primitive candidate only after the main thread
+  reviews the residual full-suite failure; tenant wiring and integrated browser verification remain
+  later checkpoints under this Task.
   tenant wiring and integrated browser verification remain later checkpoints under this Task.
-- Execution posture: `MEDIA_PRIMITIVE_BUILDER_IN_PROGRESS`; no tenant page or global CSS source is
+- Execution posture: `MEDIA_PRIMITIVE_VERIFIED_PENDING_INTEGRATION`; no tenant page or global CSS source is
   authorized in this checkpoint.
 
 ## Accepted implementation boundary
@@ -124,13 +128,14 @@ after `ASSET_GATE_READY` may the main thread dispatch the shared media primitive
 ### RS-WO-017-02 — Implement the shared listing media primitive
 
 **Role:** Builder → independent Verifier  
-**Status:** `ASSIGNED`  
+**Status:** `VERIFIED` — integration pending  
 **Parallelization:** `PARALLEL_MEDIA_PRIMITIVE` — disjoint from Operations authority verification and the later tenant integration  
 **Risk profile:** `Standard` — shared UI primitive with explicit asset resolution and bounded failure behavior  
-**Supporting worker:** Multi-agent shared media primitive Builder `01a05e0f-62bb-7c03-a68a-12956ef5169a` (`Darwin`)  
+**Supporting worker:** Multi-agent shared media primitive Builder `01a05e0f-62bb-7c03-a68a-12956ef5169a` (`Darwin`), closed after handoff  
+**Independent verifier:** Multi-agent read-only Verifier `01a05e1c-7bd7-7a33-8921-3b562a279003` (`Halley`), closed after report  
 **Source baseline:** `fd4b3e67d884571d7c3a2b9ba3ee43329f57883e` on `main`, captured immediately before dispatch; the reviewed asset baseline is `760b88f`  
-**Dispatch state:** `ASSIGNED`; Builder execution is in progress  
-**Next gate:** Return `READY_FOR_VERIFICATION` with an exact candidate commit; no tenant wiring or integration in this checkpoint  
+**Dispatch state:** `VERIFIED`; the Builder returned a candidate overlay, not a commit, and the independent verifier accepted the bounded candidate  
+**Next gate:** Main-thread integration review; no tenant wiring in this checkpoint  
 **Ownership:** The Builder owns only the three declared primitive/test paths. The main thread owns manifest/assets, source freeze, integration, canonical writeback, and closure.  
 **Allowed write set:** `src/ui/shared/listing-media.tsx`, `src/ui/shared/listing-media.module.css`, `tests/ui/listing-media.test.ts`  
 **Dependency:** `RS-WO-017-01 ASSET_GATE_READY`  
@@ -139,6 +144,52 @@ after `ASSET_GATE_READY` may the main thread dispatch the shared media primitive
   or global CSS edits.  
 **Verification:** Focused manifest/error tests, typecheck, build, diff, responsive/accessibility static
   checks, and isolated browser asset/failure evidence.
+
+### Builder handoff evidence — 2026-09-01
+
+The Builder returned `READY_FOR_VERIFICATION` and the three declared paths exist as an untracked
+candidate overlay in the main checkout. This is a known handoff exception: no tracked code was
+integrated, no file was staged, and the main thread has not edited the candidate paths. They are
+frozen read-only until the independent verifier completes. The candidate is identified by the
+dispatch baseline plus exact path/content hashes rather than a commit:
+
+| Candidate path | SHA-256 |
+|---|---|
+| `src/ui/shared/listing-media.tsx` | `65c6a243c793b2b29c35cb21c4f66a6c1083c3f1663da626da2cf766a38b798d` |
+| `src/ui/shared/listing-media.module.css` | `977da9dbc287d950ddceb83b157310b225eb56952a5c451d961db06e2968921a1` |
+| `tests/ui/listing-media.test.ts` | `6831175fefd8097770dbec305acdf9942341e1432a6bf085918234936d7a5dce` |
+
+The verifier must confirm these exact paths and hashes before testing, re-check them after testing,
+and report any candidate drift as a handoff failure. The committed manifest and WebP assets remain
+read-only inputs. No candidate commit, tenant/browser evidence, or integration claim exists yet.
+
+### Independent verification result — 2026-09-01
+
+Verifier `Halley` returned `VERIFIED` for the exact frozen three-file candidate overlay. All three
+candidate hashes matched before and after verification; no staged or tracked source change was
+observed. With pinned Node `24.20.0` / npm `11.19.0`, the focused media tests passed `4/4`, relevant
+UI tests passed `11/11`, typecheck passed, and the production build passed. The verifier independently
+confirmed the exact identity allowlist, native image semantics, disclosure/alt/object-position/loading/
+decode contract, 3:2 local CSS frame, current-listing-bound missing/error state, and absence of URL,
+filename, network, API, domain, auth, dependency, or tenant integration changes.
+
+The direct full TypeScript suite reported `65/66`: the only failure was the existing
+`tests/api/listings.test.ts` persistent fixture-generation expectation (`expected 1`, observed `5`).
+The verifier reproduced the failure in isolation, did not reset or mutate the runtime database, and
+classified it as unrelated to the three media paths. This is recorded as a residual baseline/runtime
+evidence issue, not silently treated as a full-suite pass. Browser rendering/E2E, tenant integration,
+and integrated media claims remain unverified and are still later gates.
+
+### Main-thread residual follow-up — 2026-09-01
+
+The main thread made a separate test-only isolation correction in
+`tests/api/listings.test.ts`: the route test now captures the current authoritative fixture generation
+instead of assuming generation `1`, while still asserting that the route returns that same generation.
+This did not touch the frozen media overlay or any media manifest/asset. The pinned direct suite was
+then rerun against the unchanged media candidate and passed `66/66`; typecheck and the candidate
+focused checks remain green. The earlier `65/66` result remains historical verifier evidence, while
+the current baseline residual is resolved. This correction does not add a media integration or browser
+claim.
 
 ### Builder instructions
 
@@ -160,9 +211,10 @@ after `ASSET_GATE_READY` may the main thread dispatch the shared media primitive
 
 ### Builder return gate
 
-Return `READY_FOR_VERIFICATION` with the exact candidate commit, clean status, changed paths, asset
-manifest identity used, focused test results, typecheck/build/diff results, and explicit skipped
-tenant/browser/integrated evidence. Do not integrate the candidate or modify the asset pack.
+Return `READY_FOR_VERIFICATION` with either an exact candidate commit or, for this frozen overlay,
+the exact path/content hashes, clean/staging status, changed paths, asset manifest identity used,
+focused test results, typecheck/build/diff results, and explicit skipped tenant/browser/integrated
+evidence. Do not integrate the candidate or modify the asset pack.
 
 ### RS-WO-017-03 — Replace tenant listing placeholders
 
