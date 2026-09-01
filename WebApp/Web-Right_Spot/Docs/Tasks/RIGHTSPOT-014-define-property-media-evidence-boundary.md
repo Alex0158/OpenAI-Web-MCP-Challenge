@@ -1,7 +1,7 @@
 # RIGHTSPOT-014: Define the property-media evidence boundary
 
 **Type:** `decision`  
-**Lifecycle:** `pending`  
+**Lifecycle:** `in_progress`  
 **Priority:** `P1` for evaluator-facing visual credibility, independent of the Operations authority lane  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-01  
@@ -10,7 +10,7 @@
 ## Task Control
 
 - Type: `decision`
-- Lifecycle: `pending`
+- Lifecycle: `in_progress`
 - Priority: `P1`
 - Owner: Main RightSpot thread
 - Objective: Define the smallest truthful local property-media contract that replaces the current
@@ -52,11 +52,12 @@ implementation authorization:
 ## RS-WO-014-01 — Define the property-media asset and presentation boundary
 
 **Role:** UI/UX and Asset Direction Advisor  
-**Status:** `GATED`  
-**Parallelization:** `READ_ONLY_PARALLEL` — may run beside `RS-WO-013-01`; it has no source write set and does not depend on Operations data  
+**Status:** `ASSIGNED`  
+**Parallelization:** `READ_ONLY_PARALLEL` — may run beside `RS-WO-015-01`; it has no source write set and does not depend on Operations data  
 **Risk profile:** `Standard` for proposal; later implementation touches binary assets, tenant/agent presentation paths, accessibility, and browser evidence  
-**Supporting worker:** To be assigned only after the main thread validates the activation prompt  
-**Source baseline:** To be captured immediately before dispatch; the collaborator-owned dirty and untracked files listed in current status remain outside this Work Order  
+**Supporting worker:** Multi-agent UI/UX and Asset Direction Advisor `01a05df7-a6dc-7ad1-93f9-fe8ca7c2ecda` (`Carson`)  
+**Source baseline:** `8fe597689b4cfe9e118b9d0bd9a19dd83b94079e` on `main`, captured immediately before dispatch; the collaborator-owned dirty and untracked files listed in current status remain outside this Work Order  
+**Dispatch state:** `ASSIGNED` after the supporting worker identity was returned; the main thread has not yet received the Advisor handoff.  
 **Ownership:** The Advisor may inspect only. The main thread owns the decision, asset generation/import, source changes, canonical writeback, integration, and closure.
 
 ### Required read set

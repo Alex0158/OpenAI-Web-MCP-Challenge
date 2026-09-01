@@ -20,10 +20,13 @@ agent surfaces have since passed their respective independent verification gates
 at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression passed at frozen source
 `4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current active Work Orders:** `RS-WO-013-01` is assigned to a read-only Architecture/Data Authority
-Advisor for the next Operations profile boundary. The bounded Operations seam
-`RS-WO-011-01` passed independent verification and is integrated at product commit `7ff0fbd`; its
-verifier Worktree remains a historical evidence snapshot. `RS-WO-007-06`, `RS-WO-007-07`, and
+**Current active Work Orders:** `RS-WO-015-01` is assigned to Operations authority Builder `Herschel`
+for the profile-local persistence/reset foundation, and independent read-only `RS-WO-014-01` is
+assigned to UI/Asset Direction Advisor `Carson`; both use reviewed baseline `8fe5976` and have
+disjoint write boundaries. `RIGHTSPOT-013` accepted the Operations authority decision and is closed.
+The bounded Operations seam `RS-WO-011-01` passed independent verification and is integrated at
+product commit `7ff0fbd`; its verifier Worktree remains a historical evidence snapshot.
+`RS-WO-007-06`, `RS-WO-007-07`, and
 `RS-WO-007-08`
 independently verified the frozen tenant/agent candidates and the main thread integrated them at
 `5abdaf3` and `a2f6a19`; their evidence Worktrees remain historical snapshots.

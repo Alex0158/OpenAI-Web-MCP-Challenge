@@ -1,7 +1,7 @@
 # RIGHTSPOT-015: Implement the Operations profile authority
 
 **Type:** `implementation`  
-**Lifecycle:** `pending`  
+**Lifecycle:** `in_progress`  
 **Priority:** `P1` for the next RightSpot Operations demonstration increment  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-01  
@@ -10,7 +10,7 @@
 ## Task Control
 
 - Type: `implementation`
-- Lifecycle: `pending`
+- Lifecycle: `in_progress`
 - Priority: `P1`
 - Owner: Main RightSpot thread
 - Objective: Implement and independently verify the smallest deterministic, multi-record Operations
@@ -19,7 +19,7 @@
   deterministic fixture generation, separate SQLite persistence, validation, and profile-local reset.
 - Next gate: The Builder candidate must pass an independent Verifier before a projection consumer,
   transport, route, UI, navigation, or WebMCP Work Order is registered.
-- Execution posture: `GATED`; this task is separate from the closed relay MVP, closed Field Desk lane,
+- Execution posture: `DISPATCHED_BUILDER`; this task is separate from the closed relay MVP, closed Field Desk lane,
   and unresolved Favourite/Information Request proposals.
 
 ## Accepted implementation boundary
@@ -49,8 +49,9 @@ Favourite records, Information Request records, contact data, or real user ident
 **Pre-dispatch status:** `GATED`  
 **Parallelization:** `SERIAL_AUTHORITY_FOUNDATION` — may run beside read-only UI/asset analysis, but any later Operations projection or transport depends on this checkpoint  
 **Risk profile:** `Assured` — new persistence authority, deterministic fixture/reset, validation, and isolation require independent verification  
-**Supporting worker:** To be assigned after the main thread validates the activation prompt  
-**Source baseline:** To be captured immediately before dispatch; collaborator-owned dirty and untracked paths remain outside this Work Order  
+**Supporting worker:** Multi-agent Operations authority Builder `01a05df7-a761-7423-9b85-e2a866f3a216` (`Herschel`)  
+**Source baseline:** `8fe597689b4cfe9e118b9d0bd9a19dd83b94079e` on `main`, captured immediately before dispatch; collaborator-owned dirty and untracked paths remain outside this Work Order  
+**Dispatch state:** `ASSIGNED` after the supporting worker identity was returned; the main thread has not yet received the Builder handoff.  
 **Next gate:** Return `READY_FOR_VERIFICATION` with an exact candidate commit/source identity; do not start a Verifier or any consumer task  
 **Ownership:** The Builder owns only the declared new Operations paths. The main thread owns source freeze, canonical writeback, integration, and closure.
 
