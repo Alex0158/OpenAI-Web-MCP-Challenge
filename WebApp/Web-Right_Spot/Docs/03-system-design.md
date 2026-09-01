@@ -1,7 +1,7 @@
 # RightSpot — Logical System Design
 
 **Role:** Backbone architecture and component boundary  
-**Status:** Accepted logical and implementation design baseline; runtime scaffold not created
+**Status:** Accepted logical and implementation design baseline; runnable foundation and workflow domain core are independently verified; business persistence/application composition remains open
 
 ## 1. Design intent
 

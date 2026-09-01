@@ -1,7 +1,7 @@
 # RightSpot Development and Closure
 
 **Role:** Big-picture roadmap, implementation, verification, collaboration, and closure routing  
-**Status:** Roadmap and thread-orchestration pilot documented; foundation Builder complete and corrected independent verification rerun verified after a procedural block
+**Status:** Roadmap and thread-orchestration pilot documented; foundation and workflow-core are independently verified; persistence/application integration is the next bounded design gate
 
 ## Purpose
 
@@ -23,9 +23,14 @@ returned `READY_FOR_VERIFICATION`; the first independent Verifier checkpoint rec
 checks but returned `BLOCKED` after its procedure created an out-of-bound OS temp artifact. A
 corrected rerun of the same checkpoint returned `VERIFIED`; Git closure is recorded in `b06bd85`,
 and the bounded workflow-core Builder plus one projection-isolation repair for `RS-WO-002-03` returned
-`READY_FOR_VERIFICATION`; its T2 candidate source is committed as `186e98a`. Later Verifier or Integrator
-work is opened only when its predecessor produces a concrete code failure or a verified source and
-evidence boundary.
+`READY_FOR_VERIFICATION`. Its T2 source was frozen at `a60001e`; the independent Verifier found that
+stale listing revisions were not rejected by both draft-update and submit commands, so the current
+checkpoint was a bounded Repairer on the domain workflow and focused test paths; its post-repair
+commit is `6e70c9f`, and the fresh independent Verifier returned `VERIFIED` against that frozen source.
+The next action is to define one bounded persistence/application integration checkpoint before
+opening API or UI work.
+Later Integrator work is opened only when its predecessor produces a concrete code failure or a
+verified source and evidence boundary.
 
 The experimental delegated-work procedure is
 [RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-RUNBOOK](RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-RUNBOOK.md).

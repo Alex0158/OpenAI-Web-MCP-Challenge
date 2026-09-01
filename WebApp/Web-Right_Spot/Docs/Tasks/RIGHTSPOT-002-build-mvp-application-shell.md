@@ -16,10 +16,10 @@ The implementation must follow the accepted business rules in
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Implement the authoritative workflow domain core as the next executable
-  checkpoint toward the accepted tenant-to-agent Happy Path.
-- Next gate: Dispatch an independent Verifier against the frozen `RS-WO-002-03` T2 source before
-  opening persistence, API, or UI work.
+- Current increment: Define the next bounded persistence/application integration checkpoint after the
+  independently verified workflow domain core.
+- Next gate: Main-thread design and dispatch of one bounded persistence/application integration
+  checkpoint; do not open the full API/UI surface as one assignment.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -40,7 +40,10 @@ The runnable foundation increment is complete: the Builder stopped after returni
 wrote to an OS temp path outside the declared RightSpot output boundary, and the corrected rerun
 returned `VERIFIED` against the unchanged source/runtime identity. `RS-WO-002-03` was implemented,
 one bounded projection-isolation repair was completed, and T2 source review produced candidate commit
-`186e98a`. No other code writer or repairer is active; the independent Verifier is the next gate.
+`186e98a`. The independent Verifier found a listing-version guard defect; the bounded Repairer fixed
+it in post-repair commit `6e70c9f`, limited to the domain workflow and focused domain test paths. Fresh
+independent verification returned `VERIFIED` against that frozen source. The next increment is a
+main-thread-defined bounded persistence/application integration checkpoint.
 
 Do not send this parent Task's full objective to one Builder. Do not treat a worker result as
 verification, integration, or parent-Task closure.
@@ -50,13 +53,15 @@ verification, integration, or parent-Task closure.
 - **Dispatch state:** `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02`
   attempt returned `BLOCKED` on a verification-procedure boundary, and the corrected rerun returned
   `VERIFIED` at the unchanged execution baseline. `RS-WO-002-03` Builder and bounded Repairer both
-  returned `READY_FOR_VERIFICATION`; T2 candidate source is committed as `186e98a`. Builder,
+  returned `READY_FOR_VERIFICATION`; its T2 source was frozen at `a60001e`, and the independent Verifier
+  returned `NEEDS_REPAIR` for stale listing revision writes. The bounded Repairer completed in
+  post-repair commit `6e70c9f`; fresh independent verification returned `VERIFIED`. Builder,
   Verifier, Repairer, and Integrator are sequential checkpoints of this Task, not pre-registered child
   Tasks.
 - **Baseline:** The actual repository root is `WebMCP_Challenge`; the frozen implementation source
-  for the next gate is candidate commit `186e98a`, whose parent execution baseline is `df4cbd6`. The
+  for the next gate is post-repair commit `6e70c9f`, whose parent T2 source was `a60001e`. The
   six modified canonical documents are main-thread process-only writeback and are not part of the
-  candidate implementation commit. Source identity is checkpoint-scoped and path-owned; it is not a
+  post-repair implementation commit. Source identity is checkpoint-scoped and path-owned; it is not a
   permanent full-document hash lock.
 - **Read before action:** Repository `AGENTS.md` and Engineering controls, RightSpot `RUNBOOK.md`,
   `Docs/00-current-status.md`, the relevant product/domain/API/validation documents, ADR-RS-0001
@@ -444,18 +449,18 @@ Order, not a new registered Task or Task File.
 ### RS-WO-002-03 — Implement the authoritative workflow domain core
 
 **Parent task:** `RIGHTSPOT-002`  
-**Role:** Builder  
+**Role:** Builder → Repairer → Verifier (sequential checkpoints)  
 **Pre-dispatch state:** `GATED` — the runnable foundation is independently verified and committed as `b06bd85`  
-**Execution state:** `READY_FOR_VERIFICATION`  
-**Owner:** Main RightSpot thread; one assigned supporting Codex task performs the bounded implementation  
-**Dispatch state:** Builder dispatched at `df4cbd6`; bounded repair completed; T2 candidate source committed as `186e98a`  
+**Execution state:** `VERIFIED` — bounded repair and fresh independent verification complete  
+**Owner:** Main RightSpot thread; one assigned supporting Codex task performs each sequential bounded checkpoint  
+**Dispatch state:** Builder dispatched at `df4cbd6`; T2 candidate source committed as `186e98a`; bounded listing-version repair committed as `6e70c9f`  
 **Objective:** Implement a transport- and persistence-agnostic TypeScript workflow kernel that
 enforces the accepted RightSpot Viewing Request state machine, availability lifecycle, role
 authorization, revision/generation guards, bounded inputs, idempotent completed commands, audit
 facts, and tenant/agent projections. The kernel must be directly testable without Next.js, React,
 SQLite, a browser, a session provider, or an external service.
-**Next gate:** Dispatch a separate read-only domain Verifier against the frozen T2 candidate source.
-No persistence, API, session, or UI Work Order opens before this checkpoint is independently verified.
+**Next gate:** Define the next bounded persistence/application integration checkpoint. No wider API/UI
+surface opens as one unbounded assignment.
 
 #### Scope and implementation contract
 
@@ -532,10 +537,10 @@ only `src/server/domain/projections.ts` and this focused test file, then returne
 - `src/server/domain/projections.ts`; and
 - `tests/domain/workflow.test.ts`.
 
-The implementation paths were committed as candidate `186e98a`; the six modified canonical documents
-are main-thread process-only writeback and are not part of that implementation commit. Under the
-accepted path-scoped source-identity model, the candidate commit is the frozen verification source;
-the process-only writeback does not change the active product contract. No other writer is active.
+The implementation paths were first committed as `186e98a`; the reviewed process/governance and
+status writeback was then committed as `a60001e`. Under the accepted path-scoped source-identity
+model, `a60001e` is the frozen verification source; any later status/evidence writeback is process-only
+and does not change the active product contract. No other writer is active.
 
 T2 checks passed under the exact Node.js `v24.20.0` runtime and npm `11.19.0`:
 
@@ -545,9 +550,59 @@ T2 checks passed under the exact Node.js `v24.20.0` runtime and npm `11.19.0`:
 - `./node_modules/.bin/tsx --test tests/domain/workflow.test.ts` — domain 12/12; and
 - `git diff --check`.
 
-Independent verification has not yet run. The Builder and Repairer did not run a build/server smoke,
+#### T3 independent verification result
+
+The independent Verifier was dispatched against frozen source commit `a60001e` using the accepted
+path-scoped identity model. It returned `NEEDS_REPAIR`, not `VERIFIED`: after creating a draft against
+listing version `1`, it changed the published listing to version `2`, then confirmed that both
+`UPDATE_REQUEST_DRAFT` and `SUBMIT_REQUEST` still succeeded with `expectedListingVersion: 1`. This
+violates the current-listing revision guard and the stale-write failure contract. The main thread
+reproduced the same result independently against the exact frozen source.
+
+The Verifier also confirmed the exact Node.js/npm identity, clean-install contract, typecheck,
+foundation 6/6 tests, domain 12/12 tests, projection detachment and idempotency probes, forbidden-path
+and sensitive-content scans, and absence of authored source changes during verification. The reported
+Pilot Runbook hash drift is intentional main-thread process-only writeback after dispatch and is not a
+product-code failure. No verification claim is closed at this checkpoint.
+
+The next checkpoint is a bounded Repairer limited to `src/server/domain/workflow.ts` and
+`tests/domain/workflow.test.ts`: enforce the current published-listing version guard for both draft
+update and submit, and add regression coverage that stale revision `1` fails after the listing reaches
+revision `2` with state unchanged. Fresh independent verification remains required afterward.
+
+The independent Verifier was dispatched against the frozen source and returned `NEEDS_REPAIR`. The Builder and Repairer did not run a build/server smoke,
 API, persistence, UI, browser, deployment, WebMCP, Cloud Receiver, Redis, or WebRTC check because
 those are outside this Work Order.
+
+#### Bounded repair record
+
+The existing Builder task performed the bounded Repairer checkpoint without changing the declared
+authority or scope. It added current published-listing version checks to both `UPDATE_REQUEST_DRAFT`
+and `SUBMIT_REQUEST`, while retaining the request-stored listing-version guard, and added deterministic
+regression coverage proving that listing version `1` → `2` causes both stale commands to return
+`STALE_VERSION` with state unchanged. Only `src/server/domain/workflow.ts` and
+`tests/domain/workflow.test.ts` changed. The repair was committed as `6e70c9f` on top of the T2
+source; the exact post-repair source is now frozen and assigned for fresh independent verification.
+
+The Repairer reported exact Node.js `v24.20.0`, npm `11.19.0`, typecheck pass, foundation 6/6,
+domain 13/13, `git diff --check` pass, no forbidden integration references or secret material, and
+no external artifacts. This is Repairer self-check evidence only; it is not independent verification.
+
+#### Fresh T3 verification record
+
+The existing independent Verifier re-ran this checkpoint against frozen post-repair commit
+`6e70c9fe20ad169e4b4082875c8e625bef0f6040` and returned `VERIFIED`. It confirmed the exact Node.js
+`v24.20.0`/npm `11.19.0` identity and `process.execPath`, approved package and lockfile versions,
+`npm ci --no-audit --no-fund`, typecheck, foundation 6/6, domain 13/13, `git diff --check`, and the
+forbidden-integration, sensitive-production, and CJK scans.
+
+Its acceptance probe changed the current published listing from version `1` to `2` and confirmed that
+both `UPDATE_REQUEST_DRAFT` and `SUBMIT_REQUEST` with expected version `1` return `STALE_VERSION` with
+full state unchanged. Fresh matching versions still succeed; existing transitions, slot lifecycle,
+expiry, role/assignment/state guards, projections, idempotency, audit continuity, and serializable
+errors remain covered. No authored path changed during verification. Generated output stayed within
+ignored RightSpot paths. This verifies only the bounded domain-core checkpoint, not persistence/API/UI,
+browser, deployment, external integration, or parent-Task closure.
 
 #### Stop conditions and report
 
@@ -591,8 +646,9 @@ confirmation or decline.
 
 ## Next gate
 
-The runnable foundation is independently verified and `RS-WO-002-03` is the assigned current
-increment. Independently verify this bounded domain core before opening persistence/API/UI work. The
+The runnable foundation and `RS-WO-002-03` domain core are independently verified; the bounded repair
+for the listing-version guard defect is committed as `6e70c9f`. The next gate is to define one bounded
+persistence/application integration checkpoint before opening the wider API/UI surface. The
 parent Task must remain `in_progress` until the staged implementation, independent verification,
 integration, and canonical writeback gates for the complete ordinary application slice are complete
 without adding deferred WebRTC/Redis infrastructure.

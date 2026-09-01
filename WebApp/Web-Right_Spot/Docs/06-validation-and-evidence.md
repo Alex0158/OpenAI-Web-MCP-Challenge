@@ -1,13 +1,14 @@
 # RightSpot — Validation and Evidence
 
 **Role:** Product validation, test strategy, and claim boundary  
-**Status:** Initial validation plan; the runnable foundation is independently verified after a
-procedurally blocked first attempt, and the product workflow remains unverified
+**Status:** Initial validation plan; the runnable foundation and workflow domain core are independently
+verified after a procedurally blocked first attempt and bounded repair, while the ordinary product
+workflow remains unverified
 
 ## 1. Current evidence level
 
-The current RightSpot evidence includes a local foundation implementation, main-thread reproduction,
-and a corrected independent Verifier rerun. The first attempt is retained as procedurally `BLOCKED`
+The current RightSpot evidence includes a local foundation implementation, an independently verified
+workflow domain core, main-thread reproduction, and corrected independent Verifier reruns. The first attempt is retained as procedurally `BLOCKED`
 because one assertion wrote outside the declared RightSpot output boundary; the corrected rerun
 returned `VERIFIED` with the same source manifest and no external output. The outer Re-entry Core's
 tests and frozen MVP evidence do not prove that RightSpot works. They must not be copied into
