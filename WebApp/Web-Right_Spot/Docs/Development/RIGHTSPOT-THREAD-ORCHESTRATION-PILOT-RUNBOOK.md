@@ -550,6 +550,12 @@ The worker must verify both roots before running package commands. A root mismat
 caused an external diagnostic file is still a process incident even when the repository stayed
 unchanged; preserve the external artifact and report it without unapproved cleanup.
 
+The runtime pin is a separate location contract: if `.node-version` is at the Git or execution
+Worktree root while `package.json` is in a nested application, the dispatch must name that exact
+runtime-pin path and the exact package root independently. The worker reads `.node-version` from the
+declared runtime-pin path and runs npm/package commands from the declared package root; neither
+location may be inferred from the other.
+
 ### 8.1.2 Execution baseline versus governance revision
 
 Every dispatch records two identities and must not merge them into one undifferentiated manifest:
