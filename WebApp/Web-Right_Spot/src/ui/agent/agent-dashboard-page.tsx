@@ -71,10 +71,10 @@ function AgentQueue() {
   return (
     <section className={styles.workspace} aria-labelledby="queue-heading">
       <div className={styles.workspaceHeader}>
-        <div>
-          <p className="eyebrow">Assigned requests</p>
-          <h2 id="queue-heading">A short queue, kept current</h2>
-          <p className="panel-copy">Counts and request links below come from the server-authorized agent queue.</p>
+        <div className={styles.headerCopy}>
+          <p className="eyebrow">Assigned work</p>
+          <h2 id="queue-heading">See what needs a human response</h2>
+          <p className="panel-copy">Scan the current states, then open one server-authorized request to review its facts and availability.</p>
         </div>
         <button
           className={`button button-quiet ${styles.refreshButton}`}
@@ -108,10 +108,18 @@ function AgentQueue() {
 function QueueLoading() {
   return (
     <div className={styles.loadingState} role="status" aria-live="polite" aria-busy="true">
-      <span className={styles.loadingMark} aria-hidden="true" />
-      <div>
-        <h3>Loading the assigned queue</h3>
-        <p className="panel-copy">RightSpot is reading the current workflow state.</p>
+      <div className={styles.loadingCopy}>
+        <span className={styles.loadingMark} aria-hidden="true" />
+        <div>
+          <p className="eyebrow">Queue update</p>
+          <h3>Loading the assigned queue</h3>
+          <p className="panel-copy">RightSpot is reading the current workflow state.</p>
+        </div>
+      </div>
+      <div className={styles.loadingPreview} aria-hidden="true">
+        <span />
+        <span />
+        <span />
       </div>
     </div>
   );
@@ -120,14 +128,14 @@ function QueueLoading() {
 function QueueContent({ queue }: { queue: AgentQueueResponse }) {
   return (
     <>
-      <div className={styles.metricGrid} aria-label="Request state counts">
+      <dl className={styles.metricGrid} aria-label="Request state counts">
         {QUEUE_STATES.map((state) => (
-          <div className={styles.metric} key={state}>
-            <span className={styles.metricLabel}>{STATE_LABELS[state]}</span>
-            <strong>{queue.counts[state]}</strong>
+          <div className={styles.metric} data-state={state} key={state}>
+            <dt className={styles.metricLabel}>{STATE_LABELS[state]}</dt>
+            <dd>{queue.counts[state]}</dd>
           </div>
         ))}
-      </div>
+      </dl>
 
       <div className={styles.queueSection}>
         <div className={styles.sectionHeader}>
@@ -135,29 +143,39 @@ function QueueContent({ queue }: { queue: AgentQueueResponse }) {
             <p className="eyebrow">Current work</p>
             <h3>Requests assigned to you</h3>
           </div>
-          <span className={styles.generation}>Fixture {queue.fixtureGeneration}</span>
+          <details className={styles.technicalDetails}>
+            <summary>Queue details</summary>
+            <p>Fixture generation {queue.fixtureGeneration}</p>
+          </details>
         </div>
 
         {queue.requests.length === 0 ? (
           <div className={styles.emptyState} role="status">
             <span className={styles.emptyMark} aria-hidden="true">—</span>
-            <h3>No requests are waiting</h3>
-            <p className="panel-copy">The assigned queue is empty. Refresh when a tenant request is submitted.</p>
+            <div className={styles.emptyStateBody}>
+              <h3>No requests are waiting</h3>
+              <p className="panel-copy">The assigned queue is empty. Refresh when a tenant request is submitted.</p>
+            </div>
           </div>
         ) : (
           <div className={styles.requestList}>
             {queue.requests.map((request) => (
               <a
                 className={styles.requestCard}
+                data-state={request.state}
                 href={`/agent/requests/${encodeURIComponent(request.id)}`}
                 key={request.id}
               >
                 <span className={styles.requestCardTopline}>
-                  <span className={styles.statePill}>{STATE_LABELS[request.state]}</span>
-                  <span className={styles.requestVersion}>Version {request.version}</span>
+                  <span className={styles.statePill} data-state={request.state}>{STATE_LABELS[request.state]}</span>
+                  <span className={styles.requestVersion}>v{request.version}</span>
                 </span>
-                <strong>Viewing request</strong>
-                <span className={styles.requestCardFooter}>Open request workspace <span aria-hidden="true">↗</span></span>
+                <span className={styles.requestCardBody}>
+                  <strong>Viewing request</strong>
+                  <span>Listing reference · {request.listingId}</span>
+                  <small>Request {request.id}</small>
+                </span>
+                <span className={styles.requestCardFooter}>Review request <span aria-hidden="true">→</span></span>
               </a>
             ))}
           </div>
