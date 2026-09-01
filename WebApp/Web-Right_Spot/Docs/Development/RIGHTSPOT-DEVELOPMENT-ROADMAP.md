@@ -12,8 +12,9 @@ verification and is integrated at product commit `7ff0fbd`; its read-model seam 
 any future consumer. `RS-WO-013-01` returned `READY_FOR_REVIEW`, its bounded authority decision is
 accepted in ADR-RS-0012, and `RIGHTSPOT-013` is closed. `RS-WO-015-01` is assigned to an Operations
 authority Builder, while independent read-only `RS-WO-014-01` is assigned to an Asset Direction
-Advisor; no Operations consumer implementation is authorized yet. The prior out-of-scope tracked
-verifier mutation remains preserved.
+Advisor; the next projection Task `RIGHTSPOT-016` is registered but GATED behind authority
+verification. No Operations consumer implementation is authorized yet. The prior out-of-scope
+tracked verifier mutation remains preserved.
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-01, Europe/London
 

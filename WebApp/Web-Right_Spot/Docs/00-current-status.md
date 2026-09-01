@@ -24,6 +24,8 @@ at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression pa
 for the profile-local persistence/reset foundation, and independent read-only `RS-WO-014-01` is
 assigned to UI/Asset Direction Advisor `Carson`; both use reviewed baseline `8fe5976` and have
 disjoint write boundaries. `RIGHTSPOT-013` accepted the Operations authority decision and is closed.
+The next Operations projection Task `RIGHTSPOT-016` is registered but remains GATED behind the
+`RS-WO-015-01` authority verification; it has no assigned worker.
 The bounded Operations seam `RS-WO-011-01` passed independent verification and is integrated at
 product commit `7ff0fbd`; its verifier Worktree remains a historical evidence snapshot.
 `RS-WO-007-06`, `RS-WO-007-07`, and
