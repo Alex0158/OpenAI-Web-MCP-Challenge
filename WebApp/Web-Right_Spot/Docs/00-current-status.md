@@ -20,6 +20,8 @@ tooling mutation preserved as procedure evidence.
 **Current active Work Order:** `RS-WO-007-02` is `READY_FOR_VERIFICATION` under `RIGHTSPOT-007`;
 Builder `01a05d75-0116-75e3-807d-a19c6669e659` (`Turing`, local multi-agent) changed only
 `app/globals.css`, whose post-Builder SHA-256 is `bb85c353b3943b1267f361b3a4e677bc3e4ce7db09250984085471c7409a957c`.
+Independent Verifier `01a05d82-ba0f-7963-9975-200e1fabb962` (`Hooke`) is assigned against the
+frozen T2 candidate.
 No tenant/agent page Builder is dispatched. The preceding `RS-WO-005-01` navigation candidate was independently `VERIFIED` by
 Verifier task `01a05d5d-d796-72f0-baad-ca00d8e7ab4e` and integrated at local product commit `27f5391`.
 Verifier attempt 01 was procedurally `BLOCKED` after browser tooling added the tracked repository
@@ -40,8 +42,8 @@ preserved `.gitignore` incident is procedure evidence, not a product defect.
 The read-only UI decomposition Work Order `RS-WO-007-01` is complete in supporting task
 `01a05d5f-cb85-7cf3-96b4-edf0f5891b6d` on host `local` and accepted with revisions; its next
 single-file CSS Work Order `RS-WO-007-02` is ready for independent verification against T2
-commit `c92eb3773e1d6e3dd1944657f877c244ae516210` plus its declared CSS candidate; its Verifier has
-not yet been dispatched.
+commit `c92eb3773e1d6e3dd1944657f877c244ae516210` plus its declared CSS candidate; its Verifier is
+assigned and the source is frozen.
 Repaired tenant candidate `52cba87c` passed final independent verification and is integrated at product
 commit `9348aa5`. Its predecessor candidate `eb1d62e1b33a045e683f64ba3d28930e9444cd25` had
 two verifier runs checkpoint-locally blocked by a tracked `.gitignore` mutation adding `.gstack/` outside
@@ -64,7 +66,7 @@ the isolated `RS-WO-007-02` shared CSS foundation.
 
 **Current cross-role gate:** `RS-WO-005-01` passed corrected independent verification and is integrated
 at local commit `27f5391`; the known tracked metadata incident remains preserved. `RS-WO-007-02` is
-now frozen for independent verification as the sole shared-CSS write checkpoint. The accepted MVP cross-role gate remains closed:
+now under assigned independent verification as the sole shared-CSS write checkpoint. The accepted MVP cross-role gate remains closed:
 `RS-WO-002-14` passed direct read-only verification of the integrated
 tenant-to-agent HTTP Happy Path, including role privacy, mutation ordering, and bounded failures.
 `RS-WO-002-15` passed the isolated browser walkthrough with no browser error or warning logs. The
@@ -76,10 +78,11 @@ closed `RS-WO-005-01` checkpoint; it remains procedure evidence and is outside t
 write set.
 
 **Current implementation lane:** `RIGHTSPOT-007`'s Architecture/UI Advisor proposal is accepted
-with revisions. `RS-WO-007-02` is frozen at T2 for independent verification; the next gate is its
+with revisions. `RS-WO-007-02` is frozen at T2 and its Verifier is assigned; the next gate is its
 Verifier result. A separate,
-non-blocking `RS-WO-007-03` parallelism review is assigned to supporting worker
-`01a05d76-dac9-7283-9c2a-4166935f5043`; it may only inspect the future tenant/agent split.
+non-blocking `RS-WO-007-03` parallelism review returned `READY_FOR_REVIEW` from supporting worker
+`01a05d76-dac9-7283-9c2a-4166935f5043`; main accepted its isolation revisions and has not registered
+or dispatched the future tenant/agent Builders.
 The newly surfaced `RIGHTSPOT-008` is classified as a pending decision proposal rather than a
 verified defect; its proposal-only `RS-WO-008-01` is assigned to supporting worker
 `01a05d79-ce45-7000-aa44-a3a1ecad95b0` and cannot authorize implementation until main-thread review.

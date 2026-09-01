@@ -26,8 +26,8 @@ no active local-MVP gate remains. The current post-MVP `RS-WO-005-01` candidate 
 independent verification and is integrated at local commit `27f5391`; its first verifier attempt's
 preserved `.gitignore` tooling mutation remains procedure evidence. `RS-WO-007-01` is an accepted
 read-only UI decomposition and `RS-WO-007-02` Builder returned `READY_FOR_VERIFICATION` after a
-single-file CSS change; no tenant/agent page Builder has been dispatched. Independent verification
-is the next gate.
+single-file CSS change; its independent Verifier is assigned. No tenant/agent page Builder has been
+dispatched.
 
 ## 1. Authority and reading order
 

@@ -132,6 +132,9 @@ for the independent Verifier.
 `Docs/Tasks/RIGHTSPOT-009-define-information-request-and-contact-preference-boundary.md`, and
 owner-held `Docs/Reference/RIGHTSPOT-GOAL-PROMPT-HISTORY.md` remain outside this Work Order and must
 not be modified, staged, restored, or treated as product source.
+**Verifier worker:** `01a05d82-ba0f-7963-9975-200e1fabb962` (`Hooke`, local multi-agent Verifier).  
+**Verification status:** `ASSIGNED`; the Verifier must use the frozen T2 candidate and an isolated
+non-repository browser working directory.
 
 ### Worker write set
 
@@ -165,7 +168,7 @@ asset, or behavior change.
 ## RS-WO-007-03 — Revalidate the post-CSS tenant/agent parallel execution boundary
 
 **Role:** Parallelism/Architecture Advisor  
-**Status:** `ASSIGNED`  
+**Status:** `READY_FOR_REVIEW`  
 **Parallelization:** `READ_ONLY_ADVISORY` — may inspect the live source while the CSS Builder works;
 it must not write source or canonical records.  
 **Risk profile:** `Standard` — execution-boundary review only; no product behavior change.  
@@ -191,6 +194,23 @@ Return `READY_FOR_REVIEW` with observation time, source identity and dirty-state
 paths inspected, verified facts versus inference/recommendation, commands, unresolved risks, and
 the proposed next boundary. Return `BLOCKED` only if the source or instructions prevent a reliable
 read-only review. Do not dispatch follow-on work or edit any file.
+
+### Main-thread review disposition
+
+The `Euler` review is accepted with revisions. Tenant and agent role surfaces are valid future
+parallel candidates only after `RS-WO-007-02` is independently `VERIFIED` and a new frozen source
+identity is captured. Their intra-role families remain intact: tenant owns the discovery, listing,
+request, and tenant-module paths; agent owns the dashboard, request, and agent-module paths. Neither
+family may modify shared UI, global CSS, route wrappers, contracts, server/domain/persistence, tests,
+fixtures, configuration, or canonical documents.
+
+The current Codex project record is not itself a Git repository, so shared local-cwd parallel writes
+are not permitted. Before registering or dispatching the two future role Builders, the main thread
+must pass an isolation preflight from the actual nested Git root: use two explicitly recorded frozen
+Worktrees when their source identity and dirty-state boundary are reliable; otherwise use two
+temporary isolated copies with explicit source manifests; if neither is safe, serialize the role
+slices in the main checkout. The proposed future role Work Orders remain gated and are not yet
+registered or dispatched by this review.
 
 ## Acceptance criteria for this task
 
