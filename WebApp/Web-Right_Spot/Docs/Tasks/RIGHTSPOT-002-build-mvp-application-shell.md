@@ -910,6 +910,30 @@ The claim remains limited to the local discovery/session API candidate; it does 
 verification, browser/UI behavior, request or agent operations, deployment, WebMCP, Cloud Receiver,
 Redis, WebRTC, or parent-task closure.
 
+#### Independent Verifier checkpoint
+
+**Execution state:** `GATED` — the Builder handoff is complete and the verification snapshot is
+prepared, but no dedicated Verifier has been dispatched yet  
+**Parallelization:** `READ_ONLY_PARALLEL` with `RS-WO-002-06`; the Verifier reads the frozen candidate
+while the Advisor reads the same stable source in a separate Worktree  
+**Source snapshot:** canonical checkout commit `99dbb5c`, containing the frozen T2 code candidate
+`de169ce` plus the main-thread documentation writeback; no code or test source follows `de169ce`  
+**Verifier Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-05-verifier` (detached at
+`99dbb5c`, clean at preparation)  
+**Worker write set:** none; the Verifier must not repair, edit tests, regenerate fixtures, or modify
+canonical documents  
+**Next gate:** Main-thread classification of `VERIFIED`, `NEEDS_REPAIR`, or `BLOCKED`; only a
+`VERIFIED` result permits the main thread to close the discovery checkpoint and open the next
+implementation boundary.
+
+The Verifier must independently inspect the exact source snapshot and reproduce the declared runtime,
+typecheck, foundation and focused checks, production build, route/API smoke, scope/path, and
+no-mutation evidence. It must distinguish source or procedure defects from environment failures,
+must not accept Builder prose as proof, and must not claim browser/UI, request, agent, deployment,
+WebMCP, Cloud Receiver, Redis, WebRTC, or parent closure. Any failure must include the first failing
+command or observation, exact source identity, affected claim, classification, and the bounded repair
+or decision condition.
+
 #### Scope and ownership
 
 **Read set:** Repository `AGENTS.md` and Engineering controls, RightSpot `RUNBOOK.md`,
