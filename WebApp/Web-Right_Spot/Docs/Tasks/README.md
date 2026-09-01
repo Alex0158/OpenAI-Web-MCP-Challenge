@@ -34,8 +34,8 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-019 — Normalize the tenant Europe/London time contract`](RIGHTSPOT-019-normalize-tenant-london-time-contract.md)
 
 `RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
-`RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`, and
-`RIGHTSPOT-018` are closed within their bounded outcomes. They do not reopen or widen the accepted
+`RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`,
+`RIGHTSPOT-016`, `RIGHTSPOT-017`, and `RIGHTSPOT-018` are closed within their bounded outcomes. They do not reopen or widen the accepted
 local MVP. `RIGHTSPOT-006` is pending behind the explicit external credential gate and does not
 authorize provider setup or authentication source changes.
 `RIGHTSPOT-008` is a pending read-only decision task for the proposed tenant favourites and agent
@@ -46,10 +46,12 @@ outbound communication, implementation, or canonical product writeback; `RIGHTSP
 read-only decision task for the proposed Agent Operations Insights dashboard and bounded WebMCP query
 surface; it does not authorize dashboard implementation, WebMCP registration, reporting-schema
 changes, or canonical product writeback. `RIGHTSPOT-012` is a pending read-only cross-layer audit
-lane and does not authorize implementation or canonical product writeback. `RIGHTSPOT-016` and
-`RIGHTSPOT-017` remain `in_progress` with preserved, non-formal candidate overlays; they require
-candidate re-gating and persistent independent verification before integration. `RIGHTSPOT-019` is
-closed after its integrated repair passed the bounded browser/form regression gate.
+lane and does not authorize implementation or canonical product writeback. `RIGHTSPOT-016` is closed
+with its repaired projection independently verified and integrated at `edd7575`; `RIGHTSPOT-017` is
+closed with its tenant media consumer integrated at `2a53917` and its integrated browser gate verified.
+The failed 016 candidate and transient 016/017 execution records remain historical evidence and do not
+reopen either task. `RIGHTSPOT-019` is closed after its integrated repair passed the bounded browser/form
+regression gate.
 
 Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, the corrected `RS-WO-002-02` rerun returned
@@ -86,10 +88,10 @@ browser evidence are reconciled in the
 `RIGHTSPOT-002` is closed.
 
 **Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-008`, `RIGHTSPOT-009`, `RIGHTSPOT-010`, and
-`RIGHTSPOT-012` are pending decision, credential, or read-only audit gates. `RS-WO-016-01` and
-`RS-WO-017-03` are `GATED` behind candidate re-gating and persistent independent verification.
-`RS-WO-019-01` is closed after its bounded browser/form regression passed. No closed task is an
-active implementation gate.
+`RIGHTSPOT-012` are pending decision, credential, or read-only audit gates. `RS-WO-016-01` is
+independently verified and integrated at `edd7575`; `RS-WO-017-03` is independently verified and
+integrated at `2a53917`, with `RS-WO-017-04` browser verification complete. `RS-WO-019-01` is closed
+after its bounded browser/form regression passed. No closed task is an active implementation gate.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.

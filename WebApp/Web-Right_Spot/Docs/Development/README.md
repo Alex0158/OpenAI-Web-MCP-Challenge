@@ -72,12 +72,12 @@ and `RIGHTSPOT-002` is closed for the accepted local MVP.
 
 ## Current post-MVP state
 
-`RIGHTSPOT-015` is closed with the Operations authority integrated at `e7f30d5`. The current
-implementation lanes are `RS-WO-016-01` (pure Operations projection) and `RS-WO-017-03` (tenant media
-consumer). Both have preserved candidate overlays from transient execution-path deviations; neither
-has a formal Builder handoff, and their exact path/hash evidence is recorded in the owning Task Files.
-Candidate re-gating, persistent isolated verification, and integration are still pending. The next
-verification dispatch must use a persistent supporting task/thread and a frozen source identity.
+`RIGHTSPOT-015` is closed with the Operations authority integrated at `e7f30d5`. `RS-WO-016-01` is
+closed after its bounded repair passed fresh independent verification and was integrated at `edd7575`.
+`RS-WO-017-03` is closed after independent verification and integration at `2a53917`, followed by the
+verified integrated browser gate `RS-WO-017-04`. The earlier transient overlays and failed 016 candidate
+remain preserved process evidence; their exact path/hash and browser evidence are recorded in the owning
+Task Files. No active implementation lane remains in this closure increment.
 `RS-WO-019-01` is integrated and closed at `6f52686` after its bounded browser/form regression passed.
 The transient execution-path incident
 is process evidence and does not authorize editing or silently absorbing either candidate overlay.

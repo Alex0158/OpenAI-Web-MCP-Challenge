@@ -1,7 +1,7 @@
 # RIGHTSPOT-017: Implement bounded property-media presentation
 
 **Type:** `implementation`  
-**Lifecycle:** `in_progress`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for evaluator-facing rental-marketplace credibility  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-01  
@@ -10,21 +10,20 @@
 ## Task Control
 
 - Type: `implementation`
-- Lifecycle: `in_progress`
+- Lifecycle: `closed`
 - Priority: `P1`
 - Owner: Main RightSpot thread
 - Objective: Replace the two current tenant listing media placeholders with reviewed, deterministic,
   local synthetic property imagery without changing listing DTOs, routes, workflow, or authentication.
-- Current increment: `RS-WO-017-03` is the bounded tenant-consumer checkpoint with a preserved candidate
-  overlay. The transient execution did not establish a formal Builder handoff or an accepted
-  `READY_FOR_VERIFICATION` state. The
-  main-thread-controlled `RS-WO-017-01` asset gate is complete, and `RS-WO-017-02` has passed
-  independent verification and is integrated at product commit `b7369bd`. Its manifest, local WebP
-  pack, and shared primitive are frozen read-only inputs for tenant wiring.
-- Next gate: Re-gate/adopt the exact candidate under the Pilot Runbook, then route it to a persistent,
-  isolated independent Verifier; `RS-WO-017-04` remains the later integrated browser/rendering gate.
-- Execution posture: `CONSTRAINED` — candidate preserved; no agent page, global CSS, API, or domain source
-  is authorized in this checkpoint.
+- Current increment: `RS-WO-017-03` passed persistent re-gate and independent verification and is
+  integrated at Main product commit `2a53917`; `RS-WO-017-04` then passed integrated browser/rendering
+  verification against that commit. The main-thread-controlled `RS-WO-017-01` asset gate is complete,
+  and `RS-WO-017-02` is independently verified and integrated at product commit `b7369bd`. Its manifest,
+  local WebP pack, and shared primitive remain frozen read-only inputs for tenant wiring.
+- Next gate: None for this bounded media task. Any future media capability must be separately scoped and
+  must not widen this local synthetic single-image boundary.
+- Execution posture: `CLOSED` — integrated and browser-verified; no agent page, global CSS, API, or domain
+  source is authorized in this checkpoint.
 
 ## Accepted implementation boundary
 
@@ -232,12 +231,13 @@ evidence. Do not integrate the candidate or modify the asset pack.
 ### RS-WO-017-03 — Replace tenant listing placeholders
 
 **Formal checkpoint:** Persistent Builder → independent Verifier  
-**Status:** `GATED` — preserved candidate requires formal re-gate after an execution-channel defect  
+**Status:** `INTEGRATED` — independently verified candidate integrated at Main product commit `2a53917`  
 **Parallelization:** `PARALLEL_TENANT_MEDIA_CONSUMER` — disjoint from Operations, workflow-domain, and tenant-request time paths; owns the two tenant listing consumers and their local module CSS only  
-**Execution channel:** Transient multi-agent execution record `01a05e31-b9cc-7561-804d-58a3ea1267de` (`Curie`); not a persistent supporting task/thread  
-**Source baseline:** `182937e121de8e7ab110272861b53917bdf52fdf` on `main`; collaborator-owned dirty and untracked paths remain outside this Work Order  
-**Dispatch state:** `FORMAL_HANDOFF_NOT_ESTABLISHED` — candidate preserved as process-incident evidence  
-**Next gate:** Candidate adoption/re-baseline under Runbook §8.1.4, followed by independent verification in a persistent isolated task/thread; do not integrate or start `RS-WO-017-04`  
+**Execution channel:** Persistent re-gate task/thread `01a05ecd-6479-79f0-9ace-8b9f05c0ff26` (`local`) completed the formal Builder handoff; independent Verifier task/thread `01a05ed8-edf1-7982-80c2-a02ea90f1460` (`local`) returned `VERIFIED`; Main integrated the exact candidate at product commit `2a53917`; the original transient execution record `01a05e31-b9cc-7561-804d-58a3ea1267de` (`Curie`) remains provenance-invalid evidence  
+**Source baseline:** `5ae6573` on `main`, the reviewed current Main baseline for this re-gate; collaborator-owned dirty and untracked paths remain outside this Work Order  
+**Candidate source:** Exact three-path overlay in isolated Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-017-03-regate`, frozen at T2; no commit was created  
+**Dispatch state:** `INTEGRATED` after independent verification and exact allowlist commit `2a53917`; the original candidate dispatch remains `FORMAL_HANDOFF_NOT_ESTABLISHED`  
+**Next gate:** Complete; `RS-WO-017-04` passed the integrated browser/rendering gate and the parent task is closed  
 **Allowed write set:** `src/ui/tenant/tenant-discovery-page.tsx`, `src/ui/tenant/tenant-listing-page.tsx`, `src/ui/tenant/tenant.module.css`  
 **Dependency:** `RS-WO-017-02` independently verified and integrated  
 **Boundary:** Replace only the two current placeholders with the shared primitive; preserve listing
@@ -282,20 +282,145 @@ these paths. The exact candidate paths and hashes are:
 | `src/ui/tenant/tenant-listing-page.tsx` | `19cc31990247ee72ce15df6531fe6589c97463a3e80e6c2dd18a228df8582924` |
 | `src/ui/tenant/tenant.module.css` | `46abbf875ca279a2be3bab04275e6bd4cc84bf75981f7cd41acf9202ec822ca3` |
 
+### Formal persistent re-gate assignment — 2026-09-01
+
+Persistent supporting task/thread `01a05ecd-6479-79f0-9ace-8b9f05c0ff26` on host `local` was created
+after the activation prompt was validated and returned a usable identity. It completed the formal
+re-gate with `READY_FOR_VERIFICATION`. The task did not edit the Main checkout, modify the candidate,
+update canonical documents, stage, commit, push, repair, or dispatch another worker. Its report is
+Builder handoff evidence only; the Work Order remains unverified until a separate independent Verifier
+passes the frozen T2 source.
+
+### Re-gate dependency preflight — 2026-09-01
+
+The first persistent re-gate preflight returned `BLOCKED` because the isolated package had no
+`node_modules`. No candidate defect, source drift, or scope violation was established; all three
+candidate hashes and the detached `5ae6573` baseline remained unchanged, and no files were edited or
+staged. The main thread authorized one locked `npm ci --ignore-scripts --no-audit --no-fund` from the
+isolated application root using the pinned Node/npm toolchain. The continuation uses the same task
+identity and Worktree, and remains a Builder re-gate only; it must not modify source, package files, the
+Git index, canonical documents, or the Main checkout.
+
+### Re-gate invocation preflight — 2026-09-01
+
+After the authorized install, the focused tsx invocation stopped before executing tests because the
+application-local temporary path produced an IPC socket path that was too long and returned `EINVAL`.
+The candidate, package files, hashes, and exact three-path scope remained unchanged; no product defect
+was established and zero tests were executed in that attempt. A first proposed shorter path (`var/t` and
+`var/c`) was correctly rejected because those paths were not currently ignored. The same persistent task
+then used the existing ignored application-local paths `var/test` and `var/test/c`; the focused tests
+and all remaining checks passed. This is an environment/procedure continuation, not a new Work Order or
+a source change.
+
+### Formal re-gate preparation — 2026-09-01
+
+The main thread established a fresh isolated re-gate Worktree from reviewed Main commit `5ae6573` at
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-017-03-regate` and reproduced only the three preserved
+candidate paths there. The candidate bytes match the hashes above. At the time of this preparation the
+candidate lifecycle was still `GATED`; the later persistent assignment is recorded in the owning Task
+File once acknowledged. The candidate remains unverified until it is accepted as a new frozen T2 source
+and an independent Verifier is dispatched against that frozen source. No Main checkout candidate path
+was edited, staged, committed, or verified during preparation.
+
 The candidate reports consumer static tests `7/7`, media tests `4/4`, all direct tests `87/87`,
 typecheck, build, and diff check under pinned Node `24.20.0` / npm `11.19.0`. These are Builder checks
 only. The independent verifier must re-check the hashes before and after testing, inspect every removed
 placeholder selector for unintended layout loss, and must not repair, commit, integrate, or modify the
 overlay.
 
+### Frozen T2 source identity — 2026-09-01
+
+The main thread reviewed the completed re-gate report and froze the exact isolated source for the next
+checkpoint:
+
+- Execution root: `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-017-03-regate`
+- Package root: `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-017-03-regate/WebApp/Web-Right_Spot`
+- Detached baseline: `5ae6573dce748e01c7a91e33b23dd05dfdeea896`
+- Candidate scope: exactly three unstaged candidate paths, 5 insertions and 102 deletions; index empty
+- `src/ui/tenant/tenant-discovery-page.tsx` SHA-256:
+  `4100bfc86924b81f0e86a439741556905947cdd96234dfb974017d135cabccad`
+- `src/ui/tenant/tenant-listing-page.tsx` SHA-256:
+  `19cc31990247ee72ce15df6531fe6589c97463a3e80e6c2dd18a228df8582924`
+- `src/ui/tenant/tenant.module.css` SHA-256:
+  `46abbf875ca279a2be3bab04275e6bd4cc84bf75981f7cd41acf9202ec822ca3`
+
+No additional authored or untracked source path was present in the frozen Worktree. The source is now
+frozen for independent verification; the verifier must re-check identity before and after testing and
+must not test a moving Main checkout, modify the candidate, repair, integrate, update canonical
+documents, stage, commit, or push.
+
+### Independent verification assignment — 2026-09-01
+
+Persistent independent Verifier task/thread `01a05ed8-edf1-7982-80c2-a02ea90f1460` on host `local` was
+created against the frozen T2 Worktree above. It is read-only and must return `VERIFIED`,
+`NEEDS_REPAIR`, or `BLOCKED`. It does not authorize integration, document writeback, staging, commit,
+push, or closure. The Main thread will review its report and re-check the frozen identity before any
+integration decision.
+
+### Independent verification result — 2026-09-01
+
+Verifier task/thread `01a05ed8-edf1-7982-80c2-a02ea90f1460` returned `VERIFIED` for the exact frozen
+three-path candidate. All supplied source and package hashes matched before and after testing; detached
+baseline and scope remained unchanged, with no staged or additional untracked source paths. Pinned
+Node `24.20.0` / npm `11.19.0` were used. Focused consumer/media tests passed `14/14`, the full direct
+suite passed `87/87`, foundation `npm test` passed `6/6`, typecheck and production build passed, and
+independent static assertions passed `7/7` (including 42 exact identity pairs and exclusive ownership
+of all 11 removed placeholder CSS rules).
+
+The verifier confirmed authoritative `listing.id` + `listing.imageKey` wiring, exact manifest resolution,
+current-listing-bound unavailable/error behavior, synthetic disclosure, local 3:2 media styling,
+responsive/focus/reduced-motion constraints, and no changes to DTOs, routes, APIs, workflow, auth,
+Operations, dependencies, global CSS, assets, manifest, or shared primitive. Browser rendering, actual
+image-load failure events, viewport/keyboard interaction, deployment, WebMCP, Cloud Receiver, WebRTC,
+and external services remain explicitly skipped for the later `RS-WO-017-04` gate. This result authorized
+Main integration review only; it did not close the parent task.
+
+### Main-thread integration result — 2026-09-01
+
+Main rechecked the three frozen candidate hashes against the current Main overlay and staged only the
+three verified tenant consumer paths. Main pre-commit focused tests passed `14/14`, the direct suite
+passed `93/93`, `npm test` passed `6/6`, typecheck and production build passed, and `git diff --check`
+passed. The exact allowlist was committed at product commit `2a53917` (`feat(rightspot): integrate
+tenant listing media`). No task docs, candidate Operations projection, Web-Game, `next-env.d.ts`,
+`.gitignore`, or other dirty/untracked path was included. The commit is local only; no push was made.
+
+`RS-WO-017-04` completed the integrated browser/rendering gate against this commit.
+
 ### RS-WO-017-04 — Verify integrated property media
 
 **Role:** Independent Verifier  
-**Status:** `GATED`  
+**Status:** `VERIFIED` — integrated browser/rendering verification passed against commit `2a53917`  
 **Dependency:** `RS-WO-017-03` integrated  
+**Execution channel:** Persistent browser/UX Verifier task/thread `01a05ee5-bcdf-7263-8bc6-5ba6f4765930` (`local`)  
+**Source:** Frozen browser Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-017-04-browser`, detached at integrated commit `2a53917`  
 **Evidence:** Exact asset association, dimensions/rendering, disclosure, missing/corrupt fallback,
   no external requests, no cross-listing substitution, 320/390/768/1440 responsive behavior,
   keyboard/reduced-motion checks, and existing suite/build/diff evidence.
+
+### RS-WO-017-04 verification result — 2026-09-01
+
+Persistent browser/UX Verifier task/thread `01a05ee5-bcdf-7263-8bc6-5ba6f4765930` returned `VERIFIED`
+against detached browser Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-017-04-browser` at the
+integrated commit `2a5391778b109b85f610eb4748e48ce25107fca4`. The Worktree remained clean and the
+commit contained only the three expected tenant consumer files. The verifier used pinned Node
+`24.20.0` / npm `11.19.0`, started the built app on `127.0.0.1:3117`, and stopped its server after
+verification.
+
+The browser walkthrough signed in through the visible tenant control, opened discovery and the primary
+listing detail, and confirmed all three manifest-bound local WebP assets decoded at `1536x1024` with
+scene-only alt text and visible `Synthetic image - illustrative only` disclosure. Area filtering, Clear,
+combined rent/size/date filtering, exact Riverside image association, request-time add/remove behavior,
+responsive discovery/detail at `320`, `390`, `768`, and `1440` pixels, keyboard focus/Enter navigation,
+figure/caption landmarks, and disclosure contrast (`5.28:1`) passed. No horizontal overflow, clipped
+primary action, remote media/request, external resource, console warning/error, or private/command token
+was observed.
+
+Checks passed: focused media/tenant `8/8`, full direct suite `87/87`, foundation `npm test` `6/6`,
+typecheck, production build, and `git diff --check`. Asset-failure injection was not available through
+the browser controls; source inspection confirmed current-listing-bound unavailable/error behavior with
+no substitute or remote fallback. Reduced-motion was checked by source inspection because browser
+emulation was unavailable. This evidence closes the bounded media task only; it does not claim deployment,
+external auth, WebMCP, Cloud Receiver, WebRTC, or production readiness.
 
 ## Non-goals
 

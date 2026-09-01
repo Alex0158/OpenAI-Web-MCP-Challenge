@@ -20,21 +20,25 @@ agent surfaces have since passed their respective independent verification gates
 at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression passed at frozen source
 `4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current active Work Orders:** `RS-WO-016-01` and `RS-WO-017-03` have preserved candidate overlays from
-transient multi-agent executions. Their reported Builder handoffs are not formal `READY_FOR_VERIFICATION`
-states because no persistent task/thread or verified Worktree established the handoff. Exact paths and
-content hashes are recorded in their Task Files; neither candidate has an independent verification
-result or integration claim. The overlays are protected inputs for formal re-gating and must not be
-edited, staged, committed, or verified from a moving source. `RIGHTSPOT-015` is closed with
-its Operations authority integrated at `e7f30d5`; `RS-WO-017-02` is independently verified and
-integrated at `b7369bd`; and `RS-WO-019-01` is independently verified, integrated at `6f52686`,
-and closed after its bounded browser/form regression passed. `RS-WO-018-01` is independently verified,
-integrated at `5eef037`, and closed. These lanes have disjoint write sets.
+**Current closure state:** `RS-WO-016-01` passed its bounded repair and fresh independent verification;
+Main integrated the repaired exact two-path projection at product commit `edd7575`. `RS-WO-017-03`
+passed persistent re-gate and independent verification and is integrated at product commit `2a53917`;
+the persistent integrated browser gate `RS-WO-017-04` then returned `VERIFIED` against that commit.
+`RIGHTSPOT-016` and `RIGHTSPOT-017` are therefore closed within their bounded outcomes. The original
+transient 016/017 overlays, the failed 016 candidate, and their evidence Worktrees remain preserved as
+historical process evidence and were not used as current source. No active product writer remains in
+these lanes; Main owns the canonical document writeback and any future separately registered consumer.
+`RIGHTSPOT-015` remains closed with its Operations authority integrated at `e7f30d5`; `RS-WO-017-02` is
+independently verified and integrated at `b7369bd`; `RS-WO-019-01` is independently verified, integrated
+at `6f52686`, and closed after its bounded browser/form regression; and `RS-WO-018-01` is independently
+verified, integrated at `5eef037`, and closed. These lanes have disjoint write sets.
 `RIGHTSPOT-013` accepted the Operations authority decision and is closed, and `RIGHTSPOT-014` accepted
 its media proposal and is closed. The reviewed media asset baseline is committed at `760b88f`.
-`RIGHTSPOT-016` and `RIGHTSPOT-017` remain `in_progress`; their formal checkpoints are `GATED` pending
-candidate re-gating and persistent, independently verifiable task/thread checkpoints before any
-integration or downstream transport/browser claim.
+`RIGHTSPOT-016` and `RIGHTSPOT-017` are closed within their bounded outcomes: the repaired Operations
+projection is integrated at `edd7575` after fresh independent verification, and the tenant media consumer
+is integrated at `2a53917` after independent verification plus the integrated browser gate `RS-WO-017-04`.
+Neither lane authorizes a downstream transport, external service, WebMCP, Cloud Receiver, or broader
+product claim.
 `RIGHTSPOT-018` records two independently reproduced relay-domain defects in one serialized
 shared-workflow Work Order and is closed; `RIGHTSPOT-019` records the integrated London-time UI
 boundary repair and completed browser/form regression, and is closed.
@@ -159,14 +163,12 @@ Its pure projection module and focused tests are available against the existing 
 waiting for the unresolved Favourite or Information Request semantics. It does not authorize an
 Operations route, dashboard UI, reporting history, WebMCP, or external service.
 
-**Current post-MVP execution lanes:** `RS-WO-016-01` and `RS-WO-017-03` are preserved candidate
-overlays from non-formal transient executions, with exact path/hash evidence recorded in their Task
-Files and no formal Builder, independent verification, or integration claim. Their next gate is
-candidate re-gating followed by a persistent, isolated independent Verifier; no downstream transport,
-browser, or WebMCP work starts from these overlays. `RS-WO-019-01`
-is integrated and closed at `6f52686` after its bounded browser/form regression passed. The
-transient execution-path incident affecting the 016/017 handoffs is process evidence, not permission
-to modify or silently absorb their candidate source.
+**Current post-MVP closure:** `RS-WO-016-01` is independently verified and integrated at `edd7575`;
+`RS-WO-017-03` is independently verified and integrated at `2a53917`, and `RS-WO-017-04` passed the
+integrated browser gate. `RIGHTSPOT-016` and `RIGHTSPOT-017` are closed within their bounded outcomes.
+The transient execution-path incident, the failed 016 candidate, and historical evidence Worktrees remain
+process evidence only; they do not authorize editing or silently absorbing candidate source. `RS-WO-019-01`
+is integrated and closed at `6f52686` after its bounded browser/form regression passed.
 
 **Authoritative closure update:** The earlier checkpoint chronology below intentionally preserves the
 state at each historical handoff. It must not be read as reopening the current gate: `RS-WO-002-14`

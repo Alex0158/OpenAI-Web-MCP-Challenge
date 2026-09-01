@@ -5,10 +5,11 @@
 Current post-MVP state is maintained in [`Docs/00-current-status.md`](Docs/00-current-status.md) and
 [`Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`](Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md),
 not in this routing document. As of 2026-09-01, `RIGHTSPOT-015` is closed at product commit `e7f30d5`;
-`RS-WO-016-01` and `RS-WO-017-03` have preserved non-formal candidate overlays in the main checkout; and
-`RS-WO-019-01` is integrated at `6f52686` with bounded browser/form evidence pending. The 016/017
-overlays are process-incident evidence and must not be edited, staged, committed, or independently
-verified until the Runbook re-gate establishes a persistent, isolated handoff.
+`RS-WO-016-01` is independently verified and integrated at `edd7575`; `RS-WO-017-03` is independently
+verified and integrated at `2a53917`, with its integrated browser gate `RS-WO-017-04` also verified; and
+`RS-WO-019-01` is integrated at `6f52686` with its bounded browser/form evidence complete and is closed.
+The earlier 016/017 transient overlays and failed candidate remain process-incident evidence only; they
+must not be edited, staged, committed, or used as current source.
 
 ## 1. Authority and reading order
 
