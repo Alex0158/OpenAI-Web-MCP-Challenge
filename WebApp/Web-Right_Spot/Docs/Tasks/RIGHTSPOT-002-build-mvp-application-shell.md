@@ -1804,7 +1804,10 @@ Verifier is `01a05bb1-c38b-7a91-95aa-49475a057e43` (`local`) in Worktree
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-verifier`, detached at the candidate; its package root
 is `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-verifier/WebApp/Web-Right_Spot` and its runtime-pin
 path is `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-verifier/.node-version`. The full Verifier
-prompt was persisted after the usable thread identity returned; no source write is authorized.  
+prompt was persisted after the usable thread identity returned; its first attempt stopped procedurally
+because the shell resolved Node `26.5.0` instead of the required pinned runtime; the main thread verified
+the prepared absolute Node `24.20.0`/npm `11.19.0` binaries and sent a correction to the same Verifier
+identity, which is re-running the complete matrix. No source write is authorized.  
 **Parent execution posture if blocked:** `CONSTRAINED` only for the tenant interface; the agent interface,
 read-only analysis, and process work may continue if they do not consume a blocked tenant write set.
 
