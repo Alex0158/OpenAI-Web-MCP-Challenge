@@ -335,3 +335,25 @@ not restore, delete, commit, or silently absorb the mutation from the worker.
 
 **Promotion:** The Pilot Runbook now treats undeclared tracked tooling metadata changes as ownership
 violations and requires a checkpoint-local `BLOCKED` result with separate main-thread handling.
+
+## 11. Browser evidence needs a tooling-safe execution boundary
+
+**Status:** `Accepted into Runbook`  
+**Date:** 2026-09-01  
+**Source:** Two consecutive `RS-WO-002-12` verifier runs from clean candidate Worktrees
+
+**Observation:** Both Tenant Verifier runs started with clean exact-scope Worktrees and completed
+their product checks, but browser tooling added `.gstack/` to the tracked `.gitignore` before final
+readback. The same mutation repeated in a newly created clean Worktree. The browser evidence also
+exposed a real tenant filter/render divergence, so browser checks were valuable even though the
+tooling side effect invalidated the checkpoint's final source-boundary claim.
+
+**Learning:** Browser verification and source identity must be treated as two coupled but separable
+boundaries. Before browser actions, record Git status and use a tooling-safe permitted output boundary;
+if that cannot be guaranteed, preserve the source Worktree and omit browser interaction rather than
+polluting the candidate or silently accepting tracked metadata. Direct HTTP and static UI checks may
+continue, but their claim must not be inflated to browser E2E. A real UI finding remains separately
+triageable by the main thread even when the verifier's overall result is procedurally `BLOCKED`.
+
+**Promotion:** The Pilot Runbook now requires browser-tool isolation or an explicit unavailable-browser
+claim and separates procedural metadata blockers from independently triageable product findings.

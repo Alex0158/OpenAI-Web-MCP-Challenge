@@ -1038,6 +1038,15 @@ delete or repair source. The Verifier records the exact path and stops the affec
 thread applies the deletion gate separately, tightens the procedure if needed, and re-gates the same
 checkpoint; it does not silently promote otherwise green checks to `VERIFIED`.
 
+Browser automation has an additional source-boundary risk: a browser tool or its helper may create
+tooling metadata or edit tracked repository metadata in the current working directory. Before browser
+actions, capture the exact Git status; if the tool changes any undeclared tracked path, stop browser
+actions in that source Worktree, preserve the diff, and report `BLOCKED` for the affected checkpoint.
+Do not restore or delete the metadata from the worker. A later rerun must either execute the browser
+tool from an explicitly isolated, permitted output boundary while the application server remains tied
+to the frozen source, or omit browser interaction and state that browser evidence is unavailable. Static
+UI, direct HTTP, and source-scope evidence must not be presented as browser E2E evidence.
+
 ### 12.2 Verification selection
 
 Choose the narrowest checks that can prove the Work Order, then expand for affected contracts:
