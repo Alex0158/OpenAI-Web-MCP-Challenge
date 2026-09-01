@@ -25,16 +25,24 @@ The implementation must follow the accepted business rules in
   Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, and the RightSpot Thread Orchestration Pilot Runbook govern any
   supporting-task dispatch under this parent.
+- Parent execution posture: `CONSTRAINED` — the `RS-WO-002-04` checkpoint is held for a
+  supporting-task identity correction; the parent goal remains viable, while any additional work
+  must pass the Pilot Runbook's independent-parallelization and ownership gates.
+- Blocker reporting: the main thread reports the checkpoint-local blocker to the human owner and
+  records its evidence, impact, owner, safe continuation, and resume condition here; this does not
+  change the parent lifecycle to `blocked`.
 
-## Parent-task boundary and current Work Order
+## Parent-task boundary and active Work Orders
 
 This record is the single registered parent Task and the one Task File for the complete first
 ordinary application slice. Its objective and closure evidence describe the parent outcome. The
 current executable increment is narrower: implement and independently verify the bounded
 `RS-WO-002-04` persistence/application boundary before opening the wider API or UI surface. Later
 implementation, verification, repair, and integration remain sequential
-checkpoints inside this Task File, not a second set of registered Tasks or a backlog of independent
-Work Orders.
+checkpoints inside each bounded Work Order, not a second set of registered Tasks or a speculative
+backlog. If a checkpoint is blocked, the main thread may record and activate another Work Order in
+this same file only when it passes the pilot's independent-parallelization gate and does not depend
+on or mutate the blocked boundary.
 
 The runnable foundation increment is complete: the Builder stopped after returning
 `READY_FOR_VERIFICATION`, the first Verifier attempt was procedurally `BLOCKED` because its assertion
@@ -82,8 +90,9 @@ verification, integration, or parent-Task closure.
   status and evidence back here.
 
 **Return gate:** Each checkpoint reports `READY_FOR_VERIFICATION`, `VERIFIED`, `NEEDS_REPAIR`, or
-`BLOCKED` with exact source and command evidence. The main thread classifies the result and opens only
-the next necessary checkpoint; no worker result closes this Task.
+`BLOCKED` with exact source and command evidence. The main thread classifies the result, reports any
+checkpoint-local blocker, and opens only the next necessary checkpoint or explicitly independent
+parallel slice; no worker result closes this Task.
 
 ### Main-thread preflight (not a Work Order)
 
@@ -643,6 +652,27 @@ made a process-only Pilot Runbook writeback. Those paths are recorded as an auxi
 they do not invalidate the product execution baseline, provided they do not change the Work Order's
 contract, semantic read set, or implementation paths.
 
+#### Current blocker report
+
+- **Status:** `BLOCKED` checkpoint; `CONSTRAINED` parent execution posture
+- **Affected owner:** `RS-WO-002-04` Builder handoff, adjudicated by the Main RightSpot thread
+- **Evidence:** the persisted destination retains the `RS-WO-002-01` title/history while the delivered
+  prompt identifies `RS-WO-002-04`; the three intended implementation paths remain uncommitted
+- **First failing boundary:** supporting-task identity/provenance, before T2 source handoff
+- **Failure class:** process/ownership defect
+- **Blocked claim/dependency:** clean `RS-WO-002-04` Builder handoff and independent verification
+- **Impact on parent goal:** Phase 4 persistence/application progress is held; the overall MVP goal,
+  documentation analysis, and other non-overlapping read-only preparation remain viable
+- **Safe continuation:** main-thread architecture, UI/UX, code-quality, verification-matrix, and
+  process analysis, or another explicitly bounded slice with a disjoint stable boundary
+- **Forbidden continuation:** downstream code that depends on this persistence/application output,
+  verification against the misidentified source, or any contract/acceptance change used to bypass it
+- **Recommended recovery:** establish a dedicated matching supporting task and isolated Worktree,
+  preserve/review the candidate output, capture a new baseline, and then reopen the Builder-to-Verifier
+  handoff
+- **Resume condition:** the new supporting-task identity, source identity, exact write set, and
+  completion-report contract are all confirmed before the Builder edits
+
 #### Scope and ownership
 
 **Read set:** RightSpot `RUNBOOK.md`, `Docs/00-current-status.md`, `Docs/03-system-design.md`,
@@ -752,7 +782,8 @@ documents, commit, push, deploy, or start the Verifier.
 ## Parent objective — not the current Builder scope
 
 The following is the complete parent-Task outcome. It must not be sent to one Builder or Verifier as a
-single assignment; only the bounded current Work Order is dispatchable at each sequential gate.
+single assignment; only bounded Work Orders that pass the pilot's dependency and ownership gates are
+dispatchable, with dependent checkpoints remaining sequential.
 
 Implement the smallest stable RightSpot application that completes the accepted ordinary human
 Happy Path: tenant discovery and request submission, agent review and response, then tenant

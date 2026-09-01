@@ -241,3 +241,25 @@ blindly resend.
 **Promotion decision:** Proposed for promotion into the dispatch transaction rule in the Pilot
 Runbook and the operating-model ADR. This entry is historical and advisory until that promotion is
 explicitly accepted.
+
+## 7. Blockers are checkpoint-local; the parent goal remains active
+
+**Status:** `Accepted into Runbook`  
+**Date:** 2026-09-01  
+**Source:** Current review of the `RS-WO-002-04` identity blocker and the main-thread factory model
+
+**Observation:** A worker can be unable to continue because of a source-identity, ownership,
+environment, authority, or dependency problem while the RightSpot parent goal remains viable. Treating
+that worker state as a global stop would make the main thread idle, delay useful analysis, and hide the
+difference between a local checkpoint failure and a failed product objective.
+
+**Learning:** `BLOCKED` belongs to the affected Work Order. The main thread must report the blocker
+to the human owner with its evidence, impact, owner, safe continuation, and resume condition; keep the
+parent `in_progress` when safe progress remains; and activate another bounded Work Order only when it
+does not depend on or mutate the blocked boundary. If no safe action remains without a material human
+or authority decision, use an explicit `AWAITING_DECISION` execution posture rather than inventing a
+workaround or silently changing the acceptance claim.
+
+**Promotion:** The parent-goal/checkpoint distinction, continuation gate, blocker-report contract,
+and bounded worker-pool rule are now part of ADR-RS-0004 and the Pilot Runbook. This entry remains the
+historical rationale; it is not an active task register.

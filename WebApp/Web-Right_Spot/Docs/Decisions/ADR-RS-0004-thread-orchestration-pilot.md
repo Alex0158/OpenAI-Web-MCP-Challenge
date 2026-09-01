@@ -29,7 +29,7 @@ main thread decision
     -> supporting implementation or review task
     -> explicit result and evidence
     -> main-thread classification
-    -> verification, repair, or integration gate
+    -> verification, repair, integration, or safe-continuation gate
     -> canonical writeback and final closure
 ```
 
@@ -77,6 +77,10 @@ Supporting tasks may implement, inspect, test, propose, and report within their 
 They may not change accepted authority, touch the Git index, commit, push, deploy, publish, or
 claim that the parent Task is closed.
 
+The main thread also owns the parent execution posture: it reports checkpoint blockers to the human
+owner, identifies safe continuation work, protects the blocked boundary, and decides whether the
+parent remains `in_progress`, is awaiting a material decision, or is ready for closure.
+
 ### 4. Use one responsibility per Work Order
 
 Each dispatched Work Order has one active responsibility and one falsifiable outcome. Typical roles
@@ -86,23 +90,36 @@ are:
 - **Verifier:** independently runs the specified checks and reports evidence without fixing code;
 - **Repairer:** addresses one diagnosed defect without widening the feature;
 - **Integrator:** couples already bounded outputs and checks their shared contracts; and
-- **Reviewer:** performs a read-only adversarial review when risk warrants it.
+- **Reviewer:** performs a read-only adversarial review when risk warrants it;
+- **Advisor:** produces bounded, evidence-backed product, architecture, process, or quality analysis
+  without becoming a second decision authority;
+- **UI/UX reviewer:** evaluates the human flow and demo clarity without silently changing product
+  scope; and
+- **QA/browser verifier:** verifies the actual user-facing route and reports evidence without
+  repairing the implementation.
 
 Documentation reconciliation and durable decisions remain main-thread responsibilities unless the
 Work Order explicitly requests a non-authoritative draft or evidence record.
 
-### 4.1 Keep the task ledger one-to-one
+### 4.1 Keep the task ledger one-to-one, while allowing bounded parallel slices
 
 One registered RightSpot Task has one canonical Task File and one parent lifecycle. A Work Order is
-the current dispatch brief recorded under that Task; it is not another registered Task, another
-Task File, or a second lifecycle. Builder, Verifier, Repairer, and Integrator are sequential
-checkpoints for the same bounded outcome. The main thread opens only the next necessary checkpoint
-after the preceding one returns usable source and evidence.
+the dispatch brief recorded under that Task; it is not another registered Task, another Task File, or
+a second lifecycle. Builder, Verifier, Repairer, and Integrator remain checkpoints for bounded
+outcomes, not independent product lifecycles.
 
-Truly independent outcomes may be run in parallel only when each is admitted as its own registered
-Task with its own Task File and isolated mutable boundary. A read-only preflight or a dependent
-stage remains main-thread work or a serialized checkpoint unless a separate Task is justified by an
-independently actionable outcome.
+The default is one active Work Order per dependency chain. The main thread may activate multiple
+Work Orders under the same Task File when each is a bounded, independently executable slice of the
+same parent outcome, has a disjoint mutable boundary, and has a declared dependency and integration
+relationship. This is the mechanism that lets the parent goal continue when one checkpoint is
+blocked; it is not permission to create a speculative queue. Only currently approved Work Orders
+are active, and future candidates remain in the roadmap or main-thread analysis.
+
+An independently actionable product outcome with its own acceptance claim, lifecycle, or ownership
+should still be admitted as its own registered Task with its own Task File. A read-only preflight,
+research activity, or implementation slice that only advances the current parent may remain a
+bounded Work Order under that parent. A dependent stage remains serialized until its prerequisite
+contract, source, or evidence is stable.
 
 ### 5. Separate completion states
 
@@ -126,6 +143,34 @@ pending -> in_progress -> verification_pending -> closed
 
 `READY_FOR_VERIFICATION` is not `VERIFIED`; `VERIFIED` is not `INTEGRATED`; and `INTEGRATED` is
 not `CLOSED`.
+
+### 5.1 Keep checkpoint blockers local to the parent goal
+
+A `BLOCKED` Work Order means that the assigned checkpoint cannot proceed within its current
+authority, source, environment, or dependency boundary. It does not mean that the parent goal has
+failed or that the main thread should become idle. While a blocked Work Order is preserved, the main
+thread must:
+
+- record the exact blocker, impact, evidence, owner, and resume condition;
+- report the blocker and its effect on the delivery claim to the human owner;
+- keep the parent Task `in_progress` when the goal remains viable or safe continuation work exists;
+- identify and, when justified, activate bounded independent analysis, research, review, testing,
+  or implementation Work Orders that do not depend on or mutate the blocked boundary; and
+- avoid changing the contract, acceptance criteria, source ownership, or evidence standard merely
+  to make the blocked checkpoint appear unblocked.
+
+Use an execution posture separate from the parent lifecycle when useful:
+
+```text
+PROGRESSING -> CONSTRAINED -> AWAITING_DECISION -> PROGRESSING
+                                      \-> READY_FOR_CLOSURE
+```
+
+`CONSTRAINED` means one or more checkpoints are blocked but the parent can still advance.
+`AWAITING_DECISION` means no safe action can change the blocker without a human or authority
+decision; it is a transparent pause of current execution, not a false completion or a new Task
+lifecycle. The main thread may continue read-only preparation and evidence gathering in either
+posture.
 
 ### 6. Treat files and evidence as the source of truth
 
@@ -212,6 +257,19 @@ external or pre-existing artifact to conceal the deviation. The main thread reco
 applies the deletion safety gate separately, and re-gates the same checkpoint without turning a
 procedure defect into a code repair.
 
+### 7.4 Bound the supporting-worker pool
+
+The pilot uses a hard cap of eight concurrently active RightSpot supporting tasks dispatched by the
+main thread. The main control thread is excluded from that worker count. A Side Chat or other task
+that the main thread has assigned RightSpot work counts as a supporting task; unrelated user-owned
+tasks are not managed or repurposed by this pilot.
+
+Eight is a ceiling, not a utilization target. Before dispatch, the main thread must confirm the
+current active count, reserve capacity for verification or repair when the risk warrants it, and
+decline delegation when the coordination cost exceeds the value. A slot is not freed merely because
+a worker has stopped responding; the main thread must classify that task's state and source before
+reusing the slot.
+
 ### 8. Use staged gates rather than an automatic loop
 
 The main thread classifies a result before dispatching the next task:
@@ -220,7 +278,9 @@ The main thread classifies a result before dispatching the next task:
 - test defect → separate test-maintenance decision or task;
 - environment failure → environment investigation;
 - authority or contract conflict → main-thread decision gate;
-- unknown outcome → preserve evidence and stop until the uncertainty is resolved; and
+- unknown outcome → preserve evidence and stop the affected claim until the uncertainty is resolved;
+- checkpoint-local blocker → report it, protect its boundary, and continue only with independent
+  safe work; and
 - verified output → integration or the next explicitly dependent Work Order.
 
 No failure is retried indefinitely. Repeated failure without new evidence is a signal to revisit
@@ -313,6 +373,7 @@ increments demonstrate all of the following:
 - at least one failure-to-repair-to-fresh-verification cycle was handled without blind looping;
 - canonical documents remained consistent with code and evidence;
 - no child task claimed authority or Git closure outside its role; and
+- a material blocker was reported without unnecessarily stopping independent parent-goal progress;
 - the orchestration overhead was proportionate to the risk and saved meaningful main-thread effort.
 
 ## Reopen conditions

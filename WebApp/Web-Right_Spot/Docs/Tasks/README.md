@@ -15,7 +15,7 @@ authority to RightSpot; it does not create a second task system.
 
 - [`RIGHTSPOT-002 — Build the MVP application shell`](RIGHTSPOT-002-build-mvp-application-shell.md)
 
-The current Work Order is recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
+Active Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, and the first `RS-WO-002-02` Verifier attempt
 returned `BLOCKED` because its procedure created an output outside the declared RightSpot boundary.
 The same checkpoint's corrected read-only rerun returned `VERIFIED`. The bounded Work Order
@@ -27,11 +27,12 @@ integration Work Order `RS-WO-002-04`. Its Builder completed checks, but the pro
 the persisted `RS-WO-002-01` supporting thread, so the result is held for a dispatch-identity
 correction. The user-authorized Side Chat learning artifact and Pilot Runbook writeback are
 process-only changes, not product source drift.
-One registered Task has one Task File. A Work Order is only the current dispatch brief under that Task; Builder, Verifier, Repairer,
-and Integrator are sequential checkpoints, not additional registered Tasks. Do not turn this file
-into a backlog of future Work Orders or a second active-work register. The parent remains
-`in_progress`; no other RightSpot product writer or repairer is authorized. The Side Chat process
-lane is separately declared and user-authorized.
+One registered Task has one Task File. A Work Order is a dispatch brief under that Task; normally
+there is one active Work Order per dependency chain, while explicitly independent slices may run in
+parallel under the same file. Builder, Verifier, Repairer, and Integrator are checkpoints, not
+additional registered Tasks. Do not turn this file into a speculative backlog or a second active-work
+register. The parent remains `in_progress` when a checkpoint is locally blocked but safe parent-goal
+work remains; the Side Chat process lane is separately declared and user-authorized.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.

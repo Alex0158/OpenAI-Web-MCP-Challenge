@@ -46,10 +46,11 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
   implementation file, or child-thread message.
 - Register only the next actionable parent Task when its boundary and gate are known. Do not create
   placeholder parent tasks for all later roadmap phases.
-- Put the lifecycle, current increment, dependency, next gate, and one current Work Order
-  in the owning Task File. A Work Order is an execution brief under that parent, not a second
-  project lifecycle; Builder, Verifier, Repairer, and Integrator are sequential checkpoints of the
-  same Task.
+- Put the lifecycle, current increment, dependency, next gate, and any active Work Orders in the
+  owning Task File. A Work Order is an execution brief under that parent, not a second project
+  lifecycle; Builder, Verifier, Repairer, and Integrator are sequential checkpoints of the same
+  bounded outcome. Multiple active Work Orders are allowed only across explicit independent
+  dependency chains with disjoint ownership; the roadmap must not become their live queue.
 - Create a separate Development record only when a material implementation, verification, or
   closure increment needs durable evidence/history beyond the Task File; never use it as a second
   live task queue.

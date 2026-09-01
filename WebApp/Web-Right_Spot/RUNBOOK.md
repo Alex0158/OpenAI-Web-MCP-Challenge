@@ -35,10 +35,11 @@ application-selection gate, and the reusable Re-entry Core.
 
 The RightSpot Development directory carries the Big Roadmap plus implementation, verification,
 and closure records. The RightSpot Tasks directory carries registered task lifecycle, current
-increment, next gate, and the one current Work Order under its parent Task. One registered
-Task has one Task File; Builder, Verifier, Repairer, and Integrator are sequential checkpoints
-within that Task rather than additional registered Tasks. Do not create a second active-task
-register in Development.
+increment, next gate, and active Work Orders under its parent when their dependency chains permit
+parallel execution. One registered Task has one Task File; Builder, Verifier, Repairer, and
+Integrator are sequential checkpoints within each bounded outcome rather than additional registered
+Tasks. Do not create a second active-task register in Development or use parallel Work Orders as a
+speculative queue.
 
 ## 2. Brainstorm workflow
 

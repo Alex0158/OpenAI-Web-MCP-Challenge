@@ -54,11 +54,12 @@ The operating model is:
 
 ```text
 current truth and decision
-    -> one Work Order
+    -> one or more bounded Work Orders
     -> isolated or explicitly serialized worker
     -> worker result and evidence
     -> main-thread classification
-    -> verification, repair, or integration gate
+       -> verification, repair, or integration gate
+       -> blocker report and safe independent continuation
     -> canonical writeback
     -> final main-thread closure
 ```
@@ -87,14 +88,18 @@ These terms have different meanings and must not be used interchangeably:
   independent verification, diagnosed repair, integration, or canonical closure. A checkpoint is
   not automatically a new Task or Work Order.
 
-One Task File normally exposes at most one current dispatchable Work Order. The main thread may
-assign its sequential checkpoints to different supporting threads, but must not pre-create a queue
-of future Builder, Verifier, Repairer, or Integrator assignments. After a checkpoint completes, the
-main thread records the evidence and opens only the next necessary checkpoint in the same Task File.
+One Task File normally exposes one current dispatchable Work Order per dependency chain. The main
+thread may activate multiple Work Orders under the same Task File only when they are independently
+executable slices of the same parent outcome, have disjoint mutable boundaries, and have an explicit
+integration relationship. The main thread must not pre-create a queue of future Builder, Verifier,
+Repairer, or Integrator assignments. After a checkpoint completes, it records the evidence and opens
+only the next necessary checkpoint for that dependency chain.
 
-If two outcomes are genuinely independent and need parallel execution, register each outcome as
-its own Task with its own Task File and isolated mutable boundary. If an outcome is only a read-only
-preflight or a dependent stage, keep it in the main thread or serialize it under the existing Task.
+If a parallel activity is an independently actionable product outcome with its own acceptance claim,
+lifecycle, or ownership, register it as its own Task with its own Task File. A bounded read-only
+preflight, research activity, or implementation slice that only advances the current parent may stay
+under the existing Task File. A dependent stage remains serialized until its prerequisite contract,
+source, or evidence is stable.
 
 ## 4. Authority and source of truth
 
@@ -203,6 +208,24 @@ The Reviewer performs a read-only adversarial review when the increment crosses 
 authorization, persistence, concurrency, privacy, external I/O, or another material boundary. A
 Reviewer identifies risks and required changes but does not silently modify the implementation.
 
+### 5.7 Specialist roles
+
+The factory may use specialist variants when their output has a clear decision or evidence boundary:
+
+- **Advisor:** produces bounded, evidence-backed product, architecture, process, or code-quality
+  analysis. An Advisor returns facts, inferences, alternatives, and a recommendation; it does not
+  become a second decision authority or edit product source by default.
+- **UI/UX reviewer:** evaluates the tenant/agent human flow, information hierarchy, accessibility
+  baseline, and demo clarity. It may recommend changes, but does not silently expand product scope.
+- **QA/browser verifier:** exercises the actual user-facing route and reports reproducible browser
+  evidence. It is a Verifier specialization and must not repair the implementation in the same
+  checkpoint.
+
+These are role assignments, not additional lifecycle states or permanent worker identities. A
+specialist may run in parallel with a Builder only when its read set is stable, its output is
+read-only or separately owned, and it cannot be mistaken for independent verification of moving
+source.
+
 ## 6. When to delegate
 
 Delegation is justified when the work has an independent responsibility, consumer, failure
@@ -231,13 +254,67 @@ Do not dispatch a consumer before its contract, schema, fixture, or authority is
 run verification while a writer is still changing the same source. Do not dispatch two writers to
 the same shared contract unless the file ownership is explicit and mechanically isolated.
 
+### 6.4 Continue the parent goal when a checkpoint is blocked
+
+`BLOCKED` is a state of the affected Work Order, not an automatic state of the parent Task. When a
+worker cannot continue within its authority, source, environment, or dependency boundary, the main
+thread must preserve the checkpoint and immediately produce a concise blocker report for the human
+owner. The report must identify:
+
+- the blocked Work Order and role;
+- the exact evidence, source identity, and first failing boundary;
+- the claim or dependency that is blocked and the impact on the parent goal;
+- the failure classification (`CODE_DEFECT`, `TEST_DEFECT`, `ENVIRONMENT_FAILURE`,
+  `AUTHORITY_CONFLICT`, `UNKNOWN`, or process/ownership defect);
+- the current owner and the condition required to resume;
+- safe work that remains available and work that must not start; and
+- the main thread's recommended next decision or bounded recovery action.
+
+The main thread must report the blocker in the conversation and record the durable task-specific
+fact in the owning Task File. A separate report file is unnecessary for an isolated checkpoint; use
+one only when the incident spans multiple tasks or produces a reusable process decision.
+
+After reporting, set the parent execution posture to `CONSTRAINED` when the goal remains viable and
+safe work exists. Continue only when the candidate work passes all of these gates:
+
+1. it advances the same parent goal through a real dependency, risk reduction, evidence, or
+   preparation outcome;
+2. it does not depend on the blocked output and does not mutate the blocked Work Order's source,
+   semantic read set, contract, or ownership;
+3. it has a bounded objective, owner, mutable boundary, and falsifiable result;
+4. its required source baseline and integration order are understood; and
+5. it does not weaken acceptance criteria, add a hidden workaround, or create a speculative queue.
+
+Suitable continuation work includes read-only architecture, UI/UX, security, or code-quality
+review; bounded research with a stated falsifier; focused test-matrix preparation; process
+retrospective; and an independent implementation slice whose contracts are already stable. A
+downstream consumer that requires the blocked contract remains gated.
+
+If no safe work can change the situation without a human, authority, credential, or material design
+decision, set the posture to `AWAITING_DECISION` and report the decision request. Do not mark the
+parent `BLOCKED` merely because one Work Order is blocked, and do not keep an unproductive retry loop
+alive to avoid telling the owner that progress is constrained.
+
+### 6.5 Bound parallel capacity
+
+The factory may run at most eight concurrently active RightSpot supporting tasks dispatched by the
+main thread. The main control thread is not counted as a worker slot. Any task assigned RightSpot
+work, including a Side Chat used as an analysis or process lane, consumes one slot; unrelated
+user-owned tasks are not repurposed or managed by this Runbook.
+
+Before dispatching, the main thread takes a current task snapshot, counts active RightSpot workers,
+checks each worker's role and mutable boundary, and records the expected slot use in its live control
+view. Eight is a ceiling, not a target. Keep capacity for a likely Verifier or Repairer when the
+current risk warrants it. A task that is idle, silent, or awaiting output does not automatically
+release its slot; classify its thread and source state before reuse.
+
 ## 7. Work Order contract
 
 Every dispatched checkpoint must have a Work Order. The default location is a bounded section in
-the owning parent Task File, alongside its current increment, dependency, and next gate. The Work
-Order is an execution brief, not another registered Task: do not create a second Task File or a
-second lifecycle for it. Keep only the current dispatchable Work Order active; retain completed
-checkpoint evidence in the same Task File when it is needed for traceability.
+the owning parent Task File, alongside its increment, dependency, and next gate. The Work Order is
+an execution brief, not another registered Task: do not create a second Task File or a second
+lifecycle for it. Keep only currently approved Work Orders active, normally one per dependency chain;
+retain completed checkpoint evidence in the same Task File when it is needed for traceability.
 
 Use a separate Development record only when a material implementation, verification, or closure
 increment needs durable evidence/history beyond the Task File; link it from the parent Task and
@@ -265,6 +342,7 @@ Each Work Order must state:
 - explicit non-goals;
 - assumptions and evidence that could falsify them;
 - failure modes and stop conditions;
+- blocker impact, reporting owner, and resume condition;
 - exact verification commands or browser checks;
 - completion report channel and canonical writeback owner; and
 - the condition for returning control to the main thread.
@@ -277,12 +355,14 @@ Project-authored Work Orders must be written in English. Use this structure:
 # RS-WO-<number>: <bounded outcome>
 
 **Parent task:** <RightSpot task>
-**Role:** Builder | Verifier | Repairer | Integrator | Reviewer
+**Role:** Builder | Verifier | Repairer | Integrator | Reviewer | Advisor | UI/UX reviewer | QA/browser verifier
 **Pre-dispatch status:** DRAFT | GATED
 **Execution state:** NOT_STARTED | ASSIGNED | IN_PROGRESS | READY_FOR_VERIFICATION | NEEDS_REPAIR | BLOCKED | VERIFIED | INTEGRATED
 **Owner:** <main thread or supporting task>
 **Dispatch state:** <not dispatched | dispatched at <source identity>>
 **Next gate:** <condition that returns control to the main thread>
+**Parent execution posture if blocked:** PROGRESSING | CONSTRAINED | AWAITING_DECISION
+**Blocker report:** <impact, evidence, owner, safe continuation, and resume condition>
 
 ## Objective
 <One falsifiable outcome.>
@@ -344,15 +424,15 @@ Project-authored Work Orders must be written in English. Use this structure:
 One Work Order may contain directly necessary implementation tests and self-checks. It must not
 also ask the same worker to perform independent verification, unrelated documentation
 reconciliation, deployment, or the next feature. Those are separate checkpoints opened only when
-the preceding gate has produced a usable source and evidence boundary. The parent Task File remains
-the source for the one current Work Order, its checkpoint history, and its next gate;
-Development remains the source for the Big Roadmap and durable implementation, verification, and
-closure records.
+their own source, ownership, and evidence boundary is clear. The parent Task File remains the source
+for active Work Orders, checkpoint history, and next gates; Development remains the source for the
+Big Roadmap and durable implementation, verification, and closure records.
 
-Do not place several independent assignments under one Task File merely to avoid registering Tasks.
-Conversely, do not register a new Task for every role transition in one bounded outcome. The test is
-whether the work has an independently actionable outcome and ownership boundary, not how many files
-or threads the implementation happens to use.
+Do not collapse several independently actionable product outcomes into one Task merely to avoid
+registering Tasks. Conversely, do not register a new Task for every role transition or parallel
+implementation slice in one bounded parent outcome. The test is whether the work has its own durable
+acceptance claim, lifecycle, and ownership boundary, not how many files or threads the implementation
+happens to use.
 
 ## 8. Activation and context protocol
 
@@ -371,11 +451,13 @@ Before dispatching, the main thread must:
 8. classify the increment as `Fast`, `Standard`, or `Assured`, and complete the additional persistence,
    data-lifecycle, dependency, or cross-layer review required by that profile;
 9. verify the target runtime or explicitly label any alternate runtime as limited evidence;
-10. confirm the execution mode/worktree and, when using an existing supporting task, verify that its
+10. take a current supporting-task snapshot, confirm the worker-pool count is below the eight-task
+    cap, and decide whether this Work Order is serial or passes the independent parallelization gate;
+11. confirm the execution mode/worktree and, when using an existing supporting task, verify that its
     persisted title/history/current Work Order identity matches this dispatch;
-11. confirm that no credential, spend, deployment, publication, or external action is hidden in the
-   assignment; and
-12. record the expected next gate, canonical writeback owner, and source-freeze point before sending
+12. confirm that no credential, spend, deployment, publication, or external action is hidden in the
+    assignment; and
+13. record the expected next gate, canonical writeback owner, and source-freeze point before sending
    the prompt.
 
 ### 8.1.1 Dispatch transaction order
@@ -395,8 +477,10 @@ The dispatch call and the lifecycle writeback form a two-phase handoff:
    pending. Do not pre-announce `in_progress` or `ASSIGNED` in canonical files.
 5. Call `create_thread` or `send_message_to_thread` once with the validated prompt.
 6. Only after a usable final `threadId` or confirmed existing-task identity is returned, perform one
-   status writeback: parent `pending -> in_progress`, Work Order `GATED -> ASSIGNED`, with the
-   source identity recorded.
+   status writeback: the dispatched Work Order moves `GATED -> ASSIGNED`, with its source identity
+   recorded. If the parent is still `pending`, move it to `in_progress` in the same writeback; if
+   another active Work Order already moved the parent to `in_progress`, leave the parent lifecycle
+   unchanged and record the additional active slice.
 7. If the tool fails, is ambiguous, or returns only a queued `clientThreadId`, keep the canonical
    states unchanged and resolve the outcome before retrying. Never resend blindly.
 8. If the status writeback fails after successful creation, retry only the writeback. Do not resend
@@ -644,6 +728,12 @@ canonical status, and dispatch decisions. It must re-read the live thread state 
 state before making a material decision; a prior snapshot or Side Chat report is evidence, not
 current truth.
 
+When a supporting task reports `BLOCKED`, the main thread remains active. It reports the blocker,
+sets the parent execution posture, reviews the dependency graph, and either opens a safe independent
+Work Order or records why the parent must await a decision. It must not use the worker's blocked
+state as a reason to stop unrelated read-only analysis, process improvement, or already-isolated
+work that passes the continuation gate in section 6.4.
+
 A Side Chat may inspect the current checkout, supporting-task status, tests, diffs, and relevant
 documents, then return analysis, alternatives, and proposed process changes. Its report must state
 the observation time, source identity or dirty-state limitation, relevant thread/cursor, and the
@@ -686,7 +776,7 @@ Use these states for execution records:
 
 Only the main thread may mark the parent Task `closed`.
 
-### 10.2 Parent-task mapping
+### 10.2 Parent-task mapping and execution posture
 
 The parent RightSpot Task retains:
 
@@ -695,13 +785,23 @@ pending -> in_progress -> verification_pending -> closed
 ```
 
 The main thread moves the parent to `verification_pending` only when the complete applicable
-increment is ready for review, not merely because one worker finished.
+increment is ready for review, not merely because one worker finished. A parent Task may remain
+`in_progress` while one Work Order is `BLOCKED`, another independent Work Order is active, or the
+main thread is pursuing a bounded recovery or research path.
 
 When the first Work Order is dispatched, the main thread changes the parent Task from `pending` to
 `in_progress` and changes the Work Order from `GATED` to `ASSIGNED`. The parent remains `in_progress`
-through internal Builder, Verifier, Repairer, and Integrator checkpoints. It moves to
-`verification_pending` only when the complete parent outcome, rather than one foundation checkpoint,
-is ready for independent review.
+through internal Builder, Verifier, Repairer, and Integrator checkpoints. Later parallel Work Orders
+only change their own assignment state when the parent is already `in_progress`. The main thread
+may record a separate execution posture:
+
+- `PROGRESSING` — active work is advancing the parent goal;
+- `CONSTRAINED` — at least one checkpoint is blocked, but safe parent-goal work remains;
+- `AWAITING_DECISION` — progress that can change the blocker requires a human or authority decision; or
+- `READY_FOR_CLOSURE` — all required Work Orders and evidence are complete and closure review may begin.
+
+The posture is not a replacement lifecycle and must not be used to claim completion. It moves back to
+`PROGRESSING` when the blocker is resolved or a new safe path becomes available.
 
 ### 10.3 Completion report minimum
 
@@ -856,6 +956,32 @@ Stop and report if the diagnosis requires a scope, architecture, data, security,
   contract, or architecture.
 - A repair is not verified by the person who made the repair alone; run a fresh independent check
   when the defect is material.
+
+### 13.4 Blocker report template
+
+Use this compact format in the main-thread conversation and the owning Task File when a blocker is
+material:
+
+```markdown
+## Blocker report — <Work Order>
+
+- **Status:** BLOCKED | CONSTRAINED | AWAITING_DECISION
+- **Affected role and owner:**
+- **Source identity and observation time:**
+- **Evidence:** <exact command, thread readback, file/diff, or runtime result>
+- **First failing boundary:**
+- **Failure class:** CODE_DEFECT | TEST_DEFECT | ENVIRONMENT_FAILURE | AUTHORITY_CONFLICT | UNKNOWN | PROCESS_DEFECT
+- **Blocked claim/dependency:**
+- **Impact on parent goal:**
+- **Safe continuation:** <bounded work that may continue, or none>
+- **Forbidden continuation:** <work that would depend on or mutate the blocked boundary>
+- **Recommended decision/recovery:**
+- **Resume condition:**
+```
+
+The report is a decision aid, not a substitute for diagnosis. It must distinguish verified facts,
+inference, and recommendation, and must not silently convert a blocker into a scope reduction or a
+weaker acceptance claim.
 
 ## 14. Integration and coupling procedure
 
@@ -1037,6 +1163,7 @@ After two or three bounded increments, the main thread records a short retrospec
 - number of source or ownership conflicts;
 - verification reproducibility;
 - repair cycles and whether they produced new evidence;
+- blocker-report latency and whether safe parent-goal work continued during each blocker;
 - documentation drift or authority violations;
 - integration overhead;
 - work that would have been faster directly; and

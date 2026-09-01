@@ -11,7 +11,7 @@ command transcripts. Each implementation record should link its owning task, dec
 verification commands, exact results, and residual risks.
 
 The Big Roadmap is [`RIGHTSPOT-DEVELOPMENT-ROADMAP`](RIGHTSPOT-DEVELOPMENT-ROADMAP.md). Task
-lifecycle, current increment, next gate, and the one current Work Order remain in
+lifecycle, current increment, next gate, and any active Work Orders remain in
 [`Docs/Tasks/`](../Tasks/README.md); this directory must not become a second active-task register.
 
 ## Current state
