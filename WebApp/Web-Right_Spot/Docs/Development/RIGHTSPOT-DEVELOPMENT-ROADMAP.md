@@ -5,6 +5,10 @@
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-01, Europe/London
 
+**Current gate:** `RS-WO-002-13` is integrated at product commit `3765747`. `RS-WO-002-12` has a
+bounded Repairer active for the reproduced filter/render divergence; its verifier Worktree metadata
+mutations remain preserved and are not product source.
+
 ## 1. Roadmap purpose and authority
 
 This document carries the RightSpot development roadmap: the major phases, milestone outcomes,
@@ -82,7 +86,7 @@ integration after a generated-output boundary incident was re-baselined in proce
 and its role-page split is accepted; `RS-WO-002-11` Builder returned `READY_FOR_VERIFICATION`, candidate
 `f1f83c7` passed dedicated verification and is integrated at `6a0b4b8`. `RS-WO-002-13` passed dedicated
 verification and is integrated at `3765747`; `RS-WO-002-12` remains a frozen, unintegrated tenant
-candidate while its same-identity verifier recovery rerun uses a clean Worktree. The tenant and agent pages must retain disjoint
+candidate while its bounded Repairer addresses the reproduced filter/render divergence. The tenant and agent pages must retain disjoint
 route/component/test ownership, consume the existing HTTP/DTO boundary, and remain separately
 verifiable before their outputs are coupled. The integrated shell and transport do not authorize
 opening the full API/UI surface as one assignment. The user-authorized Side Chat process lane is not

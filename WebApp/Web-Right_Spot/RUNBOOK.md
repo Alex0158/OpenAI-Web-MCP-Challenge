@@ -16,9 +16,10 @@ at product commit `f700ba9`; `RS-WO-002-08` is integrated at product commit `006
 localized generated-output boundary incident was re-baselined in process commit `8b77bdd`; and
 `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-13` passed dedicated independent
 verification and is integrated at product commit `3765747`; `RS-WO-002-12` remains frozen while its
-same-identity verifier recovery rerun uses a clean Worktree after the original out-of-scope tracked
-`.gitignore` mutation adding `.gstack/` was preserved. The next gate is to complete tenant verification
-and then complete combined role-page verification.
+bounded Repairer addresses a reproduced filter/render divergence. The original out-of-scope tracked
+`.gitignore` mutations from verifier Worktrees remain preserved as procedure evidence. The next gate
+is to review the repair, complete clean independent tenant verification, and then complete combined
+role-page verification.
 
 ## 1. Authority and reading order
 

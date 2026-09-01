@@ -18,18 +18,19 @@ The implementation must follow the accepted business rules in
 - Owner: Main RightSpot thread
 - Current increment: Implement the disjoint tenant and property-agent role-page slices in parallel
   against the verified shared role frame, workflow transport, listing discovery API, and DTO contracts.
-- Next gate: Integrate the independently verified `RS-WO-002-13` agent candidate, preserve the
-  checkpoint-local `RS-WO-002-12` verifier block until its Worktree ownership gate is resolved, then
-  re-verify the tenant candidate and run a combined cross-role integration check before any complete
-  browser Happy Path claim. Their exact route, component, test, and shared-boundary ownership are
-  recorded below.
+- Next gate: Review the bounded `RS-WO-002-12` Repairer output for the reproduced tenant filter
+  defect, obtain a fresh independent tenant verification from a clean exact-scope Worktree, and then
+  run a combined cross-role integration check before any complete browser Happy Path claim. The
+  previously verified `RS-WO-002-13` agent candidate is already integrated; exact route, component,
+  test, and shared-boundary ownership remain recorded below.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, ADR-RS-0008, and the accepted Requirements
   and Domain and Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, ADR-RS-0008, and the RightSpot Thread Orchestration Pilot Runbook govern any
   supporting-task dispatch under this parent.
-- Parent execution posture: `PROGRESSING` — `RS-WO-002-13` passed independent verification, while
-  `RS-WO-002-12` is checkpoint-locally blocked by an out-of-scope tracked tooling mutation in its
-  verifier Worktree; the parent remains open and the agent result can proceed independently.
+- Parent execution posture: `PROGRESSING` — `RS-WO-002-13` passed independent verification and is
+  integrated; `RS-WO-002-12` has a bounded Repairer active for a reproduced filter defect while its
+  verifier Worktrees remain preserved as procedural evidence. The parent remains open and can proceed
+  through the tenant repair/reverification gate.
 - Blocker reporting: the main thread reports the checkpoint-local blocker to the human owner and
   records its evidence, impact, owner, safe continuation, and resume condition here; this does not
   change the parent lifecycle to `blocked`.
@@ -1781,10 +1782,9 @@ unclaimed.
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — the shared role-page frame, listing discovery API, workflow
 transport, and tenant DTO contract are integrated and independently verified  
-**Execution state:** `IN_PROGRESS` — the first dedicated tenant Verifier run was checkpoint-locally
-blocked by an out-of-scope tracked `.gitignore` mutation in its execution Worktree; the same Verifier
-identity is now rerunning from a newly created clean Worktree without touching the original evidence.
-Candidate `eb1d62e1b33a045e683f64ba3d28930e9444cd25` remains frozen and unintegrated  
+**Execution state:** `IN_PROGRESS` — the tenant candidate remains frozen and unintegrated while a
+bounded Repairer addresses the reproduced filter/render divergence; the same Verifier's clean rerun
+was checkpoint-locally blocked by a tooling mutation and is preserved as evidence.  
 **Prior checkpoint result:** `BLOCKED` — the source, runtime, test, build, HTTP, and partial UI checks
 completed, but final scope readback found `.gstack/` added outside the exact nine-path candidate.  
 **Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-13`; route, component, helper, test, and CSS
@@ -1795,10 +1795,11 @@ ownership are disjoint, while both consume the same frozen read-only contracts
 seeded published listings, inspect one listing, create and submit the one bounded Viewing Request, and
 later read and respond to the agent's proposal or decline. Keep server workflow state authoritative;
 the UI may hold transient form input but must not invent transitions, identity, versions, or fallback data.  
-**Next gate:** Complete the same Verifier identity's rerun against the clean exact-scope Worktree. The
-original mutation remains preserved for separate ownership/recoverability handling; the partial filter
-and draft-save observations remain unadjudicated product evidence. Do not open source repair or integrate
-until the clean rerun classifies them.  
+**Next gate:** Complete the bounded Repairer, review its exact one-file candidate, then dispatch a fresh
+independent verification that uses direct HTTP/static UI checks and avoids tooling that mutates tracked
+metadata. The original verifier Worktrees and `.gitignore` diffs remain preserved for separate
+ownership/recoverability handling; do not integrate until the repaired candidate is independently
+verified.  
 **Dispatch state:** Dispatched from clean baseline `8b33399ce5769bdb58cd08025ac2c1917675daf3`; execution
 Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-tenant-ui`; package root
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-tenant-ui/WebApp/Web-Right_Spot`; runtime-pin path
@@ -1820,7 +1821,12 @@ adding `.gstack/`. The Verifier correctly stopped as `BLOCKED`; it also recorded
 draft-save UI observations that require a clean rerun. The main thread preserved that Worktree and
 created `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-verifier-rerun` at the same candidate SHA,
 then sent the recovery prompt to the same Verifier identity `01a05bb1-c38b-7a91-95aa-49475a057e43`.
-The rerun result is pending; no source repair or integration is authorized.  
+That rerun reached the same procedural `.gitignore` blocker and was preserved without cleanup. It also
+produced a reproducible `Southwark` filter/render divergence, which the main thread classified as a
+bounded product repair. Repairer task `01a05bca-aba1-70c1-8be3-782030f7673f` is now working from a new
+Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-repair` at the frozen candidate SHA, with
+only `src/ui/tenant/tenant-discovery-page.tsx` writable. No integration is authorized until Repairer
+handoff and fresh independent verification pass.  
 **Parent execution posture if blocked:** `CONSTRAINED` only for the tenant interface; the agent interface,
 read-only analysis, and process work may continue if they do not consume a blocked tenant write set.
 

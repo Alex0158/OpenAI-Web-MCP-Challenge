@@ -27,11 +27,11 @@ independent verification and are integrated at product commits `f700ba9` and `00
 is integrated as bounded guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW`
 and its decomposition is accepted; `RS-WO-002-11` candidate `f1f83c7` passed independent verification
 and is integrated at `6a0b4b8`; `RS-WO-002-13` passed independent verification and is integrated at
-product commit `3765747`; `RS-WO-002-12` remains frozen while its same-identity verifier recovery rerun
-uses a clean Worktree. Its prior run was checkpoint-locally blocked by a tracked `.gitignore` mutation
-adding `.gstack/` outside the declared candidate scope; the original evidence remains preserved for
-separate ownership/recoverability handling. No separate registered Task or Task File is created for
-that recovery.
+product commit `3765747`; `RS-WO-002-12` remains frozen while its bounded Repairer addresses a
+reproduced filter/render divergence. Its verifier runs were checkpoint-locally blocked by a tracked
+`.gitignore` mutation adding `.gstack/` outside the declared candidate scope; the original evidence
+remains preserved for separate ownership/recoverability handling. No separate registered Task or Task
+File is created for that repair or recovery.
 The user-authorized Side Chat learning
 artifact and Pilot Runbook writeback are process-only changes, not product source drift.
 One registered Task has one Task File. A Work Order is a dispatch brief under that Task; normally
