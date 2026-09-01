@@ -1,7 +1,7 @@
 # RIGHTSPOT-009: Define tenant information requests and contact-preference boundary
 
 **Type:** `decision`  
-**Lifecycle:** `pending`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for the next coherent product increment, not a blocker to the Re-entry Core challenge slice  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-01  
@@ -10,14 +10,13 @@
 ## Task Control
 
 - Type: `decision`
-- Lifecycle: `pending`
+- Lifecycle: `closed`
+- Execution posture: `REVIEWED_DEFERRED`
 - Priority: `P1`
 - Owner: Main RightSpot thread
 - Current increment: Produce one evidence-backed proposal for a structured tenant Information Request and its authorized agent handling projection, including contact-channel preferences, requested information topics, and an open message, without implementing the capability.
-- Next gate: The main thread reviews the returned Advisor proposal, jointly with `RIGHTSPOT-008`
-  where their listing, tenant-navigation, privacy, and agent-surface boundaries overlap, then either
-  accepts a bounded decision plus a later implementation task or records a rejected/not-planned
-  disposition and its reopen condition.
+- Next gate: Closed after joint main-thread review with `RIGHTSPOT-008`; the proposal is explicitly
+  deferred and no Information Request implementation Task is registered.
 - Dependencies: The accepted ordinary rental MVP remains authoritative; the existing Viewing Request workflow, role/privacy boundaries, and listing identity remain in force. `RIGHTSPOT-008` is adjacent context only and must not be treated as accepted behavior or an implementation dependency. No external authentication, email/phone/WhatsApp provider, WebMCP, Cloud Receiver, deployment, or credential gate is required for this proposal.
 
 ## Bounded objective
@@ -225,12 +224,25 @@ unresolved decisions, and explicit non-goals. Return `BLOCKED` if the current au
 identity does not permit a reliable proposal. A proposal return does not authorize implementation,
 external communication, or canonical writeback.
 
+### Main-thread review disposition
+
+The `Arendt` proposal was reviewed jointly with `RS-WO-008-01` against the Main source baseline at
+`d6b242c`. Its separation from Favourite and Viewing Request is sound, but the proposal is not
+implementation-ready. The following material choices remain unaccepted: the authoritative contact
+profile, whether an assigned agent may see full contact values, permission wording/versioning, PII
+retention and erasure, encryption and access audit, withdrawal/reopen semantics, and listing deletion
+or relisting behavior. The main thread therefore defers this capability, registers no implementation
+Task, and keeps all contact/provider/WebMCP/Re-entry behavior out of the product.
+
+This is a review disposition, not a rejection of the user problem. Reopening requires an owner-approved
+privacy/data decision and a new bounded implementation Task. `RIGHTSPOT-020` must not absorb this scope.
+
 ## Closure gate
 
-Close this task only after the main thread records a review disposition. If accepted, the main thread
-may create a separate durable decision record and a later bounded implementation task; those actions
-must be explicitly registered and independently verified. If rejected or not planned, preserve the
-reason, residual risk, and reopen condition in this task. This task itself must remain proposal-only.
+This task is closed as `REVIEWED_DEFERRED` after the main thread recorded the joint review disposition.
+It remains proposal-only and contains no product code, external communication, or implementation
+authority. A later owner-approved decision may reopen it and must register a new bounded implementation
+Task rather than extending `RIGHTSPOT-020`.
 
 ## Reopen condition
 

@@ -1,7 +1,7 @@
 # RIGHTSPOT-008: Define tenant favourites and agent listing-interest boundary
 
 **Type:** `decision`  
-**Lifecycle:** `pending`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for the next coherent product increment, not a blocker to the Re-entry Core challenge slice  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-01  
@@ -10,13 +10,14 @@
 ## Task Control
 
 - Type: `decision`
-- Lifecycle: `pending`
+- Lifecycle: `closed`
+- Execution posture: `REVIEWED_ACCEPTED_CLOSED`
 - Priority: `P1`
 - Owner: Main RightSpot thread
 - Current increment: Produce one evidence-backed proposal for a tenant-owned Favourites capability and its authorized agent listing-interest projection, without implementing either surface.
-- Next gate: Review the proposal jointly with `RIGHTSPOT-009`, reconcile the shared listing-detail,
-  tenant-navigation, privacy, and agent-surface boundaries, then either accept a bounded decision
-  plus a later implementation task or record a rejected/not-planned disposition and reopen condition.
+- Next gate: Closed after joint main-thread review with `RIGHTSPOT-009`; the accepted bounded decision is
+  recorded in [ADR-RS-0013](../Decisions/ADR-RS-0013-favourites-and-listing-interest-boundary.md), and
+  implementation is registered separately in `RIGHTSPOT-020`.
 - Dependencies: The accepted ordinary rental MVP remains authoritative; existing role/privacy boundaries and listing identity remain in force; no external authentication, WebMCP, Cloud Receiver, deployment, or credential gate is required for this proposal.
 
 ## Bounded objective
@@ -201,19 +202,20 @@ reliable proposal. A proposal return does not authorize implementation or canoni
 
 ### Main-thread review disposition
 
-The `Kuhn` proposal is accepted as review evidence with revisions, not as canonical product truth.
-It provides a coherent bounded separation between Favourite and Viewing Request, but the final
-listing lifecycle, saved-price evidence, tombstone retention, command contract, and default fixture
-must be reconciled with `RIGHTSPOT-009` before any implementation task is registered. No Favourite
-API, domain, persistence, UI, navigation, or agent aggregate implementation is authorized by this
-review. The parent remains `pending`.
+The `Kuhn` proposal was reviewed jointly with `RS-WO-009-01` against the Main source baseline at
+`d6b242c`. The main thread accepted the bounded Favourite/listing-interest direction with revisions:
+current listing states remain `PUBLISHED | UNPUBLISHED`; active saved relationships are retained when
+unpublished; only current and available aggregate metrics are included; tenant identity/contact data,
+all-time analytics, archive/hard-delete/relisting semantics, Information Request, external communication,
+WebMCP, and Re-entry remain out of scope. The durable decision is [ADR-RS-0013](../Decisions/ADR-RS-0013-favourites-and-listing-interest-boundary.md).
+
+This proposal Task is now `closed`. It authorized no code itself. The separately registered
+`RIGHTSPOT-020` Task is the only implementation authority, and it remains `REGISTERED_NOT_DISPATCHED`.
 
 ## Closure gate
 
-Close this task only after the main thread records a review disposition. If accepted, the main thread
-may create a separate durable decision record and a later bounded implementation task; those actions
-must be explicitly registered and independently verified. If rejected or not planned, preserve the
-reason, residual risk, and reopen condition in this task. This task itself must remain proposal-only.
+This task is closed after the main thread recorded the review disposition, durable ADR, and separate
+implementation Task. It remains proposal-only and contains no product code or implementation authority.
 
 ## Reopen condition
 

@@ -91,11 +91,12 @@ The experimental delegated-work procedure is
 It is opt-in and scoped to RightSpot; it does not change outer repository governance or sibling
 applications.
 
-The current post-MVP route is decision-first: the main thread jointly reviews `RS-WO-008-01` and
-`RS-WO-009-01`, then registers a separate implementation Task only if their shared boundaries are
-accepted. `RIGHTSPOT-006` remains credential-gated, `RIGHTSPOT-010` remains a later Operations/WebMCP
-decision gate, and `RIGHTSPOT-012` is a non-blocking read-only audit lane. The authoritative sequence
-is maintained in the [development roadmap](RIGHTSPOT-DEVELOPMENT-ROADMAP.md#31-current-next-route).
+The current post-MVP route is now implementation-ready for one bounded increment: the main thread
+jointly reviewed `RS-WO-008-01` and `RS-WO-009-01`, accepted the Favourite boundary in ADR-RS-0013,
+deferred the PII-sensitive Information Request boundary, and registered `RIGHTSPOT-020`. Its first
+contract/data Work Order is not dispatched yet. `RIGHTSPOT-006` remains credential-gated,
+`RIGHTSPOT-010` remains a later Operations/WebMCP decision gate, and `RIGHTSPOT-012` is a non-blocking
+read-only audit lane. The authoritative sequence is maintained in the [development roadmap](RIGHTSPOT-DEVELOPMENT-ROADMAP.md#31-current-next-route).
 
 ## Closure record requirements
 

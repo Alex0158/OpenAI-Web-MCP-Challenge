@@ -19,7 +19,7 @@
 - Current increment: Produce a baseline cross-layer audit of the existing RightSpot product and a reusable high-quality prompt for repeating that audit after each meaningful source increment.
 - Next gate: The main thread reviews the returned report, accepts only bounded follow-on proposals that have a clear owner and next gate, and records whether this audit lane should remain open for the next source baseline.
 - Execution posture: `READ_ONLY_ADVISORY`; the Advisor may inspect the current implementation and run safe, bounded verification, but must not implement findings or write canonical product truth.
-- Dependencies: Current RightSpot source, tests, runtime evidence where safely available, and the accepted documentation/decision hierarchy. `RIGHTSPOT-008`, `RIGHTSPOT-009`, and `RIGHTSPOT-010` remain proposal-only adjacent tasks and must not be treated as accepted behavior.
+- Dependencies: Current RightSpot source, tests, runtime evidence where safely available, and the accepted documentation/decision hierarchy. `RIGHTSPOT-008` is closed with the bounded ADR-RS-0013 direction but has no implementation yet; `RIGHTSPOT-009` is closed as `REVIEWED_DEFERRED`; and `RIGHTSPOT-010` remains proposal-only. None authorizes unregistered implementation behavior.
 
 ## Bounded objective
 
@@ -48,11 +48,12 @@ and one review gate. Do not accumulate unrelated findings indefinitely.
 
 ## Why this task is registered now
 
-RightSpot is in active development after the ordinary local MVP closure. The current implementation
-wave includes visual refinement, while Favourites, Information Requests, and Agent Operations Insights
-are separately registered proposal tasks. The project therefore needs a disciplined way to distinguish
-unfinished work from defects and from worthwhile refinement, without allowing every observation to
-become a feature or every missing fallback to be treated as a solution.
+RightSpot is in active development after the ordinary local MVP closure. The current next implementation
+lane is the bounded Favourite Task `RIGHTSPOT-020`; the Information Request proposal is reviewed and
+deferred, while Agent Operations Insights remains a separate proposal task. The project therefore
+needs a disciplined way to distinguish unfinished work from defects and from worthwhile refinement,
+without allowing every observation to become a feature or every missing fallback to be treated as a
+solution.
 
 The audit is especially important because the product must serve two purposes at once:
 
@@ -97,8 +98,9 @@ The audit must start from current evidence, not from the older project history:
   actual current map rather than assume a file is complete because its route exists.
 - WebMCP, Cloud Receiver, a concrete Agent adapter, and production Re-entry integration are later
   boundaries unless current source and evidence prove otherwise.
-- `RIGHTSPOT-008`, `RIGHTSPOT-009`, and `RIGHTSPOT-010` contain owner direction and proposal inputs,
-  not accepted implementation truth.
+- ADR-RS-0013 and `RIGHTSPOT-020` define the accepted but not-yet-implemented Favourite direction;
+  `RIGHTSPOT-009` contains a reviewed but deferred Information Request proposal; and `RIGHTSPOT-010`
+  remains proposal input, not an implementation authority.
 - Documentation may lag the source. For example, an older README implementation summary may not
   match the current status record. The Advisor must identify and report material documentation drift
   instead of silently choosing one source or rewriting it.

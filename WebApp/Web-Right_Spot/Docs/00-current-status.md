@@ -154,19 +154,19 @@ source. A separate,
 non-blocking `RS-WO-007-03` parallelism review returned `READY_FOR_REVIEW` from supporting worker
 `01a05d76-dac9-7283-9c2a-4166935f5043`; main accepted its isolation revisions and used them to
 register and dispatch the two role Builders.
-The newly surfaced `RIGHTSPOT-008` is classified as a pending decision proposal rather than a
-verified defect; its proposal-only `RS-WO-008-01` returned `READY_FOR_REVIEW` from supporting worker
-`01a05d79-ce45-7000-aa44-a3a1ecad95b0`. Main accepted it as review evidence with revisions; it
-cannot authorize implementation until joint review with `RIGHTSPOT-009`.
-The newly surfaced `RIGHTSPOT-009` is a separate pending decision proposal for Information Request
-and contact-preference semantics; its proposal-only `RS-WO-009-01` returned `READY_FOR_REVIEW` from
-supporting worker `01a05d7c-21b4-72f3-bbe8-1c34d1aee291` and cannot authorize implementation or
-outbound communication.
+The newly surfaced `RIGHTSPOT-008` proposal-only `RS-WO-008-01` returned `READY_FOR_REVIEW` from
+supporting worker `01a05d79-ce45-7000-aa44-a3a1ecad95b0`. Main jointly reviewed it with `RS-WO-009-01`,
+accepted the bounded Favourite direction in ADR-RS-0013, and closed the proposal task; its separate
+implementation Task is `RIGHTSPOT-020` and has not been dispatched.
+`RIGHTSPOT-009` was reviewed with `RIGHTSPOT-008` after `RS-WO-009-01` returned `READY_FOR_REVIEW`
+from `01a05d7c-21b4-72f3-bbe8-1c34d1aee291`. It is closed as `REVIEWED_DEFERRED`: the Information
+Request boundary remains proposal evidence only because contact/PII authority, retention, and agent
+access decisions are not accepted. It cannot authorize implementation or outbound communication.
 `RIGHTSPOT-010` is a separate pending Agent Operations Insights/WebMCP boundary proposal; its
 read-only `RS-WO-010-01` returned `READY_FOR_REVIEW` from `01a05d88-8907-7063-8c93-030e296c9df0`
 (`Leibniz`) and cannot authorize dashboard implementation, WebMCP registration, reporting changes,
-or canonical product writeback. `RS-WO-009-01` also returned `READY_FOR_REVIEW` from its assigned
-Advisor; both proposal records await main-thread review.
+or canonical product writeback. Its proposal record remains unimplemented and separate from the
+accepted Favourite lane.
 
 `RIGHTSPOT-011` accepts ADR-RS-0011's bounded Agent Operations read-model seam. `RS-WO-011-01`
 completed its exact two-path Builder handoff at `5b05c78`, `RS-WO-011-02` independently verified it,
@@ -297,18 +297,19 @@ closed parent or override the current closure statement above.
 ## 5.1 Current post-MVP route
 
 The accepted local MVP and the Phase 6 post-MVP closure increment are complete. No product
-implementation Work Order is active. The next route is:
+implementation Work Order is active. The next route is the bounded `RIGHTSPOT-020` implementation
+lane:
 
-1. close the current RightSpot documentation/procedure increment as an exact reviewed Git baseline,
-   without staging or changing unrelated collaborator work;
-2. review `RS-WO-008-01` and `RS-WO-009-01` jointly because their listing, tenant-navigation,
-   privacy, request, contact-preference, and agent-surface boundaries overlap;
-3. if accepted, record the durable decision(s) and register a separate implementation Task—neither
-   proposal Task authorizes product code;
-4. split that implementation into bounded domain/data/API, tenant UI, agent UI, serialized shared
-   integration, and independent verification checkpoints;
-5. keep `RIGHTSPOT-006` gated on explicit external credentials and local-origin authorization;
-6. treat `RIGHTSPOT-010` as a later Operations/WebMCP decision gate and `RIGHTSPOT-012` as a
+1. keep the reviewed documentation/procedure baseline and unrelated collaborator work separate;
+2. implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; its first step is
+   a fresh Main baseline followed by one serial contract/data Work Order;
+3. after that contract handoff, tenant and agent UI may run in parallel only with disjoint paths;
+4. serialize shared navigation, listing-card/detail integration, global CSS, source freeze, Main
+   integration, and Worktree retirement;
+5. keep the reviewed `RIGHTSPOT-009` Information Request proposal deferred until its contact/PII
+   authority decisions are accepted; it must not be absorbed into `RIGHTSPOT-020`;
+6. keep `RIGHTSPOT-006` gated on explicit external credentials and local-origin authorization;
+7. treat `RIGHTSPOT-010` as a later Operations/WebMCP decision gate and `RIGHTSPOT-012` as a
    non-blocking read-only audit lane.
 
 Only an explicitly selected, implementation-ready Task may open a code Work Order or temporary

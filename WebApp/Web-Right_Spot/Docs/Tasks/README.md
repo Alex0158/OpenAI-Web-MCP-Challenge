@@ -1,7 +1,7 @@
 # RightSpot Tasks
 
 **Role:** Canonical bounded task routing for the RightSpot child application  
-**Status:** Active for post-MVP decision proposals; `RIGHTSPOT-002` remains closed for the accepted local MVP
+**Status:** Active for post-MVP decision and bounded implementation routing; `RIGHTSPOT-002` remains closed for the accepted local MVP
 
 RightSpot tasks own local product and implementation work. They do not authorize changes to the
 outer Core, public deployment, credentials, or Hackathon submission. Keep the queue small and
@@ -32,21 +32,24 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-017 — Implement bounded property-media presentation`](RIGHTSPOT-017-implement-property-media-presentation.md)
 - [`RIGHTSPOT-018 — Harden relay workflow integrity`](RIGHTSPOT-018-harden-workflow-integrity.md)
 - [`RIGHTSPOT-019 — Normalize the tenant Europe/London time contract`](RIGHTSPOT-019-normalize-tenant-london-time-contract.md)
+- [`RIGHTSPOT-020 — Implement tenant favourites and agent listing-interest`](RIGHTSPOT-020-implement-favourites-and-listing-interest.md)
 
 `RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
 `RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`,
 `RIGHTSPOT-016`, `RIGHTSPOT-017`, and `RIGHTSPOT-018` are closed within their bounded outcomes. They do not reopen or widen the accepted
 local MVP. `RIGHTSPOT-006` is pending behind the explicit external credential gate and does not
 authorize provider setup or authentication source changes.
-`RIGHTSPOT-008` is a pending read-only decision task for the proposed tenant favourites and agent
-listing-interest capability; it does not authorize implementation or canonical product writeback;
-`RIGHTSPOT-009` is a pending read-only decision task for the proposed structured information-request
-and contact-preference capability; it is separate from Viewing Requests and does not authorize
-outbound communication, implementation, or canonical product writeback; `RIGHTSPOT-010` is a pending
-read-only decision task for the proposed Agent Operations Insights dashboard and bounded WebMCP query
-surface; it does not authorize dashboard implementation, WebMCP registration, reporting-schema
-changes, or canonical product writeback. `RIGHTSPOT-012` is a pending read-only cross-layer audit
-lane and does not authorize implementation or canonical product writeback. `RIGHTSPOT-016` is closed
+`RIGHTSPOT-008` is closed after joint review with `RIGHTSPOT-009`; its accepted bounded direction is
+recorded in ADR-RS-0013 and implementation is separately registered as `RIGHTSPOT-020`.
+`RIGHTSPOT-009` is closed as `REVIEWED_DEFERRED`: its Information Request proposal remains useful
+review evidence but is not implementation-ready because its contact/PII authority and retention
+decisions remain open. It is separate from Viewing Requests and does not authorize outbound
+communication or implementation. `RIGHTSPOT-010` is a pending read-only decision task for the
+proposed Agent Operations Insights dashboard and bounded WebMCP query surface; it does not authorize
+dashboard implementation, WebMCP registration, reporting-schema changes, or canonical product
+writeback. `RIGHTSPOT-012` is a pending read-only cross-layer audit lane and does not authorize
+implementation or canonical product writeback. `RIGHTSPOT-020` is registered but not dispatched;
+its implementation scope excludes `RIGHTSPOT-009` and all external providers. `RIGHTSPOT-016` is closed
 with its repaired projection independently verified and integrated at `edd7575`; `RIGHTSPOT-017` is
 closed with its tenant media consumer integrated at `2a53917` and its integrated browser gate verified.
 The failed 016 candidate and transient 016/017 execution records remain historical evidence and do not
@@ -91,17 +94,19 @@ browser evidence are reconciled in the
 [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](../Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md), and
 `RIGHTSPOT-002` is closed.
 
-**Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-008`, `RIGHTSPOT-009`, `RIGHTSPOT-010`, and
-`RIGHTSPOT-012` are pending decision, credential, or read-only audit gates. `RS-WO-016-01` is
+**Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain pending
+credential, decision, or read-only audit gates. `RIGHTSPOT-020` is the registered next implementation
+Task but has not been dispatched. `RS-WO-016-01` is
 independently verified and integrated at `edd7575`; `RS-WO-017-03` is independently verified and
 integrated at `2a53917`, with `RS-WO-017-04` browser verification complete. `RS-WO-019-01` is closed
 after its bounded browser/form regression passed. No closed task is an active implementation gate.
 
-**Current route:** No post-MVP implementation Work Order is active. The main thread first closes the
-current RightSpot documentation/procedure baseline, then jointly reviews the returned proposal
-Work Orders `RS-WO-008-01` and `RS-WO-009-01`. If accepted, it records the durable decision(s) and
-registers a separate implementation Task; proposal Tasks remain proposal-only. `RIGHTSPOT-006` stays
-gated on explicit external credentials and local-origin authorization. `RIGHTSPOT-010` is a later
+**Current route:** No post-MVP implementation Work Order is active. The main thread jointly reviewed
+`RS-WO-008-01` and `RS-WO-009-01`, accepted the bounded Favourite direction in ADR-RS-0013, deferred
+the PII-sensitive Information Request direction, and registered `RIGHTSPOT-020` as the next separate
+implementation Task. The next operational step is to capture a fresh Main baseline and dispatch only
+the first contract/data Work Order under `RIGHTSPOT-020`; no code Worktree is active yet. `RIGHTSPOT-006`
+stays gated on explicit external credentials and local-origin authorization. `RIGHTSPOT-010` is a later
 Operations/WebMCP decision gate, while `RIGHTSPOT-012` is non-blocking read-only audit work. Only an
 explicitly selected, implementation-ready Task may open code Work Orders or temporary Worktrees.
 

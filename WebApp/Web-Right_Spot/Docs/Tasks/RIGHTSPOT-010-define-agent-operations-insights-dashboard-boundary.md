@@ -18,7 +18,7 @@
 - Execution posture: `READ_ONLY_ADVISORY`; the proposal Advisor returned `READY_FOR_REVIEW` and the
   main-thread review is pending. This does not authorize implementation, WebMCP registration, or
   canonical writeback.
-- Dependencies: The accepted ordinary rental MVP, current role/privacy authority, and existing listing/request identity remain in force. `RIGHTSPOT-008` and `RIGHTSPOT-009` are adjacent proposal tasks only and must not be treated as accepted behavior or implementation dependencies. No external authentication, WebMCP registration, Cloud Receiver, deployment, reporting provider, or credential gate is required for this proposal.
+- Dependencies: The accepted ordinary rental MVP, current role/privacy authority, and existing listing/request identity remain in force. ADR-RS-0013 accepts a bounded Favourite direction, but its implementation Task `RIGHTSPOT-020` is not yet dispatched; `RIGHTSPOT-009` is closed as `REVIEWED_DEFERRED`. Neither supplies an implementation dependency for this proposal. No external authentication, WebMCP registration, Cloud Receiver, deployment, reporting provider, or credential gate is required for this proposal.
 
 ## Bounded objective
 
@@ -62,10 +62,10 @@ API, WebMCP, or UI decision into canonical documents.
   an explicit human agent response. This task records the owner's decision to develop a second major
   product line; it does not replace the tenant-to-agent workflow or force every dashboard query into
   the Re-entry Core mechanism.
-- `RIGHTSPOT-008` proposes tenant Favourites and agent listing-interest aggregates, while
-  `RIGHTSPOT-009` proposes structured Information Requests and contact preferences. Neither task has
-  accepted implementation truth. Their signals may form a later interest funnel, but this proposal
-  must remain valid if either capability is deferred.
+- ADR-RS-0013 accepts tenant Favourites and agent listing-interest aggregates, but `RIGHTSPOT-020` has
+  not been implemented. `RIGHTSPOT-009` is a reviewed and deferred proposal for structured Information
+  Requests and contact preferences. Their signals may form a later interest funnel, but this proposal
+  must remain valid if either implementation is deferred.
 - The current agent UI is request-queue centric. The proposal must assess whether the smallest MVP
   surface is a dashboard section, a dedicated `/agent/insights` or `/agent/operations` route, or both.
 - The outer repository remains authoritative for WebMCP and Re-entry Core boundaries. This task may
@@ -372,7 +372,8 @@ stage and the exact evidence required before any broader claim.
 - RightSpot `Docs/05-api-and-integration-contracts.md`
 - RightSpot `Docs/06-validation-and-evidence.md`
 - RightSpot ADR-RS-0001 through ADR-RS-0009, with attention to ADR-RS-0001, ADR-RS-0006, ADR-RS-0008, and ADR-RS-0009
-- RightSpot `RIGHTSPOT-008` and `RIGHTSPOT-009` task files, without treating either proposal as accepted product truth
+- RightSpot `RIGHTSPOT-009` and the unimplemented `RIGHTSPOT-020` task files, without treating deferred
+  Information Requests or unimplemented Favourite signals as available Operations data
 - Current listing, Viewing Request, Favourite-adjacent, and information-request-adjacent source if present
 - Current domain/application/persistence source, DTOs, route handlers, fixture/reset logic, and tests
 - Current tenant, agent, shared shell/session/navigation source and tests

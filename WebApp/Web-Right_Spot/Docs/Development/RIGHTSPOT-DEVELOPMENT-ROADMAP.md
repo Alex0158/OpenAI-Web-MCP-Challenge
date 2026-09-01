@@ -2,8 +2,9 @@
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
 **Status:** Phase 5 is complete for the accepted local MVP, and the Phase 6 post-MVP closure increment
-is complete. The current route is the post-MVP decision gate described in Section 3.1; no product
-implementation Work Order is active.
+is complete. The joint review of `RS-WO-008-01` and `RS-WO-009-01` accepted ADR-RS-0013 for the
+bounded Favourite increment, deferred the PII-sensitive Information Request boundary, and registered
+`RIGHTSPOT-020`; no product implementation Work Order is active yet.
 `RS-WO-005-01` has passed corrected independent verification and is integrated at local product
 commit `27f5391`; `RS-WO-007-01` is accepted as a read-only UI decomposition and `RS-WO-007-02` has
 passed final independent browser verification and is integrated at product commit `89a50c7` after
@@ -91,26 +92,24 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 ### 3.1 Current next route
 
 The accepted local MVP and the Phase 6 post-MVP closure increment are complete. The next route is a
-decision-first sequence, not an open-ended implementation wave:
+bounded implementation sequence, not an open-ended implementation wave:
 
-1. Close the current RightSpot documentation/procedure increment as an exact reviewed Git baseline;
-   unrelated collaborator changes remain outside its scope.
-2. Review `RS-WO-008-01` and `RS-WO-009-01` together in the main thread. Reconcile their shared
-   listing-detail, tenant-navigation, privacy, request, contact-preference, and agent-surface
-   boundaries before choosing implementation.
-3. If the joint review is accepted, record the durable decision(s) and register a separate bounded
-   implementation Task. The proposal Tasks remain proposal-only and must not receive product code.
-4. Decompose that implementation Task into bounded domain/data/API work, tenant and agent surfaces,
-   serialized shared integration, and independent verification. Tenant and agent UI may run in
-   parallel only after their contracts, routes, shared-shell ownership, and test boundaries are
-   stable.
-5. Keep `RIGHTSPOT-006` outside the implementation lane until the explicit external credential and
-   local-origin gate is authorized. It is a separate high-risk lane and must not block ordinary
-   product progress.
-6. Review `RIGHTSPOT-010` after its proposal is dispositioned and the product value of an Operations
-   or WebMCP surface is explicitly selected. Its proposal does not authorize WebMCP or dashboard
-   implementation.
-7. Keep `RIGHTSPOT-012` as a non-blocking, read-only audit lane. It may identify follow-on work but
+1. Keep the reviewed documentation/procedure baseline and unrelated collaborator changes separate.
+2. Implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; capture a fresh
+   Main baseline and dispatch its first serial contract/data Work Order.
+3. After the contract/data handoff, tenant and agent UI may run in parallel only with disjoint paths;
+   shared navigation, listing-card/detail integration, and global CSS remain serialized.
+4. Freeze the integrated source before independent verification, then reconcile evidence and retire
+   any temporary Worktree at the first safe checkpoint-scoped opportunity.
+5. Keep the reviewed `RIGHTSPOT-009` Information Request proposal deferred until contact/PII authority,
+   retention, erasure, and agent-access decisions are accepted; it must not enter `RIGHTSPOT-020`.
+6. Keep `RIGHTSPOT-006` outside the implementation lane until the explicit external credential and
+   local-origin gate is authorized. It is a separate high-risk lane and must not block ordinary product
+   progress.
+7. Review `RIGHTSPOT-010` later, after its proposal is dispositioned and the product value of an
+   Operations or WebMCP surface is explicitly selected. Its proposal does not authorize WebMCP or
+   dashboard implementation.
+8. Keep `RIGHTSPOT-012` as a non-blocking, read-only audit lane. It may identify follow-on work but
    does not itself constitute a product implementation milestone.
 
 Only an explicitly selected, implementation-ready Task opens a new code Work Order or temporary
