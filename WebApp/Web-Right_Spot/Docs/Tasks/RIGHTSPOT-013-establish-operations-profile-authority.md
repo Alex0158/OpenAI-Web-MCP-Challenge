@@ -54,13 +54,14 @@ accepted product truth:
 ## RS-WO-013-01 — Define the Operations profile authority and implementation boundary
 
 **Role:** Architecture/Data Authority Advisor  
-**Status:** `READY_TO_DISPATCH`  
+**Status:** `ASSIGNED`  
 **Parallelization:** `READ_ONLY_ADVISORY` — may run beside the active Field Desk evidence lane and
 the verified Operations seam with no source write set.  
 **Risk profile:** `High` for later implementation because the decision crosses data authority,
 persistence, reset, time semantics, privacy, API, and UI boundaries; `Standard` for this read-only
 proposal.  
-**Supporting worker:** To be assigned by the main thread after task registration.  
+**Supporting worker:** Multi-agent Architecture/Data Advisor `01a05dee-3fea-7561-9076-54bdd053f647`
+(`Pauli`).  
 **Source baseline:** `0f6cc8ebd7e27e9fe2241c5138873c103b136b58` on `main`, captured immediately before
 dispatch. The collaborator-owned dirty and untracked paths listed in current status remain outside this
 read-only Work Order.  
