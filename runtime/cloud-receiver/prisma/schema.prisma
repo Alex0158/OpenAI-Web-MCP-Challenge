@@ -1,0 +1,15 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model RuntimeStoreSnapshot {
+  storeName String   @id @map("store_name")
+  payload   Bytes
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("reentry_runtime_store_snapshots")
+}

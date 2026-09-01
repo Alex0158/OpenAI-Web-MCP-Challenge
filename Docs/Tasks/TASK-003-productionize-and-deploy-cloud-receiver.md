@@ -9,10 +9,12 @@
 - Lifecycle: `in_progress`
 - Priority: `P1`
 - Owner: Alex and project team
-- Current increment: CLOUD-001 locally verified the loopback-only Stage 1 Cloud Receiver shell;
-  prepare the bounded Stage 2 identity and consent decision without widening the shell first.
-- Next gate: Accept one decision that freezes organization scope, Host-key enrollment, Receiver-owned
-  consent sessions, Connector pairing, and credential custody before Stage 2 code begins.
+- Current increment: CLOUD-010 locally verifies the account-first product path across organization
+  credentials, Re-entry-owned consent, one-time Mac authorization, background delivery polling, and
+  the fresh Codex process seam.
+- Next gate: Select and prove the supported real Agent-to-Browser-to-page-bound-WebMCP route and
+  first Host workflow, then replace preview identity and credential assumptions with the
+  production contracts required by that vertical slice.
 - Dependencies: Host-integrated runtime verification depends on TASK-001; public hosting, secrets,
   credentials, paid infrastructure, and deployment require their own current authority.
 
@@ -35,15 +37,25 @@ generic Host, one organization, one Connector, and a deterministic or fake Agent
 - `reentry-core/` locally verifies Receiver authority, SQLite durability, bounded Host-event and
   Connector HTTP mapping, separate-process behavior, and deterministic conformance.
 - The current source does not provide a production TLS listener, hosted service process, production
-  enrollment or Grant-control surface, Browser SDK or consent UI, organization/API-key control
-  plane, deployment configuration, supported Connector pairing, operational readiness contract, or
-  public Cloud Receiver deployment.
+  enrollment or Grant-control surface, production organization/API-key control plane, deployment
+  configuration, production account identity, production credential recovery, real Host-effect
+  verifier, or public Cloud Receiver deployment. The local product preview now provides account and
+  organization UI, dashboard-issued Host keys, Connector-initiated account authorization,
+  Re-entry-owned consent and target-device selection, durable hashed control state, a background
+  macOS Connector profile, and the fresh Codex process seam.
 - Test child processes and the conformance profile are evidence scaffolding, not shipping services.
 - The final Host application and Host-specific event, canonical page, WebMCP tools, and end-to-end
   continuation route remain governed by TASK-001.
 
-Current claim ceiling: `separate_process_verified` for the named bounded test surfaces. No current
-evidence supports `runtime_verified` or `deployed` for a Cloud Receiver service.
+Current claim ceiling: `deployed_preview` for the hosted smoke-test surface and
+`locally_verified` for the named loopback product and process surfaces. This does not claim a
+production-ready Cloud Receiver service.
+
+The hosted MVP increment now has an accepted Supabase/Prisma direction in ADR-0029. It is a
+bounded preview persistence bridge around the unchanged synchronous SQLite protocol stores, not a
+production-scale native Prisma data model. The Vercel preview has passed migration, build,
+liveness, and readiness checks; exact committed-source readback and the account-first happy path
+remain open before any production claim.
 
 ### 2.1 Working planning direction
 
@@ -55,16 +67,17 @@ durable contract change still requires an accepted ADR and a bounded Development
   keys) and Receiver data-plane functions; do not begin with separate microservices.
 - The Host backend sends signed Manifests and Events. Organization credentials and Host signing
   keys remain server-side. The Browser SDK receives only a short-lived, one-time consent token.
-- The Host page's Browser SDK opens the consent experience in a top-layer UI. The Receiver owns the
-  consent decision and returns only an opaque Host `binding_id`; private Grants and managed-context
-  details remain in the Receiver boundary.
+- The Host page's Browser SDK opens an exact short-lived Re-entry consent URL from a user gesture.
+  The Receiver renders and owns the authenticated decision and returns only an opaque Host
+  `binding_id`; account, Connector, private Grant, and managed-context details remain private.
 - The Local Connector reaches the Receiver through outbound polling and short leases. The Cloud
   Receiver does not assume it can push into a user's laptop or loopback port.
 - The Host owns business truth and verifies the business effect. Receiver event acceptance, Agent
   activation, and acknowledgement remain separate facts.
-- The first vertical slice proves `manifest -> consent -> Grant -> event -> Connector claim ->
-  Agent activation -> Host effect -> acknowledgement`. Dashboard, billing, broad multi-tenancy,
-  real Codex activation, and final Host selection remain later or separately governed work.
+- The local vertical slice proves `manifest -> consent -> Grant -> event -> Connector claim ->
+  fresh Codex process seam`. Production Host effect, acknowledgement through a supported Agent
+  runtime, billing, broad multi-tenancy, and final Host selection remain later or separately
+  governed work.
 
 The short protocol note must freeze the credential boundaries, message states, consent handoff,
 organization scoping, delivery retry semantics, and acknowledgement meaning before production
@@ -113,8 +126,8 @@ implementation stream for the user or Alex must be registered as a new bounded T
 starts when it has its own owner, affected paths, dependency, and completion gate. The new Task must
 link back to TASK-003; TASK-003 must retain only the cross-stream dependency and next-gate summary.
 
-No new parallel implementation Task is registered by this update because the owner and exact
-bounded increments have not yet been accepted.
+No new parallel implementation Task is registered by this update; the accepted local preview
+increment remains within TASK-003 and was implemented in one workstream.
 
 ## 4. Non-goals
 
@@ -123,10 +136,11 @@ This task does not:
 - select or implement the Host application;
 - put application-specific users, events, artifacts, state machines, prompts, or WebMCP tools into
   Receiver Core or the Cloud Receiver shell;
-- create a second Local Receiver production authority or a hidden local fallback;
-- deliver a full multi-tenant control plane, dashboard, billing, fleet management, or broad
-  administration platform in the first vertical slice; eventual organization and API-key support
-  remains a product direction, not a first-slice completion requirement;
+- create a second Local Receiver production authority or a hidden local fallback; the current local
+  Connector is an explicit preview process;
+- deliver a production-grade multi-tenant control plane, billing, fleet management, or broad
+  administration platform in the first vertical slice; CLOUD-004 is only a local product preview
+  of account, organization, and API-key management;
 - claim real Codex activation, Browser acquisition, genuine page-bound WebMCP re-entry, product
   value, judge reproducibility, or submission completion from Receiver deployment alone; or
 - authorize public hosting, credentials, paid infrastructure, production data, or external mutation

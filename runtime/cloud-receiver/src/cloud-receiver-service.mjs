@@ -17,7 +17,8 @@ export const CLOUD_RECEIVER_SERVER_LIMITS = Object.freeze({
   maxRequestsPerSocket: 100,
 });
 
-const SERVICE_OPTION_FIELDS = Object.freeze(["receiver", "close", "readiness"]);
+const SERVICE_ALLOWED_FIELDS = Object.freeze(["receiver", "close", "readiness", "controlHandler"]);
+const SERVICE_REQUIRED_FIELDS = Object.freeze(["receiver", "close", "readiness"]);
 const START_INPUT_FIELDS = Object.freeze(["host", "port"]);
 const LOOPBACK_HOSTS = new Set(["127.0.0.1", "::1"]);
 const OPERATIONAL_PATHS = new Set(Object.values(CLOUD_RECEIVER_OPERATIONAL_ROUTES));
@@ -33,8 +34,8 @@ export class CloudReceiverServiceError extends Error {
 export function createCloudReceiverService(options) {
   requireExactRecord(
     options,
-    SERVICE_OPTION_FIELDS,
-    SERVICE_OPTION_FIELDS,
+    SERVICE_ALLOWED_FIELDS,
+    SERVICE_REQUIRED_FIELDS,
     "Cloud Receiver service options",
   );
   if (typeof options.close !== "function") {
@@ -42,6 +43,9 @@ export function createCloudReceiverService(options) {
   }
   if (typeof options.readiness !== "function") {
     throw new TypeError("Cloud Receiver service readiness must be a function");
+  }
+  if (options.controlHandler !== undefined && typeof options.controlHandler !== "function") {
+    throw new TypeError("Cloud Receiver service controlHandler must be a function");
   }
 
   const protocolHandler = createCloudReceiverHttpHandler({ receiver: options.receiver });
@@ -65,7 +69,23 @@ export function createCloudReceiverService(options) {
         }).catch(() => response.destroy());
         return;
       }
-      protocolHandler(request, response);
+      if (options.controlHandler === undefined) {
+        protocolHandler(request, response);
+        return;
+      }
+      Promise.resolve(options.controlHandler(request, response)).then((handled) => {
+        if (!handled && !response.writableEnded && !response.destroyed) {
+          protocolHandler(request, response);
+        }
+      }).catch(() => {
+        if (response.writableEnded || response.destroyed) return;
+        response.writeHead(500, {
+          "Cache-Control": "no-store",
+          "Content-Length": 0,
+          Connection: "close",
+        });
+        response.end();
+      });
     },
   );
   server.maxHeadersCount = CLOUD_RECEIVER_SERVER_LIMITS.maxHeaders;
