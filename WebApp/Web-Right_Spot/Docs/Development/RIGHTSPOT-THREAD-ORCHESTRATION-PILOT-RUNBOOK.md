@@ -1,0 +1,939 @@
+# RightSpot Thread Orchestration Pilot Runbook
+
+**Role:** Scoped operating procedure for delegated RightSpot work
+**Status:** Experimental, opt-in, and RightSpot-scoped
+**Owner:** Main RightSpot thread
+**Governing decision:** [ADR-RS-0004](../Decisions/ADR-RS-0004-thread-orchestration-pilot.md)
+
+## 1. Purpose
+
+This Runbook defines how the RightSpot main thread may use separate Codex tasks for bounded
+implementation, verification, repair, review, and integration work. It is intended to preserve
+the main thread's product and architecture context while allowing independent execution where
+responsibility, file ownership, and evidence boundaries are clear.
+
+This is a development operating procedure, not a RightSpot product feature. It does not describe
+WebMCP tools, Cloud Receiver behavior, WebRTC runtime behavior, or a production distributed task
+system.
+
+## 2. Scope and non-scope
+
+### 2.1 In scope
+
+This Runbook applies to:
+
+- the RightSpot main thread;
+- explicitly dispatched supporting tasks for RightSpot;
+- implementation, focused testing, adversarial review, repair, integration, and documentation
+  evidence inside the RightSpot child application; and
+- work whose source baseline, mutable paths, and next gate are written in a Work Order.
+
+### 2.2 Out of scope
+
+This Runbook does not automatically apply to:
+
+- the outer Re-entry Core;
+- Eddie's Cloud Receiver work;
+- sibling applications or unrelated repository tasks;
+- production deployment, public publication, credentials, payments, or external communication;
+- WebMCP or Agent activation proof; or
+- a general repository-wide collaboration policy.
+
+The outer repository `AGENTS.md`, Engineering documents, safety controls, and Git closure rules
+remain higher authority. A RightSpot Work Order cannot relax them.
+
+## 3. Core operating model
+
+The main thread is the product and integration authority. Supporting tasks are bounded workers.
+The operating model is:
+
+```text
+current truth and decision
+    -> one Work Order
+    -> isolated or explicitly serialized worker
+    -> worker result and evidence
+    -> main-thread classification
+    -> verification, repair, or integration gate
+    -> canonical writeback
+    -> final main-thread closure
+```
+
+The following distinctions are mandatory:
+
+- a prompt is not a task record;
+- a thread stopping is not a successful result;
+- a worker result is not independent verification;
+- a passing focused test is not complete integration;
+- an integrated change is not a closed parent Task; and
+- a local pass is not a commit, push, deployment, judge, or submission claim.
+
+### 3.1 Registered Tasks, Work Orders, and checkpoints
+
+These terms have different meanings and must not be used interchangeably:
+
+- **Registered Task:** one bounded project outcome admitted to the RightSpot task ledger. It has
+  one canonical Task File and one parent lifecycle.
+- **Work Order:** one concrete dispatch brief for the current execution checkpoint under that
+  parent Task. It is not a registered Task, does not create a second lifecycle, and does not need a
+  separate file by default.
+- **Supporting Codex task/thread:** the execution container used to run one Work Order checkpoint.
+  It is a coordination surface, not automatically a RightSpot registered Task or a new Task File.
+- **Checkpoint:** one staged role gate for the same Task outcome, such as Builder readiness,
+  independent verification, diagnosed repair, integration, or canonical closure. A checkpoint is
+  not automatically a new Task or Work Order.
+
+One Task File normally exposes at most one current dispatchable Work Order. The main thread may
+assign its sequential checkpoints to different supporting threads, but must not pre-create a queue
+of future Builder, Verifier, Repairer, or Integrator assignments. After a checkpoint completes, the
+main thread records the evidence and opens only the next necessary checkpoint in the same Task File.
+
+If two outcomes are genuinely independent and need parallel execution, register each outcome as
+its own Task with its own Task File and isolated mutable boundary. If an outcome is only a read-only
+preflight or a dependent stage, keep it in the main thread or serialize it under the existing Task.
+
+## 4. Authority and source of truth
+
+### 4.1 Authority hierarchy
+
+Workers must resolve instructions in this order:
+
+1. platform, safety, and explicit human constraints;
+2. applicable global and workspace instructions;
+3. the actual repository `AGENTS.md` and repository Engineering controls;
+4. RightSpot product truth, domain contracts, and accepted ADRs;
+5. the active RightSpot parent Task;
+6. the specific Work Order; and
+7. the worker's local interpretation, memory, or historical thread context.
+
+The lower layers cannot silently override the higher layers. If two layers conflict, the worker
+must stop at the conflict boundary and report the current rule, proposed change, affected
+surfaces, and evidence needed for a decision.
+
+### 4.2 Operational source of truth
+
+The main thread determines the current status from the following evidence, in order of reliability:
+
+1. actual repository and worktree state;
+2. current code, tests, package manifests, and generated state owned by the task;
+3. exact command output and runtime information;
+4. the Work Order and Development Record; and
+5. thread messages, summaries, or worker prose.
+
+A worker's completion message is useful navigation, not proof. The main thread must inspect the
+actual files and rerun decisive checks before making a closure claim.
+
+### 4.3 Canonical versus non-canonical writeback
+
+Workers normally return implementation facts and verification evidence in their supporting thread.
+They may update a non-canonical evidence record only when the Work Order explicitly grants that
+write. They may propose a documentation change when the Work Order allows it, but they must not
+silently edit the canonical Task File or other RightSpot authority.
+
+Only the main thread promotes a stable conclusion into RightSpot's canonical current status,
+requirements, domain model, system design, accepted ADR, or parent Task status. A worker must not
+silently rewrite accepted product or architecture authority.
+
+## 5. Roles and decision rights
+
+### 5.1 Main thread
+
+The main thread:
+
+- owns product intent, scope, architecture, and decision interpretation;
+- identifies the smallest coherent increment;
+- writes or approves the Work Order;
+- chooses whether work is direct, serial, or parallel;
+- resolves conflicts and classifies failures;
+- decides the next gate;
+- inspects returned files, evidence, and source state;
+- owns canonical documentation writeback;
+- performs or supervises final integration;
+- owns final staging, commit, push, remote, deployment, and submission claims when authorized; and
+- closes or reopens the parent Task.
+
+### 5.2 Builder
+
+The Builder implements one bounded behavior in the assigned mutable paths. The Builder may add or
+modify focused tests that are directly necessary to define the implemented behavior. The Builder
+must self-check code quality, scope, error behavior, and relevant focused tests, then stop at
+`READY_FOR_VERIFICATION`.
+
+The Builder must not:
+
+- begin the next feature without a new Work Order;
+- silently change accepted requirements or contracts;
+- modify forbidden or shared files outside the assigned scope;
+- add a dependency without the required decision review;
+- use a hidden fallback to make a check pass; or
+- claim independent verification or parent-task closure.
+
+### 5.3 Verifier
+
+The Verifier independently runs the registered checks against the named source baseline. The
+Verifier may inspect code, tests, runtime output, and browser behavior as required, but must not
+repair the implementation or modify tests to remove a failure. The Verifier reports exact results,
+failure classification, and claim limits, then stops.
+
+### 5.4 Repairer
+
+The Repairer addresses one diagnosed defect in the original ownership boundary. A repair is not
+permission to redesign the feature. If the diagnosis changes the data model, authority, public
+contract, persistence, security, or scope, the Repairer stops and returns the issue to the main
+thread's decision gate.
+
+The original Builder thread may receive a repair prompt when its context remains relevant. A fresh
+Repairer task is preferred when the defect crosses ownership, the original context is stale, or
+independence would otherwise be compromised.
+
+### 5.5 Integrator
+
+The Integrator couples already bounded outputs. The Integrator checks shared contracts, routes,
+types, schema, fixtures, permissions, and failure behavior. It must not invent a new product
+feature to make incompatible outputs appear complete. The main thread still owns final source
+reconciliation and Git closure.
+
+### 5.6 Reviewer
+
+The Reviewer performs a read-only adversarial review when the increment crosses authentication,
+authorization, persistence, concurrency, privacy, external I/O, or another material boundary. A
+Reviewer identifies risks and required changes but does not silently modify the implementation.
+
+## 6. When to delegate
+
+Delegation is justified when the work has an independent responsibility, consumer, failure
+boundary, test surface, authority, or update cadence. It is not justified merely because a feature
+has multiple files or because more threads are available.
+
+### 6.1 Keep work in the main thread when
+
+- the action is read-only and smaller than a useful handoff;
+- the change is a trivial mechanical correction;
+- the work needs an immediate product or architecture decision;
+- the source baseline is unstable or ownership is unclear; or
+- delegation overhead would exceed the implementation risk.
+
+### 6.2 Use a full worker pipeline when
+
+- the increment crosses UI, application, domain, data, or permission boundaries;
+- an independent browser or integration check is material;
+- a defect needs a separate diagnosis and repair cycle;
+- multiple contributors need isolated file ownership; or
+- the result will support a meaningful closure claim.
+
+### 6.3 Do not parallelize dependent work
+
+Do not dispatch a consumer before its contract, schema, fixture, or authority is stable. Do not
+run verification while a writer is still changing the same source. Do not dispatch two writers to
+the same shared contract unless the file ownership is explicit and mechanically isolated.
+
+## 7. Work Order contract
+
+Every dispatched checkpoint must have a Work Order. The default location is a bounded section in
+the owning parent Task File, alongside its current increment, dependency, and next gate. The Work
+Order is an execution brief, not another registered Task: do not create a second Task File or a
+second lifecycle for it. Keep only the current dispatchable Work Order active; retain completed
+checkpoint evidence in the same Task File when it is needed for traceability.
+
+Use a separate Development record only when a material implementation, verification, or closure
+increment needs durable evidence/history beyond the Task File; link it from the parent Task and
+never use it as a second live task queue. Do not create a large task hierarchy or pre-written future
+Work Orders without a real current dispatch need.
+
+### 7.1 Required fields
+
+Each Work Order must state:
+
+- Work Order identifier and title;
+- parent RightSpot Task;
+- worker role and owner;
+- pre-dispatch status, execution state, and next gate;
+- objective as one falsifiable outcome;
+- acceptance criteria;
+- exact source baseline and dirty-state limitation;
+- required documents to read;
+- dependencies and prerequisite outputs;
+- package/runtime permissions and any approved dependency set;
+- allowed mutable paths;
+- forbidden paths and actions;
+- affected roles, modules, state, data, and claims;
+- explicit non-goals;
+- assumptions and evidence that could falsify them;
+- failure modes and stop conditions;
+- exact verification commands or browser checks;
+- completion report channel and canonical writeback owner; and
+- the condition for returning control to the main thread.
+
+### 7.2 Recommended Work Order template
+
+Project-authored Work Orders must be written in English. Use this structure:
+
+```markdown
+# RS-WO-<number>: <bounded outcome>
+
+**Parent task:** <RightSpot task>
+**Role:** Builder | Verifier | Repairer | Integrator | Reviewer
+**Pre-dispatch status:** DRAFT | GATED
+**Execution state:** NOT_STARTED | ASSIGNED | IN_PROGRESS | READY_FOR_VERIFICATION | NEEDS_REPAIR | BLOCKED | VERIFIED | INTEGRATED
+**Owner:** <main thread or supporting task>
+**Dispatch state:** <not dispatched | dispatched at <source identity>>
+**Next gate:** <condition that returns control to the main thread>
+
+## Objective
+<One falsifiable outcome.>
+
+## Acceptance criteria
+- <Observable result>
+
+## Baseline
+- Git root:
+- Branch and HEAD:
+- Working-tree limitation:
+- Runtime baseline:
+
+## Read before action
+- <Global/workspace/repository instructions>
+- <RightSpot Runbook>
+- <Current status>
+- <Task and governing ADR>
+- <Relevant product/domain/system/API documents>
+
+## Mutable scope
+- Allowed paths:
+- Forbidden paths:
+- Forbidden actions:
+
+## Dependencies and assumptions
+- <Named prerequisite>
+- <Falsifier>
+
+## Non-goals
+- <Explicitly excluded work>
+
+## Verification
+- <Exact command or browser check>
+
+## Completion report
+- files changed;
+- behavior implemented or checked;
+- exact commands, runtime, and results;
+- skipped checks and why;
+- residual risks;
+- final status; and
+- next gate.
+
+## Writeback
+- worker report channel:
+- canonical Task File writeback owner:
+- allowed evidence-record changes:
+```
+
+### 7.3 Scope granularity
+
+One Work Order may contain directly necessary implementation tests and self-checks. It must not
+also ask the same worker to perform independent verification, unrelated documentation
+reconciliation, deployment, or the next feature. Those are separate checkpoints opened only when
+the preceding gate has produced a usable source and evidence boundary. The parent Task File remains
+the source for the one current Work Order, its checkpoint history, and its next gate;
+Development remains the source for the Big Roadmap and durable implementation, verification, and
+closure records.
+
+Do not place several independent assignments under one Task File merely to avoid registering Tasks.
+Conversely, do not register a new Task for every role transition in one bounded outcome. The test is
+whether the work has an independently actionable outcome and ownership boundary, not how many files
+or threads the implementation happens to use.
+
+## 8. Activation and context protocol
+
+### 8.1 Main-thread pre-dispatch checklist
+
+Before dispatching, the main thread must:
+
+1. confirm the actual Git root;
+2. inspect branch, `HEAD`, upstream, dirty state, ownership, and relevant ignored state;
+3. identify whether the source includes uncommitted or untracked RightSpot work;
+4. read the parent Task, current status, governing ADR, Runbook, and affected authority documents;
+5. write the Work Order and allowed-path boundary;
+6. decide whether a shared tree is safe or an isolated worktree is required;
+7. identify the minimum verification and the falsifier;
+8. classify the increment as `Fast`, `Standard`, or `Assured`, and complete the additional persistence,
+   data-lifecycle, dependency, or cross-layer review required by that profile;
+9. verify the target runtime or explicitly label any alternate runtime as limited evidence;
+10. confirm that no credential, spend, deployment, publication, or external action is hidden in the
+   assignment; and
+11. record the expected next gate and canonical writeback owner before sending the prompt.
+
+### 8.1.1 Dispatch transaction order
+
+The dispatch call and the lifecycle writeback form a two-phase handoff:
+
+1. Prepare the Work Order, exact runtime/dependency profile, source baseline, content manifest,
+   mutable paths, acceptance criteria, stop conditions, and completion-report contract before any
+   thread-tool call.
+2. Validate the activation prompt once. It must include `RIGHTSPOT-DISPATCH-BEGIN`, the Work Order
+   identifier, role, objective, read-before-action route, exact scope, verification, stop
+   conditions, completion report, and `RIGHTSPOT-DISPATCH-END`.
+3. Keep the canonical parent at `pending` and the Work Order at `GATED` while the tool call is
+   pending. Do not pre-announce `in_progress` or `ASSIGNED` in canonical files.
+4. Call `create_thread` or `send_message_to_thread` once with the validated prompt.
+5. Only after a usable final `threadId` or confirmed existing-task identity is returned, perform one
+   status writeback: parent `pending -> in_progress`, Work Order `GATED -> ASSIGNED`, with the
+   source identity recorded.
+6. If the tool fails, is ambiguous, or returns only a queued `clientThreadId`, keep the canonical
+   states unchanged and resolve the outcome before retrying. Never resend blindly.
+7. If the status writeback fails after successful creation, retry only the writeback. Do not resend
+   the prompt.
+8. Immediately take one bounded `wait_threads` snapshot. Do not repeatedly poll unchanged state.
+
+The worker may receive the prompt during the short writeback window. Its prompt must say that it
+may read and establish context, but it must not edit until the Task File shows `ASSIGNED` or the
+main thread confirms the writeback. A process-protocol amendment made by the main thread does not
+retroactively change the active Work Order's product scope or acceptance criteria.
+
+The status patch is therefore a post-acknowledgement truth update, not a precondition for sending.
+The main thread should prepare the patch in advance and apply it immediately after acknowledgement;
+the patch itself must not become a multi-minute manual phase.
+
+### 8.1.2 Execution baseline versus governance revision
+
+Every dispatch records two identities and must not merge them into one undifferentiated manifest:
+
+1. **Execution baseline:** exact product and implementation inputs that can affect the worker's
+   result, including the Work Order, relevant product/domain/API contracts, implementation paths,
+   package and lockfile, fixtures, tests, runtime pin, and required verification commands.
+2. **Governance revision:** the revision of this Runbook and ADR-RS-0004 used to govern the handoff.
+
+The governance revision is read-only process context. A later process-only amendment does not
+invalidate the active implementation baseline or require a Builder re-dispatch when it does not
+change the Work Order objective, allowed paths, acceptance criteria, runtime, dependencies, source
+authority, or required execution behavior. The main thread records the amendment separately.
+
+If a process amendment does affect execution, the main thread must send an explicit clarification or
+re-gate the Work Order before the worker relies on the changed rule. It must never silently change the
+worker's contract or classify an unconnected process edit as a product defect.
+
+### 8.2 New supporting Codex task/thread activation
+
+A new supporting Codex task/thread does not inherit the main thread's complete conversation. It is
+an execution container for the current Work Order, not automatically a new RightSpot registered
+Task. Its first prompt must tell it to establish its own context before editing. The minimum reading
+route is:
+
+1. the available global instructions, including `/Users/alex/.codex/AGENTS.md` when present;
+2. the workspace `AGENTS.md` when the task runs inside this workspace;
+3. the actual repository `AGENTS.md`;
+4. repository `Docs/README.md`, current outer status, and applicable Engineering controls;
+5. `WebApp/Web-Right_Spot/RUNBOOK.md`;
+6. `WebApp/Web-Right_Spot/Docs/00-current-status.md`;
+7. the active RightSpot parent Task;
+8. the governing RightSpot ADRs; and
+9. only the relevant product, requirements, system, domain, API, validation, and Development
+   documents.
+
+The worker should consult relevant memory only when it helps locate context or a prior failure.
+Memory is non-authoritative and must not replace current files, tests, or instructions.
+
+Use the following activation shape:
+
+```text
+RIGHTSPOT-DISPATCH-BEGIN
+
+You are the supporting <ROLE> worker for RightSpot Work Order <ID>.
+
+Before editing:
+1. Confirm the actual Git root, branch, HEAD, and working-tree state.
+2. Read the global, workspace, repository, and RightSpot instructions listed in the Work Order.
+3. Read the active Task, current status, governing ADR, Runbook, and relevant owning documents.
+4. Restate the objective, acceptance criteria, affected surfaces, non-goals, baseline, and stop conditions.
+5. Report any contradiction or missing authority before taking action.
+
+Scope:
+- Objective: <one bounded outcome>
+- Allowed paths: <exact paths>
+- Forbidden paths: <exact paths>
+- Dependencies: <exact prerequisite and source baseline>
+
+Execution rules:
+- Keep all authored artifacts in English.
+- Implement only the assigned outcome.
+- Install dependencies only when this Work Order explicitly permits the named package manager and
+  dependency set; installation permission does not authorize an external runtime service.
+- Do not add speculative dependencies, fallback paths, or unrelated cleanup.
+- Do not modify the Git index, commit, push, deploy, publish, or perform external actions.
+- Do not change canonical product or architecture authority.
+- Stop and report if the source, instruction, or scope conflicts with the Work Order.
+
+Verification:
+- Run the listed checks and directly necessary focused checks only.
+- Report exact commands, runtime, source identity, results, skipped checks, and residual risks.
+
+Completion:
+- Return the completion report in the supporting thread unless the Work Order explicitly grants a
+  non-canonical evidence record update.
+- Do not edit the canonical Task File, current status, ADR, roadmap, or Runbook; the main thread owns
+  that writeback.
+- Mark READY_FOR_VERIFICATION, NEEDS_REPAIR, or BLOCKED.
+- Stop after reporting; do not start the next phase.
+
+RIGHTSPOT-DISPATCH-END
+```
+
+The main thread must verify the begin/end sentinels and required-section markers before sending.
+After sending, it must inspect the persisted task input where the thread surface exposes it. A
+collapsed task-card preview such as `Show more` is only a presentation state and must not be used
+as proof of truncation or proof of complete delivery.
+
+### 8.3 Existing task follow-up
+
+An existing task may receive a new prompt for a repair or clarification, but the main thread must
+still provide the current Work Order, source baseline, exact failure, and new acceptance criteria.
+Do not assume that an older task remembers later main-thread decisions or file changes.
+
+### 8.4 Thread-tool handling
+
+The Codex thread tools are coordination mechanisms, not the RightSpot task ledger:
+
+- use `create_thread` only when a supporting execution task is explicitly authorized for the
+  current Work Order and the target project and source state have been resolved;
+- a queued `clientThreadId` is not a usable final `threadId` until the task is ready;
+- use `send_message_to_thread` for an existing task only after confirming its identity and role;
+- do not put raw thread identifiers, credentials, bearer values, or private context in tracked
+  RightSpot artifacts;
+- do not infer completion from a sent message or a thread title; and
+- do not make a task responsible for sending a callback message as its only completion mechanism.
+
+The worker's report, actual files, and exact evidence are the handoff. The main thread uses
+`wait_threads` for bounded completion or attention waits and `read_thread` when detail is needed.
+An up-to-date wait cursor should be reused. Repeated one-minute polling is not required and can
+create noise without improving evidence.
+
+When a process or orchestration document is revised while an implementation task is active, the
+main thread must distinguish that non-functional protocol change from a change to the active Work
+Order. It may update the future operating procedure directly, but it must not silently change the
+Builder's product scope, mutable paths, acceptance criteria, or source authority. If the active
+worker's source manifest includes the revised process document, record the revision as a
+main-thread-only protocol change and send a concise clarification only if the worker's execution
+could otherwise be affected.
+
+If a task needs user input, approval, credentials, or a material decision, the main thread treats
+it as `BLOCKED` or attention-required rather than automatically guessing or continuing.
+
+## 9. Worktree and file-ownership protocol
+
+### 9.1 Shared working tree
+
+The shared working tree is allowed only for one writer at a time or for low-conflict read-only
+work. Before a worker edits there, the main thread must state the baseline and confirm that no other
+writer is active on overlapping paths. The main thread must not edit overlapping paths until the
+worker has returned and the handoff source has been frozen for verification.
+
+### 9.2 Isolated worktree
+
+Use an isolated worktree for parallel code writers or high-conflict changes. The Work Order must
+state how the worktree was created and what source it includes. A worktree created from a branch
+does not automatically include uncommitted or untracked changes from the main checkout; verify
+the actual files before relying on it.
+
+The current RightSpot documentation baseline is local and may be untracked. Until a stable source
+snapshot is explicitly established, do not assume that a new worktree contains the current RightSpot
+documents. Prefer one serialized foundational increment or a verified working-tree source state.
+
+For an untracked source, the dispatch record must state whether the worker uses the current shared
+tree or a verified snapshot. A branch name or `HEAD` alone does not identify untracked content.
+
+### 9.3 Shared files and contracts
+
+Serialize changes to:
+
+- `package.json` and lockfiles;
+- framework and build configuration;
+- database schema and migrations;
+- seed fixtures and reset logic;
+- shared domain types and API contracts;
+- shared UI tokens and components;
+- authentication and role policy; and
+- canonical product or architecture documents.
+
+Parallel feature work is valid only when these shared surfaces are already stable or explicitly
+partitioned.
+
+### 9.4 Ownership violation
+
+If a worker changes a forbidden path, discovers another writer, or finds that the baseline differs
+materially from the Work Order, it must stop. The main thread records the actual change, decides
+whether it can be preserved, and does not use destructive reset or cleanup to hide the violation.
+
+## 10. Lifecycle and handoff states
+
+### 10.1 Supporting-task states
+
+Use these states for execution records:
+
+| State | Meaning | Required action |
+|---|---|---|
+| `DRAFT` | Work Order text exists but has not been approved for dispatch | Main thread completes the contract; no worker action |
+| `GATED` | Work Order is bounded but a named pre-dispatch prerequisite remains open | Main thread resolves the gate or records a blocker; do not dispatch |
+| `ASSIGNED` | Work Order is approved and dispatched | Worker establishes context |
+| `IN_PROGRESS` | Worker is executing within scope | No parallel overlap on owned paths |
+| `READY_FOR_VERIFICATION` | Worker believes acceptance criteria and self-check pass | Stop; wait for independent verification |
+| `NEEDS_REPAIR` | A confirmed defect blocks acceptance | Main diagnoses and sends one repair scope |
+| `BLOCKED` | Authority, dependency, environment, or external input prevents progress | Stop and report the blocker |
+| `VERIFIED` | Independent verifier reproduced the required result | Main decides integration gate |
+| `INTEGRATED` | Output is coupled into the intended source and affected checks pass | Main reconciles docs and closure |
+
+Only the main thread may mark the parent Task `closed`.
+
+### 10.2 Parent-task mapping
+
+The parent RightSpot Task retains:
+
+```text
+pending -> in_progress -> verification_pending -> closed
+```
+
+The main thread moves the parent to `verification_pending` only when the complete applicable
+increment is ready for review, not merely because one worker finished.
+
+When the first Work Order is dispatched, the main thread changes the parent Task from `pending` to
+`in_progress` and changes the Work Order from `GATED` to `ASSIGNED`. The parent remains `in_progress`
+through internal Builder, Verifier, Repairer, and Integrator checkpoints. It moves to
+`verification_pending` only when the complete parent outcome, rather than one foundation checkpoint,
+is ready for independent review.
+
+### 10.3 Completion report minimum
+
+Every worker handoff must include:
+
+- final state;
+- exact files created or changed;
+- actual source baseline and dirty-state limitation;
+- behavior implemented, inspected, or tested;
+- exact commands and runtime;
+- passed, failed, skipped, and not-run checks;
+- deviations from the Work Order;
+- unresolved risks or unknowns;
+- evidence claim limit; and
+- recommended next gate.
+
+## 11. Builder procedure
+
+The Builder follows this loop:
+
+1. establish repository and instruction context;
+2. restate the Work Order and identify a falsifier;
+3. inspect the owning code, tests, and consumers;
+4. identify affected state, roles, data, contracts, failure modes, and non-goals;
+5. implement the smallest coherent change;
+6. add only directly necessary focused tests;
+7. inspect the diff and scan for scope drift, hidden fallbacks, sensitive data, and accidental
+   shared-file changes;
+8. run the registered focused checks under the named runtime;
+9. return the completion report through the approved handoff channel; and
+10. stop at `READY_FOR_VERIFICATION`, `NEEDS_REPAIR`, or `BLOCKED`.
+
+The Builder must not treat a green local check as proof of browser, integration, deployment, or
+judge behavior unless that exact surface was tested. The Builder must not edit the canonical Task
+File, current status, ADR, roadmap, or Runbook unless the Work Order explicitly grants a separate
+non-canonical evidence record; the main thread owns canonical writeback.
+
+## 12. Verification procedure
+
+### 12.1 Independence
+
+Verification must occur after the Builder has stopped changing the candidate source. The Verifier
+must receive the exact source identity, expected files, commands, runtime, fixtures, and claim
+boundary. A Verifier may use a clean isolated worktree or a clearly identified stable source state.
+When the source contains untracked files, a commit SHA alone is insufficient: record `HEAD`, full
+dirty/untracked state, exact changed paths, and a content manifest or equivalent hash for the
+assigned source. The Verifier must run against that same identified source and no moving writer.
+
+### 12.1.1 Verification output boundary
+
+The Verifier may create only the ignored runtime output explicitly permitted by the Work Order and
+only inside the assigned application directory. Short response-body and header assertions should
+use shell variables. If a file is necessary, place it under the application's declared ignored
+test-output directory with a unique name. Do not write to `/tmp`, the user's home directory, or any
+other path outside the application boundary unless the Work Order explicitly grants that path.
+
+An out-of-bound artifact is a procedural `BLOCKED` result, not a product defect and not a reason to
+delete or repair source. The Verifier records the exact path and stops the affected claim. The main
+thread applies the deletion gate separately, tightens the procedure if needed, and re-gates the same
+checkpoint; it does not silently promote otherwise green checks to `VERIFIED`.
+
+### 12.2 Verification selection
+
+Choose the narrowest checks that can prove the Work Order, then expand for affected contracts:
+
+- domain or state change → focused domain and transition tests;
+- API or persistence change → contract, repository, reset, and role/privacy tests;
+- UI route or form change → build, route, and browser smoke checks;
+- shared contract or schema change → affected integration and transitive checks;
+- authentication or permission change → positive and negative role tests; and
+- parent closure → complete applicable local baseline and documentation/scope checks.
+
+Do not create empty browser, database, deployment, or release lanes before a real surface requires
+them. Do not substitute a weaker test merely because the registered check is inconvenient.
+
+### 12.3 Verifier result
+
+The Verifier must classify the result as:
+
+- `PASS`: acceptance criteria reproduced under the named source and runtime;
+- `CODE_DEFECT`: implementation behavior contradicts the contract;
+- `TEST_DEFECT`: the check is wrong, stale, or insufficient and needs a separate decision;
+- `ENVIRONMENT_FAILURE`: runtime, dependency, service, browser, or machine state prevented the
+  check;
+- `AUTHORITY_CONFLICT`: the expected behavior conflicts with an accepted rule; or
+- `UNKNOWN`: the evidence is incomplete or the outcome cannot be trusted.
+
+The Verifier must not turn `ENVIRONMENT_FAILURE` or `UNKNOWN` into a code fix by guesswork.
+
+## 13. Failure, repair, and retry protocol
+
+### 13.1 Main-thread triage
+
+When verification fails, the main thread records:
+
+- exact command or browser action;
+- source identity and working-tree state;
+- runtime and environment;
+- expected result;
+- actual result and error text;
+- first failing boundary;
+- whether the result is reproducible;
+- likely failure class; and
+- the smallest next check that can disprove the diagnosis.
+
+The main thread does not send a vague “please fix it” prompt.
+
+### 13.2 Repair prompt
+
+A repair prompt must state:
+
+```text
+Repair the single diagnosed defect in Work Order <ID>.
+
+Evidence:
+- Source baseline:
+- Failing command or browser action:
+- Expected result:
+- Actual result:
+- First failing file, boundary, or contract:
+- Reproduction status:
+
+Allowed scope:
+- <exact files and behavior>
+
+Do not:
+- add a feature;
+- change accepted authority or contract;
+- weaken the test;
+- add a fallback or speculative dependency; or
+- modify unrelated files.
+
+Acceptance:
+- <specific corrected behavior>
+- <focused checks to rerun>
+
+Stop and report if the diagnosis requires a scope, architecture, data, security, or authority change.
+```
+
+### 13.3 Retry rules
+
+- A local deterministic check may be rerun once to distinguish an invocation error from a real
+  failure, with both outcomes recorded.
+- A flaky or environment-dependent result needs classification and a bounded reproducer, not blind
+  repetition.
+- An unknown external or remote outcome must not be blindly retried.
+- After repeated failure without new evidence, stop the loop and revisit the baseline, assumption,
+  contract, or architecture.
+- A repair is not verified by the person who made the repair alone; run a fresh independent check
+  when the defect is material.
+
+## 14. Integration and coupling procedure
+
+An integration Work Order starts only after its input outputs are independently verified or their
+known limitations are explicitly accepted by the main thread.
+
+### 14.1 Integration checklist
+
+The Integrator or main thread checks:
+
+1. every input has a known source and owner;
+2. changed paths do not overlap unreviewed work;
+3. shared types and API semantics agree;
+4. only one domain state machine remains authoritative;
+5. role and privacy projections remain separate;
+6. schema, seed data, reset, and migration behavior agree;
+7. idempotency, version, error, and stale-state behavior agree;
+8. routes and forms consume the intended application services;
+9. no integration workaround creates a hidden fallback;
+10. the combined Happy Path works; and
+11. the affected focused, integration, and aggregate checks are rerun.
+
+### 14.2 Contract conflict
+
+If two worker outputs require incompatible contracts, do not choose the more convenient one in the
+integration task. Return the conflict to the main thread with:
+
+- current contract and owners;
+- competing proposals;
+- affected files, roles, data, and tests;
+- failure and migration implications;
+- minimal alternatives; and
+- the evidence required for a decision.
+
+If the decision changes accepted behavior or authority, update the governing ADR and affected
+RightSpot documents before closing the integration increment.
+
+## 15. Documentation and evidence writeback
+
+### 15.1 Work Order and Development Record
+
+The Work Order or Development Record stores execution-specific facts. A supporting worker normally
+returns these facts in its thread report; the main thread writes them into the canonical Task File
+or an explicitly selected Development record after inspecting the source:
+
+- what was assigned;
+- what actually changed;
+- what was tested;
+- exact runtime and commands;
+- failed or skipped checks;
+- source and dirty-state limitations;
+- residual risks; and
+- next gate.
+
+Do not copy raw command transcripts or chronology into product or architecture documents.
+
+### 15.2 Canonical RightSpot documents
+
+The main thread updates canonical documents when the increment changes:
+
+- product intent or scope → product definition, requirements, current status, or ADR;
+- domain states or authority → domain model, system design, API contract, or ADR;
+- implementation stack or dependency policy → implementation ADR and affected Runbook;
+- implementation status or claim boundary → current status and Development index; or
+- verification/evidence claims → validation and Development records.
+
+If no canonical document needs changing, record why in the Development Record. Never close code
+against stale authority.
+
+## 16. Git and source closure
+
+Supporting tasks must not touch the Git index, commit, push, deploy, or publish. They may edit
+assigned working files only. Package installation is allowed only when the active Work Order names
+the package manager and approved dependency set; installation must not modify the outer repository
+or create an external runtime dependency.
+
+The main thread follows the repository Git gate:
+
+1. inspect actual root, branch, upstream, ownership, dirty state, and divergence;
+2. preserve unrelated and collaborator-owned work;
+3. inspect exact worker changes and forbidden-path violations;
+4. integrate deliberately, never with destructive reset or blind pull;
+5. rerun invalidated checks after integration;
+6. stage exact task-owned paths or hunks;
+7. review the complete staged diff and sensitive/scope scans;
+8. commit one coherent verified increment when authorized;
+9. fetch and inspect remote movement before pushing;
+10. push only the intended branch when authorized; and
+11. report local, committed, pushed, CI, runtime, deployment, judge, and submission states
+    separately.
+
+An uncommitted local result may be useful evidence, but it is not remote delivery.
+
+## 17. Security, privacy, and external-action boundaries
+
+Work Orders and thread prompts must not contain:
+
+- passwords, API keys, bearer values, signing material, or private cookies;
+- raw browser session state or private context locators;
+- unnecessary personal information or real tenant identity documents;
+- mutable production databases or private runtime dumps; or
+- opaque delivery receipts that are not needed for the assigned local task.
+
+Workers must not send external messages, publish artifacts, deploy services, spend money, alter
+accounts, or access production systems unless a separate explicit authority and Work Order permits
+that exact action. A request to “finish” a task does not broaden these permissions.
+
+## 18. Anti-patterns and stop conditions
+
+Stop and return to the main thread when any of the following occurs:
+
+- the source baseline differs materially from the Work Order;
+- another writer owns an overlapping path;
+- the task requires a new dependency, migration, public protocol, credential, or external effect;
+- accepted product, architecture, security, privacy, or data authority would change;
+- a test is being weakened or a fallback is being added to hide a failure;
+- a result is unknown, partial, or not reproducible;
+- the worker has completed its assigned outcome and is tempted to begin another one;
+- the same root cause fails repeatedly without new evidence;
+- the task would modify an outer or sibling project; or
+- the requested closure claim exceeds the evidence level.
+
+Do not:
+
+- dispatch multiple workers to the same shared file without isolation;
+- run a verifier against a moving source;
+- let a Builder verify its own repair as independent evidence;
+- use a thread title, summary, or final prose as the only status source;
+- create a new Task for every phase of one bounded increment;
+- store raw thread IDs or private context in canonical artifacts;
+- create an automation merely to poll an internal worker; or
+- keep a failing loop alive to avoid reporting a blocker.
+
+## 19. RightSpot first-pilot sequence
+
+The first use of this Runbook should be deliberately small:
+
+### Phase 0 — Baseline lock
+
+The main thread confirms the RightSpot source state, parent Task, accepted stack ADR, exact mutable
+scope, package/runtime permission, SQLite/reset semantics, health-route contract, verification
+commands, canonical writeback owner, and whether the current untracked documentation baseline is
+available to the chosen worker state. If the target Node baseline is unavailable, label the actual
+runtime as limited evidence and do not claim final closure from it.
+
+### Phase 1 — Foundational Builder
+
+Dispatch one Builder for the first coherent application-shell increment. The increment may include
+the project scaffold, scripts, child-level generated-state ignore rules, local persistence foundation,
+health route, and directly necessary test harness, but it must not silently expand into business
+tables, authentication, or all product features.
+
+### Phase 2 — Independent verification
+
+Dispatch one Verifier for local startup, source/runtime compatibility, and the registered focused
+checks. The Verifier reports pass/fail without repairing the shell.
+
+### Phase 3 — Repair if required
+
+If a code defect is confirmed, send one bounded repair prompt to the responsible Builder. If the
+issue is architectural, environmental, or unknown, stop for main-thread triage instead.
+
+### Phase 4 — Contract stabilization
+
+After the foundation and shared contracts are verified, decide whether tenant and agent surfaces
+have genuinely independent file and test boundaries. Do not parallelize them merely because they
+are separate screens.
+
+### Phase 5 — Coupling and closure
+
+Integrate only verified outputs, run the affected combined Happy Path, update canonical documents,
+and close the parent Task only after the complete applicable evidence is available.
+
+## 20. Pilot review
+
+After two or three bounded increments, the main thread records a short retrospective covering:
+
+- number of dispatched Work Orders;
+- number of source or ownership conflicts;
+- verification reproducibility;
+- repair cycles and whether they produced new evidence;
+- documentation drift or authority violations;
+- integration overhead;
+- work that would have been faster directly; and
+- whether the pilot should continue, be narrowed, be revised, or be proposed for wider adoption.
+
+The pilot is not promoted to a repository-wide rule from thread count or subjective enthusiasm.
+Promotion requires a separate explicit decision and evidence that the process improves controlled
+delivery without creating disproportionate coordination cost.
