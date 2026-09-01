@@ -65,7 +65,8 @@ verification, integration, or parent-Task closure.
 - **Dispatch state:** `RS-WO-002-05` is independently verified against clean snapshot `bc3bc42`.
   `RS-WO-002-06` returned `READY_FOR_REVIEW`; the main thread accepted its useful decomposition with
   revisions, recorded the local HTTP/DTO contract in ADR-RS-0008, and dispatched only `RS-WO-002-07`,
-  `RS-WO-002-08`, and `RS-WO-002-09` from baseline `c758634`. Builder, Verifier, Repairer,
+  `RS-WO-002-08`, and `RS-WO-002-09` from baseline `c758634`. `RS-WO-002-09` returned
+  `READY_FOR_REVIEW` and its bounded checklist is now integrated as later UI guidance. Builder, Verifier, Repairer,
   Integrator, Advisor, and reviewer roles remain checkpoints under this Task, not pre-registered
   child Tasks.
 - **Baseline:** The actual repository root is `WebMCP_Challenge`; the latest verified product code
@@ -1395,7 +1396,8 @@ or if a design request would expand beyond the minimum shell and session surface
 **Role:** UI/UX reviewer  
 **Pre-dispatch status:** `GATED` — the ordinary contract is accepted; implementation review is
 read-only and does not wait for role pages  
-**Execution state:** `ASSIGNED` — dedicated read-only reviewer task dispatched  
+**Execution state:** `INTEGRATED` — the dedicated read-only reviewer returned `READY_FOR_REVIEW`; the
+main thread accepted the bounded checklist as guidance for the current shell and later role pages  
 **Parallelization:** `READ_ONLY_PARALLEL` with `RS-WO-002-07` and `RS-WO-002-08`  
 **Owner:** Main RightSpot thread; one dedicated read-only supporting task  
 **Risk profile:** `Standard` — human-flow clarity, accessibility, responsive baseline, and ownership
@@ -1403,8 +1405,9 @@ review without source mutation
 **Objective:** Produce a bounded, evidence-backed UI/UX acceptance checklist for the shared shell
 and the later tenant and agent Happy Path pages, including information hierarchy, accessibility,
 responsive behavior, demo narrative, and exact ownership boundaries.  
-**Next gate:** Main-thread review of the checklist; it may refine later page Work Orders but cannot
-authorize scope expansion or silently change ADR-RS-0008.  
+**Next gate:** No further implementation is opened from this Work Order. The accepted checklist is
+applied when reviewing `RS-WO-002-08` and designing later role-page Work Orders; it cannot authorize
+scope expansion or silently change ADR-RS-0008.  
 **Dispatch state:** Dispatched from clean detached source `c758634aa5d046e089e051ee74e463756b73a202`;
 execution Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-09-ui-review`; supporting-task
 identity `01a05b58-9ba4-7321-9c66-84477c44d359` (`local`). The reviewer has no authored write set.  
@@ -1450,6 +1453,22 @@ The reviewer must return:
 The report must distinguish verified current UI facts, design recommendations, unresolved product
 choices, and checks that require a later running browser. It returns `READY_FOR_REVIEW` or `BLOCKED`;
 it does not claim implementation, browser verification, integration, or parent closure.
+
+#### Main-thread review result
+
+The reviewer returned `READY_FOR_REVIEW` from detached source
+`c758634aa5d046e089e051ee74e463756b73a202`, with a clean tree, no generated output, and no authored
+mutation. The main thread accepts the following as bounded guidance: keep the shell and role pages
+semantic, labelled, keyboard-reachable, visibly focused, responsive, and explicit about pending/error
+states; show the server-resolved role; keep tenant and agent information hierarchies separate; make
+agent `Prepare` and `Send` visibly distinct; refetch authoritative state on conflicts; and keep the
+human decision boundary visible. The checklist also confirms the future page ownership split of
+shared shell, workflow transport, tenant UI, and agent UI.
+
+The reviewer’s suggestion to add a browser-test dependency is not adopted as a current scope change.
+Manual or existing browser tooling may provide the later UI evidence; a new dependency requires its
+own decision if a demonstrated verification gap remains. The report is review guidance, not browser
+verification or product-flow evidence.
 
 ## Parent objective — not the current Builder scope
 
