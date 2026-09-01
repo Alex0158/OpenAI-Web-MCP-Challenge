@@ -78,8 +78,8 @@ consumer). Both have preserved candidate overlays from transient execution-path 
 has a formal Builder handoff, and their exact path/hash evidence is recorded in the owning Task Files.
 Candidate re-gating, persistent isolated verification, and integration are still pending. The next
 verification dispatch must use a persistent supporting task/thread and a frozen source identity.
-`RS-WO-019-01` is integrated at `6f52686`
-with only its bounded browser/form regression evidence pending. The transient execution-path incident
+`RS-WO-019-01` is integrated and closed at `6f52686` after its bounded browser/form regression passed.
+The transient execution-path incident
 is process evidence and does not authorize editing or silently absorbing either candidate overlay.
 
 The experimental delegated-work procedure is

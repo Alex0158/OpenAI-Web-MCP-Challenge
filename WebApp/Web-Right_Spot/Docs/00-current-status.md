@@ -27,8 +27,8 @@ content hashes are recorded in their Task Files; neither candidate has an indepe
 result or integration claim. The overlays are protected inputs for formal re-gating and must not be
 edited, staged, committed, or verified from a moving source. `RIGHTSPOT-015` is closed with
 its Operations authority integrated at `e7f30d5`; `RS-WO-017-02` is independently verified and
-integrated at `b7369bd`; and `RS-WO-019-01` is independently verified and integrated at `6f52686`,
-with only its bounded browser/form regression gate open. `RS-WO-018-01` is independently verified,
+integrated at `b7369bd`; and `RS-WO-019-01` is independently verified, integrated at `6f52686`,
+and closed after its bounded browser/form regression passed. `RS-WO-018-01` is independently verified,
 integrated at `5eef037`, and closed. These lanes have disjoint write sets.
 `RIGHTSPOT-013` accepted the Operations authority decision and is closed, and `RIGHTSPOT-014` accepted
 its media proposal and is closed. The reviewed media asset baseline is committed at `760b88f`.
@@ -37,7 +37,7 @@ candidate re-gating and persistent, independently verifiable task/thread checkpo
 integration or downstream transport/browser claim.
 `RIGHTSPOT-018` records two independently reproduced relay-domain defects in one serialized
 shared-workflow Work Order and is closed; `RIGHTSPOT-019` records the integrated London-time UI
-boundary repair with browser/form evidence still pending.
+boundary repair and completed browser/form regression, and is closed.
 The bounded Operations seam `RS-WO-011-01` passed independent verification and is integrated at
 product commit `7ff0fbd`; its verifier Worktree remains a historical evidence snapshot.
 `RS-WO-007-06`, `RS-WO-007-07`, and
@@ -105,8 +105,8 @@ The parent `RIGHTSPOT-002` is `closed` for the accepted local MVP. ADR-RS-0009 a
 Field Desk UI/UX direction and ADR-RS-0010 accepts Clerk as a gated external-auth candidate; neither
 decision reopens the MVP or authorizes external credential setup. The Field Desk regression gate is
 closed; the current implementation wave is the independently verifiable Operations projection slice
-and tenant media consumer slice, plus the bounded browser/form regression gate for the London-time
-contract. The current 016/017 candidates were produced through a transient execution path; their formal
+and tenant media consumer slice. The London-time browser/form regression is closed. The current
+016/017 candidates were produced through a transient execution path; their formal
 handoffs were not established and they remain unintegrated until candidate re-gating and a persistent
 independent verification lane re-establish the source identity.
 The reviewed property-media asset baseline and Operations authority are complete and remain read-only
@@ -164,7 +164,7 @@ overlays from non-formal transient executions, with exact path/hash evidence rec
 Files and no formal Builder, independent verification, or integration claim. Their next gate is
 candidate re-gating followed by a persistent, isolated independent Verifier; no downstream transport,
 browser, or WebMCP work starts from these overlays. `RS-WO-019-01`
-is integrated at `6f52686` with only its bounded browser/form regression evidence pending. The
+is integrated and closed at `6f52686` after its bounded browser/form regression passed. The
 transient execution-path incident affecting the 016/017 handoffs is process evidence, not permission
 to modify or silently absorb their candidate source.
 

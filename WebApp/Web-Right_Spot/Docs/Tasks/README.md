@@ -48,8 +48,8 @@ surface; it does not authorize dashboard implementation, WebMCP registration, re
 changes, or canonical product writeback. `RIGHTSPOT-012` is a pending read-only cross-layer audit
 lane and does not authorize implementation or canonical product writeback. `RIGHTSPOT-016` and
 `RIGHTSPOT-017` remain `in_progress` with preserved, non-formal candidate overlays; they require
-candidate re-gating and persistent independent verification before integration. `RIGHTSPOT-019`
-remains `in_progress` with its integrated repair awaiting the bounded browser/form regression gate.
+candidate re-gating and persistent independent verification before integration. `RIGHTSPOT-019` is
+closed after its integrated repair passed the bounded browser/form regression gate.
 
 Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, the corrected `RS-WO-002-02` rerun returned
@@ -88,7 +88,7 @@ browser evidence are reconciled in the
 **Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-008`, `RIGHTSPOT-009`, `RIGHTSPOT-010`, and
 `RIGHTSPOT-012` are pending decision, credential, or read-only audit gates. `RS-WO-016-01` and
 `RS-WO-017-03` are `GATED` behind candidate re-gating and persistent independent verification.
-`RS-WO-019-01` is integrated and awaits its bounded browser/form regression. No closed task is an
+`RS-WO-019-01` is closed after its bounded browser/form regression passed. No closed task is an
 active implementation gate.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)

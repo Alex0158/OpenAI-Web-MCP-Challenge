@@ -1,7 +1,7 @@
 # RIGHTSPOT-019: Normalize the tenant Europe/London time contract
 
 **Type:** `defect`  
-**Lifecycle:** `in_progress`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for correct Viewing Request scheduling semantics  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-01  
@@ -12,11 +12,11 @@
 - Objective: ensure a tenant's `datetime-local` input is interpreted and displayed as an explicit
   `Europe/London` wall-clock value regardless of the browser's local timezone, while keeping the
   existing server/API UTC instant contract.
-- Current increment: `RS-WO-019-01` is the bounded tenant request time conversion repair. It does not
-  add calendar integration, a timezone selector, or a new backend time model.
-- Next gate: bounded browser/form regression against the integrated source; the backend/API contract
-  remains unchanged.
-- Execution posture: `INTEGRATED_AWAITING_BROWSER_VERIFICATION`.
+- Current increment: `RS-WO-019-01` completed the bounded tenant request time conversion repair and
+  its browser/form regression. It does not add calendar integration, a timezone selector, or a new
+  backend time model.
+- Next gate: none. The backend/API contract remains unchanged.
+- Execution posture: `CLOSED`.
 - This task is disjoint from workflow-domain, Operations, and media write sets.
 
 ## Verified defect
@@ -34,7 +34,7 @@ deterministically before sending the existing DTO.
 ## RS-WO-019-01 — Repair tenant London-time input conversion
 
 **Role:** Builder → independent Verifier  
-**Status:** `INTEGRATED_AWAITING_BROWSER_VERIFICATION`  
+**Status:** `CLOSED`  
 **Parallelization:** `PARALLEL_TENANT_TIME_REPAIR` — disjoint from workflow-domain, Operations, and media paths  
 **Risk profile:** `Assured` — incorrect time conversion changes user-visible scheduling instants  
 **Source baseline:** `e92dc9c1102549e9197ebad114803eea1e96c06f` on `main`; current media candidate files and collaborator-owned documentation remain outside this Work Order  
@@ -43,7 +43,7 @@ deterministically before sending the existing DTO.
 **Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-019-01-builder`  
 **Independent verifier:** Multi-agent read-only Verifier `01a05e28-2cf4-76d1-9f42-a38c08830f43` (`Nash`), closed after report  
 **Dispatch state:** `INDEPENDENTLY_VERIFIED_AND_INTEGRATED`  
-**Next gate:** Browser/form regression against the integrated source; do not expand the time contract  
+**Next gate:** None; bounded browser/form regression passed against the integrated source  
 **Allowed write set:** `src/ui/tenant/tenant-request-time.ts`, `src/ui/tenant/tenant-request-page.tsx`, `tests/ui/tenant-request-time.test.ts`  
 **Ownership:** The Builder owns only the declared tenant time helper/page/test paths. The main thread
 owns source freeze, integration, browser evidence, canonical writeback, and closure.
@@ -130,6 +130,28 @@ the main thread reran the full direct suite `75/75`, `npm run typecheck`, `npm r
 `git diff --check`; all passed. A browser/form regression remains intentionally open because the task
 closure gate requires observing the integrated editor and actual submission boundary.
 
+### Main-thread browser/form regression result — 2026-09-01
+
+The main thread ran the bounded regression against a fresh isolated runtime built from committed
+snapshot `3e2c735`, without the unrelated dirty candidate overlays in the shared checkout. The
+runtime used Node `24.13.1` and npm `11.8.0`; the requested Node `24.20.0`/npm `11.19.0` pair was not
+available on this host for this run.
+
+- Summer London input `2026-10-03 10:00 AM` was entered through the browser's native
+  `datetime-local` control, saved as a draft, and returned by the server as
+  `2026-10-03T09:00:00.000Z`; the tenant dashboard displayed `3 Oct 2026, 10:00`.
+- The same browser session submitted the saved draft through the explicit submit action. The UI
+  showed `Request Submitted`, and the server DTO reported `REQUEST_SUBMITTED`, request version `2`,
+  and the unchanged UTC instant.
+- Winter London input `2026-01-15 10:00 AM` was saved through the browser and returned as
+  `2026-01-15T10:00:00.000Z`.
+- The London spring-forward gap `2026-03-29 01:30 AM` was rejected visibly with the bounded
+  `NON_EXISTENT_TIME` message; the server retained the prior winter draft and did not append a
+  timeline transition.
+
+This closes the browser/form gate without changing the DTO, persistence, workflow, or dependency
+boundaries. No deployment, WebMCP, Cloud Receiver, auth, WebRTC, or Redis claim is made.
+
 ## Acceptance criteria
 
 1. The same London wall-clock input produces the same UTC ISO value on UTC, London, and non-UK browser
@@ -147,7 +169,7 @@ closure gate requires observing the integrated editor and actual submission boun
 
 ## Closure gate
 
-Close only after independent verification, main-thread integration, and a bounded browser/form
+Closed after independent verification, main-thread integration, and a bounded browser/form
 regression against the integrated source. Preserve any unrelated persistent-fixture failure as
 separate evidence.
 
