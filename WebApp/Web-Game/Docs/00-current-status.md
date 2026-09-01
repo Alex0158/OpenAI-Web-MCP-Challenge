@@ -21,6 +21,10 @@ capability gates before creating a bounded implementation task. Balance, product
 event ordering, and several Re-entry authority details remain open. No implementation, deployment,
 runtime, or judge claim follows from this documentation work.
 
+The owner has agreed with the other proposed MVP defaults, including the deterministic combat contrast
+and the discovered-landmark presentation. Re-entry action authority and the protected-start boundary
+remain the two clarification gates before CP-01 promotion.
+
 The structural coverage result and cross-boundary gaps are recorded in
 [`Validation/02-mechanism-boundary-and-chain-audit.md`](Validation/02-mechanism-boundary-and-chain-audit.md).
 The roadmap-driven decisions and edge cases are recorded in

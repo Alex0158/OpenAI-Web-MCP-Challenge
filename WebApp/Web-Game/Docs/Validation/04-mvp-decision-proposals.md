@@ -62,6 +62,13 @@ The first 18 rows came from the roadmap audit. G-MVP-19 and G-MVP-20 are added h
 deterministic playable slice still needs an explicit combat and economy contract even when the values
 remain tunable after the first trace.
 
+## Owner review status
+
+**As of 2026-09-01:** The owner agreed with the other recommendations in this pack, including the
+gatherer-versus-hunter combat contrast and showing the other shelter as a discovered landmark while
+keeping active PvP attack commands outside G2. Two terms remain pending clarification before CP-01 can
+promote the complete pack: the G2 Re-entry action and the protected-start boundary.
+
 ## Proposed combat and economy profile
 
 ### Combat
@@ -190,7 +197,36 @@ Monster M-001 at world time 42, lost 2 Rock, respawned at Shelter P-001, and rec
 
 ## Decisions that still need owner confirmation
 
-The following are the only high-impact product choices I recommend reviewing before promotion:
+The following are the only high-impact product choices I recommend reviewing before promotion. The
+terms are defined here so the review is about behavior rather than vocabulary.
+
+### Re-entry action
+
+Re-entry is the Agent returning to the canonical game page after a backend event, not a soldier
+returning to its shelter. The proposed G2 flow is:
+
+```text
+page closed
+  -> monster kills a gatherer
+  -> CargoLostToMonster is committed and delivered
+  -> Agent returns to the game page
+  -> Agent reads fresh mission history and current revisions
+  -> Agent invokes or prepares force_recall_soldier
+```
+
+`force_recall_soldier` is a bounded, server-validated command. It queues the soldier's normal return,
+does not teleport it, does not change its role, and does not create coins. The recommended choice is
+to let the Agent execute this one low-consequence recovery action under the existing user grant;
+migration, siege, destructive upgrades, and irreversible recovery remain human-confirmed.
+
+### Protected start
+
+Protected start is an onboarding shield around the initial shelter. Under the proposal, hostile
+monster contact is rejected within 12 logical tiles until the player's first field dispatch or 120
+world seconds, whichever comes first. The page shows the active shield and the condition that will end
+it. This is separate from migration's veil: it does not hide the shelter, protect already-dispatched
+soldiers, or make the whole map safe. PvP attack commands are outside G2, so the proposal only defines
+the monster-start boundary at this stage.
 
 1. whether the G2 Re-entry action may auto-execute `force_recall_soldier`, or must stop at a prepared
    action for human confirmation;
