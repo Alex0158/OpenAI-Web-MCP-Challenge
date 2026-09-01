@@ -8,7 +8,7 @@ returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in ADR-RS
 `RS-WO-002-07` is integrated at product commit `f700ba9`; `RS-WO-002-08` is integrated at product
 commit `006d2fd` after process re-baseline commit `8b77bdd`; `RS-WO-002-09` is integrated as bounded
 UI guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW` and its decomposition was accepted; the
-immediate implementation checkpoint is the gated serial shared role-page frame `RS-WO-002-11`,
+immediate implementation checkpoint is the assigned serial shared role-page frame `RS-WO-002-11`,
 followed by bounded tenant and agent role-page delivery in parallel.
 
 ## Purpose

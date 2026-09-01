@@ -70,9 +70,9 @@ verification, integration, or parent-Task closure.
   passed dedicated independent verification and are integrated at product commits `f700ba9` and
   `006d2fd`; `RS-WO-002-09` returned `READY_FOR_REVIEW` and its bounded checklist is integrated as
   later UI guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW`; the main thread accepted its
-  decomposition and opened the minimal serial shared-role-frame slice `RS-WO-002-11`. There is no
-  active product writer at this checkpoint. Builder, Verifier, Repairer, Integrator, Advisor, and
-  reviewer roles remain checkpoints under this Task, not pre-registered child Tasks.
+  decomposition and opened the minimal serial shared-role-frame slice `RS-WO-002-11`, which is
+  currently assigned to its Builder. Builder, Verifier, Repairer, Integrator, Advisor, and reviewer
+  roles remain checkpoints under this Task, not pre-registered child Tasks.
 - **Baseline:** The actual repository root is `WebMCP_Challenge`; the latest integrated product code
   is `f700ba9` (workflow transport plus the previously integrated shell); the accepted
   workflow/interface documentation baseline was frozen in `c758634` before dispatch. Each new Work
@@ -85,8 +85,9 @@ verification, integration, or parent-Task closure.
   through ADR-RS-0008, and the Thread Orchestration Pilot Runbook.
 - **Worker restrictions:** The foundation, domain-core, persistence/application, and discovery
   writers have stopped. The currently assigned slices have separate ownership: `RS-WO-002-07` owns
-  workflow HTTP/DTO paths, `RS-WO-002-08` owns the shared human shell paths, and `RS-WO-002-09` is
-  read-only. Every checkpoint must classify the declared read, worker-write, main-thread-writeback,
+  workflow HTTP/DTO paths, `RS-WO-002-08` owns the shared human shell paths, `RS-WO-002-09` is
+  read-only, and `RS-WO-002-11` owns the shared role-page frame paths. Every checkpoint must classify
+  the declared read, worker-write, main-thread-writeback,
   forbidden, and generated sets path-by-path; no worker may modify canonical authority, the Git
   index, or generated state outside explicitly ignored runtime paths. No worker may commit, push,
   deploy, publish, perform external actions, expand product scope, or change canonical authority.
@@ -1654,7 +1655,8 @@ independently verified and frozen. The suggestion to add a browser-test dependen
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — `RS-WO-002-10` decomposition is accepted; role-page Builders are
 gated on this shared seam  
-**Execution state:** `GATED` — ready for main-thread dispatch preparation  
+**Execution state:** `ASSIGNED` — the dedicated Builder is establishing context and preparing the
+shared role-page frame  
 **Parallelization:** `SERIAL` prerequisite for the tenant and agent role-page Builders  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one independent Verifier  
 **Risk profile:** `Standard` — shared session presentation, route semantics, and accessibility  
@@ -1664,8 +1666,12 @@ editing shared files in parallel. Keep this seam presentation-only; it must not 
 workflow, listing, queue, or decision state.  
 **Next gate:** Main-thread T2 review, then independent verification of the exact shared-shell candidate.
 Only after that candidate is verified may tenant and agent page Builders be dispatched in parallel.  
-**Dispatch state:** Not dispatched. The main thread will record the exact clean source, Worktree, and
-supporting-task identity before activation.  
+**Dispatch state:** Dispatched from clean source `7e8506f78c58927008672c1185115d7ecb90671a`; execution
+Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-11-shared-role-frame`; package root
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-11-shared-role-frame/WebApp/Web-Right_Spot`; runtime-pin
+path `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-11-shared-role-frame/.node-version`; supporting-task
+identity `01a05b8a-f781-7440-a503-5a6a59d29b67` (`local`). The dispatch returned a usable thread identity
+and the full prompt was persisted; no source write is authorized before context establishment.  
 **Parent execution posture if blocked:** `CONSTRAINED` for role-page implementation; independent
 read-only analysis and process work may continue.
 

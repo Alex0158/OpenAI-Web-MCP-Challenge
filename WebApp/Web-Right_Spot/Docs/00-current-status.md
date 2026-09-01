@@ -11,9 +11,9 @@ entry/listing discovery API, and the `RS-WO-002-07` workflow HTTP/DTO boundary i
 Advisor decomposition is accepted; `RS-WO-002-11` shared role-page frame is the next gated
 implementation slice before tenant/agent role pages
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current active Work Order:** `RS-WO-002-11` shared authenticated role-page frame is gated for
-dispatch after the main thread accepted the `RS-WO-002-10` Architecture Advisor decomposition. No
-role-page Builder has been dispatched yet.
+**Current active Work Order:** `RS-WO-002-11` shared authenticated role-page frame is assigned to a
+dedicated Builder from clean baseline `7e8506f`; its exact Worktree and supporting-task identity are
+recorded in the parent Task File. Tenant/agent role-page Builders remain gated behind this seam.
 **Implementation:** Foundation Builder returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02` verification attempt was procedurally blocked by an out-of-scope OS temp artifact, then the corrected bounded rerun returned `VERIFIED` against the unchanged source/runtime identity; `RS-WO-002-03` found and repaired a listing-version guard defect in commit `6e70c9f`, and fresh independent verification returned `VERIFIED` against that frozen source; `RS-WO-002-04` candidate adoption completed at T2 commit `68bbc69`; its first dedicated Verifier attempt stopped before source checks because the dispatch prompt described the Worktree root incorrectly, then one corrected follow-up returned `VERIFIED` against frozen source `28105e4d`; `RS-WO-002-05` Builder returned `READY_FOR_VERIFICATION` with the required runtime, focused `35/35` checks, production build, and local API smoke passing; the candidate was integrated at T2 code commit `de169ce`, and a dedicated Verifier independently returned `VERIFIED` against clean snapshot `bc3bc42`; the read-only `RS-WO-002-06` Architecture Advisor returned `READY_FOR_REVIEW`, and the main thread accepted its decomposition with revisions in ADR-RS-0008; `RS-WO-002-07` candidate `d71fe3e` passed dedicated independent verification with foundation `6/6`, focused `9/9`, full direct `50/50`, build, HTTP, role/privacy, conflict, and no-mutation evidence and was integrated at product commit `f700ba9`; `RS-WO-002-08` is integrated at product commit `006d2fd` after a localized generated-output boundary incident was re-baselined in process commit `8b77bdd`; both originate from reviewed baseline `c758634`; `RS-WO-002-09` is integrated as bounded UI guidance
 
 ## 1. Executive status
@@ -108,7 +108,7 @@ final response can remain a normal application action.
 
 ## 5. Next gate
 
-The immediate gate is the accepted serial shared-shell Work Order `RS-WO-002-11`, derived from the
+The immediate gate is the assigned serial shared-shell Work Order `RS-WO-002-11`, derived from the
 `RS-WO-002-10` Architecture Advisor review. It will generalize the authenticated role-page frame;
 after its independent verification, tenant and agent Builders can be dispatched in parallel against
 the stable role-frame, transport, and DTO boundaries.
@@ -125,9 +125,9 @@ dependencies.
 ## 5.1 Current Work Order boundary
 
 `RS-WO-002-10` returned `READY_FOR_REVIEW` with no source mutation, and the main thread accepted its
-decomposition. `RS-WO-002-11` is currently `GATED` with no source write; its proposed shared-frame
-scope and next gate are recorded in the parent Task File. It is the serial prerequisite before
-role-page implementation, not browser evidence.
+decomposition. `RS-WO-002-11` is currently `ASSIGNED` with no source write authorized before context
+establishment; its shared-frame scope and next gate are recorded in the parent Task File. It is the
+serial prerequisite before role-page implementation, not browser evidence.
 
 The parent `RIGHTSPOT-002` remains `in_progress`; the foundation Builder stopped after returning
 `READY_FOR_VERIFICATION`, the first `RS-WO-002-02` attempt was `BLOCKED` on a procedure boundary,
