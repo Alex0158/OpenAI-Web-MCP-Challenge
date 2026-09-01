@@ -21,13 +21,15 @@ at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression pa
 `4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current active Work Orders:** `RS-WO-015-01` is assigned to Operations authority Builder `Herschel`
-for the profile-local persistence/reset foundation, while main-thread `RS-WO-017-01` owns the local
-asset provenance/generation gate; their write boundaries are disjoint. `RIGHTSPOT-013` accepted the
+for the profile-local persistence/reset foundation, while main-thread `RS-WO-017-01` has reached
+`ASSET_GATE_READY` and is ready to dispatch the shared media primitive Builder; their write boundaries
+are disjoint. `RIGHTSPOT-013` accepted the
 Operations authority decision and is closed, and `RIGHTSPOT-014` accepted its media proposal and is
 closed. Both active lanes use reviewed baseline `8fe5976` or its documented process-only descendants.
 The next Operations projection Task `RIGHTSPOT-016` is registered but remains GATED behind the
-`RS-WO-015-01` authority verification; it has no assigned worker. The next media primitive remains
-GATED behind `RS-WO-017-01` and has no assigned worker.
+`RS-WO-015-01` authority verification; it has no assigned worker. The next media primitive
+`RS-WO-017-02` is ready for main-thread dispatch with the reviewed manifest and local asset pack
+frozen as read-only inputs; it has no assigned worker yet.
 The bounded Operations seam `RS-WO-011-01` passed independent verification and is integrated at
 product commit `7ff0fbd`; its verifier Worktree remains a historical evidence snapshot.
 `RS-WO-007-06`, `RS-WO-007-07`, and

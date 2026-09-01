@@ -15,13 +15,13 @@
 - Owner: Main RightSpot thread
 - Objective: Replace the two current tenant listing media placeholders with reviewed, deterministic,
   local synthetic property imagery without changing listing DTOs, routes, workflow, or authentication.
-- Current increment: `RS-WO-017-01` is a main-thread-controlled asset provenance/generation/import
-  gate. It must establish the three-file manifest and review evidence before any UI Builder uses it.
-- Next gate: After the assets and manifest pass the main-thread content/dimension/hash review, dispatch
-  one shared media primitive Builder. Tenant integration and independent browser verification remain
-  later checkpoints under this Task.
-- Execution posture: `MAIN_THREAD_ASSET_GATE`; no UI source change is authorized until the manifest
-  points only to reviewed, present local files.
+- Current increment: `RS-WO-017-01` has completed the main-thread-controlled asset
+  provenance/generation/import gate. The three-file manifest and review evidence are now available
+  before any UI Builder uses them.
+- Next gate: Dispatch one shared media primitive Builder. Tenant integration and independent browser
+  verification remain later checkpoints under this Task.
+- Execution posture: `ASSET_GATE_READY`; UI source remains frozen until the shared primitive Builder is
+  dispatched with the reviewed manifest as a read-only input.
 
 ## Accepted implementation boundary
 
@@ -38,13 +38,13 @@ legal status. A visible disclosure must say that the image is synthetic/illustra
 ## RS-WO-017-01 — Generate, review, and import the local asset pack
 
 **Role:** Main-thread Asset Producer/Reviewer  
-**Status:** `IN_PROGRESS`  
+**Status:** `ASSET_GATE_READY`  
 **Parallelization:** `SERIAL_ASSET_GATE` — must finish before the shared media primitive or tenant wiring uses the assets  
 **Risk profile:** `Standard` — local generated files and manifest provenance, with no product-domain change  
 **Supporting worker:** None; binary generation and content review remain main-thread-owned  
 **Source baseline:** `f93ae6b` product source plus the reviewed media proposal baseline `8fe5976`; collaborator-owned dirty and untracked paths remain outside this Work Order  
-**Dispatch state:** `MAIN_THREAD_CONTROLLED`  
-**Next gate:** Every manifest entry has a present local file, reviewed dimensions/hash, approved content/provenance, and deterministic listing identity  
+**Dispatch state:** `READY_FOR_BUILDER_DISPATCH`  
+**Next gate:** Dispatch `RS-WO-017-02` with the asset pack and manifest frozen as read-only inputs  
 **Ownership:** The main thread owns generation/import/review. No supporting worker may alter the asset pack or manifest during this gate.
 
 ### Intended asset write set
@@ -78,6 +78,30 @@ Before handoff, inspect every generated image for prohibited or misleading conte
 dimensions and hash from the local file, and record the result in the manifest. The main thread must
 not claim copyright/licensing approval beyond the documented generation/provenance basis. Do not use
 real property photography or scrape Rightmove imagery.
+
+### Asset gate evidence — 2026-09-01
+
+`ASSET_GATE_READY` is recorded on the main thread. All three assets were generated with the built-in
+OpenAI image-generation tool from synthetic, generic rental-interior prompts, visually inspected after
+WebP import, and checked for people, readable text, logos, brands, watermarks, maps, documents, license
+plates, landmarks, and identifiable address/location cues. None were present. The images are not
+property evidence and do not add listing facts.
+
+The source PNGs were 1536×1024. The committed local assets were encoded as WebP with `cwebp 1.6.0`
+at quality 84; each output remains 1536×1024 and 3:2. SHA-256 values below were computed from the
+committed WebP bytes and are mirrored in `src/ui/shared/listing-media-manifest.ts`:
+
+| Listing identity | Local asset | Dimensions | SHA-256 |
+|---|---|---:|---|
+| `listing-primary` + `listing-primary` | `public/listings/listing-primary.v1.webp` | 1536×1024 | `526500a0c45376d9dbf6e132be0902e3214ed7656b8ebd9fad28e20ea9fffde7` |
+| `listing-north` + `listing-north` | `public/listings/listing-north.v1.webp` | 1536×1024 | `b7a5fae3bf3c9235ef58fa88f530235d60b6f82d54cc6fbd70cc6302b8d8a0f6` |
+| `listing-riverside` + `listing-riverside` | `public/listings/listing-riverside.v1.webp` | 1536×1024 | `18c37a78ed75cf33f5acbcc9eaef48261048f1396c475ebe8c25579c39259b11` |
+
+The manifest records `OpenAI built-in image generation` as the provenance method and explicitly
+states that no external source was imported. This is a generation record, not a legal licensing
+opinion. The pinned Node `24.20.0` / npm `11.19.0` runtime verified all manifest hashes and
+`npm run typecheck` passed. UI rendering, browser loading/error behavior, and accessibility remain
+unverified until `RS-WO-017-02` through `RS-WO-017-04`.
 
 ### Forbidden actions
 
