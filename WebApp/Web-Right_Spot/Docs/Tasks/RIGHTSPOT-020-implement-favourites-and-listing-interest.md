@@ -182,8 +182,9 @@ Likely ownership:
 ```text
 src/ui/tenant/favourites-api.ts
 src/ui/tenant/tenant-favourites-page.tsx
+src/ui/tenant/tenant-discovery-page.tsx
 src/ui/tenant/tenant-listing-page.tsx
-src/ui/tenant/tenant-listing-card.tsx
+src/ui/tenant/tenant.module.css
 app/tenant/favourites/page.tsx
 tests/ui/tenant-favourites.test.ts
 ```
@@ -199,6 +200,7 @@ Likely ownership:
 src/ui/agent/agent-listing-interest.tsx
 src/ui/agent/agent-dashboard-page.tsx
 src/ui/agent/agent-api.ts
+src/ui/agent/agent.module.css
 tests/ui/agent-listing-interest.test.ts
 ```
 
