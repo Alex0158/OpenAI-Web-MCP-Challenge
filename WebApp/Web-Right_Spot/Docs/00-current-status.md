@@ -17,12 +17,13 @@ against the integrated source with full direct, built-server HTTP, and browser e
 is closed for the accepted local MVP. Its verifier Worktrees also exposed an out-of-scope tracked
 tooling mutation preserved as procedure evidence.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current active Work Order:** `RS-WO-005-01` is `VERIFIED` in canonical Builder task
-`01a05d57-4962-7681-afa7-a95b27acf04e` and Verifier task `01a05d5d-d796-72f0-baad-ca00d8e7ab4e` on
-host `local`; the main thread is performing integration/Git closure review. Verifier attempt 01 was
-procedurally `BLOCKED` after browser tooling added the tracked repository metadata line `+.gstack/` to
-`.gitignore`; the candidate source hash is unchanged and the main thread preserves that diff.
-Corrected attempt 02 used browser cwd `/var/tmp/rightspot-browser.65cSwB` and returned `VERIFIED`. A duplicate supporting
+**Current active Work Order:** `RS-WO-007-02` is `GATED` under `RIGHTSPOT-007`; no visual Builder is
+dispatched. The preceding `RS-WO-005-01` navigation candidate was independently `VERIFIED` by
+Verifier task `01a05d5d-d796-72f0-baad-ca00d8e7ab4e` and integrated at local product commit `27f5391`.
+Verifier attempt 01 was procedurally `BLOCKED` after browser tooling added the tracked repository
+metadata line `+.gstack/` to `.gitignore`; the candidate source hash was unchanged and the main thread
+preserves that diff. Corrected attempt 02 used browser cwd `/var/tmp/rightspot-browser.65cSwB` and
+returned `VERIFIED`. A duplicate supporting
 task `01a05d58-0b9e-7e40-8093-befbe4723318` detected the already-dirty shared candidate and returned
 `NEEDS_REVIEW` without source changes; it is not a second candidate. `RS-WO-003-01` and
 `RS-WO-004-01` completed their read-only decision proposals in supporting tasks
@@ -31,10 +32,9 @@ task `01a05d58-0b9e-7e40-8093-befbe4723318` detected the already-dirty shared ca
 read-only direct cross-role verification and `RS-WO-002-15` completed the isolated browser walkthrough
 against the integrated tenant and agent role pages at product commit `9348aa50b63e3f4f46e77238ad370670383d9d6d`; the closure record is
 [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md).
-`RIGHTSPOT-005` is the active, bounded post-login navigation defect; its Builder changed only the
+`RIGHTSPOT-005` is closed and integrated at local commit `27f5391`; its Builder changed only the
 declared shared-shell write set and corrected independent verification returned `VERIFIED`. The
-candidate is awaiting main-thread integration/Git closure; the preserved `.gitignore` incident is
-procedure evidence, not a product defect.
+preserved `.gitignore` incident is procedure evidence, not a product defect.
 The read-only UI decomposition Work Order `RS-WO-007-01` is complete in supporting task
 `01a05d5f-cb85-7cf3-96b4-edf0f5891b6d` on host `local` and accepted with revisions; its next
 single-file CSS Work Order `RS-WO-007-02` is gated behind the frozen navigation checkpoint and has no
@@ -59,9 +59,9 @@ Field Desk UI/UX direction and ADR-RS-0010 accepts Clerk as a gated external-aut
 decision reopens the MVP or authorizes external credential setup. The current implementation wave is
 the isolated `RS-WO-005-01` navigation repair.
 
-**Current cross-role gate:** `RS-WO-005-01` passed corrected independent verification and is frozen
-for main-thread integration/Git closure; the known tracked metadata incident remains preserved. The
-accepted MVP cross-role gate remains closed:
+**Current cross-role gate:** `RS-WO-005-01` passed corrected independent verification and is integrated
+at local commit `27f5391`; the known tracked metadata incident remains preserved. The next active gate
+is `RS-WO-007-02`, the shared CSS foundation. The accepted MVP cross-role gate remains closed:
 `RS-WO-002-14` passed direct read-only verification of the integrated
 tenant-to-agent HTTP Happy Path, including role privacy, mutation ordering, and bounded failures.
 `RS-WO-002-15` passed the isolated browser walkthrough with no browser error or warning logs. The
@@ -74,7 +74,7 @@ to review, but no visual Builder may touch the frozen navigation source.
 
 **Current parallel advisory lane:** `RIGHTSPOT-007`'s Architecture/UI Advisor proposal is accepted
 with revisions. No visual Builder has been dispatched; `RS-WO-007-02` remains gated until the main
-thread completes the `RS-WO-005-01` navigation verification/integration gate.
+thread captures the post-navigation T2 identity and confirms the shared CSS boundary.
 
 **Authoritative closure update:** The earlier checkpoint chronology below intentionally preserves the
 state at each historical handoff. It must not be read as reopening the current gate: `RS-WO-002-14`

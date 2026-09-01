@@ -1,7 +1,7 @@
 # RIGHTSPOT-005: Route signed-in users to the role workspace
 
 **Type:** `defect`  
-**Lifecycle:** `verification_pending`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for the next demo-ready product increment  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-01  
@@ -10,14 +10,16 @@
 ## Task Control
 
 - Type: `defect`
-- Lifecycle: `verification_pending`
+- Lifecycle: `closed`
 - Priority: `P1`
 - Owner: Main RightSpot thread
 - Current increment: Implement the accepted role-aware post-login navigation behavior without changing session, route, workflow, or API authority.
-- Next gate: Main-thread integration and Git closure review; no further source change is required by verification.
+- Next gate: None for this bounded increment; future visual changes are tracked under `RIGHTSPOT-007`.
 - Dependencies: `RIGHTSPOT-003` and ADR-RS-0009 have accepted the visual/interaction direction; no authentication-provider decision is required for this repair.
-- Implementation status: `RS-WO-005-01` is `READY_FOR_VERIFICATION` in supporting task `01a05d57-4962-7681-afa7-a95b27acf04e` on host `local`.
-- Verification status: Corrected independent attempt 02 returned `VERIFIED` in the same supporting task; the candidate is accepted for main-thread integration review.
+- Implementation status: `RS-WO-005-01` is `INTEGRATED` at local product commit `27f5391`; the
+  accepted candidate remains limited to the declared shared-shell path.
+- Verification status: Corrected independent attempt 02 returned `VERIFIED` in the same supporting
+  task; the main thread reviewed the evidence and completed local integration.
 
 ## Verified problem
 
@@ -70,9 +72,10 @@ provider boundary are not part of this repair.
 ## RS-WO-005-01 — Implement role-aware post-login workspace navigation
 
 **Role:** Builder → Verifier (sequential checkpoints)  
-**Status:** `VERIFIED` — awaiting main-thread integration  
+**Status:** `INTEGRATED` — closed  
 **Supporting task:** `01a05d57-4962-7681-afa7-a95b27acf04e` on host `local`  
 **Verifier task:** `01a05d5d-d796-72f0-baad-ca00d8e7ab4e` on host `local`  
+**Integrated commit:** `27f5391` on local `main`  
 **Parallelization:** `SERIAL_SHARED_SHELL` — this Work Order owns the shared session landing flow; no other worker may modify its write set during execution.  
 **Risk profile:** `Standard` — client navigation after server-confirmed session, with no domain or API change.  
 **Source baseline:** `625048a74e4fa7d716dd0067b29467438c648940`  
@@ -208,8 +211,12 @@ decision. Do not commit, push, deploy, dispatch follow-on work, or claim indepen
 
 After implementation, the Work Order must prove tenant and agent post-login destinations, listing
 visibility, session/error behavior, no workflow mutation, and the absence of browser console errors.
-Close this task only after the main thread reviews independent evidence, reconciles any durable UI
-decision into the owning document, and confirms that no broader feature scope was introduced.
+
+The main thread reviewed the corrected independent evidence, reconciled the navigation decision and
+procedure incident into the owning documents, and integrated the exact candidate at local commit
+`27f5391`. The preserved `.gitignore` tooling diff and owner-held reference remain outside this
+product commit. No broader feature scope was introduced. This task is now closed; the local product
+commit has not been pushed.
 
 ## Reopen condition
 

@@ -23,9 +23,9 @@ main-thread `RS-WO-002-15` isolated browser walkthrough passed against the same 
 The closure evidence is recorded in
 [`Docs/Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md`](Docs/Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md);
 no active local-MVP gate remains. The current post-MVP `RS-WO-005-01` candidate passed corrected
-independent verification and is under main-thread integration/Git closure review; its first verifier
-attempt's preserved `.gitignore` tooling mutation remains procedure evidence. `RS-WO-007-01` is an
-accepted read-only UI decomposition and `RS-WO-007-02` is gated; no visual Builder has been dispatched.
+independent verification and is integrated at local commit `27f5391`; its first verifier attempt's
+preserved `.gitignore` tooling mutation remains procedure evidence. `RS-WO-007-01` is an accepted
+read-only UI decomposition and `RS-WO-007-02` is gated; no visual Builder has been dispatched.
 
 ## 1. Authority and reading order
 

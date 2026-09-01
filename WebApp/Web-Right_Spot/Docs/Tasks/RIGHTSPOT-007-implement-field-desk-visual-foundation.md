@@ -17,8 +17,9 @@
   shared UI foundation without expanding the rental MVP or changing product authority.
 - Current increment: Advisor decomposition is complete; the next visual source change is a gated,
   single-file shared CSS foundation.
-- Next gate: Complete and classify `RS-WO-005-01`, then dispatch `RS-WO-007-02` only after the main
-  thread freezes the post-navigation source identity.
+- Next gate: Dispatch `RS-WO-007-02` only after the main thread captures a fresh T2 identity from the
+  integrated navigation commit and confirms that the preserved metadata incident is excluded from
+  the product source baseline.
 - Execution posture: `PROGRESSING` while the independent `RS-WO-005-01` verification runs.
 
 ## Accepted product boundary
@@ -114,8 +115,8 @@ these constraints:
 **Status:** `GATED`  
 **Parallelization:** `SERIAL_SHARED_CSS` — sole writer for the global visual token and primitive layer.  
 **Risk profile:** `Standard` — behavior-preserving CSS change with a narrow authored path.  
-**Dependency:** `RS-WO-005-01` must pass independent verification and be integrated or explicitly
-  frozen by the main thread before dispatch.  
+**Dependency:** `RS-WO-005-01` passed independent verification and is integrated at local product
+  commit `27f5391`; the main thread must still capture a fresh T2 identity before dispatch.  
 **Source baseline:** A new main-thread T2 source identity captured after the navigation checkpoint.
 
 ### Worker write set
