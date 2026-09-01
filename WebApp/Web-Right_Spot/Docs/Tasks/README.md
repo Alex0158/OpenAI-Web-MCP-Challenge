@@ -23,13 +23,15 @@ The same checkpoint's corrected read-only rerun returned `VERIFIED`. The bounded
 source was frozen at `a60001e`, and its independent Verifier returned `NEEDS_REPAIR` for stale listing
 revision writes. The bounded Repairer completed in post-repair commit `6e70c9f`, and fresh independent
 verification returned `VERIFIED`. The current checkpoint is the bounded persistence/application
-integration Work Order `RS-WO-002-04`, whose Builder completed checks but is `BLOCKED` by an
-unexpected shared-tree learning artifact and Pilot Runbook change from another active task.
+integration Work Order `RS-WO-002-04`. Its Builder completed checks, but the prompt was appended to
+the persisted `RS-WO-002-01` supporting thread, so the result is held for a dispatch-identity
+correction. The user-authorized Side Chat learning artifact and Pilot Runbook writeback are
+process-only changes, not product source drift.
 One registered Task has one Task File. A Work Order is only the current dispatch brief under that Task; Builder, Verifier, Repairer,
 and Integrator are sequential checkpoints, not additional registered Tasks. Do not turn this file
 into a backlog of future Work Orders or a second active-work register. The parent remains
-`in_progress`; no other RightSpot product writer or repairer is authorized, while the unrelated
-active task's process-write ownership remains unresolved.
+`in_progress`; no other RightSpot product writer or repairer is authorized. The Side Chat process
+lane is separately declared and user-authorized.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.

@@ -17,6 +17,10 @@ This is a development operating procedure, not a RightSpot product feature. It d
 WebMCP tools, Cloud Receiver behavior, WebRTC runtime behavior, or a production distributed task
 system.
 
+Non-normative observations and proposed improvements from this pilot are recorded in
+[`RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-LEARNINGS.md`](RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-LEARNINGS.md).
+That log is historical and advisory only; it does not override this Runbook or an accepted ADR.
+
 ## 2. Scope and non-scope
 
 ### 2.1 In scope
@@ -254,7 +258,9 @@ Each Work Order must state:
 - required documents to read;
 - dependencies and prerequisite outputs;
 - package/runtime permissions and any approved dependency set;
-- declared read, worker-write, main-thread-writeback, forbidden, and generated sets;
+- declared read, worker-write, main-thread-writeback, auxiliary process-only, forbidden, and
+  generated sets;
+- execution mode/worktree and supporting-task identity;
 - affected roles, modules, state, data, and claims;
 - explicit non-goals;
 - assumptions and evidence that could falsify them;
@@ -290,6 +296,8 @@ Project-authored Work Orders must be written in English. Use this structure:
 - Execution source identity and dirty/untracked limitation:
 - Governance revision:
 - Runtime baseline:
+- Execution mode/worktree: shared tree | isolated worktree <path and source ref>
+- Supporting-task identity: <new/final thread ID and matching Work Order>
 
 ## Read before action
 - <Global/workspace/repository instructions>
@@ -302,6 +310,7 @@ Project-authored Work Orders must be written in English. Use this structure:
 - Read set:
 - Worker write set:
 - Main-thread orchestration writeback set:
+- Auxiliary process-only set:
 - Forbidden set and actions:
 - Generated set:
 
@@ -362,9 +371,11 @@ Before dispatching, the main thread must:
 8. classify the increment as `Fast`, `Standard`, or `Assured`, and complete the additional persistence,
    data-lifecycle, dependency, or cross-layer review required by that profile;
 9. verify the target runtime or explicitly label any alternate runtime as limited evidence;
-10. confirm that no credential, spend, deployment, publication, or external action is hidden in the
+10. confirm the execution mode/worktree and, when using an existing supporting task, verify that its
+    persisted title/history/current Work Order identity matches this dispatch;
+11. confirm that no credential, spend, deployment, publication, or external action is hidden in the
    assignment; and
-11. record the expected next gate, canonical writeback owner, and source-freeze point before sending
+12. record the expected next gate, canonical writeback owner, and source-freeze point before sending
    the prompt.
 
 ### 8.1.1 Dispatch transaction order
@@ -372,23 +383,25 @@ Before dispatching, the main thread must:
 The dispatch call and the lifecycle writeback form a two-phase handoff:
 
 1. Prepare the Work Order, exact runtime/dependency profile, checkpoint source identity, read/write/
-   writeback/forbidden/generated sets, acceptance criteria, stop conditions, and completion-report
-   contract before any thread-tool call. Add a content manifest only where Git cannot identify the
-   intended source.
+   writeback/auxiliary/forbidden/generated sets, acceptance criteria, stop conditions, and
+   completion-report contract before any thread-tool call. Add a content manifest only where Git
+   cannot identify the intended source.
 2. Validate the activation prompt once. It must include `RIGHTSPOT-DISPATCH-BEGIN`, the Work Order
    identifier, role, objective, read-before-action route, exact scope, verification, stop
    conditions, completion report, and `RIGHTSPOT-DISPATCH-END`.
-3. Keep the canonical parent at `pending` and the Work Order at `GATED` while the tool call is
+3. For an existing supporting task, verify the persisted thread identity before sending. If its
+   title, history, or current Work Order does not match, do not append a new assignment to it.
+4. Keep the canonical parent at `pending` and the Work Order at `GATED` while the tool call is
    pending. Do not pre-announce `in_progress` or `ASSIGNED` in canonical files.
-4. Call `create_thread` or `send_message_to_thread` once with the validated prompt.
-5. Only after a usable final `threadId` or confirmed existing-task identity is returned, perform one
+5. Call `create_thread` or `send_message_to_thread` once with the validated prompt.
+6. Only after a usable final `threadId` or confirmed existing-task identity is returned, perform one
    status writeback: parent `pending -> in_progress`, Work Order `GATED -> ASSIGNED`, with the
    source identity recorded.
-6. If the tool fails, is ambiguous, or returns only a queued `clientThreadId`, keep the canonical
+7. If the tool fails, is ambiguous, or returns only a queued `clientThreadId`, keep the canonical
    states unchanged and resolve the outcome before retrying. Never resend blindly.
-7. If the status writeback fails after successful creation, retry only the writeback. Do not resend
+8. If the status writeback fails after successful creation, retry only the writeback. Do not resend
    the prompt.
-8. Immediately take one bounded `wait_threads` snapshot. Do not repeatedly poll unchanged state.
+9. Immediately take one bounded `wait_threads` snapshot. Do not repeatedly poll unchanged state.
 
 The worker may receive the prompt during the short writeback window. Its prompt must say that it
 may read and establish context, but it must not edit until the Task File shows `ASSIGNED` or the
@@ -570,19 +583,23 @@ it as `BLOCKED` or attention-required rather than automatically guessing or cont
 
 ### 9.1 Shared working tree
 
-The shared working tree is allowed only for one worker writer at a time or for low-conflict read-only
-work. Before a worker edits there, the main thread must state the baseline and confirm that no other
-writer is active on overlapping paths. During execution, the main thread must not edit the worker
-write set or semantic read set. It may update only the explicitly declared main-thread
-orchestration-writeback set, and only within its process-only boundary. The main thread must not edit
-product source while the worker is active or after handoff has been frozen for verification.
+The shared working tree is allowed only for one product/code writer at a time or for explicitly
+declared, low-conflict process-only work. Before a worker edits there, the main thread must state the
+baseline and confirm that no other writer is active on overlapping product or semantic-input paths.
+During execution, the main thread must not edit the worker write set or semantic read set. It may
+update only the explicitly declared main-thread orchestration-writeback set, and a Side Chat may write
+only an explicitly declared auxiliary process-only set. Neither may change product source, contract,
+authority, or the worker's semantic inputs while the worker is active or after handoff has been
+frozen for verification.
 
 ### 9.2 Isolated worktree
 
-Use an isolated worktree for parallel code writers or high-conflict changes. The Work Order must
-state how the worktree was created and what source it includes. A worktree created from a branch
-does not automatically include uncommitted or untracked changes from the main checkout; verify
-the actual files before relying on it.
+Once a reviewed Git baseline exists, an isolated worktree is the default for a code Builder and is
+required for parallel code writers or high-conflict changes. The Work Order must state how the
+worktree was created and what source it includes. A worktree created from a branch does not
+automatically include uncommitted or untracked changes from the main checkout; verify the actual
+files before relying on it. The main thread may continue live observation and process-document
+writeback in its checkout without changing the Builder's source snapshot.
 
 The current RightSpot documentation baseline is local and may be untracked. Until a stable source
 snapshot is explicitly established, do not assume that a new worktree contains the current RightSpot
@@ -611,10 +628,43 @@ partitioned by named sections; a path alone is not enough to authorize a semanti
 ### 9.4 Ownership violation
 
 If a worker changes a forbidden path, discovers another writer, or finds an unexpected semantic
-baseline change, it must stop. The main thread records the actual change and classifies it as an
-expected worker write, declared process-only writeback, generated output, source drift, or ownership
-violation. It decides whether a new baseline or repair is needed and does not use destructive reset or
-cleanup to hide the violation.
+baseline change, it must stop its affected write or handoff. The main thread records the actual
+change and classifies it as an expected worker write, declared process-only writeback, generated
+output, source drift, or ownership violation. An unclassified change pauses only the affected
+checkpoint; it does not block unrelated read-only analysis or an isolated writer. A user-authorized
+process-only change outside the worker's semantic inputs may be recorded as a governance revision
+without invalidating the product execution baseline. A semantic, overlapping, or forbidden change
+requires re-baselining or serialization. The main thread must not guess and must not use destructive
+reset or cleanup to hide the violation.
+
+### 9.5 Live analysis and auxiliary process lane
+
+The main thread is the live control plane: it owns current-state adjudication, Work Order design,
+canonical status, and dispatch decisions. It must re-read the live thread state and working-tree
+state before making a material decision; a prior snapshot or Side Chat report is evidence, not
+current truth.
+
+A Side Chat may inspect the current checkout, supporting-task status, tests, diffs, and relevant
+documents, then return analysis, alternatives, and proposed process changes. Its report must state
+the observation time, source identity or dirty-state limitation, relevant thread/cursor, and the
+distinction between verified fact, inference, and recommendation. It must not silently substitute
+for the main thread's decision.
+
+If the main thread explicitly declares an auxiliary process-only write set, a Side Chat may create
+or update only those named learning, observation, or process sections. Such a write must not alter
+product code, contract, authority, acceptance criteria, runtime, dependencies, or the worker's
+semantic read set. The main thread classifies the change and incorporates it into the next
+governance revision or evidence record. If no auxiliary write set is declared, the Side Chat returns
+the proposed text without editing the shared tree.
+
+### 9.6 Work Order and supporting-task identity
+
+One supporting Codex task/thread represents one Work Order checkpoint. A thread's title, persisted
+history, and current Work Order identity must agree with the dispatch being sent. Before using
+`send_message_to_thread`, the main thread checks that identity; an idle or available thread is not
+automatically reusable for a different Work Order. If the identity does not match, do not append a
+new assignment to the old thread. Establish a dedicated supporting task/thread and record its
+identity before dispatch.
 
 ## 10. Lifecycle and handoff states
 

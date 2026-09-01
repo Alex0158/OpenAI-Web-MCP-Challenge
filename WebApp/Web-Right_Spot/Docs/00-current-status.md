@@ -2,7 +2,7 @@
 
 **Role:** Canonical current status for the RightSpot child application  
 **As of:** 2026-09-01, Europe/London  
-**Stage:** MVP scope, business-rules, Backbone, and implementation-stack baseline; runnable foundation and workflow-core independently verified, `RS-WO-002-04` Builder blocked on a shared-tree ownership conflict
+**Stage:** MVP scope, business-rules, Backbone, and implementation-stack baseline; runnable foundation and workflow-core independently verified, `RS-WO-002-04` Builder output held after a supporting-thread identity mismatch
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Implementation:** Foundation Builder returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02` verification attempt was procedurally blocked by an out-of-scope OS temp artifact, then the corrected bounded rerun returned `VERIFIED` against the unchanged source/runtime identity; `RS-WO-002-03` found and repaired a listing-version guard defect in commit `6e70c9f`, and fresh independent verification returned `VERIFIED` against that frozen source
 
@@ -101,8 +101,7 @@ final response can remain a normal application action.
 The first `RS-WO-002-02` result is recorded as a procedural `BLOCKED`, and the corrected rerun is
 now `VERIFIED` against the unchanged source/runtime identity. The bounded `RS-WO-002-03` domain-core
 implementation and projection-isolation repair were independently checked against frozen commit
-`a60001e`; the bounded Repairer completed the exact two-path repair in `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` Builder completed implementation checks but is `BLOCKED` because an unrelated active task introduced an untracked RightSpot learning file and Pilot Runbook change during execution. Do not start another writer, pre-create downstream role assignments, or
-claim the parent Task is closed.
+`a60001e`; the bounded Repairer completed the exact two-path repair in `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` Builder completed implementation checks, but its prompt was appended to the persisted `RS-WO-002-01` supporting thread, so the result is held for a dispatch-identity correction. The user-authorized Side Chat learning file and process-only Runbook writeback are classified separately and are not product source drift. Do not start another writer, pre-create downstream role assignments, or claim the parent Task is closed.
 The eventual implementation remains without Cloud Receiver, WebMCP, Redis, or WebRTC media
 dependencies.
 
@@ -113,10 +112,11 @@ The parent `RIGHTSPOT-002` remains `in_progress`; the foundation Builder stopped
 and its corrected rerun is `VERIFIED` against the unchanged exact target Node.js runtime and
 execution manifest. `RS-WO-002-03` Builder and bounded Repairer returned `READY_FOR_VERIFICATION`,
 and T2 source is frozen at `a60001e`; the Verifier found a listing-version guard defect and the
-bounded Repairer completed it in post-repair commit `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` Builder is blocked on the three-path persistence/application boundary until the unexpected shared-tree ownership is resolved. Builder, Verifier, Repairer,
-and Integrator remain sequential checkpoints of this same Task. No other RightSpot product writer
-or repairer is authorized; the unrelated active task's process-write ownership is unresolved. The
-main thread owns evidence writeback, Git closure, and the next checkpoint dispatch.
+bounded Repairer completed it in post-repair commit `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` Builder output is held on the three-path persistence/application boundary until its supporting-thread identity is corrected and the source is re-baselined. Builder, Verifier, Repairer,
+and Integrator remain sequential checkpoints of this same Task. The Side Chat process lane is
+user-authorized and must remain separate from product-source writes; no other RightSpot product
+writer or repairer is authorized. The main thread owns evidence writeback, Git closure, and the next
+checkpoint dispatch.
 
 ## 6. Non-claims
 

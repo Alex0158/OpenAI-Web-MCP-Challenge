@@ -18,8 +18,9 @@ The implementation must follow the accepted business rules in
 - Owner: Main RightSpot thread
 - Current increment: Implement and independently verify the bounded `RS-WO-002-04` persistence/application
   boundary after the independently verified workflow domain core.
-- Next gate: Resolve the `RS-WO-002-04` shared-tree ownership conflict, re-baseline the bounded
-  Builder output, then independently verify it; do not open the full API/UI surface as one assignment.
+- Next gate: Correct the `RS-WO-002-04` supporting-task identity, re-baseline the preserved bounded
+  Builder output in a dedicated Worktree, then independently verify it; do not open the full API/UI
+  surface as one assignment.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -62,14 +63,14 @@ verification, integration, or parent-Task closure.
   for the next gate is post-repair commit `6e70c9f`, whose parent T2 source was `a60001e`. The
   six modified canonical documents are main-thread process-only writeback and are not part of the
   post-repair implementation commit. The current `RS-WO-002-04` dispatch baseline is reviewed commit
-`178d8873dc9c4a28a11da313e8425a3a25316b71`; the Builder completed its three-path implementation checks but the checkpoint is blocked by an unexpected untracked learning file and Pilot Runbook change from another active task. Source identity is checkpoint-scoped and path-owned; it is not a
-  permanent full-document hash lock.
+`178d8873dc9c4a28a11da313e8425a3a25316b71`; the Builder completed its three-path implementation checks, but the prompt was appended to the persisted `RS-WO-002-01` supporting thread, so the result is held for a dispatch-identity correction. The user-authorized Side Chat learning file and process-only Pilot Runbook writeback are classified separately from product source. Source identity is checkpoint-scoped and path-owned; it is not a permanent full-document hash lock.
 - **Read before action:** Repository `AGENTS.md` and Engineering controls, RightSpot `RUNBOOK.md`,
   `Docs/00-current-status.md`, the relevant product/domain/API/validation documents, ADR-RS-0001
   through ADR-RS-0006, and the Thread Orchestration Pilot Runbook.
 - **Worker restrictions:** The foundation and domain-core writers have stopped. The current
-  `RS-WO-002-04` Builder may modify only its three declared persistence/application/test paths; after
-  it stops, the independent Verifier will have no authored mutable paths. Every checkpoint must
+  `RS-WO-002-04` Builder may modify only its three declared persistence/application/test paths; the
+  corrected execution must use a dedicated supporting task and isolated Worktree. After it stops, the
+  independent Verifier will have no authored mutable paths. Every checkpoint must
   classify the declared read, worker-write, main-thread-writeback, forbidden, and generated sets
   path-by-path; no worker may modify canonical authority, the Git index, or generated state outside
   explicitly ignored runtime paths. Short response-body assertions must use shell variables or an
@@ -611,17 +612,36 @@ browser, deployment, external integration, or parent-Task closure.
 **Parent task:** `RIGHTSPOT-002`  
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch state:** `GATED` — `RS-WO-002-03` domain core is independently verified at `6e70c9f`; local persistence/application design is accepted in ADR-RS-0006  
-**Execution state:** `BLOCKED` — bounded Builder completed its implementation checks but stopped on an unresolved shared-tree ownership conflict  
+**Execution state:** `BLOCKED` — bounded Builder completed its implementation checks, but the dispatch used the wrong supporting-task identity  
 **Owner:** Main RightSpot thread; one supporting task may implement the exact bounded write set  
 **Objective:** Persist the complete serializable `WorkflowState` in a deterministic local SQLite
 snapshot and expose one narrow application service above the verified domain core. Prove durable
 refresh-visible workflow continuity and atomic command/reset behavior without exposing HTTP, UI,
 authentication, or external integration yet. This Work Order is governed by
 [ADR-RS-0006](../Decisions/ADR-RS-0006-durable-workflow-and-application-boundary.md).
-**Dispatch state:** Builder dispatched from reviewed baseline `178d8873dc9c4a28a11da313e8425a3a25316b71`; it returned `BLOCKED` after observing an untracked learning file and Pilot Runbook change from another active task during the checkpoint.  
-**Next gate:** Resolve and record ownership of the unexpected paths, confirm the other writer is
-stopped, re-baseline the bounded Builder checkpoint, then review the exact diff and open an
-independent Verifier only after the Builder returns `READY_FOR_VERIFICATION`.
+**Dispatch state:** Builder prompt was sent to supporting thread `01a05a6e-5758-7961-b774-53c332e685ef`,
+whose persisted identity/title is `RS-WO-002-01 — Foundation…`, while the prompt identified
+`RS-WO-002-04`; the Builder returned `BLOCKED` after completing its local checks. The user-authorized
+Side Chat learning file and process-only Pilot Runbook writeback are not product source drift.  
+**Corrective execution mode:** Dedicated isolated Worktree from the reviewed baseline; no corrected
+supporting-task identity has been established yet.  
+**Next gate:** Preserve the existing implementation output, establish a dedicated `RS-WO-002-04`
+supporting task and isolated Worktree, capture a new baseline, then review the exact diff and open an
+independent Verifier only after the correctly identified Builder returns `READY_FOR_VERIFICATION`.
+
+#### Dispatch identity incident
+
+The persisted supporting task was originally activated for `RS-WO-002-01` and retains that title and
+history. A later `send_message_to_thread` delivered a prompt whose content was `RS-WO-002-04`; the
+content scope was bounded correctly, but the supporting-task identity did not match the Work Order.
+This is a process/provenance defect, not evidence that the implementation behavior is wrong. The
+three intended implementation paths remain uncommitted and must not be deleted or silently promoted
+to a verified result.
+
+During the same period, the user-authorized Side Chat created the non-canonical learning record and
+made a process-only Pilot Runbook writeback. Those paths are recorded as an auxiliary process lane;
+they do not invalidate the product execution baseline, provided they do not change the Work Order's
+contract, semantic read set, or implementation paths.
 
 #### Scope and ownership
 
@@ -640,6 +660,13 @@ modules, and all verified domain/projection modules.
 and Runbook process/evidence sections only. The main thread may record lifecycle and evidence but
 must not change this Work Order's objective, acceptance criteria, runtime, dependencies, authority,
 or path sets while the Builder is active.
+
+**Auxiliary process-only set:** user-authorized Side Chat may update the non-canonical learning
+record `Docs/Development/RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-LEARNINGS.md` and the process-only
+sections of `Docs/Development/RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-RUNBOOK.md`. These paths are
+outside the product execution source; they must not change product code, contract, authority,
+acceptance criteria, runtime, dependencies, or the worker's semantic read set. The main thread
+classifies and promotes any resulting rule.
 
 **Forbidden set:** all existing domain files under `src/server/domain/`; foundation files under
 `src/server/persistence/sqlite.ts`, `src/server/persistence/reset.ts`, and

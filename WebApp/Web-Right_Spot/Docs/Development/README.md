@@ -1,7 +1,7 @@
 # RightSpot Development and Closure
 
 **Role:** Big-picture roadmap, implementation, verification, collaboration, and closure routing  
-**Status:** Roadmap and thread-orchestration pilot documented; foundation and workflow-core are independently verified; `RS-WO-002-04` Builder is blocked on an unresolved shared-tree ownership conflict
+**Status:** Roadmap and thread-orchestration pilot documented; foundation and workflow-core are independently verified; `RS-WO-002-04` Builder output is held after a supporting-thread identity mismatch
 
 ## Purpose
 
@@ -27,8 +27,8 @@ and the bounded workflow-core Builder plus one projection-isolation repair for `
 stale listing revisions were not rejected by both draft-update and submit commands, so the current
 checkpoint was a bounded Repairer on the domain workflow and focused test paths; its post-repair
 commit is `6e70c9f`, and the fresh independent Verifier returned `VERIFIED` against that frozen source.
-The current action is to resolve the unexpected shared-tree paths, then re-baseline and complete
-`RS-WO-002-04` before opening API or UI work.
+The current action is to correct the `RS-WO-002-04` supporting-task identity, preserve and review its
+implementation output, then re-baseline and complete the Work Order before opening API or UI work.
 Later Integrator work is opened only when its predecessor produces a concrete code failure or a
 verified source and evidence boundary.
 
