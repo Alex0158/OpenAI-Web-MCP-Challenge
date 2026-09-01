@@ -7,8 +7,8 @@ procedurally blocked, and the corrected rerun returned `VERIFIED`; the bounded d
 projection-isolation repair returned `READY_FOR_VERIFICATION`, with T2 source commit `a60001e` frozen;
 independent verification found a bounded listing-version guard defect; the bounded Repairer completed
 in `6e70c9f`, and fresh independent verification returned `VERIFIED`; `RS-WO-002-04` candidate adoption
-completed at T2 commit `68bbc69`; the first dedicated independent Verifier attempt stopped before
-source checks because the dispatch prompt described the frozen Worktree root incorrectly
+completed at T2 commit `68bbc69`; after one procedural Worktree-path correction, the dedicated
+independent Verifier returned `VERIFIED` against frozen source `28105e4d`
 
 ## 1. Authority and reading order
 

@@ -2,9 +2,9 @@
 
 **Role:** Canonical current status for the RightSpot child application  
 **As of:** 2026-09-01, Europe/London  
-**Stage:** MVP scope, business-rules, Backbone, and implementation-stack baseline; runnable foundation and workflow-core independently verified, `RS-WO-002-04` candidate adopted at T2 commit `68bbc69` and verification currently constrained by a dispatch-path correction
+**Stage:** MVP scope, business-rules, Backbone, and implementation-stack baseline; runnable foundation, workflow-core, and the `RS-WO-002-04` persistence/application boundary independently verified; ordinary API/UI happy-path implementation remains open
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Implementation:** Foundation Builder returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02` verification attempt was procedurally blocked by an out-of-scope OS temp artifact, then the corrected bounded rerun returned `VERIFIED` against the unchanged source/runtime identity; `RS-WO-002-03` found and repaired a listing-version guard defect in commit `6e70c9f`, and fresh independent verification returned `VERIFIED` against that frozen source; `RS-WO-002-04` candidate adoption completed at T2 commit `68bbc69`, but its first dedicated Verifier attempt stopped before source checks because the dispatch prompt described the Worktree root incorrectly
+**Implementation:** Foundation Builder returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02` verification attempt was procedurally blocked by an out-of-scope OS temp artifact, then the corrected bounded rerun returned `VERIFIED` against the unchanged source/runtime identity; `RS-WO-002-03` found and repaired a listing-version guard defect in commit `6e70c9f`, and fresh independent verification returned `VERIFIED` against that frozen source; `RS-WO-002-04` candidate adoption completed at T2 commit `68bbc69`; its first dedicated Verifier attempt stopped before source checks because the dispatch prompt described the Worktree root incorrectly, then one corrected follow-up returned `VERIFIED` against frozen source `28105e4d`
 
 ## 1. Executive status
 
@@ -47,11 +47,11 @@ final response can remain a normal application action.
 | Implementation stack | **FOUNDATION VERIFIED** | Next.js App Router, React, TypeScript, Node.js 24, and SQLite; the runnable foundation passed the corrected independent verification contract, without claiming product-flow or deployment readiness |
 | Foundation runtime readiness | **PREPARED / VERIFIED** | Exact arm64 Node.js `v24.20.0` is prepared outside the repository and passed version, npm, archive-checksum, and `node:sqlite` smoke checks; the default shell remains `v26.5.0`, and the Builder used the exact target runtime |
 | Realtime / WebRTC | **DEFERRED FEATURE SEAM** | Future Remote Viewing is possible without making WebRTC or signaling an MVP dependency |
-| Delegated development | **EXPERIMENTAL PILOT — TASK-OWNED** | `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; corrected `RS-WO-002-02` rerun returned `VERIFIED`; `RS-WO-002-03` bounded repair commit `6e70c9f` passed fresh independent verification; `RS-WO-002-04` candidate adopted at `68bbc69`, first verification attempt procedurally blocked before source checks |
+| Delegated development | **EXPERIMENTAL PILOT — TASK-OWNED** | `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; corrected `RS-WO-002-02` rerun returned `VERIFIED`; `RS-WO-002-03` bounded repair commit `6e70c9f` passed fresh independent verification; `RS-WO-002-04` candidate `68bbc69` passed dedicated verification against frozen source `28105e4d` after one procedural path correction |
 | Cloud Receiver | **Not a first-phase dependency** | Future integration boundary only |
 | WebMCP | **Not a first-phase design center** | Later Hackathon integration boundary |
 | Runtime / deployment | **Not started** | No service, hosting, credentials, or public URL |
-| Evidence | **FOUNDATION + DOMAIN CORE VERIFIED; PERSISTENCE CANDIDATE PENDING VERIFICATION** | Foundation and the bounded workflow domain core passed independent verification; the persistence/application candidate is committed, but its first verification attempt was blocked by a dispatch-path error before source checks; API, UI, browser, deployment, and product-flow evidence remain open |
+| Evidence | **FOUNDATION + DOMAIN CORE + PERSISTENCE/APPLICATION BOUNDARY VERIFIED** | The bounded persistence/application candidate passed independent verification at frozen source `28105e4d`; API, UI, browser, deployment, and complete product-flow evidence remain open |
 
 ## 3. Confirmed working inputs
 
@@ -101,7 +101,7 @@ final response can remain a normal application action.
 The first `RS-WO-002-02` result is recorded as a procedural `BLOCKED`, and the corrected rerun is
 now `VERIFIED` against the unchanged source/runtime identity. The bounded `RS-WO-002-03` domain-core
 implementation and projection-isolation repair were independently checked against frozen commit
-`a60001e`; the bounded Repairer completed the exact two-path repair in `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` was initially held because its prompt was appended to the persisted `RS-WO-002-01` supporting thread. The main thread reconstructed the exact three-path candidate, adopted it at T2 commit `68bbc69`, and resolved the provenance blocker. The first dedicated Verifier dispatch then stopped before source checks because the prompt incorrectly expected a nested `WebMCP_Challenge` directory inside the detached Worktree. The parent execution posture is now `CONSTRAINED`, not globally blocked: the main thread will send one corrected path clarification to the same identity-matching Verifier, while downstream API/UI assignments remain closed until verification passes. The user-authorized Side Chat learning file and process-only Runbook writeback are classified separately and are not product source drift. Do not classify the unexecuted verification as a code failure or claim parent closure.
+`a60001e`; the bounded Repairer completed the exact two-path repair in `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` was initially held because its prompt was appended to the persisted `RS-WO-002-01` supporting thread. The main thread reconstructed the exact three-path candidate and adopted it at T2 commit `68bbc69`. The first dedicated Verifier dispatch then stopped before source checks because the prompt incorrectly expected a nested `WebMCP_Challenge` directory inside the detached Worktree; one corrected follow-up to the same identity-matching Verifier returned `VERIFIED` against frozen source `28105e4d`. The parent execution posture is now `PROGRESSING`, not globally blocked: downstream API/UI work remains closed until the next bounded slice is designed and dispatched. The user-authorized Side Chat learning file and process-only Runbook writeback are classified separately and are not product source drift. Do not claim complete product-flow or parent closure from this checkpoint alone.
 The eventual implementation remains without Cloud Receiver, WebMCP, Redis, or WebRTC media
 dependencies.
 
@@ -112,11 +112,12 @@ The parent `RIGHTSPOT-002` remains `in_progress`; the foundation Builder stopped
 and its corrected rerun is `VERIFIED` against the unchanged exact target Node.js runtime and
 execution manifest. `RS-WO-002-03` Builder and bounded Repairer returned `READY_FOR_VERIFICATION`,
 and T2 source is frozen at `a60001e`; the Verifier found a listing-version guard defect and the
-bounded Repairer completed it in post-repair commit `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` candidate adoption is complete for the three-path persistence/application boundary at T2 commit `68bbc69`; its first dedicated Verifier attempt was procedurally blocked before source checks by an incorrect nested-root path in the dispatch prompt. A corrected follow-up is the next gate against frozen source `28105e4d`. A fresh Builder is needed only if the candidate cannot be reconstructed confidently or verification identifies a source gap that requires a new bounded implementation checkpoint. Builder, Verifier, Repairer,
+bounded Repairer completed it in post-repair commit `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` candidate adoption is complete for the three-path persistence/application boundary at T2 commit `68bbc69`; its first dedicated Verifier attempt was procedurally blocked before source checks by an incorrect nested-root path in the dispatch prompt, and one corrected follow-up returned `VERIFIED` against frozen source `28105e4d`. A fresh Builder is needed only if a later checkpoint identifies a source gap requiring a new bounded implementation. Builder, Verifier, Repairer,
 and Integrator remain sequential checkpoints of this same Task. The Side Chat process lane is
 user-authorized and must remain separate from product-source writes; no other RightSpot product
 writer or repairer is authorized. The main thread owns evidence writeback, Git closure, and the next
-checkpoint dispatch.
+checkpoint dispatch. The next product gate is a bounded transport/session or API consumer slice; no
+full API/UI assignment is authorized from this evidence alone.
 
 ## 6. Non-claims
 

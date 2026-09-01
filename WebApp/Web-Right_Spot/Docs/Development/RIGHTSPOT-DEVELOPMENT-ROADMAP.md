@@ -1,7 +1,7 @@
 # RightSpot Development Roadmap
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
-**Status:** Phase 3 complete — authoritative workflow domain core independently verified; Phase 4 persistence/application candidate adopted at T2 commit `68bbc69`, with verification constrained by a dispatch-path correction
+**Status:** Phase 3 complete — authoritative workflow domain core independently verified; the Phase 4 persistence/application boundary is independently verified against frozen source `28105e4d`; the ordinary human application loop is not started
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-01, Europe/London
 
@@ -36,7 +36,7 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 1. Implementation readiness | Resolve and record the foundation toolchain, runtime, SQLite/reset, health-route, source-boundary, and verification profile | Main-thread decision gate complete and the first Builder Work Order is ready; the Node.js baseline situation is explicitly recorded | Complete |
 | 2. Runnable foundation | Create one local application composition with the accepted stack, server-side SQLite foundation, deterministic reset metadata, and reproducible commands | Builder output reconciled and independently verified | Complete; first Verifier attempt was procedurally blocked, corrected rerun verified |
 | 3. Authoritative workflow core | Implement the Viewing Request state machine, availability lifecycle, role projections, version checks, audit facts, and explicit failures | Domain and Backbone checks pass without a browser or external service | Complete; post-repair source `6e70c9f` independently verified |
-| 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | `RS-WO-002-04` persistence/application candidate adopted at T2 `68bbc69`; first verification attempt procedurally blocked before source checks; UI not started |
+| 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | `RS-WO-002-04` persistence/application boundary independently verified at T2 source `28105e4d` (candidate `68bbc69`); API/UI not started |
 | 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Not started |
 | 6. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary loop is stable and a new explicit integration decision exists | Deferred; not scheduled |
 
@@ -68,7 +68,9 @@ domain workflow and focused domain test paths. Fresh independent verification re
 post-repair source `6e70c9f`. `RS-WO-002-04` now defines the bounded persistence/application integration
 checkpoint; the main thread reconstructed and adopted its exact three-path candidate at T2 source
 `68bbc69`. Its first dedicated independent Verifier attempt stopped before source checks because the
-dispatch prompt described the Worktree root incorrectly. The next gate is one corrected follow-up to
-the same identity-matching Verifier; the candidate is not yet a verified integration or permission to
-open downstream API/UI work. The user-authorized Side Chat process lane is not product-source drift.
+dispatch prompt described the Worktree root incorrectly; one corrected follow-up to the same
+identity-matching Verifier returned `VERIFIED` against frozen source `28105e4d`. The next gate is to
+design one bounded transport/session or API consumer slice; this does not authorize opening the full
+API/UI surface as one assignment. The user-authorized Side Chat process lane is not product-source
+drift.
 Do not turn the full parent Task into one worker assignment or pre-create downstream role assignments.

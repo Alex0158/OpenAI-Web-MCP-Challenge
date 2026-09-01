@@ -27,8 +27,9 @@ integration Work Order `RS-WO-002-04`. Its prompt was appended to the persisted 
 supporting thread, so the original handoff was held for a dispatch-identity correction. The main
 thread reconstructed and adopted the exact three-path candidate at T2 commit `68bbc69`; the first
 dedicated read-only Verifier attempt stopped before source checks because the prompt described the
-Worktree root incorrectly. The candidate remains unverified until a corrected run completes. The user-authorized Side Chat learning
-artifact and Pilot Runbook writeback are process-only changes, not product source drift.
+Worktree root incorrectly, and one corrected follow-up to the same identity-matching Verifier
+returned `VERIFIED` against frozen source `28105e4d`. The user-authorized Side Chat learning artifact
+and Pilot Runbook writeback are process-only changes, not product source drift.
 One registered Task has one Task File. A Work Order is a dispatch brief under that Task; normally
 there is one active Work Order per dependency chain, while explicitly independent slices may run in
 parallel under the same file. Builder, Verifier, Repairer, and Integrator are checkpoints, not

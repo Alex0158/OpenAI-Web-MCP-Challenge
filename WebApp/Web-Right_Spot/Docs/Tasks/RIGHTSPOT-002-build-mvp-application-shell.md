@@ -16,18 +16,17 @@ The implementation must follow the accepted business rules in
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Implement and independently verify the bounded `RS-WO-002-04` persistence/application
-  boundary after the independently verified workflow domain core.
-- Next gate: Correct the verification checkout path and complete one clarified independent verification
-  attempt of the adopted `RS-WO-002-04` candidate from frozen source `28105e4d`; do not open the full
-  API/UI surface as one assignment.
+- Current increment: Design the next bounded transport/session or API consumer slice from the
+  independently verified `RS-WO-002-04` persistence/application boundary.
+- Next gate: Design one bounded transport/session or API consumer slice from the verified persistence/
+  application boundary; do not open the full API/UI surface as one assignment.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, and the RightSpot Thread Orchestration Pilot Runbook govern any
   supporting-task dispatch under this parent.
-- Parent execution posture: `CONSTRAINED` — the supporting-task identity correction is resolved by
-  main-thread candidate adoption at T2 commit `68bbc69`, but the first verification dispatch stopped
-  on a main-thread checkout-path error; the parent remains viable and safe main-thread work may continue.
+- Parent execution posture: `PROGRESSING` — the supporting-task identity and Worktree-path corrections
+  are resolved, `RS-WO-002-04` is independently verified against frozen source `28105e4d`, and the
+  parent remains open for the next bounded product slice.
 - Blocker reporting: the main thread reports the checkpoint-local blocker to the human owner and
   records its evidence, impact, owner, safe continuation, and resume condition here; this does not
   change the parent lifecycle to `blocked`.
@@ -37,7 +36,9 @@ The implementation must follow the accepted business rules in
 This record is the single registered parent Task and the one Task File for the complete first
 ordinary application slice. Its objective and closure evidence describe the parent outcome. The
 current executable increment is narrower: implement and independently verify the bounded
-`RS-WO-002-04` persistence/application boundary before opening the wider API or UI surface. Later
+`RS-WO-002-04` persistence/application boundary before opening the wider API or UI surface. That
+checkpoint is now independently verified; no downstream Work Order is active until its bounded
+consumer and ownership are designed. Later
 implementation, verification, repair, and integration remain sequential
 checkpoints inside each bounded Work Order, not a second set of registered Tasks or a speculative
 backlog. If a checkpoint is blocked, the main thread may record and activate another Work Order in
@@ -51,8 +52,9 @@ returned `VERIFIED` against the unchanged source/runtime identity. `RS-WO-002-03
 one bounded projection-isolation repair was completed, and T2 source review produced candidate commit
 `186e98a`. The independent Verifier found a listing-version guard defect; the bounded Repairer fixed
 it in post-repair commit `6e70c9f`, limited to the domain workflow and focused domain test paths. Fresh
-independent verification returned `VERIFIED` against that frozen source. `RS-WO-002-04` is the current
-bounded persistence/application integration checkpoint.
+independent verification returned `VERIFIED` against that frozen source. `RS-WO-002-04` was the current
+bounded persistence/application integration checkpoint and is now independently verified against
+frozen source `28105e4d`.
 
 Do not send this parent Task's full objective to one Builder. Do not treat a worker result as
 verification, integration, or parent-Task closure.
@@ -64,7 +66,9 @@ verification, integration, or parent-Task closure.
   `VERIFIED` at the unchanged execution baseline. `RS-WO-002-03` Builder and bounded Repairer both
   returned `READY_FOR_VERIFICATION`; its T2 source was frozen at `a60001e`, and the independent Verifier
   returned `NEEDS_REPAIR` for stale listing revision writes. The bounded Repairer completed in
-  post-repair commit `6e70c9f`; fresh independent verification returned `VERIFIED`. Builder,
+  post-repair commit `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04`
+  candidate `68bbc69` was independently verified against frozen source `28105e4d` after one corrected
+  Worktree-path follow-up. Builder,
   Verifier, Repairer, and Integrator are sequential checkpoints of this Task, not pre-registered child
   Tasks.
 - **Baseline:** The actual repository root is `WebMCP_Challenge`; the frozen implementation source
@@ -75,7 +79,7 @@ verification, integration, or parent-Task closure.
   the main thread adopted the exact candidate at T2 implementation commit `68bbc69`. The dedicated
   verification checkout is frozen at repository commit `28105e4d81b5432e8e2bbf53b783732356bd9380`,
   created after the candidate adoption writeback and before the Verifier dispatch. The candidate
-  remains pending dedicated independent verification. The
+  passed dedicated independent verification. The
   user-authorized Side Chat learning file and process-only Pilot Runbook writeback are classified
   separately from product source. Source identity is checkpoint-scoped and path-owned; it is not a
   permanent full-document hash lock.
@@ -628,7 +632,7 @@ browser, deployment, external integration, or parent-Task closure.
 **Parent task:** `RIGHTSPOT-002`  
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch state:** `GATED` — `RS-WO-002-03` domain core is independently verified at `6e70c9f`; local persistence/application design is accepted in ADR-RS-0006  
-**Execution state:** `BLOCKED` — the dedicated Verifier stopped at a main-thread checkout-path error before source verification
+**Execution state:** `VERIFIED` — the dedicated Verifier completed the corrected read-only verification against frozen source `28105e4d`
 **Owner:** Main RightSpot thread; the dedicated supporting task performs the read-only verification checkpoint
 **Objective:** Persist the complete serializable `WorkflowState` in a deterministic local SQLite
 snapshot and expose one narrow application service above the verified domain core. Prove durable
@@ -640,14 +644,15 @@ whose persisted identity/title was `RS-WO-002-01 — Foundation…`, while the p
 `RS-WO-002-04`; that handoff remains procedurally invalid. The main thread reviewed and adopted the
 exact three-path candidate at T2 commit `68bbc69`. The first dedicated Verifier dispatch was acknowledged
 against frozen source `28105e4d`, but its prompt incorrectly expected a nested `WebMCP_Challenge` directory
-inside the Git Worktree; the Verifier stopped before reading candidate source. The user-authorized Side
-Chat learning file and process-only Pilot Runbook writeback are not product source drift.  
+inside the Git Worktree and stopped before reading candidate source. One corrected follow-up to the same
+identity-matching Verifier then returned `VERIFIED` against frozen source `28105e4d`. The user-authorized
+Side Chat learning file and process-only Pilot Runbook writeback are not product source drift.  
 **Corrective execution mode:** Dedicated isolated Worktree from frozen repository commit `28105e4d`,
 which contains the adopted T2 implementation commit `68bbc69`; no product writer is active.  
-**Next gate:** Send one corrected path clarification to the same identity-matching Verifier and await
-its independent report against frozen source `28105e4d`. A fresh Builder is
-required only if the candidate's ownership, inputs, changed paths, or behavior cannot be reconstructed
-confidently, or if verification identifies a source gap requiring a new bounded implementation.
+**Next gate:** Design one bounded transport/session or API consumer slice from the verified
+persistence/application boundary. Do not open the full API/UI surface as one assignment. A fresh
+Builder is required only if a later checkpoint identifies a source gap requiring a new bounded
+implementation.
 
 #### Dispatch identity incident
 
@@ -656,8 +661,8 @@ history. A later `send_message_to_thread` delivered a prompt whose content was `
 content scope was bounded correctly, but the supporting-task identity did not match the Work Order.
 This is a process/provenance defect, not evidence that the implementation behavior is wrong. The
 three intended implementation paths were preserved, reviewed, and committed as the unverified T2
-candidate `68bbc69`; they must not be treated as independently verified until the dedicated Verifier
-completes.
+candidate `68bbc69`; they were not treated as independently verified until the corrected dedicated
+Verifier completed.
 
 During the same period, the user-authorized Side Chat created the non-canonical learning record and
 made a process-only Pilot Runbook writeback. Those paths are recorded as an auxiliary process lane;
@@ -673,8 +678,8 @@ contract, semantic read set, or implementation paths.
   paths and committed them at T2 `68bbc69`
 - **First failing boundary:** supporting-task identity/provenance, before T2 source handoff
 - **Failure class:** process/ownership defect
-- **Blocked claim/dependency:** the original clean `RS-WO-002-04` Builder handoff was invalid; dedicated
-  independent verification remains pending
+- **Blocked claim/dependency:** the original clean `RS-WO-002-04` Builder handoff was invalid; the
+  corrected dedicated verification has now completed
 - **Impact on parent goal:** the original phase-4 checkpoint was held until candidate adoption; the
   provenance blocker is resolved, while the overall MVP goal remains in progress
 - **Safe continuation:** main-thread architecture, UI/UX, code-quality, verification-matrix, and
@@ -683,8 +688,8 @@ contract, semantic read set, or implementation paths.
   verification against the misidentified source, or any contract/acceptance change used to bypass it
 - **Recommended recovery:** completed by preserving and reviewing the candidate, establishing T2
   source `68bbc69`, and preparing a dedicated matching verification task and isolated Worktree
-- **Resume condition:** the dedicated Verifier must reproduce the required result against `68bbc69`
-  before the persistence/application checkpoint is accepted or downstream work opens
+- **Resume condition:** satisfied by the corrected dedicated Verifier returning `VERIFIED` against
+  frozen source `28105e4d`; downstream work still requires its own bounded design and verification
 
 #### Candidate-adoption record
 
@@ -696,12 +701,13 @@ contract, semantic read set, or implementation paths.
 - **Evidence:** Node.js `v24.20.0`, npm `11.19.0`, typecheck, foundation tests `6/6`, application tests
   `8/8`, repository validators, sensitive scan, and staged `git diff --check` passed.
 - **Source identity:** local Git commit `68bbc69`; no external push or deployment was performed.
-- **Claim limit:** this is an adopted, unverified candidate. It does not claim independent
-  verification, API/UI integration, browser behavior, deployment, or parent-task closure.
+- **Claim limit:** after the T3 result below, this is an independently verified local
+  persistence/application boundary. It does not claim API/UI integration, browser behavior,
+  deployment, or parent-task closure.
 
 #### Verification dispatch path blocker
 
-- **Status:** `BLOCKED` checkpoint; `CONSTRAINED` parent execution posture
+- **Status:** resolved `BLOCKED` checkpoint; `PROGRESSING` parent execution posture
 - **Affected owner:** the dedicated `RS-WO-002-04` Verifier handoff, adjudicated by the Main RightSpot thread
 - **Evidence:** the detached Worktree existed at the expected commit and was clean, but the prompt
   incorrectly required a second `WebMCP_Challenge` directory inside that Worktree; the Verifier
@@ -709,16 +715,45 @@ contract, semantic read set, or implementation paths.
 - **First failing boundary:** checkout path resolution before candidate diff or test execution
 - **Failure class:** `PROCESS_DEFECT`
 - **Blocked claim/dependency:** independent verification of the adopted persistence/application candidate
-- **Impact on parent goal:** only the `RS-WO-002-04` verification claim is held; the parent goal and
-  independent main-thread analysis remain viable
+- **Impact on parent goal:** only the `RS-WO-002-04` verification claim was held; the parent goal and
+  independent main-thread analysis remained viable
 - **Safe continuation:** correct the prompt path, preserve the frozen Worktree, and continue bounded
   main-thread architecture, review, research, or process work
 - **Forbidden continuation:** use the main checkout as a substitute, alter the frozen Worktree, or
   classify the unexecuted verification as a code failure
-- **Recommended recovery:** send one concise path clarification to the same correctly identified
-  Verifier; do not create a duplicate Work Order or resend the full assignment
-- **Resume condition:** the Verifier confirms the Worktree itself is the Git root and then executes
-  the unchanged RS-WO-002-04 verification contract
+- **Recommended recovery:** completed by sending one concise path clarification to the same correctly
+  identified Verifier; no duplicate Work Order was created and the full assignment was not resent
+- **Resume condition:** satisfied when the Verifier confirmed the Worktree itself was the Git root and
+  executed the unchanged RS-WO-002-04 verification contract
+
+#### T3 independent verification result
+
+The corrected follow-up to the same identity-matching dedicated Verifier returned `VERIFIED` against
+frozen source commit `28105e4d81b5432e8e2bbf53b783732356bd9380`. The Worktree itself was confirmed as
+the Git root, with detached HEAD and clean authored state. The candidate diff from `68bbc69^` to
+`68bbc69` contained exactly the three declared paths:
+
+- `src/server/application/workflow.ts`;
+- `src/server/persistence/workflow-store.ts`; and
+- `tests/application/workflow.test.ts`.
+
+The exact Node.js `v24.20.0` and npm `11.19.0` runtime identity was confirmed. `npm ci --no-audit
+--no-fund`, `npm run typecheck`, `npm test` (foundation `6/6`),
+`node ./node_modules/tsx/dist/cli.mjs --test tests/application/workflow.test.ts` (`8/8`), and
+`git diff --check` all passed. Candidate static inspection passed for durable singleton file-backed
+`node:sqlite` persistence, close/reopen continuity, command idempotency, stale request/listing guards
+without mutation, role projections and persisted expiry, atomic command/reset rollback and generation
+semantics, neutral corrupt-snapshot failure, and exclusion of HTTP/UI/auth/external service,
+Cloud Receiver, WebMCP, Redis, WebRTC, ORM, migration framework, and in-memory fallback.
+
+No authored paths changed during verification. Generated output stayed within the Worktree's ignored
+RightSpot paths: `node_modules/` and `var/test/*.sqlite`; no `.next/`, `*.tsbuildinfo`, `/tmp`, or
+other external output was observed. One supplementary static-scan command initially failed due to
+Verifier shell quoting and executed no check or write; the Verifier completed the contract readback
+with a simplified read-only command. This procedural deviation does not weaken the recorded passing
+checks, but the claim remains limited to this local persistence/application boundary. It does not
+verify API/UI integration, browser behavior, deployment, production multi-process behavior, Cloud
+Receiver/WebMCP compatibility, or parent-task closure.
 
 #### Scope and ownership
 
