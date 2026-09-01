@@ -1,7 +1,10 @@
 # RightSpot — Logical System Design
 
 **Role:** Backbone architecture and component boundary  
-**Status:** Accepted logical and implementation design baseline; runnable foundation, workflow domain core, and durable workflow persistence/application composition are independently verified; the bounded synthetic listing discovery decision is accepted, while session/transport and user-facing composition remain open
+**Status:** Accepted logical and implementation design baseline; runnable foundation, workflow domain core,
+durable workflow persistence/application composition, tenant listing discovery, workflow HTTP/DTO
+transport, and the shared human shell are independently verified or integrated; tenant and
+property-agent role-page composition remains the next implementation boundary
 
 ## 1. Design intent
 

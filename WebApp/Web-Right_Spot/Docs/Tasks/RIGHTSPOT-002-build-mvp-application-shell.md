@@ -1541,6 +1541,91 @@ Manual or existing browser tooling may provide the later UI evidence; a new depe
 own decision if a demonstrated verification gap remains. The report is review guidance, not browser
 verification or product-flow evidence.
 
+### RS-WO-002-10 — Review the tenant and agent role-page decomposition
+
+**Parent task:** `RIGHTSPOT-002`  
+**Role:** Architecture Advisor  
+**Pre-dispatch status:** `GATED` — the workflow HTTP/DTO transport and shared shell are integrated,
+and the accepted UI/UX guidance is available  
+**Execution state:** `GATED` — current main-thread design checkpoint; no supporting task has been
+activated yet  
+**Parallelization:** `SERIAL` as a planning gate before the next role-page Builder dispatches  
+**Owner:** Main RightSpot thread; one read-only Architecture Advisor  
+**Risk profile:** `Standard` — route/component ownership, shared-shell coupling, role isolation, and
+human-flow completeness  
+**Objective:** Produce one evidence-backed decomposition for the next tenant and property-agent UI
+implementation slices. Determine whether both role pages can be built in parallel from the integrated
+transport and shell, identify the smallest shared seam if they cannot, and return exact disjoint
+Work Order boundaries for main-thread approval.  
+**Next gate:** Main-thread review of the proposal. No role-page Builder may be dispatched from this
+Work Order until the main thread accepts or revises the proposed ownership and integration order.  
+**Dispatch state:** Not dispatched; the main thread will record the exact clean baseline, execution
+Worktree, and supporting-task identity before activation.  
+**Parent execution posture if blocked:** `PROGRESSING` unless the proposal exposes a material
+contract, role-policy, or shared-shell decision that requires the human owner.
+
+#### Scope and ownership
+
+**Read set:** Repository instructions and Engineering controls; RightSpot `RUNBOOK.md`; the Pilot
+Runbook; `Docs/00-current-status.md`; this parent Task File; Requirements; Product Definition;
+System Design; Domain and Data Model; API and Integration Contracts; Validation and Evidence;
+ADR-RS-0001 through ADR-RS-0008; current source and tests; the integrated workflow transport at
+`f700ba9`; the integrated shared shell at `006d2fd`; and the accepted `RS-WO-002-09` UI/UX review.
+
+**Worker write set:** none. The Advisor returns a proposal in the supporting task only and must not
+edit source, tests, package files, canonical documents, ADRs, the Task File, the Runbook, the Git
+index, or any external path.
+
+**Main-thread orchestration writeback set:** this Task File, current status, the Development README,
+the Development Roadmap, and a new ADR only if the proposal reveals a material accepted contract or
+architecture decision. The Advisor cannot write these files.
+
+**Auxiliary process-only set:** none.
+
+**Forbidden set:** product or test implementation; changes to shared shell, workflow transport,
+domain, persistence, session, listing, package, fixture, script, or configuration paths; new
+dependencies; browser-test installation; mock business state; WebMCP, Cloud Receiver, Redis,
+WebRTC media, deployment, external communication, Git operations, or dispatching another task.
+
+**Generated set:** none. The Advisor should use a clean read-only source snapshot and must not start
+the application or create runtime output unless the main thread explicitly re-gates this Work Order.
+
+#### Dependencies and assumptions
+
+- The existing workflow route and DTO contract in ADR-RS-0008 is stable and remains the only UI
+  business boundary.
+- `f700ba9` and `006d2fd` are integrated source inputs; the Advisor must inspect actual current
+  files rather than relying on summaries or historical proposals.
+- Tenant and agent pages may be parallel only when their authored route/component/helper/test paths
+  are disjoint, shared UI ownership is explicit, and neither page invents the other's state.
+- If a shared shell or session seam must change, the Advisor must name the smallest separate Work
+  Order and explain why role-page Builders cannot safely proceed without it.
+
+#### Acceptance criteria
+
+- Map the accepted tenant and agent Happy Path steps to the current HTTP routes, DTOs, session
+  behavior, shared components, and missing UI surfaces.
+- Recommend the smallest page/workspace shape for tenant discovery, listing detail, request draft
+  and submission, request status, agent queue, request review, preparation, send, and tenant
+  response.
+- Name exact proposed authored paths for each role-page Builder, including page, UI component,
+  client API/helper, and directly necessary test paths; identify every shared path that must remain
+  single-owner or be handled by a separate integration Work Order.
+- Decide whether tenant and agent Builders can run in parallel against the current baseline; if yes,
+  state the stable contract, disjoint write sets, integration order, and end-to-end claim limit; if
+  no, state the hard dependency and smallest serial prerequisite.
+- Define the minimum role/session guard, loading/error/conflict handling, responsive/accessibility,
+  and no-UI-authority checks without adding a new browser stack or duplicating backend rules.
+- Identify material risks, unnecessary strictness, unresolved decisions, non-goals, and a concrete
+  next main-thread dispatch recommendation.
+
+#### Verification and return
+
+Confirm the actual execution Worktree root, source identity, clean state, and no authored mutation.
+Return `READY_FOR_REVIEW` with verified facts, recommendations, exact proposed ownership, dependency
+classification, and claim boundaries, or return `BLOCKED` with the first failing boundary and resume
+condition. Do not implement, dispatch, commit, or claim browser/product-flow verification.
+
 ## Parent objective — not the current Builder scope
 
 The following is the complete parent-Task outcome. It must not be sent to one Builder or Verifier as a
