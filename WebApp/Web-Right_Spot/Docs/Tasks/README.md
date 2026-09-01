@@ -11,24 +11,45 @@ The outer repository [`Docs/Tasks/README.md`](../../../../Docs/Tasks/README.md) 
 authority for task admission, control fields, lifecycle, and routing. This local index narrows that
 authority to RightSpot; it does not create a second task system.
 
-## Current tasks
+## Registered tasks
 
+- [`RIGHTSPOT-001 — Establish Product Thesis and Backbone Boundary`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 - [`RIGHTSPOT-002 — Build the MVP application shell`](RIGHTSPOT-002-build-mvp-application-shell.md)
 - [`RIGHTSPOT-003 — Define the rental marketplace UI/UX visual system`](RIGHTSPOT-003-define-ui-ux-visual-system.md)
 - [`RIGHTSPOT-004 — Define the external authentication boundary`](RIGHTSPOT-004-define-external-authentication-boundary.md)
 - [`RIGHTSPOT-005 — Route signed-in users to the role workspace`](RIGHTSPOT-005-fix-post-login-workspace-navigation.md)
 - [`RIGHTSPOT-006 — Integrate the provider-backed authentication boundary`](RIGHTSPOT-006-integrate-provider-backed-authentication-boundary.md)
 - [`RIGHTSPOT-007 — Implement the accepted Field Desk visual foundation`](RIGHTSPOT-007-implement-field-desk-visual-foundation.md)
+- [`RIGHTSPOT-008 — Define tenant favourites and agent listing-interest boundary`](RIGHTSPOT-008-define-favourites-and-listing-interest-boundary.md)
+- [`RIGHTSPOT-009 — Define tenant information requests and contact-preference boundary`](RIGHTSPOT-009-define-information-request-and-contact-preference-boundary.md)
+- [`RIGHTSPOT-010 — Define the Agent Operations Insights dashboard boundary`](RIGHTSPOT-010-define-agent-operations-insights-dashboard-boundary.md)
+- [`RIGHTSPOT-011 — Implement the bounded Agent Operations read-model seam`](RIGHTSPOT-011-implement-bounded-agent-operations-read-model.md)
+- [`RIGHTSPOT-012 — Establish a continuous cross-layer product and architecture audit lane`](RIGHTSPOT-012-continuous-cross-layer-product-architecture-audit.md)
+- [`RIGHTSPOT-013 — Establish the Operations Insights profile authority`](RIGHTSPOT-013-establish-operations-profile-authority.md)
+- [`RIGHTSPOT-014 — Define the property-media evidence boundary`](RIGHTSPOT-014-define-property-media-evidence-boundary.md)
+- [`RIGHTSPOT-015 — Implement the Operations profile authority`](RIGHTSPOT-015-implement-operations-profile-authority.md)
+- [`RIGHTSPOT-016 — Implement the governed Operations projection`](RIGHTSPOT-016-implement-operations-projection-boundary.md)
+- [`RIGHTSPOT-017 — Implement bounded property-media presentation`](RIGHTSPOT-017-implement-property-media-presentation.md)
+- [`RIGHTSPOT-018 — Harden relay workflow integrity`](RIGHTSPOT-018-harden-workflow-integrity.md)
+- [`RIGHTSPOT-019 — Normalize the tenant Europe/London time contract`](RIGHTSPOT-019-normalize-tenant-london-time-contract.md)
 
-`RIGHTSPOT-002` is terminal and remains unchanged. `RIGHTSPOT-003` and `RIGHTSPOT-004` are bounded
- read-only decision tasks opened for proposal work only; they are now closed after the main thread
- accepted ADR-RS-0009 and ADR-RS-0010. They did not reopen or widen the accepted MVP implementation.
-`RIGHTSPOT-005` is a verified navigation defect whose Builder candidate and corrected independent
-verification are complete; main-thread integration/Git closure is pending after the preserved tracked
-metadata incident from attempt 01;
-`RIGHTSPOT-006` is pending behind the explicit external credential gate and does not authorize
-provider setup or authentication source changes; `RIGHTSPOT-007` has an accepted read-only Advisor
-decomposition and a gated single-file shared CSS Work Order, but no visual Builder is dispatched.
+`RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
+`RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`, and
+`RIGHTSPOT-018` are closed within their bounded outcomes. They do not reopen or widen the accepted
+local MVP. `RIGHTSPOT-006` is pending behind the explicit external credential gate and does not
+authorize provider setup or authentication source changes.
+`RIGHTSPOT-008` is a pending read-only decision task for the proposed tenant favourites and agent
+listing-interest capability; it does not authorize implementation or canonical product writeback;
+`RIGHTSPOT-009` is a pending read-only decision task for the proposed structured information-request
+and contact-preference capability; it is separate from Viewing Requests and does not authorize
+outbound communication, implementation, or canonical product writeback; `RIGHTSPOT-010` is a pending
+read-only decision task for the proposed Agent Operations Insights dashboard and bounded WebMCP query
+surface; it does not authorize dashboard implementation, WebMCP registration, reporting-schema
+changes, or canonical product writeback. `RIGHTSPOT-012` is a pending read-only cross-layer audit
+lane and does not authorize implementation or canonical product writeback. `RIGHTSPOT-016` and
+`RIGHTSPOT-017` remain `in_progress` with preserved, non-formal candidate overlays; they require
+candidate re-gating and persistent independent verification before integration. `RIGHTSPOT-019`
+remains `in_progress` with its integrated repair awaiting the bounded browser/form regression gate.
 
 Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, the corrected `RS-WO-002-02` rerun returned
@@ -64,9 +85,11 @@ browser evidence are reconciled in the
 [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](../Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md), and
 `RIGHTSPOT-002` is closed.
 
-**Current post-MVP gates:** `RS-WO-005-01` is verified and awaiting main-thread integration/Git
-closure; `RS-WO-007-01` is ready for review and `RS-WO-007-02` is gated behind the 005 integration
-checkpoint.
+**Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-008`, `RIGHTSPOT-009`, `RIGHTSPOT-010`, and
+`RIGHTSPOT-012` are pending decision, credential, or read-only audit gates. `RS-WO-016-01` and
+`RS-WO-017-03` are `GATED` behind candidate re-gating and persistent independent verification.
+`RS-WO-019-01` is integrated and awaits its bounded browser/form regression. No closed task is an
+active implementation gate.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.

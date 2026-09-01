@@ -1,33 +1,14 @@
 # RightSpot Development Runbook
 
 **Role:** Local development and documentation routing  
-**Status:** Accepted local MVP closed; implementation stack accepted; the exact target Node runtime is prepared and verified,
-the foundation Builder returned `READY_FOR_VERIFICATION`, the first independent Verifier attempt was
-procedurally blocked, and the corrected rerun returned `VERIFIED`; the bounded domain-core Builder and
-projection-isolation repair returned `READY_FOR_VERIFICATION`, with T2 source commit `a60001e` frozen;
-independent verification found a bounded listing-version guard defect; the bounded Repairer completed
-in `6e70c9f`, and fresh independent verification returned `VERIFIED`; `RS-WO-002-04` candidate adoption
-completed at T2 commit `68bbc69`; after one procedural Worktree-path correction, the dedicated
-independent Verifier returned `VERIFIED` against frozen source `28105e4d`; the `RS-WO-002-05` tenant
-entry/listing discovery API candidate `de169ce` was independently verified from canonical snapshot
-`bc3bc42`; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in
-ADR-RS-0008; `RS-WO-002-07` workflow transport is independently verified at `d71fe3e` and integrated
-at product commit `f700ba9`; `RS-WO-002-08` is integrated at product commit `006d2fd` after a
-localized generated-output boundary incident was re-baselined in process commit `8b77bdd`; and
-`RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-13` passed dedicated independent
-verification and is integrated at product commit `3765747`; repaired `RS-WO-002-12` candidate
-`52cba87c` passed final independent verification and is integrated at product commit `9348aa5`. The
-original out-of-scope tracked `.gitignore` mutations from verifier Worktrees remain preserved as
-procedure evidence. `RS-WO-002-14` passed direct read-only combined role-page verification and the
-main-thread `RS-WO-002-15` isolated browser walkthrough passed against the same integrated source.
-The closure evidence is recorded in
-[`Docs/Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md`](Docs/Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md);
-no active local-MVP gate remains. The current post-MVP `RS-WO-005-01` candidate passed corrected
-independent verification and is integrated at local commit `27f5391`; its first verifier attempt's
-preserved `.gitignore` tooling mutation remains procedure evidence. `RS-WO-007-01` is an accepted
-read-only UI decomposition and `RS-WO-007-02` Builder returned `READY_FOR_VERIFICATION` after a
-single-file CSS change; its independent Verifier is assigned. No tenant/agent page Builder has been
-dispatched.
+**Status:** Accepted local MVP closed; the delegated-work pilot remains experimental and opt-in.
+Current post-MVP state is maintained in [`Docs/00-current-status.md`](Docs/00-current-status.md) and
+[`Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`](Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md),
+not in this routing document. As of 2026-09-01, `RIGHTSPOT-015` is closed at product commit `e7f30d5`;
+`RS-WO-016-01` and `RS-WO-017-03` have preserved non-formal candidate overlays in the main checkout; and
+`RS-WO-019-01` is integrated at `6f52686` with bounded browser/form evidence pending. The 016/017
+overlays are process-incident evidence and must not be edited, staged, committed, or independently
+verified until the Runbook re-gate establishes a persistent, isolated handoff.
 
 ## 1. Authority and reading order
 

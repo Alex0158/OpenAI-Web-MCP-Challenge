@@ -122,19 +122,24 @@ stable read contract, not whether all later integration work has disappeared.
 
 ### 3.2 Dispatch channel and continuation rule
 
-The default execution channel for a formal RightSpot Work Order is a persistent supporting Codex
-task/thread. A Builder, Verifier, Repairer, or formal Advisor that needs a durable identity,
-independent source state, a later handoff, or a possible follow-up must run in that task/thread. Use
-`create_thread` for a newly authorized execution task and `send_message_to_thread` only for an
-identity-matched existing task. The task/thread is an execution container; the RightSpot Task File
-remains the project ledger and canonical source of scope.
+The default execution channel for a formal RightSpot Work Order is a persistent, visible supporting
+Codex task/thread with a durable identity and an explicitly resolved execution source. A Builder,
+Verifier, Repairer, Integrator, or formal Advisor that needs source ownership, independent evidence,
+a later handoff, or a possible follow-up must run in that task/thread. Use `create_thread` for a
+newly authorized execution task and `send_message_to_thread` only for an identity-matched existing
+task. The task/thread is an execution container; the RightSpot Task File remains the project ledger
+and canonical source of scope.
 
-A transient subagent may be used only for a bounded auxiliary activity such as a short read-only
-preflight, one-off comparison, or disposable analysis that does not own source, verification, repair,
-integration, or a formal evidence gate. Its output may inform the main thread, but it does not replace
-the formal task/thread identity, Work Order report, or independent verification record. Historical
-pilot workers that used another execution mechanism remain valid evidence for their completed
-checkpoints and do not change this forward-looking default.
+A transient `SubAgent` or internal multi-agent invocation is not a formal supporting task/thread.
+It must not be used for a Builder, Verifier, Repairer, Integrator, formal Advisor, or any checkpoint
+that owns source, verification, repair, integration, or a formal evidence gate. It may be used only
+for a bounded auxiliary activity such as a short read-only preflight, one-off comparison, or
+disposable analysis that has no source ownership and no handoff or closure claim. A role name in a
+prompt does not upgrade a transient execution into a persistent worker. If a formal Work Order would
+be routed through a transient mechanism, keep it `GATED`, report a process blocker, and use the
+persistent task/thread route instead. Historical pilot workers that used another execution mechanism may
+remain evidence for checkpoints already independently verified and integrated; they do not establish a
+forward-looking formal channel or authorize the same mechanism for a new checkpoint.
 
 Dispatch is asynchronous. After sending a prompt, the main thread continues non-overlapping PM work:
 queue audit, proposal classification, architecture review, next Work Order design, safe read-only
@@ -395,16 +400,20 @@ alive to avoid telling the owner that progress is constrained.
 
 ### 6.5 Bound parallel capacity
 
-The factory may run at most eight concurrently active RightSpot supporting tasks dispatched by the
-main thread. The main control thread is not counted as a worker slot. Any task assigned RightSpot
-work, including a Side Chat used as an analysis or process lane, consumes one slot; unrelated
-user-owned tasks are not repurposed or managed by this Runbook.
+The factory may run at most eight concurrently active RightSpot supporting task/thread executions
+dispatched by the main thread. The main control thread is not counted as a worker slot. Every
+persistent supporting task/thread assigned RightSpot work, including a Side Chat used as an analysis
+or process lane, consumes one slot; unrelated user-owned tasks are not repurposed or managed by this
+Runbook. A permitted transient `SubAgent` is auxiliary rather than a formal worker, but it must still
+be counted against the same safety budget while active and must never be used to bypass the cap.
 
 Before dispatching, the main thread takes a current task snapshot, counts active RightSpot workers,
 checks each worker's role and mutable boundary, and records the expected slot use in its live control
 view. Eight is a ceiling, not a target. Keep capacity for a likely Verifier or Repairer when the
 current risk warrants it. A task that is idle, silent, or awaiting output does not automatically
-release its slot; classify its thread and source state before reuse.
+release its slot; classify its thread and source state before reuse. A transient execution that can
+edit source is not an exception: stop it before mutation and re-dispatch the formal Work Order
+through a persistent task/thread with verified isolation.
 
 ## 7. Work Order contract
 
@@ -561,10 +570,14 @@ Before dispatching, the main thread must:
     assignment;
 13. record the expected next gate, canonical writeback owner, and source-freeze point before sending
     the prompt;
-14. resolve the declared main checkout root, execution Worktree root, package root, and runtime-pin
+14. classify the dispatch channel as a persistent supporting task/thread or a permitted transient
+    auxiliary. A formal Builder, Verifier, Repairer, Integrator, or Advisor Work Order requires the
+    persistent channel; if the selected mechanism cannot provide that identity, keep the Work Order
+    `GATED` and report the process blocker;
+15. resolve the declared main checkout root, execution Worktree root, package root, and runtime-pin
     path to actual filesystem paths, then run the read-only root checks before the thread-tool call;
     a prompt must not leave any of these identities implicit or inferred from another root; and
-15. if the Work Order relies on persisted fixtures or business snapshots, inspect the reset boundary
+16. if the Work Order relies on persisted fixtures or business snapshots, inspect the reset boundary
     and state whether setup uses a fresh isolated database or the existing application-level reset;
     do not dispatch a verifier with an unclassified reset procedure.
 
@@ -583,17 +596,20 @@ The dispatch call and the lifecycle writeback form a two-phase handoff:
    title, history, or current Work Order does not match, do not append a new assignment to it.
 4. Keep the canonical parent at `pending` and the Work Order at `GATED` while the tool call is
    pending. Do not pre-announce `in_progress` or `ASSIGNED` in canonical files.
-5. Call `create_thread` or `send_message_to_thread` once with the validated prompt.
-6. Only after a usable final `threadId` or confirmed existing-task identity is returned, perform one
+5. Confirm that the selected channel is a persistent supporting task/thread. Do not route a formal
+   Work Order through a transient `SubAgent` or internal multi-agent invocation; if that is the only
+   available route, stop before source mutation and keep the Work Order `GATED`.
+6. Call `create_thread` or `send_message_to_thread` once with the validated prompt.
+7. Only after a usable final `threadId` or confirmed existing-task identity is returned, perform one
    status writeback: the dispatched Work Order moves `GATED -> ASSIGNED`, with its source identity
    recorded. If the parent is still `pending`, move it to `in_progress` in the same writeback; if
    another active Work Order already moved the parent to `in_progress`, leave the parent lifecycle
    unchanged and record the additional active slice.
-7. If the tool fails, is ambiguous, or returns only a queued `clientThreadId`, keep the canonical
+8. If the tool fails, is ambiguous, or returns only a queued `clientThreadId`, keep the canonical
    states unchanged and resolve the outcome before retrying. Never resend blindly.
-8. If the status writeback fails after successful creation, retry only the writeback. Do not resend
+9. If the status writeback fails after successful creation, retry only the writeback. Do not resend
    the prompt.
-9. Immediately take one bounded `wait_threads` snapshot. Do not repeatedly poll unchanged state.
+10. Immediately take one bounded `wait_threads` snapshot. Do not repeatedly poll unchanged state.
 
 The worker may receive the prompt during the short writeback window. Its prompt must say that it
 may read and establish context, but it must not edit until the Task File shows `ASSIGNED` or the
@@ -788,12 +804,43 @@ guessing. A read-only Architecture Advisor and a Verifier may pass this gate tog
 Builder and an agent UI Builder may pass it when their route/component/test ownership is explicit,
 even if their eventual API integration remains sequential.
 
+### 8.1.6 Execution-channel and isolation preflight
+
+The dispatch mechanism is part of the Work Order boundary. A formal role assignment is valid only
+when the selected host mechanism provides both:
+
+1. a persistent supporting task/thread identity that can be read, continued, and matched to the
+   Work Order; and
+2. the declared source boundary, normally an isolated Worktree for a code writer or a deliberately
+   serialized shared-tree execution explicitly named in the Work Order.
+
+The main thread must not infer either property from a role label, a successful tool call, a task-card
+preview, or a worker's prose. If a transient `SubAgent` or internal multi-agent execution is observed
+writing the main checkout, the event is a process/isolation defect:
+
+1. stop the affected writer before any further source mutation;
+2. preserve the working tree; do not reset, restore, clean, overwrite, stage, or commit the candidate;
+3. capture the exact status, changed paths, diff, source inputs, and content hashes needed to classify
+   the candidate against the Work Order;
+4. do not dispatch verification against the moving overlay or promote the Work Order to `ASSIGNED`,
+   `IN_PROGRESS`, `READY_FOR_VERIFICATION`, `VERIFIED`, or `INTEGRATED` merely because the transient
+   execution reported success;
+5. record the incident in the owning Task File and the learning log when it is reusable; and
+6. either adopt the candidate under section 8.1.4 with a new frozen T2 identity and a persistent,
+   independent Verifier, or preserve it as evidence and re-dispatch a fresh Builder from a clean,
+   explicitly identified source.
+
+This recovery rule protects potentially useful output without treating a mechanism failure as a
+product defect. It does not authorize the main thread to edit the candidate paths while their
+ownership or source identity is unresolved.
+
 ### 8.2 New supporting Codex task/thread activation
 
-A new supporting Codex task/thread does not inherit the main thread's complete conversation. It is
-an execution container for the current Work Order, not automatically a new RightSpot registered
-Task. Its first prompt must tell it to establish its own context before editing. The minimum reading
-route is:
+This activation shape applies only to a persistent supporting Codex task/thread, not to a transient
+`SubAgent` or internal multi-agent invocation. A new supporting Codex task/thread does not inherit
+the main thread's complete conversation. It is an execution container for the current Work Order,
+not automatically a new RightSpot registered Task. Its first prompt must tell it to establish its own
+context before editing. The minimum reading route is:
 
 1. the available global instructions, including `/Users/alex/.codex/AGENTS.md` when present;
 2. the workspace `AGENTS.md` when the task runs inside this workspace;
@@ -899,8 +946,10 @@ it as `BLOCKED` or attention-required rather than automatically guessing or cont
 ### 9.1 Shared working tree
 
 The shared working tree is allowed only for one product/code writer at a time or for explicitly
-declared, low-conflict process-only work. Before a worker edits there, the main thread must state the
-baseline and confirm that no other writer is active on overlapping product or semantic-input paths.
+declared, low-conflict process-only work. It is not the default execution target for a supporting
+code worker, and a tool's default current checkout is not evidence that shared-tree execution was
+authorized. Before a worker edits there, the main thread must state the baseline and confirm that no
+other writer is active on overlapping product or semantic-input paths.
 During execution, the main thread must not edit the worker write set or semantic read set. It may
 update only the explicitly declared main-thread orchestration-writeback set, and a Side Chat may write
 only an explicitly declared auxiliary process-only set. Neither may change product source, contract,
@@ -1418,7 +1467,9 @@ Do not:
 - let a Builder verify its own repair as independent evidence;
 - use a thread title, summary, or final prose as the only status source;
 - create a new Task for every phase of one bounded increment;
-- store raw thread IDs or private context in canonical artifacts;
+- store raw thread IDs or private context in product or general canonical artifacts; a minimal provider
+  identifier may appear only in a Task File incident record when needed for reconciliation, never as
+  proof of source identity, ownership, isolation, or completion;
 - create an automation merely to poll an internal worker; or
 - keep a failing loop alive to avoid reporting a blocker.
 

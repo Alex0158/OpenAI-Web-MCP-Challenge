@@ -225,9 +225,9 @@ Only after those questions are answered should an entry be promoted, rejected, o
 
 **Observation:** The dispatch was treated as successful after the send operation was accepted, but
 the destination was not independently read back to confirm the immutable target identity and the
-complete activation payload. The message was observed in a different supporting task (`規劃 WebMCP
-競品研究`) from the intended RightSpot Builder task. A human-readable thread title was not a
-sufficient identity check. This made the Work Order status, source ownership, and any resulting
+complete activation payload. The message was observed in a different supporting task (`WebMCP
+competitor research`) from the intended RightSpot Builder task. A human-readable thread title was not
+a sufficient identity check. This made the Work Order status, source ownership, and any resulting
 files ambiguous.
 
 **Candidate adjustment:** Treat dispatch as a round-trip handoff. Before sending, record the exact
@@ -357,3 +357,30 @@ triageable by the main thread even when the verifier's overall result is procedu
 
 **Promotion:** The Pilot Runbook now requires browser-tool isolation or an explicit unavailable-browser
 claim and separates procedural metadata blockers from independently triageable product findings.
+
+## 12. Formal code work must not fall back to transient SubAgents
+
+**Status:** `Accepted into Runbook`  
+**Date:** 2026-09-01  
+**Source:** `RS-WO-016-01` and `RS-WO-017-03` Builder handoffs and the current main-checkout state
+
+**Observation:** Recent formal Builder work was routed through a transient multi-agent execution rather
+than a persistent supporting task/thread with a verified Worktree. The resulting files appeared as
+uncommitted overlays in the main checkout. The candidate code may still be useful, but the execution
+identity, source isolation, continuation path, and later independent handoff were not established by
+the dispatch mechanism itself.
+
+**Learning:** A formal role name does not create a formal worker identity. Builder, Verifier, Repairer,
+Integrator, and formal Advisor Work Orders require a persistent supporting task/thread and an explicitly
+verified source boundary. A transient `SubAgent` is suitable only for short, read-only auxiliary work
+that has no source ownership or closure claim. If it writes source, stop the writer, preserve the exact
+overlay, classify the process defect separately from any product defect, and re-gate the candidate
+through a new frozen T2 identity and an independent persistent Verifier or use a fresh Builder.
+
+**Promotion:** The Pilot Runbook now defines the formal-channel rule, dispatch preflight, and
+main-checkout overlay recovery procedure in sections 3.2, 6.5, 8.1.6, 8.2, and 9.1. This is a
+RightSpot pilot operating rule; it does not change product authority or the outer repository process.
+
+**Remaining uncertainty:** The host may expose multiple execution mechanisms with similar role labels
+or summaries. The main thread must verify the returned task/thread identity and actual execution root
+at every formal dispatch rather than relying on the selected tool name or prompt wording.

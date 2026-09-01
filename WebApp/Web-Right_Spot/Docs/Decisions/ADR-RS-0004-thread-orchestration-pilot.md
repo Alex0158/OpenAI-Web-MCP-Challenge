@@ -2,6 +2,7 @@
 
 **Status:** Accepted — experimental, RightSpot-scoped, opt-in
 **Decision date:** 2026-08-31
+**Clarification date:** 2026-09-01
 **Decision owner:** Main RightSpot thread
 
 ## Context
@@ -128,6 +129,19 @@ paths, integration owner, and pending claim boundary are explicit. A hard depend
 shared write remains serialized. A read-only Advisor may propose such a decomposition, but the main
 thread retains the final decision and must accept the proposal before dispatching the resulting
 Builders.
+
+### 4.2 Use a persistent channel for formal checkpoints
+
+A formal Builder, Verifier, Repairer, Integrator, or formal Advisor Work Order must run in a
+persistent, visible supporting task/thread with a durable identity and an explicitly verified source
+boundary, normally an isolated Worktree. A role label in a prompt does not create that identity.
+
+A transient `SubAgent` or internal multi-agent invocation may perform only a bounded, read-only
+auxiliary activity with no source ownership, handoff, or closure claim. If a transient execution
+writes product source, the result is a process/isolation incident rather than a valid formal Builder
+handoff; preserve the candidate, keep the formal checkpoint gated, and re-establish a frozen source
+identity before persistent independent verification. The detailed recovery procedure remains in the
+[Pilot Runbook](../Development/RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-RUNBOOK.md).
 
 ### 5. Separate completion states
 

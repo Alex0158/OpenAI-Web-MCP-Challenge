@@ -28,7 +28,7 @@ The Big Roadmap is [`RIGHTSPOT-DEVELOPMENT-ROADMAP`](RIGHTSPOT-DEVELOPMENT-ROADM
 lifecycle, current increment, next gate, and any active Work Orders remain in
 [`Docs/Tasks/`](../Tasks/README.md); this directory must not become a second active-task register.
 
-## Current state
+## Accepted MVP state
 
 RightSpot now has an accepted internal MVP scope, business-rules baseline, logical Backbone
 baseline, implementation-stack decision, and a bounded foundation implementation. The Builder
@@ -69,6 +69,18 @@ source and evidence boundary.
 Current gate note: `RS-WO-002-14` and `RS-WO-002-15` passed direct and browser verification respectively;
 the closure evidence is recorded in [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md),
 and `RIGHTSPOT-002` is closed for the accepted local MVP.
+
+## Current post-MVP state
+
+`RIGHTSPOT-015` is closed with the Operations authority integrated at `e7f30d5`. The current
+implementation lanes are `RS-WO-016-01` (pure Operations projection) and `RS-WO-017-03` (tenant media
+consumer). Both have preserved candidate overlays from transient execution-path deviations; neither
+has a formal Builder handoff, and their exact path/hash evidence is recorded in the owning Task Files.
+Candidate re-gating, persistent isolated verification, and integration are still pending. The next
+verification dispatch must use a persistent supporting task/thread and a frozen source identity.
+`RS-WO-019-01` is integrated at `6f52686`
+with only its bounded browser/form regression evidence pending. The transient execution-path incident
+is process evidence and does not authorize editing or silently absorbing either candidate overlay.
 
 The experimental delegated-work procedure is
 [RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-RUNBOOK](RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-RUNBOOK.md).

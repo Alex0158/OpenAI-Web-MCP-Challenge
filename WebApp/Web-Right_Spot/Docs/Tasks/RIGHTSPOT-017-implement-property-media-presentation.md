@@ -15,14 +15,16 @@
 - Owner: Main RightSpot thread
 - Objective: Replace the two current tenant listing media placeholders with reviewed, deterministic,
   local synthetic property imagery without changing listing DTOs, routes, workflow, or authentication.
-- Current increment: `RS-WO-017-03` is the bounded tenant-consumer checkpoint. The
+- Current increment: `RS-WO-017-03` is the bounded tenant-consumer checkpoint with a preserved candidate
+  overlay. The transient execution did not establish a formal Builder handoff or an accepted
+  `READY_FOR_VERIFICATION` state. The
   main-thread-controlled `RS-WO-017-01` asset gate is complete, and `RS-WO-017-02` has passed
   independent verification and is integrated at product commit `b7369bd`. Its manifest, local WebP
   pack, and shared primitive are frozen read-only inputs for tenant wiring.
-- Next gate: Dispatch `RS-WO-017-03` against the integrated primitive; `RS-WO-017-04` remains the
-  later independent browser/rendering gate.
-- Execution posture: `TENANT_MEDIA_WIRING_READY`; no agent page, global CSS, API, or domain source is
-  authorized in this checkpoint.
+- Next gate: Re-gate/adopt the exact candidate under the Pilot Runbook, then route it to a persistent,
+  isolated independent Verifier; `RS-WO-017-04` remains the later integrated browser/rendering gate.
+- Execution posture: `CONSTRAINED` — candidate preserved; no agent page, global CSS, API, or domain source
+  is authorized in this checkpoint.
 
 ## Accepted implementation boundary
 
@@ -221,16 +223,21 @@ integrated; tenant discovery/detail rendering and browser evidence remain separa
 
 ### Builder return gate
 
-Return `READY_FOR_VERIFICATION` with either an exact candidate commit or, for this frozen overlay,
+Return `READY_FOR_VERIFICATION` with either an exact candidate commit or, for a formally re-gated
+overlay,
 the exact path/content hashes, clean/staging status, changed paths, asset manifest identity used,
 focused test results, typecheck/build/diff results, and explicit skipped tenant/browser/integrated
 evidence. Do not integrate the candidate or modify the asset pack.
 
 ### RS-WO-017-03 — Replace tenant listing placeholders
 
-**Role:** Builder → independent Verifier  
-**Status:** `READY_FOR_DISPATCH`  
+**Formal checkpoint:** Persistent Builder → independent Verifier  
+**Status:** `GATED` — preserved candidate requires formal re-gate after an execution-channel defect  
 **Parallelization:** `PARALLEL_TENANT_MEDIA_CONSUMER` — disjoint from Operations, workflow-domain, and tenant-request time paths; owns the two tenant listing consumers and their local module CSS only  
+**Execution channel:** Transient multi-agent execution record `01a05e31-b9cc-7561-804d-58a3ea1267de` (`Curie`); not a persistent supporting task/thread  
+**Source baseline:** `182937e121de8e7ab110272861b53917bdf52fdf` on `main`; collaborator-owned dirty and untracked paths remain outside this Work Order  
+**Dispatch state:** `FORMAL_HANDOFF_NOT_ESTABLISHED` — candidate preserved as process-incident evidence  
+**Next gate:** Candidate adoption/re-baseline under Runbook §8.1.4, followed by independent verification in a persistent isolated task/thread; do not integrate or start `RS-WO-017-04`  
 **Allowed write set:** `src/ui/tenant/tenant-discovery-page.tsx`, `src/ui/tenant/tenant-listing-page.tsx`, `src/ui/tenant/tenant.module.css`  
 **Dependency:** `RS-WO-017-02` independently verified and integrated  
 **Boundary:** Replace only the two current placeholders with the shared primitive; preserve listing
@@ -260,6 +267,26 @@ assets, manifest, shared primitive, canonical documents, or generated output. Do
 upload, video, image service, lazy fallback, or new dependency. Return `READY_FOR_VERIFICATION` with
 the exact candidate identity, three-path diff, tests/checks, and explicit skipped browser evidence;
 return `NEEDS_REVIEW` if a fourth path or a public contract change is required.
+
+### Preserved candidate evidence — 2026-09-01
+
+Transient execution record `Curie` reported `READY_FOR_VERIFICATION`, but this is not a valid formal
+Builder handoff because the work ran without a persistent supporting task/thread and isolated Worktree.
+The candidate remains an uncommitted overlay in the main checkout after that execution-channel defect.
+This is process evidence recorded for the orchestration pilot; the main thread has not edited or staged
+these paths. The exact candidate paths and hashes are:
+
+| Candidate path | SHA-256 |
+|---|---|
+| `src/ui/tenant/tenant-discovery-page.tsx` | `4100bfc86924b81f0e86a439741556905947cdd96234dfb974017d135cabccad` |
+| `src/ui/tenant/tenant-listing-page.tsx` | `19cc31990247ee72ce15df6531fe6589c97463a3e80e6c2dd18a228df8582924` |
+| `src/ui/tenant/tenant.module.css` | `46abbf875ca279a2be3bab04275e6bd4cc84bf75981f7cd41acf9202ec822ca3` |
+
+The candidate reports consumer static tests `7/7`, media tests `4/4`, all direct tests `87/87`,
+typecheck, build, and diff check under pinned Node `24.20.0` / npm `11.19.0`. These are Builder checks
+only. The independent verifier must re-check the hashes before and after testing, inspect every removed
+placeholder selector for unintended layout loss, and must not repair, commit, integrate, or modify the
+overlay.
 
 ### RS-WO-017-04 — Verify integrated property media
 

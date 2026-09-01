@@ -10,17 +10,17 @@ verified and integrated at product commits `5abdaf3` and `a2f6a19`; `RS-WO-007-0
 integrated cross-role regression check and `RIGHTSPOT-007` is closed. `RS-WO-011-01` passed independent
 verification and is integrated at product commit `7ff0fbd`; its read-model seam remains separate from
 any future consumer. `RS-WO-013-01` returned `READY_FOR_REVIEW`, its bounded authority decision is
-accepted in ADR-RS-0012, and `RIGHTSPOT-013` is closed. `RS-WO-015-01` has returned candidate
-`3f041a0` failed independent verification on an existing-schema shape gap; repair candidate `39e67e1`
-then failed fresh verification on a missing table-level singleton constraint, so `RS-WO-015-04` is
-awaiting fresh verification for repair candidate `a9c8e79`. Main-thread `RS-WO-017-01` has reached
-`ASSET_GATE_READY`; `RS-WO-017-02` passed independent verification and is integrated at `b7369bd`,
-with `RS-WO-017-03` ready for tenant wiring. The earlier verifier's unrelated persistent-fixture
-residual (`65/66`) was resolved by a separate test-only isolation correction and current full suites.
-`RIGHTSPOT-014` is closed after its read-only proposal review. The next projection Task
-`RIGHTSPOT-016` is registered but GATED behind authority verification. No Operations consumer
-implementation is authorized yet. `RIGHTSPOT-018` is independently verified, integrated at `5eef037`,
-and closed; `RIGHTSPOT-019` is independently verified and integrated at `6f52686`, with only bounded
+accepted in ADR-RS-0012, and `RIGHTSPOT-013` is closed. `RS-WO-015-04` passed fresh independent
+verification and the complete Operations authority is integrated at `e7f30d5`; `RIGHTSPOT-015` is
+closed. Main-thread `RIGHTSPOT-017-01` reached `ASSET_GATE_READY`; `RS-WO-017-02` passed independent
+verification and is integrated at `b7369bd`. `RS-WO-016-01` and `RS-WO-017-03` have preserved candidate
+overlays from transient execution-path deviations; their reported Builder handoffs are not formal
+checkpoint states because no persistent task/thread or verified Worktree established them. Exact
+path/hash evidence is recorded in their Task Files; candidate re-gating, independent verification,
+and integration are still pending. The earlier verifier's unrelated persistent-fixture residual (`65/66`) was resolved by
+a separate test-only isolation correction and current full suites. `RIGHTSPOT-014` is closed after its
+read-only proposal review. `RIGHTSPOT-018` is independently verified, integrated at `5eef037`, and
+closed; `RIGHTSPOT-019` is independently verified and integrated at `6f52686`, with only bounded
 browser/form evidence pending. Their write sets do not overlap the Operations or media lanes. The
 prior out-of-scope tracked verifier mutation remains preserved.
 **Owner:** Main RightSpot thread  
@@ -32,9 +32,11 @@ cross-role verification, and `RS-WO-002-15` passed the isolated browser walkthro
 is [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md). For the active post-MVP
 lane, `RS-WO-007-04`/`05` have passed independent verification and are integrated, and the fresh
 integrated-source Field Desk regression `RS-WO-007-08` also passed; `RIGHTSPOT-007` is closed. The
-verified `RS-WO-011` seam is integrated, while `RS-WO-015-04` is the current Operations authority
-repair gate awaiting fresh independent verification of `a9c8e79`. `RS-WO-017-02` is independently
-verified and integrated at `b7369bd`; `RS-WO-017-03` is the next tenant consumer checkpoint.
+verified `RS-WO-011` seam is integrated, and the Operations authority is integrated at `e7f30d5`.
+`RS-WO-016-01` is the current Operations projection checkpoint and `RS-WO-017-03` is the current
+tenant media consumer checkpoint; both are `GATED` with preserved non-formal candidate overlays awaiting
+candidate re-gating and persistent, isolated independent verification. `RS-WO-017-02` is independently verified and integrated at
+`b7369bd`.
 `RS-WO-018-01` is independently verified, integrated at `5eef037`, and closed. `RS-WO-019-01` is
 independently verified and integrated at `6f52686`, with only bounded browser/form evidence pending.
 Prior
@@ -56,9 +58,9 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 - The rental-only product thesis, primary tenant-to-agent workflow, business rules, logical
   Backbone, and implementation stack are accepted working baselines.
 - `RIGHTSPOT-001` established the product thesis and Backbone boundary and is closed.
-- `RIGHTSPOT-002` is closed for the accepted local MVP. Post-MVP work is admitted only through the
-  separately bounded `RIGHTSPOT-005`, `RIGHTSPOT-007`, and accepted `RIGHTSPOT-011` Task Files; their Work Orders remain in
-  those files and this roadmap is not their live queue.
+- `RIGHTSPOT-002` is closed for the accepted local MVP. Post-MVP work is admitted only through
+  separately bounded Task Files with accepted scope and an explicit next gate; their Work Orders
+  remain in those files and this roadmap is not their live queue.
 - The foundation package, runtime code, tests, and local reset/health composition now exist as an
   independently verified local baseline; no deployment configuration or Hackathon integration exists.
 - The accepted local baseline is Next.js App Router, React, TypeScript, Node.js 24, and SQLite.
@@ -74,7 +76,7 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 3. Authoritative workflow core | Implement the Viewing Request state machine, availability lifecycle, role projections, version checks, audit facts, and explicit failures | Domain and Backbone checks pass without a browser or external service | Complete; post-repair source `6e70c9f` independently verified |
 | 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | Complete; `RS-WO-002-14` passed independent direct cross-role verification and `RS-WO-002-15` passed the isolated browser walkthrough against integrated source `9348aa50b63e3f4f46e77238ad370670383d9d6` |
 | 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Complete; closure record reconciled and `RIGHTSPOT-002` closed |
-| 6. Post-MVP product refinement | Resolve high-impact navigation friction, strengthen visual credibility, and add a truthful Operations foundation without changing relay workflow authority | Each bounded candidate is independently verified and integrated before the next shared-surface change | Active; `RS-WO-005-01` integrated at `27f5391`; `RIGHTSPOT-007` closed after `RS-WO-007-08` integrated regression; `RS-WO-011-01`/`02` verified and integrated at `7ff0fbd` as a server-only relay seam; `RIGHTSPOT-013` and `RIGHTSPOT-014` closed with their accepted decisions; `RS-WO-015-04` awaits fresh verification of `a9c8e79`, `RS-WO-017-02` is integrated at `b7369bd` and `RS-WO-017-03` is ready, `RS-WO-018-01` is integrated and closed at `5eef037`, `RS-WO-019-01` is integrated at `6f52686` with browser/form evidence pending, and `RIGHTSPOT-016` remains gated |
+| 6. Post-MVP product refinement | Resolve high-impact navigation friction, strengthen visual credibility, and add a truthful Operations foundation without changing relay workflow authority | Each bounded candidate is independently verified and integrated before the next shared-surface change | Active; `RS-WO-005-01` integrated at `27f5391`; `RIGHTSPOT-007` closed after `RS-WO-007-08` integrated regression; `RS-WO-011-01`/`02` verified and integrated at `7ff0fbd` as a server-only relay seam; `RIGHTSPOT-013` and `RIGHTSPOT-014` closed with their accepted decisions; `RIGHTSPOT-015` is closed at `e7f30d5`; `RS-WO-016-01` and `RS-WO-017-03` are `GATED` with preserved non-formal candidates awaiting re-gate and persistent independent verification; `RS-WO-017-02` is integrated at `b7369bd`; `RS-WO-018-01` is integrated and closed at `5eef037`; and `RS-WO-019-01` is integrated at `6f52686` with browser/form evidence pending |
 | 7. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary refinement is stable and a new explicit integration decision exists | Deferred; not scheduled |
 
 ## 4. Roadmap operating rules
