@@ -18,7 +18,9 @@ React for controls, dashboard, and overlays. The server remains authoritative: m
 simulation may step at 100 ms, combat and extraction settle on one-world-second boundaries, the
 server publishes snapshots at about 10 Hz, and the browser renders at up to 60 FPS with interpolation.
 Typed HTTP commands remain the mutation boundary; WebSocket is the preferred snapshot channel after
-an early capability probe, with polling retained only as a diagnostic fallback.
+an early capability probe, with polling retained only as a diagnostic fallback. The visual asset
+quality bar and parallel delivery boundary are defined in
+[`ADR-GAME-0007-mvp-visual-assets-and-parallel-delivery.md`](ADR-GAME-0007-mvp-visual-assets-and-parallel-delivery.md).
 
 The target implementation profile is Next.js App Router, React, and TypeScript for the page; a
 Node.js 24 TypeScript worker for the world; SQLite WAL for the local harness; PostgreSQL for hosted

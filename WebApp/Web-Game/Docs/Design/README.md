@@ -12,8 +12,10 @@ mechanisms and chains that implement them.
 - [`03-dashboard-and-operations.md`](03-dashboard-and-operations.md) — shelter, missions, and causal
   history views;
 - [`04-visual-and-interaction-direction.md`](04-visual-and-interaction-direction.md) — visual
-  direction and Starve.io reference boundary; and
-- [`05-hackathon-demo.md`](05-hackathon-demo.md) — the re-entry demonstration narrative.
+  direction and Starve.io reference boundary;
+- [`05-hackathon-demo.md`](05-hackathon-demo.md) — the re-entry demonstration narrative;
+- [`06-visual-ui-and-asset-spec.md`](06-visual-ui-and-asset-spec.md) — UI layers, asset vocabulary,
+  placeholder rules, and the parallel visual delivery lane.
 
 ## Capability contracts
 

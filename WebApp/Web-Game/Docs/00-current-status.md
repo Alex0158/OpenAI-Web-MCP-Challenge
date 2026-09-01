@@ -23,8 +23,11 @@ deployment, runtime, or judge claim follows from this documentation work.
 
 The owner accepted all twenty MVP defaults, including automatic bounded Re-entry recall, the
 12-tile/120-second protected start, the deterministic combat contrast, and the discovered-landmark
-presentation. Their durable contract and authority boundary are recorded in
-[`Decisions/ADR-GAME-0006-mvp-contract-and-reentry-boundary.md`](Decisions/ADR-GAME-0006-mvp-contract-and-reentry-boundary.md)
+presentation. The owner also accepted a reasonable, consistent visual bar with simple optional
+effects and a parallel asset lane that cannot block the backbone. Their durable contract and
+authority boundaries are recorded in
+[`Decisions/ADR-GAME-0006-mvp-contract-and-reentry-boundary.md`](Decisions/ADR-GAME-0006-mvp-contract-and-reentry-boundary.md),
+[`Decisions/ADR-GAME-0007-mvp-visual-assets-and-parallel-delivery.md`](Decisions/ADR-GAME-0007-mvp-visual-assets-and-parallel-delivery.md),
 and [`Engineering/09-mvp-contract-sheet.md`](Engineering/09-mvp-contract-sheet.md).
 
 The structural coverage result and cross-boundary gaps are recorded in
@@ -82,13 +85,16 @@ Recommended defaults and chain-level UX contracts for closing those decisions ar
    share/cap, and the leaderboard metric remain post-G2 decisions.
 4. CP-02 must prove the local runtime, page-bound WebMCP capability, persistence probe, and visible
    degraded behavior; hosted topology and its proof remain open.
+5. Final visual asset selection and decorative polish remain open quality work, but placeholders and
+   the accepted visual vocabulary cannot block the backbone or the G2 trace.
 
 ## Recommended next step
 
 The next action is CP-02, a short capability and runtime probe for the selected Node worker, Canvas
-page, realtime transport, durable store, and genuine page-bound WebMCP surface. Only after that gate
-passes should CP-03 create a bounded implementation task. Keep production combat tuning, spawn rates,
-prices, and visual assets or polish outside the contract until measured evidence requires a change.
+page, realtime transport, durable store, and genuine page-bound WebMCP surface. Visual preparation can
+run alongside that probe, while only after CP-02 passes should CP-03 create a bounded implementation
+task. Keep production combat tuning, spawn rates, prices, and final visual polish outside the contract
+until measured evidence requires a change.
 
 The accepted first slice is: one seeded 128 × 128 map, two protected shelters at least 80 tiles
 apart, five soldiers per player, symmetric Wood and Rock nodes, one seeded monster, one gather

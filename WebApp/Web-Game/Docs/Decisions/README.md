@@ -15,4 +15,6 @@ Research, or a Scenario until accepted.
 - [`ADR-GAME-0005-mvp-world-and-rendering-profile.md`](ADR-GAME-0005-mvp-world-and-rendering-profile.md)
   — fixes the two-player MVP map/resource profile and a smooth minimal 2D presentation target;
 - [`ADR-GAME-0006-mvp-contract-and-reentry-boundary.md`](ADR-GAME-0006-mvp-contract-and-reentry-boundary.md)
-  — accepts the versioned G2 contract, protected start, deterministic combat, and bounded Re-entry action.
+  — accepts the versioned G2 contract, protected start, deterministic combat, and bounded Re-entry action;
+- [`ADR-GAME-0007-mvp-visual-assets-and-parallel-delivery.md`](ADR-GAME-0007-mvp-visual-assets-and-parallel-delivery.md)
+  — accepts a readable MVP visual bar, stable asset vocabulary, placeholders, and parallel art delivery;

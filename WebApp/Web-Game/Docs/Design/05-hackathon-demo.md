@@ -13,9 +13,11 @@ The preferred demonstration is one causal re-entry story:
    unbanked cargo is destroyed.
 5. Re-entry Core delivers a bounded continuation to the bound Agent.
 6. The Agent returns to the canonical shelter page and discovers fresh WebMCP tools.
-7. The Agent reads the current report and either prepares a safer route, recalls another squad, or
-   proposes migration.
-8. The player sees the proposed effect and remains responsible for the consequential action.
+7. The Agent reads the current report and executes the bounded `force_recall_soldier` action when the
+   current revision permits it; an unavailable capability or stale command produces a visible typed
+   result.
+8. The player sees the action result and remains responsible for migration, siege, upgrades, and
+   other consequential actions outside the G2 grant.
 
 A second optional beat is shelter breach: field soldiers become roaming monsters and the Agent helps
 rebuild the damaged shelter using the event history.

@@ -27,6 +27,11 @@ interpolation at up to 60 FPS is the recommended smoothness path; typed HTTP rem
 boundary. The capability probe and a visible reconnect/degraded state are required before treating the
 realtime channel as available.
 
+The accepted visual split and parallel asset boundary are recorded in
+[`../Decisions/ADR-GAME-0007-mvp-visual-assets-and-parallel-delivery.md`](../Decisions/ADR-GAME-0007-mvp-visual-assets-and-parallel-delivery.md)
+and [`../Design/06-visual-ui-and-asset-spec.md`](../Design/06-visual-ui-and-asset-spec.md). Asset
+replacement must not alter the snapshot, command, or event contracts.
+
 The first implementation increment is deliberately narrower than this full target. Its proposed
 authority, storage, transport, and WebMCP proof boundary is recorded in
 [`07-hackathon-mvp-build-gate.md`](07-hackathon-mvp-build-gate.md); that document is a build proposal,

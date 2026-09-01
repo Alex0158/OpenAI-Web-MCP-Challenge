@@ -71,9 +71,11 @@ flowchart LR
   CP25 --> CP26[Full playtest and product decision]
 ```
 
-The critical path is CP-01 through CP-18. UI polish can run beside CP-09 to CP-14 after the state
-contracts are stable, but it cannot define or mutate authoritative state. Full-game expansion starts
-only after CP-16 is verified locally.
+The critical path is CP-01 through CP-18. Visual preparation can start now; placeholder assets and
+asset production may run alongside CP-04 through CP-11 after the implementation lock. CP-12 integrates
+the visual lane, while final polish remains optional. Visual work cannot define or mutate authoritative
+state, block the backbone, or expand the G2 boundary. Full-game expansion starts only after CP-16 is
+verified locally.
 
 ## Phase 0 — contract and implementation readiness
 
@@ -84,7 +86,7 @@ only after CP-16 is verified locally.
 - **Depends on:** Owner discussion and repository guidance.
 - **Acceptance:** The two-player 128 × 128 profile, minimum 80-tile separation, Wood plus Rock,
   continuous world, cargo-loss clarification, and minimal Canvas direction appear in the owning docs.
-- **Evidence:** 100 child Markdown files, 11 raw source blocks, no broken links, no unfenced CJK, and
+- **Evidence:** 107 tracked child Markdown files, 11 raw source blocks, no broken links, no unfenced CJK, and
   repository validators pass.
 - **Current result:** Committed locally as `0791304`; no implementation claim follows.
 
@@ -125,7 +127,8 @@ only after CP-16 is verified locally.
   acceptance cases, checkpoint cadence, and a rollback point.
 - **Depends on:** CP-02 passing or a documented capability decision.
 - **Acceptance:** The task names only the G1/G2 critical path; full PvP, siege, migration, breach,
-  leaderboard, and visual asset polish are explicit non-goals.
+  leaderboard, and final visual polish are explicit non-goals. The accepted visual spec and
+  placeholders may proceed in parallel without changing the game contract.
 - **Verify:** Human review of the task against this roadmap and `Docs/00-current-status.md`.
 
 ## Phase 1 — runtime and authority foundation
@@ -220,9 +223,10 @@ only after CP-16 is verified locally.
 
 ### CP-12 — minimal Canvas and dashboard (`PLANNED`)
 
-- **Scope:** Build the Starve.io-inspired minimal top-down surface with a tile/sprite atlas, Canvas
-  projection, React controls, keyboard movement, shelter HUD, mission rows, cargo risk, event history,
-  reconnect status, and accessible text equivalents.
+- **Scope:** Integrate the accepted visual/UI spec with the Starve.io-inspired minimal top-down
+  surface: tile/sprite atlas, Canvas projection, React controls, keyboard movement, shelter HUD,
+  mission rows, cargo risk, event history, reconnect status, lightweight effects, and accessible text
+  equivalents.
 - **Depends on:** CP-08 through CP-11.
 - **Acceptance:** Canvas renders snapshots at up to 60 FPS, interpolates remote actors, reconciles local
   input, and never decides world state. The dashboard explains mission, cargo, death cause, respawn,
