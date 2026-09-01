@@ -1,8 +1,5 @@
+import AppShell from "../src/ui/shared/app-shell";
+
 export default function HomePage() {
-  return (
-    <main>
-      <h1>RightSpot</h1>
-      <p>Rental workflow foundation is ready for the next implementation phase.</p>
-    </main>
-  );
+  return <AppShell />;
 }
