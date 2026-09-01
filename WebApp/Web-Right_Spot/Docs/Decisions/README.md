@@ -21,7 +21,8 @@ The current working decisions are:
 - [`ADR-RS-0001 — MVP scope and primary flow`](ADR-RS-0001-mvp-scope-and-primary-flow.md); and
 - [`ADR-RS-0002 — Logical Backbone boundary`](ADR-RS-0002-logical-backbone-boundary.md); and
 - [`ADR-RS-0003 — Implementation stack and realtime boundary`](ADR-RS-0003-implementation-stack-and-realtime-boundary.md); and
-- [`ADR-RS-0004 — Thread orchestration pilot`](ADR-RS-0004-thread-orchestration-pilot.md).
+- [`ADR-RS-0004 — Thread orchestration pilot`](ADR-RS-0004-thread-orchestration-pilot.md); and
+- [`ADR-RS-0005 — Checkpoint source identity and path ownership`](ADR-RS-0005-checkpoint-source-identity-and-path-ownership.md).
 
 They define a RightSpot internal MVP baseline. They do not replace the outer project's formal
 application-selection ADR or authorize changes to the outer Re-entry Core.

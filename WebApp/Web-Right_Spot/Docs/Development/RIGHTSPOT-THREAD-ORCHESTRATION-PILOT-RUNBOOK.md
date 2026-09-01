@@ -3,7 +3,8 @@
 **Role:** Scoped operating procedure for delegated RightSpot work
 **Status:** Experimental, opt-in, and RightSpot-scoped
 **Owner:** Main RightSpot thread
-**Governing decision:** [ADR-RS-0004](../Decisions/ADR-RS-0004-thread-orchestration-pilot.md)
+**Governing decisions:** [ADR-RS-0004](../Decisions/ADR-RS-0004-thread-orchestration-pilot.md) and
+[ADR-RS-0005](../Decisions/ADR-RS-0005-checkpoint-source-identity-and-path-ownership.md)
 
 ## 1. Purpose
 
@@ -249,12 +250,11 @@ Each Work Order must state:
 - pre-dispatch status, execution state, and next gate;
 - objective as one falsifiable outcome;
 - acceptance criteria;
-- exact source baseline and dirty-state limitation;
+- checkpoint source identity and dirty-state limitation;
 - required documents to read;
 - dependencies and prerequisite outputs;
 - package/runtime permissions and any approved dependency set;
-- allowed mutable paths;
-- forbidden paths and actions;
+- declared read, worker-write, main-thread-writeback, forbidden, and generated sets;
 - affected roles, modules, state, data, and claims;
 - explicit non-goals;
 - assumptions and evidence that could falsify them;
@@ -287,7 +287,8 @@ Project-authored Work Orders must be written in English. Use this structure:
 ## Baseline
 - Git root:
 - Branch and HEAD:
-- Working-tree limitation:
+- Execution source identity and dirty/untracked limitation:
+- Governance revision:
 - Runtime baseline:
 
 ## Read before action
@@ -298,9 +299,11 @@ Project-authored Work Orders must be written in English. Use this structure:
 - <Relevant product/domain/system/API documents>
 
 ## Mutable scope
-- Allowed paths:
-- Forbidden paths:
-- Forbidden actions:
+- Read set:
+- Worker write set:
+- Main-thread orchestration writeback set:
+- Forbidden set and actions:
+- Generated set:
 
 ## Dependencies and assumptions
 - <Named prerequisite>
@@ -352,7 +355,8 @@ Before dispatching, the main thread must:
 2. inspect branch, `HEAD`, upstream, dirty state, ownership, and relevant ignored state;
 3. identify whether the source includes uncommitted or untracked RightSpot work;
 4. read the parent Task, current status, governing ADR, Runbook, and affected authority documents;
-5. write the Work Order and allowed-path boundary;
+5. write the Work Order and read, worker-write, main-thread-writeback, forbidden, and generated
+   boundaries;
 6. decide whether a shared tree is safe or an isolated worktree is required;
 7. identify the minimum verification and the falsifier;
 8. classify the increment as `Fast`, `Standard`, or `Assured`, and complete the additional persistence,
@@ -360,15 +364,17 @@ Before dispatching, the main thread must:
 9. verify the target runtime or explicitly label any alternate runtime as limited evidence;
 10. confirm that no credential, spend, deployment, publication, or external action is hidden in the
    assignment; and
-11. record the expected next gate and canonical writeback owner before sending the prompt.
+11. record the expected next gate, canonical writeback owner, and source-freeze point before sending
+   the prompt.
 
 ### 8.1.1 Dispatch transaction order
 
 The dispatch call and the lifecycle writeback form a two-phase handoff:
 
-1. Prepare the Work Order, exact runtime/dependency profile, source baseline, content manifest,
-   mutable paths, acceptance criteria, stop conditions, and completion-report contract before any
-   thread-tool call.
+1. Prepare the Work Order, exact runtime/dependency profile, checkpoint source identity, read/write/
+   writeback/forbidden/generated sets, acceptance criteria, stop conditions, and completion-report
+   contract before any thread-tool call. Add a content manifest only where Git cannot identify the
+   intended source.
 2. Validate the activation prompt once. It must include `RIGHTSPOT-DISPATCH-BEGIN`, the Work Order
    identifier, role, objective, read-before-action route, exact scope, verification, stop
    conditions, completion report, and `RIGHTSPOT-DISPATCH-END`.
@@ -400,7 +406,8 @@ Every dispatch records two identities and must not merge them into one undiffere
 1. **Execution baseline:** exact product and implementation inputs that can affect the worker's
    result, including the Work Order, relevant product/domain/API contracts, implementation paths,
    package and lockfile, fixtures, tests, runtime pin, and required verification commands.
-2. **Governance revision:** the revision of this Runbook and ADR-RS-0004 used to govern the handoff.
+2. **Governance revision:** the revision of this Runbook and ADR-RS-0004/ADR-RS-0005 used to govern
+   the handoff.
 
 The governance revision is read-only process context. A later process-only amendment does not
 invalidate the active implementation baseline or require a Builder re-dispatch when it does not
@@ -410,6 +417,48 @@ authority, or required execution behavior. The main thread records the amendment
 If a process amendment does affect execution, the main thread must send an explicit clarification or
 re-gate the Work Order before the worker relies on the changed rule. It must never silently change the
 worker's contract or classify an unconnected process edit as a product defect.
+
+### 8.1.3 Checkpoint source identity and path-scoped validation
+
+The execution baseline is a checkpoint identity, not a permanent lock on every RightSpot file. When
+the reviewed source is suitable for persistence, establish a local Git commit before dispatch and use
+that commit as the primary identity. If the checkpoint intentionally includes dirty or untracked
+source, record the commit plus the exact dirty/untracked paths and content hashes. A content manifest
+is supplementary evidence for source that Git cannot identify; it is not a substitute for ownership
+or a merge protocol.
+
+Every Work Order must classify source surfaces as follows:
+
+- **Read set:** worker-readable, worker-immutable inputs. A change is source drift when it changes a
+  semantic input to the Work Order.
+- **Worker write set:** exact authored paths the worker owns. Changes are expected and must be checked
+  against the Work Order diff and acceptance criteria.
+- **Main-thread orchestration writeback set:** explicitly named status/evidence paths or sections
+  that only the main thread may update while the worker runs. These writes may record lifecycle and
+  process evidence, but must not change the active Work Order's objective, acceptance criteria,
+  runtime, dependencies, allowed paths, source authority, or product/domain contract.
+- **Forbidden set:** paths and actions that stop the checkpoint if changed or attempted.
+- **Generated set:** explicitly allowed ignored runtime/output paths that are not authored source
+  identity.
+
+If a file mixes contract text with status or evidence, the Work Order must identify the immutable
+contract section and the process-only section separately. A process-only writeback does not invalidate
+the execution baseline; a semantic contract or authority change does and requires a stop and
+re-baseline. The main thread must not guess when the boundary is ambiguous.
+
+At T2, after the Builder stops, the main thread must:
+
+1. confirm there is no remaining writer;
+2. capture actual changed paths and the diff, including newly created files;
+3. classify every change against the declared sets;
+4. record generated output separately from authored source;
+5. capture the post-Builder source identity, preferring a reviewed local commit; and
+6. freeze that source before dispatching the independent Verifier.
+
+At T3, the Verifier runs only against the frozen T2 source. No product writer, including the main
+thread, may modify that source during verification. The main thread may update an explicitly declared
+process-only record outside the frozen implementation snapshot, but any change to the verified source
+requires a fresh handoff or re-verification.
 
 ### 8.2 New supporting Codex task/thread activation
 
@@ -521,10 +570,12 @@ it as `BLOCKED` or attention-required rather than automatically guessing or cont
 
 ### 9.1 Shared working tree
 
-The shared working tree is allowed only for one writer at a time or for low-conflict read-only
+The shared working tree is allowed only for one worker writer at a time or for low-conflict read-only
 work. Before a worker edits there, the main thread must state the baseline and confirm that no other
-writer is active on overlapping paths. The main thread must not edit overlapping paths until the
-worker has returned and the handoff source has been frozen for verification.
+writer is active on overlapping paths. During execution, the main thread must not edit the worker
+write set or semantic read set. It may update only the explicitly declared main-thread
+orchestration-writeback set, and only within its process-only boundary. The main thread must not edit
+product source while the worker is active or after handoff has been frozen for verification.
 
 ### 9.2 Isolated worktree
 
@@ -554,13 +605,16 @@ Serialize changes to:
 - canonical product or architecture documents.
 
 Parallel feature work is valid only when these shared surfaces are already stable or explicitly
-partitioned.
+partitioned. If a shared document contains both contract and process fields, ownership must be
+partitioned by named sections; a path alone is not enough to authorize a semantic contract edit.
 
 ### 9.4 Ownership violation
 
-If a worker changes a forbidden path, discovers another writer, or finds that the baseline differs
-materially from the Work Order, it must stop. The main thread records the actual change, decides
-whether it can be preserved, and does not use destructive reset or cleanup to hide the violation.
+If a worker changes a forbidden path, discovers another writer, or finds an unexpected semantic
+baseline change, it must stop. The main thread records the actual change and classifies it as an
+expected worker write, declared process-only writeback, generated output, source drift, or ownership
+violation. It decides whether a new baseline or repair is needed and does not use destructive reset or
+cleanup to hide the violation.
 
 ## 10. Lifecycle and handoff states
 
@@ -639,12 +693,16 @@ non-canonical evidence record; the main thread owns canonical writeback.
 
 ### 12.1 Independence
 
-Verification must occur after the Builder has stopped changing the candidate source. The Verifier
-must receive the exact source identity, expected files, commands, runtime, fixtures, and claim
-boundary. A Verifier may use a clean isolated worktree or a clearly identified stable source state.
-When the source contains untracked files, a commit SHA alone is insufficient: record `HEAD`, full
-dirty/untracked state, exact changed paths, and a content manifest or equivalent hash for the
-assigned source. The Verifier must run against that same identified source and no moving writer.
+Verification must occur after the Builder has stopped changing the candidate source and the main
+thread has completed T2 handoff. The Verifier must receive the exact source identity, expected files,
+read/write/forbidden/generated sets, commands, runtime, fixtures, and claim boundary. A Verifier may
+use a clean isolated worktree or a clearly identified stable source state.
+
+A clean reviewed commit is the preferred source identity. When dirty or untracked source is part of
+the checkpoint, record the commit plus exact dirty/untracked paths and content hashes. The Verifier
+must validate the worker write set and unexpected semantic drift path-by-path; it must not treat
+expected owned writes or declared process-only writeback as a global manifest failure. The Verifier
+must run against the same frozen T2 source and no moving product writer.
 
 ### 12.1.1 Verification output boundary
 

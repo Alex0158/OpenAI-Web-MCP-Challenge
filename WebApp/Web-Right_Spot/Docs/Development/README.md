@@ -22,7 +22,8 @@ returned `READY_FOR_VERIFICATION`; the first independent Verifier checkpoint rec
 [RIGHTSPOT-002](../Tasks/RIGHTSPOT-002-build-mvp-application-shell.md) completed the functional
 checks but returned `BLOCKED` after its procedure created an out-of-bound OS temp artifact. A
 corrected rerun of the same checkpoint returned `VERIFIED`; Git closure is recorded in `b06bd85`,
-and the next bounded workflow-core Builder checkpoint `RS-WO-002-03` is defined and gated. Later Repairer or Integrator
+and the bounded workflow-core Builder plus one projection-isolation repair for `RS-WO-002-03` returned
+`READY_FOR_VERIFICATION`; its T2 candidate source is committed as `186e98a`. Later Verifier or Integrator
 work is opened only when its predecessor produces a concrete code failure or a verified source and
 evidence boundary.
 

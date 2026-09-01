@@ -1,7 +1,7 @@
 # RightSpot Development Roadmap
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
-**Status:** Phase 2 complete — foundation independently verified; Phase 3 domain-core checkpoint gated  
+**Status:** Phase 3 — authoritative workflow domain core ready for independent verification  
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-01, Europe/London
 
@@ -35,7 +35,7 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 0. Product and Backbone baseline | Establish the rental thesis, one shared Viewing Request, role boundaries, MVP rules, and logical modular-monolith boundary | Accepted RightSpot decisions and reconciled core documents | Complete through `RIGHTSPOT-001` |
 | 1. Implementation readiness | Resolve and record the foundation toolchain, runtime, SQLite/reset, health-route, source-boundary, and verification profile | Main-thread decision gate complete and the first Builder Work Order is ready; the Node.js baseline situation is explicitly recorded | Complete |
 | 2. Runnable foundation | Create one local application composition with the accepted stack, server-side SQLite foundation, deterministic reset metadata, and reproducible commands | Builder output reconciled and independently verified | Complete; first Verifier attempt was procedurally blocked, corrected rerun verified |
-| 3. Authoritative workflow core | Implement the Viewing Request state machine, availability lifecycle, role projections, version checks, audit facts, and explicit failures | Domain and Backbone checks pass without a browser or external service | `RS-WO-002-03` defined and gated |
+| 3. Authoritative workflow core | Implement the Viewing Request state machine, availability lifecycle, role projections, version checks, audit facts, and explicit failures | Domain and Backbone checks pass without a browser or external service | T2 candidate `186e98a`; independent verification pending |
 | 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | Not started |
 | 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Not started |
 | 6. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary loop is stable and a new explicit integration decision exists | Deferred; not scheduled |
@@ -60,6 +60,7 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 
 The first `RS-WO-002-02` attempt is recorded as a procedural block, and the corrected output-boundary
 rerun is independently verified against the unchanged source/runtime identity. The verified
-foundation is committed as `b06bd85`; `RS-WO-002-03` is the next bounded workflow-core checkpoint
-and is gated for dispatch. Do not dispatch the full parent Task as one worker assignment or
-pre-create downstream role assignments.
+foundation is committed as `b06bd85`; `RS-WO-002-03` Builder and a bounded projection-isolation
+repair returned `READY_FOR_VERIFICATION`, and the T2 candidate source is committed as `186e98a`.
+Dispatch only its independent Verifier next; do not dispatch the full parent Task as one worker
+assignment or pre-create downstream role assignments.

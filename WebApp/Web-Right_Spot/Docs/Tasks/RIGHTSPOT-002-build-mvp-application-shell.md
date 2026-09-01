@@ -18,28 +18,29 @@ The implementation must follow the accepted business rules in
 - Owner: Main RightSpot thread
 - Current increment: Implement the authoritative workflow domain core as the next executable
   checkpoint toward the accepted tenant-to-agent Happy Path.
-- Next gate: Dispatch the gated `RS-WO-002-03` domain-core Builder against the committed verified
-  foundation, then require an independent Verifier before opening persistence, API, or UI work.
+- Next gate: Dispatch an independent Verifier against the frozen `RS-WO-002-03` T2 source before
+  opening persistence, API, or UI work.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
-- Process authority: ADR-RS-0004 and the RightSpot Thread Orchestration Pilot Runbook govern any
+- Process authority: ADR-RS-0004, ADR-RS-0005, and the RightSpot Thread Orchestration Pilot Runbook govern any
   supporting-task dispatch under this parent.
 
 ## Parent-task boundary and current Work Order
 
 This record is the single registered parent Task and the one Task File for the complete first
 ordinary application slice. Its objective and closure evidence describe the parent outcome. The
-current executable increment is narrower: establish the runnable foundation before implementing the
-product workflow. Later implementation, verification, repair, and integration remain sequential
+current executable increment is narrower: establish and independently verify the authoritative
+workflow domain core before opening persistence, API, or UI work. Later implementation, verification,
+repair, and integration remain sequential
 checkpoints inside this Task File, not a second set of registered Tasks or a backlog of independent
 Work Orders.
 
 The runnable foundation increment is complete: the Builder stopped after returning
 `READY_FOR_VERIFICATION`, the first Verifier attempt was procedurally `BLOCKED` because its assertion
 wrote to an OS temp path outside the declared RightSpot output boundary, and the corrected rerun
-returned `VERIFIED` against the unchanged source/runtime identity. The next increment is the bounded
-`RS-WO-002-03` domain-core Builder Work Order; it is gated but not yet assigned. No code writer or
-repairer is active.
+returned `VERIFIED` against the unchanged source/runtime identity. `RS-WO-002-03` was implemented,
+one bounded projection-isolation repair was completed, and T2 source review produced candidate commit
+`186e98a`. No other code writer or repairer is active; the independent Verifier is the next gate.
 
 Do not send this parent Task's full objective to one Builder. Do not treat a worker result as
 verification, integration, or parent-Task closure.
@@ -48,22 +49,26 @@ verification, integration, or parent-Task closure.
 
 - **Dispatch state:** `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02`
   attempt returned `BLOCKED` on a verification-procedure boundary, and the corrected rerun returned
-  `VERIFIED` at the unchanged execution baseline. `RS-WO-002-03` is the next `GATED` domain-core
-  Builder checkpoint. Builder, Verifier, Repairer, and Integrator are sequential checkpoints of this
-  Task, not pre-registered child Tasks.
-- **Baseline:** The actual repository root is `WebMCP_Challenge`; the RightSpot documentation and
-  Builder foundation output are untracked in the worktree. The source baseline is identified by
-  exact implementation-path hashes rather than `HEAD` alone.
+  `VERIFIED` at the unchanged execution baseline. `RS-WO-002-03` Builder and bounded Repairer both
+  returned `READY_FOR_VERIFICATION`; T2 candidate source is committed as `186e98a`. Builder,
+  Verifier, Repairer, and Integrator are sequential checkpoints of this Task, not pre-registered child
+  Tasks.
+- **Baseline:** The actual repository root is `WebMCP_Challenge`; the frozen implementation source
+  for the next gate is candidate commit `186e98a`, whose parent execution baseline is `df4cbd6`. The
+  six modified canonical documents are main-thread process-only writeback and are not part of the
+  candidate implementation commit. Source identity is checkpoint-scoped and path-owned; it is not a
+  permanent full-document hash lock.
 - **Read before action:** Repository `AGENTS.md` and Engineering controls, RightSpot `RUNBOOK.md`,
   `Docs/00-current-status.md`, the relevant product/domain/API/validation documents, ADR-RS-0001
-  through ADR-RS-0004, and the Thread Orchestration Pilot Runbook.
-- **Worker restrictions:** The Builder was limited to the exact `RS-WO-002-01` paths and has
-  stopped. The Verifier may inspect and run the frozen source, but has no authored mutable paths and
-  must not modify code, canonical documents, the Git index, or generated state outside the explicitly
-  ignored runtime paths. Short response-body assertions must use shell variables or an exact file
-  under `var/test/`; `/tmp` and other external paths are not permitted. No worker may commit, push,
-  deploy, publish, perform external actions,
-  expand product scope, or change canonical authority.
+  through ADR-RS-0005, and the Thread Orchestration Pilot Runbook.
+- **Worker restrictions:** The foundation Builder and domain-core Builder/Repairer have stopped.
+  The next Verifier may inspect and run only the frozen source, with no authored mutable paths. It
+  must classify the declared read, worker-write, main-thread-writeback, forbidden, and generated
+  sets path-by-path; it must not modify code, canonical documents, the Git index, or generated state
+  outside explicitly ignored runtime paths. Short response-body assertions must use shell variables
+  or an exact file under `var/test/`; `/tmp` and other external paths are not permitted. No worker may
+  commit, push, deploy, publish, perform external actions, expand product scope, or change canonical
+  authority.
 - **Worker writeback:** The Builder returns its completion report in the supporting thread. It does
   not edit this canonical Task File; the main thread inspects the source and writes authoritative
   status and evidence back here.
@@ -441,16 +446,16 @@ Order, not a new registered Task or Task File.
 **Parent task:** `RIGHTSPOT-002`  
 **Role:** Builder  
 **Pre-dispatch state:** `GATED` — the runnable foundation is independently verified and committed as `b06bd85`  
-**Execution state:** `GATED`  
+**Execution state:** `READY_FOR_VERIFICATION`  
 **Owner:** Main RightSpot thread; one assigned supporting Codex task performs the bounded implementation  
+**Dispatch state:** Builder dispatched at `df4cbd6`; bounded repair completed; T2 candidate source committed as `186e98a`  
 **Objective:** Implement a transport- and persistence-agnostic TypeScript workflow kernel that
 enforces the accepted RightSpot Viewing Request state machine, availability lifecycle, role
 authorization, revision/generation guards, bounded inputs, idempotent completed commands, audit
 facts, and tenant/agent projections. The kernel must be directly testable without Next.js, React,
 SQLite, a browser, a session provider, or an external service.
-**Next gate:** Builder returns `READY_FOR_VERIFICATION`, `NEEDS_REPAIR`, or `BLOCKED`; the main thread
-then dispatches a separate read-only domain Verifier. No persistence, API, session, or UI Work Order
-opens before this checkpoint is independently verified.
+**Next gate:** Dispatch a separate read-only domain Verifier against the frozen T2 candidate source.
+No persistence, API, session, or UI Work Order opens before this checkpoint is independently verified.
 
 #### Scope and implementation contract
 
@@ -514,6 +519,36 @@ preparation versus send, bounded input validation, role-private projection exclu
 continuity, and repeated completed-command idempotency. No browser, SQLite schema, route, login,
 deployment, Cloud Receiver, WebMCP, Redis, or WebRTC claim is part of this Work Order.
 
+#### T2 handoff record
+
+The Builder returned `READY_FOR_VERIFICATION`. Main-thread review found one projection isolation
+defect: the tenant-visible response aliased the `ProjectionOutcome.state`. A bounded repair changed
+only `src/server/domain/projections.ts` and this focused test file, then returned
+`READY_FOR_VERIFICATION`. The post-repair T2 source review found exactly these five authored paths:
+
+- `src/server/domain/types.ts`;
+- `src/server/domain/errors.ts`;
+- `src/server/domain/workflow.ts`;
+- `src/server/domain/projections.ts`; and
+- `tests/domain/workflow.test.ts`.
+
+The implementation paths were committed as candidate `186e98a`; the six modified canonical documents
+are main-thread process-only writeback and are not part of that implementation commit. Under the
+accepted path-scoped source-identity model, the candidate commit is the frozen verification source;
+the process-only writeback does not change the active product contract. No other writer is active.
+
+T2 checks passed under the exact Node.js `v24.20.0` runtime and npm `11.19.0`:
+
+- `npm ci --no-audit --no-fund`;
+- `npm run typecheck`;
+- `npm test` — foundation 6/6;
+- `./node_modules/.bin/tsx --test tests/domain/workflow.test.ts` — domain 12/12; and
+- `git diff --check`.
+
+Independent verification has not yet run. The Builder and Repairer did not run a build/server smoke,
+API, persistence, UI, browser, deployment, WebMCP, Cloud Receiver, Redis, or WebRTC check because
+those are outside this Work Order.
+
 #### Stop conditions and report
 
 Stop and return `BLOCKED` if the accepted business rules or domain authority need to change, an exact
@@ -556,11 +591,11 @@ confirmation or decline.
 
 ## Next gate
 
-The runnable foundation is independently verified and `RS-WO-002-03` is the gated next increment.
-Dispatch only this bounded domain-core Builder, then independently verify it before opening
-persistence/API/UI work. The parent Task must remain `in_progress` until the staged implementation,
-independent verification, integration, and canonical writeback gates for the complete ordinary
-application slice are complete without adding deferred WebRTC/Redis infrastructure.
+The runnable foundation is independently verified and `RS-WO-002-03` is the assigned current
+increment. Independently verify this bounded domain core before opening persistence/API/UI work. The
+parent Task must remain `in_progress` until the staged implementation, independent verification,
+integration, and canonical writeback gates for the complete ordinary application slice are complete
+without adding deferred WebRTC/Redis infrastructure.
 
 ## Closure evidence
 

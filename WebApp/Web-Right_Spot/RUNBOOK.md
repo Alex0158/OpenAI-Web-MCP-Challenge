@@ -3,8 +3,9 @@
 **Role:** Local development and documentation routing  
 **Status:** Implementation stack accepted; the exact target Node runtime is prepared and verified,
 the foundation Builder returned `READY_FOR_VERIFICATION`, the first independent Verifier attempt was
-procedurally blocked, and the corrected rerun returned `VERIFIED`; the next bounded domain-core
-Builder checkpoint `RS-WO-002-03` is defined and gated
+procedurally blocked, and the corrected rerun returned `VERIFIED`; the bounded domain-core Builder and
+projection-isolation repair returned `READY_FOR_VERIFICATION`, with T2 candidate commit `186e98a` frozen
+for independent verification
 
 ## 1. Authority and reading order
 
