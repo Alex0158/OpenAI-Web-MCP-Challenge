@@ -154,6 +154,36 @@ accessibility evidence, typecheck/build results, and explicit statement that no 
 Stop with `NEEDS_REVIEW` if the visual result requires a shared component, route markup, dependency,
 asset, or behavior change.
 
+## RS-WO-007-03 — Revalidate the post-CSS tenant/agent parallel execution boundary
+
+**Role:** Parallelism/Architecture Advisor  
+**Status:** `ASSIGNED`  
+**Parallelization:** `READ_ONLY_ADVISORY` — may inspect the live source while the CSS Builder works;
+it must not write source or canonical records.  
+**Risk profile:** `Standard` — execution-boundary review only; no product behavior change.  
+**Supporting worker:** `01a05d76-dac9-7283-9c2a-4166935f5043` (`Euler`, local multi-agent Advisor).  
+**Source baseline:** Main-thread T0 commit `04fb595`; the Advisor must record any CSS-builder drift
+observed during inspection and must not treat a moving `globals.css` as frozen evidence.
+
+### Advisor scope
+
+- Recheck exact tenant and agent route, component, CSS, test, fixture, API/domain, and runtime
+  ownership after the shared CSS foundation is independently verified.
+- Identify shared imports, contracts, wrappers, test/reset coupling, and any same-file write conflict;
+  URL separation alone is not sufficient for parallel execution.
+- Evaluate safe isolation choices for the current local project record (`isGitRepository=false`),
+  including serialized same-tree work, a temporary isolated copy, or a separately authorized Git
+  Worktree; do not create or mutate any of them.
+- Propose at most two next bounded Work Orders with acceptance criteria, Verifier strategy, and stop
+  conditions. This proposal is non-blocking for the current CSS Builder.
+
+### Return gate
+
+Return `READY_FOR_REVIEW` with observation time, source identity and dirty-state limitation, exact
+paths inspected, verified facts versus inference/recommendation, commands, unresolved risks, and
+the proposed next boundary. Return `BLOCKED` only if the source or instructions prevent a reliable
+read-only review. Do not dispatch follow-on work or edit any file.
+
 ## Acceptance criteria for this task
 
 1. The main thread has a reviewed, evidence-backed shared/tenant/agent ownership map.
