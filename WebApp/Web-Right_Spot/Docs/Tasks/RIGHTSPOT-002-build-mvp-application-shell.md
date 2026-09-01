@@ -16,13 +16,15 @@ The implementation must follow the accepted business rules in
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Review the completed independent verification of `RS-WO-002-05` and the still
-  running read-only `RS-WO-002-06` Architecture Advisor proposal before deciding the first UI slices.
-- Next gate: Complete main-thread adjudication of the two dispatched outputs and record accepted
-  ownership/contracts before opening tenant/agent UI Builders.
-- Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
-  Data Model documents.
-- Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, and the RightSpot Thread Orchestration Pilot Runbook govern any
+- Current increment: Adjudicate the completed `RS-WO-002-06` Architecture Advisor proposal, freeze
+  the ordinary workflow HTTP/DTO contract, and open only the first three bounded interface slices:
+  workflow transport, shared shell, and UI/UX review.
+- Next gate: Record the accepted contract and exact ownership before dispatching `RS-WO-002-07`,
+  `RS-WO-002-08`, and `RS-WO-002-09`. Keep tenant and agent role-page Builders gated until the
+  transport and shell outputs are frozen and reviewed.
+- Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, ADR-RS-0008, and the accepted Requirements
+  and Domain and Data Model documents.
+- Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, ADR-RS-0008, and the RightSpot Thread Orchestration Pilot Runbook govern any
   supporting-task dispatch under this parent.
 - Parent execution posture: `PROGRESSING` — the supporting-task identity and Worktree-path corrections
   are resolved, `RS-WO-002-04` is independently verified against frozen source `28105e4d`, and the
@@ -35,11 +37,11 @@ The implementation must follow the accepted business rules in
 
 This record is the single registered parent Task and the one Task File for the complete first
 ordinary application slice. Its objective and closure evidence describe the parent outcome. The
-current executable increment is narrower: implement and independently verify the bounded
-`RS-WO-002-04` persistence/application boundary before opening the wider API or UI surface. That
-checkpoint is now independently verified; no downstream Work Order is active until its bounded
-consumer and ownership are designed. Later
-implementation, verification, repair, and integration remain sequential
+current executable increment is narrower: implement and independently verify only the currently
+approved interface slices against stable contracts and disjoint ownership. The persistence,
+workflow-core, and discovery boundaries are independently verified; the ordinary workflow
+HTTP/DTO contract is accepted in ADR-RS-0008, but its implementation and UI consumers remain
+separate checkpoints. Later implementation, verification, repair, and integration remain sequential
 checkpoints inside each bounded Work Order, not a second set of registered Tasks or a speculative
 backlog. If a checkpoint is blocked, the main thread may record and activate another Work Order in
 this same file only when it passes the pilot's independent-parallelization gate and does not depend
@@ -61,41 +63,28 @@ verification, integration, or parent-Task closure.
 
 ### Current Work Order controls
 
-- **Dispatch state:** `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; the first `RS-WO-002-02`
-  attempt returned `BLOCKED` on a verification-procedure boundary, and the corrected rerun returned
-  `VERIFIED` at the unchanged execution baseline. `RS-WO-002-03` Builder and bounded Repairer both
-  returned `READY_FOR_VERIFICATION`; its T2 source was frozen at `a60001e`, and the independent Verifier
-  returned `NEEDS_REPAIR` for stale listing revision writes. The bounded Repairer completed in
-  post-repair commit `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04`
-  candidate `68bbc69` was independently verified against frozen source `28105e4d` after one corrected
-  Worktree-path follow-up. Builder,
-  Verifier, Repairer, and Integrator are sequential checkpoints of this Task, not pre-registered child
-  Tasks.
-- **Baseline:** The actual repository root is `WebMCP_Challenge`; the frozen implementation source
-  for the next gate is post-repair commit `6e70c9f`, whose parent T2 source was `a60001e`. The
-  six modified canonical documents are main-thread process-only writeback and are not part of the
-  post-repair implementation commit. The original `RS-WO-002-04` dispatch baseline was reviewed commit
-  `178d8873dc9c4a28a11da313e8425a3a25316b71`; after reviewing the three-path implementation checks,
-  the main thread adopted the exact candidate at T2 implementation commit `68bbc69`. The dedicated
-  verification checkout is frozen at repository commit `28105e4d81b5432e8e2bbf53b783732356bd9380`,
-  created after the candidate adoption writeback and before the Verifier dispatch. The candidate
-  passed dedicated independent verification. The
+- **Dispatch state:** `RS-WO-002-05` is independently verified against clean snapshot `bc3bc42`.
+  `RS-WO-002-06` returned `READY_FOR_REVIEW`; the main thread accepted its useful decomposition with
+  revisions, recorded the local HTTP/DTO contract in ADR-RS-0008, and opened only `RS-WO-002-07`,
+  `RS-WO-002-08`, and `RS-WO-002-09` as currently gated Work Orders. Builder, Verifier, Repairer,
+  Integrator, Advisor, and reviewer roles remain checkpoints under this Task, not pre-registered
+  child Tasks.
+- **Baseline:** The actual repository root is `WebMCP_Challenge`; the latest verified product code
+  remains `de169ce`, and the main-thread documentation decision is being frozen in the next local
+  Git commit before dispatch. Each new Work Order records its own exact source identity. The
   user-authorized Side Chat learning file and process-only Pilot Runbook writeback are classified
   separately from product source. Source identity is checkpoint-scoped and path-owned; it is not a
   permanent full-document hash lock.
 - **Read before action:** Repository `AGENTS.md` and Engineering controls, RightSpot `RUNBOOK.md`,
   `Docs/00-current-status.md`, the relevant product/domain/API/validation documents, ADR-RS-0001
-  through ADR-RS-0006, and the Thread Orchestration Pilot Runbook.
-- **Worker restrictions:** The foundation and domain-core writers have stopped. The current
-  `RS-WO-002-04` Builder may modify only its three declared persistence/application/test paths; the
-  corrected execution must use a dedicated supporting task and isolated Worktree. After it stops, the
-  independent Verifier will have no authored mutable paths. Every checkpoint must
-  classify the declared read, worker-write, main-thread-writeback, forbidden, and generated sets
-  path-by-path; no worker may modify canonical authority, the Git index, or generated state outside
-  explicitly ignored runtime paths. Short response-body assertions must use shell variables or an
-  exact file under `var/test/`; `/tmp` and other external paths are not permitted. No worker may
-  commit, push, deploy, publish, perform external actions, expand product scope, or change canonical
-  authority.
+  through ADR-RS-0008, and the Thread Orchestration Pilot Runbook.
+- **Worker restrictions:** The foundation, domain-core, persistence/application, and discovery
+  writers have stopped. The currently gated slices have separate ownership: `RS-WO-002-07` owns
+  workflow HTTP/DTO paths, `RS-WO-002-08` owns the shared human shell paths, and `RS-WO-002-09` is
+  read-only. Every checkpoint must classify the declared read, worker-write, main-thread-writeback,
+  forbidden, and generated sets path-by-path; no worker may modify canonical authority, the Git
+  index, or generated state outside explicitly ignored runtime paths. No worker may commit, push,
+  deploy, publish, perform external actions, expand product scope, or change canonical authority.
 - **Worker writeback:** The Builder returns its completion report in the supporting thread. It does
   not edit this canonical Task File; the main thread inspects the source and writes authoritative
   status and evidence back here.
@@ -1073,8 +1062,9 @@ snapshot, silently substitute a listing, or add a compatibility fallback.
 **Parent task:** `RIGHTSPOT-002`  
 **Role:** Architecture Advisor  
 **Pre-dispatch status:** `GATED` — the `RS-WO-002-05` candidate is frozen at T2 code commit `de169ce`; the proposal must be reviewed by the main thread before any UI Builder dispatch  
-**Execution state:** `ASSIGNED` — dedicated read-only Architecture Advisor task dispatched for the
-bounded proposal  
+**Execution state:** `INTEGRATED` — the dedicated read-only Architecture Advisor returned
+  `READY_FOR_REVIEW`; the main thread accepted the proposal with recorded revisions and incorporated
+  its useful boundaries into ADR-RS-0008 and the current Work Orders  
 **Parallelization:** `READ_ONLY_PARALLEL` with the `RS-WO-002-05` Verifier; no authored source write  
 **Owner:** Main RightSpot thread; one dedicated supporting task produces the bounded proposal  
 **Risk profile:** `Standard` — cross-surface decomposition and ownership planning without code mutation  
@@ -1083,8 +1073,9 @@ bounded tenant-interface, agent-interface, shared-shell, API, and integration Wo
 each dependency as hard, contract, integration, evidence, or shared-write; identify exact route,
 page, component, test, and application ownership; and recommend the first safe parallel execution
 set for main-thread review.
-**Next gate:** Main-thread adversarial review accepts, revises, or rejects the proposal. No Builder
-may be dispatched from this brief until the main thread records the accepted boundaries and contracts.
+**Next gate:** The proposal review is complete. `RS-WO-002-07`, `RS-WO-002-08`, and `RS-WO-002-09`
+  are the only currently approved follow-on slices; tenant and agent role-page Builders remain gated
+  until the transport and shared-shell outputs are frozen and reviewed.
 
 #### Scope and ownership
 
@@ -1140,6 +1131,315 @@ and distinguish verified facts, inferences, recommendations, and unresolved deci
 scope cannot be established. `READY_FOR_REVIEW` is not code verification and does not authorize a
 Builder or integration by itself.
 
+#### Main-thread adjudication
+
+The main thread reviewed the completed proposal against the live repository, the independently
+verified discovery API, and the accepted MVP boundary. The following conclusions are accepted:
+
+- role-specific UI is genuinely parallelizable once it consumes a stable HTTP/DTO contract and owns
+  disjoint route/page/component paths; zero logical relationship is not required for parallel work;
+- the ordinary local workflow transport must be frozen before tenant and agent pages are opened;
+- the shared shell is a separate bounded consumer of the already verified demo-session endpoints;
+- public DTOs must be explicit role-safe views rather than raw `WorkflowState`, `TenantProjection`,
+  or `AgentProjection`; and
+- normal empty tenant-request and agent-queue states are successful empty results, not errors.
+
+The main thread revised or rejected the following parts of the proposal:
+
+- use the Runbook's canonical parallelization classes only: `SERIAL`, `CONTRACT_PARALLEL`,
+  `READ_ONLY_PARALLEL`, and `INTEGRATION_SERIAL`;
+- do not pre-register a speculative queue of future Work Orders; only the three current slices below
+  are admitted;
+- do not dispatch complete tenant and agent page Builders yet; their implementation starts only
+  after the workflow transport and shared shell reach T2 and pass main-thread review;
+- allow the workflow transport Builder to make a minimal, actor-checked nullable read/queue adapter
+  in `src/server/application/workflow.ts` if the existing non-null projection methods cannot express
+  the accepted empty-state contract, without changing domain or persistence authority; and
+- do not add a UI kit, browser-test dependency, external service, or UI-owned business-state mock.
+
+The accepted contract is [ADR-RS-0008](../Decisions/ADR-RS-0008-ordinary-workflow-http-and-interface-contract.md).
+The next three Work Orders are registered below as `GATED`; their exact source identity and supporting
+task identity will be recorded only after the dispatch transaction succeeds. Their outputs remain
+individually unverified until dedicated Verifier checkpoints complete.
+
+### RS-WO-002-07 — Implement the ordinary workflow HTTP and DTO boundary
+
+**Parent task:** `RIGHTSPOT-002`  
+**Role:** Builder → Verifier (sequential checkpoints)  
+**Pre-dispatch status:** `GATED` — ADR-RS-0008 is accepted; the discovery API and its independent
+verification are complete  
+**Execution state:** `GATED` — not dispatched  
+**Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-08`; `READ_ONLY_PARALLEL` with
+`RS-WO-002-09`  
+**Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent
+Verifier  
+**Risk profile:** `Assured` — cross-layer transport, role authorization, privacy, and durable
+workflow command/read composition  
+**Objective:** Implement only the frozen ordinary local workflow HTTP routes and role-safe DTOs over
+the existing domain, application, session, and persistence authority. The result must make the
+tenant request and agent response operations callable by a human UI without adding UI, a second
+business state, or an external integration.  
+**Next gate:** Builder handoff; the main thread inspects exact paths and freezes the candidate before
+dispatching the dedicated Verifier.  
+**Parent execution posture if blocked:** `CONSTRAINED` — the shared shell and read-only UI/UX review
+may continue, but tenant/agent role-page Builders remain gated.
+
+#### Scope and ownership
+
+**Read set:** Repository instructions and Engineering controls; RightSpot `RUNBOOK.md`; the Pilot
+Runbook; `Docs/00-current-status.md`; the parent Task File; Requirements; System Design; Domain and
+Data Model; API and Integration Contracts; Validation and Evidence; ADR-RS-0001 through ADR-RS-0008;
+and the verified session, listing, workflow, projection, and persistence modules and tests.
+
+**Worker write set — exact authored paths:**
+
+- `src/shared/contracts/workflow-api.ts`;
+- `src/server/application/workflow-views.ts`;
+- `src/server/application/workflow-http.ts`;
+- `src/server/application/workflow.ts` — only a minimal actor-checked nullable tenant-request or
+  agent-queue read method if the existing non-null projection methods cannot express ADR-RS-0008;
+- `app/api/tenant/request/route.ts`;
+- `app/api/tenant/request/submit/route.ts`;
+- `app/api/tenant/request/confirm/route.ts`;
+- `app/api/tenant/request/decline/route.ts`;
+- `app/api/agent/requests/route.ts`;
+- `app/api/agent/requests/[requestId]/route.ts`;
+- `app/api/agent/requests/[requestId]/review/route.ts`;
+- `app/api/agent/requests/[requestId]/preparation/route.ts`;
+- `app/api/agent/requests/[requestId]/send/route.ts`;
+- `tests/application/workflow-views.test.ts`; and
+- `tests/api/workflow.test.ts`.
+
+No other authored path may be added. The Builder owns implementation tests directly necessary for
+this boundary, but not a new aggregate test script or a new testing dependency.
+
+**Main-thread orchestration writeback set:** this Task File, `Docs/00-current-status.md`,
+`Docs/Tasks/README.md`, `Docs/Development/README.md`, `Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`,
+`Docs/05-api-and-integration-contracts.md`, ADR-RS-0008, and `RUNBOOK.md`. The Builder must not edit
+these files.
+
+**Auxiliary process-only set:** none.
+
+**Forbidden set:** `src/server/domain/**`; `src/server/persistence/**`; existing session, listing,
+and health route or application source; `app/layout.tsx`; `app/page.tsx`; UI components and styles;
+package manifests, lockfiles, fixtures, scripts, Git index, canonical documents; external services;
+Cloud Receiver, WebMCP, Redis, WebRTC media, ORM, migration framework, production auth, and any
+commercial scope. No commit, push, deploy, publication, or dispatch of another task is allowed.
+
+**Generated set:** existing ignored RightSpot output (`node_modules/`, `.next/`, `*.tsbuildinfo`,
+`var/rightspot.sqlite*`) and uniquely named workflow test databases under
+`var/test/`. No `/tmp`, home-directory, or external output is allowed.
+
+#### Dependencies and assumptions
+
+- ADR-RS-0008 is the frozen local route, body, DTO, empty-state, error, freshness, and UI-consumer
+  contract.
+- `WorkflowApplication.applyCommand`, the verified projections, the bounded demo session, and the
+  durable workflow store remain the only business authorities.
+- If a safe nullable read cannot be added without changing domain or persistence behavior, stop and
+  return `BLOCKED` with the smallest required main-thread decision; do not expose raw state or invent
+  a UI fallback.
+- If the contract, actor policy, fixture identity, or domain transition must change, stop for
+  re-baselining rather than silently widening this Work Order.
+
+#### Acceptance criteria
+
+- The exact tenant and agent routes in ADR-RS-0008 exist as thin Node-compatible adapters over one
+  application boundary; route handlers do not inspect or mutate SQLite directly.
+- The server derives actor, role, request identity, listing identity, assignment, state transitions,
+  and send kind; client input cannot select a role, actor, arbitrary request identity, assignment, or
+  terminal state.
+- State-changing bodies are strict allowlists with bounded `commandId`, `fixtureGeneration`, and
+  applicable expected request/listing versions. The send route derives the prepared proposal or
+  decline command from authoritative state.
+- Tenant and agent DTOs are explicit and role-safe. They do not expose raw workflow state, actor IDs,
+  processed commands, assignment policy, internal persistence details, or agent-only data to tenants.
+- Initial tenant request reads return `200` with `request: null`, `listing: null`, and an empty
+  timeline; an empty agent queue returns `200`; an unknown agent detail is `404`.
+- Known malformed, unauthenticated, wrong-role/unassigned, missing, conflict/transition/expiry, and
+  persistence failures map to the declared `400`, `401`, `403`, `404`, `409`, and `503` contract
+  without stack traces, SQL, paths, cookies, credentials, or false success.
+- Reads do not mutate request, audit, version, slot, expiry, command, or fixture state. Repeated
+  commands preserve the domain idempotency result, while conflicting command reuse remains visible.
+- Focused tests cover DTO privacy, empty states, route authorization/error mapping, state-changing
+  command forwarding, stale/generation/idempotency behavior, persistence failure, and no-mutation
+  reads. Existing foundation, domain, listing, and session checks remain green.
+- No UI, WebMCP, Cloud Receiver, Redis, WebRTC media, deployment, production-auth, or parent-closure
+  claim is made.
+
+#### Verification and return
+
+Use exact Node.js `v24.20.0`, npm `11.19.0`, and
+`/Users/alex/.local/share/rightspot/node-v24.20.0-darwin-arm64/bin/node`. Run `npm run typecheck`,
+the existing foundation `npm test`, direct focused application/API tests with the pinned `tsx`
+runner, `npm run build`, and `git diff --check`. Exercise every declared route with session, role,
+empty-state, success, conflict, privacy, persistence-failure, and no-mutation checks against an
+isolated `var/test/` database. Inspect source identity, exact path ownership, generated output,
+sensitive scope, and forbidden imports. Return exactly `READY_FOR_VERIFICATION`, `NEEDS_REPAIR`, or
+`BLOCKED` with source identity, runtime, commands/results, changed/generated paths, skipped checks,
+claim boundary, residual risks, and next gate. Do not edit canonical documents, commit, push,
+deploy, or start the Verifier.
+
+#### Stop conditions
+
+Stop at `BLOCKED` if the contract requires a domain, persistence, fixture, auth, dependency, or
+security decision; if an exact path is already owned; if source drift affects a semantic input; if
+the runtime/output boundary cannot be maintained; or if a failure can be hidden only by fallback
+state or a second authority. Do not broaden this into tenant/agent UI or future integration.
+
+### RS-WO-002-08 — Build the shared human application shell
+
+**Parent task:** `RIGHTSPOT-002`  
+**Role:** Builder → Verifier (sequential checkpoints)  
+**Pre-dispatch status:** `GATED` — the verified demo-session endpoints and ADR-RS-0008 shell boundary
+are available  
+**Execution state:** `GATED` — not dispatched  
+**Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-07`; `READ_ONLY_PARALLEL` with
+`RS-WO-002-09`  
+**Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent
+Verifier  
+**Risk profile:** `Standard` — shared presentation ownership and bounded demo-session UX  
+**Objective:** Replace the static placeholder with a minimal, accessible, responsive human shell
+that can establish and end a bounded tenant or agent demo session. It must provide shared navigation
+and status feedback without implementing either role's business pages or owning workflow state.  
+**Next gate:** Builder handoff; main-thread path review and source freeze before independent UI
+verification.  
+**Parent execution posture if blocked:** `CONSTRAINED` — workflow transport and UI/UX review may
+continue; role-page Builders remain gated.
+
+#### Scope and ownership
+
+**Read set:** Repository instructions and Engineering controls; RightSpot `RUNBOOK.md`; the Pilot
+Runbook; current status; parent Task File; Requirements; System Design; API and Integration Contracts;
+Validation and Evidence; ADR-RS-0001 through ADR-RS-0008; and the existing session routes and
+verified session tests.
+
+**Worker write set — exact authored paths:**
+
+- `app/layout.tsx`;
+- `app/page.tsx`;
+- `app/globals.css`;
+- `src/ui/shared/app-shell.tsx`;
+- `src/ui/shared/demo-session-panel.tsx`;
+- `src/ui/shared/session-nav.tsx`;
+- `src/ui/shared/status-banner.tsx`; and
+- `src/ui/shared/session-api.ts`.
+
+No tenant or agent route/page, workflow API, server application, domain, persistence, fixture,
+package, or test path is owned by this Builder.
+
+**Main-thread orchestration writeback set:** this Task File, current status, Development records,
+the roadmap, API/decision documents, and `RUNBOOK.md`. The Builder must not edit them.
+
+**Auxiliary process-only set:** none.
+
+**Forbidden set:** `app/api/**`; `src/server/**`; `src/shared/contracts/**`;
+`app/tenant/**`; `app/agent/**`; tenant/agent business components; package manifests and lockfiles;
+external fonts/services/media; fixture or mock business state; canonical documents; Git index;
+commit/push/deploy/publication; and Cloud Receiver, WebMCP, Redis, WebRTC media, or production auth.
+
+**Generated set:** existing ignored `.next/`, `node_modules/`, and `*.tsbuildinfo` only. No authored
+test dependency or external/generated asset is permitted.
+
+#### Dependencies and assumptions
+
+- The existing `/api/session` contract is the sole session authority; the shell calls it and does
+  not infer role from URL, local storage, query parameters, or client-owned state.
+- The shell may offer the two bounded demo roles and logout, but it must not simulate a request,
+  listing, queue, approval, or response.
+- The root page is a neutral landing/session surface. It may show a bounded signed-in status and
+  navigation placeholder, but must not pretend that a role workflow is implemented.
+
+#### Acceptance criteria
+
+- The application renders through the shared shell with a clear title, semantic landmarks, a
+  keyboard-reachable and labelled demo-session control, visible focus, and text status/error feedback.
+- Sign-in uses only the existing server session endpoint, handles `401`/`400` visibly, shows the
+  server-resolved actor/role, and logout clears the session through the server endpoint.
+- The shell is responsive at narrow and wide viewport widths without requiring a UI kit, custom
+  design system, external font, external media, or browser-test dependency.
+- No UI component is a business authority: it does not invent listings, requests, queue counts,
+  approval state, dates, or terminal outcomes, and it does not duplicate domain clock/version logic.
+- `npm run typecheck`, `npm run build`, and the existing foundation/session tests pass under the
+  exact target runtime; no forbidden path changes occur.
+- The claim is limited to shared shell and bounded demo-session UX. Tenant/agent workflow pages,
+  browser acceptance, integration, deployment, WebMCP, Cloud Receiver, Redis, WebRTC, and parent
+  closure remain open.
+
+#### Verification and return
+
+Use exact Node.js `v24.20.0` and the approved runtime path. Run `npm run typecheck`, `npm test`,
+`npm run build`, `git diff --check`, and a bounded local smoke of `/`, `/api/session` sign-in for
+both roles, session read, logout, invalid input, and unauthenticated state. Inspect semantic
+landmarks, keyboard/focus behavior, narrow/wide layout, exact path ownership, generated output, and
+privacy boundaries. Return `READY_FOR_VERIFICATION`, `NEEDS_REPAIR`, or `BLOCKED`; do not edit
+canonical documents, add a UI dependency, commit, push, deploy, or dispatch another task.
+
+#### Stop conditions
+
+Stop at `BLOCKED` if session behavior requires real authentication, a workflow contract, a new
+dependency, shared business state, or a role-page decision; if another writer owns a declared path;
+or if a design request would expand beyond the minimum shell and session surface.
+
+### RS-WO-002-09 — Review the human interface baseline and future page boundaries
+
+**Parent task:** `RIGHTSPOT-002`  
+**Role:** UI/UX reviewer  
+**Pre-dispatch status:** `GATED` — the ordinary contract is accepted; implementation review is
+read-only and does not wait for role pages  
+**Execution state:** `GATED` — not dispatched  
+**Parallelization:** `READ_ONLY_PARALLEL` with `RS-WO-002-07` and `RS-WO-002-08`  
+**Owner:** Main RightSpot thread; one dedicated read-only supporting task  
+**Risk profile:** `Standard` — human-flow clarity, accessibility, responsive baseline, and ownership
+review without source mutation  
+**Objective:** Produce a bounded, evidence-backed UI/UX acceptance checklist for the shared shell
+and the later tenant and agent Happy Path pages, including information hierarchy, accessibility,
+responsive behavior, demo narrative, and exact ownership boundaries.  
+**Next gate:** Main-thread review of the checklist; it may refine later page Work Orders but cannot
+authorize scope expansion or silently change ADR-RS-0008.  
+**Parent execution posture if blocked:** `PROGRESSING` unless the review reveals a material product,
+privacy, or accessibility decision requiring the human owner's input.
+
+#### Scope and ownership
+
+**Read set:** Repository instructions and Engineering controls; RightSpot `RUNBOOK.md`; the Pilot
+Runbook; current status; parent Task File; Requirements; Product Definition; System Design; API and
+Integration Contracts; Validation and Evidence; ADR-RS-0001 through ADR-RS-0008; current source and
+tests; and the accepted tenant-to-agent Happy Path.
+
+**Worker write set:** none. The reviewer returns the checklist and findings in its supporting-task
+report only. It must not edit code, tests, package files, canonical documents, ADRs, the Task File,
+the Runbook, the Git index, or any external path.
+
+**Main-thread orchestration writeback set:** none during review. The main thread may later promote
+accepted findings into a new bounded Work Order or canonical decision.
+
+**Auxiliary process-only set:** none.
+
+**Forbidden set:** implementation, mock business state, contract mutation, dispatching another task,
+Git operations, deployment, external communication, and Cloud Receiver, WebMCP, Redis, WebRTC media,
+production auth, or unrelated commercial scope.
+
+**Generated set:** none.
+
+#### Review contract
+
+The reviewer must return:
+
+- the minimum shell and session acceptance checklist;
+- tenant discovery/detail/request-dashboard and agent queue/review/response information hierarchy;
+- role and shared-path ownership that preserves disjoint future Builder scopes;
+- keyboard, focus, labels, status/error, responsive, and reduced-motion considerations proportionate
+  to the demo;
+- the minimum judge-facing walkthrough narrative without inventing unimplemented behavior;
+- usability, privacy, or scope risks ranked by decision impact;
+- any current rule that is unnecessarily strict, with evidence and a bounded alternative; and
+- one recommendation, non-goals, residual risks, and the next main-thread decision.
+
+The report must distinguish verified current UI facts, design recommendations, unresolved product
+choices, and checks that require a later running browser. It returns `READY_FOR_REVIEW` or `BLOCKED`;
+it does not claim implementation, browser verification, integration, or parent closure.
+
 ## Parent objective — not the current Builder scope
 
 The following is the complete parent-Task outcome. It must not be sent to one Builder or Verifier as a
@@ -1173,15 +1473,17 @@ confirmation or decline.
 
 ## Next gate
 
-The runnable foundation, `RS-WO-002-03` domain core, and `RS-WO-002-04` durable workflow/application
-boundary are independently verified. `RS-WO-002-05` has produced a frozen tenant entry and listing
-discovery API candidate at T2 code commit `de169ce`; its dedicated independent Verifier is the next
-checkpoint. In parallel, the read-only `RS-WO-002-06` Architecture Advisor may propose bounded
-tenant/agent interface Work Orders. The main thread must review that proposal and record exact
-ownership and contract boundaries before dispatching UI Builders. The parent Task must remain
-`in_progress` until the staged implementation, independent verification, integration, and canonical
-writeback gates for the complete ordinary application slice are complete without adding deferred
-WebRTC/Redis infrastructure.
+The runnable foundation, `RS-WO-002-03` domain core, `RS-WO-002-04` durable workflow/application
+boundary, and `RS-WO-002-05` tenant entry/listing discovery API are independently verified. The
+`RS-WO-002-06` Architecture Advisor proposal returned `READY_FOR_REVIEW`; the main thread accepted
+it with revisions and froze the ordinary local workflow HTTP/DTO boundary in ADR-RS-0008. The only
+currently approved slices are `RS-WO-002-07` workflow transport, `RS-WO-002-08` shared shell, and
+`RS-WO-002-09` read-only UI/UX review. The first two are `CONTRACT_PARALLEL`; the reviewer is
+`READ_ONLY_PARALLEL`. Tenant and agent role-page Builders remain gated until the transport and shell
+outputs reach T2 and pass main-thread review. The parent Task must remain `in_progress` until the
+staged implementation, independent verification, integration, and canonical writeback gates for
+the complete ordinary application slice are complete without adding deferred WebRTC/Redis
+infrastructure.
 
 ## Closure evidence
 

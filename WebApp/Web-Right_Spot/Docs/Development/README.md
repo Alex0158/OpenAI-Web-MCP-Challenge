@@ -1,7 +1,11 @@
 # RightSpot Development and Closure
 
 **Role:** Big-picture roadmap, implementation, verification, collaboration, and closure routing  
-**Status:** Roadmap and thread-orchestration pilot documented; foundation, workflow-core, the `RS-WO-002-04` persistence/application boundary, and the `RS-WO-002-05` tenant entry/listing discovery API are independently verified; the read-only `RS-WO-002-06` Architecture Advisor remains assigned from canonical snapshot `bc3bc42`
+**Status:** Roadmap and thread-orchestration pilot documented; foundation, workflow-core, the
+`RS-WO-002-04` persistence/application boundary, and the `RS-WO-002-05` tenant entry/listing
+discovery API are independently verified; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted
+decomposition is recorded in ADR-RS-0008; `RS-WO-002-07`, `RS-WO-002-08`, and `RS-WO-002-09` are the
+current gated slices
 
 ## Purpose
 
@@ -31,14 +35,15 @@ The main-thread candidate-adoption review for `RS-WO-002-04` is complete and the
 three-path candidate is committed at T2 source `68bbc69`. Its first dedicated read-only Verifier
 attempt stopped before source checks because the prompt described the Worktree root incorrectly; a
 corrected follow-up to the same identity-matching Verifier then returned `VERIFIED` against frozen
-source `28105e4d`. API or UI work remains closed until the next bounded slice is executed. The
-`RS-WO-002-05` Builder returned `READY_FOR_VERIFICATION`; the exact 14-path candidate is frozen at
-T2 code commit `de169ce` and its dedicated independent Verifier returned `VERIFIED` against clean
-snapshot `bc3bc42`. The next read-only planning slice is
-`RS-WO-002-06`, whose Architecture Advisor will propose contract-based tenant/agent interface
-boundaries and shared-path ownership for main-thread review. No UI Builder is authorized until that
-review records the accepted boundaries. A fresh Builder is needed only if a later checkpoint exposes
-a source or behavior gap that cannot be repaired within a separately bounded Work Order. Later
+source `28105e4d`. The `RS-WO-002-05` Builder returned `READY_FOR_VERIFICATION`; the exact 14-path
+candidate is frozen at T2 code commit `de169ce` and its dedicated independent Verifier returned
+`VERIFIED` against clean snapshot `bc3bc42`. The read-only planning slice `RS-WO-002-06` returned
+`READY_FOR_REVIEW`; the main thread accepted its contract-based decomposition with revisions and
+recorded the ordinary workflow HTTP/DTO contract in ADR-RS-0008. Only the three current gated slices
+`RS-WO-002-07` (workflow transport), `RS-WO-002-08` (shared shell), and `RS-WO-002-09` (UI/UX
+review) are admitted. Tenant and agent role-page Builders remain gated until the transport and shell
+outputs are frozen and reviewed. A fresh Builder is needed only if a later checkpoint exposes a
+source or behavior gap that cannot be repaired within a separately bounded Work Order. Later
 Integrator work is opened only when its predecessor produces a concrete code failure or a verified
 source and evidence boundary.
 

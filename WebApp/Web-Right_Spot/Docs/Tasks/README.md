@@ -16,25 +16,16 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-002 — Build the MVP application shell`](RIGHTSPOT-002-build-mvp-application-shell.md)
 
 Active Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
-`RS-WO-002-01` returned `READY_FOR_VERIFICATION`, and the first `RS-WO-002-02` Verifier attempt
-returned `BLOCKED` because its procedure created an output outside the declared RightSpot boundary.
-The same checkpoint's corrected read-only rerun returned `VERIFIED`. The bounded Work Order
-`RS-WO-002-03` Builder and one projection-isolation repair returned `READY_FOR_VERIFICATION`; its T2
-source was frozen at `a60001e`, and its independent Verifier returned `NEEDS_REPAIR` for stale listing
-revision writes. The bounded Repairer completed in post-repair commit `6e70c9f`, and fresh independent
-verification returned `VERIFIED`. The current checkpoint is the bounded persistence/application
-integration Work Order `RS-WO-002-04`. Its prompt was appended to the persisted `RS-WO-002-01`
-supporting thread, so the original handoff was held for a dispatch-identity correction. The main
-thread reconstructed and adopted the exact three-path candidate at T2 commit `68bbc69`; the first
-dedicated read-only Verifier attempt stopped before source checks because the prompt described the
-Worktree root incorrectly, and one corrected follow-up to the same identity-matching Verifier
-returned `VERIFIED` against frozen source `28105e4d`. The next bounded Work Order,
-`RS-WO-002-05`, returned `READY_FOR_VERIFICATION`; its exact 14-path candidate is frozen at T2 code
-commit `de169ce`, and its dedicated independent Verifier returned `VERIFIED` from canonical snapshot
-`bc3bc42`. The parallel planning Work Order `RS-WO-002-06` remains assigned as a read-only
-Architecture Advisor against the same stable candidate; the main thread must review its output before
-any UI Builder dispatch. The user-authorized Side Chat learning artifact and Pilot Runbook writeback
-are process-only changes, not product source drift.
+`RS-WO-002-01` returned `READY_FOR_VERIFICATION`, the corrected `RS-WO-002-02` rerun returned
+`VERIFIED`, `RS-WO-002-03` returned `VERIFIED` after its bounded repair, and `RS-WO-002-04` returned
+`VERIFIED` against frozen source `28105e4d`. `RS-WO-002-05` is independently verified against
+canonical snapshot `bc3bc42`. The read-only Architecture Advisor `RS-WO-002-06` returned
+`READY_FOR_REVIEW`; the main thread accepted its decomposition with revisions, froze the ordinary
+workflow HTTP/DTO contract in ADR-RS-0008, and admitted only `RS-WO-002-07`, `RS-WO-002-08`, and
+`RS-WO-002-09` as the current gated slices. The first two are contract-parallel; the reviewer is
+read-only parallel. Tenant and agent role-page Builders remain gated until the transport and shared
+shell outputs are frozen and reviewed. The user-authorized Side Chat learning artifact and Pilot
+Runbook writeback are process-only changes, not product source drift.
 One registered Task has one Task File. A Work Order is a dispatch brief under that Task; normally
 there is one active Work Order per dependency chain, while explicitly independent slices may run in
 parallel under the same file. Builder, Verifier, Repairer, and Integrator are checkpoints, not

@@ -8,11 +8,10 @@ projection-isolation repair returned `READY_FOR_VERIFICATION`, with T2 source co
 independent verification found a bounded listing-version guard defect; the bounded Repairer completed
 in `6e70c9f`, and fresh independent verification returned `VERIFIED`; `RS-WO-002-04` candidate adoption
 completed at T2 commit `68bbc69`; after one procedural Worktree-path correction, the dedicated
-independent Verifier returned `VERIFIED` against frozen source `28105e4d`; the next bounded
-`RS-WO-002-05` tenant entry/listing discovery API Builder returned `READY_FOR_VERIFICATION`, and its
-dedicated Verifier independently returned `VERIFIED` against frozen code `de169ce` from canonical
-snapshot `bc3bc42`; the read-only `RS-WO-002-06` Architecture Advisor remains assigned pending
-main-thread review
+independent Verifier returned `VERIFIED` against frozen source `28105e4d`; the `RS-WO-002-05` tenant
+entry/listing discovery API candidate `de169ce` was independently verified from canonical snapshot
+`bc3bc42`; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in
+ADR-RS-0008; `RS-WO-002-07`, `RS-WO-002-08`, and `RS-WO-002-09` are the current gated slices
 
 ## 1. Authority and reading order
 

@@ -1,7 +1,8 @@
 # RightSpot — Application and Integration Contracts
 
 **Role:** Application boundary and future integration seams  
-**Status:** MVP logical contract and implementation stack accepted; no wire-level transport is frozen
+**Status:** MVP logical contract and implementation stack accepted; the ordinary local workflow
+HTTP/DTO boundary is frozen by [ADR-RS-0008](Decisions/ADR-RS-0008-ordinary-workflow-http-and-interface-contract.md)
 
 ## 1. Contract principle
 
@@ -9,8 +10,9 @@ RightSpot first exposes ordinary application operations around its own domain tr
 submits bounded intents; the backend resolves identity, authorization, current state, and request
 version; the backend returns a role-authorized projection and an explicit result.
 
-No endpoint names, serialization format, or transport is final in this document. The implementation
-stack is governed by ADR-RS-0003 and is not redefined by this logical contract document.
+The ordinary local workflow endpoint names, body allowlists, role DTO boundary, empty-state semantics,
+and error mapping are frozen by ADR-RS-0008. The implementation stack is governed by ADR-RS-0003 and
+is not redefined by this logical contract document. Future integration transports remain separate.
 
 ## 2. Logical operation groups
 
@@ -151,8 +153,8 @@ payloads merely to reserve names.
 
 The remaining choices are implementation or later integration details:
 
-- concrete session storage for the bounded demo login;
-- ordinary transport and serialization format;
+- concrete session storage beyond the bounded local demo login;
+- transport or serialization for future external integration;
 - audit storage and development-only inspection surface;
 - event/outbox representation and future external event mapping; and
 - public versus internal operation exposure; and
