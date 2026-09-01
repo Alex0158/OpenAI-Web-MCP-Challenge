@@ -18,9 +18,9 @@
 - Current increment: `RS-WO-015-01` has returned a bounded Builder candidate for Operations domain
   types, deterministic fixture generation, separate SQLite persistence, validation, and profile-local
   reset; the main thread found and required one orphan-link validation amendment before handoff.
-- Next gate: Dispatch `RS-WO-015-02` to independently verify the amended candidate before a projection
+- Next gate: `RS-WO-015-02` must independently verify the amended candidate before a projection
   consumer, transport, route, UI, navigation, or WebMCP Work Order is registered.
-- Execution posture: `BUILDER_HANDOFF_COMPLETE`; this task is separate from the closed relay MVP,
+- Execution posture: `AUTHORITY_VERIFICATION_IN_PROGRESS`; this task is separate from the closed relay MVP,
   closed Field Desk lane, and unresolved Favourite/Information Request proposals.
 
 ## Accepted implementation boundary
@@ -169,14 +169,14 @@ browser, deployment, WebMCP, or consumer evidence is claimed here.
 ## RS-WO-015-02 — Independently verify the Operations authority candidate
 
 **Role:** Independent Verifier  
-**Status:** `READY_FOR_DISPATCH`  
+**Status:** `ASSIGNED`  
 **Parallelization:** `SERIAL_AUTHORITY_VERIFICATION` — must complete before any Operations projection or consumer Work Order  
 **Risk profile:** `Assured` — verifies a new persistence authority, strict validation, reset atomicity, and relay isolation  
-**Supporting worker:** Not yet assigned  
+**Supporting worker:** Multi-agent Independent Verifier `01a05e0d-4add-7f10-a659-85651c54629d` (`Anscombe`)  
 **Source under verification:** `3f041a0d0477f2fba0aedb93c5e048d21334254d` with parent baseline `8fe597689b4cfe9e118b9d0bd9a19dd83b94079e`  
 **Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-015-01-builder`  
-**Dispatch state:** `READY_FOR_DISPATCH`  
-**Next gate:** Dispatch an independent read-only verifier against the exact candidate commit; no repair, integration, or consumer work in this checkpoint  
+**Dispatch state:** `ASSIGNED`; independent read-only verification is in progress  
+**Next gate:** Receive the verifier verdict against the exact candidate commit; no repair, integration, or consumer work in this checkpoint  
 **Ownership:** The Verifier owns evidence only. The main thread owns any disposition, source freeze, integration, canonical writeback, and closure.
 
 ### Verifier read set
