@@ -20,6 +20,13 @@ import {
 export const MAX_IDENTIFIER_LENGTH = 100;
 export const MAX_NOTE_LENGTH = 500;
 export const MAX_TENANT_NOTE_LENGTH = 500;
+export const MAX_LISTING_TITLE_LENGTH = 120;
+export const MAX_LISTING_ADDRESS_LENGTH = 160;
+export const MAX_LISTING_AREA_LENGTH = 80;
+export const MAX_LISTING_DESCRIPTION_LENGTH = 600;
+export const MAX_MONTHLY_RENT_GBP = 100_000;
+export const MAX_BEDROOM_COUNT = 20;
+export const MAX_LISTING_SIZE_SQ_M = 10_000;
 export const PROPOSAL_WINDOW_HOURS = 24;
 
 const TERMINAL_STATES: ReadonlySet<RequestState> = new Set([
@@ -30,6 +37,7 @@ const TERMINAL_STATES: ReadonlySet<RequestState> = new Set([
 ]);
 
 const ISO_IDENTIFIER_PATTERN = /^[A-Za-z0-9._:-]+$/;
+const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 export function createInitialWorkflowState(
   overrides: Partial<Pick<WorkflowState, "fixtureGeneration" | "tenantId" | "agentId" | "listings" | "slots">> = {},
@@ -590,6 +598,34 @@ function validateWorkflowState(state: WorkflowState): void {
     if (listing.assignedAgentId !== state.agentId) {
       throw domainError("VALIDATION_FAILED", "Listing agent assignment is invalid");
     }
+    validateRequiredText(listing.title, MAX_LISTING_TITLE_LENGTH, "Listing title");
+    validateRequiredText(listing.address, MAX_LISTING_ADDRESS_LENGTH, "Listing address");
+    validateRequiredText(listing.area, MAX_LISTING_AREA_LENGTH, "Listing area");
+    validateRequiredText(
+      listing.description,
+      MAX_LISTING_DESCRIPTION_LENGTH,
+      "Listing description",
+    );
+    validateIdentifier(listing.imageKey, "listing image key");
+    validateBoundedInteger(
+      listing.monthlyRentGbp,
+      1,
+      MAX_MONTHLY_RENT_GBP,
+      "Listing monthly rent",
+    );
+    validateBoundedInteger(
+      listing.bedrooms,
+      0,
+      MAX_BEDROOM_COUNT,
+      "Listing bedroom count",
+    );
+    validateBoundedInteger(
+      listing.sizeSqM,
+      1,
+      MAX_LISTING_SIZE_SQ_M,
+      "Listing size",
+    );
+    validateIsoDate(listing.availableFrom, "Listing available-from date");
   }
   for (const slot of state.slots) {
     validateIdentifier(slot.id, "slot identifier");
@@ -625,6 +661,40 @@ function validateWorkflowState(state: WorkflowState): void {
     if (!requestListing || state.request.agentId !== requestListing.assignedAgentId) {
       throw domainError("VALIDATION_FAILED", "Request agent assignment is invalid");
     }
+  }
+}
+
+function validateRequiredText(value: string, max: number, label: string): void {
+  if (
+    typeof value !== "string"
+    || value.length > max
+    || value.trim().length === 0
+    || value !== value.trim()
+  ) {
+    throw domainError("VALIDATION_FAILED", `${label} is outside its bounds`);
+  }
+}
+
+function validateBoundedInteger(
+  value: number,
+  min: number,
+  max: number,
+  label: string,
+): void {
+  if (!Number.isInteger(value) || value < min || value > max) {
+    throw domainError("VALIDATION_FAILED", `${label} is outside its bounds`);
+  }
+}
+
+function validateIsoDate(value: string, label: string): void {
+  const parsed = Date.parse(`${value}T00:00:00.000Z`);
+  if (
+    typeof value !== "string"
+    || !ISO_DATE_PATTERN.test(value)
+    || !Number.isFinite(parsed)
+    || new Date(parsed).toISOString().slice(0, 10) !== value
+  ) {
+    throw domainError("VALIDATION_FAILED", `${label} is invalid`);
   }
 }
 
@@ -684,9 +754,51 @@ function addHours(now: string, hours: number): string {
 
 function createDefaultListings(agentId: string): Listing[] {
   return [
-    { id: "listing-primary", version: 1, status: "PUBLISHED", assignedAgentId: agentId },
-    { id: "listing-north", version: 1, status: "PUBLISHED", assignedAgentId: agentId },
-    { id: "listing-riverside", version: 1, status: "PUBLISHED", assignedAgentId: agentId },
+    {
+      id: "listing-primary",
+      version: 1,
+      status: "PUBLISHED",
+      assignedAgentId: agentId,
+      title: "Canal Wharf Apartment",
+      address: "14 Demo Wharf, London N1 0AA",
+      area: "Islington",
+      monthlyRentGbp: 2450,
+      bedrooms: 2,
+      sizeSqM: 74,
+      availableFrom: "2026-09-15",
+      description: "A synthetic two-bedroom apartment with a bright living space near the canal.",
+      imageKey: "listing-primary",
+    },
+    {
+      id: "listing-north",
+      version: 1,
+      status: "PUBLISHED",
+      assignedAgentId: agentId,
+      title: "Northfield Garden Flat",
+      address: "82 Sample Lane, London N8 8AA",
+      area: "Haringey",
+      monthlyRentGbp: 1950,
+      bedrooms: 2,
+      sizeSqM: 65,
+      availableFrom: "2026-10-01",
+      description: "A synthetic ground-floor flat with a private garden and separate kitchen.",
+      imageKey: "listing-north",
+    },
+    {
+      id: "listing-riverside",
+      version: 1,
+      status: "PUBLISHED",
+      assignedAgentId: agentId,
+      title: "Riverside Studio",
+      address: "5 Fictional Quay, London SE1 2AA",
+      area: "Southwark",
+      monthlyRentGbp: 1650,
+      bedrooms: 1,
+      sizeSqM: 42,
+      availableFrom: "2026-09-20",
+      description: "A synthetic riverside studio with an efficient layout and local transport links.",
+      imageKey: "listing-riverside",
+    },
   ];
 }
 

@@ -5,6 +5,7 @@ import {
   type AgentProjection,
   type Listing,
   type ProjectionOutcome,
+  type TenantListing,
   type TenantProjection,
   type WorkflowState,
 } from "./types";
@@ -37,9 +38,25 @@ export function readTenantProjection(
         response: request.sentResponse ? cloneRequest(request.sentResponse) : undefined,
         proposalExpiresAt: request.proposalExpiresAt,
       },
-      listing: { ...listing },
+      listing: toTenantListing(listing),
       timeline: evaluated.state.audit.map((entry) => ({ ...entry })),
     },
+  };
+}
+
+export function toTenantListing(listing: Listing): TenantListing {
+  return {
+    id: listing.id,
+    version: listing.version,
+    title: listing.title,
+    address: listing.address,
+    area: listing.area,
+    monthlyRentGbp: listing.monthlyRentGbp,
+    bedrooms: listing.bedrooms,
+    sizeSqM: listing.sizeSqM,
+    availableFrom: listing.availableFrom,
+    description: listing.description,
+    imageKey: listing.imageKey,
   };
 }
 

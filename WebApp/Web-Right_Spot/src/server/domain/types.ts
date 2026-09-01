@@ -24,7 +24,18 @@ export type Listing = {
   version: number;
   status: ListingStatus;
   assignedAgentId: string;
+  title: string;
+  address: string;
+  area: string;
+  monthlyRentGbp: number;
+  bedrooms: number;
+  sizeSqM: number;
+  availableFrom: string;
+  description: string;
+  imageKey: string;
 };
+
+export type TenantListing = Omit<Listing, "assignedAgentId" | "status">;
 
 export type AvailabilitySlot = {
   id: string;
@@ -198,7 +209,7 @@ export type TenantProjection = {
     response?: SentResponse;
     proposalExpiresAt?: string;
   };
-  listing: Listing;
+  listing: TenantListing;
   timeline: AuditEntry[];
 };
 

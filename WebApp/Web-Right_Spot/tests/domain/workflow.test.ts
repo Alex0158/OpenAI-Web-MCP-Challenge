@@ -129,6 +129,75 @@ test("proposal Happy Path preserves authoritative transitions and exact slot lif
   assert.equal(state.slots[0]?.heldByRequestId, undefined);
 });
 
+test("the deterministic fixture carries exactly three bounded synthetic listing records", () => {
+  const state = createInitialWorkflowState();
+  assert.deepEqual(state.listings.map((listing) => ({
+    id: listing.id,
+    version: listing.version,
+    status: listing.status,
+    assignedAgentId: listing.assignedAgentId,
+    title: listing.title,
+    area: listing.area,
+    monthlyRentGbp: listing.monthlyRentGbp,
+    bedrooms: listing.bedrooms,
+    sizeSqM: listing.sizeSqM,
+    availableFrom: listing.availableFrom,
+    imageKey: listing.imageKey,
+  })), [
+    {
+      id: "listing-primary",
+      version: 1,
+      status: "PUBLISHED",
+      assignedAgentId: "agent-demo",
+      title: "Canal Wharf Apartment",
+      area: "Islington",
+      monthlyRentGbp: 2450,
+      bedrooms: 2,
+      sizeSqM: 74,
+      availableFrom: "2026-09-15",
+      imageKey: "listing-primary",
+    },
+    {
+      id: "listing-north",
+      version: 1,
+      status: "PUBLISHED",
+      assignedAgentId: "agent-demo",
+      title: "Northfield Garden Flat",
+      area: "Haringey",
+      monthlyRentGbp: 1950,
+      bedrooms: 2,
+      sizeSqM: 65,
+      availableFrom: "2026-10-01",
+      imageKey: "listing-north",
+    },
+    {
+      id: "listing-riverside",
+      version: 1,
+      status: "PUBLISHED",
+      assignedAgentId: "agent-demo",
+      title: "Riverside Studio",
+      area: "Southwark",
+      monthlyRentGbp: 1650,
+      bedrooms: 1,
+      sizeSqM: 42,
+      availableFrom: "2026-09-20",
+      imageKey: "listing-riverside",
+    },
+  ]);
+  assert.equal(state.listings.every((listing) => listing.description.length > 0), true);
+  assert.equal(state.listings.every((listing) => !listing.address.includes("http")), true);
+});
+
+test("invalid listing discovery metadata fails workflow validation visibly", () => {
+  const state = createInitialWorkflowState();
+  state.listings[0]!.availableFrom = "2026-02-31";
+  const outcome = executeCommand(state, command("START_AGENT_REVIEW", {
+    commandId: "invalid-listing-metadata-1",
+    actor: AGENT,
+  }), NOW);
+  expectFailure(outcome, "VALIDATION_FAILED");
+});
+
 test("agent decline requires preparation and reaches a terminal state", () => {
   let state = startReview(submit(createDraft()));
   const beforeSend = state.request?.version;
@@ -344,6 +413,9 @@ test("role projections keep private agent fields and unrelated data out of tenan
   assert.equal("internalReviewNote" in tenant.projection.request, false);
   assert.equal("preparedResponse" in tenant.projection.request, false);
   assert.equal("processedCommands" in tenant.projection, false);
+  assert.equal("assignedAgentId" in tenant.projection.listing, false);
+  assert.equal("status" in tenant.projection.listing, false);
+  assert.equal(agent.projection.listing.assignedAgentId, AGENT.id);
   assert.equal(agent.projection.request.internalReviewNote, "Matches the tenant's first preference.");
   assert.equal(agent.projection.availability.length, 3);
   assert.equal("credentials" in agent.projection.request, false);

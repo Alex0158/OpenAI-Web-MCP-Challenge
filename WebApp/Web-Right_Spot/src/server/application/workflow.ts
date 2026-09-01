@@ -13,6 +13,13 @@ import type {
   WorkflowCommand,
   WorkflowState,
 } from "../domain/types";
+import {
+  readTenantListing,
+  readTenantListings,
+  type ListingCollection,
+  type ListingDetail,
+  type ListingFilters,
+} from "./listings";
 
 export class WorkflowApplication {
   private readonly store: WorkflowStore;
@@ -41,6 +48,14 @@ export class WorkflowApplication {
     now: string,
   ): ProjectionOutcome<AgentProjection> {
     return this.store.readAgentProjection(actor, now);
+  }
+
+  readTenantListings(actor: Actor, filters: ListingFilters = {}): ListingCollection {
+    return readTenantListings(this.store.readState(), actor, filters);
+  }
+
+  readTenantListing(actor: Actor, listingId: string): ListingDetail {
+    return readTenantListing(this.store.readState(), actor, listingId);
   }
 
   reset(now: string = DEFAULT_SNAPSHOT_TIMESTAMP): WorkflowResetResult {
