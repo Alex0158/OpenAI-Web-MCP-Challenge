@@ -135,6 +135,24 @@ profile and authority recommendation, time/lifecycle rules, fixture/reset plan, 
 privacy matrix, exact future decomposition, unresolved decisions, alternatives, and claim limits. Stop
 after the report; the main thread owns all acceptance and follow-on dispatch.
 
+## Main-thread review disposition
+
+`RS-WO-013-01` returned `READY_FOR_REVIEW` from Architecture/Data Authority Advisor
+`01a05dee-3fea-7561-9076-54bdd053f647` (`Pauli`). The Advisor observed requested baseline
+`0f6cc8ebd7e27e9fe2241c5138873c103b136b58` and current `HEAD`
+`34ec459d2b1fb3289777bccdfc813f92b3081e51`; the difference was limited to process/document files,
+with no source, test, fixture, runtime, browser, or Git metadata mutation. Collaborator-owned dirty
+and untracked paths remained outside the proposal.
+
+The main thread accepts the proposal with the following bounded revisions, now recorded in
+ADR-RS-0012: use a separate application-owned Operations SQLite file; implement current-state
+records only; include explicit `firstPublishedAt` rather than publication history; use five assigned
+synthetic listings, one unassigned negative listing, four requests, and at least six slots; keep the
+first manual query families to upcoming viewings and listing pipeline; enforce a fixed result cap
+without introducing cursors; and defer history, relisting, natural-language parsing, WebMCP, charts,
+Favourite/Information Request metrics, and external services. `RIGHTSPOT-015` is the resulting first
+implementation gate. No dashboard, API, route, UI, or WebMCP capability is claimed by this proposal.
+
 ## Closure gate
 
 Close this task only after the main thread reviews `RS-WO-013-01` and records a durable decision and
