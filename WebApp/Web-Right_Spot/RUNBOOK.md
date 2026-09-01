@@ -9,10 +9,10 @@ independent verification found a bounded listing-version guard defect; the bound
 in `6e70c9f`, and fresh independent verification returned `VERIFIED`; `RS-WO-002-04` candidate adoption
 completed at T2 commit `68bbc69`; after one procedural Worktree-path correction, the dedicated
 independent Verifier returned `VERIFIED` against frozen source `28105e4d`; the next bounded
-`RS-WO-002-05` tenant entry/listing discovery API Builder returned `READY_FOR_VERIFICATION` and its
-candidate is frozen at T2 code commit `de169ce`; its dedicated Verifier and the read-only
-`RS-WO-002-06` Architecture Advisor are assigned from canonical snapshot `bc3bc42`, pending
-independent verification and main-thread review
+`RS-WO-002-05` tenant entry/listing discovery API Builder returned `READY_FOR_VERIFICATION`, and its
+dedicated Verifier independently returned `VERIFIED` against frozen code `de169ce` from canonical
+snapshot `bc3bc42`; the read-only `RS-WO-002-06` Architecture Advisor remains assigned pending
+main-thread review
 
 ## 1. Authority and reading order
 

@@ -16,10 +16,10 @@ The implementation must follow the accepted business rules in
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Independently verify the Builder-delivered `RS-WO-002-05` tenant entry and
-  listing discovery API while preparing the first bounded parallel interface decomposition.
-- Next gate: Review the two dispatched supporting-task outputs — the frozen `RS-WO-002-05` Verifier
-  and the read-only `RS-WO-002-06` Architecture Advisor — before opening tenant/agent UI Builders.
+- Current increment: Review the completed independent verification of `RS-WO-002-05` and the still
+  running read-only `RS-WO-002-06` Architecture Advisor proposal before deciding the first UI slices.
+- Next gate: Complete main-thread adjudication of the two dispatched outputs and record accepted
+  ownership/contracts before opening tenant/agent UI Builders.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -912,8 +912,8 @@ Redis, WebRTC, or parent-task closure.
 
 #### Independent Verifier checkpoint
 
-**Execution state:** `ASSIGNED` — a dedicated independent Verifier has been dispatched against the
-prepared verification snapshot  
+**Execution state:** `VERIFIED` — the dedicated independent Verifier reproduced the checkpoint and
+returned `VERIFIED` against the frozen source snapshot  
 **Parallelization:** `READ_ONLY_PARALLEL` with `RS-WO-002-06`; the Verifier reads the frozen candidate
 while the Advisor reads the same stable source in a separate Worktree  
 **Source snapshot:** canonical checkout commit `bc3bc42`, containing the frozen T2 code candidate
@@ -924,9 +924,9 @@ while the Advisor reads the same stable source in a separate Worktree
 Verifier checkpoint and not reused from an earlier Work Order  
 **Worker write set:** none; the Verifier must not repair, edit tests, regenerate fixtures, or modify
 canonical documents  
-**Next gate:** Main-thread classification of `VERIFIED`, `NEEDS_REPAIR`, or `BLOCKED`; only a
-`VERIFIED` result permits the main thread to close the discovery checkpoint and open the next
-implementation boundary.
+**Next gate:** Main-thread canonical writeback may close this discovery checkpoint. The next
+implementation boundary remains gated on review of `RS-WO-002-06`; this verification does not by
+itself authorize a UI Builder.
 
 The Verifier must independently inspect the exact source snapshot and reproduce the declared runtime,
 typecheck, foundation and focused checks, production build, route/API smoke, scope/path, and
@@ -935,6 +935,26 @@ must not accept Builder prose as proof, and must not claim browser/UI, request, 
 WebMCP, Cloud Receiver, Redis, WebRTC, or parent closure. Any failure must include the first failing
 command or observation, exact source identity, affected claim, classification, and the bounded repair
 or decision condition.
+
+#### Independent verification result
+
+The Verifier returned `VERIFIED` from the detached Worktree at
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-05-verifier`, HEAD
+`bc3bc42834004d71f5b08080b5aed29f2ecb482e`, with a clean tree before and after checks. It confirmed
+the frozen code commit `de169ce8ff01586f8e7071c159433eb0d01cf6b6` changed exactly the declared 14
+paths, while the documentation-only commits after it changed no code, tests, or package files.
+
+Independent evidence: Node.js `v24.20.0`, npm `11.19.0`, `npm ci --no-audit --no-fund`, typecheck,
+foundation tests `6/6`, focused discovery files `27/27`, affected five-file suite `35/35`, production
+build, and built-server smoke all passed. Smoke covered tenant session/listing reads, filters,
+published and unknown/unpublished detail, agent `403`, missing/forged session `401`, invalid input
+`400`, logout, persistence failure `503`, no-mutation, and tenant response privacy. No additional
+dependency or forbidden scope was found; only documented ignored generated output was present.
+
+The claim is limited to the local tenant entry, demo-session, and listing discovery/detail API
+checkpoint. Browser/UI, request-command transport, agent queue/response, deployment, WebMCP, Cloud
+Receiver, Redis, WebRTC, production authentication, and parent closure remain unverified. The
+supporting task did not edit source, tests, documents, or Git state.
 
 #### Scope and ownership
 
