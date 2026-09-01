@@ -1,7 +1,7 @@
 # RIGHTSPOT-013: Establish the Operations Insights profile authority
 
 **Type:** `architecture`  
-**Lifecycle:** `in_progress`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for the next substantial RightSpot demonstration increment  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-01  
@@ -11,19 +11,19 @@ without treating that proposal as canonical authority
 ## Task Control
 
 - Type: `architecture`
-- Lifecycle: `in_progress`
+- Lifecycle: `closed`
 - Priority: `P1`
 - Owner: Main RightSpot thread
 - Objective: Define the smallest authoritative, deterministic Operations Insights profile that can
   later support a manual read-only dashboard and page-authored WebMCP queries without weakening the
   existing relay workflow, privacy boundary, or reset contract.
-- Current increment: `RS-WO-013-01` is a read-only Architecture/Data Authority proposal. It must settle
-  profile isolation, data ownership, time/lifecycle semantics, fixture/reset behavior, and the future
-  consumer seams before any Operations route, API, UI, or WebMCP implementation is registered.
-- Next gate: The main thread reviews the proposal, accepts a bounded ADR and implementation sequence,
-  or records a rejected/deferred disposition. No implementation is authorized by this task alone.
-- Execution posture: `READ_ONLY_ARCHITECTURE_ADVISOR`; this task is independent of the closed Field
-  Desk lane, the verified `RIGHTSPOT-011` pure seam, and the unresolved Favourite/Information Request
+- Current increment: `RS-WO-013-01` returned `READY_FOR_REVIEW`; the main thread accepted its bounded
+  profile direction with the revisions recorded in ADR-RS-0012 and registered `RIGHTSPOT-015` for the
+  first authority/persistence implementation slice.
+- Next gate: `RIGHTSPOT-015` must implement and independently verify the Operations profile authority
+  and reset boundary before any Operations projection consumer, route, API, UI, or WebMCP work begins.
+- Execution posture: `REVIEWED_ACCEPTED_CLOSED`; this task is independent of the closed Field Desk lane,
+  the closed `RIGHTSPOT-011` relay-only seam, and the unresolved Favourite/Information Request
   proposals.
 
 ## Why this task exists
