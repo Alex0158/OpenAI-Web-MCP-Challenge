@@ -1038,6 +1038,9 @@ the proposed text without editing the shared tree.
 ### 9.5.1 Worktree closure and archive rule
 
 A physical Worktree is an execution surface, not an evidence register and not a Codex task record.
+Worktree retirement is checkpoint-scoped, not parent-Task-scoped: once a bounded output has passed
+its required gate and has been safely integrated into Main, its physical checkout must not remain
+open merely because sibling Work Orders or the parent Task are still active.
 When a Work Order closes, the main thread must classify its checkout before any cleanup:
 
 - `integrated/clean`: the intended output is in the canonical source and the checkout has no
@@ -1064,6 +1067,37 @@ After cleanup, verify `git worktree list --porcelain`, confirm the exact removed
 update current-status, roadmap, and owning Task File references so historical paths are clearly marked
 as historical. Historical chronology may retain the old path and identity as evidence, but current-truth
 sections must not describe a removed Worktree as an active source or execution surface.
+
+### 9.5.2 Prompt integration and checkout retirement
+
+The main thread integrates each bounded output at the first safe point after its required acceptance
+gate; it must not batch completed outputs until an unrelated sibling or the parent Task finishes:
+
+- a Work Order without an independent-verification requirement may proceed after the Builder's
+  self-check, main-thread scope inspection, and required focused checks pass;
+- a Work Order with an independent Verifier remains isolated until the Verifier returns `VERIFIED`
+  against the frozen T2 source; and
+- a repaired candidate requires fresh verification before it is accepted into Main.
+
+For disjoint parallel lanes, each output may be integrated and retired independently. Shared contracts,
+shared files, and semantic conflicts remain serialized at the integration boundary. Timely integration
+does not bypass a required verification gate, ownership review, or post-integration check.
+
+The normal per-checkpoint close sequence is:
+
+```text
+required gate passes
+    -> main inspects exact output and ownership
+    -> integrate into Main
+    -> rerun invalidated checks
+    -> record evidence and checkpoint state
+    -> remove the exact integrated/clean Worktree
+```
+
+If integration, post-integration validation, ownership classification, or recovery assessment is
+blocked, retain the Worktree and report the affected checkpoint. Do not delete it to reduce workspace
+noise. Preserve a commit, Task File record, or named local-only archive ref when historical recovery
+requires it; preserve the evidence, not the physical checkout.
 
 ### 9.6 Work Order and supporting-task identity
 

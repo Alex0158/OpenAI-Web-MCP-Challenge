@@ -14,8 +14,9 @@
 - Priority: `P1`
 - Owner: Main RightSpot thread
 - Current increment: Produce one evidence-backed proposal for a structured tenant Information Request and its authorized agent handling projection, including contact-channel preferences, requested information topics, and an open message, without implementing the capability.
-- Next gate: Receive the assigned Advisor proposal, then have the main thread review it and either
-  accept a bounded decision plus a later implementation task, or record a rejected/not-planned
+- Next gate: The main thread reviews the returned Advisor proposal, jointly with `RIGHTSPOT-008`
+  where their listing, tenant-navigation, privacy, and agent-surface boundaries overlap, then either
+  accepts a bounded decision plus a later implementation task or records a rejected/not-planned
   disposition and its reopen condition.
 - Dependencies: The accepted ordinary rental MVP remains authoritative; the existing Viewing Request workflow, role/privacy boundaries, and listing identity remain in force. `RIGHTSPOT-008` is adjacent context only and must not be treated as accepted behavior or an implementation dependency. No external authentication, email/phone/WhatsApp provider, WebMCP, Cloud Receiver, deployment, or credential gate is required for this proposal.
 

@@ -2,7 +2,7 @@
 
 **Status:** Accepted — experimental, RightSpot-scoped, opt-in
 **Decision date:** 2026-08-31
-**Clarification date:** 2026-09-01
+**Clarification date:** 2026-09-02
 **Decision owner:** Main RightSpot thread
 
 ## Context
@@ -305,6 +305,22 @@ not a Builder completion claim and must not silently include unrelated work.
 If the candidate's ownership, inputs, changed paths, or behavior cannot be reconstructed confidently,
 preserve it as evidence and keep the checkpoint blocked until a fresh Builder can work from a clean,
 explicitly identified baseline.
+
+### 7.6 Integrate accepted outputs promptly and retire physical checkouts
+
+A supporting Worktree is a temporary execution surface, not a second long-lived product workspace.
+After a bounded output passes its required acceptance gate, the main thread integrates that output
+into the canonical Main Worktree at the first safe point and does not wait for unrelated sibling Work
+Orders or parent-Task closure. A Work Order that requires independent verification remains isolated
+until its frozen source is reported `VERIFIED`; prompt integration never bypasses verification,
+ownership review, or post-integration checks.
+
+After the output is integrated, the main thread records the exact evidence and retires the physical
+Worktree when it is `integrated/clean`. Disjoint parallel outputs may be integrated independently;
+shared files and semantic contracts remain serialized. Unresolved, dirty, rejected, or dependency-
+bearing checkouts remain protected until their evidence and recovery path are resolved. A commit,
+Task File, or named local-only archive ref may preserve recovery history, but retaining a physical
+checkout is not the default.
 
 ### 8. Use staged gates rather than an automatic loop
 

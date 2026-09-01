@@ -17,6 +17,11 @@ Main Worktree at `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge` on `main`. Worktre
 remove Codex task records or branch refs. Re-run the command before relying on this snapshot for a new
 dispatch or cleanup decision.
 
+Temporary Worktree lifecycle is checkpoint-scoped: after a bounded output passes its required gate
+and is integrated into Main, retire the exact extra checkout promptly; do not retain it until the
+parent Task closes. Unresolved, dirty, rejected, or dependency-bearing checkouts remain protected
+under the [pilot Runbook](Docs/Development/RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-RUNBOOK.md).
+
 ## 1. Authority and reading order
 
 RightSpot inherits the repository's engineering and safety rules. Read these in order:

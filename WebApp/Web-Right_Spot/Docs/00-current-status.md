@@ -294,18 +294,39 @@ and DTO boundaries. The durable evidence is recorded in
 The remaining paragraphs record the earlier checkpoint sequence for audit context; they do not reopen the
 closed parent or override the current closure statement above.
 
+## 5.1 Current post-MVP route
+
+The accepted local MVP and the Phase 6 post-MVP closure increment are complete. No product
+implementation Work Order is active. The next route is:
+
+1. close the current RightSpot documentation/procedure increment as an exact reviewed Git baseline,
+   without staging or changing unrelated collaborator work;
+2. review `RS-WO-008-01` and `RS-WO-009-01` jointly because their listing, tenant-navigation,
+   privacy, request, contact-preference, and agent-surface boundaries overlap;
+3. if accepted, record the durable decision(s) and register a separate implementation Task—neither
+   proposal Task authorizes product code;
+4. split that implementation into bounded domain/data/API, tenant UI, agent UI, serialized shared
+   integration, and independent verification checkpoints;
+5. keep `RIGHTSPOT-006` gated on explicit external credentials and local-origin authorization;
+6. treat `RIGHTSPOT-010` as a later Operations/WebMCP decision gate and `RIGHTSPOT-012` as a
+   non-blocking read-only audit lane.
+
+Only an explicitly selected, implementation-ready Task may open a code Work Order or temporary
+Worktree. The accepted Worktree lifecycle is prompt integration into Main followed by
+checkpoint-scoped retirement.
+
+## 5.2 Accepted MVP Work Order boundary (historical closure)
+
 The first `RS-WO-002-02` result is recorded as a procedural `BLOCKED`, and the corrected rerun is
 now `VERIFIED` against the unchanged source/runtime identity. The bounded `RS-WO-002-03` domain-core
 implementation and projection-isolation repair were independently checked against frozen commit
 `a60001e`; the bounded Repairer completed the exact two-path repair in `6e70c9f`; fresh independent verification returned `VERIFIED`. `RS-WO-002-04` was initially held because its prompt was appended to the persisted `RS-WO-002-01` supporting thread. The main thread reconstructed the exact three-path candidate and adopted it at T2 commit `68bbc69`. The first dedicated Verifier dispatch then stopped before source checks because the prompt incorrectly expected a nested `WebMCP_Challenge` directory inside the detached Worktree; one corrected follow-up to the same identity-matching Verifier returned `VERIFIED` against frozen source `28105e4d`. The parent execution posture is now `PROGRESSING`, not globally blocked: `RS-WO-002-05` Builder returned `READY_FOR_VERIFICATION`, its exact 14-path candidate was integrated at T2 code commit `de169ce`, and its dedicated independent Verifier returned `VERIFIED` against canonical snapshot `bc3bc42`. The read-only `RS-WO-002-06` Architecture Advisor returned `READY_FOR_REVIEW`; the main thread accepted its decomposition with revisions and froze the ordinary workflow HTTP/DTO contract in ADR-RS-0008. `RS-WO-002-07` candidate `d71fe3e` passed dedicated independent verification, including foundation `6/6`, focused `9/9`, full direct `50/50`, build, built-server HTTP, role/privacy/conflict, and no-mutation evidence, and is integrated at product commit `f700ba9`; `RS-WO-002-08` passed dedicated independent verification after a generated-output boundary re-baseline in process commit `8b77bdd` and is integrated at product commit `006d2fd`; `RS-WO-002-09` is integrated as bounded guidance; `RS-WO-002-11` candidate `f1f83c7` passed dedicated independent verification and is integrated at product commit `6a0b4b8`. The next gate is to complete the assigned disjoint tenant and agent role-page Work Orders `RS-WO-002-12` and `RS-WO-002-13`, then independently verify and integrate each before the cross-role browser walkthrough. The user-authorized Side Chat learning file and process-only Runbook writeback are classified separately and are not product source drift. Do not claim complete product-flow or parent closure from this checkpoint alone.
-The authoritative role-page disposition is integrated tenant and agent role pages: repaired tenant
+The historical role-page disposition was integrated tenant and agent role pages: repaired tenant
 candidate `52cba87c` for `RS-WO-002-12` is integrated at `9348aa5`, after `RS-WO-002-13` passed
 independent verification and was integrated at `3765747`; `RS-WO-002-14` passed direct combined
-cross-role verification, while browser walkthrough and closure evidence remain required. The eventual implementation remains
-without Cloud Receiver, WebMCP, Redis, or WebRTC media
-dependencies.
-
-## 5.1 Accepted MVP Work Order boundary (historical closure)
+cross-role verification. At that historical checkpoint, the browser walkthrough and closure evidence
+remained required; both are complete as stated in the current closure section above. The eventual
+implementation remained without Cloud Receiver, WebMCP, Redis, or WebRTC media dependencies.
 
 Current checkpoint: `RS-WO-002-14` passed direct combined cross-role verification against the integrated
 source, and `RS-WO-002-15` passed the isolated browser walkthrough from

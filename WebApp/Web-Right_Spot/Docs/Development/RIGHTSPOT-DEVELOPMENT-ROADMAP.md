@@ -1,8 +1,9 @@
 # RightSpot Development Roadmap
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
-**Status:** Phase 5 is complete for the accepted local MVP. The current Phase 6 closure increment is
-complete.
+**Status:** Phase 5 is complete for the accepted local MVP, and the Phase 6 post-MVP closure increment
+is complete. The current route is the post-MVP decision gate described in Section 3.1; no product
+implementation Work Order is active.
 `RS-WO-005-01` has passed corrected independent verification and is integrated at local product
 commit `27f5391`; `RS-WO-007-01` is accepted as a read-only UI decomposition and `RS-WO-007-02` has
 passed final independent browser verification and is integrated at product commit `89a50c7` after
@@ -87,6 +88,35 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 6. Post-MVP product refinement | Resolve high-impact navigation friction, strengthen visual credibility, and add a truthful Operations foundation without changing relay workflow authority | Each bounded candidate is independently verified and integrated before the next shared-surface change | Closure increment complete; `RS-WO-005-01` integrated at `27f5391`; `RIGHTSPOT-007` closed after `RS-WO-007-08` integrated regression; `RS-WO-011-01`/`02` verified and integrated at `7ff0fbd` as a server-only relay seam; `RIGHTSPOT-013` and `RIGHTSPOT-014` closed with their accepted decisions; `RIGHTSPOT-015` closed at `e7f30d5`; `RS-WO-016-01` independently verified and integrated at `edd7575`; `RS-WO-017-02` integrated at `b7369bd`; `RS-WO-017-03` independently verified and integrated at `2a53917`, with `RS-WO-017-04` browser verification complete; `RS-WO-018-01` integrated and closed at `5eef037`; and `RS-WO-019-01` integrated and closed at `6f52686` after browser/form regression |
 | 7. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary refinement is stable and a new explicit integration decision exists | Deferred; not scheduled |
 
+### 3.1 Current next route
+
+The accepted local MVP and the Phase 6 post-MVP closure increment are complete. The next route is a
+decision-first sequence, not an open-ended implementation wave:
+
+1. Close the current RightSpot documentation/procedure increment as an exact reviewed Git baseline;
+   unrelated collaborator changes remain outside its scope.
+2. Review `RS-WO-008-01` and `RS-WO-009-01` together in the main thread. Reconcile their shared
+   listing-detail, tenant-navigation, privacy, request, contact-preference, and agent-surface
+   boundaries before choosing implementation.
+3. If the joint review is accepted, record the durable decision(s) and register a separate bounded
+   implementation Task. The proposal Tasks remain proposal-only and must not receive product code.
+4. Decompose that implementation Task into bounded domain/data/API work, tenant and agent surfaces,
+   serialized shared integration, and independent verification. Tenant and agent UI may run in
+   parallel only after their contracts, routes, shared-shell ownership, and test boundaries are
+   stable.
+5. Keep `RIGHTSPOT-006` outside the implementation lane until the explicit external credential and
+   local-origin gate is authorized. It is a separate high-risk lane and must not block ordinary
+   product progress.
+6. Review `RIGHTSPOT-010` after its proposal is dispositioned and the product value of an Operations
+   or WebMCP surface is explicitly selected. Its proposal does not authorize WebMCP or dashboard
+   implementation.
+7. Keep `RIGHTSPOT-012` as a non-blocking, read-only audit lane. It may identify follow-on work but
+   does not itself constitute a product implementation milestone.
+
+Only an explicitly selected, implementation-ready Task opens a new code Work Order or temporary
+Worktree. Each accepted output is integrated into Main and its physical Worktree is retired at the
+first safe checkpoint-scoped opportunity under the orchestration Runbook.
+
 ## 4. Roadmap operating rules
 
 - The roadmap stays at milestone level. It must not become a catalogue of every future click,
@@ -112,11 +142,11 @@ fresh database against integrated source `9348aa50b63e3f4f46e77238ad370670383d9d
 evidence is recorded in [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md), and
 `RIGHTSPOT-002` is closed. Future work requires a new explicit scope decision.
 
-The current post-MVP scope is now explicitly admitted: `RIGHTSPOT-005` addresses verified
-role-aware post-login navigation, and `RIGHTSPOT-007` implements the accepted Field Desk direction
-starting with a shared CSS foundation. These increments do not reopen the accepted MVP closure or
-authorize external authentication, WebMCP, Cloud Receiver, deployment, or commercial-marketplace
-scope.
+The previously admitted post-MVP increments, including `RIGHTSPOT-005` and `RIGHTSPOT-007`, are
+closed historical work rather than the current implementation queue. The current next route is the
+decision-first sequence in [Section 3.1](#31-current-next-route). It does not reopen the accepted
+MVP closure or authorize external authentication, WebMCP, Cloud Receiver, deployment, or
+commercial-marketplace scope by itself.
 
 ### Historical execution chronology
 

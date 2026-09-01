@@ -15,8 +15,9 @@
 - Owner: Main RightSpot thread
 - Current increment: Produce one evidence-backed proposal for a read-first Agent Operations Insights dashboard in which a non-technical property agent can express bounded operational questions through a page-authored WebMCP tool surface and see the verified result in the normal RightSpot web UI.
 - Next gate: The main thread reviews the proposal and either accepts a bounded dashboard/tool/data decision plus a later implementation task, or records a rejected/not-planned disposition and its reopen condition.
-- Execution posture: `IN_PROGRESS`; a read-only proposal Advisor is assigned. This does not authorize
-  implementation, WebMCP registration, or canonical writeback.
+- Execution posture: `READ_ONLY_ADVISORY`; the proposal Advisor returned `READY_FOR_REVIEW` and the
+  main-thread review is pending. This does not authorize implementation, WebMCP registration, or
+  canonical writeback.
 - Dependencies: The accepted ordinary rental MVP, current role/privacy authority, and existing listing/request identity remain in force. `RIGHTSPOT-008` and `RIGHTSPOT-009` are adjacent proposal tasks only and must not be treated as accepted behavior or implementation dependencies. No external authentication, WebMCP registration, Cloud Receiver, deployment, reporting provider, or credential gate is required for this proposal.
 
 ## Bounded objective

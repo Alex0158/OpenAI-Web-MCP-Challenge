@@ -97,6 +97,14 @@ independently verified and integrated at `edd7575`; `RS-WO-017-03` is independen
 integrated at `2a53917`, with `RS-WO-017-04` browser verification complete. `RS-WO-019-01` is closed
 after its bounded browser/form regression passed. No closed task is an active implementation gate.
 
+**Current route:** No post-MVP implementation Work Order is active. The main thread first closes the
+current RightSpot documentation/procedure baseline, then jointly reviews the returned proposal
+Work Orders `RS-WO-008-01` and `RS-WO-009-01`. If accepted, it records the durable decision(s) and
+registers a separate implementation Task; proposal Tasks remain proposal-only. `RIGHTSPOT-006` stays
+gated on explicit external credentials and local-origin authorization. `RIGHTSPOT-010` is a later
+Operations/WebMCP decision gate, while `RIGHTSPOT-012` is non-blocking read-only audit work. Only an
+explicitly selected, implementation-ready Task may open code Work Orders or temporary Worktrees.
+
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.
 
