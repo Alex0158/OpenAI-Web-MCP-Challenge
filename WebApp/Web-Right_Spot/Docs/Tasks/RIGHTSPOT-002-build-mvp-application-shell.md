@@ -1300,8 +1300,9 @@ state or a second authority. Do not broaden this into tenant/agent UI or future 
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — the verified demo-session endpoints and ADR-RS-0008 shell boundary
 are available  
-**Execution state:** `ASSIGNED` — the same Builder task resumed after process re-baseline commit
-`8b77bdd`; no Verifier has started and no product candidate is adopted  
+**Execution state:** `VERIFYING` — Builder handoff passed main-thread T2 path review; candidate
+`52a8f101b4de9f039261dd5c50e3094c8c948ae3` is frozen and the dedicated independent Verifier is
+running  
 **Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-07`; `READ_ONLY_PARALLEL` with
 `RS-WO-002-09`  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent
@@ -1310,12 +1311,15 @@ Verifier
 **Objective:** Replace the static placeholder with a minimal, accessible, responsive human shell
 that can establish and end a bounded tenant or agent demo session. It must provide shared navigation
 and status feedback without implementing either role's business pages or owning workflow state.  
-**Next gate:** Builder handoff; main-thread path review and source freeze before independent UI
-verification.  
+**Next gate:** Independent verification of the frozen T2 candidate; no product writer may modify
+the frozen source until the Verifier returns.  
 **Dispatch state:** Dispatched from clean detached source `c758634aa5d046e089e051ee74e463756b73a202`;
 execution Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-08-shared-shell`; supporting-task
-identity `01a05b58-a280-7ca0-8b19-df4bc78da099` (`local`). No source write was authorized before the
-main-thread acknowledgement.  
+identity `01a05b58-a280-7ca0-8b19-df4bc78da099` (`local`). The Builder returned
+`READY_FOR_VERIFICATION`; main-thread T2 review committed the exact eight authored paths at
+`52a8f101b4de9f039261dd5c50e3094c8c948ae3`. The independent Verifier is dispatched in Worktree
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-08-verifier` with supporting-task identity
+`01a05b6a-4f17-7b33-a30c-1d761f1f4192` (`local`). No source write is authorized during verification.  
 **Parent execution posture if blocked:** `CONSTRAINED` — workflow transport and UI/UX review may
 continue; role-page Builders remain gated.
 
