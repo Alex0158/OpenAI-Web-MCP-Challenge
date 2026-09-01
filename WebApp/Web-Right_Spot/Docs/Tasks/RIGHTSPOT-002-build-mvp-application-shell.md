@@ -18,9 +18,10 @@ The implementation must follow the accepted business rules in
 - Owner: Main RightSpot thread
 - Current increment: Implement the disjoint tenant and property-agent role-page slices in parallel
   against the verified shared role frame, workflow transport, listing discovery API, and DTO contracts.
-- Next gate: Dispatch `RS-WO-002-12` and `RS-WO-002-13` as separate Builders, review each frozen candidate
-  independently, then run their dedicated Verifiers before any cross-role integration or browser Happy
-  Path claim. Their exact route, component, test, and shared-boundary ownership are recorded below.
+- Next gate: Review the frozen candidates from the assigned `RS-WO-002-12` and `RS-WO-002-13` Builders,
+  independently verify each candidate, then integrate only passing outputs before any cross-role
+  integration or browser Happy Path claim. Their exact route, component, test, and shared-boundary
+  ownership are recorded below.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, ADR-RS-0008, and the accepted Requirements
   and Domain and Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, ADR-RS-0008, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -1667,8 +1668,8 @@ dedicated independent verification and was cherry-picked into main at product co
 semantics so tenant and agent pages can consume one session boundary without duplicating auth UX or
 editing shared files in parallel. Keep this seam presentation-only; it must not read, own, or mutate
 workflow, listing, queue, or decision state.  
-**Next gate:** This Work Order is integrated. Dispatch the disjoint tenant and agent page Builders in
-parallel against the verified shared seam, then independently verify each before cross-role integration.  
+**Next gate:** This Work Order is integrated. The disjoint tenant and agent page Builders are assigned
+in parallel against the verified shared seam; independently verify each before cross-role integration.  
 **Dispatch state:** Dispatched from clean source `7e8506f78c58927008672c1185115d7ecb90671a`; execution
 Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-11-shared-role-frame`; package root
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-11-shared-role-frame/WebApp/Web-Right_Spot`; runtime-pin
@@ -1779,8 +1780,8 @@ unclaimed.
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — the shared role-page frame, listing discovery API, workflow
 transport, and tenant DTO contract are integrated and independently verified  
-**Execution state:** `GATED` — not dispatched; the main thread is preparing the exact tenant-owned
-surface and will assign one dedicated Builder followed by one independent Verifier  
+**Execution state:** `ASSIGNED` — the dedicated tenant Builder is establishing context and implementing
+the bounded tenant-owned surface  
 **Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-13`; route, component, helper, test, and CSS
 ownership are disjoint, while both consume the same frozen read-only contracts  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent Verifier  
@@ -1789,11 +1790,14 @@ ownership are disjoint, while both consume the same frozen read-only contracts
 seeded published listings, inspect one listing, create and submit the one bounded Viewing Request, and
 later read and respond to the agent's proposal or decline. Keep server workflow state authoritative;
 the UI may hold transient form input but must not invent transitions, identity, versions, or fallback data.  
-**Next gate:** Dispatch only after the main thread records the final source baseline and supporting-task
-identity. The Builder must return a frozen exact-path candidate; an independent Verifier must pass it
-before the tenant output is integrated or described as end-to-end evidence.  
-**Dispatch state:** Not dispatched. The exact execution Worktree, package root, runtime pin, and task
-identity will be recorded here after the dispatch returns a usable thread identity.  
+**Next gate:** Complete the bounded Builder handoff, then independently verify the frozen exact-path
+candidate before the tenant output is integrated or described as end-to-end evidence.  
+**Dispatch state:** Dispatched from clean baseline `8b33399ce5769bdb58cd08025ac2c1917675daf3`; execution
+Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-tenant-ui`; package root
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-tenant-ui/WebApp/Web-Right_Spot`; runtime-pin path
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-12-tenant-ui/.node-version`; supporting-task identity
+`01a05ba2-34d4-7613-892d-c0776203073c` (`local`). The full prompt was persisted after the usable thread
+identity returned; no source write is authorized before context establishment.  
 **Parent execution posture if blocked:** `CONSTRAINED` only for the tenant interface; the agent interface,
 read-only analysis, and process work may continue if they do not consume a blocked tenant write set.
 
@@ -1916,8 +1920,8 @@ media, agent management, or future integration.
 **Role:** Builder → Verifier (sequential checkpoints)  
 **Pre-dispatch status:** `GATED` — the shared role-page frame, workflow transport, agent DTO contract,
 and UI/UX guidance are integrated and independently verified  
-**Execution state:** `GATED` — not dispatched; the main thread is preparing the exact agent-owned
-surface and will assign one dedicated Builder followed by one independent Verifier  
+**Execution state:** `ASSIGNED` — the dedicated agent Builder is establishing context and implementing
+the bounded agent-owned surface  
 **Parallelization:** `CONTRACT_PARALLEL` with `RS-WO-002-12`; route, component, helper, test, and CSS
 ownership are disjoint, while both consume the same frozen read-only contracts  
 **Owner:** Main RightSpot thread; one dedicated Builder followed by one dedicated independent Verifier  
@@ -1926,11 +1930,14 @@ ownership are disjoint, while both consume the same frozen read-only contracts
 the assigned request queue, inspect the authorized request and availability, start review, prepare a
 slot proposal or decline, and explicitly send the prepared human decision. Keep the server/application
 workflow authoritative and preserve the separation between preparation and consequence.  
-**Next gate:** Dispatch only after the main thread records the final source baseline and supporting-task
-identity. The Builder must return a frozen exact-path candidate; an independent Verifier must pass it
-before the agent output is integrated or described as end-to-end evidence.  
-**Dispatch state:** Not dispatched. The exact execution Worktree, package root, runtime pin, and task
-identity will be recorded here after the dispatch returns a usable thread identity.  
+**Next gate:** Complete the bounded Builder handoff, then independently verify the frozen exact-path
+candidate before the agent output is integrated or described as end-to-end evidence.  
+**Dispatch state:** Dispatched from clean baseline `8b33399ce5769bdb58cd08025ac2c1917675daf3`; execution
+Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-agent-ui`; package root
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-agent-ui/WebApp/Web-Right_Spot`; runtime-pin path
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-13-agent-ui/.node-version`; supporting-task identity
+`01a05ba2-3d53-7bd3-934c-6238237576fd` (`local`). The full prompt was persisted after the usable thread
+identity returned; no source write is authorized before context establishment.  
 **Parent execution posture if blocked:** `CONSTRAINED` only for the agent interface; the tenant interface,
 read-only analysis, and process work may continue if they do not consume a blocked agent write set.
 
@@ -2083,7 +2090,7 @@ it with revisions and froze the ordinary local workflow HTTP/DTO boundary in ADR
 `RS-WO-002-07` workflow transport is independently verified and integrated at `f700ba9`; the
 `RS-WO-002-08` shared shell is independently verified and integrated at `006d2fd`; and
 `RS-WO-002-09` is integrated as read-only UI/UX guidance, and `RS-WO-002-11` is integrated at product
-commit `6a0b4b8` after dedicated independent verification. The next gate is to dispatch the accepted
+commit `6a0b4b8` after dedicated independent verification. The current gate is to complete the assigned
 disjoint tenant and agent role-page Work Orders `RS-WO-002-12` and `RS-WO-002-13` against these stable
 interfaces, then independently verify each before their outputs are integrated or used for a cross-role
 browser claim. The parent Task

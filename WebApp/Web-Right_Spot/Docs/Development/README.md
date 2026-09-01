@@ -52,7 +52,7 @@ dedicated independent verification after a generated-output boundary re-baseline
 `8b77bdd` and is integrated at product commit `006d2fd`; the reviewer output is integrated as guidance.
 `RS-WO-002-11` Builder returned `READY_FOR_VERIFICATION`; the exact four-path candidate `f1f83c7` passed
 dedicated independent verification and is integrated at product commit `6a0b4b8`. `RS-WO-002-12` and
-`RS-WO-002-13` are now the active disjoint tenant and agent role-page Builder candidates. A fresh Builder is needed only if a later checkpoint exposes a
+`RS-WO-002-13` are now the assigned disjoint tenant and agent role-page Builder checkpoints. A fresh Builder is needed only if a later checkpoint exposes a
 source or behavior gap that cannot be repaired within a separately bounded Work Order. Later
 Integrator work is opened only when its predecessor produces a concrete code failure or a verified
 source and evidence boundary.

@@ -73,7 +73,7 @@ identity-matching Verifier returned `VERIFIED` against frozen source `28105e4d`.
 independently verified at T2 code commit `de169ce` from canonical snapshot `bc3bc42`. The read-only
 `RS-WO-002-06` Architecture Advisor returned `READY_FOR_REVIEW`; the main thread accepted its
 decomposition with revisions and froze the ordinary workflow HTTP/DTO contract in ADR-RS-0008. The
-current gate is to dispatch the accepted bounded tenant and agent role-page Work Orders `RS-WO-002-12`
+current gate is to complete the assigned bounded tenant and agent role-page Work Orders `RS-WO-002-12`
 and `RS-WO-002-13` against the integrated workflow transport `f700ba9`, shared shell `006d2fd`, and
 shared role frame `6a0b4b8`. `RS-WO-002-08` reached product
 integration after a generated-output boundary incident was re-baselined in process commit `8b77bdd`;
