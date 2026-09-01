@@ -1,7 +1,7 @@
 # RightSpot Development Roadmap
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
-**Status:** Phase 3 complete — authoritative workflow domain core independently verified; the Phase 4 persistence/application boundary, `RS-WO-002-05` discovery API, and `RS-WO-002-07` workflow HTTP/DTO boundary are independently verified; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in ADR-RS-0008; `RS-WO-002-07` is integrated at product commit `f700ba9`; `RS-WO-002-08` is integrated at product commit `006d2fd` after process re-baseline commit `8b77bdd`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-10` Architecture Advisor is assigned to review the role-page decomposition; tenant and agent role-page delivery is the next increment
+**Status:** Phase 3 complete — authoritative workflow domain core independently verified; the Phase 4 persistence/application boundary, `RS-WO-002-05` discovery API, and `RS-WO-002-07` workflow HTTP/DTO boundary are independently verified; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in ADR-RS-0008; `RS-WO-002-07` is integrated at product commit `f700ba9`; `RS-WO-002-08` is integrated at product commit `006d2fd` after process re-baseline commit `8b77bdd`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-10` returned `READY_FOR_REVIEW` and its decomposition is accepted; `RS-WO-002-11` is the next gated shared-frame increment before parallel tenant and agent role-page delivery
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-01, Europe/London
 
@@ -76,8 +76,8 @@ decomposition with revisions and froze the ordinary workflow HTTP/DTO contract i
 current gate is to design and review the bounded tenant and agent role-page Work Orders against the
 integrated workflow transport `f700ba9` and shared shell `006d2fd`. `RS-WO-002-08` reached product
 integration after a generated-output boundary incident was re-baselined in process commit `8b77bdd`;
-`RS-WO-002-09` UI/UX review is integrated as guidance. `RS-WO-002-10` is the current assigned
-read-only architecture review for the role-page split. The tenant and agent pages must retain disjoint
+`RS-WO-002-09` UI/UX review is integrated as guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW`
+and its role-page split is accepted; the current gated prerequisite is `RS-WO-002-11`. The tenant and agent pages must retain disjoint
 route/component/test ownership, consume the existing HTTP/DTO boundary, and remain separately
 verifiable before their outputs are coupled. The integrated shell and transport do not authorize
 opening the full API/UI surface as one assignment. The user-authorized Side Chat process lane is not

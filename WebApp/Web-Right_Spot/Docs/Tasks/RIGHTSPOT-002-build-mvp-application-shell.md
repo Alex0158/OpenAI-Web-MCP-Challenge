@@ -16,12 +16,12 @@ The implementation must follow the accepted business rules in
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Reconcile the independently verified workflow HTTP/DTO boundary and shared
-  shell into the main branch, then open the next bounded tenant and agent role-page slices against
-  those stable interfaces.
-- Next gate: Complete canonical writeback for `RS-WO-002-07`, preserve the accepted `RS-WO-002-09`
-  UI guidance, and define the smallest disjoint tenant/agent page Work Orders. Their exact route,
-  component, test, and shared-boundary ownership must be reviewed before dispatch.
+- Current increment: Use the accepted role-page decomposition to complete the minimal shared role
+  frame, then dispatch the disjoint tenant and property-agent page slices in parallel against the
+  integrated transport and shell contracts.
+- Next gate: Execute and independently verify `RS-WO-002-11`, then freeze its shared seam and dispatch
+  only the approved tenant and agent Builders. Their exact route, component, test, and shared-boundary
+  ownership are recorded in the accepted architecture review.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, ADR-RS-0008, and the accepted Requirements
   and Domain and Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, ADR-RS-0008, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -69,9 +69,10 @@ verification, integration, or parent-Task closure.
   `RS-WO-002-08`, and `RS-WO-002-09` from baseline `c758634`. `RS-WO-002-07` and `RS-WO-002-08`
   passed dedicated independent verification and are integrated at product commits `f700ba9` and
   `006d2fd`; `RS-WO-002-09` returned `READY_FOR_REVIEW` and its bounded checklist is integrated as
-  later UI guidance. There is no active product writer at this checkpoint. Builder, Verifier,
-  Repairer, Integrator, Advisor, and reviewer roles remain checkpoints under this Task, not
-  pre-registered child Tasks.
+  later UI guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW`; the main thread accepted its
+  decomposition and opened the minimal serial shared-role-frame slice `RS-WO-002-11`. There is no
+  active product writer at this checkpoint. Builder, Verifier, Repairer, Integrator, Advisor, and
+  reviewer roles remain checkpoints under this Task, not pre-registered child Tasks.
 - **Baseline:** The actual repository root is `WebMCP_Challenge`; the latest integrated product code
   is `f700ba9` (workflow transport plus the previously integrated shell); the accepted
   workflow/interface documentation baseline was frozen in `c758634` before dispatch. Each new Work
@@ -1547,8 +1548,8 @@ verification or product-flow evidence.
 **Role:** Architecture Advisor  
 **Pre-dispatch status:** `GATED` — the workflow HTTP/DTO transport and shared shell are integrated,
 and the accepted UI/UX guidance is available  
-**Execution state:** `ASSIGNED` — the read-only Architecture Advisor is establishing context and
-preparing the decomposition proposal  
+**Execution state:** `INTEGRATED` — the read-only Architecture Advisor returned `READY_FOR_REVIEW`
+and the main thread accepted the decomposition with the shared-role-frame revision below  
 **Parallelization:** `SERIAL` as a planning gate before the next role-page Builder dispatches  
 **Owner:** Main RightSpot thread; one read-only Architecture Advisor  
 **Risk profile:** `Standard` — route/component ownership, shared-shell coupling, role isolation, and
@@ -1557,8 +1558,8 @@ human-flow completeness
 implementation slices. Determine whether both role pages can be built in parallel from the integrated
 transport and shell, identify the smallest shared seam if they cannot, and return exact disjoint
 Work Order boundaries for main-thread approval.  
-**Next gate:** Main-thread review of the proposal. No role-page Builder may be dispatched from this
-Work Order until the main thread accepts or revises the proposed ownership and integration order.  
+**Next gate:** Execute the accepted serial shared-role-frame Work Order `RS-WO-002-11`; role-page
+Builders remain gated until that shared seam is frozen and independently verified.  
 **Dispatch state:** Dispatched from clean source `a654658d2d50de24fd601f4fb863ec66e19bdff9`; execution
 Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-10-advisor`; package root
 `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-10-advisor/WebApp/Web-Right_Spot`; runtime-pin path
@@ -1629,6 +1630,120 @@ Confirm the actual execution Worktree root, source identity, clean state, and no
 Return `READY_FOR_REVIEW` with verified facts, recommendations, exact proposed ownership, dependency
 classification, and claim boundaries, or return `BLOCKED` with the first failing boundary and resume
 condition. Do not implement, dispatch, commit, or claim browser/product-flow verification.
+
+#### Main-thread review result
+
+The Advisor returned `READY_FOR_REVIEW` from clean detached source
+`a654658d2d50de24fd601f4fb863ec66e19bdff9`, with the declared execution Worktree confirmed as the
+actual Git root and no source, runtime, or external mutation. The main thread accepts the central
+finding: tenant and agent UI have no hard dependency once ADR-RS-0008, listing discovery, session,
+role/privacy, version, fixture-generation, and `409` refetch contracts are stable. They can later be
+implemented as separate contract-parallel Builders with disjoint route, component, client-helper,
+and test paths.
+
+The main thread also accepts the Advisor's minimal serial prerequisite, with the following bounded
+scope: generalize the shared authenticated role-page frame, provide the signed-in role workspace
+entry link, and make `SessionNav`'s current-route semantics correct outside `/`. This is an
+implementation seam, not a product-scope expansion; it must not read or mutate workflow state. The
+Advisor's proposed tenant and agent path sets remain design guidance until `RS-WO-002-11` is
+independently verified and frozen. The suggestion to add a browser-test dependency is not adopted.
+
+### RS-WO-002-11 — Generalize the authenticated role-page frame
+
+**Parent task:** `RIGHTSPOT-002`  
+**Role:** Builder → Verifier (sequential checkpoints)  
+**Pre-dispatch status:** `GATED` — `RS-WO-002-10` decomposition is accepted; role-page Builders are
+gated on this shared seam  
+**Execution state:** `GATED` — ready for main-thread dispatch preparation  
+**Parallelization:** `SERIAL` prerequisite for the tenant and agent role-page Builders  
+**Owner:** Main RightSpot thread; one dedicated Builder followed by one independent Verifier  
+**Risk profile:** `Standard` — shared session presentation, route semantics, and accessibility  
+**Objective:** Add the smallest reusable authenticated role-page frame and correct shared navigation
+semantics so tenant and agent pages can consume one session boundary without duplicating auth UX or
+editing shared files in parallel. Keep this seam presentation-only; it must not read, own, or mutate
+workflow, listing, queue, or decision state.  
+**Next gate:** Main-thread T2 review, then independent verification of the exact shared-shell candidate.
+Only after that candidate is verified may tenant and agent page Builders be dispatched in parallel.  
+**Dispatch state:** Not dispatched. The main thread will record the exact clean source, Worktree, and
+supporting-task identity before activation.  
+**Parent execution posture if blocked:** `CONSTRAINED` for role-page implementation; independent
+read-only analysis and process work may continue.
+
+#### Scope and ownership
+
+**Read set:** Repository instructions and Engineering controls; RightSpot `RUNBOOK.md`; the Pilot
+Runbook; current status; this Task File; Requirements; System Design; API and Integration Contracts;
+Validation and Evidence; ADR-RS-0001 through ADR-RS-0008; `RS-WO-002-09` guidance; and the current
+integrated shared shell, session endpoint, workflow transport, and listing API.
+
+**Worker write set — exact authored paths:**
+
+- `src/ui/shared/app-shell.tsx`;
+- `src/ui/shared/demo-session-panel.tsx`;
+- `src/ui/shared/session-nav.tsx`; and
+- `src/ui/shared/role-page-frame.tsx` (new).
+
+**Main-thread orchestration writeback set:** this Task File, `Docs/00-current-status.md`,
+`Docs/Tasks/README.md`, `Docs/Development/README.md`, `Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`,
+and `RUNBOOK.md`. The Builder must not edit these files.
+
+**Auxiliary process-only set:** none.
+
+**Forbidden set:** `app/layout.tsx`; `app/page.tsx` except through the existing `AppShell` import
+surface (the Builder must not change the route file); `app/globals.css`; `src/ui/shared/session-api.ts`;
+`src/ui/shared/status-banner.tsx`; all tenant/agent page paths; all API, application, domain,
+persistence, fixture, script, package, contract, ADR, canonical-document, Git, deployment, and
+external paths; new dependencies; browser-test installation; WebMCP, Cloud Receiver, Redis, WebRTC,
+production auth, and commercial scope. No commit, push, deploy, or follow-on dispatch is allowed.
+
+**Generated set:** existing ignored `.next/`, `node_modules/`, `*.tsbuildinfo`, and `var/test/**`
+outputs only; preserve them and do not create external artifacts.
+
+#### Dependencies and assumptions
+
+- `SessionNav`, `StatusBanner`, and `session-api` remain read-only reusable inputs except for the
+  declared current-route correction in `session-nav.tsx`.
+- The frame must use the existing server session endpoint and `readSession`/`deleteSession`; it must
+  not accept a client-selected actor or role as authority.
+- The frame may accept a required role, current path, title/landmark metadata, and children; it must
+  render role content only after the server-resolved actor matches the required role.
+- Unauthenticated and wrong-role states must be visible and must not load or mutate role business
+  state. Logout remains an ordinary session endpoint action.
+
+#### Acceptance criteria
+
+- Signed-in root users receive a clear role-specific workspace entry link based on the server-resolved
+  actor, without a client role selector becoming authority.
+- `SessionNav` marks the home link current only on `/` and supports a role page without incorrect
+  `aria-current`; existing root shell behavior remains valid.
+- `RolePageFrame` provides loading, unauthenticated, wrong-role, active-session, logout, semantic
+  landmark, visible status/error, keyboard/focus, and responsive presentation states using existing
+  shared primitives and no new dependency.
+- Role content is not rendered as authorized before the server session resolves and matches the
+  required role; the frame does not infer or override role from URL or local state.
+- The frame owns no listing/request/queue/availability/expiry/version/transition state and contains
+  no workflow fallback or mock business data.
+- The stale root copy in the shared session surfaces is corrected without promising features that are
+  not yet implemented.
+- Existing typecheck, foundation/session tests, build, and a bounded browser/manual smoke for `/`,
+  unauthenticated role access, wrong-role access, both roles, logout, keyboard focus, and narrow/wide
+  layout pass under Node `v24.20.0`.
+
+#### Verification and return
+
+Use the exact runtime and a frozen T2 candidate. The Builder returns `READY_FOR_VERIFICATION`,
+`NEEDS_REPAIR`, or `BLOCKED` with exact source identity, paths, commands, results, generated state,
+and claim boundary. The independent Verifier must run against the frozen candidate, inspect the exact
+four-path scope, and verify the session/route/accessibility behavior without changing source. Neither
+checkpoint may claim tenant/agent workflow implementation, browser Happy Path completion, deployment,
+WebMCP/Cloud Receiver readiness, or parent closure.
+
+#### Stop conditions
+
+Stop at `BLOCKED` if the frame requires API, domain, persistence, role-policy, package, CSS-global,
+or product-contract changes; if a shared path has another owner; if an external artifact is created;
+or if a behavior can pass only through mock business state, hidden fallback, or client-authoritative
+role logic. Do not widen this Work Order into role pages.
 
 ## Parent objective — not the current Builder scope
 
