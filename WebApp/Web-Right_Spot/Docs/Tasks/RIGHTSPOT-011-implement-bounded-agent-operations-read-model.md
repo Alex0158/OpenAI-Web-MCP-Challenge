@@ -114,7 +114,7 @@ Verifier or any consumer/integration task.
 ## RS-WO-011-02 — Independently verify the Operations projection seam
 
 **Role:** Independent Verifier  
-**Status:** `READY_TO_DISPATCH`  
+**Status:** `ASSIGNED`  
 **Parallelization:** `EVIDENCE_ONLY` — may run beside `RS-WO-007-08` because it uses a detached
 snapshot and has no product write set.  
 **Risk profile:** `Standard` — code-level verification of a pure, privacy-bounded projection seam.  
@@ -122,7 +122,7 @@ snapshot and has no product write set.
 `5b05c78ec71c849a268b31cd49e72f9b3235587e`; do not verify the moving Builder branch.  
 **Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-011-02-operations-verifier`
 (detached HEAD at the frozen candidate).  
-**Supporting worker:** To be assigned by the main thread after this Work Order registration.  
+**Supporting worker:** Multi-agent Verifier `01a05de3-4a06-7522-8b35-3c5ec4daab05` (`Ramanujan`).  
 **Ownership:** The Verifier may inspect and execute only. The main thread owns repair, canonical
 writeback, integration, and closure.
 
