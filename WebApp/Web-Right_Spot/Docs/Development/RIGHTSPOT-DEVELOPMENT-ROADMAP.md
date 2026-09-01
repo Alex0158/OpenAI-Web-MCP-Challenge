@@ -1,7 +1,7 @@
 # RightSpot Development Roadmap
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
-**Status:** Phase 3 complete — authoritative workflow domain core independently verified; the Phase 4 persistence/application boundary is independently verified against frozen source `28105e4d`; `RS-WO-002-05` discovery API candidate is frozen at T2 code commit `de169ce` pending independent verification; the ordinary human application loop is not started
+**Status:** Phase 3 complete — authoritative workflow domain core independently verified; the Phase 4 persistence/application boundary is independently verified against frozen source `28105e4d`; `RS-WO-002-05` discovery API candidate is frozen at T2 code commit `de169ce` with its dedicated Verifier assigned; the read-only `RS-WO-002-06` Architecture Advisor is assigned in parallel; the ordinary human application loop is not started
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-01, Europe/London
 
@@ -36,7 +36,7 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 1. Implementation readiness | Resolve and record the foundation toolchain, runtime, SQLite/reset, health-route, source-boundary, and verification profile | Main-thread decision gate complete and the first Builder Work Order is ready; the Node.js baseline situation is explicitly recorded | Complete |
 | 2. Runnable foundation | Create one local application composition with the accepted stack, server-side SQLite foundation, deterministic reset metadata, and reproducible commands | Builder output reconciled and independently verified | Complete; first Verifier attempt was procedurally blocked, corrected rerun verified |
 | 3. Authoritative workflow core | Implement the Viewing Request state machine, availability lifecycle, role projections, version checks, audit facts, and explicit failures | Domain and Backbone checks pass without a browser or external service | Complete; post-repair source `6e70c9f` independently verified |
-| 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | `RS-WO-002-04` persistence/application boundary independently verified at T2 source `28105e4d` (candidate `68bbc69`); `RS-WO-002-05` tenant entry/listing discovery API Builder delivered and frozen at T2 code commit `de169ce`, verification pending; `RS-WO-002-06` Architecture Advisor gated; UI not started |
+| 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | `RS-WO-002-04` persistence/application boundary independently verified at T2 source `28105e4d` (candidate `68bbc69`); `RS-WO-002-05` tenant entry/listing discovery API Builder delivered and frozen at T2 code commit `de169ce`, Verifier assigned; `RS-WO-002-06` Architecture Advisor assigned read-only in parallel; UI not started |
 | 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Not started |
 | 6. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary loop is stable and a new explicit integration decision exists | Deferred; not scheduled |
 
@@ -70,10 +70,10 @@ checkpoint; the main thread reconstructed and adopted its exact three-path candi
 `68bbc69`. Its first dedicated independent Verifier attempt stopped before source checks because the
 dispatch prompt described the Worktree root incorrectly; one corrected follow-up to the same
 identity-matching Verifier returned `VERIFIED` against frozen source `28105e4d`. The next gate is the
-assigned `RS-WO-002-05` tenant entry and listing discovery API slice; its candidate is frozen at T2 code
-commit `de169ce` and is awaiting independent verification. The read-only `RS-WO-002-06`
-Architecture Advisor may run in parallel to propose bounded tenant/agent interface slices, but the
-main thread must review and record exact ownership and contract boundaries before opening any UI
+`RS-WO-002-05` tenant entry and listing discovery API slice is frozen at T2 code commit `de169ce` and
+its dedicated Verifier is assigned from canonical snapshot `bc3bc42`. The read-only `RS-WO-002-06`
+Architecture Advisor is assigned in parallel to propose bounded tenant/agent interface slices, but
+the main thread must review and record exact ownership and contract boundaries before opening any UI
 Builder. This does not authorize opening the full API/UI surface as one assignment. The
 user-authorized Side Chat process lane is not product-source drift.
 Do not turn the full parent Task into one worker assignment or pre-create downstream role assignments.

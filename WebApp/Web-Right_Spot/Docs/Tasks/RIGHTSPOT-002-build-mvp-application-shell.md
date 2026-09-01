@@ -18,8 +18,8 @@ The implementation must follow the accepted business rules in
 - Owner: Main RightSpot thread
 - Current increment: Independently verify the Builder-delivered `RS-WO-002-05` tenant entry and
   listing discovery API while preparing the first bounded parallel interface decomposition.
-- Next gate: Dispatch the frozen `RS-WO-002-05` Verifier and the read-only `RS-WO-002-06`
-  Architecture Advisor in parallel; review both outputs before opening tenant/agent UI Builders.
+- Next gate: Review the two dispatched supporting-task outputs — the frozen `RS-WO-002-05` Verifier
+  and the read-only `RS-WO-002-06` Architecture Advisor — before opening tenant/agent UI Builders.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, and the accepted Requirements and Domain and
   Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, and the RightSpot Thread Orchestration Pilot Runbook govern any
@@ -912,14 +912,16 @@ Redis, WebRTC, or parent-task closure.
 
 #### Independent Verifier checkpoint
 
-**Execution state:** `GATED` — the Builder handoff is complete and the verification snapshot is
-prepared, but no dedicated Verifier has been dispatched yet  
+**Execution state:** `ASSIGNED` — a dedicated independent Verifier has been dispatched against the
+prepared verification snapshot  
 **Parallelization:** `READ_ONLY_PARALLEL` with `RS-WO-002-06`; the Verifier reads the frozen candidate
 while the Advisor reads the same stable source in a separate Worktree  
-**Source snapshot:** canonical checkout commit `99dbb5c`, containing the frozen T2 code candidate
+**Source snapshot:** canonical checkout commit `bc3bc42`, containing the frozen T2 code candidate
 `de169ce` plus the main-thread documentation writeback; no code or test source follows `de169ce`  
 **Verifier Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-05-verifier` (detached at
-`99dbb5c`, clean at preparation)  
+`bc3bc42`, clean at preparation)  
+**Supporting-task identity:** `01a05b41-736c-78c0-87e0-5a8e0ae80c53` (`local`), dedicated to this
+Verifier checkpoint and not reused from an earlier Work Order  
 **Worker write set:** none; the Verifier must not repair, edit tests, regenerate fixtures, or modify
 canonical documents  
 **Next gate:** Main-thread classification of `VERIFIED`, `NEEDS_REPAIR`, or `BLOCKED`; only a
@@ -1051,7 +1053,8 @@ snapshot, silently substitute a listing, or add a compatibility fallback.
 **Parent task:** `RIGHTSPOT-002`  
 **Role:** Architecture Advisor  
 **Pre-dispatch status:** `GATED` — the `RS-WO-002-05` candidate is frozen at T2 code commit `de169ce`; the proposal must be reviewed by the main thread before any UI Builder dispatch  
-**Execution state:** `GATED` — not yet dispatched  
+**Execution state:** `ASSIGNED` — dedicated read-only Architecture Advisor task dispatched for the
+bounded proposal  
 **Parallelization:** `READ_ONLY_PARALLEL` with the `RS-WO-002-05` Verifier; no authored source write  
 **Owner:** Main RightSpot thread; one dedicated supporting task produces the bounded proposal  
 **Risk profile:** `Standard` — cross-surface decomposition and ownership planning without code mutation  
@@ -1083,6 +1086,10 @@ task, Git commit/push, deployment, external communication, and Cloud Receiver, W
 WebRTC, production-auth, or unrelated commercial scope.
 
 **Generated set:** none; no authored or generated output is needed beyond the supporting-task report.
+
+**Dispatch state:** Dispatched from clean detached source snapshot `bc3bc42`; the dedicated Worktree is
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-06-advisor`; supporting-task identity is
+`01a05b41-6b73-7751-86bd-c59d270d43a3` (`local`). No source or document write is authorized.  
 
 #### Proposal contract
 

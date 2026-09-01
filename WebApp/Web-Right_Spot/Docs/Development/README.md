@@ -1,7 +1,7 @@
 # RightSpot Development and Closure
 
 **Role:** Big-picture roadmap, implementation, verification, collaboration, and closure routing  
-**Status:** Roadmap and thread-orchestration pilot documented; foundation, workflow-core, and the `RS-WO-002-04` persistence/application boundary are independently verified; `RS-WO-002-05` tenant entry/listing discovery API Builder returned `READY_FOR_VERIFICATION` and its candidate is frozen at T2 code commit `de169ce`; `RS-WO-002-06` Architecture Advisor is gated as the next read-only parallel planning slice
+**Status:** Roadmap and thread-orchestration pilot documented; foundation, workflow-core, and the `RS-WO-002-04` persistence/application boundary are independently verified; `RS-WO-002-05` tenant entry/listing discovery API Builder returned `READY_FOR_VERIFICATION` and its candidate is frozen at T2 code commit `de169ce`; its dedicated Verifier and the read-only `RS-WO-002-06` Architecture Advisor are assigned from canonical snapshot `bc3bc42`
 
 ## Purpose
 
