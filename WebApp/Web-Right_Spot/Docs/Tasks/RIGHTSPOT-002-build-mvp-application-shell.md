@@ -1187,7 +1187,10 @@ dispatching the dedicated Verifier.
 execution Worktree `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-07-workflow-http`; supporting-task
 identity `01a05b57-e509-7392-90dd-09b056b463d7` (`local`). The initial task activation and the full
 Work Order prompt were persisted to this dedicated task; no source write was authorized before the
-main-thread acknowledgement.  
+main-thread acknowledgement. The application/package root is the Worktree-relative
+`WebApp/Web-Right_Spot`; a follow-up correction was sent after the Builder identified an initial
+checkout-root/npm-root confusion, which only created external npm diagnostics and did not change the
+repository.  
 **Parent execution posture if blocked:** `CONSTRAINED` — the shared shell and read-only UI/UX review
 may continue, but tenant/agent role-page Builders remain gated.
 

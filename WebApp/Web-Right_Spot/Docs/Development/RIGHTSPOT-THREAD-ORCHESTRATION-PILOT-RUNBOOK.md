@@ -543,6 +543,13 @@ root. If they differ, or if the prompt gives only the main checkout root, the wo
 source mutation and reports a path-identity blocker. The main thread must correct the same task
 identity; it must not silently retry against a different Worktree or create a replacement task.
 
+When the repository contains a nested application, the dispatch must also name the application or
+package root separately. A Git root is not automatically an npm root: commands that read
+`package.json`, `.node-version`, or the package lockfile must run from the declared package root.
+The worker must verify both roots before running package commands. A root mismatch that already
+caused an external diagnostic file is still a process incident even when the repository stayed
+unchanged; preserve the external artifact and report it without unapproved cleanup.
+
 ### 8.1.2 Execution baseline versus governance revision
 
 Every dispatch records two identities and must not merge them into one undifferentiated manifest:
