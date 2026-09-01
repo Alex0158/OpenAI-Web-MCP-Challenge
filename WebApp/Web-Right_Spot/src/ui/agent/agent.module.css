@@ -1,0 +1,481 @@
+.workspace {
+  display: grid;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.workspaceHeader,
+.sectionHeader,
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.workspaceHeader h2,
+.sectionHeader h3,
+.cardHeader h3 {
+  margin-bottom: 0.45rem;
+}
+
+.workspaceHeader h2 {
+  max-width: 17ch;
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  line-height: 0.98;
+}
+
+.workspaceHeader .panel-copy {
+  max-width: 52ch;
+  margin-bottom: 0;
+}
+
+.refreshButton,
+.headerActions {
+  flex: 0 0 auto;
+}
+
+.headerActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
+.feedbackStack {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: start;
+}
+
+.loadingState,
+.emptyState {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1.35rem;
+  border: 1px dashed #b9cfc5;
+  border-radius: var(--radius-medium);
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.loadingState h3,
+.emptyState h3 {
+  margin-bottom: 0.35rem;
+}
+
+.loadingState .panel-copy,
+.emptyState .panel-copy {
+  margin-bottom: 0;
+}
+
+.loadingMark,
+.emptyMark {
+  display: block;
+  flex: 0 0 auto;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-top: 0.35rem;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 5px var(--accent-soft);
+}
+
+.emptyMark {
+  display: grid;
+  width: 1.8rem;
+  height: 1.8rem;
+  margin-top: 0;
+  place-items: center;
+  border-radius: 0.55rem;
+  background: var(--surface-muted);
+  box-shadow: none;
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.metricGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-medium);
+  background: var(--line);
+}
+
+.metric {
+  display: grid;
+  min-height: 7.6rem;
+  align-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.76);
+}
+
+.metricLabel,
+.requestVersion,
+.generation,
+.timezone,
+.optional,
+.field small {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.metric strong {
+  color: var(--accent-strong);
+  font-size: 2.2rem;
+  font-weight: 760;
+  letter-spacing: -0.06em;
+}
+
+.queueSection {
+  display: grid;
+  gap: 1rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--line);
+}
+
+.sectionHeader {
+  align-items: end;
+}
+
+.sectionHeader h3 {
+  font-size: 1.5rem;
+}
+
+.generation,
+.timezone {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-muted);
+  white-space: nowrap;
+}
+
+.requestList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 0.8rem;
+}
+
+.requestCard {
+  display: grid;
+  min-height: 10.5rem;
+  align-content: space-between;
+  gap: 1.2rem;
+  padding: 1.1rem;
+  border: 1px solid #c5d9d0;
+  border-radius: var(--radius-medium);
+  background: linear-gradient(145deg, #fff 10%, #f1f8f4 100%);
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+}
+
+.requestCard:hover {
+  border-color: #8dbdab;
+  box-shadow: 0 14px 28px rgba(26, 61, 50, 0.08);
+  transform: translateY(-2px);
+}
+
+.requestCardTopline,
+.requestCardFooter,
+.factRow,
+.availabilityRow,
+.preparedSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+
+.requestCardFooter {
+  color: var(--accent-strong);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.statePill {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  padding: 0.34rem 0.55rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 0.8rem;
+}
+
+.infoCard,
+.actionPanel {
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-medium);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.infoCard:first-child {
+  grid-row: span 2;
+}
+
+.infoCard h3,
+.actionPanel h3 {
+  font-size: 1.45rem;
+}
+
+.detailList {
+  display: grid;
+  gap: 0.8rem;
+  margin: 1.3rem 0 0;
+}
+
+.detailList div {
+  display: grid;
+  grid-template-columns: 7.4rem minmax(0, 1fr);
+  gap: 0.9rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--line);
+}
+
+.detailList dt {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.detailList dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 0.88rem;
+  font-weight: 680;
+  line-height: 1.5;
+}
+
+.listingAddress {
+  margin-bottom: 1.1rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.factRow {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  color: var(--accent-strong);
+  font-size: 0.8rem;
+  font-weight: 760;
+}
+
+.infoCard .panel-copy {
+  margin-bottom: 0;
+  font-size: 0.86rem;
+}
+
+.availabilityCard {
+  grid-column: 2;
+}
+
+.availabilityList {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.availabilityRow {
+  align-items: flex-start;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.availabilityStatus {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.actionPanel {
+  display: grid;
+  gap: 0.95rem;
+  border-color: #b9d7c9;
+  background: linear-gradient(145deg, #fff 0%, #eef8f3 100%);
+}
+
+.actionPanel .panel-copy {
+  max-width: 66ch;
+  margin-bottom: 0;
+}
+
+.preparedSummary {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  padding: 0.75rem;
+  border: 1px solid #c7ddd2;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.68);
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.preparationForm {
+  display: grid;
+  gap: 1rem;
+}
+
+.preparationForm fieldset {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+.choiceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.choiceCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.68);
+  cursor: pointer;
+}
+
+.choiceCardSelected {
+  border-color: #8dbdab;
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.choiceCard input {
+  margin-top: 0.2rem;
+  accent-color: var(--accent);
+}
+
+.choiceCard span {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.choiceCard small {
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.field {
+  display: grid;
+  gap: 0.42rem;
+  color: var(--ink);
+  font-size: 0.84rem;
+  font-weight: 720;
+}
+
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 2.8rem;
+  padding: 0.72rem 0.8rem;
+  border: 1px solid #b9cfc5;
+  border-radius: 0.7rem;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 450;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.field small {
+  font-weight: 450;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 760px) {
+  .workspaceHeader,
+  .sectionHeader,
+  .cardHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .refreshButton {
+    width: fit-content;
+  }
+
+  .headerActions {
+    justify-content: flex-start;
+  }
+
+  .metricGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .infoCard:first-child,
+  .availabilityCard {
+    grid-row: auto;
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .metric {
+    min-height: 6.7rem;
+  }
+
+  .choiceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .detailList div {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+
+  .availabilityRow {
+    display: grid;
+    gap: 0.2rem;
+  }
+}
