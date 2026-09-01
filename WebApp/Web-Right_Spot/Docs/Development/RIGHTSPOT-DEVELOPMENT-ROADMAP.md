@@ -1,15 +1,18 @@
 # RightSpot Development Roadmap
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
-**Status:** Phase 3 complete — authoritative workflow domain core independently verified; the Phase 4 persistence/application boundary, `RS-WO-002-05` discovery API, and `RS-WO-002-07` workflow HTTP/DTO boundary are independently verified; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in ADR-RS-0008; `RS-WO-002-07` is integrated at product commit `f700ba9`; `RS-WO-002-08` is integrated at product commit `006d2fd` after process re-baseline commit `8b77bdd`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-10` returned `READY_FOR_REVIEW` and its decomposition is accepted; `RS-WO-002-11` candidate `f1f83c7` passed independent verification and is integrated at product commit `6a0b4b8`; `RS-WO-002-13` passed independent verification and is integrated at product commit `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final independent verification and is integrated at product commit `9348aa5`; `RS-WO-002-14` is the active combined cross-role verification checkpoint; the prior out-of-scope tracked verifier mutation remains preserved
+**Status:** Phase 5 complete for the accepted local MVP — authoritative workflow domain core, application
+boundaries, role pages, integrated cross-role path, and isolated browser walkthrough are independently
+verified; `RS-WO-002-14` passed direct verification, `RS-WO-002-15` passed the browser walkthrough, and
+the parent Task is closed. The prior out-of-scope tracked verifier mutation remains preserved
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-01, Europe/London
 
-**Current gate:** `RS-WO-002-13` is integrated at product commit `3765747`, and repaired `RS-WO-002-12`
-candidate `52cba87c` passed final independent verification and is integrated at product commit `9348aa5`.
-The read-only `RS-WO-002-14` combined cross-role verification passed direct HTTP/static checks; the next
-gate is an isolated browser walkthrough before closure review. Prior verifier Worktree metadata mutations
-remain preserved and are not product source.
+**Current gate:** None for the accepted local MVP. `RS-WO-002-13` is integrated at product commit
+`3765747`, repaired `RS-WO-002-12` is integrated at `9348aa5`, `RS-WO-002-14` passed direct combined
+cross-role verification, and `RS-WO-002-15` passed the isolated browser walkthrough. The closure record
+is [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md). Prior verifier Worktree
+metadata mutations remain preserved and are not product source.
 
 ## 1. Roadmap purpose and authority
 
@@ -42,8 +45,8 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 1. Implementation readiness | Resolve and record the foundation toolchain, runtime, SQLite/reset, health-route, source-boundary, and verification profile | Main-thread decision gate complete and the first Builder Work Order is ready; the Node.js baseline situation is explicitly recorded | Complete |
 | 2. Runnable foundation | Create one local application composition with the accepted stack, server-side SQLite foundation, deterministic reset metadata, and reproducible commands | Builder output reconciled and independently verified | Complete; first Verifier attempt was procedurally blocked, corrected rerun verified |
 | 3. Authoritative workflow core | Implement the Viewing Request state machine, availability lifecycle, role projections, version checks, audit facts, and explicit failures | Domain and Backbone checks pass without a browser or external service | Complete; post-repair source `6e70c9f` independently verified |
-| 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | `RS-WO-002-04` persistence/application boundary independently verified at T2 source `28105e4d` (candidate `68bbc69`); `RS-WO-002-05` tenant entry/listing discovery API independently verified at T2 code `de169ce` from snapshot `bc3bc42`; ADR-RS-0008 freezes the ordinary workflow HTTP/DTO boundary; `RS-WO-002-07` workflow transport independently verified at frozen `d71fe3e` and integrated at `f700ba9`; `RS-WO-002-08` shared shell passed dedicated independent verification after process re-baseline `8b77bdd` and is integrated at `006d2fd`; `RS-WO-002-09` UI/UX review is integrated as guidance; `RS-WO-002-11` shared role-page frame is independently verified and integrated at `6a0b4b8`; `RS-WO-002-13` agent role-page candidate passed dedicated independent verification and is integrated at `3765747`; repaired `RS-WO-002-12` tenant role-page candidate passed final independent verification at `52cba87c` and is integrated at `9348aa5`; `RS-WO-002-14` direct cross-role verification passed; browser walkthrough and closure evidence remain open |
-| 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Not started |
+| 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | Complete; `RS-WO-002-14` passed independent direct cross-role verification and `RS-WO-002-15` passed the isolated browser walkthrough against integrated source `9348aa50b63e3f4f46e77238ad370670383d9d6` |
+| 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Complete; closure record reconciled and `RIGHTSPOT-002` closed |
 | 6. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary loop is stable and a new explicit integration decision exists | Deferred; not scheduled |
 
 ## 4. Roadmap operating rules
@@ -63,7 +66,15 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 - Keep the main thread as the authority for scope, architecture, canonical writeback, integration,
   and closure. A roadmap milestone is a target, not evidence that its implementation has started.
 
-## 5. Current next gate
+## 5. Current closure
+
+There is no active implementation gate for the accepted local MVP. `RS-WO-002-14` passed direct
+combined cross-role verification and `RS-WO-002-15` passed the isolated browser walkthrough from a
+fresh database against integrated source `9348aa50b63e3f4f46e77238ad370670383d9d6`. The durable
+evidence is recorded in [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md), and
+`RIGHTSPOT-002` is closed. Future work requires a new explicit scope decision.
+
+### Historical execution chronology
 
 The first `RS-WO-002-02` attempt is recorded as a procedural block, and the corrected output-boundary
 rerun is independently verified against the unchanged source/runtime identity. The verified

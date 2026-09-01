@@ -1,7 +1,7 @@
 # RightSpot Tasks
 
 **Role:** Canonical bounded task routing for the RightSpot child application  
-**Status:** Active
+**Status:** Closed for the accepted local MVP; reopen only under the recorded reopen condition
 
 RightSpot tasks own local product and implementation work. They do not authorize changes to the
 outer Core, public deployment, credentials, or Hackathon submission. Keep the queue small and
@@ -15,7 +15,7 @@ authority to RightSpot; it does not create a second task system.
 
 - [`RIGHTSPOT-002 — Build the MVP application shell`](RIGHTSPOT-002-build-mvp-application-shell.md)
 
-Active Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
+Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, the corrected `RS-WO-002-02` rerun returned
 `VERIFIED`, `RS-WO-002-03` returned `VERIFIED` after its bounded repair, and `RS-WO-002-04` returned
 `VERIFIED` against frozen source `28105e4d`. `RS-WO-002-05` is independently verified against
@@ -29,7 +29,8 @@ and its decomposition is accepted; `RS-WO-002-11` candidate `f1f83c7` passed ind
 and is integrated at `6a0b4b8`; `RS-WO-002-13` passed independent verification and is integrated at
 product commit `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final independent
 verification and is integrated at product commit `9348aa5`; `RS-WO-002-14` passed the read-only direct
-combined cross-role verification checkpoint. Its predecessor verifier runs were checkpoint-locally
+combined cross-role verification checkpoint and `RS-WO-002-15` passed the isolated browser walkthrough.
+Its predecessor verifier runs were checkpoint-locally
 blocked by a tracked `.gitignore` mutation adding `.gstack/` outside the declared candidate scope; the
 original evidence remains preserved for separate ownership/recoverability handling. No separate
 registered Task or Task File is created for that repair or recovery.
@@ -39,12 +40,14 @@ One registered Task has one Task File. A Work Order is a dispatch brief under th
 there is one active Work Order per dependency chain, while explicitly independent slices may run in
 parallel under the same file. Builder, Verifier, Repairer, and Integrator are checkpoints, not
 additional registered Tasks. Do not turn this file into a speculative backlog or a second active-work
-register. The parent remains `in_progress` when a checkpoint is locally blocked but safe parent-goal
-work remains; the Side Chat process lane is separately declared and user-authorized.
+register. The parent remained `in_progress` when a checkpoint was locally blocked but safe parent-goal
+work remained; it is now `closed` for the accepted local MVP. The Side Chat process lane is separately
+declared and user-authorized.
 
-**Current gate:** `RS-WO-002-14` passed direct read-only combined cross-role verification. The next
-checkpoint is the isolated browser walkthrough and closure-evidence review; the parent remains
-`in_progress` until those claims are reconciled.
+**Current gate:** None for the accepted local MVP. `RS-WO-002-14` direct evidence and `RS-WO-002-15`
+browser evidence are reconciled in the
+[`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](../Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md), and
+`RIGHTSPOT-002` is closed.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.

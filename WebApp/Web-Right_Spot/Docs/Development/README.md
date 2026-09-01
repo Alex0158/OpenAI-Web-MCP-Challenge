@@ -1,7 +1,7 @@
 # RightSpot Development and Closure
 
 **Role:** Big-picture roadmap, implementation, verification, collaboration, and closure routing  
-**Status:** Roadmap and thread-orchestration pilot documented; foundation, workflow-core, the
+**Status:** Accepted local MVP closed; roadmap and thread-orchestration pilot documented; foundation, workflow-core, the
 `RS-WO-002-04` persistence/application boundary, the `RS-WO-002-05` tenant entry/listing discovery
 API, and the `RS-WO-002-07` workflow HTTP/DTO boundary are independently verified; `RS-WO-002-06`
 returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in ADR-RS-0008;
@@ -11,7 +11,9 @@ UI guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW` and its decomposition wa
 `RS-WO-002-11` candidate `f1f83c7` passed independent verification and is integrated at product commit
 `6a0b4b8` as the shared role-page frame; `RS-WO-002-13` passed independent verification and is
 integrated at product commit `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final
-independent verification and is integrated at product commit `9348aa5`. Its predecessor verifier runs were
+independent verification and is integrated at product commit `9348aa5`; `RS-WO-002-14` passed direct
+cross-role verification and `RS-WO-002-15` passed the isolated browser walkthrough. The durable closure
+record is [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md). Its predecessor verifier runs were
 checkpoint-locally blocked by an out-of-scope tracked verifier Worktree mutation, which remains preserved
 for separate ownership/recoverability handling.
 
@@ -56,23 +58,24 @@ dedicated independent verification after a generated-output boundary re-baseline
 `RS-WO-002-11` Builder returned `READY_FOR_VERIFICATION`; the exact four-path candidate `f1f83c7` passed
 dedicated independent verification and is integrated at product commit `6a0b4b8`. `RS-WO-002-13` is
 integrated at product commit `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final
-independent verification and is integrated at product commit `9348aa5`. `RS-WO-002-14` passed direct
-read-only combined cross-role verification against the integrated source. The next smallest gate is an
-isolated browser walkthrough and closure-evidence review. A fresh Builder is needed only if a later checkpoint exposes a
+independent verification and is integrated at product commit `9348aa5`; `RS-WO-002-14` passed direct
+read-only combined cross-role verification against the integrated source and `RS-WO-002-15` passed the
+isolated browser walkthrough from a fresh database. The parent is closed for the accepted local MVP. A
+fresh Builder is needed only if a later checkpoint exposes a
 source or behavior gap that cannot be repaired within a separately bounded Work Order. Later
 Integrator work is opened only when its predecessor produces a concrete code failure or a verified
 source and evidence boundary.
 
-Current gate note: RS-WO-002-14 passed direct read-only combined cross-role verification against the
-integrated source. The next smallest gate is an isolated browser walkthrough and closure-evidence review;
-the parent remains in_progress until those claims are reconciled.
+Current gate note: `RS-WO-002-14` and `RS-WO-002-15` passed direct and browser verification respectively;
+the closure evidence is recorded in [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md),
+and `RIGHTSPOT-002` is closed for the accepted local MVP.
 
 The experimental delegated-work procedure is
 [RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-RUNBOOK](RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-RUNBOOK.md).
 It is opt-in and scoped to RightSpot; it does not change outer repository governance or sibling
 applications.
 
-## Future closure requirements
+## Closure record requirements
 
 A RightSpot implementation record must identify:
 

@@ -1,7 +1,7 @@
 # RIGHTSPOT-002: Build the MVP Application Shell
 
 **Type:** implementation  
-**Lifecycle:** `in_progress`  
+**Lifecycle:** `closed`  
 **Priority:** P0 for RightSpot  
 **Owner:** Main RightSpot thread  
 **Depends on:** [ADR-RS-0001](../Decisions/ADR-RS-0001-mvp-scope-and-primary-flow.md), [ADR-RS-0002](../Decisions/ADR-RS-0002-logical-backbone-boundary.md), [ADR-RS-0003](../Decisions/ADR-RS-0003-implementation-stack-and-realtime-boundary.md), [ADR-RS-0006](../Decisions/ADR-RS-0006-durable-workflow-and-application-boundary.md)
@@ -13,22 +13,20 @@ The implementation must follow the accepted business rules in
 ## Task Control
 
 - Type: `implementation`
-- Lifecycle: `in_progress`
+- Lifecycle: `closed`
 - Priority: `P0`
 - Owner: Main RightSpot thread
-- Current increment: Reconcile the completed `RS-WO-002-14` direct cross-role verification, then obtain
-  the smallest remaining browser walkthrough and closure evidence for the ordinary local application loop.
-- Next gate: Run the browser walkthrough against a fresh isolated built server, reconcile its evidence,
-  and only then decide whether the parent has sufficient closure evidence. Both role-page candidates and
-  the integrated cross-role HTTP path are verified; exact route, component, test, and shared-boundary
-  ownership remain recorded below.
+- Current increment: The ordinary local application loop is implemented, independently verified, walked
+  through in the browser from a fresh isolated built server, and reconciled in the closure record.
+- Next gate: None for the accepted local MVP. Reopen only after a new explicit scope or material change
+  to the primary flow, authority boundary, or future integration seam.
 - Dependencies: ADR-RS-0001, ADR-RS-0002, ADR-RS-0003, ADR-RS-0008, and the accepted Requirements
   and Domain and Data Model documents.
 - Process authority: ADR-RS-0004, ADR-RS-0005, ADR-RS-0006, ADR-RS-0008, and the RightSpot Thread Orchestration Pilot Runbook govern any
   supporting-task dispatch under this parent.
-- Parent execution posture: `PROGRESSING` — `RS-WO-002-13` and repaired `RS-WO-002-12` passed
-  independent verification and are integrated at product commits `3765747` and `9348aa5`. The parent
-  remains open and can proceed through the combined cross-role verification gate.
+- Parent execution posture: `CLOSED` — the integrated product source passed independent direct
+  cross-role verification and the isolated browser walkthrough; closure evidence and non-claims are
+  recorded in the RightSpot Development closure record.
 - Blocker reporting: the main thread reports the checkpoint-local blocker to the human owner and
   records its evidence, impact, owner, safe continuation, and resume condition here; this does not
   change the parent lifecycle to `blocked`.
@@ -63,7 +61,8 @@ verification, integration, or parent-Task closure.
 
 ### Current Work Order controls
 
-- **Dispatch state:** `RS-WO-002-05` is independently verified against clean snapshot `bc3bc42`.
+- **Dispatch state:** All admitted implementation and verification checkpoints under this parent are
+  reconciled. `RS-WO-002-05` was independently verified against clean snapshot `bc3bc42`.
   `RS-WO-002-06` returned `READY_FOR_REVIEW`; the main thread accepted its useful decomposition with
   revisions, recorded the local HTTP/DTO contract in ADR-RS-0008, and dispatched `RS-WO-002-07`,
   `RS-WO-002-08`, and `RS-WO-002-09` from baseline `c758634`. `RS-WO-002-07` and `RS-WO-002-08`
@@ -72,12 +71,14 @@ verification, integration, or parent-Task closure.
   later UI guidance. `RS-WO-002-10` returned `READY_FOR_REVIEW`; the main thread accepted its
   decomposition and opened the minimal serial shared-role-frame slice `RS-WO-002-11`. Its Builder
   candidate `f1f83c7` passed dedicated independent verification and is integrated at product commit
-  `6a0b4b8`. The next two Work Orders are the disjoint tenant and agent page slices recorded below.
-  Builder, Verifier, Repairer, Integrator, Advisor, and reviewer
-  roles remain checkpoints under this Task, not pre-registered child Tasks.
+  `6a0b4b8`. The disjoint tenant and agent page slices, their repair/re-verification, the integrated
+  cross-role verification `RS-WO-002-14`, and the main-thread browser checkpoint `RS-WO-002-15` are
+  recorded below. No supporting writer or verifier is active. Builder, Verifier, Repairer, Integrator,
+  Advisor, reviewer, and browser-verification roles are checkpoints under this Task, not registered
+  child Tasks.
 - **Baseline:** The actual repository root is `WebMCP_Challenge`; the latest integrated product code
-  is `6a0b4b8` (workflow transport, shared shell, and shared role-page frame); the accepted
-  workflow/interface documentation baseline was frozen in `c758634` before dispatch. Each new Work
+  is `9348aa5` (the complete accepted local role-page slice); the accepted workflow/interface
+  documentation baseline was frozen in `c758634` before dispatch. Each Work
   Order records its own exact source identity. The
   user-authorized Side Chat learning file and process-only Pilot Runbook writeback are classified
   separately from product source. Source identity is checkpoint-scoped and path-owned; it is not a
@@ -85,15 +86,16 @@ verification, integration, or parent-Task closure.
 - **Read before action:** Repository `AGENTS.md` and Engineering controls, RightSpot `RUNBOOK.md`,
   `Docs/00-current-status.md`, the relevant product/domain/API/validation documents, ADR-RS-0001
   through ADR-RS-0008, and the Thread Orchestration Pilot Runbook.
-- **Worker restrictions:** The foundation, domain-core, persistence/application, and discovery
-  writers have stopped. The currently assigned slices have separate ownership: `RS-WO-002-07` owns
+- **Worker restrictions:** All foundation, domain-core, persistence/application, discovery, shared,
+  tenant, and agent writers have stopped. The assigned slices had separate ownership: `RS-WO-002-07` owns
   workflow HTTP/DTO paths, `RS-WO-002-08` owns the shared human shell paths, `RS-WO-002-09` is
   read-only, `RS-WO-002-11` owns the shared role-page frame paths, `RS-WO-002-12` owns tenant page
   paths, and `RS-WO-002-13` owns agent page paths. Every checkpoint must classify
   the declared read, worker-write, main-thread-writeback,
   forbidden, and generated sets path-by-path; no worker may modify canonical authority, the Git
   index, or generated state outside explicitly ignored runtime paths. No worker may commit, push,
-  deploy, publish, perform external actions, expand product scope, or change canonical authority.
+  deploy, publish, perform external actions, expand product scope, or change canonical authority. No
+  new worker is active after the closure checkpoint.
 - **Worker writeback:** The Builder returns its completion report in the supporting thread. It does
   not edit this canonical Task File; the main thread inspects the source and writes authoritative
   status and evidence back here.
@@ -101,7 +103,8 @@ verification, integration, or parent-Task closure.
 **Return gate:** Each checkpoint reports `READY_FOR_VERIFICATION`, `VERIFIED`, `NEEDS_REPAIR`, or
 `BLOCKED` with exact source and command evidence. The main thread classifies the result, reports any
 checkpoint-local blocker, and opens only the next necessary checkpoint or explicitly independent
-parallel slice; no worker result closes this Task.
+parallel slice. The parent is closed only by main-thread reconciliation of implementation, independent
+verification, browser evidence, Git state, scope, and canonical documentation.
 
 ### Main-thread preflight (not a Work Order)
 
@@ -2225,6 +2228,89 @@ reproducible product defect within an existing integrated ownership boundary. Do
 Order into UI redesign, favourites, chat, payments, deployment, WebMCP, Cloud Receiver, Redis, WebRTC,
 or parent closure.
 
+### RS-WO-002-15 — Run the isolated browser walkthrough and close the local MVP evidence gap
+
+**Parent task:** `RIGHTSPOT-002`  
+**Role:** Main-thread browser verifier; read-only with respect to authored source  
+**Pre-dispatch status:** `GATED` — `RS-WO-002-14` passed direct combined cross-role verification;
+the remaining claim was an actual browser walkthrough of the integrated local application  
+**Execution state:** `VERIFIED` — the main thread completed the walkthrough against a fresh isolated
+built server and reconciled the evidence below  
+**Parallelization:** `INTEGRATION_SERIAL` — no source writer may modify the integrated product while
+the walkthrough or closure review is in progress  
+**Owner:** Main RightSpot thread  
+**Risk profile:** `High` — browser evidence, session continuity, visible human decisions, and final
+scope/claim boundary  
+**Objective:** Demonstrate the ordinary tenant-to-agent-to-tenant Happy Path through the actual local
+browser UI, using the already integrated source and a fresh isolated database, without changing product
+source or expanding the MVP. This is a closure-evidence checkpoint, not a feature, repair, or redesign
+assignment.  
+**Dispatch state:** Completed as a main-thread checkpoint; no supporting task was dispatched. Execution
+Worktree / Git root:
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-15-browser-primary`; package root:
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-15-browser-primary/WebApp/Web-Right_Spot`;
+runtime-pin path:
+`/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-002-15-browser-primary/.node-version`. The browser
+Worktree was detached at the exact integrated product commit and remained clean after the walkthrough;
+only permitted ignored runtime output was present.
+
+#### Browser walkthrough result
+
+The walkthrough used the exact integrated product source
+`9348aa50b63e3f4f46e77238ad370670383d9d6`, pinned Node `24.20.0` and npm `11.19.0`, a fresh
+application database at fixture generation `1`, and a built local server on port `3102`. The actual
+browser path was:
+
+1. Begin signed out, use the bounded demo login as the tenant, and open the tenant workspace.
+2. Browse the three seeded listings, use the bounded discovery surface, open the canonical primary
+   listing `listing-primary`, and inspect its listing facts.
+3. Select `3 September 2026, 11:00–11:30`, save a draft, explicitly submit the Viewing Request, and
+   confirm the tenant dashboard showed `REQUEST_SUBMITTED` at version `2`.
+4. Switch to the property-agent session, open the queue containing one `Needs review` request, open
+   the request, and choose `Start review`; the page showed `AGENT_REVIEWING` at version `3`.
+5. Select the available slot, enter the tenant-facing note and internal review note, choose
+   `Prepare response`, and confirm the page showed version `4` while still stating that nothing had
+   been sent.
+6. Choose the explicit `Send response` action; the page showed `SLOT_PROPOSED` at version `5` and the
+   selected slot was held for the proposal.
+7. Return to the same tenant flow, refresh the request state, and choose `Confirm proposed viewing`;
+   the page showed `VIEWING_CONFIRMED` at version `6` and the visible timeline contained all six
+   workflow operations.
+
+The browser's error/warning log was empty. No browser-tool mutation reached an authored or tracked
+path in this Worktree; generated `node_modules/`, `.next/`, TypeScript build metadata, and the isolated
+SQLite database stayed within the declared generated set. The server was stopped after the walkthrough.
+
+#### Scope, evidence, and known observation
+
+**Read set:** the repository and RightSpot instructions, `RUNBOOK.md`, current status, this Task File,
+the accepted Requirements, Domain, API/DTO, Validation, ADR-RS-0001 through ADR-RS-0008, the integrated
+tenant/agent/shared UI and route source, and the direct verification result for `RS-WO-002-14`.  
+
+**Worker write set:** None. The main-thread browser verifier did not edit authored source, tests,
+canonical documents, Git metadata, or the index.  
+
+**Generated set:** only ignored `node_modules/`, `.next/`, `*.tsbuildinfo`, and
+`var/rightspot.sqlite*` inside the declared Worktree/package root.  
+
+**Claim boundary:** This proves the local browser Happy Path and complements, but does not replace,
+the independent direct HTTP/static evidence. It does not prove deployment, WebMCP, Cloud Receiver,
+WebRTC media/signaling, Redis, production identity, or commercial readiness.
+
+An earlier exploratory browser run used a separate fresh Worktree and selected a non-primary seeded
+listing (`Riverside`). That fixture intentionally has no availability in the canonical judged walkthrough;
+the final run used `listing-primary` as required by the fixture/domain setup. This observation did not
+reproduce a product defect and caused no change to the integrated source.
+
+#### Closure handoff
+
+`RS-WO-002-14` and `RS-WO-002-15` together satisfy the applicable direct, built-server, browser,
+scope, privacy, stale-state, reset, and evidence gates for the accepted local MVP. The main thread
+records the durable implementation/closure evidence in
+[`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](../Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md), updates the
+current status, roadmap, Runbook, and task index, and has closed `RIGHTSPOT-002`. No further Builder,
+Repairer, or supporting Verifier is required unless the reopen condition is met.
+
 ## Parent objective — not the current Builder scope
 
 The following is the complete parent-Task outcome. It must not be sent to one Builder or Verifier as a
@@ -2258,33 +2344,32 @@ confirmation or decline.
 
 ## Next gate
 
-The runnable foundation, `RS-WO-002-03` domain core, `RS-WO-002-04` durable workflow/application
-boundary, and `RS-WO-002-05` tenant entry/listing discovery API are independently verified. The
-`RS-WO-002-06` Architecture Advisor proposal returned `READY_FOR_REVIEW`; the main thread accepted
-it with revisions and froze the ordinary local workflow HTTP/DTO boundary in ADR-RS-0008. The
-`RS-WO-002-07` workflow transport is independently verified and integrated at `f700ba9`; the
-`RS-WO-002-08` shared shell is independently verified and integrated at `006d2fd`; and
-`RS-WO-002-09` is integrated as read-only UI/UX guidance, and `RS-WO-002-11` is integrated at product
-commit `6a0b4b8` after dedicated independent verification. `RS-WO-002-13` has now passed its dedicated
-independent verification against candidate `169cb95d60d4d91c8cd89ef4b722f6fc379db97f` and is ready for
-main-thread integration. `RS-WO-002-12` is checkpoint-locally `BLOCKED` because its verifier Worktree
-contains an out-of-scope tracked `.gitignore` mutation adding `.gstack/`; the mutation must be handled
-under the ownership/recoverability gate before the clean tenant candidate can be re-verified. The parent
-Task
-must remain `in_progress` until the staged implementation, independent verification, integration,
-browser walkthrough, and canonical writeback gates for the complete ordinary application slice are
-complete without adding deferred WebRTC/Redis infrastructure.
+None for the accepted local MVP. The runnable foundation, domain core, persistence/application boundary,
+discovery API, workflow HTTP/DTO transport, shared shell, shared role-page frame, tenant page, and agent
+page are integrated at product commit `9348aa50b63e3f4f46e77238ad370670383d9d6`. `RS-WO-002-14` passed
+independent direct combined cross-role verification, and `RS-WO-002-15` passed the isolated browser
+walkthrough against that exact source. The closure evidence is reconciled in the Development closure
+record and the parent Task is `closed`. Future work requires a new explicit scope decision; it must not
+be inferred from this local MVP closure.
 
 ## Closure evidence
 
-- runnable local app;
-- deterministic reset;
-- primary flow walkthrough;
-- role/privacy and stale-state guardrails;
-- business-rule coverage for transitions, slot lifecycle, expiry, and repeated actions;
-- exact test commands and results;
-- updated development record and current status; and
-- no changes outside the RightSpot folder.
+- The built local app starts with the accepted Next.js/React/TypeScript/Node.js 24/SQLite stack and
+  returns the neutral health response without an external service.
+- A fresh isolated database starts at fixture generation `1`; reset and fixture behavior are covered
+  by the foundation and application tests.
+- The independent `RS-WO-002-14` result passed pinned install, typecheck, foundation `6/6`, all ten
+  direct test files `57/57`, production build, built-server cross-role HTTP, role/privacy, conflict,
+  one-request, and bounded failure checks.
+- The `RS-WO-002-15` browser walkthrough passed tenant discovery, draft/save, explicit submit, agent
+  queue/review/prepare/send, tenant refresh, and explicit confirmation with authoritative versions
+  `1 → 6`, visible state/timeline changes, and no browser errors or warnings.
+- The integrated source has no uncommitted authored changes; browser output remained inside the
+  declared ignored generated set, and no change was made outside the RightSpot folder for this closure.
+- Current status, Task index, roadmap, Runbook, this Task File, and the durable Development closure
+  record are reconciled.
+- Deferred Cloud Receiver, WebMCP, WebRTC media/signaling, Redis, deployment, production identity,
+  commercial readiness, and exhaustive edge-case claims remain explicitly out of scope.
 
 ## Reopen condition
 

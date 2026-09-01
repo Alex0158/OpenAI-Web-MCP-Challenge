@@ -1,7 +1,7 @@
 # RightSpot Development Runbook
 
 **Role:** Local development and documentation routing  
-**Status:** Implementation stack accepted; the exact target Node runtime is prepared and verified,
+**Status:** Accepted local MVP closed; implementation stack accepted; the exact target Node runtime is prepared and verified,
 the foundation Builder returned `READY_FOR_VERIFICATION`, the first independent Verifier attempt was
 procedurally blocked, and the corrected rerun returned `VERIFIED`; the bounded domain-core Builder and
 projection-isolation repair returned `READY_FOR_VERIFICATION`, with T2 source commit `a60001e` frozen;
@@ -18,8 +18,11 @@ localized generated-output boundary incident was re-baselined in process commit 
 verification and is integrated at product commit `3765747`; repaired `RS-WO-002-12` candidate
 `52cba87c` passed final independent verification and is integrated at product commit `9348aa5`. The
 original out-of-scope tracked `.gitignore` mutations from verifier Worktrees remain preserved as
-procedure evidence. `RS-WO-002-14` passed direct read-only combined role-page verification; the next
-gate is an isolated browser walkthrough and closure-evidence review.
+procedure evidence. `RS-WO-002-14` passed direct read-only combined role-page verification and the
+main-thread `RS-WO-002-15` isolated browser walkthrough passed against the same integrated source.
+The closure evidence is recorded in
+[`Docs/Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md`](Docs/Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md);
+no active local-MVP gate remains.
 
 ## 1. Authority and reading order
 
