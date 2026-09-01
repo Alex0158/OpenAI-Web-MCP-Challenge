@@ -17,11 +17,12 @@
   shared UI foundation without expanding the rental MVP or changing product authority.
 - Current increment: The single-file shared CSS foundation is independently verified and integrated
   at product commit `89a50c7`; its served runtime includes the candidate tokens. The isolated tenant
-  and agent role Builders are now dispatched as the next bounded parallel wave.
-- Next gate: Let both Builders complete their narrow role slices, then independently verify each frozen
-  output and integrate the two disjoint candidates through the main thread.
-- Execution posture: `PARALLEL_ROLE_BUILDERS_ACTIVE`; the CSS checkpoint is closed and the two role
-  Builders are running in separate Worktrees under the persistent task/thread dispatch policy.
+  and agent role Builders have handed off clean frozen candidates at `63e4c3e` and `33a36f0`.
+- Next gate: Run `RS-WO-007-06` and `RS-WO-007-07` as independent Verifiers against those exact
+  candidate commits, then integrate the two disjoint candidates through the main thread.
+- Execution posture: `PARALLEL_ROLE_VERIFICATION_READY`; the CSS checkpoint is closed, both role
+  Builder outputs are frozen, and their verification lanes may run in parallel under the persistent
+  task/thread dispatch policy.
 
 ## Accepted product boundary
 
@@ -254,13 +255,15 @@ sequential after both Builder handoffs.
 ## RS-WO-007-04 — Refine the tenant Field Desk surfaces
 
 **Role:** Persistent Codex task/thread Builder → later independent Verifier  
-**Status:** `ASSIGNED`  
+**Status:** `READY_FOR_VERIFICATION` — frozen candidate commit `63e4c3e`  
 **Parallelization:** `CONTRACT_PARALLEL_ROLE_UI` — may run in parallel with `RS-WO-007-05` only in
 the explicitly isolated Worktree recorded by the main thread; the shared CSS, shell, contracts, and
 runtime authority are read-only.  
 **Risk profile:** `Standard` — visual refinement constrained to existing tenant UI modules.  
 **Dependency:** `RS-WO-007-02` is independently verified and integrated at product commit `89a50c7`;
 the dispatch baseline is clean commit `3cc6a04287ebb639f71eebe94191559dd58ca9be`.  
+**Frozen source:** `63e4c3e2b6985439edd18f61d4905eb4134e521b`; the candidate Worktree is clean after
+the main-thread T2 freeze.  
 **Supporting task/thread:** `01a05db4-6e9d-7e51-8ee1-9b7c62cc31d0` on host `local`.  
 **Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-007-04-tenant` on branch
 `rightspot/rs-wo-007-04-tenant`.  
@@ -322,13 +325,15 @@ Verifier phase.
 ## RS-WO-007-05 — Refine the agent Field Desk surfaces
 
 **Role:** Persistent Codex task/thread Builder → later independent Verifier  
-**Status:** `ASSIGNED`  
+**Status:** `READY_FOR_VERIFICATION` — frozen candidate commit `33a36f0`  
 **Parallelization:** `CONTRACT_PARALLEL_ROLE_UI` — may run in parallel with `RS-WO-007-04` only in
 the explicitly isolated Worktree recorded by the main thread; the shared CSS, shell, contracts, and
 runtime authority are read-only.  
 **Risk profile:** `Standard` — visual refinement constrained to existing agent UI modules.  
 **Dependency:** `RS-WO-007-02` is independently verified and integrated at product commit `89a50c7`;
 the dispatch baseline is clean commit `3cc6a04287ebb639f71eebe94191559dd58ca9be`.  
+**Frozen source:** `33a36f01bb4163c2d29d9ee95ae6e4e95f591ae2`; the candidate Worktree is clean after
+the main-thread T2 freeze.  
 **Supporting task/thread:** `01a05db4-7764-7931-b474-ddbd977762ae` on host `local`.  
 **Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-007-05-agent` on branch
 `rightspot/rs-wo-007-05-agent`.  
@@ -387,6 +392,119 @@ boundary. This is a visual refinement slice, not an operations dashboard or feat
 Return `READY_FOR_VERIFICATION` with exact changed paths, source identity, diff summary, checks,
 known skipped browser evidence, and residual risks. Do not commit, modify the index, or start the
 Verifier phase.
+
+## RS-WO-007-06 — Independently verify the tenant Field Desk candidate
+
+**Role:** Persistent Codex task/thread Verifier  
+**Status:** `READY_TO_DISPATCH`  
+**Parallelization:** `EVIDENCE_PARALLEL` — may run in parallel with `RS-WO-007-07` because it uses a
+separate frozen source snapshot, separate Worktree, and no product write set.  
+**Risk profile:** `Standard` — independent static, runtime, and browser verification of a bounded
+tenant presentation candidate.  
+**Dependency:** `RS-WO-007-04` Builder handoff is frozen at candidate commit
+`63e4c3e2b6985439edd18f61d4905eb4134e521b`; do not verify the moving Builder Worktree.  
+**Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-007-06-tenant-verifier` (detached
+HEAD at the frozen candidate commit).  
+**Ownership:** The Verifier may inspect and execute only. The main thread owns all repair, canonical
+writeback, integration, and closure.
+
+### Verifier objective
+
+Independently determine whether the frozen tenant Field Desk candidate preserves the existing rental
+MVP behavior and role boundaries while meeting the accepted visual refinement claims. Return exact
+evidence and claim limits; do not repair or reinterpret the candidate.
+
+### Required read set
+
+- This Task File, the accepted ADR-RS-0009, and the frozen candidate commit.
+- `Docs/00-current-status.md`, `Docs/03-system-design.md`, `Docs/05-api-and-integration-contracts.md`,
+  and `Docs/06-validation-and-evidence.md` as they existed for the candidate boundary.
+- The tenant route wrappers, tenant API module, shared shell, existing tests, package scripts, and
+  the Builder handoff report.
+
+### Verification boundary
+
+- Confirm the exact source commit, clean status, exact four changed paths, and no forbidden-path
+  mutation.
+- Run Node `24.20.0` / npm `11.19.0` checks: dependency installation only if needed using the existing
+  lockfile, `npm run typecheck`, `npm test`, `npm run build`, and `git diff --check`.
+- Run directly relevant tenant/API tests and a bounded local production-server/browser walkthrough
+  at isolated port `3114` when the environment permits. Check discovery, listing detail, request
+  dashboard, loading/empty/error behavior, responsive layouts near `390x844`, `768x1024`, and
+  `1440x900`, keyboard focus, and no horizontal overflow. Report unexercised paths explicitly.
+- Check that no new feature, remote asset, dependency, global/shared-surface mutation, hidden
+  fallback, or role/privacy regression was introduced.
+
+### Forbidden actions
+
+- Do not edit source, tests, fixtures, dependencies, configuration, documentation, Git metadata, or
+  the main checkout.
+- Do not repair failures, weaken tests, commit, push, deploy, modify the database, or use the main
+  server on port `3100`.
+- Do not claim browser, contrast, or integration evidence from static inspection or a failed setup.
+
+### Return gate
+
+Return `VERIFIED`, `NEEDS_REPAIR`, or `BLOCKED` with the exact source identity, changed-path result,
+commands/runtime, browser evidence, skipped checks, residual risks, and recommended next gate. Stop
+after the report; do not dispatch repair or integration work.
+
+## RS-WO-007-07 — Independently verify the agent Field Desk candidate
+
+**Role:** Persistent Codex task/thread Verifier  
+**Status:** `READY_TO_DISPATCH`  
+**Parallelization:** `EVIDENCE_PARALLEL` — may run in parallel with `RS-WO-007-06` because it uses a
+separate frozen source snapshot, separate Worktree, and no product write set.  
+**Risk profile:** `Standard` — independent static, runtime, and browser verification of a bounded
+agent presentation candidate.  
+**Dependency:** `RS-WO-007-05` Builder handoff is frozen at candidate commit
+`33a36f01bb4163c2d29d9ee95ae6e4e95f591ae2`; do not verify the moving Builder Worktree.  
+**Source Worktree:** `/Users/alex/OpenAI-WebMCP/.rightspot-rs-wo-007-07-agent-verifier` (detached
+HEAD at the frozen candidate commit).  
+**Ownership:** The Verifier may inspect and execute only. The main thread owns all repair, canonical
+writeback, integration, and closure.
+
+### Verifier objective
+
+Independently determine whether the frozen agent Field Desk candidate preserves the existing queue,
+request-review, preparation, send, conflict, and privacy behavior while meeting the accepted visual
+refinement claims. Return exact evidence and claim limits; do not repair or reinterpret the candidate.
+
+### Required read set
+
+- This Task File, the accepted ADR-RS-0009, and the frozen candidate commit.
+- `Docs/00-current-status.md`, `Docs/03-system-design.md`, `Docs/05-api-and-integration-contracts.md`,
+  and `Docs/06-validation-and-evidence.md` as they existed for the candidate boundary.
+- The agent route wrappers, agent API module, shared shell, existing tests, package scripts, and the
+  Builder handoff report.
+
+### Verification boundary
+
+- Confirm the exact source commit, clean status, exact three changed paths, and no forbidden-path
+  mutation.
+- Run Node `24.20.0` / npm `11.19.0` checks: dependency installation only if needed using the existing
+  lockfile, `npm run typecheck`, `npm test`, `npm run build`, and `git diff --check`.
+- Run directly relevant agent/API tests and a bounded local production-server/browser walkthrough at
+  isolated port `3115` when the environment permits. Check queue, request detail, review/preparation,
+  explicit human send boundary, loading/error states, responsive layouts near `390x844`, `768x1024`,
+  and `1440x900`, keyboard focus, and no horizontal overflow. If the fixture has no assigned request,
+  report the consequential detail path as not exercised rather than manufacturing evidence.
+- Check that no new feature, remote asset, dependency, global/shared-surface mutation, hidden
+  fallback, or role/privacy regression was introduced.
+
+### Forbidden actions
+
+- Do not edit source, tests, fixtures, dependencies, configuration, documentation, Git metadata, or
+  the main checkout.
+- Do not repair failures, weaken tests, commit, push, deploy, modify the database, or use the main
+  server on port `3100`.
+- Do not claim browser, contrast, or integration evidence from static inspection or a failed setup.
+
+### Return gate
+
+Return `VERIFIED`, `NEEDS_REPAIR`, or `BLOCKED` with the exact source identity, changed-path result,
+commands/runtime, browser evidence, skipped checks, residual risks, and recommended next gate. Stop
+after the report; do not dispatch repair or integration work.
 
 ## Acceptance criteria for this task
 

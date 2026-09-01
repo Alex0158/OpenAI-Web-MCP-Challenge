@@ -17,10 +17,11 @@ against the integrated source with full direct, built-server HTTP, and browser e
 is closed for the accepted local MVP. Its verifier Worktrees also exposed an out-of-scope tracked
 tooling mutation preserved as procedure evidence.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current active Work Orders:** `RS-WO-007-04` tenant Builder and `RS-WO-007-05` agent Builder are
-`ASSIGNED` in isolated Worktrees from baseline `3cc6a04287ebb639f71eebe94191559dd58ca9be`; the
-shared CSS foundation `RS-WO-007-02` is already `VERIFIED` and integrated at product commit `89a50c7`
-after its final same-identity browser rerun corrected the stale served-build block under `RIGHTSPOT-007`;
+**Current active Work Orders:** `RS-WO-007-04` tenant and `RS-WO-007-05` agent Builders have handed
+off clean frozen candidates at commits `63e4c3e` and `33a36f0`; their independent Verifier Work
+Orders `RS-WO-007-06` and `RS-WO-007-07` are the next dispatchable evidence lanes. The shared CSS
+foundation `RS-WO-007-02` is already `VERIFIED` and integrated at product commit `89a50c7` after its
+final same-identity browser rerun corrected the stale served-build block under `RIGHTSPOT-007`;
 Builder `01a05d75-0116-75e3-807d-a19c6669e659` (`Turing`, local multi-agent) changed only
 `app/globals.css`, whose post-Builder SHA-256 is `bb85c353b3943b1267f361b3a4e677bc3e4ce7db09250984085471c7409a957c`.
 Independent Verifier `01a05d82-ba0f-7963-9975-200e1fabb962` (`Hooke`) verified the corrected frozen
@@ -92,8 +93,9 @@ write set.
 **Current implementation lane:** `RIGHTSPOT-007`'s Architecture/UI Advisor proposal is accepted
 with revisions. `RS-WO-007-02` passed static/build and final browser verification and is integrated
 at product commit `89a50c7`; its rebuilt served runtime shows the candidate tokens. `RS-WO-007-04`
-and `RS-WO-007-05` are now assigned to persistent task/threads in isolated Worktrees with disjoint
-tenant/agent write sets; their independent verification and integration remain pending. A separate,
+and `RS-WO-007-05` are frozen as clean candidate commits `63e4c3e` and `33a36f0` in isolated
+Worktrees with disjoint tenant/agent write sets; `RS-WO-007-06` and `RS-WO-007-07` are ready for
+independent verification before integration. A separate,
 non-blocking `RS-WO-007-03` parallelism review returned `READY_FOR_REVIEW` from supporting worker
 `01a05d76-dac9-7283-9c2a-4166935f5043`; main accepted its isolation revisions and used them to
 register and dispatch the two role Builders.
