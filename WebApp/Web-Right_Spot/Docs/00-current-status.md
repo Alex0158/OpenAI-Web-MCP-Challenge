@@ -27,7 +27,7 @@ tooling mutation preserved as procedure evidence. The Field Desk shared CSS, ten
 agent surfaces have since passed their respective independent verification gates and are integrated
 at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression passed at frozen source
 `4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
-**Post-commit audit checkpoint (2026-09-02):** The canonical Main Worktree is at `63e141e34d2d0fa9735b4ab1f5d7eef30b44f6a1`,
+**Post-commit audit checkpoint (2026-09-02):** The canonical Main Worktree is at `9f75523b38a624cb68b4df815ac5fe5284380d42`,
 `origin/main` is identical, and no additional RightSpot Worktree is present. The current local server
 still reports healthy at `/api/health`. A fresh rendered route/role sweep covered the signed-out root,
 Tenant catalogue, Favourites, Viewing Requests, listing detail, wrong-role Agent access, and the valid
