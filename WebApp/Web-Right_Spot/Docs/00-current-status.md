@@ -195,8 +195,9 @@ The newly surfaced `RIGHTSPOT-008` proposal-only `RS-WO-008-01` returned `READY_
 supporting worker `01a05d79-ce45-7000-aa44-a3a1ecad95b0`. Main jointly reviewed it with `RS-WO-009-01`,
 accepted the bounded Favourite direction in ADR-RS-0013, and closed the proposal task; its separate
 implementation Task is `RIGHTSPOT-020`. `RS-WO-020-01` is independently verified and closed after
-Main completed the bounded server contract/data slice; its tenant and agent UI Work Orders are prepared
-but no UI slice is active.
+Main completed the bounded server contract/data slice. Its disjoint tenant and agent UI Work Orders
+were subsequently dispatched, adopted into Main at product commit `c29e80d`, independently verified at
+`c977ea4`, and browser-verified against fresh-reset Main `f49e1ca`; no UI slice is active.
 `RIGHTSPOT-009` was reviewed with `RIGHTSPOT-008` after `RS-WO-009-01` returned `READY_FOR_REVIEW`
 from `01a05d7c-21b4-72f3-bbe8-1c34d1aee291`. It is closed as `REVIEWED_DEFERRED`: the Information
 Request boundary remains proposal evidence only because contact/PII authority, retention, and agent
@@ -206,8 +207,9 @@ read-only `RS-WO-010-01` returned `READY_FOR_REVIEW` from `01a05d88-8907-7063-8c
 (`Leibniz`) and cannot authorize dashboard implementation, WebMCP registration, reporting changes,
 or canonical product writeback. Its proposal record remains unimplemented and separate from the
 accepted Favourite lane. `RS-WO-020-01` has now passed independent verification and is closed; the
-disjoint tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` are prepared but not yet
-dispatched.
+disjoint tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched, adopted
+into Main at product commit `c29e80d`, and later covered by independent source and fresh-reset browser
+verification. They are historical checkpoints, not active Work Orders.
 
 `RIGHTSPOT-011` accepts ADR-RS-0011's bounded Agent Operations read-model seam. `RS-WO-011-01`
 completed its exact two-path Builder handoff at `5b05c78`, `RS-WO-011-02` independently verified it,
@@ -276,7 +278,7 @@ final response can remain a normal application action.
 | Cloud Receiver | **Not a first-phase dependency** | Future integration boundary only |
 | WebMCP | **Not a first-phase design center** | Later Hackathon integration boundary |
 | Runtime / deployment | **Not started** | No service, hosting, credentials, or public URL |
-| Evidence | **LOCAL MVP IMPLEMENTATION + DIRECT AND BROWSER HAPPY PATH VERIFIED** | `RS-WO-002-14` passed pinned install, typecheck, foundation `6/6`, all ten direct test files `57/57`, build, built-server cross-role HTTP, role/error/privacy/conflict, and no-mutation checks; `RS-WO-002-15` completed the isolated browser walkthrough with authoritative versions `1 → 6` and no browser errors or warnings. Deployment and future integrations remain unclaimed |
+| Evidence | **LOCAL MVP IMPLEMENTATION + DIRECT AND BROWSER HAPPY PATH VERIFIED** | Current pinned `npm test` passes the complete authored suite `133/133` across 28 test files, while `npm run test:foundation` passes `6/6`; the historical `RS-WO-002-14` direct cross-role check and `RS-WO-002-15` isolated browser walkthrough also passed with authoritative versions `1 → 6` and no browser errors or warnings. Deployment and future integrations remain unclaimed |
 
 ## 3. Confirmed working inputs
 
@@ -318,8 +320,15 @@ final response can remain a normal application action.
   transport is actually necessary?
 - Whether the local MVP snapshot should later be replaced by a normalized production schema and
   migration strategy.
-- What accessibility and responsive layout baseline should the application use?
+- Whether and how to expose a development-only audit inspection surface; the current product UI does
+  not expose audit records.
+- Whether provider-backed authentication should be enabled beyond the bounded demo session, subject to
+  the external credential gate in `RIGHTSPOT-006`.
 - Which future Hackathon integration is necessary after the ordinary product loop works?
+
+The current `320px` responsive floor, keyboard/focus, reduced-motion, and related presentation baseline
+are accepted by ADR-RS-0009 and covered by the recorded validation evidence; they are not open
+implementation decisions for the local MVP.
 
 ## 5. Current gate and closure
 

@@ -187,3 +187,28 @@ roadmap, Runbook, Development index, and Task index were reconciled. F-07 is the
 F-08 remains `EVIDENCE_GAP`: no controlled delayed-response reproduction was obtained, so no UI
 concurrency Task has been registered. The next Main-thread audit should revisit it only with a
 supported network-delay or deterministic test harness.
+
+## 9. Main-thread authority-coherence follow-up — 2026-09-02
+
+A fresh cross-document pass found one documentation-only drift. `Docs/02-requirements.md` still
+described the concrete local service/repository composition, SQLite snapshot, bounded demo session,
+ordinary HTTP/JSON transport, and accessibility/responsive baseline as open implementation decisions,
+although those choices are implemented or accepted by the current system design, domain/API
+contracts, ADRs, and validation evidence. `Docs/00-current-status.md` also retained the responsive
+baseline as an open question and contained two unmarked historical statements that the Favourite UI
+Work Orders had not yet been dispatched.
+
+**Classification:** `DOCUMENTATION_DRIFT`  
+**Priority:** `P2` for source-of-truth and planning clarity  
+**Product impact:** None reproduced. The ordinary local MVP source, runtime, and business-flow
+behavior were not changed.
+
+**Resolution:** The Requirements document now separates the closed local implementation baseline from
+the remaining production, provider, audit-inspection, deployment, and future-integration decisions.
+The Current Status document now reflects the completed Favourite integration, current `133/133`
+verification contract, and the accepted responsive/accessibility baseline. No product Task was
+registered because this was a bounded Main-owned documentation correction, not a runtime defect or
+new product outcome.
+
+F-08 remains an `EVIDENCE_GAP`; this documentation correction does not authorize speculative async
+read guards or any other source change. The next active route remains a fresh Main-thread audit.

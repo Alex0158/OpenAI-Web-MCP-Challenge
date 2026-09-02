@@ -1,7 +1,7 @@
 # RightSpot — Requirements
 
 **Role:** Product, workflow, authority, and reliability requirements  
-**Status:** MVP business-rules baseline accepted; implementation details remain open
+**Status:** MVP business-rules and accepted local implementation baseline; future integration and production decisions remain open
 
 ## 1. Requirement discipline
 
@@ -235,17 +235,25 @@ The following are intentionally not first-phase requirements:
 They will be added only after the ordinary RightSpot workflow has a stable product and Backbone
 boundary.
 
-## 8. Open implementation decisions
+## 8. Remaining implementation and integration decisions
 
-The MVP business rules above are closed. The remaining decisions are implementation or later
-integration choices:
+The MVP business rules and the local implementation baseline above are closed. The concrete local
+application service/repository composition, SQLite snapshot persistence, bounded demo-cookie session,
+ordinary HTTP/JSON transport, local audit persistence, and current accessibility/responsive baseline
+are recorded in the system design, domain model, API contract, accepted ADRs, and validation evidence.
+They are not open blockers for the accepted ordinary local MVP.
 
-- concrete application service and repository implementation within the accepted Next.js, React,
-  TypeScript, Node.js 24, and SQLite baseline;
-- persistence records, migrations, and concrete repository layout;
-- concrete session storage for the bounded demo login;
-- ordinary transport and serialization format;
-- audit storage and development-only inspection surface;
+The remaining decisions are deliberately outside that local MVP:
+
+- production persistence schema, migrations, backup, and data-lifecycle strategy beyond the local
+  SQLite snapshot;
+- provider-backed authentication and external identity mapping beyond the bounded demo session;
+- whether and how to expose a development-only audit inspection surface; the current product UI does
+  not expose audit records;
 - future event/outbox representation and external event mapping;
-- accessibility and responsive layout baseline; and
+- public versus internal operation exposure for future capabilities; and
 - deployment, clean-room access, and final evaluator timing.
+
+Provider-backed authentication remains separately gated by `RIGHTSPOT-006`. WebMCP, Cloud Receiver,
+and any Remote Viewing/signaling capability remain subject to their deferred integration boundaries;
+this section does not authorize them.
