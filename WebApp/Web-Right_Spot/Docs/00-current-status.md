@@ -63,6 +63,10 @@ The follow-up keyboard pass also confirmed first-Tab skip-link entry on Tenant a
 main-content continuation after activation, ordered Tenant editor controls, and a non-exposed disabled
 submit action until the draft is eligible. The Agent queue remained free of a product focus trap; the
 browser reported no errors.
+The subsequent API/projection check confirmed Tenant responses expose only tenant-safe listing,
+Favourite, and request fields, while Agent responses expose only queue counts and assigned-listing
+aggregates. Missing Agent requests returned bounded `404` and cross-role reads returned bounded `403`;
+no actor-private fields, internal notes, or workflow ledger fields were exposed.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current next product action:** Continue the Main-thread cross-layer audit from the closed
 `RIGHTSPOT-041` / `RS-WO-041-01` tenant request mutation-feedback repair. `RIGHTSPOT-039` /

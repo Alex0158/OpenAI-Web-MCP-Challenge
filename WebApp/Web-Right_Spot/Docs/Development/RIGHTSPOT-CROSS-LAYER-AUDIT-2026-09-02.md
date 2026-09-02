@@ -1821,3 +1821,19 @@ trap; the only extra development-only focus surface was the injected Next.js Dev
 error checks were empty, no request/Favourite/fixture state changed, and no source changed. No new
 `VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`, `VERIFIED_POLISH`, or `DOCUMENTATION_DRIFT` finding was
 accepted; no Task or Work Order was registered.
+
+## 74. Runtime API and projection privacy revalidation — no new finding — 2026-09-02
+
+Main used a fresh local browser session at fixture generation `86` to read the actual Tenant and Agent
+API projections. The Tenant session returned only the bounded actor identity, public listing fields,
+tenant-owned Favourite fields, and tenant-safe request/timeline data. The Agent session returned only
+its role identity, explicit workflow-state counts, assigned-listing interest aggregates, and the empty
+request collection. No internal review note, processed-command ledger, slot holder, or unrelated actor
+identity appeared in any inspected response.
+
+The Agent request detail for the absent `request-primary` returned bounded `404 NOT_FOUND`. The same
+Agent session received bounded `403 FORBIDDEN` responses for Tenant Favourite, Tenant request, and Tenant
+listing reads. The empty Agent queue and listing-interest projection rendered without browser errors;
+the fixture remained unchanged and `/api/health` stayed healthy. No source, workflow, or Task state
+changed. No `VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`, `VERIFIED_POLISH`, or `DOCUMENTATION_DRIFT`
+finding was accepted, and no Task or Work Order was registered.
