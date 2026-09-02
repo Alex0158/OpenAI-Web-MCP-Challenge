@@ -652,6 +652,11 @@ h3 {
     overflow-x: auto;
   }
 
+  .session-nav[data-workspace-role="tenant"] .session-nav-links {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+
   .session-nav-actions {
     width: 100%;
     justify-content: space-between;
