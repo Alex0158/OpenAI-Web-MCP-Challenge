@@ -14,6 +14,11 @@ are now `CLOSED_VERIFIED`. The subsequent tenant request-surface audit registere
 a separate P2 terminal-response presentation defect; its single presentation-only Work Order was
 implemented by persistent Builder task `01a060bf-17c7-7c32-96ad-2ea1aa028ebf` and independently verified
 by `01a060a8-6f2d-7141-98d0-385483a9104f`; no implementation Worktree is active.
+The 2026-09-02 Main-thread audit registered and closed `RIGHTSPOT-029` after confirming that the
+default `npm test` command ran only the six foundation tests although the authored suite contains 28
+test files and passes 133 tests through the complete command. `npm test` is now the complete RightSpot
+test command. The audit's un-reproduced asynchronous-read concern remains evidence-only and does not
+authorize a speculative UI repair.
 Current post-MVP state is maintained in [`Docs/00-current-status.md`](Docs/00-current-status.md) and
 [`Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`](Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md),
 not in this routing document. As of 2026-09-02, `RIGHTSPOT-015` is closed at product commit `e7f30d5`;
@@ -122,7 +127,10 @@ The foundation verification commands are defined in the `RS-WO-002-01` acceptanc
 re-run by `RS-WO-002-02`. The corrected independent Verifier rerun reproduced them against the
 frozen source and runtime identity without violating the output boundary. This is foundation evidence
 only; a future implementation record must name the exact runtime, commands, test counts, fixtures,
-and residual risks rather than copying the outer Core's verification claims.
+and residual risks rather than copying the outer Core's verification claims. For current RightSpot
+verification, `npm test` is intended to be the complete authored test suite, while
+`npm run test:foundation` is the narrow six-test foundation check; `RIGHTSPOT-029` closed the package
+script repair and current-document reconciliation for this contract.
 
 ### 5.1 Verification output boundary
 

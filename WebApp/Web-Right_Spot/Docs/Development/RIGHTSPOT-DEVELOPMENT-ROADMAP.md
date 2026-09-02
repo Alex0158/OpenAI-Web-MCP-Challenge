@@ -2,11 +2,15 @@
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
 **Status:** Phase 5 is complete for the accepted local MVP, and the earlier Phase 6 post-MVP closure increment
-is complete. The continuous cross-layer audit registered six bounded defects: `F-01` (agent draft
+is complete. The continuous cross-layer audit registered six bounded product defects and one current
+verification-governance defect: `F-01` (agent draft
 visibility), `F-02` (signed-out root session resolution), `F-03` (the loopback development origin
 gap), `F-04` (listing-detail request-status notice), `F-05` (terminal request-response presentation),
 and `F-06` (the deterministic workflow-fixture reset command). `F-01`–`F-06` are closed within their
-bounded local claims; `F-06` was repaired and independently verified through `RIGHTSPOT-028`. The first implementation route was
+bounded local claims; `F-06` was repaired and independently verified through `RIGHTSPOT-028`. The
+2026-09-02 audit registered `F-07` for the default test command under-covering the 28-file/133-test
+suite; `RIGHTSPOT-029` is now closed within its command/documentation scope. It also recorded an
+un-reproduced asynchronous read concern as `F-08`/`EVIDENCE_GAP`, not as an implementation Task. The first implementation route was
 the `RIGHTSPOT-023` session-client repair, now verified in its Main Builder and independent read-only
 verification checkpoints. The same rendered audit registered `F-03` (the documented 127.0.0.1 dev
 origin gap) as the separately gated `RIGHTSPOT-024` configuration route. A subsequent page-entry audit
@@ -102,6 +106,11 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 - The current physical state is one Worktree: canonical Main. The stopped `RS-WO-020-02` and
   `RS-WO-020-03` UI candidates were adopted into Main and their physical Worktrees were retired after
   exact-path review; their task records remain as historical evidence.
+- `RIGHTSPOT-029` is closed: `npm test` now runs the complete authored suite and
+  `npm run test:foundation` is the explicit six-test foundation check. No product runtime behavior
+  or closed business-flow Task was reopened.
+- No implementation or verification gate is currently active; the next route is a fresh Main-thread
+  cross-layer audit. The un-reproduced overlapping-read concern remains `F-08`/`EVIDENCE_GAP`.
 
 ## 3. Roadmap milestones
 
@@ -149,6 +158,11 @@ from the workflow snapshot on repeated use. `RIGHTSPOT-028` closed this bounded 
 verification at integrated commit `b2c1682a`; the repair remains limited to CLI composition and an
 isolated child-process regression, with no automatic recovery or persistence-contract redesign. No
 supporting implementation Worktree was opened.
+The subsequent audit registered and closed `F-07`/`RIGHTSPOT-029` after confirming that `npm test`
+passed only the six foundation tests while the complete authored suite passed `133/133`. The current
+command contract and documentation are reconciled. The overlapping-read concern remains
+`F-08`/`EVIDENCE_GAP` because the available browser instrumentation could not provide a controlled
+delayed response; no speculative UI guard is authorized.
 The independent static verification `RS-WO-020-04` and fresh-reset browser verification `RS-WO-020-05`
 are reconciled in the owning Task File; the `RS-WO-021-01` implementation and `RS-WO-021-02`
 independent verification gates are closed:

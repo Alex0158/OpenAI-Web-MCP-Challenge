@@ -123,6 +123,15 @@ repeated reset/reopen evidence all passed. The reset remains a disposable local 
 boundary; arbitrary corrupt-database salvage, production data management, deployment, WebMCP, and
 external authentication remain non-claims.
 
+The 2026-09-02 Main-thread cross-layer audit also reproduced a verification-governance defect:
+`npm test` executes only `tests/foundation.test.ts` and passes `6/6`, while the authored RightSpot
+suite contains 28 test files and the complete pinned glob command passes `133/133`. This was recorded
+as `F-07` and repaired through `RIGHTSPOT-029`: `npm test` now runs the complete suite, while
+`npm run test:foundation` reports the foundation-only result separately. The Task is
+`CLOSED_VERIFIED` within that command/documentation boundary. The same audit recorded the
+un-reproduced overlapping-read concern as `F-08`/`EVIDENCE_GAP`; it requires a supported
+controlled-delay reproduction before any UI change is registered.
+
 ## 4.1 Post-MVP shared CSS evidence
 
 `RS-WO-007-02` is independently `VERIFIED` and integrated at product commit `89a50c7`. The

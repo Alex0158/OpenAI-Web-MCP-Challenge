@@ -28,14 +28,20 @@ agent surfaces have since passed their respective independent verification gates
 at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression passed at frozen source
 `4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Begin a fresh Main-thread cross-layer audit. The latest audit's
-P1 reset defect `F-06` is closed through `RIGHTSPOT-028`: the documented `npm run db:reset` command
-now composes the authoritative workflow reset, and `RS-WO-028-01` passed Main Red→Green checks,
-frozen-source independent verification, and documentation reconciliation at product commit
-`b2c1682a`. No supporting implementation Worktree is open. `RIGHTSPOT-023`, `RIGHTSPOT-024`,
-`RIGHTSPOT-025`, `RIGHTSPOT-026`, `RIGHTSPOT-027`, and `RIGHTSPOT-028` remain closed within their
-bounded outcomes after applicable TDD, independent verification, browser/build evidence, and
-documentation reconciliation. The canonical business-flow and scenario baseline is
+**Current next product action:** Return to a fresh Main-thread cross-layer audit. The latest audit
+found no new business-flow blocker and registered `RIGHTSPOT-029` for the verification-contract gap
+where the default `npm test` command executed only foundation tests `6/6` while the complete authored
+suite passed `133/133` across 28 test files. That Task is now `CLOSED_VERIFIED`: `npm test` runs the
+complete suite and `npm run test:foundation` names the fast foundation check. `F-06` remains closed
+through `RIGHTSPOT-028`: the documented `npm run db:reset` command now composes the authoritative
+workflow reset, and `RS-WO-028-01` passed Main Red→Green checks, frozen-source independent
+verification, and documentation reconciliation at product commit `b2c1682a`. No supporting
+implementation Worktree is open. `RIGHTSPOT-023`, `RIGHTSPOT-024`, `RIGHTSPOT-025`, `RIGHTSPOT-026`,
+`RIGHTSPOT-027`, `RIGHTSPOT-028`, and `RIGHTSPOT-029` remain closed within their bounded outcomes
+after applicable TDD, independent verification, browser/build evidence, and documentation
+reconciliation. The separate F-08 overlapping-read concern remains an `EVIDENCE_GAP` pending
+controlled reproduction and is not a repair authorization. The canonical business-flow and scenario
+baseline is
 [`07-business-flows-and-scenarios.md`](07-business-flows-and-scenarios.md). The only product source
 authority remains the canonical Main Worktree.
 **Current closure state:** `RS-WO-016-01` passed its bounded repair and fresh independent verification;
@@ -111,6 +117,14 @@ task `01a05d58-0b9e-7e40-8093-befbe4723318` detected the already-dirty shared ca
 read-only direct cross-role verification and `RS-WO-002-15` completed the isolated browser walkthrough
 against the integrated tenant and agent role pages at product commit `9348aa50b63e3f4f46e77238ad370670383d9d6d`; the closure record is
 [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md).
+
+The current Main-thread audit is recorded in
+[`RIGHTSPOT-CROSS-LAYER-AUDIT-2026-09-02.md`](Development/RIGHTSPOT-CROSS-LAYER-AUDIT-2026-09-02.md).
+It registered and then closed `RIGHTSPOT-029` for the default test-command under-coverage. This was a
+verification gate, not a product-runtime gate: the complete suite and the explicit foundation check
+now both pass under the named commands. The audit also records an un-reproduced asynchronous-read
+concern as `F-08`/`EVIDENCE_GAP`; no speculative UI repair is authorized until a supported controlled
+reproduction exists.
 `RIGHTSPOT-005` is closed and integrated at local commit `27f5391`; its Builder changed only the
 declared shared-shell write set and corrected independent verification returned `VERIFIED`. The
 preserved `.gitignore` incident is procedure evidence, not a product defect.

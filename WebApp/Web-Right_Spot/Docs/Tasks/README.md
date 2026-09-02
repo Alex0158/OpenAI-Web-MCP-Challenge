@@ -41,6 +41,7 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-026 — Clarify the existing Viewing Request status notice`](RIGHTSPOT-026-clarify-listing-request-status-notice.md)
 - [`RIGHTSPOT-027 — Make terminal Viewing Request response state-accurate`](RIGHTSPOT-027-clarify-terminal-request-response-state.md)
 - [`RIGHTSPOT-028 — Restore deterministic workflow fixture reset`](RIGHTSPOT-028-fix-deterministic-workflow-fixture-reset.md)
+- [`RIGHTSPOT-029 — Align the default RightSpot test command with the complete suite`](RIGHTSPOT-029-align-default-test-command.md)
 
 `RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
 `RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`,
@@ -114,6 +115,12 @@ verification by persistent task `01a060fa-3cc5-7f22-9d74-d8c0eb95d21b`; it is in
 `b2c1682a34a395ff9471f4338b213a0ede938134`. No supporting implementation Worktree was opened and
 no recovery fallback is authorized.
 
+`RIGHTSPOT-029` is closed as a P1 verification-contract repair. Its single Work Order changed only
+the package scripts and current command guidance: `npm test` now runs the complete authored suite
+(`133/133` across 28 test files), while `npm run test:foundation` preserves the explicit six-test
+foundation check. Typecheck, production build, local health, reset, and minimum browser smoke passed;
+no product behavior or closed business-flow Task was reopened.
+
 Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, the corrected `RS-WO-002-02` rerun returned
 `VERIFIED`, `RS-WO-002-03` returned `VERIFIED` after its bounded repair, and `RS-WO-002-04` returned
@@ -143,7 +150,8 @@ register. The parent remained `in_progress` when a checkpoint was locally blocke
 work remained; it is now `closed` for the accepted local MVP. The Side Chat process lane is separately
 declared and user-authorized.
 
-**Current gate:** None for the accepted local MVP. `RS-WO-002-14` direct evidence and `RS-WO-002-15`
+**Current gate:** There is no active implementation gate for the accepted local MVP. `RIGHTSPOT-029`
+is closed within its verification-command scope; `RS-WO-002-14` direct evidence and `RS-WO-002-15`
 browser evidence are reconciled in the
 [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](../Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md), and
 `RIGHTSPOT-002` is closed.
