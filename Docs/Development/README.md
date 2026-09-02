@@ -111,6 +111,7 @@ genuine WebMCP, deployment, or judge reproducibility.
 | [`ENG-003`](ENG-003-collaborative-source-of-truth-and-git-gates.md) | Establish human-request authority checks, canonical writeback, and multi-computer Git synchronization gates | `locally_verified` |
 | [`CLOUD-001`](CLOUD-001-stage-one-cloud-receiver-shell.md) | Implement the loopback-only Cloud Receiver process shell around the existing Core and file-backed SQLite | `locally_verified` |
 | [`SDK-004`](SDK-004-cloud-receiver-v2-event-contract-tests.md) | Prepare SDK `sendEvent()` contract verification for Cloud Receiver v2 Feature 3 | `closed` — `7/7` Event cases and normal SDK `18/18` passed against `b851c320` |
+| [`SDK-005`](SDK-005-cloud-receiver-v2-full-chain-contract.md) | Prepare SDK-to-Receiver full-chain contract coverage through downstream acknowledgement | `verification_pending` — SDK boundary specified; blocked on Cloud Features 5–6 and exact Connector acknowledgement commit |
 
 ## Verification reports
 
