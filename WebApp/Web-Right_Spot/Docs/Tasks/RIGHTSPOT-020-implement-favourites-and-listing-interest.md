@@ -423,8 +423,11 @@ unavailable-listing representation, and the assigned agent's listing-level inter
 2. As the synthetic tenant, enter the tenant workspace, view the seeded listings, save `listing-primary`
    from discovery or detail, open the Favourite list, remove it, reload the Favourite projection, and
    save it again. Record the visible state and relevant URLs.
-3. Confirm an unavailable/unpublished Favourite remains represented as unavailable and removable while it
-   is excluded from the agent's `Available interest` count and retained in `Current saves`.
+3. If the accepted MVP exposes an in-scope UI action that produces an unpublished listing, confirm the
+   unavailable Favourite remains represented as unavailable and removable while it is excluded from the
+   agent's `Available interest` count and retained in `Current saves`. If no such UI action exists, do not
+   call a hidden API or mutate the fixture solely for browser evidence; record this as direct/static-only
+   evidence and keep the browser claim limited to the supported human flow.
 4. In an independent fresh session, enter the synthetic assigned-agent workspace and confirm only the
    listing-level `Current saves` and `Available interest` projection is visible; no tenant identity,
    contact value, or private note may appear.
