@@ -154,34 +154,16 @@ independently verified and integrated at `edd7575`; `RS-WO-017-03` is independen
 integrated at `2a53917`, with `RS-WO-017-04` browser verification complete. `RS-WO-019-01` is closed
 after its bounded browser/form regression passed. No closed task is an active implementation gate.
 
-**Current route:** The latest completed bounded route, `RIGHTSPOT-026`, is closed after its
-presentation-only listing-detail status-notice repair, full checks, live browser evidence, and formal
-persistent verification. The fresh Main-thread audit registered `RIGHTSPOT-027` for the tenant
-request-dashboard terminal response presentation defect. Its `RS-WO-027-01` passed independent
-verification and is closed after the exact candidate was integrated into the canonical Main Worktree.
-No separate implementation Worktree is open. There is no active implementation route; the next action
-is a fresh Main-thread cross-layer audit. The latest completed bounded routes,
-`RIGHTSPOT-022`, closed after `RS-WO-022-01` returned `READY_FOR_VERIFICATION`, Main froze the exact
-CSS candidate at product commit `f0dbd99`, and persistent `RS-WO-022-02` independently returned
-`VERIFIED`. The boundary was CSS-only, tenant-scoped, and serialized on the canonical Main Worktree;
-no implementation Worktree is open. `RIGHTSPOT-021` remains closed for
-its bounded implementation and verification. Its
-`RS-WO-021-01` implementation changed only the declared two product paths, and `RS-WO-021-02`
-independently returned `VERIFIED` against the frozen canonical Main Worktree. A subsequent
-Main-thread audit found that the third tenant navigation link is initially clipped at `320–342px`;
-the support-floor decision and the bounded repair are now recorded in `RIGHTSPOT-022`. The exact
-five-line CSS candidate is committed locally at `f0dbd99` and independently verified.
-`RIGHTSPOT-020` remains closed: `RS-WO-020-01R` is independently verified at `adfd37e`; the main thread jointly reviewed
-`RS-WO-008-01` and `RS-WO-009-01`, accepted the bounded Favourite direction in ADR-RS-0013, deferred
-the PII-sensitive Information Request direction, and registered the now-closed `RIGHTSPOT-020` as a separate
-implementation Task. Its tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched
-for disjoint parallel work and adopted into Main; their stopped candidate Worktrees were then retired
-after exact-path review, leaving only Main as the current source authority. `RS-WO-020-04` passed static
-verification at `c977ea4`, and `RS-WO-020-05` passed fresh-reset browser verification at `f49e1ca`.
-`RIGHTSPOT-006`
-stays gated on explicit external credentials and local-origin authorization. `RIGHTSPOT-010` is a later
-Operations/WebMCP decision gate, while `RIGHTSPOT-012` is non-blocking read-only audit work. Only an
-explicitly selected, implementation-ready Task may open code Work Orders or temporary Worktrees.
+**Current route:** `RIGHTSPOT-027` is the latest completed bounded route. Its `RS-WO-027-01`
+presentation-only terminal-response repair passed independent verification and is integrated into the
+canonical Main Worktree. There is no active implementation route and no implementation Worktree is
+open; the next action is a fresh Main-thread cross-layer audit. `RIGHTSPOT-026`, `RIGHTSPOT-022`, and
+`RIGHTSPOT-021` remain closed within their separately recorded presentation/navigation boundaries.
+`RIGHTSPOT-020` remains closed after its Favourite/listing-interest implementation and fresh-reset
+browser verification. `RIGHTSPOT-006` stays gated on explicit external credentials and local-origin
+authorization; `RIGHTSPOT-010` is a later Operations/WebMCP decision gate; and `RIGHTSPOT-012` is
+non-blocking read-only audit work. Only an explicitly selected, implementation-ready Task may open
+code Work Orders or temporary Worktrees.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.

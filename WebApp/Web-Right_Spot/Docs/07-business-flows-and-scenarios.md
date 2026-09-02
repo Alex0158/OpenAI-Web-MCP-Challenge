@@ -2,8 +2,8 @@
 
 **Role:** Canonical business-flow, scenario, state-transition, and acceptance authority for the
 RightSpot Web application
-**Status:** Accepted current-flow baseline; latest implementation coverage audit closed `F-05` within
-its bounded presentation-only claim
+**Status:** Accepted current-flow baseline; the latest implementation coverage audit closed `F-01`–`F-05`
+within their recorded bounded claims
 **As of:** 2026-09-02, Europe/London
 **Owner:** Main RightSpot thread
 
