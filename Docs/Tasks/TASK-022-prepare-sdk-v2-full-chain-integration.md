@@ -1,10 +1,10 @@
 # TASK-022: Prepare SDK v2 Full-Chain Integration Contract
 
-**Status:** `verification_pending` — SDK Host-side gates are specified; final cross-team execution waits for exact Cloud Receiver Features 5–6 and Local Connector acknowledgement commits
+**Status:** `verification_pending` — SDK Host/Event/Claim gates and Cloud Feature 5/6 own tests pass against exact Cloud `300bce02`; received Acknowledgement is `4/5` because ACK-003 has an error-code mismatch; combined flow remains open
 **Owner:** SDK development team
 **Profile:** Assured
 **Scope:** SDK-owned contract tests and evidence documents only; no Cloud Receiver or Local Connector production changes
-**Authority:** [ADR-0007](../Decisions/ADR-0007-freeze-reentry-core-v0.1-contract-kernel.md), [ADR-0009](../Decisions/ADR-0009-freeze-connector-lease-and-effect-acknowledgement.md), [ADR-0010](../Decisions/ADR-0010-freeze-receiver-http-and-connector-transport.md), [ADR-0013](../Decisions/ADR-0013-freeze-receiver-grant-control-and-revocation.md), [ADR-0036](../Decisions/ADR-0036-adopt-cloud-receiver-v2-signed-event-ingress.md), and [ADR-0037](../Decisions/ADR-0037-adopt-cloud-receiver-v2-delivery-claim.md)
+**Authority:** [ADR-0007](../Decisions/ADR-0007-freeze-reentry-core-v0.1-contract-kernel.md), [ADR-0009](../Decisions/ADR-0009-freeze-connector-lease-and-effect-acknowledgement.md), [ADR-0010](../Decisions/ADR-0010-freeze-receiver-http-and-connector-transport.md), [ADR-0013](../Decisions/ADR-0013-freeze-receiver-grant-control-and-revocation.md), [ADR-0036](../Decisions/ADR-0036-adopt-cloud-receiver-v2-signed-event-ingress.md), [ADR-0037](../Decisions/ADR-0037-adopt-cloud-receiver-v2-delivery-claim.md), [ADR-0038](../Decisions/ADR-0038-adopt-cloud-receiver-v2-delivery-acknowledgement.md), and [ADR-0039](../Decisions/ADR-0039-adopt-cloud-receiver-v2-transport-operations.md)
 **Source contracts:** [SDK to Cloud Receiver v2 integration map](../Cloud-Receiver-Handoff/v2-build/08-sdk-cloud-receiver-integration.md), [Feature 04 — Delivery Claim and Lease](../Cloud-Receiver-Handoff/v2-build/04-delivery-claim-and-lease.md), [Feature 05 — Delivery Acknowledgement](../Cloud-Receiver-Handoff/v2-build/05-delivery-acknowledgement.md), and [Feature 06 — Transport, Errors, Health, and Operations](../Cloud-Receiver-Handoff/v2-build/06-transport-and-operations.md)
 
 ## Task Control
@@ -14,7 +14,7 @@
 - Priority: `P1`
 - Owner: SDK development team.
 - Current increment: Prepare the exact SDK-to-Receiver and downstream full-chain contract matrix while leaving SDK production code unchanged.
-- Next gate: Cloud TASK-020 and TASK-021 supply tested Feature 5–6 commits and the configured effect-authority boundary; Local Connector supplies its tested acknowledgement commit; then run this matrix against those exact checkouts.
+- Next gate: reconcile the ACK-003 future-effect error code against Core and ADR-0038, rerun the received Acknowledgement matrix on Cloud 300bce02, then run the combined flow with the exact Local Connector counterpart.
 - Dependencies: [SDK-005](../Development/SDK-005-cloud-receiver-v2-full-chain-contract.md), [TASK-019](TASK-019-build-cloud-receiver-v2-delivery-claim.md), [TASK-020](TASK-020-build-cloud-receiver-v2-delivery-acknowledgement.md), [TASK-021](TASK-021-build-cloud-receiver-v2-transport-operations.md), the Local Connector acknowledgement evidence, and the [Primary Development Runbook](../Engineering/03-primary-development-runbook.md).
 
 ## 1. Problem and objective
@@ -40,9 +40,8 @@ Host SDK -> Cloud Receiver -> Local Connector -> Host effect -> acknowledgement
   transport, replay, and secret rules.
 - The SDK-to-Receiver map is supporting integration guidance; it does not add a route or change an
   accepted decision.
-- The current Cloud Receiver checkout is a separate nested repository. Its local `HEAD` is
-  `b9f40617827467057b6c34dbe9e82a9893e5bee4`; the Feature 4 implementation is
-  `d840439efe628a24c89fec6b74f37f04a701cb58`; its `origin/main` remains
+- The current Cloud Receiver checkout is a separate nested repository. Its clean local `HEAD` is
+  `300bce02e6a6f9b643a6de95a3596691304749b7`; it is three commits ahead of `origin/main` at
   `b851c320fae0505e3cf098f979d149e04ab44310`. This is local checkout evidence, not remote delivery.
 - The root SDK Event gate is recorded in [SDK-004](../Development/SDK-004-cloud-receiver-v2-event-contract-tests.md).
 - The root SDK Host-key/consent/browser gate is recorded in [SDK-003](../Development/SDK-003-cloud-receiver-v2-contract-tests.md).
@@ -91,17 +90,20 @@ assertions, and secret boundaries are recorded in [SDK-005](../Development/SDK-0
 
 Current local evidence on 2026-09-02:
 
-- `SDK-V2-001` through `SDK-V2-004`: `4/4` passed against clean Cloud Receiver `b9f4061` and fresh
+- `SDK-V2-001` through `SDK-V2-004`: `4/4` passed against clean Cloud Receiver `300bce02` and fresh
   PostgreSQL.
-- `SDK-V2-EVENT-001` through `SDK-V2-EVENT-007`: `7/7` passed against the same clean checkout and
+- `SDK-V2-EVENT-001` through `SDK-V2-EVENT-007`: `7/7` passed against the same exact checkout and
   fresh PostgreSQL.
-- Received `CONNECTOR-V2-CLAIM-001` through `CONNECTOR-V2-CLAIM-005`: `5/5` passed against that
+- Received `CONNECTOR-V2-CLAIM-001` through `CONNECTOR-V2-CLAIM-005`: `5/5` passed against the
   exact Cloud checkout and fresh PostgreSQL.
+- Received `CONNECTOR-V2-ACK-001`, `002`, `004`, and `005`: passed against the exact Cloud checkout;
+  ACK-003 failed because the received test expects future effect `403 host_effect_time_invalid`,
+  while Cloud returns `403 host_effect_invalid`.
+- Cloud's own Feature 5 and Feature 6 tests: `10/10` passed against the exact Cloud checkout.
 - Normal SDK verification: `18/18` passed on Node `v26.8.1`.
-- The Acknowledgement and Feature 6 gates remain unverified. The shared Cloud worktree contains
-  uncommitted Feature 5 work, while the committed checkout has no Acknowledgement or `/healthz` /
-  `/readyz` routes. No exact Feature 5–6 SHAs or tested Connector acknowledgement commit were
-  supplied.
+- The combined flow remains unverified. ACK-003 is an exact contract conflict between the received
+  Local Connector test, Cloud implementation/own test, Core's future-window classification, and the
+  accepted ADR-0038 authority-output boundary. No implementation was weakened or changed by the SDK.
 
 The exact-commit run must record:
 

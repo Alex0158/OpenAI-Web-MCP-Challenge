@@ -1,10 +1,10 @@
 # SDK-005 — Cloud Receiver v2 Full Host-to-Acknowledgement Contract
 
-**Status:** `verification_pending` — SDK Host boundary is unchanged and documented; final full-chain execution is blocked on Cloud Receiver Features 5–6 and the exact Local Connector acknowledgement commit
+**Status:** `verification_pending` — SDK Host/Event/Claim gates pass against exact Cloud `300bce02`; Cloud Feature 5/6 tests pass `10/10`; received Acknowledgement is `4/5` because ACK-003 has an error-code mismatch; combined flow remains open
 **Date:** 2026-09-02
 **Owner:** SDK development team
 **Task:** [TASK-022](../Tasks/TASK-022-prepare-sdk-v2-full-chain-integration.md)
-**Authority:** [ADR-0007](../Decisions/ADR-0007-freeze-reentry-core-v0.1-contract-kernel.md), [ADR-0009](../Decisions/ADR-0009-freeze-connector-lease-and-effect-acknowledgement.md), [ADR-0010](../Decisions/ADR-0010-freeze-receiver-http-and-connector-transport.md), [ADR-0013](../Decisions/ADR-0013-freeze-receiver-grant-control-and-revocation.md), [ADR-0036](../Decisions/ADR-0036-adopt-cloud-receiver-v2-signed-event-ingress.md), and [ADR-0037](../Decisions/ADR-0037-adopt-cloud-receiver-v2-delivery-claim.md)
+**Authority:** [ADR-0007](../Decisions/ADR-0007-freeze-reentry-core-v0.1-contract-kernel.md), [ADR-0009](../Decisions/ADR-0009-freeze-connector-lease-and-effect-acknowledgement.md), [ADR-0010](../Decisions/ADR-0010-freeze-receiver-http-and-connector-transport.md), [ADR-0013](../Decisions/ADR-0013-freeze-receiver-grant-control-and-revocation.md), [ADR-0036](../Decisions/ADR-0036-adopt-cloud-receiver-v2-signed-event-ingress.md), [ADR-0037](../Decisions/ADR-0037-adopt-cloud-receiver-v2-delivery-claim.md), [ADR-0038](../Decisions/ADR-0038-adopt-cloud-receiver-v2-delivery-acknowledgement.md), and [ADR-0039](../Decisions/ADR-0039-adopt-cloud-receiver-v2-transport-operations.md)
 **Source contracts:** [SDK to Cloud Receiver v2 integration map](../Cloud-Receiver-Handoff/v2-build/08-sdk-cloud-receiver-integration.md), [Feature 04](../Cloud-Receiver-Handoff/v2-build/04-delivery-claim-and-lease.md), [Feature 05](../Cloud-Receiver-Handoff/v2-build/05-delivery-acknowledgement.md), and [Feature 06](../Cloud-Receiver-Handoff/v2-build/06-transport-and-operations.md)
 
 ## 1. Conclusion and boundary
@@ -40,14 +40,14 @@ claimed, activated, effected, or acknowledged.
 | `SDK-V2-EVENT-001` | SDK `sendEvent()` -> `/v0.1/events` | Canonical signed envelope, no organization API key, `202` continuation acceptance only | Existing Feature 3 gate; rerun against the exact current Cloud checkout |
 | `SDK-V2-EVENT-002` | Identical Event replay | Same identifiers and `202`, `duplicate: true`, no second delivery or Grant run consumption | Existing Feature 3 gate; rerun against the exact current Cloud checkout |
 | `SDK-V2-EVENT-003..007` | Invalid Event/Grant inputs | Exact bounded signature, expiry, revocation, origin, and sequence errors with no mutation | Existing Feature 3 gate; rerun against the exact current Cloud checkout |
-| `SDK-V2-CLAIM-001..005` | Received Connector client -> `/v0.1/delivery-claims` | Exact body, target scope, lease/replay/expiry/exhaustion behavior, durable digest-only state | Cloud Feature 4 locally available; SDK-side compatibility run pending/recorded separately |
-| `SDK-V2-ACK-001` | Connector success without effect proof | Delivery remains `leased`; adapter/Agent success is not acknowledgement | Blocked: Cloud Feature 5 route/authority not present in current checkout |
-| `SDK-V2-ACK-002` | Connector + configured Host-effect authority -> `/v0.1/delivery-acknowledgements` | Exact context-bound effect attestation, one atomic `200` acknowledgement | Blocked: exact authority injection/configuration and Cloud Feature 5 commit unavailable |
-| `SDK-V2-ACK-003` | Invalid/stale/mismatched effect or lease | Stable `4xx`; no acknowledgement or overwrite | Blocked on Feature 5 exact implementation and error mapping |
-| `SDK-V2-ACK-004` | Identical acknowledgement replay | Same result with `duplicate: true`; no second effect or state transition | Blocked on Feature 5 exact implementation |
-| `SDK-V2-ACK-005` | Different effect or wrong Connector | Stable conflict/identity error; original attestation remains | Blocked on Feature 5 exact implementation |
-| `SDK-V2-HTTP-001..005` | All SDK/Connector HTTP boundaries | Bounded JSON, size limits, no redirect, no-store, stable errors, health/readiness, secret-free logs | Blocked on Cloud Feature 6 exact implementation |
-| `SDK-V2-E2E-001` | Host SDK -> Receiver -> Connector -> Host effect -> acknowledgement | Complete response sequence and durable terminal `acknowledged` state, then exact acknowledgement replay | Blocked until all earlier gates and exact counterpart SHAs are green |
+| `SDK-V2-CLAIM-001..005` | Received Connector client -> `/v0.1/delivery-claims` | Exact body, target scope, lease/replay/expiry/exhaustion behavior, durable digest-only state | `5/5` passed against exact Cloud `300bce02` and fresh PostgreSQL |
+| `SDK-V2-ACK-001` | Connector success without effect proof | Delivery remains `leased`; adapter/Agent success is not acknowledgement | Passed in received run against exact Cloud `300bce02` |
+| `SDK-V2-ACK-002` | Connector + configured Host-effect authority -> `/v0.1/delivery-acknowledgements` | Exact context-bound effect attestation, one atomic `200` acknowledgement | Passed in received run against exact Cloud `300bce02` |
+| `SDK-V2-ACK-003` | Invalid/stale/mismatched effect or lease | Stable `4xx`; no acknowledgement or overwrite | Failed: received test expects future effect `403 host_effect_time_invalid`; Cloud returns `403 host_effect_invalid` |
+| `SDK-V2-ACK-004` | Identical acknowledgement replay | Same result with `duplicate: true`; no second effect or state transition | Passed in received run against exact Cloud `300bce02` |
+| `SDK-V2-ACK-005` | Different effect or wrong Connector | Stable conflict/identity error; original attestation remains | Passed in received run against exact Cloud `300bce02` |
+| `SDK-V2-HTTP-001..005` | All SDK/Connector HTTP boundaries | Bounded JSON, size limits, no redirect, no-store, stable errors, health/readiness, secret-free logs | Cloud Feature 6 test file `5/5` passed against exact Cloud `300bce02` |
+| `SDK-V2-E2E-001` | Host SDK -> Receiver -> Connector -> Host effect -> acknowledgement | Complete response sequence and durable terminal `acknowledged` state, then exact acknowledgement replay | Blocked by ACK-003 mismatch; not run |
 
 The existing SDK test sources remain the executable SDK-owned coverage:
 
@@ -411,6 +411,31 @@ CLOUD_RECEIVER_V2_CLAIM_CONTRACT=1 \
   node --test test/cloud-receiver-v2-claim.contract.mjs
 ```
 
+Run the received Acknowledgement matrix against the same exact Cloud checkout after Feature 5 is
+committed:
+
+```sh
+cd runtime/local-connector
+CLOUD_RECEIVER_V2_ACK_CONTRACT=1 \
+  CLOUD_RECEIVER_V2_ROOT="<exact-cloud-receiver-checkout>" \
+  DATABASE_URL="<fresh-disposable-postgresql-url>" \
+  CLOUD_RECEIVER_RUNTIME_DATABASE_URL="" \
+  DIRECT_URL="" \
+  node --test test/cloud-receiver-v2-ack.contract.mjs
+```
+
+Run the received Feature 6 HTTP/operations tests from the exact Cloud backend package:
+
+```sh
+cd <exact-cloud-receiver-checkout>/backend
+DATABASE_URL="<fresh-disposable-postgresql-url>" \
+  CLOUD_RECEIVER_RUNTIME_DATABASE_URL="" \
+  DIRECT_URL="" \
+  NODE_ENV=test \
+  npm test -- --runInBand src/modules/acknowledgements/test/acknowledgement.test.ts \
+    src/modules/system-health/test/http.test.ts
+```
+
 The normal SDK regression remains:
 
 ```sh
@@ -420,73 +445,70 @@ npm run verify
 
 ### Current source blocker
 
-The committed Cloud Receiver checkout used for the green compatibility runs is
-`b9f40617827467057b6c34dbe9e82a9893e5bee4` and contains Feature 4 Claim/lease code. Its v0.1 router
-registers Pairing, Consent, Event, and Claim only; it does not register
-`/v0.1/delivery-acknowledgements`, `/healthz`, or `/readyz`. The shared nested worktree is currently
-not clean because the Cloud team is developing Feature 5 schema, migration, and tests there; those
-files are not an exact counterpart commit. Feature 5 and Feature 6 exact green commits have not
-been supplied. The nested remote readback is still `b851c320fae0505e3cf098f979d149e04ab44310`, so
-Feature 4 is local-only and not a remote/deployed claim.
+The exact Cloud Receiver checkout used for the current rerun is clean at
+`300bce02e6a6f9b643a6de95a3596691304749b7`. It includes Features 4, 5, and 6, all six committed
+Prisma migrations, `/v0.1/delivery-acknowledgements`, `/healthz`, and `/readyz`. Its nested
+`main` is three commits ahead of remote `origin/main` at
+`b851c320fae0505e3cf098f979d149e04ab44310`; this is local checkout evidence, not pushed,
+deployed, or public-runtime evidence.
 
-The acknowledgement tests are therefore blocked at the exact authority boundary: there is no
-accepted Cloud Feature 5 implementation or configured effect-authority invocation to produce a valid
-opaque effect token. A guessed token, direct database mutation, v1 route, fallback, or alternate
-transport would invalidate the contract. The combined test remains open.
+Cloud's own Feature 5 acknowledgement and Feature 6 transport/operations tests pass `10/10` on
+that checkout. The received Local Connector acknowledgement matrix is `4/5`: ACK-001, ACK-002,
+ACK-004, and ACK-005 pass, while ACK-003 fails on one exact error code. For a future effect, the
+received test expects `403 host_effect_time_invalid`; the Cloud implementation returns
+`403 host_effect_invalid` during effect-attestation normalization. The current Core implementation
+also classifies a future `confirmed_at` as `host_effect_time_invalid` in
+`reentry-core/src/receiver-delivery.mjs`, while accepted ADR-0038 explicitly reserves
+`host_effect_invalid` for invalid authority output. This is a protocol/test authority conflict,
+not a reason to weaken either test. The project manager/owning teams must reconcile it before the
+SDK can close the acknowledgement gate.
+
+No SDK production fallback, guessed effect token, direct database mutation, v1 route, polling, or
+alternate transport was added. The combined test remains open until ACK-003 is reconciled and the
+exact Host SDK -> Receiver -> Connector -> Host effect -> acknowledgement flow is run.
 
 ## 8. Executed verification — 2026-09-02
 
-The SDK normal suite ran with Node `v26.8.1` and npm `11.19.0`:
+The current exact Cloud Receiver checkout is clean at
+`300bce02e6a6f9b643a6de95a3596691304749b7`; its nested remote readback remains
+`b851c320fae0505e3cf098f979d149e04ab44310`. Runtime evidence is Node `v26.8.1`, npm `11.19.0`,
+and PostgreSQL `14.18` on `127.0.0.1:55440`. Each focused run used a separate disposable database
+and all six committed migrations. The database process was stopped after verification.
 
-- `npm run verify` in `runtime/host-sdk/`: syntax passed; normal SDK suite `18/18` passed.
-- The clean exact-commit Cloud Receiver clone resolved to
-  `b9f40617827467057b6c34dbe9e82a9893e5bee4` and had no tracked modifications. It used an isolated
-  dependency installation and Prisma client generated from the committed five-migration schema.
-- Fresh disposable PostgreSQL `14.18` ran on `127.0.0.1:55440`; the SDK Feature 2, Event, and
-  received Claim runs each used a separate database and the five committed migrations.
-- `SDK-V2-001` through `SDK-V2-004`: `4/4` passed against the clean exact Cloud checkout.
-- `SDK-V2-EVENT-001` through `SDK-V2-EVENT-007`: `7/7` passed against the same clean exact Cloud
-  checkout. This includes the signed envelope, no organization API key on `/v0.1/events`, `202`
-  acceptance-only semantics, duplicate replay, invalid signature, expired/revoked Grant, wrong
-  origin, invalid sequence, and no-mutation assertions.
-- The received `CONNECTOR-V2-CLAIM-001` through `CONNECTOR-V2-CLAIM-005` matrix: `5/5` passed
-  against the same clean exact Cloud checkout, including restart, contention, expiry/exhaustion,
-  target scope, durable state, and secret redaction.
-- The unchanged Local Connector normal verification, rerun with loopback listening permitted,
-  passed syntax for `28` modules and `34/34` executed tests. Its `10` opt-in Claim/Acknowledgement
-  tests were skipped without their database gates; no test failed.
+- `SDK-V2-001` through `SDK-V2-004`: `4/4` passed against Cloud `300bce02` using
+  `sdk_receiver_300bce_sdk`.
+- `SDK-V2-EVENT-001` through `SDK-V2-EVENT-007`: `7/7` passed against Cloud `300bce02` using
+  `sdk_receiver_300bce_event`. This includes the signed envelope, no organization API key on
+  `/v0.1/events`, `202` acceptance-only semantics, duplicate replay, invalid signature,
+  expired/revoked Grant, wrong origin, invalid Event, and no-mutation assertions.
+- Received `CONNECTOR-V2-CLAIM-001` through `CONNECTOR-V2-CLAIM-005`: `5/5` passed against Cloud
+  `300bce02` using `sdk_receiver_300bce_claim`.
+- Received `CONNECTOR-V2-ACK-001` through `CONNECTOR-V2-ACK-005`: `4/5` passed against Cloud
+  `300bce02` using `sdk_receiver_300bce_ack`; ACK-003 failed only because the received test expects
+  `host_effect_time_invalid` for a future effect while Cloud returns `host_effect_invalid`.
+- Cloud Feature 5 acknowledgement tests: `5/5` passed using `sdk_receiver_300bce_http`.
+- Cloud Feature 6 HTTP/operations tests: `5/5` passed using `sdk_receiver_300bce_http`.
+- Normal SDK verification: `npm run verify` passed `18/18` with syntax checks green.
+- Normal Local Connector verification: syntax passed for `28` modules and `34/34` executed tests;
+  its `10` opt-in Claim/Acknowledgement tests remain skipped without their database gates.
+- Repository governance checks passed: `test_validators.py`, `test_sensitive_scan.py`,
+  `validate_repository.py --root .`, and `scan_sensitive_patterns.py --root .`.
 
-The following failures remain recorded and are not silently converted to passes:
-
-1. An initial Event attempt against the mutable shared Cloud worktree stopped in fixture setup at
-   `cloud-receiver-v2.event.contract.mjs:445`: the developer registration response was `400` rather
-   than the harness's required `201`. No Event assertion ran. A fresh isolated database and clean
-   exact-commit clone removed that setup condition; the clean rerun passed `7/7`.
-2. A first clean-clone Event attempt used the shared Prisma client generated from collaborator
-   Feature 5 schema work. Event acceptance then returned HTTP `500` with Prisma `P2022` because
-   `cr2_deliveries.effect_id` was absent from the committed five-migration database. The isolated
-   `npm ci` plus Prisma generation fixed only the test environment; no SDK or Cloud source changed.
-3. The received Acknowledgement matrix was run once against the mutable Cloud worktree while its
-   Feature 5 schema/migration work was uncommitted. All `5/5` cases stopped at Claim with
-   `ConnectorTransportError: connector_http_error`, status `500`, and inner
-   `connector_response_invalid` because the response was not the bounded Connector error envelope.
-   This is evidence that the mutable worktree was internally mixed, not Feature 5 green evidence.
-
-The committed Cloud checkout's tracked router still has no Acknowledgement route, and no exact
-Feature 5 or Feature 6 commit has been supplied. The Cloud team has an in-progress Feature 5 test,
-schema, and migration in its worktree; those collaborator-owned files were not changed or staged
-by the SDK team. The ACK and HTTP/operations gates therefore remain blocked.
+Earlier environment-only attempts are retained as evidence: the mutable mixed Cloud worktree
+produced setup/Prisma failures, and the first new exact-checkout Local Connector run was blocked by
+unprivileged loopback access (`connect EPERM`). Neither is treated as a protocol result; the
+privileged rerun above is the current result.
 
 ## 9. Evidence status
 
 | Evidence | Status |
 |---|---|
-| Existing SDK Host-key/consent/status/browser gate | `4/4` passed against clean exact Cloud `b9f4061` and fresh PostgreSQL |
-| Existing SDK Event gate | `7/7` passed against clean exact Cloud `b9f4061` and fresh PostgreSQL |
-| Cloud Feature 4 Claim compatibility | Received matrix `5/5` passed against clean exact Cloud `b9f4061` and fresh PostgreSQL |
-| Cloud Feature 5 Acknowledgement | Blocked: current committed router has no ACK route; exact green commit/effect-authority runtime not supplied |
-| Cloud Feature 6 HTTP/operations | Blocked: exact implementation SHA not supplied |
-| Combined Host SDK -> Receiver -> Connector -> effect -> acknowledgement | Not run; remains open until all dependencies are exact and green |
+| Existing SDK Host-key/consent/status/browser gate | `4/4` passed against exact Cloud `300bce02` and fresh PostgreSQL |
+| Existing SDK Event gate | `7/7` passed against exact Cloud `300bce02` and fresh PostgreSQL |
+| Cloud Feature 4 Claim compatibility | Received matrix `5/5` passed against exact Cloud `300bce02` and fresh PostgreSQL |
+| Cloud Feature 5 Acknowledgement | Cloud own tests `5/5`; received Local Connector matrix `4/5`, blocked by ACK-003 error-code mismatch |
+| Cloud Feature 6 HTTP/operations | `5/5` Cloud tests passed against exact Cloud `300bce02` and fresh PostgreSQL |
+| Combined Host SDK -> Receiver -> Connector -> effect -> acknowledgement | Not run; remains open until ACK-003 is reconciled and the combined flow passes |
 
 No whole-system completion claim is made by this record.
 
