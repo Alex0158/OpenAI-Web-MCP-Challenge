@@ -92,7 +92,7 @@ Local Connector harness-isolation commit:
 
 `ac62e724a010b855df8494ec6f57c071f614212d`
 
-Current Local Connector integration/report commit:
+Local Connector source/test integration counterpart:
 
 `81e51a6b2299fa1f63c2b06180febebaab9ded04`
 
