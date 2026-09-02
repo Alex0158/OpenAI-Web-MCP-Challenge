@@ -2,8 +2,8 @@
 
 **Role:** Local Connector maintainer handoff
 
-**Status:** Connector-compatible; Feature 4 verified against the current Cloud checkout; Feature
-5 and Feature 6 counterpart verification pending
+**Status:** Connector-compatible; Feature 4 verified against the exact Cloud checkout; Feature 5
+and Feature 6 counterpart verification blocked
 
 **Owner:** Local Connector team
 
@@ -292,3 +292,12 @@ The acknowledgement route and Feature 6 shell are not present in that commit, so
 and combined flow remain blocked until the Cloud team supplies committed Feature 5 and Feature 6
 implementations plus the configured test authority. This is a counterpart readiness gap, not a
 reason to change the Local Connector protocol.
+
+There is one additional contract mismatch to return to the project manager before either team
+changes implementation or tests. `CONNECTOR-V2-ACK-003` currently expects
+`host_effect_time_invalid` for a future `confirmed_at`. The authoritative Core implementation
+normalizes the attestation inside its effect-verification boundary and maps that normalization
+failure to `host_effect_invalid`; the Core test suite records that result. The Local Connector
+test remains unchanged and intentionally red for this unresolved decision. The project manager
+must choose the authoritative mapping and reconcile Core, the accepted ADR, the test, and this
+handoff together.
