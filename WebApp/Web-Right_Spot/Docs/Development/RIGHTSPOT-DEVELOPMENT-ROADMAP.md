@@ -175,8 +175,8 @@ files, foundation `6/6`, typecheck/build, exact-scope review, local health/reset
 review, and both isolated browser race reruns passed. The separate listing-detail dynamic-route
 concern remains `F-08`/`EVIDENCE_GAP`.
 The fresh Main-thread audit continuation also replayed the ordinary local agent-decline browser branch;
-`RS-FLOW-11` is now `CLOSED_VERIFIED`. `RS-FLOW-13` remains implemented with residual evidence until
-its fresh tenant-decline mutation browser branch is either replayed or deliberately bounded out.
+`RS-FLOW-11` is now `CLOSED_VERIFIED`. It also replayed the tenant-decision branch through proposal,
+explicit tenant decline, terminal readback, and slot release; `RS-FLOW-13` is now `CLOSED_VERIFIED`.
 The independent static verification `RS-WO-020-04` and fresh-reset browser verification `RS-WO-020-05`
 are reconciled in the owning Task File; the `RS-WO-021-01` implementation and `RS-WO-021-02`
 independent verification gates are closed:
@@ -256,8 +256,8 @@ evidence is recorded in [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSUR
 The previously admitted post-MVP increments, including `RIGHTSPOT-005` and `RIGHTSPOT-007`, are
 closed historical work rather than the current implementation queue. The current next route is a
 continuing Main-thread cross-layer audit, as described in [Section 3.1](#31-current-next-route). The
-latest continuation closed the local browser evidence gap for `RS-FLOW-11`; it did not register a
-product Task because no new defect was reproduced. It does not reopen the accepted
+latest continuation closed the local browser evidence gaps for `RS-FLOW-11` and `RS-FLOW-13`; it did
+not register a product Task because no new defect was reproduced. It does not reopen the accepted
 MVP closure or authorize external authentication, WebMCP, Cloud Receiver, deployment, or
 commercial-marketplace scope by itself.
 

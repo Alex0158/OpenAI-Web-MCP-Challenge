@@ -140,7 +140,7 @@ Status values used below:
 | `RS-FLOW-10` | Send a slot proposal | Agent request detail | `SLOT_PROPOSED`; slot held; 24-hour window | `CLOSED_VERIFIED` |
 | `RS-FLOW-11` | Send an agent decline | Agent request detail | `AGENT_DECLINED` terminal | `CLOSED_VERIFIED` — fresh isolated local browser branch verified on 2026-09-02 |
 | `RS-FLOW-12` | Tenant confirms a proposal | `/tenant/requests` | `VIEWING_CONFIRMED`; slot confirmed | `CLOSED_VERIFIED` — transition and terminal response presentation verified by `RIGHTSPOT-027` |
-| `RS-FLOW-13` | Tenant declines a proposal | `/tenant/requests` | `TENANT_DECLINED`; slot released | `IMPLEMENTED_WITH_RESIDUAL_EVIDENCE` — transition and terminal response presentation are verified by `RIGHTSPOT-027`; fresh mutation browser branch remains unclaimed |
+| `RS-FLOW-13` | Tenant declines a proposal | `/tenant/requests` | `TENANT_DECLINED`; slot released | `CLOSED_VERIFIED` — transition, terminal response presentation, and fresh local mutation browser branch verified on 2026-09-02 |
 | `RS-FLOW-14` | Proposal expires without a scheduler | Relevant tenant/agent read or write | `EXPIRED`; slot released | `CLOSED_VERIFIED` — transition and terminal response presentation verified by `RIGHTSPOT-027` |
 | `RS-FLOW-15` | Reset and replay a deterministic fixture | Development script/test boundary | New generation; empty request/Favourites | `CLOSED_VERIFIED` — `F-06` / `RIGHTSPOT-028` repaired the CLI composition and passed focused and independent verification |
 | `RS-FLOW-16` | Show privacy-preserving listing interest to an agent | `/agent` embedded section | Read-only aggregate | `CLOSED_VERIFIED` |
@@ -533,15 +533,18 @@ reservation outside the local slot record, or guaranteed real-world appointment.
 audit increment.
 **Acceptance:** Decline is terminal; slot release is atomic; a repeat or stale action does not create
 a second audit entry or alter a terminal state.
-**Evidence:** `tests/api/workflow.test.ts`, `tests/domain/workflow.test.ts`, and tenant request UI
-decision handling.
+**Evidence:** `tests/api/workflow.test.ts`, `tests/domain/workflow.test.ts`, tenant request UI
+decision handling, and a fresh isolated local browser walkthrough on 2026-09-02. The walkthrough
+sent a real slot proposal, had the tenant explicitly decline it, and then read the request back as
+the property agent. The tenant saw `Tenant Declined` with no remaining action and a version-6 timeline;
+the agent saw the terminal state and the previously held slot as `Available`.
 
 **Presentation rule:** The retained slot proposal may remain visible as history, but a terminal
 `TENANT_DECLINED` request is not labelled actionable and does not retain an active `Respond by` deadline;
 this bounded presentation repair is verified in `RIGHTSPOT-027`.
 
-**Residual evidence:** Direct/API and domain coverage exists; a full fresh-reset browser decline branch
-is not currently claimed.
+**Evidence boundary:** This verifies the ordinary local browser branch and slot-release projection only.
+It does not claim external notification, deployment, production concurrency, or any deferred integration.
 
 ### RS-FLOW-14 — Proposal expiry without a scheduler
 
@@ -759,7 +762,7 @@ present, not that every evidence branch is closed.
 | `RS-FLOW-10` | Implemented | Implemented | Domain/API and primary browser evidence | No delivery provider claim |
 | `RS-FLOW-11` | Implemented | Implemented | Direct/domain/API and fresh isolated local browser evidence | No external notification or deployment claim |
 | `RS-FLOW-12` | Implemented and verified | Implemented and verified | Domain/API, primary browser, and `RIGHTSPOT-027` state-matrix evidence | No booking/payment or real-world appointment claim |
-| `RS-FLOW-13` | Implemented and verified | Implemented and verified | Direct/domain/API and `RIGHTSPOT-027` state-matrix evidence | `IMPLEMENTED_WITH_RESIDUAL_EVIDENCE`: fresh tenant-decline mutation browser branch remains unclaimed |
+| `RS-FLOW-13` | Implemented and verified | Implemented and verified | Direct/domain/API, `RIGHTSPOT-027` state-matrix, and fresh isolated local browser evidence | No external notification or deployment claim |
 | `RS-FLOW-14` | Implemented and verified | Implemented indirectly on reads/writes and verified | Direct/application/API and `RIGHTSPOT-027` state-matrix evidence | No scheduler/notification claim |
 | `RS-FLOW-15` | Implemented in application authority and CLI composition | Development boundary only | Focused child-process regression, full suite, and frozen-source independent verification for `F-06` / `RIGHTSPOT-028` | No public reset route; arbitrary corrupt-database salvage remains unclaimed |
 | `RS-FLOW-16` | Implemented | Implemented on `/agent` | Domain/API/UI and browser aggregate evidence | No analytics/history claim |

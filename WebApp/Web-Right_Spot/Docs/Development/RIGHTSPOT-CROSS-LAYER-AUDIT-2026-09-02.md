@@ -10,9 +10,9 @@ report remains evidence and does not authorize work outside the registered bound
 ## 1. Executive conclusion
 
 The accepted ordinary local MVP remains runnable and the highest-value tenant-to-agent workflow was
-replayed through the browser without a new business-flow blocker. The tenant proposal/confirmation
-branch, agent-decline branch, empty request state, listing discovery/filter states, listing detail,
-and role-specific navigation were inspected against the current Main source. The browser evidence
+replayed through the browser without a new business-flow blocker. The tenant proposal/confirmation/
+decline branches, agent-decline branch, empty request state, listing discovery/filter states, listing
+detail, and role-specific navigation were inspected against the current Main source. The browser evidence
 showed no application console error or warning beyond normal React development information.
 
 One actionable process defect was confirmed: the package's default `npm test` command executed only
@@ -51,9 +51,10 @@ commercial marketplace behavior remain deliberately deferred or gated and are no
 
 ### Checks and walkthroughs
 
-- Pinned `npm test`: pass `6/6`; this is the under-covering default command and the finding's direct
-  reproduction
-- Pinned complete glob test command: pass `133/133` across 28 test files, with no skip or todo
+- Initial-audit-baseline `npm test`: pass `6/6`; this was the under-covering default command and the
+  finding's direct reproduction before `RIGHTSPOT-029`
+- Initial-audit-baseline complete glob test command: pass `133/133` across 28 test files, with no skip
+  or todo; `RIGHTSPOT-029` subsequently made this the `npm test` command
 - Pinned `npm run typecheck`: pass
 - Pinned `npm run build`: pass on Next.js `16.3.4`
 - Fresh/reset browser walkthroughs: tenant discovery and filters; listing detail and request draft;
@@ -86,10 +87,10 @@ The current product path is coherent across these layers:
 7. `npm run db:reset` composes the authoritative workflow reset and is covered by a child-process
    regression.
 
-The main verification seam is currently weaker than the product seam: the package test script
-names only the original foundation file even though the suite has expanded to domain, persistence,
-application, API, UI-contract, and reset coverage. This is the sole confirmed follow-on finding in
-this audit.
+At the initial audit baseline, the package test script named only the original foundation file even
+though the suite had expanded to domain, persistence, application, API, UI-contract, and reset
+coverage. `RIGHTSPOT-029` repaired that verification seam; the current `npm test` result is recorded
+in the closure and continuation sections below.
 
 ## 4. User and business journey review
 
@@ -108,6 +109,8 @@ this audit.
   slot reaches its confirmed outcome.
 - Agent decline reaches `AGENT_DECLINED`; tenant sees the recorded response without an invalid
   tenant action.
+- Tenant decline reaches `TENANT_DECLINED`; the agent projection shows the released slot as
+  `Available`, and neither role receives an invalid follow-up action.
 - Empty request state provides a clear `Browse rentals` entry; role navigation exposes the tenant
   request dashboard, favourites, agent queue, and agent listing-interest surface where implemented.
 - Terminal response presentation no longer falsely asks for a decision after confirmation, tenant
@@ -282,16 +285,19 @@ the tenant, `/tenant/requests` showed `Agent Declined`, the tenant-facing note, 
 the expected five-step timeline through `AGENT_DECLINED`. The internal note did not cross the tenant
 projection boundary, no slot side effect appeared, and no application browser error was observed.
 
-The temporary browser session was closed and `npm run db:reset` was run afterward; the reset returned
-workflow fixture generation `16`, and `/api/health` returned `{"ok":true,"service":"rightspot"}`.
-The user's existing in-app browser tab was not used or changed. This closes the fresh local browser
-evidence residual for `RS-FLOW-11`. `RS-FLOW-13` remains `IMPLEMENTED_WITH_RESIDUAL_EVIDENCE` until a
-fresh tenant-decline mutation browser branch is replayed; that evidence gap is not itself a product
-defect and does not authorize a speculative repair. The analogous listing-detail async concern remains
-`F-08`/`EVIDENCE_GAP` for the same reason.
+The first temporary browser session was closed and `npm run db:reset` was run afterward; the reset
+returned workflow fixture generation `16`, and `/api/health` returned
+`{"ok":true,"service":"rightspot"}`. The user's existing in-app browser tab was not used or changed.
 
-The audit therefore found no new product Task to register. The next audit action is the bounded fresh
-tenant-decline evidence branch; if it reproduces a real user-visible defect, Main will register one
-single outcome Task with a falsifiable scope. Otherwise Main will record the evidence and continue the
-cross-layer audit. No deployment, external authentication, WebMCP, Cloud Receiver, WebRTC, Redis, or
-production-readiness claim follows from this continuation.
+The audit then replayed the distinct tenant-decision branch in a second isolated temporary session:
+an agent prepared and explicitly sent a slot proposal, the tenant explicitly selected `Decline proposed
+viewing`, and the tenant projection changed to `Tenant Declined` with no remaining action and the
+expected version-6 timeline. A subsequent agent read showed the terminal request and the previously
+held slot as `Available`, confirming the release. No application browser error was observed. That
+temporary session was closed and the fixture was reset to generation `18`.
+
+This closes the fresh local browser evidence residuals for `RS-FLOW-11` and `RS-FLOW-13`. The audit
+found no new product Task to register. The analogous listing-detail async concern remains
+`F-08`/`EVIDENCE_GAP`; it was not reproduced and does not authorize a speculative repair. No
+deployment, external authentication, WebMCP, Cloud Receiver, WebRTC, Redis, or production-readiness
+claim follows from this continuation.

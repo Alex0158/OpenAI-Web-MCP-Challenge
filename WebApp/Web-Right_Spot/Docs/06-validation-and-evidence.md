@@ -166,7 +166,7 @@ speculative guard or broader async infrastructure is claimed. This closure does 
 concurrency guarantees, deployment, external authentication, WebMCP, Cloud Receiver, WebRTC, or
 Redis readiness.
 
-## 3.2 Fresh local agent-decline walkthrough — 2026-09-02
+## 3.2 Fresh local decline walkthroughs — 2026-09-02
 
 An isolated temporary browser session replayed the ordinary agent-decline branch against the running
 local RightSpot server. A tenant created and explicitly submitted a viewing request, the assigned
@@ -180,8 +180,17 @@ afterward; the user's existing in-app browser tab was not used for this evidence
 
 This closes the required local browser evidence for `RS-FLOW-11`. It does not claim external
 notification, deployment, production concurrency, or any deferred WebMCP, Cloud Receiver, WebRTC,
-Redis, or external-auth behavior. The fresh tenant-decline mutation branch for `RS-FLOW-13` remains an
-explicit evidence gap rather than a product defect or repair authorization.
+Redis, or external-auth behavior.
+
+The same audit then replayed the tenant-decision branch from a fresh reset: an agent prepared and
+explicitly sent a slot proposal, the tenant viewed it on `/tenant/requests` and explicitly selected
+`Decline proposed viewing`, and the tenant projection changed to `Tenant Declined` with no remaining
+action. The timeline reached version 6. A subsequent agent read showed the request as terminal and the
+formerly held slot as `Available`, confirming release. No application browser error was observed and
+the temporary session was closed before the fixture was reset.
+
+This closes the required local browser evidence for `RS-FLOW-13`. It does not claim external
+notification, deployment, production concurrency, or any deferred integration.
 
 ## 4.1 Post-MVP shared CSS evidence
 
