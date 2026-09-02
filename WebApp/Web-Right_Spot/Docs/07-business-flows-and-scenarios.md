@@ -2,8 +2,8 @@
 
 **Role:** Canonical business-flow, scenario, state-transition, and acceptance authority for the
 RightSpot Web application
-**Status:** Accepted current-flow baseline; the latest implementation coverage audit closed `F-01`–`F-05`
-within their recorded bounded claims
+**Status:** Accepted current-flow baseline; `F-01`–`F-05` are closed within their recorded bounded
+claims, while the latest audit registered `F-06` as an open deterministic-reset defect
 **As of:** 2026-09-02, Europe/London
 **Owner:** Main RightSpot thread
 
@@ -142,7 +142,7 @@ Status values used below:
 | `RS-FLOW-12` | Tenant confirms a proposal | `/tenant/requests` | `VIEWING_CONFIRMED`; slot confirmed | `CLOSED_VERIFIED` — transition and terminal response presentation verified by `RIGHTSPOT-027` |
 | `RS-FLOW-13` | Tenant declines a proposal | `/tenant/requests` | `TENANT_DECLINED`; slot released | `CLOSED_VERIFIED` — transition and terminal response presentation verified by `RIGHTSPOT-027` |
 | `RS-FLOW-14` | Proposal expires without a scheduler | Relevant tenant/agent read or write | `EXPIRED`; slot released | `CLOSED_VERIFIED` — transition and terminal response presentation verified by `RIGHTSPOT-027` |
-| `RS-FLOW-15` | Reset and replay a deterministic fixture | Development script/test boundary | New generation; empty request/Favourites | `CLOSED_VERIFIED` |
+| `RS-FLOW-15` | Reset and replay a deterministic fixture | Development script/test boundary | New generation; empty request/Favourites | `OPEN_FINDING` — `F-06` / `RIGHTSPOT-028` identifies a CLI composition defect |
 | `RS-FLOW-16` | Show privacy-preserving listing interest to an agent | `/agent` embedded section | Read-only aggregate | `CLOSED_VERIFIED` |
 | `RS-FLOW-17` | Query the isolated Operations profile | Domain/persistence tests only | Projection envelope; no relay mutation | `ISOLATED_SEAM_NOT_USER_FACING` |
 | `RS-FLOW-18` | Enforce role, privacy, version, and failure boundaries | All API/projection surfaces | Visible bounded error; no invalid mutation | `CLOSED_VERIFIED` for the audited role/privacy/version/failure matrix; future audits remain required |
@@ -589,6 +589,18 @@ presented as a production data-management action.
 **Boundary:** No public admin CRUD, deletion/retention policy, archive workflow, production migration,
 or real-user reset is included.
 
+**Current finding:** The application-layer reset authority is implemented, but the documented CLI
+currently calls the foundation-only `resetFoundationDatabase` helper. In an isolated stateful probe,
+the first CLI reset left a real `TENANT_DRAFT` request and Favourite in place. A second reset advanced
+foundation metadata to generation `2` without rewriting the workflow snapshot, leaving its generation
+at `1`; reopening the application then failed with `WorkflowPersistenceError`. This is recorded as
+`F-06` and registered as `RIGHTSPOT-028` / `RS-WO-028-01`.
+
+**Required repair boundary:** Make the CLI call the existing `WorkflowApplication.reset` authority and
+close it safely, then prove fresh, stateful, and repeated reset behavior through an isolated
+child-process regression. Keep `resetFoundationDatabase` foundation-only, do not add arbitrary
+database recovery, and do not change the workflow state machine, snapshot schema, or public routes.
+
 ### RS-FLOW-16 — Show privacy-preserving listing interest to an agent
 
 **Actors:** Tenant creates the source Favourite; assigned agent reads the aggregate
@@ -743,7 +755,7 @@ present, not that every evidence branch is closed.
 | `RS-FLOW-12` | Implemented and verified | Implemented and verified | Domain/API, primary browser, and `RIGHTSPOT-027` state-matrix evidence | No booking/payment or real-world appointment claim |
 | `RS-FLOW-13` | Implemented and verified | Implemented and verified | Direct/domain/API and `RIGHTSPOT-027` state-matrix evidence | Fresh mutation browser branch remains unclaimed |
 | `RS-FLOW-14` | Implemented and verified | Implemented indirectly on reads/writes and verified | Direct/application/API and `RIGHTSPOT-027` state-matrix evidence | No scheduler/notification claim |
-| `RS-FLOW-15` | Implemented | Development boundary only | Persistence/application/reset evidence | No public reset route |
+| `RS-FLOW-15` | Implemented in application authority; CLI composition defective | Development boundary only | Existing application reset tests plus isolated `F-06` reproduction | `RIGHTSPOT-028` pending; no public reset route |
 | `RS-FLOW-16` | Implemented | Implemented on `/agent` | Domain/API/UI and browser aggregate evidence | No analytics/history claim |
 | `RS-FLOW-17` | Implemented seam | No current route | Domain/persistence tests | Separate authority/route decision required |
 | `RS-FLOW-18` | Implemented and verified for audited boundaries | Implemented and verified | Broad negative tests plus formal `RIGHTSPOT-025` F-01 and browser `F-02`/`F-03` evidence | Re-check on the next cross-layer audit; no production-readiness claim |
@@ -863,9 +875,37 @@ focused `3/3`, relevant `48/48`, full `132/132`, typecheck, production build, sc
 browser smoke all passed. The Task
 forbids workflow, API, DTO, persistence, role/privacy, auth, shared CSS, and external-integration changes.
 
+### F-06 — Documented reset command bypasses the full workflow fixture reset
+
+**Severity:** P1 for local demo reproducibility, stateful test isolation, and persistence integrity;
+no production impact is claimed.
+**Reproduction:** In an isolated disposable database, create a real `TENANT_DRAFT` request and one
+Favourite through `WorkflowApplication`. Run the current `npm run db:reset` command once: it reports
+generation `1`, but the request and Favourite remain. Run it again: it reports generation `2`, while
+the workflow snapshot remains at generation `1` with the same business state. Reopening the
+application then throws `WorkflowPersistenceError` because foundation metadata and the workflow
+snapshot no longer share the same generation identity.
+**Root cause:** `scripts/reset-db.ts` calls `resetFoundationDatabase` from
+`src/server/persistence/reset.ts`. That helper intentionally resets foundation metadata only. The
+existing `WorkflowApplication.reset` → `WorkflowStore.reset` path already owns the full atomic
+workflow-fixture reset but is not used by the CLI.
+**Expected:** `npm run db:reset` invokes the existing full workflow reset authority, clears the
+disposable request/Favourite/audit/processed-command state, restores deterministic listings and slots,
+writes matching metadata/snapshot generation, and leaves the database reopenable after repeated
+resets. Existing stale-generation and persistence-failure boundaries remain visible.
+**Disposition:** `VERIFIED_DEFECT`; registered as in-progress `RIGHTSPOT-028` with one bounded
+`RS-WO-028-01` Work Order. Main design review accepted the CLI composition and isolated
+child-process regression boundary, and the Main Builder's Red→Green candidate now awaits frozen-source
+independent verification. No automatic salvage of an already-corrupt arbitrary database is authorized.
+**Not authorised by this finding:** broadening `resetFoundationDatabase`, changing
+`WorkflowStore.reset`, altering fixture contents or generation semantics, adding a reset API/page,
+changing workflow/UI/auth behavior, or introducing WebMCP, Cloud Receiver, WebRTC, Redis, external
+authentication, or deployment behavior.
+
 No other implementation gap discovered in this documentation audit should be promoted to a product
-defect without reproducing it against current source, tests, or runtime. `F-04` and `F-05` are closed
-within their bounded presentation-only claims; the next cross-layer audit remains required.
+defect without reproducing it against current source, tests, or runtime. `F-01`–`F-05` are closed
+within their bounded claims; `F-06` is the current open reset-command defect and remains separate from
+the completed presentation repairs. The next audit remains required after `RIGHTSPOT-028` closure.
 A future audit must classify each new observation as:
 
 1. intended behavior already accepted by an ADR or this catalogue;

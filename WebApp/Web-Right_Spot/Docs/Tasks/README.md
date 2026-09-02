@@ -40,6 +40,7 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-025 — Keep a tenant draft private from the agent workflow`](RIGHTSPOT-025-hide-pre-submission-agent-draft.md)
 - [`RIGHTSPOT-026 — Clarify the existing Viewing Request status notice`](RIGHTSPOT-026-clarify-listing-request-status-notice.md)
 - [`RIGHTSPOT-027 — Make terminal Viewing Request response state-accurate`](RIGHTSPOT-027-clarify-terminal-request-response-state.md)
+- [`RIGHTSPOT-028 — Restore deterministic workflow fixture reset`](RIGHTSPOT-028-fix-deterministic-workflow-fixture-reset.md)
 
 `RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
 `RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`,
@@ -105,6 +106,13 @@ confirmed, declined, or expired. Its single presentation-only Work Order passed 
 and independent verification by persistent tasks `01a060bf-17c7-7c32-96ad-2ea1aa028ebf` and
 `01a060a8-6f2d-7141-98d0-385483a9104f`; no separate implementation Worktree was open.
 
+`RIGHTSPOT-028` is now an in-progress P1 verified defect: the documented `npm run db:reset`
+command currently updates only foundation metadata, leaves workflow request/Favourite state in place,
+and diverges metadata from the workflow snapshot on a repeated reset. Its single
+`RS-WO-028-01` command-composition and isolated child-process regression passed Main design review
+and is now at the Main Builder Red checkpoint; no supporting implementation Worktree is open and
+no recovery fallback is authorized.
+
 Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, the corrected `RS-WO-002-02` rerun returned
 `VERIFIED`, `RS-WO-002-03` returned `VERIFIED` after its bounded repair, and `RS-WO-002-04` returned
@@ -140,7 +148,8 @@ browser evidence are reconciled in the
 `RIGHTSPOT-002` is closed.
 
 **Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain pending
-(credential, decision, and read-only audit gates respectively); `RIGHTSPOT-023` and `RIGHTSPOT-024`
+(credential, decision, and read-only audit gates respectively); `RIGHTSPOT-028` is in progress as a
+bounded reset repair; `RIGHTSPOT-023` and `RIGHTSPOT-024`
 are closed within their bounded outcomes; `RIGHTSPOT-025` and `RIGHTSPOT-026` are closed within their
 bounded outcomes; `RIGHTSPOT-027` is closed after its Builder handoff and independent verification;
 `RIGHTSPOT-021` is closed as an implementation gate, and `RIGHTSPOT-022` is closed at product commit `f0dbd99` after
@@ -154,16 +163,16 @@ independently verified and integrated at `edd7575`; `RS-WO-017-03` is independen
 integrated at `2a53917`, with `RS-WO-017-04` browser verification complete. `RS-WO-019-01` is closed
 after its bounded browser/form regression passed. No closed task is an active implementation gate.
 
-**Current route:** `RIGHTSPOT-027` is the latest completed bounded route. Its `RS-WO-027-01`
-presentation-only terminal-response repair passed independent verification and is integrated into the
-canonical Main Worktree. There is no active implementation route and no implementation Worktree is
-open; the next action is a fresh Main-thread cross-layer audit. `RIGHTSPOT-026`, `RIGHTSPOT-022`, and
-`RIGHTSPOT-021` remain closed within their separately recorded presentation/navigation boundaries.
-`RIGHTSPOT-020` remains closed after its Favourite/listing-interest implementation and fresh-reset
-browser verification. `RIGHTSPOT-006` stays gated on explicit external credentials and local-origin
-authorization; `RIGHTSPOT-010` is a later Operations/WebMCP decision gate; and `RIGHTSPOT-012` is
-non-blocking read-only audit work. Only an explicitly selected, implementation-ready Task may open
-code Work Orders or temporary Worktrees.
+**Current route:** `RIGHTSPOT-028` is the current bounded route from the fresh Main-thread
+cross-layer audit. Its `RS-WO-028-01` Work Order passed Main design review and is at the Main
+Builder Red checkpoint. No supporting implementation Worktree is open; the
+canonical Main Worktree remains the only source authority. `RIGHTSPOT-027`, `RIGHTSPOT-026`,
+`RIGHTSPOT-022`, and `RIGHTSPOT-021` remain closed within their separately recorded
+presentation/navigation boundaries. `RIGHTSPOT-020` remains closed after its Favourite/listing-interest
+implementation and fresh-reset browser verification. `RIGHTSPOT-006` stays gated on explicit external
+credentials and local-origin authorization; `RIGHTSPOT-010` is a later Operations/WebMCP decision
+gate; and `RIGHTSPOT-012` is non-blocking read-only audit work. Only an explicitly selected,
+implementation-ready Task may open code Work Orders or temporary Worktrees.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.

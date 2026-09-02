@@ -28,13 +28,15 @@ agent surfaces have since passed their respective independent verification gates
 at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression passed at frozen source
 `4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product task:** No RightSpot implementation task is active. `RIGHTSPOT-023`,
-`RIGHTSPOT-024`, `RIGHTSPOT-025`, `RIGHTSPOT-026`, and `RIGHTSPOT-027` are closed within their
-bounded outcomes after applicable TDD, independent verification, browser/build evidence, and
-documentation reconciliation. `RIGHTSPOT-027` closed the reproduced tenant request-dashboard terminal
-response presentation defect through a two-path, presentation-only Red→Green repair; the five-state
-response matrix is now state-accurate and does not alter workflow/API behavior. The next step is a new
-Main-thread cross-layer audit before registering another implementation Task. The canonical business-flow and scenario baseline is
+**Current next product task:** `RIGHTSPOT-028` is the in-progress P1 verified defect from the
+fresh Main-thread cross-layer audit. The documented `npm run db:reset` command currently updates only
+foundation metadata, leaves workflow request/Favourite state in place, and diverges metadata from the
+workflow snapshot after a repeated reset. `RS-WO-028-01` passed Main design review and is at the
+Main Builder Red checkpoint; no supporting implementation Worktree is open. `RIGHTSPOT-023`,
+`RIGHTSPOT-024`, `RIGHTSPOT-025`, `RIGHTSPOT-026`, and `RIGHTSPOT-027` remain closed within their
+bounded outcomes
+after applicable TDD, independent verification, browser/build evidence, and documentation
+reconciliation. The canonical business-flow and scenario baseline is
 [`07-business-flows-and-scenarios.md`](07-business-flows-and-scenarios.md). The only product source
 authority remains the canonical Main Worktree.
 **Current closure state:** `RS-WO-016-01` passed its bounded repair and fresh independent verification;
@@ -364,11 +366,15 @@ the exact source on a separate local port, and its evidence is recorded in the o
     defect; keep it presentation-only and separate from the closed workflow/privacy repairs.
 12. register, verify, and close `RIGHTSPOT-027` for the reproduced tenant request-dashboard terminal
     response presentation defect; keep it presentation-only and separate from workflow/API changes.
+13. register and design-review `RIGHTSPOT-028` for the reproduced deterministic workflow-fixture reset
+    defect; keep its repair in the CLI/test composition boundary and do not broaden foundation-only
+    reset semantics or add automatic database recovery.
 
 Only an explicitly selected, implementation-ready Task may open a code Work Order or temporary
 Worktree. `RIGHTSPOT-023`, `RIGHTSPOT-024`, and `RIGHTSPOT-025` are closed after their exact-path
-verification and documentation writeback; `RIGHTSPOT-026` is also closed after its exact-path
-verification and documentation writeback, with no active implementation Worktree. The accepted Worktree
+verification and documentation writeback; `RIGHTSPOT-026` and `RIGHTSPOT-027` are also closed after
+their exact-path verification and documentation writeback, with no active implementation Worktree.
+`RIGHTSPOT-028` is pending design review and has not opened an implementation Worktree. The accepted Worktree
 lifecycle is prompt integration into Main followed by
 checkpoint-scoped retirement. `RIGHTSPOT-021` is closed for its bounded navigation repair and
 independent verification; its post-closure `320–342px` residual was resolved by closed

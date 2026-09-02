@@ -1,4 +1,9 @@
-import { resetFoundationDatabase } from "../src/server/persistence/reset";
+import { WorkflowApplication } from "../src/server/application/workflow";
 
-const generation = resetFoundationDatabase();
-console.log(`foundation generation ${generation}`);
+const application = new WorkflowApplication();
+try {
+  const reset = application.reset(new Date().toISOString());
+  console.log(`workflow fixture generation ${reset.generation}`);
+} finally {
+  application.close();
+}
