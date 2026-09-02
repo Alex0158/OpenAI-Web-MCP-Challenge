@@ -1,3 +1,5 @@
+# Local Connector v2 Claim, Lease, and Acknowledgement Integration Report
+
 ## 1. What was built
 
 The Local Connector claim, lease, and explicit acknowledgement boundary is implemented and
