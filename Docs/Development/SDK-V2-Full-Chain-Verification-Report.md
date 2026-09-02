@@ -31,7 +31,7 @@ All tests below used Cloud Receiver commit `300bce02` unless stated otherwise.
 | Cloud Feature 6 HTTP/operations tests | **5/5 passed** |
 | Normal SDK suite | **18/18 passed** |
 | Normal Local Connector suite | **34/34 executed passed; 10 opt-in tests skipped** |
-| Repository validators and sensitive-data scans | **Passed** |
+| Repository validators and sensitive-data scans | **6/6 validator tests; 3/3 sensitive-scan tests; repository checks passed** |
 
 Commands used for the final focused runs:
 
@@ -58,11 +58,16 @@ DATABASE_URL=postgresql://mac@127.0.0.1:55440/sdk_receiver_300bce_http \
   src/modules/acknowledgements/test/acknowledgement.test.ts \
   src/modules/system-health/test/http.test.ts
 cd /Users/mac/Desktop/OpenAI-Web-MCP-Challenge/runtime/host-sdk && npm run verify
+cd /Users/mac/Desktop/OpenAI-Web-MCP-Challenge/runtime/local-connector && npm run verify
+cd /Users/mac/Desktop/OpenAI-Web-MCP-Challenge && python3 scripts/test_validators.py
+cd /Users/mac/Desktop/OpenAI-Web-MCP-Challenge && python3 scripts/test_sensitive_scan.py
+cd /Users/mac/Desktop/OpenAI-Web-MCP-Challenge && python3 scripts/validate_repository.py --root .
+cd /Users/mac/Desktop/OpenAI-Web-MCP-Challenge && python3 scripts/scan_sensitive_patterns.py --root .
 ```
 
 These are the final command forms; the two Local Connector commands required permitted loopback
 access. The SDK and Connector contract commands used the exact Cloud checkout path and separate
-fresh database URLs.
+fresh database URLs. The test runs used Node.js `v26.8.1`, npm `11.19.0`, and PostgreSQL `14.18`.
 
 Received Local Connector acknowledgement results:
 
@@ -80,20 +85,24 @@ No whole-system completion claim is made.
 
 ## 3. Exact commit SHA
 
-### Commits
-
+- Final verification-report commit: `5420b316089a701f5ee862f46badda9df3c2202c`.
+- Current root local HEAD: `81e51a6b2299fa1f63c2b06180febebaab9ded04` on
+  `codex/eyad-reentry-core-foundation`. The root worktree is dirty with pre-existing collaborator
+  changes; the report file is clean, and the current HEAD commit is a collaborator documentation
+  commit after the final report commit.
+- Root remote readback: `77c9cbcd7d2dbb71ba62308c0b3a5e0e47805dac`. The local branch is 18 commits
+  ahead; no push or deployment is claimed here.
+- SDK production-code baseline: `77c9cbcd7d2dbb71ba62308c0b3a5e0e47805dac`, the last commit
+  touching `runtime/host-sdk/src` before this evidence increment. SDK production code is unchanged.
 - Cloud Receiver exact test checkout: `300bce02e6a6f9b643a6de95a3596691304749b7`.
-- Cloud Receiver remote readback: `b851c320fae0505e3cf098f979d149e04ab44310`.
-  The Cloud checkout is clean and three commits ahead of its remote; it is local-only evidence,
-  not deployed evidence.
+- Cloud Receiver remote readback: `b851c320fae0505e3cf098f979d149e04ab44310`. The Cloud checkout
+  is clean and three commits ahead of its remote; it is local-only evidence, not deployed evidence.
 - SDK evidence update: `99def9f392db041c19741ea52593a79db9415c4c`.
 - SDK evidence-index update: `0b32eac2c6ee81aa67495ea56b2f721ca92069ad`.
-- Verification report commit: `3d90820dda3ea327d5324d8baf478628d768aad1`.
+- Initial verification report commit: `3d90820dda3ea327d5324d8baf478628d768aad1`.
 - Verification-report link commit: `2233c5214fae2a23908d4f36c6757f7440169ac5`.
 - Local Connector acknowledgement test harness: `ac62e724a010b855df8494ec6f57c071f614212d`.
-- Root SDK branch HEAD before this report revision: `2233c5214fae2a23908d4f36c6757f7440169ac5` on
-  `codex/eyad-reentry-core-foundation`. The root worktree contains pre-existing collaborator
-  changes; these report commits do not include them. The Cloud worktree itself is clean.
+- The Cloud worktree itself was clean at the tested SHA.
 
 ## 4. Runtime and database evidence
 
@@ -108,17 +117,25 @@ No whole-system completion claim is made.
   ingress, delivery claim/lease, and delivery acknowledgement.
 - Prisma Client was regenerated from the exact Cloud checkout and the Cloud backend build passed.
 - The disposable PostgreSQL process was stopped after verification.
+- `python3 scripts/test_sensitive_scan.py` passed `3/3`; `python3 scripts/scan_sensitive_patterns.py
+  --root .` reported no high-confidence sensitive patterns. The report and committed evidence use
+  synthetic identifiers/redacted values; no raw organization keys, Connector tokens, lease tokens,
+  or effect tokens were persisted.
 
 ## 5. Required changes from the other teams
 
-1. Cloud Receiver and Local Connector owners must reconcile the `ACK-003` future-effect error code
-   against `reentry-core/` and ADR-0038. Do not weaken or bypass the received test.
-2. Cloud must provide the exact pushed/read-back SHA for Features 5–6, or explicitly identify the
-   local-only status of `300bce02`.
-3. Local Connector must provide the exact clean commit used for acknowledgement integration and
-   rerun `ACK-001`–`ACK-005` after the contract decision.
-4. The teams must provide a configured test Host-effect authority and run the combined flow with
-   durable database assertions and identical acknowledgement replay.
+1. **Cloud Receiver and Local Connector owners** — reconcile the `ACK-003` future-effect error
+   code against `reentry-core/` and ADR-0038; dependency: the project-manager contract decision;
+   next gate: rerun `ACK-001`–`ACK-005` without weakening or bypassing the received test.
+2. **Cloud Receiver owner** — provide the exact pushed/read-back SHA for Features 5–6, or explicitly
+   identify `300bce02` as local-only; dependency: a clean counterpart checkout; next gate: rerun
+   SDK-005 against that exact SHA.
+3. **Local Connector owner** — provide the exact clean commit used for acknowledgement integration
+   and rerun the full acknowledgement matrix after the contract decision; current harness evidence
+   is `ac62e724`.
+4. **Cloud Receiver, Local Connector, and SDK integration owners** — provide a configured independent
+   Host-effect authority and run SDK-005 E2E-001 with durable state assertions and identical
+   acknowledgement replay; next gate: keep TASK-022 open until that combined flow passes.
 
 No SDK production change is required for the current mismatch.
 
