@@ -123,6 +123,9 @@ No whole-system completion claim is made.
 - SDK full-chain test/evidence increment commit: `315c2a3c473e85365adaea5927a40e9a6a10062e`.
 - Latest report-clarification commit at the evidence-closure readback:
   `c1e84f79b6a4e3fe369cd0abb145b0c2d19ceb9e`.
+- The subsequent report-metadata commit is `d8f74af9241a93cdd31f53209369c0c72aadd3ca`.
+  It also contains six pre-existing staged collaborator-file changes from the shared index; the
+  SDK team did not edit those files, and no SDK production source changed.
 - Initial verification report commit: `3d90820dda3ea327d5324d8baf478628d768aad1`.
 - Verification-report link commit: `2233c5214fae2a23908d4f36c6757f7440169ac5`.
 - Local Connector acknowledgement test harness: `ac62e724a010b855df8494ec6f57c071f614212d`.
