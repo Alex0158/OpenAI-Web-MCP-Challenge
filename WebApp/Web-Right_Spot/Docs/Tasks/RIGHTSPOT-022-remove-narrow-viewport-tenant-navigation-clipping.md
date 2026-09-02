@@ -1,7 +1,7 @@
 # RIGHTSPOT-022: Remove narrow-viewport tenant navigation clipping
 
 **Type:** `defect`
-**Lifecycle:** `pending`
+**Lifecycle:** `in_progress`
 **Priority:** `P2` for the accepted 320px accessibility and demo-readiness baseline
 **Owner:** Main RightSpot thread
 **Opened:** 2026-09-02
@@ -12,18 +12,19 @@ tenant route topology; and the current canonical product source at local product
 ## Task Control
 
 - Type: `defect`
-- Lifecycle: `pending`
+- Lifecycle: `in_progress`
 - Priority: `P2`
 - Owner: Main RightSpot thread
 - Current increment: Make the existing authenticated tenant navigation satisfy the already accepted
   `320px` minimum layout baseline without changing routes, request workflow, role authority, or data.
-- Next gate: `RS-WO-022-01` is registered and `GATED`, but not dispatched. Main has accepted
-  `320px` as the supported floor and selected a tenant-scoped CSS-only wrap as the preferred repair.
-  Before dispatch, Main must confirm the current source identity, exact path ownership, and worker
-  capacity. No product code has been changed for this Task.
+- Next gate: `RS-WO-022-01` has been dispatched to persistent Builder task
+  `01a0602e-e947-7231-bf6f-37ed685681e2` against the serialized canonical Main Worktree. Main must
+  record the Builder handoff, freeze the resulting CSS path, and open independent verification after
+  the Builder returns `READY_FOR_VERIFICATION` or `BLOCKED`. No product code has changed for this
+  Task yet.
 - Dependencies: The existing `SessionNav` component, `/tenant` route family, current global CSS,
   and ADR-RS-0009 remain authoritative. No new product or architecture decision is required.
-- Execution posture: `PENDING`
+- Execution posture: `IN_PROGRESS`
 - Evidence status: `READY_FOR_BOUNDED_REPAIR` after Main's post-closure responsive audit.
 - Affected surface: The responsive presentation of the authenticated tenant shared navigation only.
   Agent navigation, session authority, request state, APIs, persistence, and route ownership remain
@@ -169,10 +170,10 @@ change. Those are new authority or scope decisions, not reasons to widen this CS
 
 **Parent task:** `RIGHTSPOT-022`
 **Role:** `Builder`
-**Pre-dispatch status:** `GATED`
-**Execution state:** `NOT_STARTED`
-**Owner:** Main RightSpot thread; a persistent supporting Builder may be selected at dispatch
-**Dispatch state:** `not dispatched`
+**Pre-dispatch status:** `GATED` (advanced to `ASSIGNED` after dispatch confirmation)
+**Execution state:** `ASSIGNED`
+**Owner:** Persistent supporting Builder task `01a0602e-e947-7231-bf6f-37ed685681e2` (`local`), under the authority of the Main RightSpot thread
+**Dispatch state:** `dispatched at main@cbf7643e26503ed0b49cc874c4a591f82e2aef18; serialized canonical Main Worktree; product source clean at dispatch`
 **Parallelization:** `SERIAL`
 **Execution profile:** `Standard` (shared navigation and accessibility behavior, but no contract, data, auth, or external-effect change)
 **Integration owner/order:** Main RightSpot thread; freeze the Builder result, independently verify it, then integrate the exact CSS path
@@ -226,8 +227,8 @@ navigation contract.
 - Execution mode/worktree: serialized canonical Main Worktree; no Worktree is opened at registration.
   No other RightSpot product writer may change the shared CSS path during this checkpoint. Main owns
   source freeze, integration, and closure.
-- Supporting-task identity: none until dispatch; if dispatched, the persistent task identity and
-  title must match `RS-WO-022-01` before editing.
+- Supporting-task identity: `01a0602e-e947-7231-bf6f-37ed685681e2` (`local`), title `RightSpot
+  RS-WO-022-01 Narrow Navigation Builder`; identity and Work Order match the dispatch prompt.
 - Source-freeze point: Main recaptures branch, HEAD, dirty state, and the exact CSS baseline immediately
   before dispatch; after the Builder handoff, Main freezes the resulting path before independent
   verification.
