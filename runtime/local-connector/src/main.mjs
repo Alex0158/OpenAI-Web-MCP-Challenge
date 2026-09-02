@@ -28,6 +28,7 @@ import { LocalConnectorPairingClient, openBrowser } from "./pairing-client.mjs";
 import { chooseWorkspaceDirectory } from "./workspace-picker.mjs";
 import {
   inspectMacConnectorService,
+  disconnectMacConnectorService,
   installMacConnectorService,
   stopMacConnectorService,
   uninstallMacConnectorService,
@@ -89,6 +90,10 @@ async function main() {
       await stop(flags, ui);
       return;
     }
+    if (command === "disconnect") {
+      await disconnect(flags, ui);
+      return;
+    }
     if (command === "uninstall") {
       await uninstall(flags, ui);
       return;
@@ -130,6 +135,7 @@ Connect this Mac once, then receive approved work in Codex in the background.
 Usage:
   re-entry install                                      Recommended first run
   re-entry listen                                      Watch live activity
+  re-entry disconnect                                  Sign out this Mac locally
   re-entry test "Reply with hello"                     Test Codex locally
 
 Invocation:
@@ -142,6 +148,7 @@ Commands:
   listen       Watch the background Connector until you press Ctrl+C
   test         Start one fresh local Codex session with the supplied prompt
   stop         Stop the background Connector without removing its credential
+  disconnect   Stop the Connector and clear this Mac's saved connection
   uninstall    Stop the Connector and remove its local service data
   connect      Open Re-entry, redeem a dashboard pairing code, and connect this Mac
   start        Poll for approved work until stopped
@@ -244,6 +251,8 @@ async function pair(flags, ui, options = {}) {
   }
   const receiver = requireFlag(flags, "receiver");
   const credentialFile = flags["credential-file"] ?? defaultCredentialFile();
+  const store = new LocalConnectorCredentialStore({ filename: credentialFile });
+  if (await store.load()) throw cliFailure("connector_account_already_connected");
   if (ui.interactive) {
     ui.step("Receiver", receiver);
   }
@@ -270,7 +279,6 @@ async function pair(flags, ui, options = {}) {
       ui.warning("Browser", "did not open automatically; use the URL above");
     }
   }
-  const store = new LocalConnectorCredentialStore({ filename: credentialFile });
   await store.save({
     version: 1,
     receiver_origin: receiver,
@@ -315,9 +323,7 @@ async function connect(flags, ui, options = {}) {
     return current;
   }
 
-  if (currentIsValid && ui.interactive) {
-    ui.warning("Receiver changed", `${current.receiver_origin} → ${receiver}; approve this Mac again`);
-  }
+  if (current) throw cliFailure("connector_account_already_connected");
 
   if (ui.interactive) {
     if (!options.guidedInstall) ui.info("Re-entry", displayReceiver(receiver));
@@ -386,11 +392,15 @@ async function status(flags, ui) {
     Date.parse(credentials.connector_expires_at) > Date.now() &&
     !reauthorizationRequired,
   );
+  const credentialExpired = Boolean(
+    credentials && Date.parse(credentials.connector_expires_at) <= Date.now(),
+  );
   if (ui.interactive) {
     ui.section("SYSTEM", "This Mac");
     showReadiness(readiness, ui);
     ui.section("CONNECTION", "Re-entry");
-    if (reauthorizationRequired) ui.warning("Account", "reconnect required");
+    if (reauthorizationRequired) ui.warning("Account", "disconnect required before reconnecting");
+    else if (credentialExpired) ui.warning("Account", "connection expired; disconnect before reconnecting");
     else if (connected) ui.success("Account", "connected");
     else ui.warning("Account", "not connected");
     if (reauthorizationRequired && service.running) ui.warning("Background", "paused until this Mac is reconnected");
@@ -400,8 +410,8 @@ async function status(flags, ui) {
     if (receiverReady) ui.success("Cloud", "online");
     else if (credentials) ui.warning("Cloud", "unavailable");
 
-    if (reauthorizationRequired) {
-      ui.next(cliCommand("connect"), "Approve this Mac again in your browser; the old credential was rejected.");
+    if (reauthorizationRequired || credentialExpired) {
+      ui.next(cliCommand("disconnect"), "Clear this Mac's saved connection, then run install to connect again.");
     } else if (!connected || !service.running) {
       ui.next(cliCommand("install"), "Finish setup and start Re-entry in the background.");
     } else if (!receiverReady) {
@@ -418,6 +428,7 @@ async function status(flags, ui) {
       connector_id: credentials?.connector_id ?? null,
       receiver_origin: credentials?.receiver_origin ?? null,
       receiver_ready: receiverReady,
+      credential_expired: credentialExpired,
       service_installed: service.installed,
       service_running: service.running,
       codex_binary: readiness.installation.executable,
@@ -436,11 +447,18 @@ async function listen(flags, ui) {
     filename: defaultCredentialFile(),
   }).load();
   const reauthorizationRequired = await hasConnectorReauthorizationRequired(defaultCredentialFile());
-  if (reauthorizationRequired || !service.running || !credentials) {
+  const credentialExpired = Boolean(
+    credentials && Date.parse(credentials.connector_expires_at) <= Date.now(),
+  );
+  if (reauthorizationRequired || credentialExpired || !service.running || !credentials) {
     if (ui.interactive) {
       if (reauthorizationRequired) {
-        ui.warning("Account", "reconnect required; the Cloud Receiver rejected this Mac");
-        ui.next(cliCommand("connect"), "Approve this Mac again in your browser.");
+        ui.warning("Account", "disconnect required; the Cloud Receiver rejected this Mac");
+        ui.next(cliCommand("disconnect"), "Clear this Mac's saved connection, then run install again.");
+      }
+      if (credentialExpired) {
+        ui.warning("Account", "connection expired");
+        ui.next(cliCommand("disconnect"), "Clear this Mac's saved connection, then run install again.");
       }
       if (!credentials) ui.warning("Account", "not connected");
       if (!service.running) ui.warning("Background", "not running");
@@ -450,6 +468,7 @@ async function listen(flags, ui) {
         event: "connector_listener_unavailable",
         connected: Boolean(credentials),
         reauthorization_required: reauthorizationRequired,
+        credential_expired: credentialExpired,
         service_running: service.running,
       })}\n`);
     }
@@ -526,7 +545,7 @@ function reportLiveActivity(event, ui) {
     );
   } else if (event.event === "connector_reauthorization_required" || event.code === "connector_identity_invalid") {
     ui.stopWait("Reconnect required", "the Cloud Receiver rejected this Mac's saved connection", "warning");
-    ui.next(cliCommand("connect"), "Approve this Mac again in your browser.");
+    ui.next(cliCommand("disconnect"), "Clear this Mac's saved connection, then run install again.");
     return;
   } else if (event.event === "connector_poll_failed" || event.event === "local_connector_failed") {
     ui.stopWait("Connection interrupted", "Re-entry is retrying", "warning");
@@ -555,6 +574,32 @@ async function stop(flags, ui) {
       event: "connector_stopped",
       supported: result.supported,
       stopped: result.stopped,
+    })}\n`);
+  }
+}
+
+async function disconnect(flags, ui) {
+  if (ui.interactive) {
+    ui.begin("Disconnect Re-entry", "Stop background delivery and clear this Mac's saved connection");
+  }
+  const result = await disconnectMacConnectorService({
+    credentialFile: flags["credential-file"] ?? defaultCredentialFile(),
+  });
+  if (ui.interactive) {
+    if (!result.supported) {
+      ui.warning("Platform", "connection lifecycle control currently supports macOS only");
+    } else if (result.disconnected) {
+      ui.complete("This Mac is disconnected", "The LaunchAgent and local Connector credential are cleared.");
+    } else {
+      ui.info("Already disconnected", "No saved local connection or background service was found.");
+    }
+    if (result.supported) ui.next(cliCommand("install"), "Connect this Mac to one Re-entry account again.");
+  } else {
+    process.stdout.write(`${JSON.stringify({
+      event: "connector_disconnected",
+      supported: result.supported,
+      disconnected: result.disconnected,
+      removed_paths: result.removedPaths,
     })}\n`);
   }
 }
@@ -642,8 +687,8 @@ async function start(flags, ui) {
     credentials = await connect(runtimeFlags, ui, { quietHeader: true });
   } else if (await hasConnectorReauthorizationRequired(credentialFile)) {
     if (ui.interactive) {
-      ui.warning("Account", "this Mac needs to be connected again");
-      ui.next(cliCommand("connect"), "Create a new dashboard pairing code and connect this Mac again.");
+      ui.warning("Account", "this Mac must be disconnected before reconnecting");
+      ui.next(cliCommand("disconnect"), "Clear the saved connection, then run install again.");
     } else {
       process.stdout.write('{"event":"connector_reauthorization_required"}\n');
     }
@@ -689,7 +734,7 @@ async function start(flags, ui) {
           });
           if (ui.interactive) {
             ui.stopWait("Reconnect required", "the Cloud Receiver rejected this Mac's saved connection", "warning");
-            ui.next(cliCommand("connect"), "Approve this Mac again in your browser.");
+            ui.next(cliCommand("disconnect"), "Clear this Mac's saved connection, then run install again.");
           } else {
             process.stdout.write('{"event":"connector_reauthorization_required"}\n');
           }
@@ -881,6 +926,7 @@ function validateCommandFlags(command, flags, positionals) {
     listen: new Set(["json"]),
     test: new Set(["codex-cd", "codex-binary", "activation-timeout", "json"]),
     stop: new Set(["json"]),
+    disconnect: new Set(["credential-file", "json"]),
     uninstall: new Set(["credential-file", "yes", "json"]),
     install: new Set([
       "receiver",
@@ -1057,10 +1103,11 @@ function errorHint(error) {
     connector_node_unsupported: "use Node.js 24 or newer, then run the command again",
     connector_receiver_missing: "pass --receiver <replacement-receiver-origin> or set REENTRY_RECEIVER_ORIGIN",
     connector_credentials_missing: `connect this Mac once with \`${cliCommand("connect")}\``,
-    connector_credentials_expired: `run \`${cliCommand("connect")}\` to authorize this Mac again`,
+    connector_credentials_expired: `run \`${cliCommand("disconnect")}\`, then \`${cliCommand("install")}\` to authorize this Mac again`,
     connector_credentials_already_exists: "use the existing Connector credential or ask for a new pairing code",
-    connector_identity_invalid: `run \`${cliCommand("connect")}\` and approve this Mac again`,
-    connector_reauthorization_required: `run \`${cliCommand("connect")}\` and approve this Mac again`,
+    connector_account_already_connected: `run \`${cliCommand("disconnect")}\` before connecting a different account or Receiver`,
+    connector_identity_invalid: `run \`${cliCommand("disconnect")}\`, then \`${cliCommand("install")}\` and approve this Mac again`,
+    connector_reauthorization_required: `run \`${cliCommand("disconnect")}\`, then \`${cliCommand("install")}\` and approve this Mac again`,
     connector_pairing_code_missing: `ask the Host backend for a new pairing code, then run \`${cliCommand("pair")}\` in a terminal`,
     pairing_code_invalid: "use the 16-character code returned by the Host, for example ABCD-EFGH-IJKL-MNOP",
     host_subject_already_paired: "use the existing Connector credential or revoke/reset the preview pairing",

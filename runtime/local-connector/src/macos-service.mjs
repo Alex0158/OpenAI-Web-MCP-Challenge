@@ -113,6 +113,30 @@ export async function stopMacConnectorService(options = {}) {
   return Object.freeze({ ...status, stopped: true, running: false });
 }
 
+export async function disconnectMacConnectorService(options = {}) {
+  const configuration = requireServiceConfiguration(options, "disconnect");
+  if (process.platform !== "darwin" && configuration.allowNonMacForTest !== true) {
+    return Object.freeze({ supported: false, disconnected: false, removedPaths: [] });
+  }
+  const service = await stopMacConnectorService(configuration);
+  const stateDirectory = configuration.stateDirectory ?? join(homedir(), ".webmcp-connector");
+  const credentialFile = requireAbsolutePath(
+    configuration.credentialFile ?? join(stateDirectory, "credentials.json"),
+    "Credential file",
+  );
+  const removedPaths = await removePaths([
+    service.plistPath,
+    credentialFile,
+    `${credentialFile}.reauthorization-required.json`,
+  ], "disconnect");
+  return Object.freeze({
+    supported: true,
+    disconnected: removedPaths.length > 0,
+    removedPaths,
+    plistPath: service.plistPath,
+  });
+}
+
 export async function uninstallMacConnectorService(options = {}) {
   const configuration = requireServiceConfiguration(options, "uninstall");
   if (process.platform !== "darwin" && configuration.allowNonMacForTest !== true) {
@@ -131,22 +155,28 @@ export async function uninstallMacConnectorService(options = {}) {
     join(stateDirectory, "connector.log"),
     join(stateDirectory, "connector-error.log"),
   ])];
-  const removedPaths = [];
-  for (const path of paths) {
-    try {
-      await unlink(path);
-      removedPaths.push(path);
-    } catch (error) {
-      if (error?.code !== "ENOENT") {
-        throw serviceFailure("connector_service_remove_failed", "Connector data could not be removed", error);
-      }
-    }
-  }
+  const removedPaths = await removePaths(paths, "uninstall");
   return Object.freeze({
     supported: true,
     removedPaths,
     plistPath: service.plistPath,
   });
+}
+
+async function removePaths(paths, operation) {
+  const removedPaths = [];
+  for (const path of [...new Set(paths)]) {
+    if (typeof path !== "string") continue;
+    try {
+      await unlink(path);
+      removedPaths.push(path);
+    } catch (error) {
+      if (error?.code !== "ENOENT") {
+        throw serviceFailure("connector_service_remove_failed", `Connector data could not be removed during ${operation}`, error);
+      }
+    }
+  }
+  return removedPaths;
 }
 
 export function renderLaunchAgent(options) {

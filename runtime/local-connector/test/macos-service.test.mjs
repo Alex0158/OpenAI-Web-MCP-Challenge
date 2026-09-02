@@ -9,6 +9,7 @@ import {
   installMacConnectorService,
   renderLaunchAgent,
   stopMacConnectorService,
+  disconnectMacConnectorService,
   uninstallMacConnectorService,
 } from "../src/macos-service.mjs";
 
@@ -130,4 +131,54 @@ test("stopping and uninstalling remove only the Connector service files", async 
   await assert.rejects(readFile(installed.plistPath));
   assert.equal(commands.some((command) => command[0] === "bootout"), true);
   await rm(directory, { recursive: true, force: true });
+});
+
+test("disconnect stops the service and removes the local connection but keeps logs", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "reentry-launch-agent-disconnect-"));
+  const launchAgentsDirectory = join(directory, "LaunchAgents");
+  const stateDirectory = join(directory, "state");
+  const credentialFile = join(stateDirectory, "credentials.json");
+  const commands = [];
+  const runCommand = async (argumentsList) => {
+    commands.push(argumentsList);
+    return { code: 0, stderr: "" };
+  };
+  try {
+    const installed = await installMacConnectorService({
+      nodeExecutable: "/usr/local/bin/node",
+      entrypoint: "/opt/reentry/main.mjs",
+      workingDirectory: "/Users/example/Host Project",
+      credentialFile,
+      launchAgentsDirectory,
+      stateDirectory,
+      allowNonMacForTest: true,
+      runCommand,
+    });
+    await writeFile(credentialFile, "credential");
+    await writeFile(`${credentialFile}.reauthorization-required.json`, "status");
+    await writeFile(installed.stdoutPath, "log");
+    await writeFile(installed.stderrPath, "error");
+
+    const disconnected = await disconnectMacConnectorService({
+      launchAgentsDirectory,
+      stateDirectory,
+      credentialFile,
+      allowNonMacForTest: true,
+      runCommand,
+    });
+
+    assert.equal(disconnected.disconnected, true);
+    assert.deepEqual(disconnected.removedPaths.sort(), [
+      credentialFile,
+      `${credentialFile}.reauthorization-required.json`,
+      installed.plistPath,
+    ].sort());
+    await assert.rejects(readFile(credentialFile));
+    await assert.rejects(readFile(installed.plistPath));
+    assert.equal(await readFile(installed.stdoutPath, "utf8"), "log");
+    assert.equal(await readFile(installed.stderrPath, "utf8"), "error");
+    assert.equal(commands.some((command) => command[0] === "bootout"), true);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
 });

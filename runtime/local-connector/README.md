@@ -2,8 +2,9 @@
 
 > **Cloud Receiver dependency notice — 2026-09-02:** The former `re-entry-weld.vercel.app` Cloud
 > Receiver is deprecated and must not be used for new pairing, credentials, or production traffic.
-> This Connector package remains a reusable/local preview surface, but a new Receiver origin must
-> be supplied explicitly by an accepted replacement service.
+> This Connector package remains a reusable/local preview surface and defaults to the accepted
+> preview origin `https://cloud-receiver-delta.vercel.app`; pass `--receiver` for another accepted
+> Receiver. This preview default is not a production deployment.
 
 Install it once on the Mac where Codex should open; after one dashboard pairing code, a macOS
 LaunchAgent keeps the outbound Connector running at login.
@@ -96,6 +97,7 @@ re-entry status
 re-entry listen
 re-entry --help
 re-entry stop
+re-entry disconnect
 re-entry uninstall
 ```
 
@@ -106,14 +108,15 @@ npx --yes --package=@4xeoz/re-entry re-entry status
 npx --yes --package=@4xeoz/re-entry re-entry listen
 npx --yes --package=@4xeoz/re-entry re-entry --help
 npx --yes --package=@4xeoz/re-entry re-entry stop
+npx --yes --package=@4xeoz/re-entry re-entry disconnect
 npx --yes --package=@4xeoz/re-entry re-entry uninstall
 ```
 
 The status view checks the local authorization, background job, Receiver reachability, Node, and
 Codex. If the Receiver rejects a previously saved device credential, the Connector pauses instead
-of retrying forever, and `status`/`listen` print an executable `connect` command. `listen` watches the
-already-running background Connector and displays new activity until you press Ctrl+C; it does not
-start a competing second poller. Useful development commands are:
+of retrying forever, and `status`/`listen` tell you to disconnect before reconnecting. `listen` watches
+the already-running background Connector and displays new activity until you press Ctrl+C; it does
+not start a competing second poller. Useful development commands are:
 
 ```sh
 npx --yes --package=@4xeoz/re-entry re-entry doctor --codex-cd /absolute/path/to/project
@@ -135,6 +138,7 @@ To pause or remove the local Connector:
 
 ```sh
 npx --yes --package=@4xeoz/re-entry re-entry stop
+npx --yes --package=@4xeoz/re-entry re-entry disconnect
 npx --yes --package=@4xeoz/re-entry re-entry uninstall
 ```
 
@@ -143,9 +147,23 @@ typing `DELETE`, then removes only the LaunchAgent, saved Connector credential, 
 It does not recursively delete folders or uninstall the npm package. To remove a global npm
 installation separately, run `npm uninstall --global @4xeoz/re-entry`.
 
-`connect` repeats only account authorization. `install` is the normal product path because it also
-installs the background job. `claim-once` is the smallest manual delivery test. The legacy
-Host-code `pair` command remains only for compatibility tests.
+`disconnect` is the simple local sign-out: it stops the LaunchAgent, removes the saved Connector
+credential, and leaves the log files in place. It is safe to run again when already disconnected.
+The current CLI does not have a server-side revoke route, so this command does not remove the Mac
+from the account's remote device list; use the account dashboard's revoke/decommission action when
+that Receiver operation is available, or wait for the remote credential to expire. `uninstall` is
+the stronger local cleanup and also removes Connector logs.
+
+Each credential file accepts one connection at a time. Repeating `connect` or `install` with the
+same saved connection returns `already connected`; an expired, rejected, or different-Receiver
+connection is not silently replaced. Run `disconnect`, then `install`, to connect this Mac to a
+different account or Receiver. `connect` repeats only account authorization, while `install` is the
+normal product path because it also installs the background job. `claim-once` is the smallest manual
+delivery test. The legacy Host-code `pair` command follows the same one-connection rule and remains
+only for compatibility tests.
+
+`Ctrl+C` stops a foreground `start` process or closes the `listen` view. It does not remove the
+saved connection; use `stop` to pause the background service or `disconnect` to clear it.
 
 ## Give this to a coding agent
 
@@ -220,6 +238,7 @@ the npm account that owns the `4xeoz` scope, publish from this directory:
 ```sh
 npm login
 npm whoami
+npm view @4xeoz/re-entry version
 npm version patch --no-git-tag-version
 npm run verify
 npm publish --access public

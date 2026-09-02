@@ -21,6 +21,7 @@ test("CLI help presents the account-first install path", () => {
   assert.match(result.stdout, /re-entry install/);
   assert.match(result.stdout, /interactive mode offers a folder picker if omitted/);
   assert.match(result.stdout, /stop         Stop the background Connector/);
+  assert.match(result.stdout, /disconnect   Stop the Connector and clear this Mac's saved connection/);
   assert.match(result.stdout, /uninstall    Stop the Connector/);
   assert.match(result.stdout, /listen       Watch the background Connector/);
   assert.match(result.stdout, /test         Start one fresh local Codex session/);
