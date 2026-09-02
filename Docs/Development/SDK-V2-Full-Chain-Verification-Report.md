@@ -33,6 +33,37 @@ All tests below used Cloud Receiver commit `300bce02` unless stated otherwise.
 | Normal Local Connector suite | **34/34 executed passed; 10 opt-in tests skipped** |
 | Repository validators and sensitive-data scans | **Passed** |
 
+Commands used for the final focused runs:
+
+```sh
+CLOUD_RECEIVER_V2_CONTRACT=1 CLOUD_RECEIVER_V2_ROOT=/Users/mac/Desktop/OpenAI-Web-MCP-Challenge/saas-boilerplate \
+  DATABASE_URL=postgresql://mac@127.0.0.1:55440/sdk_receiver_300bce_sdk \
+  CLOUD_RECEIVER_RUNTIME_DATABASE_URL= DIRECT_URL= NODE_ENV=test \
+  node --test runtime/host-sdk/test/cloud-receiver-v2.contract.mjs
+CLOUD_RECEIVER_V2_EVENT_CONTRACT=1 CLOUD_RECEIVER_V2_ROOT=/Users/mac/Desktop/OpenAI-Web-MCP-Challenge/saas-boilerplate \
+  DATABASE_URL=postgresql://mac@127.0.0.1:55440/sdk_receiver_300bce_event \
+  CLOUD_RECEIVER_RUNTIME_DATABASE_URL= DIRECT_URL= NODE_ENV=test \
+  node --test runtime/host-sdk/test/cloud-receiver-v2.event.contract.mjs
+CLOUD_RECEIVER_V2_CLAIM_CONTRACT=1 CLOUD_RECEIVER_V2_ROOT=/Users/mac/Desktop/OpenAI-Web-MCP-Challenge/saas-boilerplate \
+  DATABASE_URL=postgresql://mac@127.0.0.1:55440/sdk_receiver_300bce_claim \
+  CLOUD_RECEIVER_RUNTIME_DATABASE_URL= DIRECT_URL= NODE_ENV=test \
+  node --test runtime/local-connector/test/cloud-receiver-v2-claim.contract.mjs
+CLOUD_RECEIVER_V2_ACK_CONTRACT=1 CLOUD_RECEIVER_V2_ROOT=/Users/mac/Desktop/OpenAI-Web-MCP-Challenge/saas-boilerplate \
+  DATABASE_URL=postgresql://mac@127.0.0.1:55440/sdk_receiver_300bce_ack \
+  CLOUD_RECEIVER_RUNTIME_DATABASE_URL= DIRECT_URL= NODE_ENV=test \
+  node --test runtime/local-connector/test/cloud-receiver-v2-ack.contract.mjs
+DATABASE_URL=postgresql://mac@127.0.0.1:55440/sdk_receiver_300bce_http \
+  CLOUD_RECEIVER_RUNTIME_DATABASE_URL= DIRECT_URL= NODE_ENV=test \
+  npm --prefix /Users/mac/Desktop/OpenAI-Web-MCP-Challenge/saas-boilerplate/backend test -- --runInBand \
+  src/modules/acknowledgements/test/acknowledgement.test.ts \
+  src/modules/system-health/test/http.test.ts
+cd /Users/mac/Desktop/OpenAI-Web-MCP-Challenge/runtime/host-sdk && npm run verify
+```
+
+These are the final command forms; the two Local Connector commands required permitted loopback
+access. The SDK and Connector contract commands used the exact Cloud checkout path and separate
+fresh database URLs.
+
 Received Local Connector acknowledgement results:
 
 - `ACK-001`, `ACK-002`, `ACK-004`, and `ACK-005`: passed.
@@ -47,7 +78,7 @@ Host SDK -> Cloud Receiver -> Local Connector -> Host effect -> acknowledgement
 
 No whole-system completion claim is made.
 
-## 3. Exact commits and runtime/database evidence
+## 3. Exact commit SHA
 
 ### Commits
 
@@ -57,9 +88,14 @@ No whole-system completion claim is made.
   not deployed evidence.
 - SDK evidence update: `99def9f392db041c19741ea52593a79db9415c4c`.
 - SDK evidence-index update: `0b32eac2c6ee81aa67495ea56b2f721ca92069ad`.
+- Verification report commit: `3d90820dda3ea327d5324d8baf478628d768aad1`.
+- Verification-report link commit: `2233c5214fae2a23908d4f36c6757f7440169ac5`.
 - Local Connector acknowledgement test harness: `ac62e724a010b855df8494ec6f57c071f614212d`.
+- Root SDK branch HEAD before this report revision: `2233c5214fae2a23908d4f36c6757f7440169ac5` on
+  `codex/eyad-reentry-core-foundation`. The root worktree contains pre-existing collaborator
+  changes; these report commits do not include them. The Cloud worktree itself is clean.
 
-### Runtime and database
+## 4. Runtime and database evidence
 
 - Node.js: `v26.8.1`.
 - npm: `11.19.0`.
@@ -73,7 +109,7 @@ No whole-system completion claim is made.
 - Prisma Client was regenerated from the exact Cloud checkout and the Cloud backend build passed.
 - The disposable PostgreSQL process was stopped after verification.
 
-## 4. Required changes from the other teams
+## 5. Required changes from the other teams
 
 1. Cloud Receiver and Local Connector owners must reconcile the `ACK-003` future-effect error code
    against `reentry-core/` and ADR-0038. Do not weaken or bypass the received test.
@@ -86,7 +122,7 @@ No whole-system completion claim is made.
 
 No SDK production change is required for the current mismatch.
 
-## 5. Integration test document
+## 6. Integration test document
 
 The complete SDK-to-Receiver integration-test document is
 [SDK-005](SDK-005-cloud-receiver-v2-full-chain-contract.md). It contains:
@@ -99,7 +135,7 @@ The complete SDK-to-Receiver integration-test document is
 - organization-key, Host-key, Connector-token, lease-token, and effect-token boundaries; and
 - exact commands for the SDK and received Claim/Acknowledgement/HTTP matrices.
 
-## 6. Unresolved mismatch
+## 7. Any unresolved mismatch
 
 `CONNECTOR-V2-ACK-003` sends a future Host-effect attestation.
 
