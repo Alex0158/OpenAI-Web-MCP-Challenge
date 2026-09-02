@@ -175,9 +175,29 @@ The Cloud team must run the same files against its exact committed handler and d
 If a received test conflicts with Core or an accepted ADR, stop and return the conflict to the
 project manager; do not weaken the test or add an alias.
 
+The latest exact Cloud release-gate run used commit
+`29cdfa4ab4af329d39af361fa3a0a1dc33eab919` and database
+`local_connector_v2_cloud_29cdf_20260902`:
+
+```sh
+cd runtime/local-connector
+
+CLOUD_RECEIVER_V2_CLAIM_CONTRACT=1 \
+  CLOUD_RECEIVER_V2_ACK_CONTRACT=1 \
+  CLOUD_RECEIVER_V2_ROOT="/Users/mac/Desktop/OpenAI-Web-MCP-Challenge/saas-boilerplate" \
+  DATABASE_URL="postgresql://mac@127.0.0.1:55433/local_connector_v2_cloud_29cdf_20260902" \
+  DIRECT_URL="postgresql://mac@127.0.0.1:55433/local_connector_v2_cloud_29cdf_20260902" \
+  CLOUD_RECEIVER_RUNTIME_DATABASE_URL="" \
+  NODE_ENV=test \
+  node --test --test-concurrency=1 test/cloud-receiver-v2-claim.contract.mjs test/cloud-receiver-v2-ack.contract.mjs
+```
+
+Result: `10/10` passed. This Claim/ACK-only run intentionally excluded the local process E2E.
+
 ### Real-process E2E command
 
-The Local Connector team also runs the following against the exact Cloud checkout. The wrapper
+The Local Connector team previously ran the following against Cloud
+`6f4b35fc6cfb0d9a6a134a69264e5ebb4277a50a`. The wrapper
 starts the Cloud Express app over loopback HTTP with an injected test-only Host-effect authority;
 the claim and acknowledgement workers are separate Node processes using the production Local
 Connector client/classes. The raw effect token is sent only over the worker's stdin, while the
@@ -329,7 +349,7 @@ inspection/revocation route; ADR-0013 remains the gate for that capability.
 ## Current counterpart result
 
 The current exact Cloud Receiver checkout is `saas-boilerplate` commit
-`6f4b35fc6cfb0d9a6a134a69264e5ebb4277a50a`, with Feature 4 implementation at
+`29cdfa4ab4af329d39af361fa3a0a1dc33eab919`, with Feature 4 implementation at
 `d840439efe628a24c89fec6b74f37f04a701cb58`. It is the clean committed backend counterpart
 containing the acknowledgement route, six migrations, and Feature 6 transport/operations shell.
 The Claim matrix

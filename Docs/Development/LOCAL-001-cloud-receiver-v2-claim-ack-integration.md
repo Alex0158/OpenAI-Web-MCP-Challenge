@@ -30,9 +30,10 @@ The earlier Claim and E2E evidence used Node `v26.8.1`, Cloud Receiver
 `300bce02e6a6f9b643a6de95a3596691304749b7`, and the disposable database
 `local_connector_v2_clean_300bce_0902` on PostgreSQL `127.0.0.1:55433`. The accepted ACK-003
 red-to-green rerun used the fresh database `local_connector_v2_ack_20260902_1f3559` on the same
-PostgreSQL endpoint. The latest exact Cloud counterpart run used commit
-`6f4b35fc6cfb0d9a6a134a69264e5ebb4277a50a` and fresh database
-`local_connector_v2_cloud_6f4b_20260902`.
+PostgreSQL endpoint. The latest exact Cloud counterpart Claim/ACK matrix used commit
+`29cdfa4ab4af329d39af361fa3a0a1dc33eab919` and fresh database
+`local_connector_v2_cloud_29cdf_20260902`. The earlier full local process E2E used Cloud
+`6f4b35fc6cfb0d9a6a134a69264e5ebb4277a50a` and remains separate evidence.
 
 Red-phase evidence:
 
@@ -120,6 +121,22 @@ node --test --test-concurrency=1 runtime/local-connector/test/*.test.mjs
 
 Result: `45` total, `45` passed, `0` failed, `0` skipped (duration `6950.168042 ms`).
 
+Latest exact Cloud `29cdfa4ab4af329d39af361fa3a0a1dc33eab919` Claim/ACK-only release-gate command:
+
+```sh
+CLOUD_RECEIVER_V2_CLAIM_CONTRACT=1 \
+CLOUD_RECEIVER_V2_ACK_CONTRACT=1 \
+CLOUD_RECEIVER_V2_ROOT=/Users/mac/Desktop/OpenAI-Web-MCP-Challenge/saas-boilerplate \
+DATABASE_URL=postgresql://mac@127.0.0.1:55433/local_connector_v2_cloud_29cdf_20260902 \
+DIRECT_URL=postgresql://mac@127.0.0.1:55433/local_connector_v2_cloud_29cdf_20260902 \
+CLOUD_RECEIVER_RUNTIME_DATABASE_URL= \
+NODE_ENV=test \
+node --test --test-concurrency=1 runtime/local-connector/test/cloud-receiver-v2-claim.contract.mjs runtime/local-connector/test/cloud-receiver-v2-ack.contract.mjs
+```
+
+Result: `10` total, `10` passed, `0` failed, `0` skipped (duration `3268.382292 ms`). This
+matrix intentionally excluded the local process E2E.
+
 The complete package suite after adding the opt-in harness was `45` tests: `34` passed, `0`
 failed, and `11` opt-in tests skipped when the Cloud contract flags were unset. The accepted full
 opt-in aggregate above ran all `45` tests green, including the E2E test.
@@ -180,12 +197,13 @@ Local repository state:
 
 Cloud Receiver counterpart:
 
-- Latest exact local counterpart commit: `6f4b35fc6cfb0d9a6a134a69264e5ebb4277a50a`.
+- Latest exact local counterpart commit: `29cdfa4ab4af329d39af361fa3a0a1dc33eab919`.
+- Earlier full local process E2E counterpart: `6f4b35fc6cfb0d9a6a134a69264e5ebb4277a50a`.
 - The earlier Features 4–6 backend commit was `300bce02e6a6f9b643a6de95a3596691304749b7`.
 - Branch: `main`.
 - The Cloud worktree was clean at the latest SHA readback, and the backend subtree used by these
   tests matches that exact commit.
-- The latest Cloud commit is local-only and is four commits ahead of its `origin/main`; it was not
+- The latest Cloud commit is local-only and is five commits ahead of its `origin/main`; it was not
   treated as pushed or deployed evidence.
 
 ## 4. Runtime and database evidence
@@ -194,9 +212,10 @@ Cloud Receiver counterpart:
 - npm: `11.19.0`.
 - PostgreSQL: `14.18`.
 - Database endpoint: `127.0.0.1:55433`.
-- Disposable database: `local_connector_v2_cloud_6f4b_20260902` for the latest exact-counterpart
-  aggregate; the accepted ACK-003 rerun used `local_connector_v2_ack_20260902_1f3559`, and earlier
-  Claim/E2E evidence used `local_connector_v2_clean_300bce_0902`.
+- Disposable database: `local_connector_v2_cloud_29cdf_20260902` for the latest exact Claim/ACK
+  matrix; the full local process E2E used `local_connector_v2_cloud_6f4b_20260902`, the accepted
+  ACK-003 rerun used `local_connector_v2_ack_20260902_1f3559`, and earlier Claim/E2E evidence used
+  `local_connector_v2_clean_300bce_0902`.
 - Six committed Cloud migrations were applied, including
   `20260902050000_delivery_acknowledgement`.
 - Teardown row counts were: users `0`, developers `0`, deliveries `0`, attempts `0`.
@@ -219,9 +238,10 @@ Cloud Receiver counterpart:
   Core, ADR-0038, and cross-team release notes: malformed/far-future normalization is
   `host_effect_invalid`; only a normalized effect outside the valid window is
   `host_effect_time_invalid`.
-- **Cloud Receiver team:** rerun the received Local Connector matrix against Local test commit
-  `4b8215156d814551f8da06dad16319deaff549d7`, then provide staging/production endpoint, SHA,
-  database, TLS, and secret-custody evidence. Do not add a fallback route, hidden retry, or
+- **Cloud Receiver team:** the Claim/ACK matrix passes against Cloud commit
+  `29cdfa4ab4af329d39af361fa3a0a1dc33eab919` and Local test commit
+  `4b8215156d814551f8da06dad16319deaff549d7`; provide the staging/production endpoint, SHA,
+  database, TLS, and secret-custody evidence next. Do not add a fallback route, hidden retry, or
   alternate transport.
 - **SDK/Host team:** provide the clean Host SDK counterpart SHA and an independent
   Host-effect authority fixture. Next gate: run `SDK-V2-E2E-001`, verify terminal durable
@@ -259,7 +279,7 @@ Host SDK -> Cloud Receiver -> Local Connector -> independent Host-effect authori
 ## 7. Any unresolved mismatch
 
 No ACK-003 protocol mismatch remains. The accepted mapping is now covered by the Local test and
-matches Cloud `6f4b35fc6cfb0d9a6a134a69264e5ebb4277a50a`:
+matches Cloud `29cdfa4ab4af329d39af361fa3a0a1dc33eab919`:
 
 - malformed or far-future normalization: HTTP `403 host_effect_invalid`;
 - normalized effect outside the lease/Grant/revocation window: HTTP `403
