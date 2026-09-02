@@ -7,6 +7,9 @@ import {
   type AvailabilitySlot,
   type CommandOutcome,
   type DomainCommandResult,
+  FAVOURITE_STATES,
+  type Favourite,
+  type FavouriteCommandResult,
   type Listing,
   type PreparedResponse,
   type RequestState,
@@ -54,6 +57,7 @@ export function createInitialWorkflowState(
     listings,
     slots,
     request: null,
+    favourites: [],
     audit: [],
     processedCommands: [],
   };
@@ -87,6 +91,12 @@ export function executeCommand(
       return failure(
         evaluated.state,
         domainError("COMMAND_CONFLICT", "Command identifier was already used with different input"),
+      );
+    }
+    if (!("requestState" in processed.result)) {
+      return failure(
+        evaluated.state,
+        domainError("COMMAND_CONFLICT", "Command identifier was already used by another operation"),
       );
     }
 
@@ -588,13 +598,19 @@ function validateNow(now: string): void {
   }
 }
 
-function validateWorkflowState(state: WorkflowState): void {
+export function validateWorkflowState(state: WorkflowState): void {
   if (!Number.isInteger(state.fixtureGeneration) || state.fixtureGeneration < 1) {
     throw domainError("VALIDATION_FAILED", "Invalid fixture generation");
   }
   validateIdentifier(state.tenantId, "tenant identifier");
   validateIdentifier(state.agentId, "agent identifier");
-  if (!Array.isArray(state.listings) || !Array.isArray(state.slots) || !Array.isArray(state.audit)) {
+  if (
+    !Array.isArray(state.listings)
+    || !Array.isArray(state.slots)
+    || !Array.isArray(state.favourites)
+    || !Array.isArray(state.audit)
+    || !Array.isArray(state.processedCommands)
+  ) {
     throw domainError("VALIDATION_FAILED", "Invalid workflow collections");
   }
   for (const listing of state.listings) {
@@ -669,6 +685,11 @@ function validateWorkflowState(state: WorkflowState): void {
       throw domainError("VALIDATION_FAILED", "Held slot must identify the current request");
     }
   }
+  const favouriteKeys = new Set<string>();
+  for (const favourite of state.favourites) {
+    validateFavouriteState(favourite, state, favouriteKeys);
+  }
+  validateProcessedCommands(state.processedCommands);
   if (state.request) {
     validateIdentifier(state.request.id, "request identifier");
     if (!REQUEST_STATES.includes(state.request.state)) {
@@ -690,6 +711,128 @@ function validateWorkflowState(state: WorkflowState): void {
     if (!requestListing || state.request.agentId !== requestListing.assignedAgentId) {
       throw domainError("VALIDATION_FAILED", "Request agent assignment is invalid");
     }
+  }
+}
+
+function validateProcessedCommands(processedCommands: unknown[]): void {
+  const commandIds = new Set<string>();
+  for (const entry of processedCommands) {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      throw domainError("VALIDATION_FAILED", "Invalid processed command entry");
+    }
+    const processed = entry as Partial<{
+      commandId: unknown;
+      fingerprint: unknown;
+      result: unknown;
+    }>;
+    if (typeof processed.commandId !== "string") {
+      throw domainError("VALIDATION_FAILED", "Invalid processed command identifier");
+    }
+    validateIdentifier(processed.commandId, "Processed command identifier");
+    if (commandIds.has(processed.commandId)) {
+      throw domainError("VALIDATION_FAILED", "Processed command identifier is duplicated");
+    }
+    commandIds.add(processed.commandId);
+    if (typeof processed.fingerprint !== "string" || processed.fingerprint.length === 0) {
+      throw domainError("VALIDATION_FAILED", "Invalid processed command fingerprint");
+    }
+    if (!processed.result || typeof processed.result !== "object" || Array.isArray(processed.result)) {
+      throw domainError("VALIDATION_FAILED", "Invalid processed command result");
+    }
+    if ("requestState" in processed.result) {
+      validateProcessedWorkflowResult(processed.commandId, processed.result as DomainCommandResult);
+    } else if ("favouriteState" in processed.result) {
+      validateProcessedFavouriteResult(processed.commandId, processed.result as FavouriteCommandResult);
+    } else {
+      throw domainError("VALIDATION_FAILED", "Unknown processed command result");
+    }
+  }
+}
+
+function validateProcessedWorkflowResult(
+  commandId: string,
+  result: DomainCommandResult,
+): void {
+  if (result.commandId !== commandId) {
+    throw domainError("VALIDATION_FAILED", "Processed workflow result identifier does not match");
+  }
+  validateIdentifier(result.requestId, "Processed request identifier");
+  if (!REQUEST_STATES.includes(result.requestState)) {
+    throw domainError("VALIDATION_FAILED", "Invalid processed request state");
+  }
+  if (!Number.isInteger(result.requestVersion) || result.requestVersion < 1) {
+    throw domainError("VALIDATION_FAILED", "Invalid processed request version");
+  }
+  if (result.slotId !== undefined) {
+    validateIdentifier(result.slotId, "Processed slot identifier");
+  }
+  if (result.idempotent !== undefined && typeof result.idempotent !== "boolean") {
+    throw domainError("VALIDATION_FAILED", "Invalid processed workflow idempotency marker");
+  }
+}
+
+function validateProcessedFavouriteResult(
+  commandId: string,
+  result: FavouriteCommandResult,
+): void {
+  if (result.commandId !== commandId) {
+    throw domainError("VALIDATION_FAILED", "Processed Favourite result identifier does not match");
+  }
+  validateIdentifier(result.listingId, "Processed Favourite listing identifier");
+  if (!FAVOURITE_STATES.includes(result.favouriteState)) {
+    throw domainError("VALIDATION_FAILED", "Invalid processed Favourite state");
+  }
+  if (!Number.isInteger(result.favouriteVersion) || result.favouriteVersion < 1) {
+    throw domainError("VALIDATION_FAILED", "Invalid processed Favourite version");
+  }
+  if (result.idempotent !== undefined && typeof result.idempotent !== "boolean") {
+    throw domainError("VALIDATION_FAILED", "Invalid processed Favourite idempotency marker");
+  }
+}
+
+function validateFavouriteState(
+  favourite: Favourite,
+  state: WorkflowState,
+  favouriteKeys: Set<string>,
+): void {
+  if (!favourite || typeof favourite !== "object") {
+    throw domainError("VALIDATION_FAILED", "Invalid Favourite record");
+  }
+  validateIdentifier(favourite.tenantId, "Favourite tenant identifier");
+  if (favourite.tenantId !== state.tenantId) {
+    throw domainError("VALIDATION_FAILED", "Favourite tenant does not match the fixture");
+  }
+  validateIdentifier(favourite.listingId, "Favourite listing identifier");
+  const key = `${favourite.tenantId}\u0000${favourite.listingId}`;
+  if (favouriteKeys.has(key)) {
+    throw domainError("VALIDATION_FAILED", "Favourite relationship is duplicated");
+  }
+  favouriteKeys.add(key);
+  if (!FAVOURITE_STATES.includes(favourite.state)) {
+    throw domainError("VALIDATION_FAILED", "Invalid Favourite state");
+  }
+  if (!Number.isInteger(favourite.version) || favourite.version < 1) {
+    throw domainError("VALIDATION_FAILED", "Invalid Favourite version");
+  }
+  if (!Number.isFinite(Date.parse(favourite.createdAt))
+    || !Number.isFinite(Date.parse(favourite.updatedAt))) {
+    throw domainError("VALIDATION_FAILED", "Invalid Favourite timestamp");
+  }
+  if (Date.parse(favourite.updatedAt) < Date.parse(favourite.createdAt)) {
+    throw domainError("VALIDATION_FAILED", "Favourite timestamps are out of order");
+  }
+  if (!Number.isInteger(favourite.savedListingVersion) || favourite.savedListingVersion < 1) {
+    throw domainError("VALIDATION_FAILED", "Invalid saved listing version");
+  }
+  validateBoundedInteger(
+    favourite.savedMonthlyRentGbp,
+    1,
+    MAX_MONTHLY_RENT_GBP,
+    "Saved monthly rent",
+  );
+  const listing = state.listings.find((candidate) => candidate.id === favourite.listingId);
+  if (!listing) {
+    throw domainError("VALIDATION_FAILED", "Favourite listing reference is invalid");
   }
 }
 

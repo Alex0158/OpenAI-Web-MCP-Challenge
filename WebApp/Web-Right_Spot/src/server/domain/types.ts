@@ -13,6 +13,9 @@ export type RequestState = (typeof REQUEST_STATES)[number];
 export type ActorRole = "tenant" | "agent";
 export type ListingStatus = "PUBLISHED" | "UNPUBLISHED";
 export type SlotStatus = "AVAILABLE" | "HELD_FOR_PROPOSAL" | "CONFIRMED";
+export const FAVOURITE_STATES = ["ACTIVE", "REMOVED"] as const;
+export type FavouriteState = (typeof FAVOURITE_STATES)[number];
+export type FavouriteStatus = FavouriteState;
 
 export type Actor = {
   id: string;
@@ -85,6 +88,17 @@ export type ViewingRequest = {
   internalReviewNote?: string;
 };
 
+export type Favourite = {
+  tenantId: string;
+  listingId: string;
+  state: FavouriteState;
+  version: number;
+  createdAt: string;
+  updatedAt: string;
+  savedListingVersion: number;
+  savedMonthlyRentGbp: number;
+};
+
 export type AuditEntry = {
   sequence: number;
   commandId?: string;
@@ -100,7 +114,7 @@ export type AuditEntry = {
 export type ProcessedCommand = {
   commandId: string;
   fingerprint: string;
-  result: DomainCommandResult;
+  result: DomainCommandResult | FavouriteCommandResult;
 };
 
 export type WorkflowState = {
@@ -110,6 +124,7 @@ export type WorkflowState = {
   listings: Listing[];
   slots: AvailabilitySlot[];
   request: ViewingRequest | null;
+  favourites: Favourite[];
   audit: AuditEntry[];
   processedCommands: ProcessedCommand[];
 };
@@ -175,12 +190,39 @@ export type WorkflowCommand =
       type: "DECLINE_VIEWING";
     });
 
+export type FavouriteCommand =
+  | {
+      type: "SAVE_FAVOURITE";
+      commandId: string;
+      actor: Actor;
+      fixtureGeneration: number;
+      listingId: string;
+      expectedListingVersion: number;
+      expectedFavouriteVersion: number;
+    }
+  | {
+      type: "REMOVE_FAVOURITE";
+      commandId: string;
+      actor: Actor;
+      fixtureGeneration: number;
+      listingId: string;
+      expectedFavouriteVersion: number;
+    };
+
 export type DomainCommandResult = {
   commandId: string;
   requestId: string;
   requestState: RequestState;
   requestVersion: number;
   slotId?: string;
+  idempotent?: boolean;
+};
+
+export type FavouriteCommandResult = {
+  commandId: string;
+  listingId: string;
+  favouriteState: FavouriteState;
+  favouriteVersion: number;
   idempotent?: boolean;
 };
 
@@ -197,6 +239,20 @@ export type CommandFailure = {
 };
 
 export type CommandOutcome = CommandSuccess | CommandFailure;
+
+export type FavouriteCommandSuccess = {
+  ok: true;
+  state: WorkflowState;
+  result: FavouriteCommandResult;
+};
+
+export type FavouriteCommandFailure = {
+  ok: false;
+  state: WorkflowState;
+  error: import("./errors").DomainError;
+};
+
+export type FavouriteCommandOutcome = FavouriteCommandSuccess | FavouriteCommandFailure;
 
 export type TenantProjection = {
   request: {

@@ -48,8 +48,8 @@ communication or implementation. `RIGHTSPOT-010` is a pending read-only decision
 proposed Agent Operations Insights dashboard and bounded WebMCP query surface; it does not authorize
 dashboard implementation, WebMCP registration, reporting-schema changes, or canonical product
 writeback. `RIGHTSPOT-012` is a pending read-only cross-layer audit lane and does not authorize
-implementation or canonical product writeback. `RIGHTSPOT-020` is in progress with only
-`RS-WO-020-01` dispatched;
+implementation or canonical product writeback. `RIGHTSPOT-020` is in progress: `RS-WO-020-01` is
+closed after independent verification, and its disjoint tenant/agent UI Work Orders are prepared;
 its implementation scope excludes `RIGHTSPOT-009` and all external providers. `RIGHTSPOT-016` is closed
 with its repaired projection independently verified and integrated at `edd7575`; `RIGHTSPOT-017` is
 closed with its tenant media consumer integrated at `2a53917` and its integrated browser gate verified.
@@ -97,16 +97,16 @@ browser evidence are reconciled in the
 
 **Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain pending
 credential, decision, or read-only audit gates. `RIGHTSPOT-020` is the active next implementation Task
-with `RS-WO-020-01` active. `RS-WO-016-01` is
+with `RS-WO-020-01` closed and the next UI slices prepared. `RS-WO-016-01` is
 independently verified and integrated at `edd7575`; `RS-WO-017-03` is independently verified and
 integrated at `2a53917`, with `RS-WO-017-04` browser verification complete. `RS-WO-019-01` is closed
 after its bounded browser/form regression passed. No closed task is an active implementation gate.
 
-**Current route:** The only active post-MVP implementation Work Order is `RS-WO-020-01`. The main thread jointly reviewed
+**Current route:** `RS-WO-020-01` is closed after independent verification. The main thread jointly reviewed
 `RS-WO-008-01` and `RS-WO-009-01`, accepted the bounded Favourite direction in ADR-RS-0013, deferred
 the PII-sensitive Information Request direction, and registered `RIGHTSPOT-020` as the next separate
-implementation Task, then dispatched its serial contract/data Builder against Main baseline `c0f9e8c`;
-no UI slice or code Worktree is active yet. `RIGHTSPOT-006`
+implementation Task. Its tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` are prepared
+for disjoint parallel dispatch; no UI slice or code Worktree is active yet. `RIGHTSPOT-006`
 stays gated on explicit external credentials and local-origin authorization. `RIGHTSPOT-010` is a later
 Operations/WebMCP decision gate, while `RIGHTSPOT-012` is non-blocking read-only audit work. Only an
 explicitly selected, implementation-ready Task may open code Work Orders or temporary Worktrees.

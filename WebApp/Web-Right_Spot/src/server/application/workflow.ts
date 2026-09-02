@@ -1,4 +1,5 @@
 import { domainError } from "../domain/errors";
+import { FavouriteApplication } from "./favourites";
 import {
   DEFAULT_SNAPSHOT_TIMESTAMP,
   WorkflowStore,
@@ -9,11 +10,17 @@ import type {
   Actor,
   AgentProjection,
   CommandOutcome,
+  FavouriteCommand,
+  FavouriteCommandOutcome,
   ProjectionOutcome,
   TenantProjection,
   WorkflowCommand,
   WorkflowState,
 } from "../domain/types";
+import type {
+  AgentListingInterestProjection,
+  TenantFavouritesProjection,
+} from "../domain/favourite-projections";
 import {
   readTenantListing,
   readTenantListings,
@@ -24,9 +31,11 @@ import {
 
 export class WorkflowApplication {
   private readonly store: WorkflowStore;
+  private readonly favouriteApplication: FavouriteApplication;
 
   constructor(options: WorkflowStoreOptions | string = {}) {
     this.store = new WorkflowStore(options);
+    this.favouriteApplication = new FavouriteApplication(this.store);
   }
 
   readState(): WorkflowState {
@@ -35,6 +44,13 @@ export class WorkflowApplication {
 
   applyCommand(command: WorkflowCommand, now: string): CommandOutcome {
     return this.store.applyCommand(command, now);
+  }
+
+  applyFavouriteCommand(
+    command: FavouriteCommand,
+    now: string,
+  ): FavouriteCommandOutcome {
+    return this.favouriteApplication.applyCommand(command, now);
   }
 
   readTenantProjection(
@@ -63,6 +79,20 @@ export class WorkflowApplication {
     now: string,
   ): ProjectionOutcome<AgentProjection> {
     return this.store.readAgentProjection(actor, now);
+  }
+
+  readTenantFavourites(
+    actor: Actor,
+    now: string,
+  ): ProjectionOutcome<TenantFavouritesProjection> {
+    return this.favouriteApplication.readTenantFavourites(actor, now);
+  }
+
+  readAgentListingInterest(
+    actor: Actor,
+    now: string,
+  ): ProjectionOutcome<AgentListingInterestProjection> {
+    return this.favouriteApplication.readAgentListingInterest(actor, now);
   }
 
   readAgentQueue(

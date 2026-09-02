@@ -11,22 +11,22 @@
 
 - Type: `implementation`
 - Lifecycle: `in_progress`
-- Execution posture: `BUILDER_ACTIVE`
-- Current increment: Implement the accepted tenant Favourite relationship and privacy-preserving
-  agent listing-interest projection as one bounded product outcome.
-- Next gate: `RS-WO-020-01` must return `READY_FOR_VERIFICATION` or `BLOCKED`; Main then reviews the
-  exact candidate diff before any UI slice is considered.
+- Execution posture: `UI_SLICES_READY`
+- Current increment: The server-side Favourite contract/data foundation is independently verified;
+  the next bounded increment is the tenant and agent UI consumer pair.
+- Next gate: Main may dispatch `RS-WO-020-02` and `RS-WO-020-03` in parallel because their write sets
+  are disjoint; shared navigation, card/detail integration, and global CSS remain serialized Main work.
 - Parent role: This is one registered Task File. Builder, Verifier, Repairer, and Integrator are
   checkpoints under this file, not additional Tasks.
 
 ## RS-WO-020-01 — Favourite contract/data foundation
 
 **Role:** Domain, persistence, application, API, and focused-test Builder  
-**Status:** `ASSIGNED` — Builder active  
+**Status:** `CLOSED` — Main candidate independently verified  
 **Parallelization:** `SERIAL_FIRST` — no other RightSpot product writer is admitted against these shared contract/state paths  
 **Risk profile:** `High` for data/role/privacy boundaries; bounded implementation scope  
-**Supporting worker:** `Ramanujan`, multi-agent `01a05f63-c270-7dc0-aa47-9c3a2b19a2e1`  
-**Source baseline:** Main `c0f9e8c7d7bda9894c137ebb846c011a5cef21eb`; the Main working tree also contains unrelated Game, `next-env.d.ts`, and owner-held RightSpot untracked changes that are outside this Work Order  
+**Supporting worker:** `Ramanujan`, multi-agent `01a05f63-c270-7dc0-aa47-9c3a2b19a2e1` (stopped after a partial candidate); Main completed the bounded candidate from that work; `Hypatia`, multi-agent `01a05f76-7603-7792-abf9-47c76705ea8a`, independently verified it  
+**Source baseline:** Main `5b98a082fd6868a5f60a088f4c1b59ab7d9fab83`; the Main working tree also contains unrelated Game, `next-env.d.ts`, and owner-held RightSpot untracked changes that are outside this Work Order  
 **Ownership:** The Builder may edit only the exact code/test paths below. Main owns task status, canonical documentation, candidate review, integration, independent verification, and closure.
 
 ### Objective
@@ -146,8 +146,8 @@ Deliver the smallest coherent Favourite experience for the current three-listing
 
 ## Planned checkpoint decomposition
 
-The contract/data slice above is the active `RS-WO-020-01`. The UI and shared-integration slices below
-remain planning slices and cannot start until the contract/data handoff is independently reviewed.
+The contract/data slice above is the closed `RS-WO-020-01`. The two UI slices below are now ready for
+disjoint parallel dispatch; shared integration remains Main-owned and serialized.
 
 ### Contract/data slice — serial first
 
@@ -175,9 +175,16 @@ tests/api/favourites.test.ts
 This slice owns the schema/migration, command semantics, server-derived identity, listing lifecycle
 join, role-safe DTOs, and focused tests. It must not edit tenant/agent pages or global CSS.
 
-### Tenant UI slice — parallel only after contract/data handoff
+### RS-WO-020-02 — Tenant Favourite UI
 
-Likely ownership:
+**Role:** Tenant UI Builder  
+**Status:** `READY_TO_DISPATCH`  
+**Parallelization:** `PARALLEL_WITH_RS-WO-020-03` — exact write set is disjoint from the agent UI slice  
+**Dependency:** Closed and independently verified `RS-WO-020-01`  
+**Objective:** Consume the Favourite API to add accessible save/remove controls to tenant discovery and
+detail, a dedicated Favourite list route, and truthful active/unavailable/loading/stale/error states.
+
+Write set:
 
 ```text
 src/ui/tenant/favourites-api.ts
@@ -189,12 +196,20 @@ app/tenant/favourites/page.tsx
 tests/ui/tenant-favourites.test.ts
 ```
 
-The exact existing card path must be confirmed at dispatch time. If the card is shared with the agent
-surface, the main thread serializes that file rather than allowing two writers.
+The Builder must consume the server projection and existing tenant API/session conventions. It must not
+edit shared navigation, global CSS, agent files, server/domain/API files, docs, or generated output.
+`src/ui/tenant/tenant.module.css` is tenant-owned for this slice; shared `app/globals.css` remains Main-owned.
 
-### Agent UI slice — parallel only after contract/data handoff
+### RS-WO-020-03 — Agent listing-interest UI
 
-Likely ownership:
+**Role:** Agent UI Builder  
+**Status:** `READY_TO_DISPATCH`  
+**Parallelization:** `PARALLEL_WITH_RS-WO-020-02` — exact write set is disjoint from the tenant UI slice  
+**Dependency:** Closed and independently verified `RS-WO-020-01`  
+**Objective:** Add a compact read-only listing-interest section to the assigned agent dashboard using the
+server projection, with explicit current-saves versus available-interest labels and bounded loading/error/empty states.
+
+Write set:
 
 ```text
 src/ui/agent/agent-listing-interest.tsx
@@ -204,8 +219,9 @@ src/ui/agent/agent.module.css
 tests/ui/agent-listing-interest.test.ts
 ```
 
-The UI is read-only and must consume the server projection; it must not recompute portfolio counts from
-raw workflow state.
+The Builder must consume the server projection and must not recompute portfolio counts from raw workflow
+state. It must not edit shared navigation, global CSS, tenant files, server/domain/API files, docs, or
+generated output.
 
 ### Shared integration and closure — serial Main ownership
 
@@ -244,7 +260,11 @@ that cannot be serialized, an external provider, or a source baseline that canno
 
 ## Current evidence and closure
 
-`RS-WO-020-01` is dispatched to the supporting Builder, but no candidate code has been integrated into
-Main and no independent verification or browser evidence exists yet. Closure requires the Builder
-handoff, exact candidate review, independent verification, Main integration, canonical document
-reconciliation, and the exact non-claims above.
+The original Builder stopped before handoff after writing a partial domain/persistence candidate. Main
+completed and reviewed the bounded candidate in the canonical working tree. Independent Verifier
+`Hypatia` returned `VERIFIED` after confirming the migration ledger guard, role/privacy boundary,
+cross-operation command-id conflict behavior, and route wiring. Main evidence is 12 Favourite-focused
+tests, 112 full tests, typecheck, production build, and `git diff --check`; the Verifier independently
+reported 18 Favourite/foundation checks and 112 full tests. No browser, deployment, production privacy,
+WebMCP, Cloud Receiver, or external-auth evidence is claimed. `RS-WO-020-01` is closed; UI Work Orders
+`RS-WO-020-02` and `RS-WO-020-03` are prepared but not yet dispatched.

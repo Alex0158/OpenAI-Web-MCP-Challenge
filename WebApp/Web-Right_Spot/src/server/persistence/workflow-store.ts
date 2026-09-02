@@ -11,7 +11,13 @@ import {
   createInitialWorkflowState,
   evaluateExpiry,
   executeCommand,
+  validateWorkflowState,
 } from "../domain/workflow";
+import { executeFavouriteCommand } from "../domain/favourites";
+import {
+  readAgentListingInterest as buildAgentListingInterest,
+  readTenantFavourites as buildTenantFavourites,
+} from "../domain/favourite-projections";
 import {
   readAgentProjection as buildAgentProjection,
   readTenantProjection as buildTenantProjection,
@@ -20,14 +26,21 @@ import type {
   Actor,
   AgentProjection,
   CommandOutcome,
+  FavouriteCommand,
+  FavouriteCommandOutcome,
   ProjectionOutcome,
   TenantProjection,
   WorkflowCommand,
   WorkflowState,
 } from "../domain/types";
+import type {
+  AgentListingInterestProjection,
+  TenantFavouritesProjection,
+} from "../domain/favourite-projections";
 
 export const WORKFLOW_SNAPSHOT_TABLE = "rightspot_workflow_snapshot";
-export const WORKFLOW_SNAPSHOT_SCHEMA_VERSION = 1;
+export const WORKFLOW_SNAPSHOT_SCHEMA_VERSION = 2;
+export const LEGACY_WORKFLOW_SNAPSHOT_SCHEMA_VERSION = 1;
 export const DEFAULT_SNAPSHOT_TIMESTAMP = "1970-01-01T00:00:00.000Z";
 
 const SNAPSHOT_VALIDATION_TIMESTAMP = "1970-01-01T00:00:00.000Z";
@@ -119,6 +132,24 @@ export class WorkflowStore {
     });
   }
 
+  applyFavouriteCommand(
+    command: FavouriteCommand,
+    now: string,
+  ): FavouriteCommandOutcome {
+    return this.transaction((database) => {
+      const generation = readFoundationGeneration(database);
+      const current = readSnapshot(database, generation);
+      const outcome = executeFavouriteCommand(current, command, now);
+      const changed = serializeState(current) !== serializeState(outcome.state);
+
+      if (outcome.ok || changed) {
+        writeSnapshot(database, outcome.state, now);
+      }
+
+      return outcome;
+    });
+  }
+
   readTenantProjection(
     actor: Actor,
     now: string,
@@ -144,6 +175,40 @@ export class WorkflowStore {
       const generation = readFoundationGeneration(database);
       const current = readSnapshot(database, generation);
       const outcome = buildAgentProjection(current, actor, now);
+
+      if (serializeState(current) !== serializeState(outcome.state)) {
+        writeSnapshot(database, outcome.state, now);
+      }
+
+      return outcome;
+    });
+  }
+
+  readTenantFavourites(
+    actor: Actor,
+    now: string,
+  ): ProjectionOutcome<TenantFavouritesProjection> {
+    return this.transaction((database) => {
+      const generation = readFoundationGeneration(database);
+      const current = readSnapshot(database, generation);
+      const outcome = buildTenantFavourites(current, actor, now);
+
+      if (serializeState(current) !== serializeState(outcome.state)) {
+        writeSnapshot(database, outcome.state, now);
+      }
+
+      return outcome;
+    });
+  }
+
+  readAgentListingInterest(
+    actor: Actor,
+    now: string,
+  ): ProjectionOutcome<AgentListingInterestProjection> {
+    return this.transaction((database) => {
+      const generation = readFoundationGeneration(database);
+      const current = readSnapshot(database, generation);
+      const outcome = buildAgentListingInterest(current, actor, now);
 
       if (serializeState(current) !== serializeState(outcome.state)) {
         writeSnapshot(database, outcome.state, now);
@@ -205,7 +270,7 @@ export class WorkflowStore {
         return;
       }
 
-      readSnapshotFromRow(row, generation);
+      readSnapshotWithMigration(connection, generation, row);
     });
   }
 
@@ -252,6 +317,19 @@ function readSnapshot(database: DatabaseSync, generation: number): WorkflowState
   return readSnapshotFromRow(row, generation);
 }
 
+function readSnapshotWithMigration(
+  database: DatabaseSync,
+  generation: number,
+  row: SnapshotRow,
+): WorkflowState {
+  if (row.schema_version === LEGACY_WORKFLOW_SNAPSHOT_SCHEMA_VERSION) {
+    const migrated = readLegacySnapshotFromRow(row, generation);
+    writeSnapshot(database, migrated, row.updated_at);
+    return migrated;
+  }
+  return readSnapshotFromRow(row, generation);
+}
+
 function readSnapshotRow(database: DatabaseSync): SnapshotRow | undefined {
   return database
     .prepare(`SELECT id, schema_version, fixture_generation, state_json, updated_at
@@ -272,9 +350,51 @@ function readSnapshotFromRow(row: SnapshotRow, generation: number): WorkflowStat
     throw new WorkflowPersistenceError();
   }
 
+  return parseSnapshotState(row.state_json, generation);
+}
+
+function readLegacySnapshotFromRow(row: SnapshotRow, generation: number): WorkflowState {
+  if (
+    row.id !== 1
+    || row.schema_version !== LEGACY_WORKFLOW_SNAPSHOT_SCHEMA_VERSION
+    || row.fixture_generation !== generation
+    || typeof row.state_json !== "string"
+    || row.state_json.length === 0
+    || typeof row.updated_at !== "string"
+    || row.updated_at.length === 0
+  ) {
+    throw new WorkflowPersistenceError();
+  }
+
   let parsed: unknown;
   try {
     parsed = JSON.parse(row.state_json);
+  } catch {
+    throw new WorkflowPersistenceError();
+  }
+
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    throw new WorkflowPersistenceError();
+  }
+
+  const migrated = { ...parsed, favourites: [] } as unknown as WorkflowState;
+  if (migrated.fixtureGeneration !== generation) {
+    throw new WorkflowPersistenceError();
+  }
+
+  try {
+    validateWorkflowState(migrated);
+  } catch {
+    throw new WorkflowPersistenceError();
+  }
+
+  return migrated;
+}
+
+function parseSnapshotState(stateJson: string, generation: number): WorkflowState {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(stateJson);
   } catch {
     throw new WorkflowPersistenceError();
   }

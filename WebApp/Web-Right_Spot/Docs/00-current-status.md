@@ -50,6 +50,8 @@ product claim.
 `RIGHTSPOT-018` records two independently reproduced relay-domain defects in one serialized
 shared-workflow Work Order and is closed; `RIGHTSPOT-019` records the integrated London-time UI
 boundary repair and completed browser/form regression, and is closed.
+`RIGHTSPOT-020` remains in progress: its server-side `RS-WO-020-01` checkpoint is independently
+verified and closed, while the tenant and agent UI Work Orders are prepared for the next dispatch.
 The bounded Operations seam `RS-WO-011-01` passed independent verification and is integrated at
 product commit `7ff0fbd`; its verifier evidence remains recorded in the owning Task File, and its
 physical Worktree was removed during the documented cleanup.
@@ -157,8 +159,9 @@ register and dispatch the two role Builders.
 The newly surfaced `RIGHTSPOT-008` proposal-only `RS-WO-008-01` returned `READY_FOR_REVIEW` from
 supporting worker `01a05d79-ce45-7000-aa44-a3a1ecad95b0`. Main jointly reviewed it with `RS-WO-009-01`,
 accepted the bounded Favourite direction in ADR-RS-0013, and closed the proposal task; its separate
-implementation Task is `RIGHTSPOT-020`. `RS-WO-020-01` is now dispatched to Builder `Ramanujan`
-(`01a05f63-c270-7dc0-aa47-9c3a2b19a2e1`) for the serial contract/data slice; no UI slice is active.
+implementation Task is `RIGHTSPOT-020`. `RS-WO-020-01` is independently verified and closed after
+Main completed the bounded server contract/data slice; its tenant and agent UI Work Orders are prepared
+but no UI slice is active.
 `RIGHTSPOT-009` was reviewed with `RIGHTSPOT-008` after `RS-WO-009-01` returned `READY_FOR_REVIEW`
 from `01a05d7c-21b4-72f3-bbe8-1c34d1aee291`. It is closed as `REVIEWED_DEFERRED`: the Information
 Request boundary remains proposal evidence only because contact/PII authority, retention, and agent
@@ -167,7 +170,9 @@ access decisions are not accepted. It cannot authorize implementation or outboun
 read-only `RS-WO-010-01` returned `READY_FOR_REVIEW` from `01a05d88-8907-7063-8c93-030e296c9df0`
 (`Leibniz`) and cannot authorize dashboard implementation, WebMCP registration, reporting changes,
 or canonical product writeback. Its proposal record remains unimplemented and separate from the
-accepted Favourite lane.
+accepted Favourite lane. `RS-WO-020-01` has now passed independent verification and is closed; the
+disjoint tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` are prepared but not yet
+dispatched.
 
 `RIGHTSPOT-011` accepts ADR-RS-0011's bounded Agent Operations read-model seam. `RS-WO-011-01`
 completed its exact two-path Builder handoff at `5b05c78`, `RS-WO-011-02` independently verified it,
@@ -297,13 +302,14 @@ closed parent or override the current closure statement above.
 
 ## 5.1 Current post-MVP route
 
-The accepted local MVP and the Phase 6 post-MVP closure increment are complete. No product
-implementation Work Order is active. The current bounded `RIGHTSPOT-020` implementation lane is:
+The accepted local MVP and the Phase 6 post-MVP closure increment are complete. The server-side
+`RS-WO-020-01` checkpoint is independently verified and closed. The current bounded `RIGHTSPOT-020`
+implementation lane is:
 
 1. keep the reviewed documentation/procedure baseline and unrelated collaborator work separate;
 2. implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; `RS-WO-020-01` is
-   the active serial contract/data Builder slice against Main baseline `c0f9e8c`;
-3. after that contract handoff, tenant and agent UI may run in parallel only with disjoint paths;
+   closed after independent verification;
+3. dispatch `RS-WO-020-02` and `RS-WO-020-03` in parallel only with disjoint paths;
 4. serialize shared navigation, listing-card/detail integration, global CSS, source freeze, Main
    integration, and Worktree retirement;
 5. keep the reviewed `RIGHTSPOT-009` Information Request proposal deferred until its contact/PII
