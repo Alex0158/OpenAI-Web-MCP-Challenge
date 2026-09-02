@@ -25,7 +25,7 @@ const testOptions = enabled && mappingApproved
   : {
     skip: mappingApproved
       ? "Set CLOUD_RECEIVER_V2_FULL_CHAIN=1 with pinned v2 counterparts and disposable PostgreSQL"
-      : "Blocked until the project manager approves the ACK-003 error mapping",
+      : "Set CLOUD_RECEIVER_V2_ACK_MAPPING_APPROVED=1 for the adopted ACK-003 mapping",
   };
 
 const RECEIVER_ORIGIN = "http://127.0.0.1:4000";

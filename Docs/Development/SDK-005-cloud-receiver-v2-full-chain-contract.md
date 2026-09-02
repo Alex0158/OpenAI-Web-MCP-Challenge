@@ -1,6 +1,6 @@
 # SDK-005 — Cloud Receiver v2 Full Host-to-Acknowledgement Contract
 
-**Status:** `verification_pending` — SDK Host/Event/Claim gates pass against exact Cloud `300bce02`; Cloud Feature 5/6 tests pass `10/10`; received Acknowledgement is `4/5` because ACK-003 has an error-code mismatch; combined flow remains open
+**Status:** `verification_pending` — SDK Host/Event/Claim gates pass against Cloud `300bce02`; Cloud Feature 5/6 tests pass `10/10`; received Acknowledgement is now `5/5` after the approved ACK-003 mapping; combined flow remains open pending the exact clean Cloud SHA and effect-authority gate
 **Date:** 2026-09-02
 **Owner:** SDK development team
 **Task:** [TASK-022](../Tasks/TASK-022-prepare-sdk-v2-full-chain-integration.md)
@@ -58,11 +58,11 @@ claimed, activated, effected, or acknowledged.
 | `SDK-V2-CLAIM-001..005` | Received Connector client -> `/v0.1/delivery-claims` | Exact body, target scope, lease/replay/expiry/exhaustion behavior, durable digest-only state | `5/5` passed against exact Cloud `300bce02` and fresh PostgreSQL |
 | `SDK-V2-ACK-001` | Connector success without effect proof | Delivery remains `leased`; adapter/Agent success is not acknowledgement | Passed in received run against exact Cloud `300bce02` |
 | `SDK-V2-ACK-002` | Connector + configured Host-effect authority -> `/v0.1/delivery-acknowledgements` | Exact context-bound effect attestation, one atomic `200` acknowledgement | Passed in received run against exact Cloud `300bce02` |
-| `SDK-V2-ACK-003` | Invalid/stale/mismatched effect or lease | Stable `4xx`; no acknowledgement or overwrite | Failed: received test expects future effect `403 host_effect_time_invalid`; Cloud returns `403 host_effect_invalid` |
+| `SDK-V2-ACK-003` | Invalid/stale/mismatched effect or lease | Stable `4xx`; no acknowledgement or overwrite | Passed after the approved mapping: future/malformed normalization returns `403 host_effect_invalid`; valid-but-out-of-window effects use `403 host_effect_time_invalid` |
 | `SDK-V2-ACK-004` | Identical acknowledgement replay | Same result with `duplicate: true`; no second effect or state transition | Passed in received run against exact Cloud `300bce02` |
 | `SDK-V2-ACK-005` | Different effect or wrong Connector | Stable conflict/identity error; original attestation remains | Passed in received run against exact Cloud `300bce02` |
 | `SDK-V2-HTTP-001..005` | All SDK/Connector HTTP boundaries | Bounded JSON, size limits, no redirect, no-store, stable errors, health/readiness, secret-free logs | Cloud Feature 6 test file `5/5` passed against exact Cloud `300bce02` |
-| `SDK-V2-E2E-001` | Host SDK -> Receiver -> Connector -> Host effect -> acknowledgement | Complete response sequence and durable terminal `acknowledged` state, then exact acknowledgement replay | Prepared in `cloud-receiver-v2.full-chain.contract.mjs`; blocked by ACK-003 mismatch and exact-counterpart/effect-authority gate |
+| `SDK-V2-E2E-001` | Host SDK -> Receiver -> Connector -> Host effect -> acknowledgement | Complete response sequence and durable terminal `acknowledged` state, then exact acknowledgement replay | Prepared in `cloud-receiver-v2.full-chain.contract.mjs`; blocked only by the exact clean Cloud counterpart and effect-authority gate |
 
 The existing SDK test sources remain the executable SDK-owned coverage:
 

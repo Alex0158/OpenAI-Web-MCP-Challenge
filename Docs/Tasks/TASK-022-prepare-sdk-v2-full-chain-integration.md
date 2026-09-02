@@ -1,6 +1,6 @@
 # TASK-022: Prepare SDK v2 Full-Chain Integration Contract
 
-**Status:** `verification_pending` — SDK Host/Event/Claim gates and Cloud Feature 5/6 own tests pass against exact Cloud `300bce02`; received Acknowledgement is `4/5` because ACK-003 has an error-code mismatch; combined flow remains open
+**Status:** `verification_pending` — SDK Host/Event/Claim gates and Cloud Feature 5/6 own tests pass against Cloud `300bce02`; received Acknowledgement is `5/5` after the approved ACK-003 mapping; combined flow remains open pending the exact clean Cloud SHA and effect-authority gate
 **Owner:** SDK development team
 **Profile:** Assured
 **Scope:** SDK-owned contract tests and evidence documents only; no Cloud Receiver or Local Connector production changes
@@ -13,8 +13,8 @@
 - Lifecycle: `verification_pending`
 - Priority: `P1`
 - Owner: SDK development team.
-- Current increment: Prepare the exact SDK-to-Receiver and downstream full-chain contract matrix, including the isolated SDK-owned SDK-V2-E2E-001 test, while leaving SDK production code unchanged.
-- Next gate: obtain the project-manager/Core ACK-003 mapping decision, rerun the received Acknowledgement matrix on Cloud 300bce02, then run SDK-V2-E2E-001 with exact clean Cloud/Local Connector counterparts and the independent Host-effect authority.
+- Current increment: Reconcile the approved ACK-003 mapping, rerun the received Acknowledgement matrix, and maintain the isolated SDK-owned SDK-V2-E2E-001 test while leaving SDK production code unchanged.
+- Next gate: obtain the exact clean Cloud Receiver SHA, then run SDK-V2-E2E-001 with Cloud, Local Connector `4b821515`, fresh PostgreSQL, and the independent Host-effect authority.
 - Dependencies: [SDK-005](../Development/SDK-005-cloud-receiver-v2-full-chain-contract.md), [TASK-019](TASK-019-build-cloud-receiver-v2-delivery-claim.md), [TASK-020](TASK-020-build-cloud-receiver-v2-delivery-acknowledgement.md), [TASK-021](TASK-021-build-cloud-receiver-v2-transport-operations.md), the Local Connector acknowledgement evidence, and the [Primary Development Runbook](../Engineering/03-primary-development-runbook.md).
 
 ## 1. Problem and objective
@@ -96,20 +96,19 @@ Current local evidence on 2026-09-02:
   fresh PostgreSQL.
 - Received `CONNECTOR-V2-CLAIM-001` through `CONNECTOR-V2-CLAIM-005`: `5/5` passed against the
   exact Cloud checkout and fresh PostgreSQL.
-- Received `CONNECTOR-V2-ACK-001`, `002`, `004`, and `005`: passed against the exact Cloud checkout;
-  ACK-003 failed because the received test expects future effect `403 host_effect_time_invalid`,
-  while Cloud returns `403 host_effect_invalid`.
+- Received `CONNECTOR-V2-ACK-001` through `CONNECTOR-V2-ACK-005`: `5/5` passed against Cloud
+  `300bce02` and fresh PostgreSQL after the approved mapping; the exact Local test commit is
+  `4b8215156d814551f8da06dad16319deaff549d7`.
 - Cloud's own Feature 5 and Feature 6 tests: `10/10` passed against the exact Cloud checkout.
 - Normal SDK verification: `18/18` passed on Node `v26.8.1`.
-- The combined flow remains unverified. ACK-003 is an exact contract conflict between the received
-  Local Connector test, Cloud implementation/own test, Core's future-window classification, and the
-  accepted ADR-0038 authority-output boundary. No implementation was weakened or changed by the SDK.
-- The exact ACK-003 red reproducer on a fresh database returned exit `1` with `0` passed and `1`
-  failed; the observed response was `403 host_effect_invalid`, while the received contract expects
-  `403 host_effect_time_invalid`. The candidate mapping is documented but unaccepted; no Core,
-  ADR, Cloud, Connector, or SDK production behavior was changed.
-- The isolated SDK-owned `SDK-V2-E2E-001` test is syntax-checked and explicitly gated until that
-  decision, exact counterpart SHAs, and an independent Host-effect authority are available.
+- The combined flow remains unverified. The project-manager decision adopts `host_effect_invalid`
+  for malformed/far-future normalization and `host_effect_time_invalid` for a normalized effect
+  outside the valid lease/Grant/revocation window. No implementation was weakened or changed by the SDK.
+- The pre-decision ACK-003 red reproducer remains retained as historical evidence. The post-decision
+  rerun passed `5/5`; no Core, ADR, Cloud, Connector, or SDK production behavior was changed by the
+  SDK increment.
+- The isolated SDK-owned `SDK-V2-E2E-001` test is syntax-checked and explicitly gated until the
+  exact Cloud SHA, exact Local Connector SHA, and independent Host-effect authority are available.
 
 The exact-commit run must record:
 
