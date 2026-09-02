@@ -2,12 +2,11 @@
 
 **Role:** Canonical current status for the RightSpot child application  
 **As of:** 2026-09-02, Europe/London  
-**Physical workspace:** `git worktree list --porcelain` currently reports the canonical Main Worktree at
-`/Users/alex/OpenAI-WebMCP/WebMCP_Challenge` on `main` plus two short-lived, stopped UI candidate
-Worktrees for the active `RIGHTSPOT-020` T2 handoff:
-`/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-02-tenant-ui` and
-`/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-03-agent-ui`. Historical candidate snapshots
-are retained only in their owning Task Files and, where applicable, the local-only archive refs
+**Physical workspace:** `git worktree list --porcelain` currently reports only the canonical Main Worktree at
+`/Users/alex/OpenAI-WebMCP/WebMCP_Challenge` on `main`. The stopped `RS-WO-020-02` and
+`RS-WO-020-03` candidate snapshots were adopted into Main and their short-lived physical Worktrees were
+retired after exact-path review. Historical candidate snapshots are retained only in their owning Task Files
+and, where applicable, the local-only archive refs
 `refs/archive/rightspot/rs-wo-015-01-builder`, `refs/archive/rightspot/rs-wo-016-01-regate`, and
 `refs/archive/rightspot/rs-wo-017-03-regate`; these refs are evidence/recovery records, not product
 source or active execution surfaces. Worktree removal does not remove task records or branch refs.
@@ -57,7 +56,7 @@ boundary repair and completed browser/form regression, and is closed.
 `RS-WO-020-01R` tenant Favourite relation-version continuity repair are independently verified; both
 UI candidates from `RS-WO-020-02` and `RS-WO-020-03` are adopted in Main with shared navigation at
 product commit `c29e80d`, and Main typecheck, full suite `121/121`, and production build pass.
-Independent verification and checkpoint-scoped Worktree retirement remain open.
+Independent verification remains open; checkpoint-scoped Worktree retirement is complete.
 The bounded Operations seam `RS-WO-011-01` passed independent verification and is integrated at
 product commit `7ff0fbd`; its verifier evidence remains recorded in the owning Task File, and its
 physical Worktree was removed during the documented cleanup.

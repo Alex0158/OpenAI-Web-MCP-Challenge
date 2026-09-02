@@ -35,10 +35,10 @@ verifier Worktree is no longer present.
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-02, Europe/London
 
-**Physical workspace:** The canonical Main Worktree remains the only source authority. Two stopped,
-short-lived candidate Worktrees are temporarily retained for T2 handoff and will be retired after
-independent verification: `/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-02-tenant-ui` and
-`/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-03-agent-ui`.
+**Physical workspace:** The canonical Main Worktree remains the only source authority. The stopped,
+short-lived `RS-WO-020-02` and `RS-WO-020-03` candidate Worktrees were adopted into Main and retired after
+exact-path review. Their historical snapshots remain in the owning Task File records; no candidate
+Worktree is an active source or writer.
 
 **Current gate:** None for the accepted local MVP. `RS-WO-002-13` is integrated at product commit
 `3765747`, repaired `RS-WO-002-12` is integrated at `9348aa5`, `RS-WO-002-14` passed direct combined
@@ -79,8 +79,9 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
   independently verified local baseline; no deployment configuration or Hackathon integration exists.
 - The accepted local baseline is Next.js App Router, React, TypeScript, Node.js 24, and SQLite.
   Cloud Receiver, WebMCP, Redis, WebRTC media/signaling, and external services remain deferred.
-- The current physical state is three Worktrees: canonical Main plus two stopped, short-lived UI T2
-  candidates; the candidates are not source authority and are scheduled for retirement after verification.
+- The current physical state is one Worktree: canonical Main. The stopped `RS-WO-020-02` and
+  `RS-WO-020-03` UI candidates were adopted into Main and their physical Worktrees were retired after
+  exact-path review; their task records remain as historical evidence.
 
 ## 3. Roadmap milestones
 
@@ -107,8 +108,9 @@ sequence:
 3. Dispatch tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` in parallel with their
    declared disjoint paths; adopt both candidates into Main and serialize shared navigation, listing-card/
    detail integration, and global CSS.
-4. Freeze the integrated product source at `c29e80d`, independently verify it, then reconcile evidence
-   and retire both temporary Worktrees at the first safe checkpoint-scoped opportunity.
+4. Freeze the integrated product source at `c29e80d`, independently verify it, then reconcile the evidence;
+   the two temporary UI Worktrees were already retired after Main adoption at the first safe
+   checkpoint-scoped opportunity.
 5. Keep the reviewed `RIGHTSPOT-009` Information Request proposal deferred until contact/PII authority,
    retention, erasure, and agent-access decisions are accepted; it must not enter `RIGHTSPOT-020`.
 6. Keep `RIGHTSPOT-006` outside the implementation lane until the explicit external credential and

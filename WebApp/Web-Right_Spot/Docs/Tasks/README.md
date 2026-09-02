@@ -112,8 +112,8 @@ after its bounded browser/form regression passed. No closed task is an active im
 `RS-WO-008-01` and `RS-WO-009-01`, accepted the bounded Favourite direction in ADR-RS-0013, deferred
 the PII-sensitive Information Request direction, and registered `RIGHTSPOT-020` as the next separate
 implementation Task. Its tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched
-for disjoint parallel work and adopted into Main; the two stopped candidate Worktrees remain only until
-the frozen-source verification gate completes. `RIGHTSPOT-006`
+for disjoint parallel work and adopted into Main; their stopped candidate Worktrees were then retired
+after exact-path review, leaving only Main as the current source authority. `RIGHTSPOT-006`
 stays gated on explicit external credentials and local-origin authorization. `RIGHTSPOT-010` is a later
 Operations/WebMCP decision gate, while `RIGHTSPOT-012` is non-blocking read-only audit work. Only an
 explicitly selected, implementation-ready Task may open code Work Orders or temporary Worktrees.

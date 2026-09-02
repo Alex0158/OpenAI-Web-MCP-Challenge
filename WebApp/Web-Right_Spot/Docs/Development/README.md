@@ -17,12 +17,10 @@ record is [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md). 
 checkpoint-locally blocked by an out-of-scope tracked verifier Worktree mutation, which remains preserved
 for separate ownership/recoverability handling; the physical verifier Worktree is no longer present.
 
-**Current physical workspace:** The canonical Main Worktree remains the only source authority; two stopped,
-short-lived UI candidate Worktrees are temporarily retained for the active `RIGHTSPOT-020` T2 handoff:
-`/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-02-tenant-ui` and
-`/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-03-agent-ui`. They are not active writers and
-will be retired after independent verification. Historical candidate snapshots are retained in the owning
-Task Files and named local-only archive refs as evidence/recovery records.
+**Current physical workspace:** The canonical Main Worktree remains the only source authority. The stopped,
+short-lived `RS-WO-020-02` and `RS-WO-020-03` candidate Worktrees were adopted into Main and retired after
+exact-path review; their historical snapshots remain in the owning Task Files and named local-only archive
+refs as evidence/recovery records. No candidate Worktree is an active source or writer.
 
 ## Purpose
 

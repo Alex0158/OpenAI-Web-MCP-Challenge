@@ -18,7 +18,8 @@
   commit `c29e80d`. Main's dependency-complete typecheck, full suite, and production build pass;
   independent verification is the remaining gate.
 - Next gate: Dispatch one independent read-only Verifier against frozen product source `c29e80d`, then
-  reconcile evidence and retire the two short-lived candidate Worktrees.
+  reconcile the verification evidence. The two short-lived candidate Worktrees were already retired
+  after exact-path review; only Main remains as the current source authority.
 - Parent role: This is one registered Task File. Builder, Verifier, Repairer, and Integrator are
   checkpoints under this file, not additional Tasks.
 
@@ -345,7 +346,8 @@ found that the active-only tenant projection did not expose a removed relation's
 Main repaired that continuity gap under `RS-WO-020-01R`, and persistent Verifier
 `01a05f8d-55ae-7810-b938-a7f8490a0b97` independently returned `VERIFIED` against `adfd37e`. UI Work
 Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched in parallel, their exact-scope candidates
-were adopted into Main, and the shared navigation integration was serialized in Main. Dependency-
+were adopted into Main, the shared navigation integration was serialized in Main, and the two short-lived
+candidate Worktrees were retired after exact-path review. Dependency-
 complete Main verification now reports typecheck pass, full suite `121/121`, and production build pass;
 one independent read-only Verifier remains before closure. No browser, deployment, production privacy,
 WebMCP, Cloud Receiver, or external-auth evidence is claimed.
