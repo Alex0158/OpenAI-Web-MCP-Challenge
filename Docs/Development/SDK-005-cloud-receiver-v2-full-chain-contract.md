@@ -1,6 +1,8 @@
 # SDK-005 — Cloud Receiver v2 Full Host-to-Acknowledgement Contract
 
-**Status:** `verification_pending` — SDK, Cloud, Local Connector, and the local full-chain contract pass against pinned commits; publication and separately spawned real-browser/Connector-process evidence remain open
+**Status:** `local_release_gate_complete / publication_blocked` — SDK, Cloud, Local Connector, and
+the local full-chain contract pass against pinned commits; npm authentication is `401 Unauthorized`
+and no deployed Cloud URL was supplied for a production smoke test
 **Date:** 2026-09-02
 **Owner:** SDK development team
 **Task:** [TASK-022](../Tasks/TASK-022-prepare-sdk-v2-full-chain-integration.md)

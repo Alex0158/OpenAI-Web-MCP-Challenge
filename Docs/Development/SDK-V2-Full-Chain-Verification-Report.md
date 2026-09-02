@@ -2,7 +2,9 @@
 
 **Date:** 2026-09-02  
 **Owner:** SDK development team  
-**Status:** `verification_pending` — the SDK, Cloud, Local Connector, and local full-chain contract gates are green against pinned commits; publication is blocked by npm authentication, and separately spawned production-style browser/Connector evidence is not claimed.
+**Status:** `local_release_gate_complete / publication_blocked` — the SDK, Cloud, Local Connector,
+and local full-chain contract gates are green against pinned commits; npm authentication is still
+blocked with `401 Unauthorized`, and no deployed Cloud URL was supplied for a production smoke test.
 
 ## 1. What was built
 
@@ -49,6 +51,7 @@ and `6f4b35fc` runs remain in the linked evidence documents for traceability.
 | Final-SHA Claim first attempt | **4/5 passed; `CLAIM-002` failed** because `backend/dist/index.js` was absent; after the exact checkout was built, the fresh-database rerun passed 5/5 |
 | Separately spawned real browser approve/decline popup | **Not run**; local tests use the fake browser harness and real consent HTTP response |
 | Separately spawned Local Connector process | **Not run**; `SDK-V2-E2E-001` uses the real Connector implementation in-process |
+| Deployed full-chain smoke | **Blocked**; no deployed Cloud URL or deployment readback was supplied |
 | SDK validators and sensitive-data scans | **6/6 validator tests; 3/3 sensitive-scan tests; sensitive-pattern scan passed** |
 | Repository validation | **Passed** (`validate_repository.py --root .`) |
 
@@ -210,5 +213,5 @@ rerun: `host_effect_invalid` covers malformed/far-future normalization, while
 `host_effect_time_invalid` covers a normalized effect outside the valid lease/Grant/revocation
 window. No unresolved SDK/Receiver protocol mismatch remains. Remaining release blockers are
 local-only (not pushed/deployed) Cloud/Local commits, unavailable separately spawned real-browser
-and Local-process evidence, and npm registry authentication (`401 Unauthorized`). The local
-contract flow passed; publication remains unclaimed.
+and Local-process evidence, npm registry authentication (`401 Unauthorized`), and the absence of a
+deployed Cloud URL for the final smoke. The local contract flow passed; publication remains blocked.
