@@ -12,6 +12,10 @@ error-code decision still open.
   five-second polling, and five-second request timeout.
 - Added exact-counterpart harness isolation so tests use the supplied Cloud root and run
   serially when they capture process/log/database state.
+- Added `CONNECTOR-V2-E2E-001`: an opt-in real-process harness that drives Host SDK setup and signed
+  Event ingress over loopback HTTP, claims through a separate Local Connector process, performs an
+  independent digest-bound Host-effect fixture, acknowledges through a second Connector client
+  process, restarts the Receiver, replays the exact acknowledgement, and verifies durable state.
 - Added the Local Connector-to-Cloud Receiver integration contract and linked it to the
   project full-chain gate.
 
@@ -41,6 +45,23 @@ node --test runtime/local-connector/test/cloud-receiver-v2-claim.contract.mjs
 
 Result: `CONNECTOR-V2-CLAIM-001`–`005`, `5/5` passed.
 
+Exact focused real-process E2E command:
+
+```sh
+cd runtime/local-connector
+
+CLOUD_RECEIVER_V2_E2E=1 \
+CLOUD_RECEIVER_V2_ROOT=/Users/mac/Desktop/OpenAI-Web-MCP-Challenge/saas-boilerplate \
+DATABASE_URL=postgresql://mac@127.0.0.1:55433/local_connector_v2_clean_300bce_0902 \
+DIRECT_URL= \
+CLOUD_RECEIVER_RUNTIME_DATABASE_URL= \
+NODE_ENV=test \
+node --test test/cloud-receiver-v2-e2e.test.mjs
+```
+
+Result: `CONNECTOR-V2-E2E-001`, `1/1` passed. This is local integration evidence with a
+deterministic test Host-effect authority; it is not production Host-effect or deployment evidence.
+
 Exact focused Acknowledgement command used the same environment, with
 `CLOUD_RECEIVER_V2_ACK_CONTRACT=1` and
 `runtime/local-connector/test/cloud-receiver-v2-ack.contract.mjs`.
@@ -61,12 +82,16 @@ NODE_ENV=test \
 node --test --test-concurrency=1 runtime/local-connector/test/*.test.mjs
 ```
 
-Result: `44` total, `43` passed, `1` failed, `0` skipped. The only failure was `ACK-003`.
+Result: `45` total, `44` passed, `1` failed, `0` skipped. The only failure was `ACK-003`.
+
+The complete package suite after adding the opt-in harness was `45` tests: `34` passed, `0`
+failed, and `11` opt-in tests skipped when the Cloud contract flags were unset. The full opt-in
+aggregate above ran `45` tests: `44` passed and `1` failed; the E2E test passed.
 
 Other verification:
 
-- `cd runtime/local-connector && npm run verify`: syntax `28/28` modules passed; `44` tests,
-  `34` passed, `0` failed, `10` opt-in tests skipped.
+- `cd runtime/local-connector && npm run verify`: syntax `32/32` modules passed; `45` tests,
+  `34` passed, `0` failed, `11` opt-in tests skipped.
 - `cd reentry-core && npm run verify`: `80/80` passed; conformance and package checks passed.
 - Cloud `npm test -- --runInBand`: `10/10` suites and `41/41` tests passed.
 - Cloud `npm run build`: passed.
@@ -92,20 +117,24 @@ Local Connector harness-isolation commit:
 
 `ac62e724a010b855df8494ec6f57c071f614212d`
 
-Local Connector source/test integration counterpart:
+Local Connector real-process E2E harness commit:
+
+`d1e0e55a91b4a6d1922cd7ab27b114cbfcf43262`
+
+Pre-E2E clean contract-validation checkout:
 
 `81e51a6b2299fa1f63c2b06180febebaab9ded04`
 
 Local repository state:
 
 - Branch: `codex/eyad-reentry-core-foundation`.
-- Local Connector source/test integration counterpart: `81e51a6b2299fa1f63c2b06180febebaab9ded04`.
-- Documentation follow-up commits after that counterpart are documentation-only; they do not
-  change the Local Connector production or Core-client implementation.
-- The shared root worktree has `160` dirty paths from parallel work; none are Local Connector
-  production or Core-client changes in this increment.
+- Local Connector production and Core-client files were unchanged in the E2E/documentation
+  follow-up; the new implementation surface is test-only.
+- The shared root worktree remains dirty from parallel work; the exact Local Connector-owned
+  source/test/report paths are isolated and are reported separately here.
 - A clean detached Local Connector counterpart worktree was verified at
-  `/private/tmp/local-connector-v2-2233`, HEAD `81e51a6b2299fa1f63c2b06180febebaab9ded04`.
+  `/private/tmp/local-connector-v2-2233`, HEAD
+  `81e51a6b2299fa1f63c2b06180febebaab9ded04`, for the pre-E2E claim/acknowledgement run.
 - Root remote readback: `77c9cbcd7d2dbb71ba62308c0b3a5e0e47805dac`.
 - The Local Connector commits are local-only and were not pushed or deployed.
 
@@ -133,6 +162,9 @@ Cloud Receiver counterpart:
   restart, concurrency, wrong-target isolation, and exhaustion.
 - Acknowledgement tests verified durable acknowledgement, exact replay, effect conflicts,
   stale/invalid authority rejection, and no mutation on the failing ACK-003 case.
+- The E2E harness verified the actual Host SDK-to-Receiver HTTP path, separate Connector worker
+  processes, explicit acknowledgement, Receiver restart replay, local credential-file mode `0600`,
+  and a Host-effect file containing only a token digest and canonical attestation fields.
 - Tests assert that raw Connector, claim/lease, and effect tokens do not appear in Receiver
   responses, logs, or persisted values. The local protected credential store intentionally
   retains the Connector credential required for future authentication.
@@ -164,6 +196,10 @@ This report owns and exchanges:
   [`cloud-receiver-v2-claim.contract.mjs`](../../runtime/local-connector/test/cloud-receiver-v2-claim.contract.mjs).
 - `CONNECTOR-V2-ACK-001`–`005` in
   [`cloud-receiver-v2-ack.contract.mjs`](../../runtime/local-connector/test/cloud-receiver-v2-ack.contract.mjs).
+- `CONNECTOR-V2-E2E-001` in
+  [`cloud-receiver-v2-e2e.test.mjs`](../../runtime/local-connector/test/cloud-receiver-v2-e2e.test.mjs),
+  with the test-only Receiver wrapper and separate Connector claim/ack workers in the same test
+  directory.
 
 The handoff document defines the exact requests, response bodies, headers, token placement,
 `200`/`204` behavior, errors, replay, timing, durable-state assertions, secret boundaries, and
@@ -189,5 +225,6 @@ For a valid Connector, delivery, current lease, and an effect attestation whose
 The authority conflict is between the received test’s specific time-code expectation and the
 authoritative Core/ADR-0038 boundary, where invalid authority output is exposed as
 `host_effect_invalid`. The impact is one failed ACK case (`4/5`), one failed aggregate test
-(`43/44`), and an open combined-flow gate. ACK-003 remains unchanged pending the project-manager
-decision. No full-chain completion claim is made.
+(`44/45`), while the exact local E2E acceptance fixture passed. The SDK-owned cross-team gate and
+production/deployment gate remain open. ACK-003 remains unchanged pending the project-manager
+decision. No whole-system or deployed completion claim is made.

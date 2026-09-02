@@ -2,8 +2,9 @@
 
 **Role:** Local Connector maintainer handoff
 
-**Status:** Connector-compatible; Feature 4 and the non-conflicting Feature 5 cases verified
-against the exact Cloud checkout; ACK-003 remains blocked by a Core/contract error mapping gate
+**Status:** Connector-compatible; Feature 4, non-conflicting Feature 5 cases, and the local
+real-process E2E acceptance fixture verified against the exact Cloud checkout; ACK-003 remains
+blocked by a Core/contract error mapping gate
 
 **Owner:** Local Connector team
 
@@ -146,6 +147,8 @@ The Local Connector sends these executable tests to the Cloud Receiver team:
   — `CONNECTOR-V2-CLAIM-001`–`005`;
 - [`cloud-receiver-v2-ack.contract.mjs`](../../../runtime/local-connector/test/cloud-receiver-v2-ack.contract.mjs)
   — `CONNECTOR-V2-ACK-001`–`005`; and
+- [`cloud-receiver-v2-e2e.test.mjs`](../../../runtime/local-connector/test/cloud-receiver-v2-e2e.test.mjs)
+  — `CONNECTOR-V2-E2E-001`, the opt-in Host SDK to acknowledgement process harness; and
 - this document, including the exact request, response, timing, persistence, and secret rules.
 
 Run against an exact Cloud Receiver checkout and fresh disposable PostgreSQL database:
@@ -171,6 +174,46 @@ CLOUD_RECEIVER_V2_ACK_CONTRACT=1 \
 The Cloud team must run the same files against its exact committed handler and database migrations.
 If a received test conflicts with Core or an accepted ADR, stop and return the conflict to the
 project manager; do not weaken the test or add an alias.
+
+### Real-process E2E command
+
+The Local Connector team also runs the following against the exact Cloud checkout. The wrapper
+starts the Cloud Express app over loopback HTTP with an injected test-only Host-effect authority;
+the claim and acknowledgement workers are separate Node processes using the production Local
+Connector client/classes. The raw effect token is sent only over the worker's stdin, while the
+independent effect file stores its SHA-256 digest and canonical attestation fields only.
+
+```sh
+cd runtime/local-connector
+
+CLOUD_RECEIVER_V2_E2E=1 \
+  CLOUD_RECEIVER_V2_ROOT="/Users/mac/Desktop/OpenAI-Web-MCP-Challenge/saas-boilerplate" \
+  DATABASE_URL="postgresql://mac@127.0.0.1:55433/local_connector_v2_clean_300bce_0902" \
+  DIRECT_URL="" \
+  CLOUD_RECEIVER_RUNTIME_DATABASE_URL="" \
+  NODE_ENV=test \
+  node --test test/cloud-receiver-v2-e2e.test.mjs
+```
+
+Expected result: `CONNECTOR-V2-E2E-001` passes `1/1`. The flow is:
+
+```text
+Host SDK registerHostKey/createConsentSession/sendEvent
+  -> Cloud HTTP 201/202 and one durable pending delivery
+  -> Connector claim worker sends connector_token + fresh claim_token
+  -> Cloud HTTP 200 lease; Connector adapter returns accepted without secrets
+  -> independent Host-effect fixture records only a digest and attestation
+  -> acknowledgement worker sends connector_token + delivery_id + lease_token + effect_token
+  -> Cloud HTTP 200 acknowledged; durable status = acknowledged
+  -> Receiver restart; exact acknowledgement replay returns HTTP 200 duplicate = true
+  -> new fresh claim token returns empty HTTP 204 and no new attempt
+```
+
+The test asserts the exact response envelopes, durable lease/attempt/acknowledgement fields,
+unchanged acknowledgement timestamp and attestation on replay, `0600` local credential custody,
+and absence of raw Connector, claim/lease, or effect tokens from Receiver output, logs, durable
+values, the effect fixture, and worker output. It does not resolve ACK-003, prove a deployed
+Receiver, or claim a production Host-effect authority.
 
 ## Test cases
 
@@ -291,9 +334,10 @@ The current exact Cloud Receiver checkout is `saas-boilerplate` commit
 acknowledgement route, six migrations, and Feature 6 transport/operations shell. The Claim matrix
 passes `5/5`; the acknowledgement matrix passes `4/5` because only ACK-003 has the unresolved
 error-code mismatch below. Cloud's own Feature 5 and Feature 6 tests pass `10/10` against that
-checkout. The current Local Connector contract source is committed in
-`9215d25e2dbfd98308f751e70979115d481d5b87`; no Local Connector or Core client files changed
-between that component commit and root HEAD `2233c5214fae2a23908d4f36c6757f7440169ac5`.
+checkout. The Local Connector production implementation remains at the pairing baseline
+`7fab264d237b3e172acb091888643c831cadcb85`; the current claim/acknowledgement test and
+real-process E2E harness tip is `d1e0e55a91b4a6d1922cd7ab27b114cbfcf43262`. No Local Connector
+production or Core client files changed in that test/documentation increment.
 The combined flow remains blocked only on the ACK-003 decision and final cross-team execution.
 
 There is one additional contract mismatch to return to the project manager before either team
