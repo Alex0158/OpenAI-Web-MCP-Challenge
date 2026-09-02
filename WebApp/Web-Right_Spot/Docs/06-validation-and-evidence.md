@@ -22,6 +22,11 @@ matter where they could break the demo or violate role/privacy boundaries, but e
 marketplace, account, payment, messaging, and distributed-system coverage is intentionally
 deferred.
 
+The canonical scenario inventory, transition matrix, role-entry map, current implementation
+disposition, and open findings are maintained in
+[`07-business-flows-and-scenarios.md`](07-business-flows-and-scenarios.md). A scenario may be
+implemented without being evidence-closed; the catalogue records that distinction explicitly.
+
 ## 2. Validation ladder
 
 ### Level 0 — Documentation coherence
@@ -81,6 +86,33 @@ The first implementation does not need exhaustive failure testing. It does need 
 guardrails to prevent a broken walkthrough: invalid role access, missing request, invalid draft,
 stale write, invalid state transition, unavailable slot, expired proposal, failed reset, duplicate
 submission, and accidental cross-role data exposure.
+
+The current cross-layer audit reproduced three guardrail failures. `F-01` was repaired by enforcing
+the pre-submission privacy rule at both authoritative agent read paths: a tenant `TENANT_DRAFT` is
+visible to the tenant but absent from the agent queue and direct detail until explicit submission.
+`F-02` was repaired by handling the expected session `401` before optional body parsing, and `F-03`
+was repaired by allowing the documented `127.0.0.1` development origin through the exact Next.js
+config boundary. All three repairs have focused Red/Green evidence, independent verification, and
+the applicable browser/build evidence recorded in their Task Files. `F-01` additionally has the
+formal persistent Verifier result recorded in `RIGHTSPOT-025`; the current audit has no reproduced
+open guardrail finding. The next audit must still re-check the full chain rather than turning these
+local checks into a production-readiness claim.
+
+The subsequent rendered-page audit reproduced one P2 presentation finding, `F-04`: the same-listing
+request notice composed its state label into ungrammatical and, for later states, inaccurate copy. The
+bounded presentation-only `RIGHTSPOT-026` repair passed Red→Green, full direct suite `129/129`,
+typecheck, production build, live browser evidence, and independent persistent verification. It did not
+alter or block the authoritative tenant-to-agent workflow.
+
+The next tenant request-surface audit reproduced one separate P2 presentation finding, `F-05`: the
+response card renders a retained `SLOT_PROPOSAL` as `Action needed` with `Respond by` after the
+authoritative request has already become `VIEWING_CONFIRMED`, `TENANT_DECLINED`, or `EXPIRED`. The
+bounded presentation-only `RIGHTSPOT-027` Task is now `CLOSED_VERIFIED`: its single UI Work Order
+was implemented by persistent task `01a060bf-17c7-7c32-96ad-2ea1aa028ebf` and independently verified by
+`01a060a8-6f2d-7141-98d0-385483a9104f`. Focused `3/3`, relevant `48/48`, full `132/132`, typecheck,
+production build, exact scope/hash checks, and safe browser smoke passed. The finding did not indicate a
+workflow, projection, privacy, or slot-transition defect; the existing response presentation now
+consumes authoritative request state and removes actionable deadline language from terminal outcomes.
 
 ## 4.1 Post-MVP shared CSS evidence
 

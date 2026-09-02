@@ -1,7 +1,21 @@
 # RightSpot Development and Closure
 
 **Role:** Big-picture roadmap, implementation, verification, collaboration, and closure routing  
-**Status:** Accepted local MVP closed; roadmap and thread-orchestration pilot documented; foundation, workflow-core, the
+**Status:** Accepted local MVP closed; roadmap and thread-orchestration pilot documented; the continuous
+cross-layer audit closed `RIGHTSPOT-023` for a bounded signed-out session-read repair after Main Builder
+and read-only independent verification. It also closed `RIGHTSPOT-024` for a separate local-dev
+loopback-origin gap after config-only verification. The audit registered `RIGHTSPOT-025` for the
+`F-01` agent-draft privacy defect; its authoritative read-boundary TDD repair, full checks, live
+smoke, and formal persistent read-only verification are complete. The next rendered-page audit
+registered `RIGHTSPOT-026` for a bounded P2 listing-detail request-status notice copy defect; its
+presentation-only Red→Green repair, full checks, live browser evidence, and independent persistent
+verification are complete and the Task is closed. The following tenant request-surface audit
+registered `RIGHTSPOT-027` for a separate P2 terminal-response presentation defect; its single
+presentation-only Work Order passed independent verification after persistent Builder task
+`01a060bf-17c7-7c32-96ad-2ea1aa028ebf` completed it and Verifier task
+`01a060a8-6f2d-7141-98d0-385483a9104f` confirmed the frozen candidate. No implementation Worktree is
+active. Foundation,
+workflow-core, the
 `RS-WO-002-04` persistence/application boundary, the `RS-WO-002-05` tenant entry/listing discovery
 API, and the `RS-WO-002-07` workflow HTTP/DTO boundary are independently verified; `RS-WO-002-06`
 returned `READY_FOR_REVIEW` and its accepted decomposition is recorded in ADR-RS-0008;
@@ -32,6 +46,10 @@ verification commands, exact results, and residual risks.
 The Big Roadmap is [`RIGHTSPOT-DEVELOPMENT-ROADMAP`](RIGHTSPOT-DEVELOPMENT-ROADMAP.md). Task
 lifecycle, current increment, next gate, and any active Work Orders remain in
 [`Docs/Tasks/`](../Tasks/README.md); this directory must not become a second active-task register.
+The canonical user-facing business chains, transition rules, route map, acceptance gates, and
+current coverage are in [`Docs/07-business-flows-and-scenarios.md`](../07-business-flows-and-scenarios.md).
+Development records may record evidence against those scenarios, but must not create a competing
+flow definition.
 
 ## Accepted MVP state
 
@@ -104,7 +122,11 @@ independently verified Main `c977ea4`, and `RS-WO-020-05` passed fresh-reset bro
 Main `f49e1ca`. `RIGHTSPOT-020` is closed within its accepted local boundary.
 `RIGHTSPOT-006` remains credential-gated,
 `RIGHTSPOT-010` remains a later Operations/WebMCP decision gate, and `RIGHTSPOT-012` is a non-blocking
-read-only audit lane. The authoritative sequence is maintained in the [development roadmap](RIGHTSPOT-DEVELOPMENT-ROADMAP.md#31-current-next-route).
+read-only audit lane. The `F-01` queue/privacy defect is closed within `RIGHTSPOT-025`; `RIGHTSPOT-026`
+is also closed within its presentation-only boundary. `RIGHTSPOT-027` is closed after its bounded
+presentation repair and independent verification; no implementation Worktree is active. The next step
+is a fresh Main-thread cross-layer audit before another implementation route is registered.
+The authoritative sequence is maintained in the [development roadmap](RIGHTSPOT-DEVELOPMENT-ROADMAP.md#31-current-next-route).
 
 ## Closure record requirements
 

@@ -28,11 +28,11 @@ export async function readSession(): Promise<SessionActor | null> {
     credentials: "same-origin",
     headers: { Accept: "application/json" },
   });
-  const payload = await readPayload(response);
 
   if (response.status === 401) {
     return null;
   }
+  const payload = await readPayload(response);
   if (!response.ok) {
     throw toApiError(response, payload);
   }

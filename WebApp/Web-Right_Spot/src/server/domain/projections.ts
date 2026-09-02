@@ -70,7 +70,7 @@ export function readAgentProjection(
   }
   const evaluated = evaluateExpiry(state, now);
   const request = evaluated.state.request;
-  if (!request || request.agentId !== actor.id) {
+  if (!request || request.agentId !== actor.id || request.state === "TENANT_DRAFT") {
     throw domainError("NOT_FOUND", "Viewing request was not found");
   }
   const listing = getListing(evaluated.state, request.listingId);

@@ -33,8 +33,8 @@ The ordinary local UI consumes the following Next.js route-handler namespaces:
 | Tenant | `POST /api/tenant/request/submit` | Explicitly submit the draft |
 | Tenant | `POST /api/tenant/request/confirm` | Confirm the current slot proposal |
 | Tenant | `POST /api/tenant/request/decline` | Decline the current slot proposal |
-| Agent | `GET /api/agent/requests` | Read the assigned queue and bounded state counts |
-| Agent | `GET /api/agent/requests/:requestId` | Read one assigned request workspace |
+| Agent | `GET /api/agent/requests` | Read the assigned submitted/current queue and bounded state counts; drafts are not visible |
+| Agent | `GET /api/agent/requests/:requestId` | Read one visible assigned request workspace; a tenant draft is non-visible |
 | Agent | `POST /api/agent/requests/:requestId/review` | Start agent review |
 | Agent | `PUT /api/agent/requests/:requestId/preparation` | Create or replace a response preparation |
 | Agent | `POST /api/agent/requests/:requestId/send` | Send the authoritative prepared proposal or decline |
@@ -82,12 +82,13 @@ a timeline reduced to non-sensitive sequence/operation/state/version facts. It n
 identifiers. `GET /api/tenant/request` returns `200` with `request: null`, `listing: null`, and an
 empty timeline when the fixture has no request; that normal state is not a failure.
 
-The agent queue returns `200` with a deterministic list and bounded state counts; an empty queue is
-an ordinary empty result. The agent request view contains only the assigned request facts, relevant
-listing facts, bounded availability, tenant-facing note, agent preparation/sent response, proposal
-expiry, and permitted internal review note. It does not expose processed-command records, unrelated
-workflow state, or arbitrary actor/session data. A missing request detail is `404`, distinct from an
-empty queue.
+The agent queue returns `200` with a deterministic list of assigned submitted/current requests and
+bounded state counts; an empty queue is an ordinary empty result. A `TENANT_DRAFT` is private
+pre-submission work and must be absent from both the queue and direct detail. The agent request view
+contains only the assigned request facts, relevant listing facts, bounded availability, tenant-facing
+note, agent preparation/sent response, proposal expiry, and permitted internal review note. It does
+not expose processed-command records, unrelated workflow state, or arbitrary actor/session data. A
+missing or non-visible request detail is `404`, distinct from an empty queue.
 
 ### 4. Keep error and freshness semantics explicit
 

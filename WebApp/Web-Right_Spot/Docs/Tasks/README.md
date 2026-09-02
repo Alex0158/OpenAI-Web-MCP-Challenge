@@ -35,6 +35,11 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-020 — Implement tenant favourites and agent listing-interest`](RIGHTSPOT-020-implement-favourites-and-listing-interest.md)
 - [`RIGHTSPOT-021 — Restore the tenant Viewing Request navigation entry`](RIGHTSPOT-021-restore-tenant-viewing-request-navigation.md)
 - [`RIGHTSPOT-022 — Remove narrow-viewport tenant navigation clipping`](RIGHTSPOT-022-remove-narrow-viewport-tenant-navigation-clipping.md)
+- [`RIGHTSPOT-023 — Restore signed-out session resolution on the root entry surface`](RIGHTSPOT-023-restore-signed-out-session-resolution.md)
+- [`RIGHTSPOT-024 — Allow the documented loopback host in local development`](RIGHTSPOT-024-allow-loopback-dev-origin.md)
+- [`RIGHTSPOT-025 — Keep a tenant draft private from the agent workflow`](RIGHTSPOT-025-hide-pre-submission-agent-draft.md)
+- [`RIGHTSPOT-026 — Clarify the existing Viewing Request status notice`](RIGHTSPOT-026-clarify-listing-request-status-notice.md)
+- [`RIGHTSPOT-027 — Make terminal Viewing Request response state-accurate`](RIGHTSPOT-027-clarify-terminal-request-response-state.md)
 
 `RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
 `RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`,
@@ -80,6 +85,26 @@ Its `RS-WO-022-01` Builder returned `READY_FOR_VERIFICATION` in persistent suppo
 and independent `RS-WO-022-02` verification in persistent supporting task
 `01a06039-6eea-7033-aaf8-ae34c69aebe7` returned `VERIFIED`. The bounded Task is closed.
 
+`RIGHTSPOT-023` is closed after its Main-thread Builder, independent read-only verification, and
+fresh browser evidence. `RIGHTSPOT-024` is also closed after its config-only Builder, path-scoped
+independent verification, clean production build, and fresh loopback browser walkthrough.
+`RIGHTSPOT-025` is now closed after its authoritative read-boundary TDD repair, focused regression,
+full suite, typecheck, production build, live loopback smoke, and formal persistent read-only
+verification. It keeps `TENANT_DRAFT` tenant-private from both agent queue and direct detail while
+preserving post-submit visibility. None of these bounded repairs reopens `RIGHTSPOT-005`, changes the
+server session contract, or adds external authentication.
+
+`RIGHTSPOT-026` is now closed as a P2 presentation-only repair: the same-listing notice on tenant
+listing detail no longer composes state labels into ungrammatical or state-inaccurate copy. Its one
+tenant-component/UI-test Work Order passed Red→Green, full checks, live browser evidence, and
+independent persistent verification without changing workflow behavior.
+
+`RIGHTSPOT-027` is now closed for a separately reproduced tenant request-dashboard presentation defect:
+retained slot-proposal responses showed `Action needed` and `Respond by` after the request was already
+confirmed, declined, or expired. Its single presentation-only Work Order passed Red→Green, Main checks,
+and independent verification by persistent tasks `01a060bf-17c7-7c32-96ad-2ea1aa028ebf` and
+`01a060a8-6f2d-7141-98d0-385483a9104f`; no separate implementation Worktree was open.
+
 Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, the corrected `RS-WO-002-02` rerun returned
 `VERIFIED`, `RS-WO-002-03` returned `VERIFIED` after its bounded repair, and `RS-WO-002-04` returned
@@ -115,8 +140,10 @@ browser evidence are reconciled in the
 `RIGHTSPOT-002` is closed.
 
 **Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain pending
-(credential, decision, and read-only audit gates respectively); `RIGHTSPOT-021` is closed as an
-implementation gate, and `RIGHTSPOT-022` is closed at product commit `f0dbd99` after
+(credential, decision, and read-only audit gates respectively); `RIGHTSPOT-023` and `RIGHTSPOT-024`
+are closed within their bounded outcomes; `RIGHTSPOT-025` and `RIGHTSPOT-026` are closed within their
+bounded outcomes; `RIGHTSPOT-027` is closed after its Builder handoff and independent verification;
+`RIGHTSPOT-021` is closed as an implementation gate, and `RIGHTSPOT-022` is closed at product commit `f0dbd99` after
 `RS-WO-022-01` returned `READY_FOR_VERIFICATION` and `RS-WO-022-02` independently returned
 `VERIFIED` for the separately registered `320–342px` responsive repair. `RIGHTSPOT-020` is closed with
 `RS-WO-020-01R` verified,
@@ -127,7 +154,13 @@ independently verified and integrated at `edd7575`; `RS-WO-017-03` is independen
 integrated at `2a53917`, with `RS-WO-017-04` browser verification complete. `RS-WO-019-01` is closed
 after its bounded browser/form regression passed. No closed task is an active implementation gate.
 
-**Current route:** No RightSpot implementation route is active. The latest bounded route,
+**Current route:** The latest completed bounded route, `RIGHTSPOT-026`, is closed after its
+presentation-only listing-detail status-notice repair, full checks, live browser evidence, and formal
+persistent verification. The fresh Main-thread audit registered `RIGHTSPOT-027` for the tenant
+request-dashboard terminal response presentation defect. Its `RS-WO-027-01` passed independent
+verification and is closed after the exact candidate was integrated into the canonical Main Worktree.
+No separate implementation Worktree is open. There is no active implementation route; the next action
+is a fresh Main-thread cross-layer audit. The latest completed bounded routes,
 `RIGHTSPOT-022`, closed after `RS-WO-022-01` returned `READY_FOR_VERIFICATION`, Main froze the exact
 CSS candidate at product commit `f0dbd99`, and persistent `RS-WO-022-02` independently returned
 `VERIFIED`. The boundary was CSS-only, tenant-scoped, and serialized on the canonical Main Worktree;

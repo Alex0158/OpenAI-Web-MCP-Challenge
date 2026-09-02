@@ -1,7 +1,7 @@
 # RightSpot — Domain and Data Model
 
 **Role:** Domain vocabulary, business rules, state machine, and privacy boundary  
-**Status:** MVP business-rules baseline accepted; durable workflow persistence and the synthetic listing discovery boundary are accepted local implementation decisions
+**Status:** MVP and bounded post-MVP business-rules baseline accepted; durable workflow persistence, synthetic listing discovery, and Favourite relation semantics are accepted local implementation decisions
 
 ## 1. Core entities
 
@@ -11,6 +11,7 @@
 | `Listing` | Published rental opportunity | a small seeded catalogue; one primary demo listing |
 | `ViewingRequest` | Shared artifact connecting tenant intent and agent response | at most one request per reset fixture |
 | `AvailabilitySlot` | Synthetic slot that an agent may propose | explicit slots owned by the application |
+| `Favourite` | Tenant-owned passive interest in a listing | unique by tenant and listing; `ACTIVE` or `REMOVED` |
 | `AgentReviewNote` | Agent-only preparation context | never exposed to tenant projection |
 | `AuditEntry` | Bounded explanation of state-changing operations | no secrets or private runtime context |
 
@@ -34,6 +35,20 @@ The tenant-facing listing shape omits the internal assigned agent identifier. Th
 shape may retain it for assignment checks. The catalogue remains deterministic, contains three
 published entries in fixture order, and does not imply live property ingestion or production media
 storage.
+
+### 1.2 Favourite relation
+
+`Favourite` is a tenant-owned relation, not a Viewing Request state or a contact record. It is unique
+by `(tenantId, listingId)` and uses the bounded lifecycle `ACTIVE | REMOVED`. Activation requires a
+currently published listing and records the current listing version and rent as a comparison
+snapshot. Removal is explicit and retains the relation version so a later re-save can use the
+authoritative `favouriteVersions` projection rather than guessing version `0`.
+
+An active relation remains readable as `Currently unavailable` if the listing is unpublished. The
+agent may receive only listing-level `currentSaves` and `availableInterest` aggregates for assigned
+listings; no tenant identity or contact value crosses that boundary. The full Favourite scenario and
+its acceptance rules are in [`07-business-flows-and-scenarios.md`](07-business-flows-and-scenarios.md)
+and [ADR-RS-0013](Decisions/ADR-RS-0013-favourites-and-listing-interest-boundary.md).
 
 ## 2. MVP business rules
 
@@ -154,8 +169,9 @@ availability reasoning.
 
 ### Property-agent projection
 
-The property agent may see assigned request facts, relevant listing facts, bounded synthetic
-availability, prepared response state, agent-only notes, and actions permitted by the current state.
+The property agent may see assigned submitted/current request facts, relevant listing facts, bounded
+synthetic availability, prepared response state, agent-only notes, and actions permitted by the
+current state. A tenant `TENANT_DRAFT` remains non-visible until explicit submission.
 
 The agent must not see tenant credentials, raw private context, or data outside the assigned request
 projection.

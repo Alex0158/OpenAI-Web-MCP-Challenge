@@ -3,8 +3,8 @@
 **Role:** Independent child application inside the WebMCP Challenge repository  
 **Working identity:** RightSpot — the rental-workflow candidate previously documented as
 `Rental Marketplace Relay`  
-**Status:** MVP design plus independently verified foundation and workflow-domain baseline; application integration not started
-**Implementation:** Foundation and workflow domain core verified; persistence, application services, API, and UI remain to be built
+**Status:** Accepted ordinary local MVP implemented and closed within its bounded scope; the business-flow catalogue is now the source for the next cross-layer coverage audit
+**Implementation:** Tenant and agent role pages, durable workflow HTTP/DTO transport, Favourites, listing-interest projection, local synthetic media, and responsive navigation are integrated; one agent draft-visibility finding remains open
 **Formal outer app-selection decision:** Pending
 
 ## Purpose
@@ -77,12 +77,16 @@ need to become a complete commercial rental marketplace.
 - tenant-visible response details; and
 - tenant confirmation or decline of a proposed viewing.
 
-### Supporting but non-blocking features
+### Supporting and implemented features
 
 - tenant favourites;
-- a small seeded property-management view with listing status;
+- a read-only agent listing-interest section with current versus available saves;
 - a bounded response note attached to an agent proposal; and
-- lightweight agent inventory status edits if they help the demo narrative.
+- local synthetic media and responsive role navigation.
+
+The Operations profile authority and projection are implemented as an isolated domain/persistence
+seam, but there is no current Operations page or public HTTP route. Listing status edits are not
+implemented and are not a hidden prerequisite for the MVP.
 
 ### Explicitly deferred
 
@@ -107,6 +111,7 @@ branch in the first demo.
 - [`Docs/04-domain-and-data-model.md`](Docs/04-domain-and-data-model.md) — entities, states, invariants, and projections;
 - [`Docs/05-api-and-integration-contracts.md`](Docs/05-api-and-integration-contracts.md) — draft application contracts and future seams;
 - [`Docs/06-validation-and-evidence.md`](Docs/06-validation-and-evidence.md) — validation plan, kill tests, and claims;
+- [`Docs/07-business-flows-and-scenarios.md`](Docs/07-business-flows-and-scenarios.md) — canonical business chains, state transitions, role entry points, acceptance criteria, and current coverage;
 - [`Docs/Decisions/README.md`](Docs/Decisions/README.md) — RightSpot decision-record routing;
 - [`Docs/Decisions/ADR-RS-0004-thread-orchestration-pilot.md`](Docs/Decisions/ADR-RS-0004-thread-orchestration-pilot.md) — scoped experimental delegated-work decision;
 - [`Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`](Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md) — the Big Roadmap for implementation, validation, and closure;

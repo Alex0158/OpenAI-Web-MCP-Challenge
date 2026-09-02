@@ -2,7 +2,13 @@
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
 **Status:** Phase 5 is complete for the accepted local MVP, and the earlier Phase 6 post-MVP closure increment
-is complete. A subsequent page-entry audit registered the bounded implementation defect `RIGHTSPOT-021`,
+is complete. The continuous cross-layer audit registered three bounded defects: `F-01` (agent draft
+visibility), `F-02` (signed-out root session resolution), and `F-03` (the loopback development origin
+gap). All three are now closed within their bounded local claims. The first implementation route was
+the `RIGHTSPOT-023` session-client repair, now verified in its Main Builder and independent read-only
+verification checkpoints. The same rendered audit registered `F-03` (the documented 127.0.0.1 dev
+origin gap) as the separately gated `RIGHTSPOT-024` configuration route. A subsequent page-entry audit
+registered the bounded implementation defect `RIGHTSPOT-021`,
 which entered and completed bounded implementation through dispatched `RS-WO-021-01` and independent
 verification `RS-WO-021-02`. The joint review of
 `RS-WO-008-01` and `RS-WO-009-01` accepted ADR-RS-0013 for the
@@ -83,6 +89,11 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
   independently verified local baseline; no deployment configuration or Hackathon integration exists.
 - The accepted local baseline is Next.js App Router, React, TypeScript, Node.js 24, and SQLite.
   Cloud Receiver, WebMCP, Redis, WebRTC media/signaling, and external services remain deferred.
+- [`../07-business-flows-and-scenarios.md`](../07-business-flows-and-scenarios.md) is now the
+  canonical audit baseline for the tenant and agent business chains. It records the closed bounded
+  findings `F-01` (agent draft privacy), `F-02` (signed-out session resolution), and `F-03`
+  (`127.0.0.1:3100` development-origin resolution). Each remains distinct from the others and from
+  deferred integrations; the next audit must re-check them against current source.
 - The current physical state is one Worktree: canonical Main. The stopped `RS-WO-020-02` and
   `RS-WO-020-03` UI candidates were adopted into Main and their physical Worktrees were retired after
   exact-path review; their task records remain as historical evidence.
@@ -114,8 +125,18 @@ registered `RIGHTSPOT-022` as a separate CSS-only responsive repair. `RS-WO-022-
 `READY_FOR_VERIFICATION` in persistent supporting task `01a0602e-e947-7231-bf6f-37ed685681e2`; Main
 froze the exact CSS candidate at local product commit `f0dbd99`, and independent `RS-WO-022-02`
 verification in persistent supporting task `01a06039-6eea-7033-aaf8-ae34c69aebe7` returned `VERIFIED`.
-The bounded Task is closed; no implementation Worktree is open, and no new RightSpot implementation
-route is currently active.
+The bounded Task is closed; no implementation Worktree is open. `RIGHTSPOT-023` and `RIGHTSPOT-024`
+are closed after their exact-path Builder, independent verification, browser, and documentation gates.
+`RIGHTSPOT-025` was the current registered route for the independently reproduced `F-01` queue/privacy
+defect. Its authoritative read-boundary repair, Main checks, and formal persistent verification are
+closed; no implementation Worktree is open. The fresh rendered-page audit then registered
+`RIGHTSPOT-026` for a bounded P2 listing-detail request-status notice copy defect. Its presentation-only
+Red→Green repair, full checks, live browser evidence, and independent persistent verification are
+complete; the Task is closed. The next rendered tenant-request audit registered `RIGHTSPOT-027` for a
+separate P2 terminal-response presentation defect; its single presentation-only Work Order passed
+independent verification after the persistent Builder task `01a060bf-17c7-7c32-96ad-2ea1aa028ebf` and
+Verifier task `01a060a8-6f2d-7141-98d0-385483a9104f` completed their gates. No implementation Worktree
+is open.
 The independent static verification `RS-WO-020-04` and fresh-reset browser verification `RS-WO-020-05`
 are reconciled in the owning Task File; the `RS-WO-021-01` implementation and `RS-WO-021-02`
 independent verification gates are closed:
@@ -142,9 +163,17 @@ independent verification gates are closed:
    dashboard implementation.
 9. Keep `RIGHTSPOT-012` as a non-blocking, read-only audit lane. It may identify follow-on work but
    does not itself constitute a product implementation milestone.
+10. Keep the separately registered `RIGHTSPOT-025` read-boundary/TDD route for `F-01` and the
+    presentation-only `RIGHTSPOT-026` status-notice repair closed within their exact boundaries. Route
+    the separate `RIGHTSPOT-027` terminal-response presentation finding through its single Work Order;
+    keep the closed `RIGHTSPOT-023`/`024` entry routes and all deferred integrations separate.
 
 Only an explicitly selected, implementation-ready Task opens a new code Work Order or temporary
-Worktree. Each accepted output is integrated into Main and its physical Worktree is retired at the
+Worktree. `RIGHTSPOT-023`, `RIGHTSPOT-024`, `RIGHTSPOT-025`, and `RIGHTSPOT-026` are closed after
+exact-path verification and documentation writeback, with no active implementation Worktree. The
+`RIGHTSPOT-027` is now closed within its bounded presentation-only claim and has no active implementation
+Worktree. No implementation-ready product repair route is currently selected; each
+accepted output is integrated into Main and its physical Worktree is retired at the
 first safe checkpoint-scoped opportunity under the orchestration Runbook. `RIGHTSPOT-021` is closed
 for its bounded repair and verification. Main selected the existing `320px` floor and registered
 `RIGHTSPOT-022`; its `RS-WO-022-01` Builder returned `READY_FOR_VERIFICATION`, Main froze the exact

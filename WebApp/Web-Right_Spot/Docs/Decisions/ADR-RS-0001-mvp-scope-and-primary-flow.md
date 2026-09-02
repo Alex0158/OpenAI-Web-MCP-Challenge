@@ -93,9 +93,10 @@ The following rules close the first application workflow without expanding the p
 - Synthetic slots use explicit times in `Europe/London`. Sending a proposal holds an available slot,
   tenant confirmation confirms it, and tenant decline or expiry releases it. A proposal expires 24
   hours after it is sent, evaluated by the application clock without a background scheduler.
-- The demo uses seeded role-specific login and one agent assignment. The agent queue reads the
-  shared application state directly and may be refreshed manually; no notification transport is
-  required.
+- The demo uses seeded role-specific login and one agent assignment. After explicit tenant
+  submission, the agent queue reads assigned submitted/current request state directly and may be
+  refreshed manually; a pre-submission `TENANT_DRAFT` remains tenant-private, and no notification
+  transport is required.
 - State-changing operations use one monotonic request version, reject stale writes, and do not
   duplicate consequences or audit entries when the same completed action is repeated.
 

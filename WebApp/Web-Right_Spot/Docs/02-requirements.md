@@ -116,8 +116,10 @@ listing version, draft state, and current request version.
 
 ### RSP-WF-05 — Agent queue projection
 
-The property agent shall see newly submitted requests in an authorized queue projection. The MVP
-uses direct reads and manual refresh; a remote notification is not part of the application contract.
+The property agent shall see newly submitted requests in an authorized queue projection. A
+`TENANT_DRAFT` is tenant-private pre-submission work and shall not appear in the agent queue, its
+counts, or direct agent request detail. The MVP uses direct reads and manual refresh; a remote
+notification is not part of the application contract.
 
 ### RSP-WF-06 — Current availability review
 
@@ -183,8 +185,9 @@ sign an agreement, send an external message, or otherwise cross the defined huma
 ### RSP-SEC-05 — Bounded data exposure
 
 The tenant may receive only its own request and tenant-facing response fields. The agent may receive
-only assigned request facts, relevant listing facts, bounded availability, and permitted internal
-notes. No credentials, private Agent context, or real-person data may enter the domain projection.
+only assigned submitted/current request facts, relevant listing facts, bounded availability, and
+permitted internal notes. Pre-submission tenant drafts are not agent-visible. No credentials, private
+Agent context, or real-person data may enter the domain projection.
 
 ## 6. Reliability and reproducibility requirements
 

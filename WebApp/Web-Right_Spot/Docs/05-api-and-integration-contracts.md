@@ -4,6 +4,10 @@
 **Status:** MVP logical contract and implementation stack accepted; the ordinary local workflow
 HTTP/DTO boundary is frozen by [ADR-RS-0008](Decisions/ADR-RS-0008-ordinary-workflow-http-and-interface-contract.md)
 
+The complete scenario-to-route inventory and current implementation disposition are maintained in
+[`07-business-flows-and-scenarios.md`](07-business-flows-and-scenarios.md). This document remains the
+authority for operation semantics and DTO/integration boundaries.
+
 ## 1. Contract principle
 
 RightSpot first exposes ordinary application operations around its own domain truth. The client
@@ -35,7 +39,7 @@ is not redefined by this logical contract document. Future integration transport
 
 ### Property-agent operations
 
-- read the assigned request queue;
+- read the assigned submitted/current request queue; pre-submission tenant drafts are not visible;
 - inspect one authorized Viewing Request;
 - start review of a submitted request;
 - read bounded synthetic availability;

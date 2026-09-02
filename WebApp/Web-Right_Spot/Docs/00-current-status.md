@@ -28,12 +28,15 @@ agent surfaces have since passed their respective independent verification gates
 at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression passed at frozen source
 `4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product task:** No RightSpot implementation task is active. `RIGHTSPOT-022` closed its
-bounded responsive repair after `RS-WO-022-01` returned `READY_FOR_VERIFICATION`, Main froze the exact
-five-line CSS candidate at local product commit `f0dbd99`, and persistent Verifier
-`RS-WO-022-02` (`01a06039-6eea-7033-aaf8-ae34c69aebe7`) independently returned `VERIFIED`. The
-tenant-only `320px` floor repair is integrated on the serialized canonical Main Worktree; no
-implementation Worktree is open, and the product commit has not been pushed by this action.
+**Current next product task:** No RightSpot implementation task is active. `RIGHTSPOT-023`,
+`RIGHTSPOT-024`, `RIGHTSPOT-025`, `RIGHTSPOT-026`, and `RIGHTSPOT-027` are closed within their
+bounded outcomes after applicable TDD, independent verification, browser/build evidence, and
+documentation reconciliation. `RIGHTSPOT-027` closed the reproduced tenant request-dashboard terminal
+response presentation defect through a two-path, presentation-only Red→Green repair; the five-state
+response matrix is now state-accurate and does not alter workflow/API behavior. The next step is a new
+Main-thread cross-layer audit before registering another implementation Task. The canonical business-flow and scenario baseline is
+[`07-business-flows-and-scenarios.md`](07-business-flows-and-scenarios.md). The only product source
+authority remains the canonical Main Worktree.
 **Current closure state:** `RS-WO-016-01` passed its bounded repair and fresh independent verification;
 Main integrated the repaired exact two-path projection at product commit `edd7575`. `RS-WO-017-03`
 passed persistent re-gate and independent verification and is integrated at product commit `2a53917`;
@@ -348,10 +351,25 @@ the exact source on a separate local port, and its evidence is recorded in the o
    authority decisions are accepted; it must not be absorbed into `RIGHTSPOT-020`;
 6. keep `RIGHTSPOT-006` gated on explicit external credentials and local-origin authorization;
 7. treat `RIGHTSPOT-010` as a later Operations/WebMCP decision gate and `RIGHTSPOT-012` as a
-   non-blocking read-only audit lane.
+   non-blocking read-only audit lane;
+8. register and close `RIGHTSPOT-023` for the independently reproduced signed-out root session-read
+   defect (`F-02`) after its serial TDD repair and independent evidence;
+9. register and close `RIGHTSPOT-024` for the independently reproduced `127.0.0.1:3100` Next.js
+   development-origin gap, keeping its config-only Work Order separate from the session repair;
+10. register and close `RIGHTSPOT-025` for the independently reproduced `F-01` agent-draft privacy
+    defect, keeping queue empty-state and direct-detail non-visibility at the authoritative read
+    boundary; Main focused `2/2`, full `127/127`, typecheck, build, live smoke, and formal persistent
+    verification passed.
+11. register and close `RIGHTSPOT-026` for the reproduced listing-detail request-status notice copy
+    defect; keep it presentation-only and separate from the closed workflow/privacy repairs.
+12. register, verify, and close `RIGHTSPOT-027` for the reproduced tenant request-dashboard terminal
+    response presentation defect; keep it presentation-only and separate from workflow/API changes.
 
 Only an explicitly selected, implementation-ready Task may open a code Work Order or temporary
-Worktree. The accepted Worktree lifecycle is prompt integration into Main followed by
+Worktree. `RIGHTSPOT-023`, `RIGHTSPOT-024`, and `RIGHTSPOT-025` are closed after their exact-path
+verification and documentation writeback; `RIGHTSPOT-026` is also closed after its exact-path
+verification and documentation writeback, with no active implementation Worktree. The accepted Worktree
+lifecycle is prompt integration into Main followed by
 checkpoint-scoped retirement. `RIGHTSPOT-021` is closed for its bounded navigation repair and
 independent verification; its post-closure `320–342px` residual was resolved by closed
 `RIGHTSPOT-022`, whose Builder handoff and independent verification are complete at product commit

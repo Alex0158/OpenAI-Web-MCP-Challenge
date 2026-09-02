@@ -2,6 +2,18 @@
 
 **Role:** Local development and documentation routing  
 **Status:** Accepted local MVP closed; the delegated-work pilot remains experimental and opt-in.
+The continuous cross-layer audit closed `RIGHTSPOT-023` for the signed-out session-read defect `F-02`
+and `RIGHTSPOT-024` for the local-dev loopback-origin defect `F-03`, each after bounded TDD,
+independent verification, browser evidence, and documentation closure. The registered `RIGHTSPOT-025`
+route for the `F-01` agent-draft privacy defect is now `CLOSED_VERIFIED` after its authoritative
+read-boundary TDD repair, full checks, live smoke, formal persistent read-only verification, and
+documentation reconciliation. The next rendered-page audit registered `RIGHTSPOT-026` for a bounded
+P2 listing-detail request-status notice copy defect. Its presentation-only Red→Green repair, full
+checks, live browser evidence, independent persistent verification, and documentation reconciliation
+are now `CLOSED_VERIFIED`. The subsequent tenant request-surface audit registered `RIGHTSPOT-027` for
+a separate P2 terminal-response presentation defect; its single presentation-only Work Order was
+implemented by persistent Builder task `01a060bf-17c7-7c32-96ad-2ea1aa028ebf` and independently verified
+by `01a060a8-6f2d-7141-98d0-385483a9104f`; no implementation Worktree is active.
 Current post-MVP state is maintained in [`Docs/00-current-status.md`](Docs/00-current-status.md) and
 [`Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`](Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md),
 not in this routing document. As of 2026-09-02, `RIGHTSPOT-015` is closed at product commit `e7f30d5`;
@@ -76,6 +88,11 @@ For each bounded increment:
 5. run the smallest meaningful focused verification, then the required transitive checks;
 6. reconcile docs, code, tests, and evidence; and
 7. review the exact Git diff and claim boundary before closure.
+
+For a defect or behavior repair, the focused verification starts with a real failing regression test
+(Red), proceeds through the smallest correct implementation (Green), and permits only behavior-
+preserving cleanup afterward (Refactor). A passing test does not by itself prove integration or
+browser behavior.
 
 The accepted framework, first server-only SQLite foundation profile, and deferred realtime boundary
 are recorded in ADR-RS-0003. The current foundation Work Order and its exact command contract are

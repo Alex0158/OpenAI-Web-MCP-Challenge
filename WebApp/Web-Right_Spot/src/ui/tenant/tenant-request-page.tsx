@@ -189,7 +189,7 @@ function RequestDashboard({ data, onSaved, onRespond, pendingResponse }: Request
             <p>{data.request.tenantNote}</p>
           </div>
         ) : null}
-        <TenantResponse response={data.request.response} expiresAt={data.request.proposalExpiresAt} />
+        <TenantResponse state={data.request.state} response={data.request.response} expiresAt={data.request.proposalExpiresAt} />
         {data.request.state === "SLOT_PROPOSED" ? (
           <section className={styles.decisionPanel} aria-labelledby="tenant-decision-title">
             <p className="eyebrow">Your decision</p>
@@ -392,22 +392,67 @@ export function TenantRequestEditor({
   );
 }
 
-function TenantResponse({ response, expiresAt }: { response?: TenantRequestDto["response"]; expiresAt?: string }) {
+function TenantResponse({
+  state,
+  response,
+  expiresAt,
+}: {
+  state: TenantRequestDto["state"];
+  response?: TenantRequestDto["response"];
+  expiresAt?: string;
+}) {
   if (!response) return null;
+  const presentation = tenantResponsePresentation(state, response);
+  if (!presentation) return null;
   return (
     <section className={styles.responseBlock} aria-labelledby="tenant-response-title">
       <div className={styles.responseHeading}>
         <div>
           <p className="eyebrow">Property agent response</p>
-          <h3 id="tenant-response-title">{response.kind === "SLOT_PROPOSAL" ? "A viewing slot was proposed" : "The agent declined this request"}</h3>
+          <h3 id="tenant-response-title">{presentation.heading}</h3>
         </div>
-        <span>{response.kind === "SLOT_PROPOSAL" ? "Action needed" : "Response received"}</span>
+        <span>{presentation.badge}</span>
       </div>
       {response.kind === "SLOT_PROPOSAL" ? <p className={styles.slotReference}>Slot reference <code>{response.slotId}</code></p> : null}
       {response.tenantNote ? <p className={styles.responseNote}>{response.tenantNote}</p> : null}
-      {expiresAt ? <p className={styles.responseDeadline}><span>Respond by</span><strong>{formatDateTime(expiresAt)}</strong></p> : null}
+      {presentation.showDeadline && expiresAt ? <p className={styles.responseDeadline}><span>Respond by</span><strong>{formatDateTime(expiresAt)}</strong></p> : null}
     </section>
   );
+}
+
+type TenantResponsePresentation = {
+  heading: string;
+  badge: string;
+  showDeadline: boolean;
+};
+
+function tenantResponsePresentation(
+  state: TenantRequestDto["state"],
+  response: NonNullable<TenantRequestDto["response"]>,
+): TenantResponsePresentation | null {
+  switch (state) {
+    case "SLOT_PROPOSED":
+      if (response.kind !== "SLOT_PROPOSAL") return null;
+      return { heading: "A viewing slot was proposed", badge: "Action needed", showDeadline: true };
+    case "VIEWING_CONFIRMED":
+      if (response.kind !== "SLOT_PROPOSAL") return null;
+      return { heading: "Viewing slot confirmed", badge: "Decision recorded", showDeadline: false };
+    case "TENANT_DECLINED":
+      if (response.kind !== "SLOT_PROPOSAL") return null;
+      return { heading: "Viewing proposal declined", badge: "Decision recorded", showDeadline: false };
+    case "EXPIRED":
+      if (response.kind !== "SLOT_PROPOSAL") return null;
+      return { heading: "Viewing proposal expired", badge: "Closed", showDeadline: false };
+    case "AGENT_DECLINED":
+      if (response.kind === "AGENT_DECLINE") {
+        return { heading: "The agent declined this request", badge: "Response received", showDeadline: false };
+      }
+      return null;
+    case "TENANT_DRAFT":
+    case "REQUEST_SUBMITTED":
+    case "AGENT_REVIEWING":
+      return null;
+  }
 }
 
 function Timeline({ entries }: { entries: TenantRequestResponse["timeline"] }) {

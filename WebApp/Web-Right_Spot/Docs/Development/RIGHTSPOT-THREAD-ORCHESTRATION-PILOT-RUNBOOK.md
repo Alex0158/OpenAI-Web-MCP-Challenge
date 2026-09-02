@@ -56,6 +56,7 @@ The operating model is:
 current truth and decision
     -> one or more bounded Work Orders
     -> isolated or explicitly serialized worker
+    -> TDD red/green/refactor where behavior is repaired
     -> worker result and evidence
     -> main-thread classification
        -> verification, repair, or integration gate
@@ -186,6 +187,28 @@ projection work whenever the relevant boundary is stable, even if the parent fea
 complete. It must serialize only the unresolved authority or shared-write boundary, not the entire
 feature by default.
 
+### 3.4 Mandatory TDD gate for behavior repair
+
+RightSpot defect and behavior-repair Work Orders use Test-Driven Development as an execution and
+evidence rule. The required cycle is:
+
+1. **Red:** reproduce the real defect or missing boundary with a focused test that fails against the
+   named baseline. The test must express the accepted business, role/privacy, API, or UI contract;
+   a speculative test is not a valid red gate.
+2. **Green:** make the smallest correct source change that satisfies the red test while preserving
+   existing accepted behavior. Do not weaken, delete, skip, broaden, or conditionally bypass the test
+   merely to obtain green.
+3. **Refactor:** improve structure only after green, without changing the accepted outcome, authority,
+   ownership, or Work Order scope. Re-run the focused test after each refactor.
+
+The Work Order and completion report must identify the red test, the green implementation, and any
+refactor separately. Domain/application/API rules are proved at their authoritative layer; UI/browser
+tests prove rendered claims and interaction only. If a genuine red test cannot be written because the
+contract or failure is not established, the work remains `GATED` or `NEEDS_REVIEW`; do not substitute
+snapshot churn, a broad smoke test, or a UI-only assertion. TDD does not authorize adding edge-case
+behavior outside the bounded outcome, and it does not replace independent verification or post-
+integration regression.
+
 ## 4. Authority and source of truth
 
 ### 4.1 Authority hierarchy
@@ -195,7 +218,7 @@ Workers must resolve instructions in this order:
 1. platform, safety, and explicit human constraints;
 2. applicable global and workspace instructions;
 3. the actual repository `AGENTS.md` and repository Engineering controls;
-4. RightSpot product truth, domain contracts, and accepted ADRs;
+4. RightSpot product truth, the business-flow catalogue, domain contracts, and accepted ADRs;
 5. the active RightSpot parent Task;
 6. the specific Work Order; and
 7. the worker's local interpretation, memory, or historical thread context.
@@ -216,6 +239,14 @@ The main thread determines the current status from the following evidence, in or
 
 A worker's completion message is useful navigation, not proof. The main thread must inspect the
 actual files and rerun decisive checks before making a closure claim.
+
+For any cross-layer product or workflow audit, read
+[`Docs/07-business-flows-and-scenarios.md`](../07-business-flows-and-scenarios.md) after the current
+status and before designing a Work Order. It is the canonical map of user-visible chains and their
+acceptance gates; the specialized requirements, domain, API, validation, decision, and Task Files
+remain authoritative for their respective concerns. Findings must be reproduced against current
+source and recorded as an implementation defect, evidence gap, accepted behavior, or deferred/gated
+boundary rather than being silently converted into a new feature.
 
 ### 4.3 Canonical versus non-canonical writeback
 
@@ -452,6 +483,7 @@ Each Work Order must state:
 - affected roles, modules, state, data, and claims;
 - explicit non-goals;
 - assumptions and evidence that could falsify them;
+- TDD phase plan and red-test boundary for a behavior repair;
 - failure modes and stop conditions;
 - blocker impact, reporting owner, and resume condition;
 - exact verification commands or browser checks;
@@ -714,6 +746,27 @@ contract section and the process-only section separately. A process-only writeba
 the execution baseline; a semantic contract or authority change does and requires a stop and
 re-baseline. The main thread must not guess when the boundary is ambiguous.
 
+### 8.1.3.1 Semantic slices for mixed canonical documents
+
+A path is not a sufficiently precise read-set boundary when one canonical document contains both
+immutable product/flow authority and mutable Main-thread lifecycle, evidence, or routing metadata.
+Before dispatching such a Work Order, the main thread must:
+
+1. name the immutable semantic sections or anchors the worker may rely on;
+2. name the exact Main-owned lifecycle/evidence sections that may receive process-only writeback;
+3. pass any current status needed for execution explicitly in the prompt rather than making the
+   worker infer it from a mutable routing paragraph;
+4. hash or compare only the declared immutable semantic slices, plus any truly execution-relevant
+   file inputs; and
+5. keep process-only writeback outside the worker's semantic identity, while still recording the
+   write and classifying it against the Work Order.
+
+The default whole-file hash or whole-file drift rule is not valid for a mixed document. If the
+contract/evidence boundary cannot be separated confidently, freeze the whole document until the
+checkpoint handoff or serialize the writeback; do not silently widen the worker's read set or ask it
+to guess. A process-only lifecycle update does not require a duplicate dispatch or product rebuild;
+a semantic section change requires the normal stop, clarification, and re-baseline gate.
+
 Tooling may create untracked instruction or metadata files outside the usual build-output paths. For
 example, the pinned Next.js toolchain may create `WebApp/Web-Right_Spot/AGENTS.md` and
 `WebApp/Web-Right_Spot/CLAUDE.md` when `next dev` runs. A worker must not delete, restore, or commit
@@ -911,6 +964,16 @@ as proof of truncation or proof of complete delivery.
 An existing task may receive a new prompt for a repair or clarification, but the main thread must
 still provide the current Work Order, source baseline, exact failure, and new acceptance criteria.
 Do not assume that an older task remembers later main-thread decisions or file changes.
+
+### 8.3.1 Delta prompts for identity-matched follow-ups
+
+The first activation of a new supporting task uses the full context route in section 8.2. A later
+prompt to the same identity-matched task should be a delta briefing, not a repeated project recap. It
+must state the same Work Order identity, current source identity, exact new observation or failure,
+changed acceptance or stop condition, and the action required next. It should point to only the
+changed or affected documents and preserve all unchanged boundaries by reference. The main thread
+must still validate the persisted task identity and must not omit a new source drift, authority
+change, or runtime change merely to save tokens.
 
 ### 8.4 Thread-tool handling
 
@@ -1217,13 +1280,15 @@ The Builder follows this loop:
 2. restate the Work Order and identify a falsifier;
 3. inspect the owning code, tests, and consumers;
 4. identify affected state, roles, data, contracts, failure modes, and non-goals;
-5. implement the smallest coherent change;
-6. add only directly necessary focused tests;
-7. inspect the diff and scan for scope drift, hidden fallbacks, sensitive data, and accidental
+5. for a defect or behavior repair, write and run the real focused red test before changing product
+   source;
+6. implement the smallest coherent green change, then refactor only without behavior/scope drift;
+7. add only directly necessary focused tests;
+8. inspect the diff and scan for scope drift, hidden fallbacks, sensitive data, and accidental
    shared-file changes;
-8. run the registered focused checks under the named runtime;
-9. return the completion report through the approved handoff channel; and
-10. stop at `READY_FOR_VERIFICATION`, `NEEDS_REPAIR`, or `BLOCKED`.
+9. run the registered focused checks under the named runtime;
+10. report the red/green/refactor evidence through the approved handoff channel; and
+11. stop at `READY_FOR_VERIFICATION`, `NEEDS_REPAIR`, or `BLOCKED`.
 
 The Builder must not treat a green local check as proof of browser, integration, deployment, or
 judge behavior unless that exact surface was tested. The Builder must not edit the canonical Task

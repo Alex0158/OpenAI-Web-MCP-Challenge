@@ -103,7 +103,7 @@ export class WorkflowApplication {
     if (actor.role !== "agent" || actor.id !== state.agentId) {
       throw domainError("FORBIDDEN", "Actor cannot read the agent queue");
     }
-    if (!state.request) {
+    if (!state.request || state.request.state === "TENANT_DRAFT") {
       return { state, projection: null };
     }
     return this.store.readAgentProjection(actor, now);

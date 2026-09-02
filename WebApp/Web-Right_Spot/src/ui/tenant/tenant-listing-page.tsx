@@ -17,7 +17,7 @@ import {
   type TenantFavouritesController,
 } from "./tenant-favourites-page";
 import styles from "./tenant.module.css";
-import type { TenantRequestResponse } from "../../shared/contracts/workflow-api";
+import type { TenantRequestDto, TenantRequestResponse } from "../../shared/contracts/workflow-api";
 
 export default function TenantListingPage({ listingId }: { listingId: string }) {
   const [listingData, setListingData] = useState<TenantListingResponse | null>(null);
@@ -95,6 +95,10 @@ function ListingDetailContent({
   const request = requestData.request;
   const requestTargetsAnotherListing = request !== null && request.listingId !== listing.id;
   const canEditDraft = request === null || (request.listingId === listing.id && request.state === "TENANT_DRAFT");
+  const requestState = request?.state;
+  const existingRequestNotice = !requestTargetsAnotherListing && requestState && requestState !== "TENANT_DRAFT"
+    ? requestNoticeForState(requestState)
+    : null;
 
   return (
     <div className={styles.detailLayout}>
@@ -155,25 +159,71 @@ function ListingDetailContent({
           request={request}
           onSaved={onRequestData}
         />
-      ) : (
+      ) : existingRequestNotice ? (
         <section className={styles.noticeCard} aria-labelledby="request-already-sent-title">
           <div className={styles.noticeHeading}>
             <span aria-hidden="true">01</span>
             <div>
               <p className="eyebrow">Viewing Request</p>
-              <h2 id="request-already-sent-title">This listing already has a {formatState(request?.state)} request</h2>
+              <h2 id="request-already-sent-title">{existingRequestNotice.heading}</h2>
             </div>
           </div>
-          <p className={styles.noticeCopy}>The submitted request is read-only here. Continue from the tenant request dashboard to see the current response and any permitted next action.</p>
+          <p className={styles.noticeCopy}>{existingRequestNotice.copy}</p>
           <a className="button button-primary" href="/tenant/requests">Open request dashboard</a>
         </section>
-      )}
+      ) : null}
     </div>
   );
 }
 
-function formatState(state: string | undefined): string {
-  return state ? state.toLowerCase().replaceAll("_", " ") : "current";
+type ExistingRequestState = Exclude<TenantRequestDto["state"], "TENANT_DRAFT">;
+
+type RequestNotice = {
+  heading: string;
+  copy: string;
+};
+
+function requestNoticeForState(state: ExistingRequestState): RequestNotice {
+  switch (state) {
+    case "REQUEST_SUBMITTED":
+      return {
+        heading: "Viewing Request already submitted",
+        copy: "The request has been sent to the property agent. Open the request dashboard to follow its status.",
+      };
+    case "AGENT_REVIEWING":
+      return {
+        heading: "Viewing Request is under review",
+        copy: "The property agent is reviewing this request. Open the request dashboard for the latest status.",
+      };
+    case "SLOT_PROPOSED":
+      return {
+        heading: "Viewing Request has a proposed viewing",
+        copy: "Review the proposed time and make your decision from the request dashboard.",
+      };
+    case "VIEWING_CONFIRMED":
+      return {
+        heading: "Viewing Request is confirmed",
+        copy: "The proposed viewing is confirmed. Open the request dashboard to review the completed request.",
+      };
+    case "TENANT_DECLINED":
+      return {
+        heading: "Viewing Request was declined by you",
+        copy: "You declined the proposed viewing. Open the request dashboard to review the completed request.",
+      };
+    case "AGENT_DECLINED":
+      return {
+        heading: "Viewing Request was declined by the agent",
+        copy: "The property agent declined this request. Open the request dashboard to review the response.",
+      };
+    case "EXPIRED":
+      return {
+        heading: "Viewing Request has expired",
+        copy: "The proposal deadline passed before a tenant decision. Open the request dashboard to review the completed request.",
+      };
+  }
+
+  const exhaustiveState: never = state;
+  return exhaustiveState;
 }
 
 function formatDate(value: string): string {
