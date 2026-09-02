@@ -240,24 +240,23 @@ test(
           leaseToken,
           effectToken: futureEffectToken,
         }),
-        (error) => error?.code === "host_effect_time_invalid" && error?.statusCode === 403,
+        (error) => error?.code === "host_effect_invalid" && error?.statusCode === 403,
       );
       assert.equal((await readDelivery(fixture.deliveryId)).status, "leased");
 
       const revokedEffectToken = createEffectToken("ack-003-revoked");
-      const leaseStartedAt = await readLeaseStart(fixture.deliveryId);
+      const revocation = await harness.revokeGrantInternally({
+        grantId: fixture.grantId,
+        controlToken: harness.appConfig.grantControlToken,
+      });
       effectTokens.set(
         revokedEffectToken,
         validEffect(
           fixture,
           `effect-${harness.suffix}-ack-003-revoked`,
-          new Date(leaseStartedAt.getTime() + 1),
+          new Date(Date.parse(revocation.revokedAt) + 1),
         ),
       );
-      await harness.revokeGrantInternally({
-        grantId: fixture.grantId,
-        controlToken: harness.appConfig.grantControlToken,
-      });
       await assert.rejects(
         client.acknowledgeDelivery({
           deliveryId: fixture.deliveryId,
