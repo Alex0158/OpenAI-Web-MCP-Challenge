@@ -6,7 +6,10 @@
 
 ## 1. What was built
 
-- Kept SDK production code unchanged.
+- Kept SDK production code unchanged in this increment. The shared root worktree currently has
+  separate uncommitted edits in `runtime/host-sdk/src/client.mjs`, `src/next.mjs`, and
+  `src/server.mjs`; those edits are outside this evidence increment, were not staged by the SDK
+  work, and were not modified.
 - Verified the existing Host-side SDK integration for Host-key registration, Consent sessions,
   Consent status, browser handoff, signed Event ingress, and `sendEvent()` acceptance.
 - Prepared the SDK-to-Receiver contract matrix covering Host setup, Event ingress, Claim, lease,
@@ -33,7 +36,7 @@ All tests below used Cloud Receiver commit `300bce02` unless stated otherwise.
 | `CONNECTOR-V2-CLAIM-001`–`CONNECTOR-V2-CLAIM-005` Claim/lease contract | **5/5 passed** |
 | Cloud Feature 5 acknowledgement tests | **5/5 passed** |
 | Cloud Feature 6 HTTP/operations tests | **5/5 passed** |
-| Normal SDK suite | **18/18 passed** |
+| Normal SDK suite | **18/18 passed** against the current shared working tree; the separate source edits noted above are not part of this evidence increment |
 | Normal Local Connector clean-counterpart baseline | **34/34 executed passed; 10 opt-in tests skipped** |
 | Current shared-tree Local Connector aggregate | **34/45 passed; 11 opt-in tests skipped** (includes a collaborator E2E gate; not clean-counterpart evidence) |
 | Prepared SDK full-chain gate `SDK-V2-E2E-001` | **Syntax passed; 1 gated test skipped; not run** |
@@ -85,7 +88,8 @@ The exact red ACK-003 command was also run against fresh database
 observed response was `403 host_effect_invalid`; the received test expects
 `403 host_effect_time_invalid`. Durable Delivery state remained leased and unchanged.
 
-The SDK-owned Task Control validation passes. The full repository validator currently reports only
+The SDK-owned Task Control validation passes. The normal SDK suite ran against the current shared
+working tree; no source edit from this increment was included. The full repository validator currently reports only
 the pre-existing collaborator-owned `Docs/Development/LOCAL-001-cloud-receiver-v2-claim-ack-integration.md`
 finding (`expected one H1, found 0`); the SDK team did not modify that file.
 
