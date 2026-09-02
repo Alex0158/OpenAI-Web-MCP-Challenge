@@ -314,6 +314,72 @@ integration, canonical writeback, full regression, browser evidence, and Worktre
 temporary Worktree is opened until the corresponding Work Order has an exact write set and a fresh Main
 baseline.
 
+### RS-WO-020-04 — Independent integrated-source verification
+
+**Role:** Read-only integrated-source Verifier  
+**Status:** `GATED` — ready to dispatch from the reconciled Main baseline  
+**Parallelization:** `SERIAL_AFTER_INTEGRATION` — the product source is frozen for this checkpoint; no
+other product writer or verifier may change the verified source until this checkpoint closes  
+**Execution mode:** Shared canonical Main Worktree, read-only; no candidate Worktree is required or permitted  
+**Source baseline:** Main `2060ebc20416c7593754b9f457074d46f6f481cb`; product implementation remains the
+accepted `c29e80d` change set. The Main Worktree contains unrelated collaborator-owned Game changes and
+owner-held RightSpot `AGENTS.md`, `CLAUDE.md`, and `Docs/Reference/` untracked content; these are not part
+of the product source under verification and must not be staged, restored, deleted, or otherwise changed.  
+**Ownership:** The Verifier may inspect and execute checks only. Main owns any interpretation, canonical
+writeback, repair, browser evidence, and Git closure.
+
+#### Objective
+
+Independently verify that the integrated Favourite/listing-interest UI and server foundation at the exact
+Main baseline satisfy the accepted local contract, remain within the declared product scope, and pass the
+dependency-complete repository safeguards without mutating source or repository state.
+
+#### Read set
+
+```text
+WebApp/Web-Right_Spot/
+WebApp/Web-Right_Spot/Docs/Tasks/RIGHTSPOT-020-implement-favourites-and-listing-interest.md
+WebApp/Web-Right_Spot/Docs/Decisions/ADR-RS-0013-favourites-and-listing-interest-boundary.md
+WebApp/Web-Right_Spot/Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md
+```
+
+#### Write set and forbidden set
+
+```text
+Write set: empty
+Forbidden set: every file under the repository, including source, tests, docs, package metadata,
+lockfiles, generated files, .gitignore, Git refs, staging area, commits, branches, and Worktrees
+```
+
+#### Required checks
+
+The Verifier must first confirm the repository root and exact `HEAD` above, then run the pinned Node
+`24.20.0`/npm runtime and the following checks where the repository scripts provide them:
+
+```text
+npm run typecheck -- --incremental false
+focused Favourite/UI and existing tenant/agent API tests
+full direct suite (expected integrated baseline: 121/121)
+npm run build
+python3 scripts/test_validators.py
+python3 scripts/test_sensitive_scan.py
+python3 scripts/validate_repository.py --root .
+python3 scripts/scan_sensitive_patterns.py --root .
+git diff --check
+```
+
+The report must include exact commands/results, product-path scope review against `c29e80d`, confirmation
+that `next-env.d.ts` and product source were not mutated, and explicit non-claims for browser, deployment,
+WebMCP, Cloud Receiver, external authentication, and production privacy. A failure caused only by the
+known unrelated dirty files must be isolated rather than repaired in place.
+
+#### Stop conditions
+
+Stop and return `BLOCKED` if exact repository identity cannot be established, any product or repository
+file changes during the checkpoint are detected, a required check needs a write or external integration,
+or the result requires interpreting a scope/contract change. Do not install dependencies, edit files,
+stage/commit, move refs, create/remove Worktrees, or broaden the verification surface.
+
 ## Acceptance criteria
 
 1. From a fresh reset, the tenant can save one published listing, see it in the Favourite list, remove
