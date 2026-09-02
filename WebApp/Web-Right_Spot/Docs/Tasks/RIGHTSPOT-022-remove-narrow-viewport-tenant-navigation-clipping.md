@@ -17,15 +17,15 @@ tenant route topology; and the current canonical product source at local product
 - Owner: Main RightSpot thread
 - Current increment: Make the existing authenticated tenant navigation satisfy the already accepted
   `320px` minimum layout baseline without changing routes, request workflow, role authority, or data.
-- Next gate: `RS-WO-022-01` has been dispatched to persistent Builder task
-  `01a0602e-e947-7231-bf6f-37ed685681e2` against the serialized canonical Main Worktree. Main must
-  record the Builder handoff, freeze the resulting CSS path, and open independent verification after
-  the Builder returns `READY_FOR_VERIFICATION` or `BLOCKED`. No product code has changed for this
-  Task yet.
+- Next gate: `RS-WO-022-01` returned `READY_FOR_VERIFICATION` from persistent Builder task
+  `01a0602e-e947-7231-bf6f-37ed685681e2`. Main reviewed the exact candidate, froze the authorized CSS
+  path in local product commit `f0dbd99`, and must now dispatch `RS-WO-022-02` for independent
+  verification against that frozen source before closure.
 - Dependencies: The existing `SessionNav` component, `/tenant` route family, current global CSS,
   and ADR-RS-0009 remain authoritative. No new product or architecture decision is required.
 - Execution posture: `IN_PROGRESS`
-- Evidence status: `READY_FOR_BOUNDED_REPAIR` after Main's post-closure responsive audit.
+- Evidence status: `READY_FOR_VERIFICATION` after the Builder handoff and Main's exact-path source
+  freeze; independent verification is the next gate.
 - Affected surface: The responsive presentation of the authenticated tenant shared navigation only.
   Agent navigation, session authority, request state, APIs, persistence, and route ownership remain
   outside this Task.
@@ -171,15 +171,17 @@ change. Those are new authority or scope decisions, not reasons to widen this CS
 **Parent task:** `RIGHTSPOT-022`
 **Role:** `Builder`
 **Pre-dispatch status:** `GATED` (advanced to `ASSIGNED` after dispatch confirmation)
-**Execution state:** `IN_PROGRESS`
+**Execution state:** `READY_FOR_VERIFICATION`
 **Owner:** Persistent supporting Builder task `01a0602e-e947-7231-bf6f-37ed685681e2` (`local`), under the authority of the Main RightSpot thread
 **Dispatch state:** `dispatched at main@cbf7643e26503ed0b49cc874c4a591f82e2aef18; serialized canonical Main Worktree; product source clean at dispatch`
 **Parallelization:** `SERIAL`
 **Execution profile:** `Standard` (shared navigation and accessibility behavior, but no contract, data, auth, or external-effect change)
-**Integration owner/order:** Main RightSpot thread; freeze the Builder result, independently verify it, then integrate the exact CSS path
-**Next gate:** Main completes the pre-dispatch checklist, then sends one bounded Builder prompt. The
-Builder returns `READY_FOR_VERIFICATION` or `BLOCKED` and stops. A required boundary expansion is
-reported as part of the blocker evidence; it is not a new worker status.
+**Integration owner/order:** Main RightSpot thread; the exact candidate is frozen at local product
+commit `f0dbd99`; an independent Verifier must pass before Main records closure.
+**Next gate:** Main has completed the Builder handoff and source freeze. Dispatch one independent
+`RS-WO-022-02` Verifier against the frozen source. The Verifier returns `VERIFIED`, `NEEDS_REPAIR`, or
+`BLOCKED` and stops. A required boundary expansion is reported as part of the evidence; it is not a
+new worker status.
 **Parent execution posture if blocked:** `AWAITING_DECISION`
 **Blocker report:** If the exact CSS-only write set cannot satisfy the acceptance matrix, report the
 first failing width, computed geometry, source identity, and the smallest required re-scope. Do not
@@ -205,6 +207,27 @@ navigation contract.
 - The Builder reports exact paths, runtime/check results, skipped evidence, and residual risks, then
   stops at `READY_FOR_VERIFICATION`; it does not commit, push, deploy, edit canonical documents, or
   dispatch another task.
+
+### Builder handoff (2026-09-02)
+
+- Result: `READY_FOR_VERIFICATION`.
+- Actual changed path: `WebApp/Web-Right_Spot/app/globals.css` only; exactly five inserted lines in the
+  existing mobile breakpoint, scoped by `data-workspace-role="tenant"`.
+- Main source review: no TypeScript, route, test, fixture, API, data, auth, dependency, generated, or
+  documentation path changed by the candidate. Existing unrelated Web-Game changes and owner-held
+  RightSpot files remain preserved and outside this Work Order.
+- Source freeze: Main committed the exact CSS candidate at local product commit `f0dbd99`; the final
+  `app/globals.css` SHA-256 is
+  `ef9bfc92f21eb931e56204b072fa26b89b398eb5a568c8111676487b5e2afd1e`.
+- Builder checks under Node.js `v24.20.0` and npm `11.19.0`: `npm run typecheck` passed, `npm test`
+  passed `6/6`, `npm run build` passed with Next.js `16.3.4`, and scoped `git diff --check` passed.
+- Builder browser evidence: all `48/48` tenant route/viewport geometry combinations and `48/48`
+  deterministic keyboard traversals passed across the required matrix; GET-only `My request` activation,
+  request-state immutability, reduced motion, signed-out privacy, wrong-role privacy, and Agent isolation
+  passed. No acceptance check was reported as skipped.
+- Residual risk reported by Builder: an existing Agent layout intersection at exactly `481px`; it is
+  outside this tenant-only selector and is not an `RS-WO-022` regression.
+- Independent verification has not yet run. Main must not close the parent from Builder evidence alone.
 
 ### Baseline
 
@@ -341,3 +364,63 @@ The Builder's report must include:
 - Canonical Task File writeback owner: Main RightSpot thread.
 - Allowed evidence-record changes: the Builder may report facts only; Main records lifecycle,
   source-freeze, verification, integration, and closure evidence in canonical documents.
+
+## RS-WO-022-02: Independently verify narrow-viewport tenant navigation
+
+**Parent task:** `RIGHTSPOT-022`
+**Role:** `Verifier`
+**Pre-dispatch status:** `GATED`
+**Execution state:** `GATED`
+**Owner:** To be recorded by Main after the persistent supporting Verifier task is created
+**Dispatch state:** Not dispatched; source freeze is local product commit `f0dbd99`
+**Parallelization:** `SERIAL` after `RS-WO-022-01`
+**Execution profile:** `Standard` (independent static, runtime, and browser verification only)
+**Integration owner/order:** Main RightSpot thread; the Verifier must not edit source or canonical
+documents, and Main owns any repair, integration, and closure decision.
+**Next gate:** Main dispatches one persistent Verifier against the frozen canonical Main source at
+`f0dbd99`. The Verifier returns `VERIFIED`, `NEEDS_REPAIR`, or `BLOCKED` and stops.
+
+### Objective
+
+Independently determine whether the frozen `f0dbd99` candidate satisfies the exact `RIGHTSPOT-022`
+acceptance matrix without changing the source, tests, fixtures, documentation, Git metadata, or
+runtime authority.
+
+### Frozen source and boundaries
+
+- Git root: `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge`
+- Package root: `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge/WebApp/Web-Right_Spot`
+- Frozen branch/source: `main` at local product commit `f0dbd99`; `app/globals.css` SHA-256
+  `ef9bfc92f21eb931e56204b072fa26b89b398eb5a568c8111676487b5e2afd1e`.
+- The verifier reads the repository and the frozen product source. It must not switch branches,
+  alter the CSS, rebuild source in a way that changes tracked files, or verify a moving candidate.
+- Verifier write set: none. Temporary browser profile, logs, and existing ignored build output are
+  process-only; no generated output may be promoted to source.
+- Forbidden set: all product source, tests, fixtures, APIs, data, auth, dependencies, docs, Git
+  metadata, Worktree management, commits, pushes, deployments, cleanup, and nested dispatch.
+
+### Required verification
+
+- Confirm the frozen source identity and exact one-path candidate before any behavior claim.
+- Under Node.js `v24.20.0` and npm `11.19.0`, run `npm run typecheck`, `npm test`, `npm run build`,
+  and scoped `git diff --check` or an equivalent clean-source check appropriate to the frozen commit.
+- Exercise authenticated tenant `/tenant`, a tenant Listing Detail route, `/tenant/favourites`, and
+  `/tenant/requests` at CSS widths `320`, `321`, `342`, `343`, `390`, `480`, `481`, `600`, `680`,
+  `760`, `768`, and `1440px`.
+- Confirm initial visibility, no links-container or document horizontal overflow, no session-action
+  overlap, full labels, visible focus, and the `44px` target baseline.
+- Confirm Agent, signed-out, and wrong-role boundaries; activate `My request` and prove GET-only
+  navigation with no request-state mutation.
+- Review console errors/warnings and reduced-motion behavior where supported. Classify tooling or
+  demo-session limitations separately from product findings.
+
+### Stop conditions and report
+
+- Stop and return `BLOCKED` if the frozen source cannot be reproduced, the source identity changes,
+  another writer alters the candidate, or the browser/runtime surface cannot support a trustworthy
+  result. Report exact evidence; do not repair or broaden the scope.
+- Return `NEEDS_REPAIR` only for a confirmed acceptance failure in the frozen candidate, including the
+  first failing route/width, measured geometry, and the smallest repair boundary. Do not edit the fix.
+- Return `VERIFIED` only when every required check passes and the exact source, command results,
+  viewport matrix, role/privacy checks, activation mutation check, console review, skipped evidence,
+  and residual risks are recorded. The Verifier must not claim Main integration or parent closure.
