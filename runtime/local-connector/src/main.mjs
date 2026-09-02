@@ -9,7 +9,8 @@ import { randomBytes } from "node:crypto";
 import process from "node:process";
 
 import { LocalConnectorClient } from "@webmcp-challenge/reentry-core/local-connector-client";
-import { createCodexExecAdapter } from "./codex-exec-adapter.mjs";
+import { followConnectorActivity } from "./activity-monitor.mjs";
+import { createCodexExecAdapter, runCodexPrompt } from "./codex-exec-adapter.mjs";
 import {
   discoverCodexExecutable,
   requireSupportedNode,
@@ -17,17 +18,28 @@ import {
   verifyCodexExecutable,
 } from "./codex-discovery.mjs";
 import { LocalConnector } from "./local-connector.mjs";
-import { LocalConnectorCredentialStore } from "./credentials.mjs";
-import { LocalConnectorPairingClient } from "./pairing-client.mjs";
+import {
+  LocalConnectorCredentialStore,
+  clearConnectorReauthorizationRequired,
+  hasConnectorReauthorizationRequired,
+  markConnectorReauthorizationRequired,
+} from "./credentials.mjs";
+import { LocalConnectorPairingClient, openBrowser } from "./pairing-client.mjs";
+import { chooseWorkspaceDirectory } from "./workspace-picker.mjs";
 import {
   inspectMacConnectorService,
   installMacConnectorService,
+  stopMacConnectorService,
+  uninstallMacConnectorService,
 } from "./macos-service.mjs";
 import { createTerminalUi } from "./terminal-ui.mjs";
 
-const DEFAULT_RECEIVER_ORIGIN = process.env.REENTRY_RECEIVER_ORIGIN ?? "https://cloud-receiver-mu.vercel.app";
+// The former hosted Cloud Receiver is retired. New pairing must name an accepted replacement
+// explicitly instead of silently sending credentials to the old deployment alias.
+const DEFAULT_RECEIVER_ORIGIN = process.env.REENTRY_RECEIVER_ORIGIN;
 const DEFAULT_POLL_INTERVAL_MS = 5_000;
 const DEFAULT_MAX_CONSECUTIVE_ERRORS = 5;
+const DEFAULT_PAIRING_REQUEST_TIMEOUT_MS = 20_000;
 const CONNECTOR_VERSION = readConnectorVersion();
 
 async function main() {
@@ -42,8 +54,8 @@ async function main() {
       process.stdout.write(`${CONNECTOR_VERSION}\n`);
       return;
     }
-    const { command, flags } = parseArguments(argumentsList);
-    validateCommandFlags(command, flags);
+    const { command, flags, positionals } = parseArguments(argumentsList);
+    validateCommandFlags(command, flags, positionals);
     ui = createTerminalUi({ interactive: flags.json !== true && process.stdout.isTTY === true });
     requireSupportedNode();
     if (command === "doctor") {
@@ -60,6 +72,22 @@ async function main() {
     }
     if (command === "status") {
       await status(flags, ui);
+      return;
+    }
+    if (command === "listen") {
+      await listen(flags, ui);
+      return;
+    }
+    if (command === "test") {
+      await testCodex(flags, positionals, ui);
+      return;
+    }
+    if (command === "stop") {
+      await stop(flags, ui);
+      return;
+    }
+    if (command === "uninstall") {
+      await uninstall(flags, ui);
       return;
     }
     if (command === "install") {
@@ -97,27 +125,33 @@ function printHelp() {
 Connect this Mac once, then receive approved work in Codex in the background.
 
 Usage:
-  reentry install --receiver <url> --codex-cd <project>   Recommended first run
-  reentry status                                          Check the connection
-  reentry start --codex-cd <project>                      Run in this terminal
+  re-entry install                                      Recommended first run
+  re-entry listen                                      Watch live activity
+  re-entry test "Reply with hello"                     Test Codex locally
 
 Commands:
   install      Check this Mac, connect the Re-entry account, and start at login
   status       Show account, Receiver, service, Node.js, and Codex readiness
-  connect      Authorize this Mac without installing the background service
+  listen       Watch the background Connector until you press Ctrl+C
+  test         Start one fresh local Codex session with the supplied prompt
+  stop         Stop the background Connector without removing its credential
+  uninstall    Stop the Connector and remove its local service data
+  connect      Open Re-entry, redeem a dashboard pairing code, and connect this Mac
   start        Poll for approved work until stopped
   doctor       Check Node.js, Codex, and the optional project directory
   claim-once   Check once for approved work
   pair         Legacy Host-code pairing preview
 
 Common options:
-  --receiver <url>       Re-entry Receiver origin
-  --codex-cd <path>      Project opened for the fresh Codex session
+  --receiver <url>       Accepted Receiver origin (required when pairing a new Mac)
+  --codex-cd <path>      Workspace for Codex; interactive mode offers a folder picker if omitted
   --codex-binary <path>  Explicit Codex executable
   --json                 Machine-readable output
+  --yes                  Confirm uninstall in a non-interactive script
   --help                 Show this help
   --version              Show the installed version
 
+Both commands are installed: re-entry and reentry.
 The Connector opens no inbound port. Host keys never belong on this Mac.
 `);
 }
@@ -133,9 +167,12 @@ function readConnectorVersion() {
 }
 
 function doctor(flags, ui) {
-  if (ui.interactive) ui.begin("Check this Mac", "Read-only readiness check");
+  if (ui.interactive) {
+    ui.begin("System check", "Confirm that this Mac is ready for Re-entry.");
+    ui.section("CHECK", "Requirements");
+  }
   const readiness = inspectReadiness(flags);
-  showReadiness(readiness, ui);
+  showReadiness(readiness, ui, { detailed: true });
   if (!ui.interactive) {
     process.stdout.write(`${JSON.stringify({
       event: "connector_ready",
@@ -159,14 +196,30 @@ function inspectReadiness(flags) {
   return Object.freeze({ workingDirectory, installation });
 }
 
-function showReadiness(readiness, ui) {
+async function withWorkspaceDirectory(flags, ui) {
+  if (flags["codex-cd"] !== undefined || !ui.interactive) {
+    return { ...flags, "codex-cd": flags["codex-cd"] ?? process.cwd() };
+  }
+  const selected = await chooseWorkspaceDirectory({ startDirectory: process.cwd() });
+  if (!selected) throw cliFailure("connector_codex_cd_missing");
+  return { ...flags, "codex-cd": selected };
+}
+
+function showReadiness(readiness, ui, options = {}) {
   if (!ui.interactive) return;
-  ui.success("Node.js", process.versions.node);
-  ui.success("Codex", `${readiness.installation.version} · ${readiness.installation.executable}`);
-  if (readiness.workingDirectory) {
-    ui.success("Host project", readiness.workingDirectory);
-  } else {
-    ui.info("Host project", "not selected; pass --codex-cd when starting Codex");
+  ui.success("Node.js", `v${process.versions.node}`);
+  ui.success(
+    "Codex",
+    options.detailed
+      ? `${readiness.installation.version} · ${readiness.installation.executable}`
+      : "ready",
+  );
+  if (options.includeWorkspace !== false) {
+    if (readiness.workingDirectory) {
+      ui.success("Workspace", readiness.workingDirectory);
+    } else {
+      ui.info("Workspace", "selected automatically when Re-entry starts");
+    }
   }
 }
 
@@ -181,18 +234,23 @@ async function pair(flags, ui, options = {}) {
   }
   const userCode = flags.code ?? await askForPairingCode(ui);
   if (ui.interactive) ui.step("Pairing code", "received");
-  const client = new LocalConnectorPairingClient({ baseUrl: receiver });
+  const client = new LocalConnectorPairingClient({
+    baseUrl: receiver,
+    requestTimeoutMs: DEFAULT_PAIRING_REQUEST_TIMEOUT_MS,
+  });
+  if (ui.interactive) ui.wait("Contacting Re-entry…");
   const credentials = await client.pair({ userCode }, async ({ verificationUri }) => {
     if (ui.interactive) {
-      ui.step("Approval page", "opening your browser");
-      ui.info("Open this URL", verificationUri);
-      ui.wait("Waiting for you to approve this Mac…");
+      ui.stopWait("Secure link", "ready");
+      ui.info("Browser link", verificationUri);
+      await waitForEnterToOpenBrowser();
+      ui.wait("Waiting for approval in your browser…");
     } else {
       process.stdout.write(`${JSON.stringify({ event: "pairing_waiting", verification_uri: verificationUri })}\n`);
     }
   });
   if (ui.interactive) {
-    ui.stopWait("Approval received", "the Receiver approved this Connector");
+    ui.stopWait("Approved", "this Mac is connected");
     if (!credentials.browserOpened) {
       ui.warning("Browser", "did not open automatically; use the URL above");
     }
@@ -206,7 +264,8 @@ async function pair(flags, ui, options = {}) {
     connector_expires_at: credentials.connector_expires_at,
   });
   if (ui.interactive) {
-    ui.success("This Mac is paired", `credential saved at ${credentialFile}`);
+    ui.complete("Pairing complete", "Re-entry can now deliver approved work to this Mac.");
+    ui.next("re-entry start", "Wait for approved work in this terminal.");
   } else {
     process.stdout.write(`${JSON.stringify({ event: "connector_paired", connector_id: credentials.connector_id })}\n`);
   }
@@ -214,16 +273,23 @@ async function pair(flags, ui, options = {}) {
 
 async function connect(flags, ui, options = {}) {
   if (!options.quietHeader && ui.interactive) {
-    ui.begin("Connect this Mac", "One browser approval, then Re-entry stays connected");
+    ui.begin("Connect this Mac", "Create a Re-entry account, pair this Mac, then leave it running");
   }
   const receiver = flags.receiver ?? DEFAULT_RECEIVER_ORIGIN;
+  if (typeof receiver !== "string" || receiver.trim().length === 0) {
+    throw cliFailure("connector_receiver_missing");
+  }
   const credentialFile = flags["credential-file"] ?? defaultCredentialFile();
   const store = new LocalConnectorCredentialStore({ filename: credentialFile });
   const current = await store.load();
-  if (current && Date.parse(current.connector_expires_at) > Date.now()) {
+  const reauthorizationRequired = await hasConnectorReauthorizationRequired(credentialFile);
+  const currentIsValid = current && Date.parse(current.connector_expires_at) > Date.now();
+  if (currentIsValid && current.receiver_origin === receiver && !reauthorizationRequired) {
     if (ui.interactive) {
-      ui.success("Already connected", `${current.connector_id} · ${current.receiver_origin}`);
-      ui.info("Next", "run `reentry start` to wait for approved work");
+      ui.success("Account", "already connected");
+      if (!options.guidedInstall) {
+        ui.next("re-entry start", "Wait for approved work in this terminal.");
+      }
     } else {
       process.stdout.write(`${JSON.stringify({
         event: "connector_already_connected",
@@ -234,31 +300,40 @@ async function connect(flags, ui, options = {}) {
     return current;
   }
 
-  if (ui.interactive) {
-    ui.step("Re-entry", receiver);
-    ui.step("This Mac", flags["device-name"] ?? defaultDeviceName());
+  if (currentIsValid && ui.interactive) {
+    ui.warning("Receiver changed", `${current.receiver_origin} → ${receiver}; approve this Mac again`);
   }
-  const client = new LocalConnectorPairingClient({ baseUrl: receiver });
-  const credentials = await client.connect(
-    { deviceName: flags["device-name"] ?? defaultDeviceName() },
-    async ({ verificationUri }) => {
-      if (ui.interactive) {
-        ui.step("Browser", "opening Re-entry sign-in and approval");
-        ui.info("If it does not open", verificationUri);
-        ui.wait("Waiting for you to connect this Mac…");
-      } else {
-        process.stdout.write(`${JSON.stringify({
-          event: "connector_authorization_waiting",
-          verification_uri: verificationUri,
-        })}\n`);
-      }
-    },
-  );
+
   if (ui.interactive) {
-    ui.stopWait("Approved", "Re-entry linked this Mac to your account");
-    if (!credentials.browserOpened) {
-      ui.warning("Browser", "did not open automatically; use the URL shown above");
+    if (!options.guidedInstall) ui.info("Re-entry", displayReceiver(receiver));
+    ui.info("This Mac", flags["device-name"] ?? defaultDeviceName());
+  }
+  const client = new LocalConnectorPairingClient({
+    baseUrl: receiver,
+    requestTimeoutMs: DEFAULT_PAIRING_REQUEST_TIMEOUT_MS,
+  });
+  const portalUrl = `${receiver}/user-register?next=${encodeURIComponent("/user-dashboard")}`;
+  if (ui.interactive) {
+    ui.stopWait("Secure link", "ready");
+    ui.info("Re-entry", portalUrl);
+    ui.info("Next", "Create or sign in, click Pair this Mac, then return here with the code.");
+    if (!(await openBrowser(portalUrl))) {
+      ui.warning("Browser", "could not open automatically; use the URL above");
     }
+  } else {
+    process.stdout.write(`${JSON.stringify({ event: "connector_account_pairing", portal_url: portalUrl })}\n`);
+  }
+  const pairingCode = flags["pairing-code"] ?? await askForPairingCode(
+    ui,
+    "  Enter the pairing code shown in your Re-entry dashboard (XXXX-XXXX): ",
+  );
+  if (ui.interactive) ui.step("Pairing code", "received");
+  const credentials = await client.connectWithPairingCode({
+    pairingCode,
+    deviceName: flags["device-name"] ?? defaultDeviceName(),
+  });
+  if (ui.interactive) {
+    ui.success("Account", "connected");
   }
   const saved = {
     version: 1,
@@ -268,9 +343,12 @@ async function connect(flags, ui, options = {}) {
     connector_expires_at: credentials.connector_expires_at,
   };
   await store.save(saved);
+  await clearConnectorReauthorizationRequired(credentialFile);
   if (ui.interactive) {
-    ui.success("Connected", `credential saved at ${credentialFile}`);
-    ui.info("Next", "run `reentry start` once; it will keep waiting in the background");
+    if (!options.guidedInstall) {
+      ui.complete("This Mac is connected", "Re-entry can now route approved work here.");
+      ui.next("re-entry start", "Wait for approved work in this terminal.");
+    }
   } else {
     process.stdout.write(`${JSON.stringify({
       event: "connector_connected",
@@ -281,26 +359,47 @@ async function connect(flags, ui, options = {}) {
 }
 
 async function status(flags, ui) {
-  if (ui.interactive) ui.begin("Connector status", "Account, background service, Receiver, and Codex");
+  if (ui.interactive) ui.begin("Status", "A quick check of this Mac and Re-entry.");
   const credentialFile = flags["credential-file"] ?? defaultCredentialFile();
   const credentials = await new LocalConnectorCredentialStore({ filename: credentialFile }).load();
+  const reauthorizationRequired = await hasConnectorReauthorizationRequired(credentialFile);
   const readiness = inspectReadiness(flags);
   const service = await inspectMacConnectorService();
   const receiverReady = credentials ? await inspectReceiver(credentials.receiver_origin) : false;
-  showReadiness(readiness, ui);
-  const connected = Boolean(credentials && Date.parse(credentials.connector_expires_at) > Date.now());
+  const connected = Boolean(
+    credentials &&
+    Date.parse(credentials.connector_expires_at) > Date.now() &&
+    !reauthorizationRequired,
+  );
   if (ui.interactive) {
-    if (connected) ui.success("Account", `${credentials.connector_id} · authorized`);
-    else ui.warning("Re-entry", "not connected; run `reentry connect`");
-    if (service.running) ui.success("Background", "running at login");
-    else if (service.installed) ui.warning("Background", "installed but not running; run `reentry install`");
-    else ui.warning("Background", "not installed; run `reentry install`");
-    if (connected && receiverReady) ui.success("Receiver", `${credentials.receiver_origin} · reachable`);
-    else if (connected) ui.warning("Receiver", `${credentials.receiver_origin} · unavailable`);
+    ui.section("SYSTEM", "This Mac");
+    showReadiness(readiness, ui);
+    ui.section("CONNECTION", "Re-entry");
+    if (reauthorizationRequired) ui.warning("Account", "reconnect required");
+    else if (connected) ui.success("Account", "connected");
+    else ui.warning("Account", "not connected");
+    if (reauthorizationRequired && service.running) ui.warning("Background", "paused until this Mac is reconnected");
+    else if (service.running) ui.success("Background", "running");
+    else if (service.installed) ui.warning("Background", "stopped");
+    else ui.warning("Background", "not installed");
+    if (receiverReady) ui.success("Cloud", "online");
+    else if (credentials) ui.warning("Cloud", "unavailable");
+
+    if (reauthorizationRequired) {
+      ui.next("re-entry connect", "Approve this Mac again in your browser; the old credential was rejected.");
+    } else if (!connected || !service.running) {
+      ui.next("re-entry install", "Finish setup and start Re-entry in the background.");
+    } else if (!receiverReady) {
+      ui.next("re-entry status", "Check again when the Re-entry Cloud service is available.");
+    } else {
+      ui.complete("Everything looks good", "Re-entry is ready for approved work.");
+      ui.next("re-entry listen", "Watch live activity. Press Ctrl+C when you are done.");
+    }
   } else {
     process.stdout.write(`${JSON.stringify({
       event: "connector_status",
       connected,
+      reauthorization_required: reauthorizationRequired,
       connector_id: credentials?.connector_id ?? null,
       receiver_origin: credentials?.receiver_origin ?? null,
       receiver_ready: receiverReady,
@@ -313,18 +412,174 @@ async function status(flags, ui) {
   }
 }
 
-async function install(flags, ui) {
+async function listen(flags, ui) {
   if (ui.interactive) {
-    ui.begin("Install Re-entry", "Check Codex, connect your account, then start at login");
+    ui.begin("Live activity", "Watch the background Connector. Ctrl+C closes this view.");
   }
-  const runtimeFlags = {
-    ...flags,
-    "codex-cd": flags["codex-cd"] ?? process.cwd(),
-  };
+  const service = await inspectMacConnectorService();
+  const credentials = await new LocalConnectorCredentialStore({
+    filename: defaultCredentialFile(),
+  }).load();
+  const reauthorizationRequired = await hasConnectorReauthorizationRequired(defaultCredentialFile());
+  if (reauthorizationRequired || !service.running || !credentials) {
+    if (ui.interactive) {
+      if (reauthorizationRequired) {
+        ui.warning("Account", "reconnect required; the Cloud Receiver rejected this Mac");
+        ui.next("re-entry connect", "Approve this Mac again in your browser.");
+      }
+      if (!credentials) ui.warning("Account", "not connected");
+      if (!service.running) ui.warning("Background", "not running");
+      ui.next("re-entry install", "Finish setup and start the background Connector.");
+    } else {
+      process.stdout.write(`${JSON.stringify({
+        event: "connector_listener_unavailable",
+        connected: Boolean(credentials),
+        reauthorization_required: reauthorizationRequired,
+        service_running: service.running,
+      })}\n`);
+    }
+    return;
+  }
+
+  if (ui.interactive) {
+    ui.success("Background", "running");
+    ui.success("Account", "connected");
+    ui.wait("Listening for approved work…");
+  } else {
+    process.stdout.write('{"event":"connector_listener_started"}\n');
+  }
+
+  const stopSignal = createStopSignal();
+  try {
+    await followConnectorActivity({
+      paths: defaultConnectorLogFiles(),
+      signal: stopSignal.signal,
+      onEvent(event) {
+        if (ui.interactive) reportLiveActivity(event, ui);
+        else process.stdout.write(`${JSON.stringify(event)}\n`);
+      },
+    });
+  } finally {
+    stopSignal.close();
+    if (ui.interactive) {
+      ui.stopWait("Live view closed", "the background Connector is still running", "info");
+    } else {
+      process.stdout.write('{"event":"connector_listener_stopped"}\n');
+    }
+  }
+}
+
+async function testCodex(flags, positionals, ui) {
+  const prompt = requireTestPrompt(positionals);
+  const runtimeFlags = await withWorkspaceDirectory(flags, ui);
   const readiness = inspectReadiness(runtimeFlags);
-  showReadiness(readiness, ui);
-  const credentials = await connect(runtimeFlags, ui, { quietHeader: true });
-  if (ui.interactive) ui.wait("Installing the background Connector…");
+  if (ui.interactive) {
+    ui.begin("Test Codex", "Run one local prompt through the Re-entry Codex adapter.");
+    ui.success("Codex", "ready");
+    ui.success("Workspace", readiness.workingDirectory);
+    ui.info("Prompt", prompt);
+    ui.wait("Starting a fresh Codex session…");
+  }
+  await runCodexPrompt({
+    workingDirectory: readiness.workingDirectory,
+    executable: readiness.installation.executable,
+    prompt,
+    commandTimeoutMs: readBoundedNumber(
+      flags["activation-timeout"] ?? 60_000,
+      100,
+      60_000,
+      "connector_activation_timeout_invalid",
+    ),
+  });
+  if (ui.interactive) {
+    ui.stopWait("Codex", "completed the local test");
+    ui.complete("Test passed", "The same fresh-session process seam is ready for Re-entry work.");
+    ui.next("re-entry listen", "Watch the background Connector for approved work.");
+  } else {
+    process.stdout.write('{"event":"connector_codex_test_passed"}\n');
+  }
+}
+
+function reportLiveActivity(event, ui) {
+  if (event.event === "connector_waiting") return;
+  if (event.event === "connector_activation_result") {
+    const accepted = event.outcome === "accepted";
+    ui.stopWait(
+      accepted ? "Work received" : "Work finished",
+      accepted ? "a fresh Codex session was started" : String(event.outcome ?? "unknown"),
+      accepted ? "success" : "warning",
+    );
+  } else if (event.event === "connector_reauthorization_required" || event.code === "connector_identity_invalid") {
+    ui.stopWait("Reconnect required", "the Cloud Receiver rejected this Mac's saved connection", "warning");
+    ui.next("re-entry connect", "Approve this Mac again in your browser.");
+    return;
+  } else if (event.event === "connector_poll_failed" || event.event === "local_connector_failed") {
+    ui.stopWait("Connection interrupted", "Re-entry is retrying", "warning");
+  } else if (event.event === "connector_ready") {
+    ui.stopWait("Connector", "ready", "success");
+  } else if (event.event === "connector_stopped") {
+    ui.stopWait("Background", "stopped", "warning");
+  } else {
+    ui.stopWait("Activity", event.event.replaceAll("_", " "), "info");
+  }
+  ui.wait("Listening for approved work…");
+}
+
+async function stop(flags, ui) {
+  if (ui.interactive) {
+    ui.begin("Stop the Connector", "Pause background delivery without removing your account connection");
+  }
+  const result = await stopMacConnectorService();
+  if (ui.interactive) {
+    if (!result.supported) ui.warning("Platform", "background service control currently supports macOS only");
+    else if (result.stopped) ui.complete("Re-entry is paused", "Your account connection is still saved.");
+    else ui.info("Already stopped", "no running background Connector was found");
+    if (result.supported) ui.next("re-entry install", "Start Re-entry in the background again.");
+  } else {
+    process.stdout.write(`${JSON.stringify({
+      event: "connector_stopped",
+      supported: result.supported,
+      stopped: result.stopped,
+    })}\n`);
+  }
+}
+
+async function uninstall(flags, ui) {
+  if (ui.interactive) {
+    ui.begin("Uninstall Re-entry", "Stop the Connector and remove only its local service data");
+    ui.warning("This removes", "the LaunchAgent, saved Connector credential, and Connector logs");
+    await askForUninstallConfirmation();
+  } else if (flags.yes !== true) {
+    throw cliFailure("connector_uninstall_confirmation_required");
+  }
+  const result = await uninstallMacConnectorService({
+    credentialFile: flags["credential-file"] ?? defaultCredentialFile(),
+  });
+  if (ui.interactive) {
+    ui.complete("Removed from this Mac", "The local service, connection, and logs are gone.");
+    ui.next("npx @4xeoz/re-entry install", "Connect this Mac again whenever you are ready.");
+  } else {
+    process.stdout.write(`${JSON.stringify({
+      event: "connector_uninstalled",
+      supported: result.supported,
+      removed_paths: result.removedPaths,
+    })}\n`);
+  }
+}
+
+async function install(flags, ui) {
+  const runtimeFlags = await withWorkspaceDirectory(flags, ui);
+  const readiness = inspectReadiness(runtimeFlags);
+  if (ui.interactive) {
+    ui.begin("Set up this Mac", "Three quick steps. You only do this once.");
+    ui.section("1 OF 3", "Workspace");
+    ui.success("Selected", readiness.workingDirectory);
+    ui.section("2 OF 3", "System check");
+    showReadiness(readiness, ui, { includeWorkspace: false });
+    ui.section("3 OF 3", "Connect Re-entry", "Create or sign in to your account, then pair this Mac from the dashboard.");
+  }
+  const credentials = await connect(runtimeFlags, ui, { quietHeader: true, guidedInstall: true });
+  if (ui.interactive) ui.wait("Starting Re-entry in the background…");
   const service = await installMacConnectorService({
     nodeExecutable: process.execPath,
     entrypoint: fileURLToPath(import.meta.url),
@@ -332,10 +587,9 @@ async function install(flags, ui) {
     credentialFile: flags["credential-file"] ?? defaultCredentialFile(),
   });
   if (ui.interactive) {
-    ui.stopWait("Installed", "Re-entry will start automatically when you log in");
-    ui.success("Account", credentials.connector_id);
-    ui.info("Logs", service.stdoutPath);
-    ui.info("You are done", "the Connector now waits in the background");
+    ui.stopWait("Background", "running at login");
+    ui.complete("You're all set", "Re-entry is connected and waiting for approved work.");
+    ui.next("re-entry listen", "Watch live activity. Press Ctrl+C when you are done.");
   } else {
     process.stdout.write(`${JSON.stringify({
       event: "connector_service_installed",
@@ -348,15 +602,13 @@ async function install(flags, ui) {
 }
 
 async function start(flags, ui) {
-  if (ui.interactive) {
-    ui.begin("Re-entry is starting", "Connect once, then wait quietly for work you approve");
-  }
-  const runtimeFlags = {
-    ...flags,
-    "codex-cd": flags["codex-cd"] ?? process.cwd(),
-  };
+  const runtimeFlags = await withWorkspaceDirectory(flags, ui);
   const readiness = inspectReadiness(runtimeFlags);
-  showReadiness(readiness, ui);
+  if (ui.interactive) {
+    ui.begin("Start Re-entry", "Wait for work you have approved.");
+    ui.section("READY", "This Mac");
+    showReadiness(readiness, ui);
+  }
   if (!ui.interactive) {
     process.stdout.write(`${JSON.stringify({
       event: "connector_ready",
@@ -371,8 +623,16 @@ async function start(flags, ui) {
   const store = new LocalConnectorCredentialStore({ filename: credentialFile });
   let credentials = await store.load();
   if (!credentials) {
-    if (ui.interactive) ui.info("Re-entry", "first run — browser approval is required once");
+    if (ui.interactive) ui.info("Re-entry", "first run — create an account and enter a dashboard pairing code");
     credentials = await connect(runtimeFlags, ui, { quietHeader: true });
+  } else if (await hasConnectorReauthorizationRequired(credentialFile)) {
+    if (ui.interactive) {
+      ui.warning("Account", "this Mac needs to be connected again");
+      ui.next("re-entry connect", "Create a new dashboard pairing code and connect this Mac again.");
+    } else {
+      process.stdout.write('{"event":"connector_reauthorization_required"}\n');
+    }
+    return;
   } else if (ui.interactive) {
     ui.success("Re-entry", "existing account connection loaded");
   }
@@ -408,6 +668,18 @@ async function start(flags, ui) {
           if (ui.interactive) ui.wait("Connected. Waiting for approved work…");
         }
       } catch (error) {
+        if (error?.code === "connector_identity_invalid") {
+          await markConnectorReauthorizationRequired(credentialFile, {
+            receiver_origin: credentials.receiver_origin,
+          });
+          if (ui.interactive) {
+            ui.stopWait("Reconnect required", "the Cloud Receiver rejected this Mac's saved connection", "warning");
+            ui.next("re-entry connect", "Approve this Mac again in your browser.");
+          } else {
+            process.stdout.write('{"event":"connector_reauthorization_required"}\n');
+          }
+          return;
+        }
         consecutiveErrors += 1;
         if (ui.interactive) {
           ui.stopWait("Receiver unavailable", `${safeErrorMessage(error)} · ${consecutiveErrors}/${maximumErrors}`, "warning");
@@ -563,11 +835,16 @@ function parseArguments(argumentsList) {
     ...(hasExplicitCommand ? argumentsList.slice(commandIndex + 1) : argumentsList.slice(commandIndex)),
   ];
   const flags = {};
+  const positionals = [];
   for (let index = 0; index < rest.length; index += 1) {
     const value = rest[index];
-    if (!value.startsWith("--")) throw cliFailure("connector_argument_invalid");
+    if (!value.startsWith("--")) {
+      if (command !== "test") throw cliFailure("connector_argument_invalid");
+      positionals.push(value);
+      continue;
+    }
     const name = value.slice(2);
-    if (name === "json") {
+    if (name === "json" || name === "yes") {
       if (Object.hasOwn(flags, name)) throw cliFailure("connector_argument_invalid");
       flags[name] = true;
       continue;
@@ -577,21 +854,26 @@ function parseArguments(argumentsList) {
     flags[name] = next;
     index += 1;
   }
-  return { command, flags };
+  return { command, flags, positionals };
 }
 
-function validateCommandFlags(command, flags) {
+function validateCommandFlags(command, flags, positionals) {
   const allowedByCommand = {
     doctor: new Set(["codex-binary", "codex-cd", "json"]),
     pair: new Set(["receiver", "code", "credential-file", "json"]),
-    connect: new Set(["receiver", "device-name", "credential-file", "json"]),
+    connect: new Set(["receiver", "device-name", "credential-file", "pairing-code", "json"]),
     status: new Set(["credential-file", "codex-cd", "codex-binary", "json"]),
+    listen: new Set(["json"]),
+    test: new Set(["codex-cd", "codex-binary", "activation-timeout", "json"]),
+    stop: new Set(["json"]),
+    uninstall: new Set(["credential-file", "yes", "json"]),
     install: new Set([
       "receiver",
       "device-name",
       "credential-file",
       "codex-cd",
       "codex-binary",
+      "pairing-code",
       "json",
     ]),
     "claim-once": new Set([
@@ -618,7 +900,11 @@ function validateCommandFlags(command, flags) {
     ]),
   };
   const allowed = allowedByCommand[command];
-  if (!allowed || Object.keys(flags).some((name) => !allowed.has(name))) {
+  if (
+    !allowed ||
+    Object.keys(flags).some((name) => !allowed.has(name)) ||
+    (command !== "test" && positionals.length > 0)
+  ) {
     throw cliFailure("connector_argument_invalid");
   }
 }
@@ -633,11 +919,44 @@ function defaultCredentialFile() {
   return join(homedir(), ".webmcp-connector", "credentials.json");
 }
 
+function defaultConnectorLogFiles() {
+  const stateDirectory = join(homedir(), ".webmcp-connector");
+  return [
+    join(stateDirectory, "connector.log"),
+    join(stateDirectory, "connector-error.log"),
+  ];
+}
+
 function defaultDeviceName() {
   const value = hostname().trim();
   return value.length >= 2 && Buffer.byteLength(value, "utf8") <= 80
     ? value
     : "This Mac";
+}
+
+function displayReceiver(origin) {
+  try {
+    return new URL(origin).host;
+  } catch {
+    return origin;
+  }
+}
+
+function requireTestPrompt(positionals) {
+  if (!Array.isArray(positionals) || positionals.length !== 1) {
+    throw cliFailure("connector_test_prompt_missing");
+  }
+  const value = positionals[0];
+  if (
+    typeof value !== "string" ||
+    value.trim() !== value ||
+    value.length === 0 ||
+    Buffer.byteLength(value, "utf8") > 4 * 1_024 ||
+    /[\u0000-\u001f\u007f]/.test(value)
+  ) {
+    throw cliFailure("connector_test_prompt_invalid");
+  }
+  return value;
 }
 
 function readBoundedNumber(value, minimum, maximum, code) {
@@ -690,14 +1009,25 @@ function safeErrorMessage(error) {
     : error.message;
 }
 
-async function askForPairingCode(ui) {
+async function askForPairingCode(ui, prompt = "  Enter the pairing code: ") {
   if (!ui.interactive || process.stdin.isTTY !== true) {
     throw cliFailure("connector_pairing_code_missing");
   }
   const readline = createInterface({ input: process.stdin, output: process.stdout });
   try {
-    const answer = await readline.question("  Enter the pairing code from your Host (XXXX-XXXX-XXXX-XXXX): ");
+    const answer = await readline.question(prompt);
     return answer.trim();
+  } finally {
+    readline.close();
+  }
+}
+
+async function askForUninstallConfirmation() {
+  if (process.stdin.isTTY !== true) throw cliFailure("connector_uninstall_confirmation_required");
+  const readline = createInterface({ input: process.stdin, output: process.stdout });
+  try {
+    const answer = await readline.question("  Type DELETE to remove local Connector data: ");
+    if (answer.trim() !== "DELETE") throw cliFailure("connector_uninstall_confirmation_required");
   } finally {
     readline.close();
   }
@@ -710,17 +1040,30 @@ function errorHint(error) {
     connector_codex_binary_not_found: "check --codex-binary or remove it to use automatic discovery",
     connector_codex_unusable: "open Codex, complete login if needed, then run `npm run doctor` again",
     connector_node_unsupported: "use Node.js 24 or newer, then run the command again",
-    connector_credentials_missing: "connect this Mac once with `reentry connect`",
-    connector_credentials_expired: "run `reentry connect` to authorize this Mac again",
+    connector_receiver_missing: "pass --receiver <replacement-receiver-origin> or set REENTRY_RECEIVER_ORIGIN",
+    connector_credentials_missing: "connect this Mac once with `re-entry connect`",
+    connector_credentials_expired: "run `re-entry connect` to authorize this Mac again",
+    connector_credentials_already_exists: "use the existing Connector credential or ask for a new pairing code",
+    connector_identity_invalid: "run `re-entry connect` and approve this Mac again",
+    connector_reauthorization_required: "run `re-entry connect` and approve this Mac again",
     connector_pairing_code_missing: "ask the Host backend for a new pairing code, then run pair in a terminal",
     pairing_code_invalid: "use the 16-character code returned by the Host, for example ABCD-EFGH-IJKL-MNOP",
     host_subject_already_paired: "use the existing Connector credential or revoke/reset the preview pairing",
     pairing_expired: "ask the Host backend for a new pairing code",
-    device_authorization_expired: "run `reentry connect` again and approve within ten minutes",
-    device_authorization_denied: "run `reentry connect` again when you are ready to approve this Mac",
+    pairing_request_timeout: "the Receiver took too long to answer; check your connection and run the command again",
+    pairing_network_error: "check your internet connection and the Receiver address, then try again",
+    workspace_directory_unavailable: "choose a readable folder or pass --codex-cd /absolute/path",
+    workspace_selection_cancelled: "run the command again when you are ready to choose a workspace",
+    device_authorization_expired: "run `re-entry connect` again and approve within ten minutes",
+    device_authorization_denied: "run `re-entry connect` again when you are ready to approve this Mac",
     connector_poll_interval_invalid: "use a polling interval between 1000 and 60000 milliseconds",
     connector_max_errors_invalid: "use a maximum error count between 1 and 20",
-    connector_service_load_failed: "run `reentry install` again; if it still fails, inspect the Connector error log",
+    connector_service_load_failed: "run `re-entry install` again; if it still fails, inspect the Connector error log",
+    connector_uninstall_confirmation_required: "run uninstall interactively and type DELETE, or pass `--yes` in a deliberate script",
+    connector_service_stop_failed: "check the Connector status and try `re-entry stop` again",
+    connector_test_prompt_missing: "use `re-entry test \"Reply with: Re-entry is working.\"`",
+    connector_test_prompt_invalid: "use one short, single-line prompt inside quotes",
+    connector_activation_timeout_invalid: "use an activation timeout between 100 and 60000 milliseconds",
   };
   return hints[error?.code] ?? "check the Receiver address and try again";
 }

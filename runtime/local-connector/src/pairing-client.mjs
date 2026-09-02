@@ -2,15 +2,21 @@ import { spawn } from "node:child_process";
 import { TextDecoder } from "node:util";
 
 export const PAIRING_CLIENT_ROUTES = Object.freeze({
+  accountPairingClaim: "/v0.1/account/pairing-sessions/claim",
   claim: "/v0.1/pairing-sessions/claim",
   poll: "/v0.1/pairing-sessions/poll",
   deviceStart: "/v0.1/device-authorizations",
   devicePoll: "/v0.1/device-authorizations/poll",
 });
 
+export async function openBrowser(url) {
+  return defaultOpenBrowser(url);
+}
+
 const OPTION_FIELDS = Object.freeze(["baseUrl", "requestTimeoutMs", "openBrowser", "sleep"]);
 const PAIR_INPUT_FIELDS = Object.freeze(["userCode"]);
 const CONNECT_INPUT_FIELDS = Object.freeze(["deviceName"]);
+const ACCOUNT_PAIRING_INPUT_FIELDS = Object.freeze(["pairingCode", "deviceName"]);
 const DEVICE_AUTHORIZATION_FIELDS = Object.freeze([
   "type",
   "protocol_version",
@@ -63,11 +69,20 @@ const CREDENTIAL_FIELDS = Object.freeze([
   "connector_expires_at",
   "duplicate",
 ]);
+const TOKENLESS_CREDENTIAL_FIELDS = Object.freeze([
+  "type",
+  "protocol_version",
+  "pairing_id",
+  "connector_id",
+  "connector_expires_at",
+  "duplicate",
+]);
 const ERROR_FIELDS = Object.freeze(["error"]);
 const ERROR_BODY_FIELDS = Object.freeze(["code"]);
 const IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$/;
 const TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
 const USER_CODE_PATTERN = /^[A-F0-9]{16}$/;
+const ACCOUNT_PAIRING_CODE_PATTERN = /^[A-F0-9]{8}$/;
 const CONTENT_TYPE_PATTERN = /^application\/json(?:\s*;\s*charset=utf-8)?$/i;
 const MIN_REQUEST_TIMEOUT_MS = 100;
 const MAX_REQUEST_TIMEOUT_MS = 60_000;
@@ -195,6 +210,34 @@ export class LocalConnectorPairingClient {
       }
       return Object.freeze({ ...credentials, browserOpened });
     }
+  }
+
+  async connectWithPairingCode(input) {
+    requireExactRecord(
+      input,
+      ACCOUNT_PAIRING_INPUT_FIELDS,
+      ACCOUNT_PAIRING_INPUT_FIELDS,
+      "Account pairing input",
+    );
+    const pairingCode = normalizeAccountPairingCode(input.pairingCode);
+    const deviceName = requireDeviceName(input.deviceName);
+    const response = await this.#post(PAIRING_CLIENT_ROUTES.accountPairingClaim, {
+      pairing_code: pairingCode,
+      device_name: deviceName,
+    });
+    if (response.status !== 200) throw await parseHttpFailure(response);
+    const credentials = normalizeAccountCredentials(await parseJsonResponse(response));
+    if (credentials.duplicate && !Object.hasOwn(credentials, "connector_token")) {
+      throw pairingFailure(
+        "connector_credentials_already_exists",
+        "Pairing is already complete; use the existing Connector credential or create a new pairing",
+        { statusCode: response.status },
+      );
+    }
+    return Object.freeze({
+      ...credentials,
+      browserOpened: false,
+    });
   }
 
   async #post(path, body) {
@@ -329,6 +372,44 @@ function normalizeCredentials(value) {
     connector_expires_at: requireTimestamp(value.connector_expires_at, "connector_expires_at"),
     duplicate: value.duplicate,
   };
+}
+
+function normalizeAccountCredentials(value) {
+  const fields = value?.duplicate === true ? TOKENLESS_CREDENTIAL_FIELDS : CREDENTIAL_FIELDS;
+  requireExactRecord(
+    value,
+    fields,
+    fields,
+    "Account Connector credential response",
+    "pairing_response_invalid",
+  );
+  if (value.type !== "webmcp.connector_credentials" || value.protocol_version !== "0.1") {
+    throw pairingFailure("pairing_response_invalid", "Account Connector credential response is unsupported");
+  }
+  if (typeof value.duplicate !== "boolean") {
+    throw pairingFailure("pairing_response_invalid", "Account Connector credential duplicate flag is invalid");
+  }
+  const normalized = {
+    pairing_id: requireIdentifier(value.pairing_id, "pairing_id"),
+    connector_id: requireIdentifier(value.connector_id, "connector_id"),
+    connector_expires_at: requireTimestamp(value.connector_expires_at, "connector_expires_at"),
+    duplicate: value.duplicate,
+  };
+  if (!value.duplicate) {
+    normalized.connector_token = requireToken(value.connector_token, "connector_token");
+  }
+  return normalized;
+}
+
+function normalizeAccountPairingCode(value) {
+  if (typeof value !== "string") {
+    throw pairingFailure("account_pairing_code_invalid", "Pairing code is invalid");
+  }
+  const normalized = value.replaceAll("-", "").trim().toUpperCase();
+  if (!ACCOUNT_PAIRING_CODE_PATTERN.test(normalized)) {
+    throw pairingFailure("account_pairing_code_invalid", "Pairing code is invalid");
+  }
+  return normalized;
 }
 
 async function parseJsonResponse(response) {
@@ -509,17 +590,17 @@ function pairingFailure(code, message, options = {}) {
   return new PairingClientError(code, message, options);
 }
 
-function requireExactRecord(value, allowedFields, requiredFields, label) {
+function requireExactRecord(value, allowedFields, requiredFields, label, failureCode = "pairing_input_invalid") {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
-    throw pairingFailure("pairing_input_invalid", `${label} must be an object`);
+    throw pairingFailure(failureCode, `${label} must be an object`);
   }
   const prototype = Object.getPrototypeOf(value);
   if (prototype !== Object.prototype && prototype !== null) {
-    throw pairingFailure("pairing_input_invalid", `${label} must be a plain object`);
+    throw pairingFailure(failureCode, `${label} must be a plain object`);
   }
   const fields = Object.keys(value);
   if (fields.some((field) => !allowedFields.includes(field)) || requiredFields.some((field) => !fields.includes(field))) {
-    throw pairingFailure("pairing_input_invalid", `${label} fields are invalid`);
+    throw pairingFailure(failureCode, `${label} fields are invalid`);
   }
 }
 

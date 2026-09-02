@@ -91,8 +91,61 @@ export async function inspectMacConnectorService(options = {}) {
   return Object.freeze({
     supported: true,
     installed: true,
-    running: result.code === 0,
+    running: result.code === 0 && isLoadedAndRunning(result.stdout),
     plistPath,
+  });
+}
+
+export async function stopMacConnectorService(options = {}) {
+  const configuration = requireServiceConfiguration(options, "stop");
+  if (process.platform !== "darwin" && configuration.allowNonMacForTest !== true) {
+    return Object.freeze({ supported: false, stopped: false, installed: false, running: false });
+  }
+  const status = await inspectMacConnectorService(configuration);
+  if (!status.installed || !status.running) {
+    return Object.freeze({ ...status, stopped: false });
+  }
+  const domain = `gui/${typeof process.getuid === "function" ? process.getuid() : 0}`;
+  const result = await configuration.runCommand(["bootout", `${domain}/${LABEL}`]);
+  if (result.code !== 0) {
+    throw serviceFailure("connector_service_stop_failed", "Background service could not be stopped");
+  }
+  return Object.freeze({ ...status, stopped: true, running: false });
+}
+
+export async function uninstallMacConnectorService(options = {}) {
+  const configuration = requireServiceConfiguration(options, "uninstall");
+  if (process.platform !== "darwin" && configuration.allowNonMacForTest !== true) {
+    return Object.freeze({ supported: false, removedPaths: [] });
+  }
+  const service = await stopMacConnectorService(configuration);
+  const stateDirectory = configuration.stateDirectory ?? join(homedir(), ".webmcp-connector");
+  const credentialFile = requireAbsolutePath(
+    configuration.credentialFile ?? join(stateDirectory, "credentials.json"),
+    "Credential file",
+  );
+  const paths = [...new Set([
+    service.plistPath,
+    credentialFile,
+    `${credentialFile}.reauthorization-required.json`,
+    join(stateDirectory, "connector.log"),
+    join(stateDirectory, "connector-error.log"),
+  ])];
+  const removedPaths = [];
+  for (const path of paths) {
+    try {
+      await unlink(path);
+      removedPaths.push(path);
+    } catch (error) {
+      if (error?.code !== "ENOENT") {
+        throw serviceFailure("connector_service_remove_failed", "Connector data could not be removed", error);
+      }
+    }
+  }
+  return Object.freeze({
+    supported: true,
+    removedPaths,
+    plistPath: service.plistPath,
   });
 }
 
@@ -140,6 +193,7 @@ ${argumentsXml}
 function runLaunchctl(argumentsList) {
   return new Promise((resolve) => {
     const child = spawn("launchctl", argumentsList, { stdio: ["ignore", "pipe", "pipe"] });
+    let stdout = "";
     let stderr = "";
     let settled = false;
     const finish = (result) => {
@@ -147,13 +201,39 @@ function runLaunchctl(argumentsList) {
       settled = true;
       resolve(result);
     };
+    child.stdout.setEncoding("utf8");
+    child.stdout.on("data", (chunk) => {
+      if (stdout.length < 16_384) stdout += chunk;
+    });
     child.stderr.setEncoding("utf8");
     child.stderr.on("data", (chunk) => {
       if (stderr.length < 4_096) stderr += chunk;
     });
-    child.once("error", (error) => finish({ code: -1, stderr: error.message }));
-    child.once("close", (code) => finish({ code: code ?? -1, stderr }));
+    child.once("error", (error) => finish({ code: -1, stdout, stderr: error.message }));
+    child.once("close", (code) => finish({ code: code ?? -1, stdout, stderr }));
   });
+}
+
+function isLoadedAndRunning(stdout) {
+  // Test doubles historically return only { code: 0 }; preserve that contract while
+  // treating launchctl's explicit not-running state as stopped in production.
+  if (stdout === undefined) return true;
+  const state = stdout.match(/^[\t ]*state\s*=\s*([^\r\n]+)$/m)?.[1]?.trim();
+  if (state) return state === "running";
+  const activeCount = stdout.match(/^[\t ]*active count\s*=\s*(\d+)$/m)?.[1];
+  return activeCount !== undefined && Number(activeCount) > 0;
+}
+
+function requireServiceConfiguration(options, operation) {
+  if (!options || typeof options !== "object" || Array.isArray(options)) {
+    throw serviceFailure("connector_service_input_invalid", `Service ${operation} options are invalid`);
+  }
+  const launchAgentsDirectory = options.launchAgentsDirectory ?? join(homedir(), "Library", "LaunchAgents");
+  const runCommand = options.runCommand ?? runLaunchctl;
+  if (typeof runCommand !== "function") {
+    throw new TypeError(`Service ${operation} runCommand must be a function`);
+  }
+  return { ...options, launchAgentsDirectory, runCommand };
 }
 
 function requireAbsolutePath(value, label) {

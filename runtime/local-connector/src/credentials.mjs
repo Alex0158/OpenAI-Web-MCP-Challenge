@@ -49,6 +49,48 @@ export class LocalConnectorCredentialStore {
   }
 }
 
+export function reauthorizationMarkerPath(filename) {
+  if (typeof filename !== "string" || filename.length === 0) {
+    throw new TypeError("Credential filename is required");
+  }
+  return `${filename}.reauthorization-required.json`;
+}
+
+export async function markConnectorReauthorizationRequired(filename, value = {}) {
+  const marker = reauthorizationMarkerPath(filename);
+  await mkdir(dirname(marker), { recursive: true, mode: 0o700 });
+  await writeFile(marker, `${JSON.stringify({
+    receiver_origin: value.receiver_origin ?? null,
+    reason: "connector_identity_invalid",
+    observed_at: new Date().toISOString(),
+  })}\n`, { encoding: "utf8", mode: 0o600 });
+  await chmod(marker, 0o600);
+}
+
+export async function hasConnectorReauthorizationRequired(filename) {
+  try {
+    await readFile(reauthorizationMarkerPath(filename), "utf8");
+    return true;
+  } catch (error) {
+    if (error?.code === "ENOENT") return false;
+    throw credentialFailure(
+      "connector_status_unreadable",
+      "Connector authorization status could not be read",
+      error,
+    );
+  }
+}
+
+export async function clearConnectorReauthorizationRequired(filename) {
+  await unlink(reauthorizationMarkerPath(filename)).catch((error) => {
+    if (error?.code !== "ENOENT") throw credentialFailure(
+      "connector_status_unwritable",
+      "Connector authorization status could not be cleared",
+      error,
+    );
+  });
+}
+
 function normalizeCredentials(value) {
   requireExactRecord(value, CREDENTIAL_FIELDS, CREDENTIAL_FIELDS, "Connector credentials");
   if (value.version !== 1) throw credentialFailure("connector_credentials_invalid", "Connector credential version is unsupported");

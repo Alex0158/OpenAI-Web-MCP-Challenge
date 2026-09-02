@@ -8,6 +8,15 @@ const YELLOW = "\u001b[33m";
 const RED = "\u001b[31m";
 const CYAN = "\u001b[36m";
 const SPINNER_FRAMES = ["·", "✦", "✧", "✦"];
+const RULE = "  ─────────────────────────────────────────────";
+
+export const REENTRY_WORDMARK = Object.freeze([
+  "   ____  _____      _____ _   _ _____ ______   __",
+  "  |  _ \\| ____|    | ____| \\ | |_   _|  _ \\ \\ / /",
+  "  | |_) |  _| _____|  _| |  \\| | | | | |_) | \\ V /",
+  "  |  _ <| |__|_____| |___| |\\  | | | |  _ <   | |",
+  "  |_| \\_\\_____|    |_____|_| \\_| |_| |_| \\_\\  |_|",
+]);
 
 /**
  * Small dependency-free terminal presentation for the Local Connector CLI.
@@ -23,7 +32,7 @@ export function createTerminalUi(options = {}) {
   let spinnerFrame = 0;
 
   const style = (value, code) => color ? `${code}${value}${RESET}` : value;
-  const write = (value) => output.write(`${value}\n`);
+  const write = (value = "") => output.write(`${value}\n`);
   const clearSpinnerLine = () => {
     if (spinnerTimer === null) return;
     output.write("\r\u001b[2K");
@@ -31,8 +40,12 @@ export function createTerminalUi(options = {}) {
     spinnerTimer = null;
   };
   const renderSpinner = () => {
-    output.write(`\r\u001b[2K  ${style(SPINNER_FRAMES[spinnerFrame], CYAN)} ${spinnerMessage}`);
+    output.write(`\r\u001b[2K  ${style(SPINNER_FRAMES[spinnerFrame], CYAN)}  ${spinnerMessage}`);
     spinnerFrame = (spinnerFrame + 1) % SPINNER_FRAMES.length;
+  };
+  const renderState = (symbol, symbolColor, label, detail) => {
+    clearSpinnerLine();
+    write(`  ${style(symbol, symbolColor)}  ${style(label, BOLD)}${detail ? `  ${style(detail, DIM)}` : ""}`);
   };
 
   return Object.freeze({
@@ -40,31 +53,43 @@ export function createTerminalUi(options = {}) {
 
     begin(title, subtitle) {
       if (!interactive) return;
-      write("");
-      write(`  ${style("RE-ENTRY", BOLD)} ${style("LOCAL CONNECTOR", DIM)}`);
+      clearSpinnerLine();
+      write();
+      for (const line of REENTRY_WORDMARK) write(style(line, `${BOLD}${CYAN}`));
+      write(`  ${style("LOCAL CONNECTOR", DIM)}`);
+      write();
       write(`  ${style(title, BOLD)}`);
       if (subtitle) write(`  ${style(subtitle, DIM)}`);
-      write("");
+      write(RULE);
+    },
+
+    section(step, title, detail) {
+      if (!interactive) return;
+      clearSpinnerLine();
+      write();
+      write(`  ${style(step, CYAN)}  ${style(title, BOLD)}`);
+      if (detail) write(`     ${style(detail, DIM)}`);
+      write();
     },
 
     step(label, detail) {
       if (!interactive) return;
-      write(`  ${style("→", CYAN)} ${style(label, BOLD)}${detail ? `  ${detail}` : ""}`);
+      renderState("→", CYAN, label, detail);
     },
 
     success(label, detail) {
       if (!interactive) return;
-      write(`  ${style("✓", GREEN)} ${style(label, BOLD)}${detail ? `  ${detail}` : ""}`);
+      renderState("✓", GREEN, label, detail);
     },
 
     info(label, detail) {
       if (!interactive) return;
-      write(`  ${style("·", CYAN)} ${style(label, BOLD)}${detail ? `  ${detail}` : ""}`);
+      renderState("·", CYAN, label, detail);
     },
 
     warning(label, detail) {
       if (!interactive) return;
-      write(`  ${style("!", YELLOW)} ${style(label, BOLD)}${detail ? `  ${detail}` : ""}`);
+      renderState("!", YELLOW, label, detail);
     },
 
     wait(message) {
@@ -80,16 +105,38 @@ export function createTerminalUi(options = {}) {
     stopWait(label, detail, outcome = "success") {
       if (!interactive) return;
       clearSpinnerLine();
-      if (outcome === "warning") this.warning(label, detail);
-      else if (outcome === "info") this.info(label, detail);
-      else this.success(label, detail);
+      if (outcome === "warning") renderState("!", YELLOW, label, detail);
+      else if (outcome === "info") renderState("·", CYAN, label, detail);
+      else renderState("✓", GREEN, label, detail);
+    },
+
+    complete(title, detail) {
+      if (!interactive) return;
+      clearSpinnerLine();
+      write();
+      write(`  ${style("✓", GREEN)}  ${style(title, BOLD)}`);
+      if (detail) write(`     ${style(detail, DIM)}`);
+    },
+
+    next(command, detail) {
+      if (!interactive) return;
+      clearSpinnerLine();
+      write();
+      write(`  ${style("NEXT", CYAN)}`);
+      write(`  ${style("$", CYAN)} ${style(command, BOLD)}`);
+      if (detail) write(`    ${style(detail, DIM)}`);
+      write();
     },
 
     error(label, detail, hint) {
       if (!interactive) return;
       clearSpinnerLine();
-      errorOutput.write(`  ${style("✕", RED)} ${style(label, BOLD)}${detail ? `  ${detail}` : ""}\n`);
-      if (hint) errorOutput.write(`  ${style("Next:", DIM)} ${hint}\n`);
+      errorOutput.write(`\n  ${style("✕", RED)}  ${style(label, BOLD)}\n`);
+      if (detail) errorOutput.write(`     ${style(detail, DIM)}\n`);
+      if (hint) {
+        errorOutput.write(`\n  ${style("NEXT", CYAN)}\n`);
+        errorOutput.write(`  ${style("→", CYAN)}  ${hint}\n\n`);
+      }
     },
 
     close() {

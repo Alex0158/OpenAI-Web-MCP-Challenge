@@ -1,8 +1,8 @@
 {
-  "name": "reentry",
-  "version": "0.2.0",
+  "name": "@4xeoz/re-entry",
+  "version": "0.2.11",
   "type": "module",
-  "description": "Outbound Local Connector process for the Re-entry Core local preview.",
+  "description": "Outbound Local Connector process for Re-entry Core; new Receiver origins must be explicit.",
   "publishConfig": {
     "access": "public"
   },
@@ -11,6 +11,7 @@
     "src"
   ],
   "bin": {
+    "re-entry": "./src/main.mjs",
     "reentry": "./src/main.mjs"
   },
   "exports": {

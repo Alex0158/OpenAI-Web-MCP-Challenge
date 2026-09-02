@@ -8,9 +8,33 @@ import {
 import { createContinuationReceipt } from "@webmcp-challenge/reentry-core/protocol";
 import {
   createCodexExecAdapter,
+  runCodexPrompt,
 } from "../src/codex-exec-adapter.mjs";
 
 const NOW = new Date("2026-08-31T12:00:00.000Z");
+
+test("local smoke test starts one fresh Codex process with the exact prompt", async () => {
+  const calls = [];
+  await runCodexPrompt({
+    workingDirectory: process.cwd(),
+    executable: "/private/codex",
+    prompt: "Reply with: Re-entry is working.",
+    spawnCommand(...input) {
+      calls.push(input);
+      const child = new EventEmitter();
+      queueMicrotask(() => child.emit("close", 0, null));
+      return child;
+    },
+  });
+
+  assert.equal(calls.length, 1);
+  assert.deepEqual(calls[0][1], [
+    "exec",
+    "--cd",
+    process.cwd(),
+    "Reply with: Re-entry is working.",
+  ]);
+});
 
 test("Codex adapter starts one fresh session with a bounded continuation prompt", async () => {
   const calls = [];

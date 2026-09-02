@@ -1,6 +1,11 @@
 # Re-entry Local Connector
 
-Install it once on the Mac where Codex should open; after one browser approval, a macOS
+> **Cloud Receiver dependency notice — 2026-09-02:** The former `re-entry-weld.vercel.app` Cloud
+> Receiver is deprecated and must not be used for new pairing, credentials, or production traffic.
+> This Connector package remains a reusable/local preview surface, but a new Receiver origin must
+> be supplied explicitly by an accepted replacement service.
+
+Install it once on the Mac where Codex should open; after one dashboard pairing code, a macOS
 LaunchAgent keeps the outbound Connector running at login.
 
 > Current boundary: this is a verified macOS Connector preview with a publish-ready npm package.
@@ -13,26 +18,64 @@ Requirements: macOS, Node.js 24+, Codex installed and signed in, and an absolute
 Codex may read and write.
 
 ```sh
-npx reentry install --codex-cd /absolute/path/to/your/project
+npx @4xeoz/re-entry install
 ```
 
-The published package uses the hosted Receiver by default. Use `--receiver` only when testing a
-different Receiver, such as the local preview:
+`npx` runs a temporary copy, so it does not leave a permanent shell command behind. Install the
+small CLI globally once if you want to use `re-entry` from any folder afterward:
 
 ```sh
-npx reentry install \
+npm install --global @4xeoz/re-entry
+```
+
+The package installs both `re-entry` and the older `reentry` spelling; `re-entry` is the documented
+command.
+
+The CLI no longer has a default hosted Receiver. For any new or historical test, pass an explicit
+accepted Receiver origin with `--receiver` or `REENTRY_RECEIVER_ORIGIN`; the former
+`https://re-entry-weld.vercel.app` alias is retired.
+
+The interactive CLI first offers Desktop, the current folder, or a small folder browser. Choose
+with ↑/↓ and Enter. If you want to skip the picker, pass the workspace directly:
+
+```sh
+npx @4xeoz/re-entry install \
+  --codex-cd /absolute/path/to/your/project
+```
+
+The guided screen stays intentionally small: **Workspace → System check → Connect Re-entry**. It
+shows one clear next command when setup finishes; internal Connector IDs, credential paths, and log
+paths stay out of the normal success screen.
+
+Run this from the Host project directory, your home directory, or another normal working
+directory—not from a checked-out `runtime/local-connector` package directory. npm can treat that
+source directory as the package itself and fail to create the temporary executable link.
+
+If your npm installation cannot create the temporary `npx` executable, use the one-time global
+installation instead:
+
+```sh
+npm install --global @4xeoz/re-entry
+re-entry install --codex-cd /absolute/path/to/your/project
+```
+
+Use `--receiver` to select an accepted replacement Receiver, such as a local historical preview:
+
+```sh
+npx --yes --package=@4xeoz/re-entry re-entry install \
   --receiver http://127.0.0.1:43224 \
   --codex-cd /absolute/path/to/your/project
 ```
 
-`reentry install` performs the whole user setup:
+`re-entry install` performs the whole user setup:
 
 ```text
-check Node + find Codex + validate project directory
-  -> request a device authorization from Re-entry
-  -> open Re-entry in the default browser
-  -> sign in or create an account
-  -> approve this Mac once
+choose Desktop, the current folder, or another Codex workspace
+  -> check Node + find Codex + validate the selected directory
+  -> open the dedicated Re-entry user account page in the default browser
+  -> sign in or create a user account
+  -> land on the user dashboard and click Pair this Mac
+  -> enter the short pairing code in the CLI
   -> save the device credential with mode 0600
   -> install and start a per-user macOS LaunchAgent
 ```
@@ -44,19 +87,44 @@ preview.
 ## Check it
 
 ```sh
-reentry status
-reentry --help
+re-entry status
+re-entry listen
+re-entry --help
 ```
 
 The status view checks the local authorization, background job, Receiver reachability, Node, and
-Codex. Useful development commands are:
+Codex. If the Receiver rejects a previously saved device credential, the Connector pauses instead
+of retrying forever, and `status`/`listen` tell you to run `re-entry connect` again. `listen` watches
+the already-running background Connector and displays new activity until you press Ctrl+C; it does
+not start a competing second poller. Useful development commands are:
 
 ```sh
-reentry doctor --codex-cd /absolute/path/to/project
-reentry connect --receiver http://127.0.0.1:43224
-reentry claim-once --codex-cd /absolute/path/to/project
-reentry start --codex-cd /absolute/path/to/project
+re-entry doctor --codex-cd /absolute/path/to/project
+re-entry connect --receiver http://127.0.0.1:43224
+re-entry claim-once --codex-cd /absolute/path/to/project
+re-entry start --codex-cd /absolute/path/to/project
 ```
+
+Test the local Codex handoff without waiting for Cloud work:
+
+```sh
+re-entry test "Reply with: Re-entry is working."
+```
+
+This starts one fresh local Codex process through the same adapter seam used by real deliveries. It
+does not create a Grant, claim Receiver work, or prove the browser/WebMCP return path.
+
+To pause or remove the local Connector:
+
+```sh
+re-entry stop
+re-entry uninstall
+```
+
+`stop` pauses the macOS background service and keeps the account connection. `uninstall` requires
+typing `DELETE`, then removes only the LaunchAgent, saved Connector credential, and Connector logs.
+It does not recursively delete folders or uninstall the npm package. To remove a global npm
+installation separately, run `npm uninstall --global @4xeoz/re-entry`.
 
 `connect` repeats only account authorization. `install` is the normal product path because it also
 installs the background job. `claim-once` is the smallest manual delivery test. The legacy
@@ -68,19 +136,20 @@ Copy this prompt into a coding-agent task:
 
 ```text
 Install the Re-entry Local Connector on this Mac. First read the package README. Verify Node.js 24
-or newer and locate the installed Codex executable. Run `npx reentry install` with an absolute
-project directory. Let the human complete the Re-entry
-browser approval; never copy browser cookies, organization keys, Connector tokens, or private keys
-into chat, logs, source files, or git. Finish by running `reentry status` and report the bounded
+or newer and locate the Connector executable. Run `npx --yes --package=@4xeoz/re-entry re-entry install` with an absolute
+project directory. Let the human create or sign in to a Re-entry account, click Pair this Mac, and
+enter the code in the CLI; never copy browser cookies, organization keys, Connector tokens, or private keys
+into chat, logs, source files, or git. Finish by running `re-entry status` and report the bounded
 results without claiming Browser/WebMCP or production deployment.
 ```
 
 ## Package map
 
-- `src/main.mjs` — `reentry` CLI and long-running poll loop.
-- `src/pairing-client.mjs` — account-first browser device authorization.
+- `src/main.mjs` — `re-entry` CLI and long-running poll loop.
+- `src/pairing-client.mjs` — account pairing-code redemption and legacy pairing compatibility.
 - `src/credentials.mjs` — atomic local credential storage.
-- `src/macos-service.mjs` — per-user LaunchAgent install and status.
+- `src/macos-service.mjs` — per-user LaunchAgent install, stop, uninstall, and status.
+- `src/workspace-picker.mjs` — interactive Codex workspace selection.
 - `src/local-connector.mjs` — one claim and activation boundary.
 - `src/codex-exec-adapter.mjs` — fresh local Codex process adapter.
 - `src/terminal-ui.mjs` — dependency-free human CLI presentation.
@@ -128,16 +197,20 @@ installed from npm without a checked-out repository or a local `file:` dependenc
 
 ## Publish the package
 
-The package name is `reentry` and the core is included in the tarball. After signing in to an npm
-account that owns the name, publish from this directory:
+The package name is `@4xeoz/re-entry` and the core is included in the tarball. After signing in to
+the npm account that owns the `4xeoz` scope, publish from this directory:
 
 ```sh
 npm login
 npm publish --access public
 ```
 
-If `reentry` is owned by another account, choose an available package name before publishing; the
-exact command `npx reentry install` requires ownership of the unscoped `reentry` name.
+After publishing, users run `npx --yes --package=@4xeoz/re-entry re-entry install`. The explicit
+`--package` form works across npm versions when the package is scoped; the executable itself is
+still named `re-entry`.
+
+On npm installations affected by the temporary-bin `PATH` bug, use `npm install --global
+@4xeoz/re-entry` once and then run `re-entry install` directly.
 
 ## Check a Mac before pairing
 
@@ -182,9 +255,10 @@ npm start -- \
   --codex-cd "$HOME/Code/my-host-project"
 ```
 
-On the first run, the Connector checks the Mac, asks for the one-time code from the Host
-backend, opens the approval page, waits for the user to approve it, stores the credential, and
-checks once for approved work. On later runs it reuses the saved credential and skips pairing:
+On the first run, the Connector checks the Mac, opens the dedicated Re-entry user account page,
+waits for you to create or sign in to an account, lands on the user dashboard, and asks for the
+pairing code. It then stores the credential. On later runs it reuses the saved credential and
+skips pairing:
 
 ```sh
 npm start -- --codex-cd "$HOME/Code/my-host-project"
@@ -202,13 +276,13 @@ events instead so another process can consume it:
 npm start -- --json --codex-cd "$HOME/Code/my-host-project"
 ```
 
-## Pair this Mac with a Host user
+## Compatibility: Host-code pairing (legacy)
 
 Pairing connects one local Connector to one already-authenticated Host user. It is separate from
 the Host organization's API key and does not give the Connector permission to create Grants or
 send Host events.
 
-The flow is:
+The older compatibility flow is:
 
 ```text
 Host backend -> Receiver: start pairing for its Host-user reference
@@ -221,7 +295,8 @@ Receiver -> Connector: one Connector credential
 Connector -> local disk: save the credential with mode 0600
 ```
 
-The Host backend starts pairing with its organization credential. In the current local preview:
+The current preview does not use this Host-issued code path. Use `re-entry install` above, where
+the authenticated Re-entry dashboard creates the code.
 
 ```sh
 curl -s -X POST http://127.0.0.1:43218/v0.1/pairing-sessions \
@@ -248,9 +323,10 @@ npm start -- pair \
   --credential-file "$HOME/.webmcp-connector/credentials.json"
 ```
 
-The Connector opens the approval page automatically. In a terminal, it shows the URL and a
-waiting indicator. If the browser does not open, use the displayed URL manually and click
-**Approve**. The command keeps polling until approval or expiry, then prints `connector_paired`.
+In an interactive terminal, the Connector shows the verification URL and waits for you to press
+Enter before opening the approval page. If the browser does not open, use the displayed URL
+manually and click **Approve**. The command keeps polling until approval or expiry, then prints
+`connector_paired`. JSON and other non-interactive callers continue without the Enter prompt.
 
 The credential file contains the local bearer credential and is protected with filesystem mode
 0600. Do not commit it, copy it into a Host prompt, or put it in a repository. The Connector never

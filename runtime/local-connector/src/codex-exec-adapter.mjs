@@ -22,6 +22,7 @@ const MIN_COMMAND_TIMEOUT_MS = 100;
 const MAX_COMMAND_TIMEOUT_MS = 60_000;
 const MAX_REFERENCE_BYTES = 4 * 1_024;
 const CONTROL_CHARACTER_PATTERN = /[\u0000-\u001f\u007f]/;
+const PROMPT_CONTROL_CHARACTER_PATTERN = /[\u0000-\u0009\u000b-\u001f\u007f]/;
 
 /**
  * Create the fresh-session Codex adapter that lives inside the Local Connector process.
@@ -54,11 +55,11 @@ export function createCodexExecAdapter(options) {
         return activationResult(activation, "rejected", "activation_rejected", null);
       }
 
-      await runCodexExec({
+      await runCodexPrompt({
         executable,
         workingDirectory,
         prompt: buildContinuationPrompt(activation),
-        timeoutMs: commandTimeoutMs,
+        commandTimeoutMs,
         spawnCommand,
       });
       return activationResult(
@@ -69,6 +70,30 @@ export function createCodexExecAdapter(options) {
       );
     },
   });
+}
+
+/**
+ * Run one local prompt through the same fresh Codex process seam used by real activations.
+ * This helper carries no Receiver authority and is intended only for an explicit local smoke test.
+ */
+export async function runCodexPrompt(options) {
+  requireExactRecord(
+    options,
+    ["workingDirectory", "prompt", "executable", "commandTimeoutMs", "spawnCommand"],
+    ["workingDirectory", "prompt"],
+    "Codex prompt options",
+  );
+  const workingDirectory = validateCodexWorkingDirectory(options.workingDirectory);
+  const executable = options.executable === undefined
+    ? discoverCodexExecutable()
+    : requireReference(options.executable, "Codex executable");
+  const prompt = requirePrompt(options.prompt);
+  const timeoutMs = requireTimeout(options.commandTimeoutMs ?? 60_000);
+  const spawnCommand = options.spawnCommand ?? spawn;
+  if (typeof spawnCommand !== "function") {
+    throw new TypeError("Codex prompt spawnCommand must be a function");
+  }
+  await runCodexExec({ executable, workingDirectory, prompt, timeoutMs, spawnCommand });
 }
 
 function buildContinuationPrompt(activation) {
@@ -179,6 +204,19 @@ function requireReference(value, label) {
     CONTROL_CHARACTER_PATTERN.test(value)
   ) {
     throw new TypeError(`${label} is invalid`);
+  }
+  return value;
+}
+
+function requirePrompt(value) {
+  if (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    value.trim() !== value ||
+    Buffer.byteLength(value, "utf8") > MAX_REFERENCE_BYTES ||
+    PROMPT_CONTROL_CHARACTER_PATTERN.test(value)
+  ) {
+    throw new TypeError("Codex prompt is invalid");
   }
   return value;
 }
