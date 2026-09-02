@@ -147,7 +147,7 @@ button:disabled {
   display: flex;
   min-height: 72px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 1.5rem;
 }
 
@@ -173,6 +173,37 @@ button:disabled {
   color: var(--surface);
   font-size: 0.73rem;
   letter-spacing: 0.07em;
+}
+
+.session-nav-links {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.25rem;
+  margin-inline: auto;
+}
+
+.session-nav-link {
+  display: inline-flex;
+  min-height: var(--control-size);
+  align-items: center;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-small);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 760;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.session-nav-link:hover {
+  background: var(--surface-muted);
+  color: var(--ink);
+}
+
+.session-nav-link[aria-current="page"] {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .session-nav-actions {
@@ -546,6 +577,10 @@ h3 {
     gap: 0.65rem;
   }
 
+  .session-nav-links {
+    margin-inline: 0;
+  }
+
   .session-indicator {
     max-width: 10rem;
     font-size: 0.75rem;
@@ -592,6 +627,11 @@ h3 {
     flex-direction: column;
     gap: 0.8rem;
     padding: 0.85rem 0;
+  }
+
+  .session-nav-links {
+    width: 100%;
+    overflow-x: auto;
   }
 
   .session-nav-actions {

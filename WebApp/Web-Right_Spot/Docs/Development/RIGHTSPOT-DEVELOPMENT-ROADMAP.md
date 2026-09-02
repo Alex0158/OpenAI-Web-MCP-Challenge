@@ -1,13 +1,14 @@
 # RightSpot Development Roadmap
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
-**Status:** Phase 5 is complete for the accepted local MVP, and the Phase 6 post-MVP closure increment
+**Status:** Phase 5 is complete for the accepted local MVP, and the earlier Phase 6 post-MVP closure increment
 is complete. The joint review of `RS-WO-008-01` and `RS-WO-009-01` accepted ADR-RS-0013 for the
 bounded Favourite increment, deferred the PII-sensitive Information Request boundary, and registered
 `RIGHTSPOT-020`; its initial serial contract/data Work Order `RS-WO-020-01` and follow-up
 `RS-WO-020-01R` relation-version continuity repair are independently verified, with the repair frozen at
-`adfd37e`. The disjoint tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` are prepared
-for dispatch.
+`adfd37e`. The disjoint tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched,
+adopted into Main, and passed dependency-complete typecheck, full-suite `121/121`, and production-build
+checks; independent verification remains the next gate.
 `RS-WO-005-01` has passed corrected independent verification and is integrated at local product
 commit `27f5391`; `RS-WO-007-01` is accepted as a read-only UI decomposition and `RS-WO-007-02` has
 passed final independent browser verification and is integrated at product commit `89a50c7` after
@@ -34,8 +35,10 @@ verifier Worktree is no longer present.
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-02, Europe/London
 
-**Physical workspace:** Only the canonical Main Worktree remains. Historical candidate snapshots are
-retained as Task File evidence and local-only archive refs, not as active source or execution surfaces.
+**Physical workspace:** The canonical Main Worktree remains the only source authority. Two stopped,
+short-lived candidate Worktrees are temporarily retained for T2 handoff and will be retired after
+independent verification: `/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-02-tenant-ui` and
+`/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-03-agent-ui`.
 
 **Current gate:** None for the accepted local MVP. `RS-WO-002-13` is integrated at product commit
 `3765747`, repaired `RS-WO-002-12` is integrated at `9348aa5`, `RS-WO-002-14` passed direct combined
@@ -76,8 +79,8 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
   independently verified local baseline; no deployment configuration or Hackathon integration exists.
 - The accepted local baseline is Next.js App Router, React, TypeScript, Node.js 24, and SQLite.
   Cloud Receiver, WebMCP, Redis, WebRTC media/signaling, and external services remain deferred.
-- Physical Worktree cleanup is complete: `git worktree list --porcelain` contains only the canonical
-  Main Worktree; historical candidate paths are evidence references, not current implementation lanes.
+- The current physical state is three Worktrees: canonical Main plus two stopped, short-lived UI T2
+  candidates; the candidates are not source authority and are scheduled for retirement after verification.
 
 ## 3. Roadmap milestones
 
@@ -94,17 +97,18 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 
 ### 3.1 Current next route
 
-The accepted local MVP and the Phase 6 post-MVP closure increment are complete. The next route is a
-bounded implementation sequence, not an open-ended implementation wave:
+The accepted local MVP and the earlier Phase 6 post-MVP closure increment are complete. The current
+`RIGHTSPOT-020` route is at the frozen-source independent verification gate after a bounded implementation
+sequence:
 
 1. Keep the reviewed documentation/procedure baseline and unrelated collaborator changes separate.
 2. Implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; the
    `RS-WO-020-01R` relation-version continuity repair is independently verified before UI consumption.
 3. Dispatch tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` in parallel with their
-   declared disjoint paths; shared navigation, listing-card/detail integration, and global CSS remain
-   serialized.
-4. Freeze the integrated source before independent verification, then reconcile evidence and retire
-   any temporary Worktree at the first safe checkpoint-scoped opportunity.
+   declared disjoint paths; adopt both candidates into Main and serialize shared navigation, listing-card/
+   detail integration, and global CSS.
+4. Freeze the integrated source at a local commit, independently verify it, then reconcile evidence and
+   retire both temporary Worktrees at the first safe checkpoint-scoped opportunity.
 5. Keep the reviewed `RIGHTSPOT-009` Information Request proposal deferred until contact/PII authority,
    retention, erasure, and agent-access decisions are accepted; it must not enter `RIGHTSPOT-020`.
 6. Keep `RIGHTSPOT-006` outside the implementation lane until the explicit external credential and

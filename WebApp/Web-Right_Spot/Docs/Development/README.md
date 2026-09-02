@@ -17,9 +17,12 @@ record is [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md). 
 checkpoint-locally blocked by an out-of-scope tracked verifier Worktree mutation, which remains preserved
 for separate ownership/recoverability handling; the physical verifier Worktree is no longer present.
 
-**Current physical workspace:** Only the canonical Main Worktree remains. Historical candidate snapshots
-are retained in the owning Task Files and named local-only archive refs as evidence/recovery records;
-they are not active product source or execution surfaces.
+**Current physical workspace:** The canonical Main Worktree remains the only source authority; two stopped,
+short-lived UI candidate Worktrees are temporarily retained for the active `RIGHTSPOT-020` T2 handoff:
+`/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-02-tenant-ui` and
+`/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-03-agent-ui`. They are not active writers and
+will be retired after independent verification. Historical candidate snapshots are retained in the owning
+Task Files and named local-only archive refs as evidence/recovery records.
 
 ## Purpose
 
@@ -91,13 +94,14 @@ The experimental delegated-work procedure is
 It is opt-in and scoped to RightSpot; it does not change outer repository governance or sibling
 applications.
 
-The current post-MVP route is now implementation-ready for the bounded Favourite increment: the main
+The current post-MVP route is now at the integrated-candidate verification gate for the bounded Favourite increment: the main
 thread jointly reviewed `RS-WO-008-01` and `RS-WO-009-01`, accepted the Favourite boundary in
 ADR-RS-0013, deferred the PII-sensitive Information Request boundary, and registered `RIGHTSPOT-020`.
 Its initial serial contract/data Work Order `RS-WO-020-01` was independently verified and the follow-up
 `RS-WO-020-01R` repair was independently verified at `adfd37e` after a pre-UI review found that a removed
 relation version could not be recovered after reload. The tenant and agent UI Work Orders `RS-WO-020-02`
-and `RS-WO-020-03` are prepared for disjoint parallel dispatch.
+and `RS-WO-020-03` were dispatched on disjoint paths, adopted into Main, and passed dependency-complete
+typecheck, full-suite `121/121`, and production-build checks; one independent read-only verification remains.
 `RIGHTSPOT-006` remains credential-gated,
 `RIGHTSPOT-010` remains a later Operations/WebMCP decision gate, and `RIGHTSPOT-012` is a non-blocking
 read-only audit lane. The authoritative sequence is maintained in the [development roadmap](RIGHTSPOT-DEVELOPMENT-ROADMAP.md#31-current-next-route).

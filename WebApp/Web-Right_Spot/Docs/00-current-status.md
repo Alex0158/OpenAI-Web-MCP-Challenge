@@ -2,8 +2,11 @@
 
 **Role:** Canonical current status for the RightSpot child application  
 **As of:** 2026-09-02, Europe/London  
-**Physical workspace:** `git worktree list --porcelain` currently reports only the canonical Main
-Worktree at `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge` on `main`. Historical candidate snapshots
+**Physical workspace:** `git worktree list --porcelain` currently reports the canonical Main Worktree at
+`/Users/alex/OpenAI-WebMCP/WebMCP_Challenge` on `main` plus two short-lived, stopped UI candidate
+Worktrees for the active `RIGHTSPOT-020` T2 handoff:
+`/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-02-tenant-ui` and
+`/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-03-agent-ui`. Historical candidate snapshots
 are retained only in their owning Task Files and, where applicable, the local-only archive refs
 `refs/archive/rightspot/rs-wo-015-01-builder`, `refs/archive/rightspot/rs-wo-016-01-regate`, and
 `refs/archive/rightspot/rs-wo-017-03-regate`; these refs are evidence/recovery records, not product
@@ -51,8 +54,10 @@ product claim.
 shared-workflow Work Order and is closed; `RIGHTSPOT-019` records the integrated London-time UI
 boundary repair and completed browser/form regression, and is closed.
 `RIGHTSPOT-020` remains in progress: the server-side `RS-WO-020-01` foundation and its
-`RS-WO-020-01R` tenant Favourite relation-version continuity repair are independently verified; the
-tenant and agent UI Work Orders are prepared for the next dispatch.
+`RS-WO-020-01R` tenant Favourite relation-version continuity repair are independently verified; both
+UI candidates from `RS-WO-020-02` and `RS-WO-020-03` are adopted in Main, shared navigation is integrated,
+and Main typecheck, full suite `121/121`, and production build pass. Independent verification and
+checkpoint-scoped Worktree retirement remain open.
 The bounded Operations seam `RS-WO-011-01` passed independent verification and is integrated at
 product commit `7ff0fbd`; its verifier evidence remains recorded in the owning Task File, and its
 physical Worktree was removed during the documented cleanup.
@@ -304,15 +309,16 @@ closed parent or override the current closure statement above.
 ## 5.1 Current post-MVP route
 
 The accepted local MVP and the Phase 6 post-MVP closure increment are complete. The current bounded
-`RIGHTSPOT-020` implementation lane is in a pre-UI repair gate because the tenant Favourite read
-contract must preserve removed relation versions across reload:
+`RIGHTSPOT-020` implementation lane has passed its pre-UI repair gate and T2 UI adoption; the integrated
+source now awaits one frozen-source independent verification:
 
 1. keep the reviewed documentation/procedure baseline and unrelated collaborator work separate;
-2. implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; complete and
-   independently verify `RS-WO-020-01R` before consuming it from UI;
-3. dispatch `RS-WO-020-02` and `RS-WO-020-03` in parallel only after the repair, with disjoint paths;
+2. implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; the
+   `RS-WO-020-01R` relation-version continuity repair is independently verified and consumed by UI;
+3. dispatch `RS-WO-020-02` and `RS-WO-020-03` in parallel with disjoint paths; both candidates are now
+   adopted in Main after exact-path review;
 4. serialize shared navigation, listing-card/detail integration, global CSS, source freeze, Main
-   integration, and Worktree retirement;
+   integration, independent verification, and Worktree retirement;
 5. keep the reviewed `RIGHTSPOT-009` Information Request proposal deferred until its contact/PII
    authority decisions are accepted; it must not be absorbed into `RIGHTSPOT-020`;
 6. keep `RIGHTSPOT-006` gated on explicit external credentials and local-origin authorization;

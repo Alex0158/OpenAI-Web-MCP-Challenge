@@ -10,6 +10,7 @@ import {
   type AgentQueueResponse,
 } from "./agent-api";
 import styles from "./agent.module.css";
+import AgentListingInterest from "./agent-listing-interest";
 
 const QUEUE_STATES = [
   "REQUEST_SUBMITTED",
@@ -38,7 +39,10 @@ export default function AgentDashboardPage() {
       eyebrow="Property agent workspace"
       description="Review the next request, compare the available times, and keep the human response explicit."
     >
-      <AgentQueue />
+      <div className={styles.dashboardStack}>
+        <AgentQueue />
+        <AgentListingInterest />
+      </div>
     </RolePageFrame>
   );
 }

@@ -1,7 +1,204 @@
+.dashboardStack {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  min-width: 0;
+}
+
 .workspace {
   display: grid;
   gap: clamp(1.35rem, 3vw, 2rem);
   min-width: 0;
+}
+
+.interestSection {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  padding-top: clamp(1.35rem, 3vw, 2rem);
+  border-top: 1px solid var(--line);
+}
+
+.interestHeader,
+.interestCardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.interestHeader h2 {
+  margin-bottom: 0.45rem;
+  font-size: clamp(1.75rem, 3vw, 2.4rem);
+}
+
+.interestHeader :global(.panel-copy) {
+  max-width: 64ch;
+  margin-bottom: 0;
+}
+
+.interestHeader :global(.button) {
+  flex: 0 0 auto;
+}
+
+.interestDefinitions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
+  background: var(--line);
+}
+
+.interestDefinitions p {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  background: var(--surface-muted);
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.interestDefinitions strong {
+  display: block;
+  margin-bottom: 0.15rem;
+  color: var(--ink);
+}
+
+.interestLoading,
+.interestEmpty,
+.interestError {
+  padding: 1rem;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+}
+
+.interestLoading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.interestLoading h3,
+.interestEmpty h3 {
+  margin-bottom: 0.35rem;
+}
+
+.interestLoading :global(.panel-copy),
+.interestEmpty :global(.panel-copy),
+.interestError :global(.panel-copy) {
+  margin-bottom: 0;
+}
+
+.interestLoading > span,
+.interestGeneration {
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+
+.interestError {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: start;
+}
+
+.interestList {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.interestCard {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+}
+
+.interestCardHeader h3 {
+  margin-bottom: 0.25rem;
+  font-size: 1.2rem;
+}
+
+.interestCardHeader p,
+.unpublishedNote,
+.interestGeneration {
+  margin: 0;
+}
+
+.interestCardHeader p,
+.unpublishedNote {
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.listingStatusPill {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  padding: 0.32rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--ink);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.listingStatusPill[data-status="PUBLISHED"] {
+  border-color: var(--success);
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.interestMetrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin: 0;
+}
+
+.interestMetrics div {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--radius-small);
+  background: var(--surface-muted);
+}
+
+.interestMetrics dt {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.interestMetrics dd {
+  margin: 0;
+  color: var(--accent-strong);
+  font-size: 1.45rem;
+  font-weight: 780;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.unpublishedNote {
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--line);
+}
+
+.interestGeneration {
+  justify-self: end;
 }
 
 .workspaceHeader,
@@ -872,9 +1069,14 @@
 @media (max-width: 760px) {
   .workspaceHeader,
   .sectionHeader,
-  .cardHeader {
+  .cardHeader,
+  .interestHeader {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .interestHeader :global(.button) {
+    width: fit-content;
   }
 
   .refreshButton {
@@ -932,6 +1134,17 @@
     grid-template-columns: 1fr;
   }
 
+  .interestDefinitions,
+  .interestMetrics {
+    grid-template-columns: 1fr;
+  }
+
+  .interestCardHeader,
+  .interestLoading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .availabilityList {
     grid-template-columns: 1fr;
   }
@@ -949,6 +1162,7 @@
   }
 
   .refreshButton,
+  .interestHeader :global(.button),
   .headerActions,
   .headerActions :global(.button),
   .actionFooter :global(.button),

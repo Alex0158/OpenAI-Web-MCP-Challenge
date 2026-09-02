@@ -10,6 +10,12 @@ import {
   type TenantListingFilters,
   type TenantListingsResponse,
 } from "./tenant-api";
+import {
+  FavouriteFeedback,
+  FavouriteToggle,
+  useTenantFavourites,
+  type TenantFavouritesController,
+} from "./tenant-favourites-page";
 import styles from "./tenant.module.css";
 
 type FilterForm = {
@@ -28,6 +34,7 @@ export default function TenantDiscoveryPage() {
   const [error, setError] = useState<unknown>(null);
   const [isLoading, setIsLoading] = useState(true);
   const latestRequestId = useRef(0);
+  const favourites = useTenantFavourites();
 
   useEffect(() => {
     const requestId = ++latestRequestId.current;
@@ -155,9 +162,12 @@ export default function TenantDiscoveryPage() {
           <div className={styles.inlineError} role="alert">{error instanceof Error ? error.message : "Filters are invalid."}</div>
         ) : null}
 
+        <FavouriteFeedback controller={favourites} />
+
         <ListingResults
           data={data}
           error={error instanceof TenantApiError ? error : null}
+          favourites={favourites}
           hasAppliedFilters={hasAppliedFilters}
           isLoading={isLoading}
           onClear={clearFilters}
@@ -171,6 +181,7 @@ export default function TenantDiscoveryPage() {
 type ListingResultsProps = {
   data: TenantListingsResponse | null;
   error: unknown;
+  favourites: TenantFavouritesController;
   hasAppliedFilters: boolean;
   isLoading: boolean;
   onClear: () => void;
@@ -180,6 +191,7 @@ type ListingResultsProps = {
 function ListingResults({
   data,
   error,
+  favourites,
   hasAppliedFilters,
   isLoading,
   onClear,
@@ -251,7 +263,10 @@ function ListingResults({
                 <div><dt>Size</dt><dd>{listing.sizeSqM} m²</dd></div>
                 <div><dt>Available</dt><dd>{formatDate(listing.availableFrom)}</dd></div>
               </dl>
-              <a className="button button-primary" href={`/tenant/listings/${encodeURIComponent(listing.id)}`}>View full listing</a>
+              <div className={styles.cardActions}>
+                <a className="button button-primary" href={`/tenant/listings/${encodeURIComponent(listing.id)}`}>View full listing</a>
+                <FavouriteToggle controller={favourites} listing={listing} />
+              </div>
             </div>
           </article>
         ))}

@@ -22,9 +22,29 @@ export default function SessionNav({
 }: SessionNavProps) {
   const sessionMessage = isLoading
     ? "Checking demo session"
-    : actor
+      : actor
       ? `${ROLE_LABELS[actor.role]} session active`
       : "Demo session not active";
+  const workspaceLinks = actor?.role === "tenant"
+    ? [
+        {
+          href: "/tenant",
+          label: "Browse rentals",
+          isCurrent: currentPath === "/tenant" || currentPath.startsWith("/tenant/listings/"),
+        },
+        {
+          href: "/tenant/favourites",
+          label: "Favourites",
+          isCurrent: currentPath === "/tenant/favourites",
+        },
+      ]
+    : actor?.role === "agent"
+      ? [{
+          href: "/agent",
+          label: "Request queue",
+          isCurrent: currentPath === "/agent" || currentPath.startsWith("/agent/"),
+        }]
+      : [];
 
   return (
     <nav className="session-nav" aria-label="Primary navigation">
@@ -32,6 +52,20 @@ export default function SessionNav({
         <span className="brand-mark" aria-hidden="true">RS</span>
         <span>RightSpot</span>
       </a>
+      {workspaceLinks.length > 0 ? (
+        <div className="session-nav-links" aria-label="Workspace navigation">
+          {workspaceLinks.map((link) => (
+            <a
+              className="session-nav-link"
+              href={link.href}
+              aria-current={link.isCurrent ? "page" : undefined}
+              key={link.href}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      ) : null}
       <div className="session-nav-actions">
         <span className="session-indicator" role="status" aria-live="polite">
           <span className="session-indicator-dot" aria-hidden="true" />

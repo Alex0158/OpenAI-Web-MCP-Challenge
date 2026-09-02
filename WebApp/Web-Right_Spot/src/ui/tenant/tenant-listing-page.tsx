@@ -10,6 +10,12 @@ import {
   type TenantListingResponse,
 } from "./tenant-api";
 import { TenantRequestEditor } from "./tenant-request-page";
+import {
+  FavouriteFeedback,
+  FavouriteToggle,
+  useTenantFavourites,
+  type TenantFavouritesController,
+} from "./tenant-favourites-page";
 import styles from "./tenant.module.css";
 import type { TenantRequestResponse } from "../../shared/contracts/workflow-api";
 
@@ -18,6 +24,7 @@ export default function TenantListingPage({ listingId }: { listingId: string }) 
   const [requestData, setRequestData] = useState<TenantRequestResponse | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const favourites = useTenantFavourites();
 
   function load() {
     setIsLoading(true);
@@ -41,6 +48,7 @@ export default function TenantListingPage({ listingId }: { listingId: string }) 
       eyebrow="Listing detail"
       description="The facts below come from the tenant listing service. A request is saved separately and only submitted through an explicit action."
     >
+      <FavouriteFeedback controller={favourites} />
       {isLoading ? (
         <div className={`${styles.feedbackState} ${styles.loadingState}`} role="status" aria-live="polite" aria-busy="true">
           <span className={styles.feedbackMarker} aria-hidden="true" />
@@ -64,6 +72,7 @@ export default function TenantListingPage({ listingId }: { listingId: string }) 
         <ListingDetailContent
           listingData={listingData}
           requestData={requestData}
+          favourites={favourites}
           onRequestData={setRequestData}
         />
       ) : null}
@@ -74,10 +83,12 @@ export default function TenantListingPage({ listingId }: { listingId: string }) 
 function ListingDetailContent({
   listingData,
   requestData,
+  favourites,
   onRequestData,
 }: {
   listingData: TenantListingResponse;
   requestData: TenantRequestResponse;
+  favourites: TenantFavouritesController;
   onRequestData: (data: TenantRequestResponse) => void;
 }) {
   const listing = listingData.listing;
@@ -96,10 +107,13 @@ function ListingDetailContent({
               <h2 id="listing-facts-title">{listing.title}</h2>
               <p className={styles.address}>{listing.address}</p>
             </div>
-            <p className={styles.detailPrice}>
-              <strong>£{listing.monthlyRentGbp.toLocaleString("en-GB")}</strong>
-              <span>per month</span>
-            </p>
+            <div className={styles.detailAside}>
+              <p className={styles.detailPrice}>
+                <strong>£{listing.monthlyRentGbp.toLocaleString("en-GB")}</strong>
+                <span>per month</span>
+              </p>
+              <FavouriteToggle controller={favourites} listing={listing} />
+            </div>
           </div>
           <p className={styles.lede}>{listing.description}</p>
           <div className={styles.availabilityStrip}>

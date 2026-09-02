@@ -11,12 +11,14 @@
 
 - Type: `implementation`
 - Lifecycle: `in_progress`
-- Execution posture: `UI_SLICES_READY`
+- Execution posture: `UI_INTEGRATED_PENDING_VERIFICATION`
 - Current increment: The pre-UI relation-version continuity repair is independently verified at
-  `adfd37e`; the tenant and agent UI consumer pair is now the next bounded increment.
-- Next gate: Main may dispatch `RS-WO-020-02` and
-  `RS-WO-020-03` in parallel because their write sets are disjoint; shared navigation, card/detail
-  integration, and global CSS remain serialized Main work.
+  `adfd37e`; both disjoint UI candidates have completed their Builder turns, passed T2 exact-path/diff
+  review, and are adopted in Main together with the serialized shared navigation integration. Main's
+  dependency-complete typecheck, full suite, and production build pass; independent verification is the
+  remaining gate.
+- Next gate: Freeze the integrated source at a local commit, dispatch one independent read-only Verifier
+  against that exact snapshot, then reconcile evidence and retire the two short-lived candidate Worktrees.
 - Parent role: This is one registered Task File. Builder, Verifier, Repairer, and Integrator are
   checkpoints under this file, not additional Tasks.
 
@@ -183,8 +185,8 @@ join, role-safe DTOs, and focused tests. It must not edit tenant/agent pages or 
 ### RS-WO-020-01R — Restore Favourite relation-version continuity
 
 **Role:** Main Repairer  
-**Status:** `ASSIGNED` — persistent read-only verification active  
-**Execution state:** `ASSIGNED`  
+**Status:** `VERIFIED` — persistent independent verification passed  
+**Execution state:** `VERIFIED`  
 **Dispatch state:** `dispatched at adfd37e885700f48c783ff134b17e50ca4f205d1`  
 **Parallelization:** `SERIAL` — blocks the UI consumer pair until independently re-verified  
 **Dependency:** Initial `RS-WO-020-01` candidate at `96b1bca`; no product writer may modify the same
@@ -224,9 +226,14 @@ confirmed a refreshed activation snapshot. No product source mutation occurred d
 ### RS-WO-020-02 — Tenant Favourite UI
 
 **Role:** Tenant UI Builder  
-**Status:** `READY_TO_DISPATCH`  
+**Status:** `READY_FOR_VERIFICATION` — candidate handoff received; isolated dependency check is environment-limited  
+**Execution state:** `READY_FOR_VERIFICATION`  
+**Dispatch state:** `dispatched at 709e3e1bf0db8448cc676acbe58112f8df57330b`  
 **Parallelization:** `PARALLEL_WITH_RS-WO-020-03` — exact write set is disjoint from the agent UI slice  
 **Dependency:** `RS-WO-020-01R` independently verified after the relation-version continuity repair
+**Execution mode:** Isolated short-lived Worktree `/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-02-tenant-ui`; Main owns integration and retirement.  
+**Supporting task:** `RightSpot RS-WO-020-02 Tenant Favourite UI Builder`, task/thread
+`01a05f93-9d5a-7993-bdde-a41fe74a5907`, host `local`.  
 **Objective:** Consume the Favourite API to add accessible save/remove controls to tenant discovery and
 detail, a dedicated Favourite list route, and truthful active/unavailable/loading/stale/error states.
 
@@ -246,12 +253,23 @@ The Builder must consume the server projection and existing tenant API/session c
 edit shared navigation, global CSS, agent files, server/domain/API files, docs, or generated output.
 `src/ui/tenant/tenant.module.css` is tenant-owned for this slice; shared `app/globals.css` remains Main-owned.
 
+Builder handoff: exact seven-path write-set review, focused Favourite/UI checks, existing tenant API
+checks, supplemental TypeScript diagnostics, and whitespace/scope checks passed. The required exact
+`npm run typecheck -- --incremental false` could not resolve React/Next/Node modules because this
+isolated Worktree has no `node_modules`; Main must rerun dependency-complete typecheck/build after T2
+adoption. No browser, integration, deployment, or external-auth claim is made.
+
 ### RS-WO-020-03 — Agent listing-interest UI
 
 **Role:** Agent UI Builder  
-**Status:** `READY_TO_DISPATCH`  
+**Status:** `READY_FOR_VERIFICATION` — Main recovered the Builder's isolated dependency gate  
+**Execution state:** `READY_FOR_VERIFICATION`  
+**Dispatch state:** `dispatched at 709e3e1bf0db8448cc676acbe58112f8df57330b`  
 **Parallelization:** `PARALLEL_WITH_RS-WO-020-02` — exact write set is disjoint from the tenant UI slice  
 **Dependency:** `RS-WO-020-01R` independently verified after the relation-version continuity repair
+**Execution mode:** Isolated short-lived Worktree `/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-03-agent-ui`; Main owns integration and retirement.  
+**Supporting task:** `RightSpot RS-WO-020-03 Agent listing-interest UI Builder`, task/thread
+`01a05f93-a02b-7da3-a950-1721bbc45b9d`, host `local`.  
 **Objective:** Add a compact read-only listing-interest section to the assigned agent dashboard using the
 server projection, with explicit current-saves versus available-interest labels and bounded loading/error/empty states.
 
@@ -268,6 +286,15 @@ tests/ui/agent-listing-interest.test.ts
 The Builder must consume the server projection and must not recompute portfolio counts from raw workflow
 state. It must not edit shared navigation, global CSS, tenant files, server/domain/API files, docs, or
 generated output.
+
+Builder handoff blocker and recovery: the exact required `npm run typecheck -- --incremental false`
+failed in the isolated Worktree because `node_modules` is intentionally absent; the same missing
+dependency layout caused one child-process test invocation to fail. Focused listing-interest/API tests,
+relevant tests excluding that environment case, bundle smoke with Main's dependency tree, diff review,
+and scope checks passed. Failure class: `ENVIRONMENT_FAILURE`. The Builder stopped without installing,
+symlinking, or expanding scope. Main adopted the stopped exact-scope candidate only after the Builder
+ended, then reran the exact typecheck, full suite, and production build successfully in the dependency-
+complete Main environment. No browser, deployment, or independent-verification claim is made yet.
 
 ### Shared integration and closure — serial Main ownership
 
@@ -314,5 +341,8 @@ role/privacy boundary, cross-operation command-id conflict behavior, and route w
 found that the active-only tenant projection did not expose a removed relation's version after reload;
 Main repaired that continuity gap under `RS-WO-020-01R`, and persistent Verifier
 `01a05f8d-55ae-7810-b938-a7f8490a0b97` independently returned `VERIFIED` against `adfd37e`. UI Work
-Orders `RS-WO-020-02` and `RS-WO-020-03` are now prepared for disjoint parallel dispatch. No browser,
-deployment, production privacy, WebMCP, Cloud Receiver, or external-auth evidence is claimed.
+Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched in parallel, their exact-scope candidates
+were adopted into Main, and the shared navigation integration was serialized in Main. Dependency-
+complete Main verification now reports typecheck pass, full suite `121/121`, and production build pass;
+one independent read-only Verifier remains before closure. No browser, deployment, production privacy,
+WebMCP, Cloud Receiver, or external-auth evidence is claimed.

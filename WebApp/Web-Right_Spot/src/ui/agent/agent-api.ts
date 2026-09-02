@@ -8,6 +8,7 @@ import type {
   WorkflowErrorCode,
   WorkflowResponseDto,
 } from "../../shared/contracts/workflow-api";
+import type { AgentListingInterestResponse } from "../../shared/contracts/favourites-api";
 
 export type {
   AgentQueueResponse,
@@ -16,6 +17,7 @@ export type {
   WorkflowAvailabilitySlotDto,
   WorkflowResponseDto,
 };
+export type { AgentListingInterestResponse };
 
 export class AgentApiError extends Error {
   readonly status: number;
@@ -63,6 +65,12 @@ export async function readAgentQueue(): Promise<AgentQueueResponse> {
   return requestJson<AgentQueueResponse>("/api/agent/requests", {
     method: "GET",
   }, parseAgentQueueResponse);
+}
+
+export async function readAgentListingInterest(): Promise<AgentListingInterestResponse> {
+  return requestJson<AgentListingInterestResponse>("/api/agent/listing-interest", {
+    method: "GET",
+  }, parseAgentListingInterestResponse);
 }
 
 export async function readAgentRequest(requestId: string): Promise<AgentRequestResponse> {
@@ -238,6 +246,43 @@ function parseAgentQueueResponse(payload: unknown): AgentQueueResponse {
   }
 
   return { fixtureGeneration: payload.fixtureGeneration, requests, counts };
+}
+
+function parseAgentListingInterestResponse(payload: unknown): AgentListingInterestResponse {
+  if (
+    !isRecord(payload)
+    || !hasOnlyKeys(payload, ["fixtureGeneration", "listings"])
+    || !isPositiveInteger(payload.fixtureGeneration)
+    || !Array.isArray(payload.listings)
+  ) {
+    throw new AgentApiError(200, "INVALID_RESPONSE", "Agent listing-interest response was invalid");
+  }
+
+  const listings = payload.listings.map((listing) => {
+    if (
+      !isRecord(listing)
+      || !hasOnlyKeys(listing, ["listingId", "title", "status", "currentSaves", "availableInterest"])
+      || typeof listing.listingId !== "string"
+      || listing.listingId.length === 0
+      || typeof listing.title !== "string"
+      || listing.title.length === 0
+      || (listing.status !== "PUBLISHED" && listing.status !== "UNPUBLISHED")
+      || !isNonNegativeInteger(listing.currentSaves)
+      || !isNonNegativeInteger(listing.availableInterest)
+    ) {
+      throw new AgentApiError(200, "INVALID_RESPONSE", "Agent listing-interest response was invalid");
+    }
+
+    return {
+      listingId: listing.listingId,
+      title: listing.title,
+      status: listing.status,
+      currentSaves: listing.currentSaves,
+      availableInterest: listing.availableInterest,
+    };
+  });
+
+  return { fixtureGeneration: payload.fixtureGeneration, listings };
 }
 
 function parseAgentMutationResponse(payload: unknown): AgentWorkflowMutationResponse {
@@ -427,6 +472,11 @@ function isPositiveInteger(value: unknown): value is number {
 
 function isNonNegativeInteger(value: unknown): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
+}
+
+function hasOnlyKeys(value: Record<string, any>, allowedKeys: readonly string[]): boolean {
+  const keys = Object.keys(value);
+  return keys.length === allowedKeys.length && keys.every((key) => allowedKeys.includes(key));
 }
 
 function isRecord(value: unknown): value is Record<string, any> {
