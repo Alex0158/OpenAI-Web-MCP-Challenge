@@ -55,6 +55,10 @@ listing-interest projection remained reachable and bounded. The page route matri
 unauthenticated API matrix returned `401`, `/api/health` returned the healthy RightSpot payload, and the
 browser reported no errors. Full tests remained `159/159` and typecheck passed; no new finding or Task
 was accepted.
+The follow-up semantic check confirmed that each request time is one native `datetime-local` field
+labelled by its visible `Option 1`, `Option 2`, or `Option 3` wrapper. Chrome's accessibility tree may
+expand that native field into `Day`, `Month`, and similar sub-controls; those are platform internals,
+not duplicate authored labels or a new accessibility defect.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current next product action:** Continue the Main-thread cross-layer audit from the closed
 `RIGHTSPOT-041` / `RS-WO-041-01` tenant request mutation-feedback repair. `RIGHTSPOT-039` /

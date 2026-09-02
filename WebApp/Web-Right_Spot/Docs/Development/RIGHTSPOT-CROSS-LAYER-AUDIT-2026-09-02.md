@@ -1788,3 +1788,18 @@ scan, and `git diff --check` passed. No `VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`
 native `datetime-local` harness boundary, and the unpublished Favourite evidence limitation retain
 their prior classifications, while external auth, Information Request, Operations/WebMCP,
 Cloud Receiver, WebRTC, deployment, and production-readiness remain deferred or gated.
+
+## 72. Native date-time semantic boundary review — no new finding — 2026-09-02
+
+Main followed up on the accessibility-tree snapshot that expanded the native date-time input into
+sub-controls named `Day Day`, `Month Month`, and similar values. The rendered DOM contains one
+`datetime-local` input per preferred-time row, nested under a visible `Option 1`, `Option 2`, or
+`Option 3` label, with no authored duplicate `aria-label`. The apparent repeated names are Chrome's
+platform representation of the native control's internal segments, not duplicate product labels.
+
+The current controlled `onChange` boundary, validation contract, and prior native-control evidence are
+unchanged. This review does not close the separate automation limitation where available harnesses
+cannot reliably generate a complete native change event, and it does not justify a product fallback or
+custom date-time replacement. No source, fixture, workflow, or Task state changed; no new
+`VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`, `VERIFIED_POLISH`, or `DOCUMENTATION_DRIFT` finding was
+accepted.
