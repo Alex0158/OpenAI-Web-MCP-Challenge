@@ -230,6 +230,35 @@ It does not close the separate `tenant-listing-page.tsx` dynamic-route `F-08` ev
 production concurrency, deployment, external authentication, WebMCP, Cloud Receiver, WebRTC, Redis,
 or external notification behavior.
 
+## 3.4 Fresh Main-thread route, role, and responsive audit — 2026-09-02
+
+The Main thread recaptured the current source identity at `HEAD=a21f4f4d35e8d01c6b132490ef0a4ff99f8a62f9`
+on `main`. RightSpot authored tracked source and documentation were clean; existing untracked local
+artifacts and unrelated outer `Web-Game` changes were preserved. The pinned runtime was Node.js
+`v24.20.0` with npm `11.19.0`. The running local server was `http://127.0.0.1:3100` and
+`/api/health` returned `{"ok":true,"service":"rightspot"}`.
+
+The complete pinned `npm test` command passed `137/137` across 30 authored test files. The explicit
+foundation command passed `6/6`, and `npm run typecheck` passed. An isolated browser session checked
+the signed-out tenant request guard, the tenant discovery, listing-detail, favourites, and request
+surfaces, the tenant-on-agent wrong-role guard, the agent queue and listing-interest surface, and the
+agent request-detail unavailable state. No application page error was observed. At a `320px` viewport,
+the inspected tenant and agent routes each reported `document.documentElement.scrollWidth` equal to
+the client width, with no horizontal overflow.
+
+The remaining `F-08` listing-detail dynamic-route concern was tested as an evidence question, not
+treated as a defect. A page-local delayed-fetch harness could not produce a valid same-document route
+switch: the current rendered listing links are ordinary anchor navigations, and the page-local
+interceptor was lost when the document changed. The source still contains an unguarded `Promise.all`
+load settlement, so the concern remains an `EVIDENCE_GAP`; this run does not prove production
+concurrency safety and does not authorize a speculative guard or a new Task.
+
+Within this audit scope, no new `VERIFIED_DEFECT`, `VERIFIED_INCOMPLETE`, or material
+`VERIFIED_POLISH` finding was reproduced. Existing closed workflow, role/privacy, terminal-state,
+conflict-feedback, and dashboard read-race claims remain bounded by their Task Files. No external
+authentication, WebMCP, Cloud Receiver, WebRTC, Redis, deployment, or production-readiness claim
+follows from this audit.
+
 ## 4.1 Post-MVP shared CSS evidence
 
 `RS-WO-007-02` is independently `VERIFIED` and integrated at product commit `89a50c7`. The

@@ -52,7 +52,11 @@ race reruns. The separate `tenant-listing-page.tsx` dynamic-route overlap remain
 and is not included in that repair. The canonical business-flow and scenario
 baseline is
 [`07-business-flows-and-scenarios.md`](07-business-flows-and-scenarios.md). The only product source
-authority remains the canonical Main Worktree.
+authority remains the canonical Main Worktree. The fresh Main-thread route, role, and responsive audit
+also reran `npm test` at `137/137`, foundation `6/6`, typecheck, health, signed-out/wrong-role guards,
+and 320px overflow checks without reproducing a new defect. The separate listing-detail dynamic-route
+concern remains an evidence gap because the current anchor navigation did not provide a valid
+same-document delayed-read reproduction.
 **Current closure state:** `RS-WO-016-01` passed its bounded repair and fresh independent verification;
 Main integrated the repaired exact two-path projection at product commit `edd7575`. `RS-WO-017-03`
 passed persistent re-gate and independent verification and is integrated at product commit `2a53917`;

@@ -18,7 +18,12 @@ The 2026-09-02 Main-thread audit registered and closed `RIGHTSPOT-029` after con
 default `npm test` command ran only the six foundation tests although the authored suite contains 28
 test files and passes 133 tests through the complete command. `npm test` is now the complete RightSpot
 test command. The audit's un-reproduced asynchronous-read concern remains evidence-only and does not
-authorize a speculative UI repair.
+authorize a speculative UI repair. The subsequent `RIGHTSPOT-030` and `RIGHTSPOT-031` bounded repairs
+are closed and independently reconciled in the current status and validation records. A fresh
+Main-thread route, role, and responsive audit reran the current `137/137` suite, typecheck, health,
+signed-out/wrong-role guards, and 320px overflow checks without reproducing a new defect. The
+listing-detail dynamic-route concern remains an evidence gap because the current anchor navigation did
+not provide a valid same-document delayed-read reproduction; no speculative repair is authorized.
 Current post-MVP state is maintained in [`Docs/00-current-status.md`](Docs/00-current-status.md) and
 [`Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`](Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md),
 not in this routing document. As of 2026-09-02, `RIGHTSPOT-015` is closed at product commit `e7f30d5`;
