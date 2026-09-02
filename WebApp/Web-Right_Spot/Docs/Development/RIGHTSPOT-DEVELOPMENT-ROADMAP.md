@@ -9,8 +9,13 @@ gap), `F-04` (listing-detail request-status notice), `F-05` (terminal request-re
 and `F-06` (the deterministic workflow-fixture reset command). `F-01`–`F-06` are closed within their
 bounded local claims; `F-06` was repaired and independently verified through `RIGHTSPOT-028`. The
 2026-09-02 audit registered `F-07` for the default test command under-covering the 28-file/133-test
-suite; `RIGHTSPOT-029` is now closed within its command/documentation scope. It also recorded an
-un-reproduced asynchronous read concern as `F-08`/`EVIDENCE_GAP`, not as an implementation Task. The first implementation route was
+suite; `RIGHTSPOT-029` is now closed within its command/documentation scope. A subsequent isolated
+controlled browser reproduction confirmed the tenant request-dashboard portion of the asynchronous
+read concern as `F-08`/`VERIFIED_DEFECT`, now closed through `RIGHTSPOT-030`; the separate
+listing-detail dynamic-route concern remains an `EVIDENCE_GAP`. `RIGHTSPOT-030` covered latest-read
+sequencing, mutation-result invalidation, and the Refresh gate for draft/decision mutations; its
+focused/full, static, runtime, and browser closure evidence is reconciled in the Task File. The first
+implementation route was
 the `RIGHTSPOT-023` session-client repair, now verified in its Main Builder and independent read-only
 verification checkpoints. The same rendered audit registered `F-03` (the documented 127.0.0.1 dev
 origin gap) as the separately gated `RIGHTSPOT-024` configuration route. A subsequent page-entry audit
@@ -109,8 +114,10 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 - `RIGHTSPOT-029` is closed: `npm test` now runs the complete authored suite and
   `npm run test:foundation` is the explicit six-test foundation check. No product runtime behavior
   or closed business-flow Task was reopened.
-- No implementation or verification gate is currently active; the next route is a fresh Main-thread
-  cross-layer audit. The un-reproduced overlapping-read concern remains `F-08`/`EVIDENCE_GAP`.
+- `RIGHTSPOT-030` is closed for the confirmed tenant request-dashboard read race after its frozen-source
+  verification and documentation writeback. The next route is a fresh Main-thread cross-layer audit.
+  The separate listing-detail dynamic-route concern remains `F-08`/`EVIDENCE_GAP` until independently
+  reproduced.
 
 ## 3. Roadmap milestones
 
@@ -160,9 +167,13 @@ isolated child-process regression, with no automatic recovery or persistence-con
 supporting implementation Worktree was opened.
 The subsequent audit registered and closed `F-07`/`RIGHTSPOT-029` after confirming that `npm test`
 passed only the six foundation tests while the complete authored suite passed `133/133`. The current
-command contract and documentation are reconciled. The overlapping-read concern remains
-`F-08`/`EVIDENCE_GAP` because the available browser instrumentation could not provide a controlled
-delayed response; no speculative UI guard is authorized.
+command contract and documentation are reconciled. A later supported isolated browser harness
+reproduced the tenant request-dashboard read race and registered `RIGHTSPOT-030`; its scope is
+limited to latest-read sequencing, mutation-result invalidation, and the Refresh/mutation overlap
+boundary. `RIGHTSPOT-030` is now closed after focused `3/3`, current full `136/136` across 29 test
+files, foundation `6/6`, typecheck/build, exact-scope review, local health/reset, independent static
+review, and both isolated browser race reruns passed. The separate listing-detail dynamic-route
+concern remains `F-08`/`EVIDENCE_GAP`.
 The independent static verification `RS-WO-020-04` and fresh-reset browser verification `RS-WO-020-05`
 are reconciled in the owning Task File; the `RS-WO-021-01` implementation and `RS-WO-021-02`
 independent verification gates are closed:
@@ -232,15 +243,16 @@ CSS candidate at product commit `f0dbd99`, and independent `RS-WO-022-02` verifi
 
 ## 5. Current closure
 
-There is no active implementation gate for the accepted local MVP. `RS-WO-002-14` passed direct
+There is no active implementation gate for the accepted local MVP or the confirmed F-08 dashboard
+race. `RIGHTSPOT-030` is closed within its bounded tenant request-dashboard scope. `RS-WO-002-14` passed direct
 combined cross-role verification and `RS-WO-002-15` passed the isolated browser walkthrough from a
 fresh database against integrated source `9348aa50b63e3f4f46e77238ad370670383d9d6`. The durable
 evidence is recorded in [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md), and
 `RIGHTSPOT-002` is closed. Future work requires a new explicit scope decision.
 
 The previously admitted post-MVP increments, including `RIGHTSPOT-005` and `RIGHTSPOT-007`, are
-closed historical work rather than the current implementation queue. The current next route is the
-decision-first sequence in [Section 3.1](#31-current-next-route). It does not reopen the accepted
+closed historical work rather than the current implementation queue. The current next route is a
+fresh Main-thread cross-layer audit, as described in [Section 3.1](#31-current-next-route). It does not reopen the accepted
 MVP closure or authorize external authentication, WebMCP, Cloud Receiver, deployment, or
 commercial-marketplace scope by itself.
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import RolePageFrame from "../shared/role-page-frame";
 import type {
   TenantRequestDto,
@@ -27,17 +27,33 @@ export default function TenantRequestPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [pendingResponse, setPendingResponse] = useState<"confirm" | "decline" | null>(null);
+  const [pendingDraftMutation, setPendingDraftMutation] = useState(false);
+  const latestReadId = useRef(0);
+
+  function applyServerData(nextData: TenantRequestResponse) {
+    latestReadId.current += 1;
+    setData(nextData);
+    setIsLoading(false);
+  }
 
   function load(message?: string) {
+    const readId = ++latestReadId.current;
     setIsLoading(true);
     setError(null);
     void readTenantRequest()
       .then((nextData) => {
-        setData(nextData);
+        if (readId !== latestReadId.current) return;
+        applyServerData(nextData);
         if (message) setStatusMessage(message);
       })
-      .catch(setError)
-      .finally(() => setIsLoading(false));
+      .catch((nextError: unknown) => {
+        if (readId !== latestReadId.current) return;
+        setError(nextError);
+      })
+      .finally(() => {
+        if (readId !== latestReadId.current) return;
+        setIsLoading(false);
+      });
   }
 
   useEffect(() => { load(); }, []);
@@ -67,7 +83,7 @@ export default function TenantRequestPage() {
             fixtureGeneration: data.fixtureGeneration,
             expectedRequestVersion: data.request.version,
           });
-      setData(response);
+      applyServerData(response);
       setStatusMessage(type === "confirm" ? "Viewing confirmed from the server response." : "Viewing declined from the server response.");
     } catch (errorValue: unknown) {
       handleConflict(errorValue);
@@ -90,7 +106,7 @@ export default function TenantRequestPage() {
           <span className={styles.toolbarLabel}>Current request view</span>
           <span className={styles.mutedCopy}>Read from the server-authoritative tenant projection</span>
         </div>
-        <button className="button button-quiet" type="button" onClick={() => load()}>Refresh</button>
+        <button className="button button-quiet" type="button" disabled={isLoading || pendingDraftMutation || pendingResponse !== null} onClick={() => load()}>Refresh</button>
       </div>
       {isLoading ? (
         <div className={`${styles.feedbackState} ${styles.loadingState}`} role="status" aria-live="polite" aria-busy="true">
@@ -112,7 +128,13 @@ export default function TenantRequestPage() {
         </div>
       ) : null}
       {!isLoading && !error && data ? (
-        <RequestDashboard data={data} onSaved={setData} onRespond={respond} pendingResponse={pendingResponse} />
+        <RequestDashboard
+          data={data}
+          onSaved={applyServerData}
+          onRespond={respond}
+          pendingResponse={pendingResponse}
+          onPendingChange={setPendingDraftMutation}
+        />
       ) : null}
     </RolePageFrame>
   );
@@ -123,9 +145,10 @@ type RequestDashboardProps = {
   onSaved: (data: TenantRequestResponse) => void;
   onRespond: (type: "confirm" | "decline") => void;
   pendingResponse: "confirm" | "decline" | null;
+  onPendingChange?: (pending: boolean) => void;
 };
 
-function RequestDashboard({ data, onSaved, onRespond, pendingResponse }: RequestDashboardProps) {
+function RequestDashboard({ data, onSaved, onRespond, pendingResponse, onPendingChange }: RequestDashboardProps) {
   if (!data.request || !data.listing) {
     return (
       <section className={`${styles.feedbackState} ${styles.emptyRequestState}`} aria-labelledby="empty-request-title">
@@ -153,6 +176,7 @@ function RequestDashboard({ data, onSaved, onRespond, pendingResponse }: Request
           fixtureGeneration={data.fixtureGeneration}
           request={data.request}
           onSaved={onSaved}
+          onPendingChange={onPendingChange}
         />
       ) : null}
       <section className={styles.requestCard} aria-labelledby="request-status-title">
@@ -227,11 +251,13 @@ export function TenantRequestEditor({
   fixtureGeneration,
   request,
   onSaved,
+  onPendingChange,
 }: {
   listing: WorkflowListingDto;
   fixtureGeneration: number;
   request: TenantRequestDto | null;
   onSaved: (data: TenantRequestResponse) => void;
+  onPendingChange?: (pending: boolean) => void;
 }) {
   const [times, setTimes] = useState(() => request?.preferredTimes.map(toInputDateTime) ?? [""]);
   const [tenantNote, setTenantNote] = useState(request?.tenantNote ?? "");
@@ -273,6 +299,7 @@ export function TenantRequestEditor({
     const preferredTimes = validateTimes();
     if (!preferredTimes) return;
     setIsPending(true);
+    onPendingChange?.(true);
     setError(null);
     setStatusMessage(null);
     try {
@@ -300,12 +327,14 @@ export function TenantRequestEditor({
       await handleMutationError(errorValue, "save the draft");
     } finally {
       setIsPending(false);
+      onPendingChange?.(false);
     }
   }
 
   async function submitDraft() {
     if (!request || request.state !== "TENANT_DRAFT" || dirty) return;
     setIsPending(true);
+    onPendingChange?.(true);
     setError(null);
     setStatusMessage(null);
     try {
@@ -321,6 +350,7 @@ export function TenantRequestEditor({
       await handleMutationError(errorValue, "submit the request");
     } finally {
       setIsPending(false);
+      onPendingChange?.(false);
     }
   }
 

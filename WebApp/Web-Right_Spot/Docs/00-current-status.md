@@ -28,19 +28,24 @@ agent surfaces have since passed their respective independent verification gates
 at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression passed at frozen source
 `4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Return to a fresh Main-thread cross-layer audit. The latest audit
+**Current next product action:** Start a fresh Main-thread cross-layer audit after the bounded
+`RIGHTSPOT-030` repair for the confirmed tenant request-dashboard read race. The latest audit
 found no new business-flow blocker and registered `RIGHTSPOT-029` for the verification-contract gap
 where the default `npm test` command executed only foundation tests `6/6` while the complete authored
 suite passed `133/133` across 28 test files. That Task is now `CLOSED_VERIFIED`: `npm test` runs the
-complete suite and `npm run test:foundation` names the fast foundation check. `F-06` remains closed
+complete suite and `npm run test:foundation` names the fast foundation check. The current suite,
+including the `RIGHTSPOT-030` regression, passes `136/136` across 29 test files. `F-06` remains closed
 through `RIGHTSPOT-028`: the documented `npm run db:reset` command now composes the authoritative
 workflow reset, and `RS-WO-028-01` passed Main Red→Green checks, frozen-source independent
 verification, and documentation reconciliation at product commit `b2c1682a`. No supporting
 implementation Worktree is open. `RIGHTSPOT-023`, `RIGHTSPOT-024`, `RIGHTSPOT-025`, `RIGHTSPOT-026`,
 `RIGHTSPOT-027`, `RIGHTSPOT-028`, and `RIGHTSPOT-029` remain closed within their bounded outcomes
 after applicable TDD, independent verification, browser/build evidence, and documentation
-reconciliation. The separate F-08 overlapping-read concern remains an `EVIDENCE_GAP` pending
-controlled reproduction and is not a repair authorization. The canonical business-flow and scenario
+reconciliation. The dashboard portion of `F-08` is now `CLOSED_VERIFIED` through
+`RIGHTSPOT-030`: latest-read sequencing, mutation-result invalidation, and the full Refresh overlap
+gate passed focused/full tests, typecheck/build, independent source review, and both isolated browser
+race reruns. The separate `tenant-listing-page.tsx` dynamic-route overlap remains an `EVIDENCE_GAP`
+and is not included in that repair. The canonical business-flow and scenario
 baseline is
 [`07-business-flows-and-scenarios.md`](07-business-flows-and-scenarios.md). The only product source
 authority remains the canonical Main Worktree.
@@ -122,9 +127,10 @@ The current Main-thread audit is recorded in
 [`RIGHTSPOT-CROSS-LAYER-AUDIT-2026-09-02.md`](Development/RIGHTSPOT-CROSS-LAYER-AUDIT-2026-09-02.md).
 It registered and then closed `RIGHTSPOT-029` for the default test-command under-coverage. This was a
 verification gate, not a product-runtime gate: the complete suite and the explicit foundation check
-now both pass under the named commands. The audit also records an un-reproduced asynchronous-read
-concern as `F-08`/`EVIDENCE_GAP`; no speculative UI repair is authorized until a supported controlled
-reproduction exists.
+now both pass under the named commands. Its subsequent controlled isolated browser reproduction
+confirmed the tenant request-dashboard portion of `F-08`; `RIGHTSPOT-030` then closed that bounded
+repair with current `136/136` evidence. Only the separate listing-detail dynamic-route concern remains
+an `EVIDENCE_GAP`.
 `RIGHTSPOT-005` is closed and integrated at local commit `27f5391`; its Builder changed only the
 declared shared-shell write set and corrected independent verification returned `VERIFIED`. The
 preserved `.gitignore` incident is procedure evidence, not a product defect.
@@ -278,7 +284,7 @@ final response can remain a normal application action.
 | Cloud Receiver | **Not a first-phase dependency** | Future integration boundary only |
 | WebMCP | **Not a first-phase design center** | Later Hackathon integration boundary |
 | Runtime / deployment | **Not started** | No service, hosting, credentials, or public URL |
-| Evidence | **LOCAL MVP IMPLEMENTATION + DIRECT AND BROWSER HAPPY PATH VERIFIED** | Current pinned `npm test` passes the complete authored suite `133/133` across 28 test files, while `npm run test:foundation` passes `6/6`; the historical `RS-WO-002-14` direct cross-role check and `RS-WO-002-15` isolated browser walkthrough also passed with authoritative versions `1 → 6` and no browser errors or warnings. Deployment and future integrations remain unclaimed |
+| Evidence | **LOCAL MVP IMPLEMENTATION + DIRECT AND BROWSER HAPPY PATH VERIFIED** | Current pinned `npm test` passes the complete authored suite `136/136` across 29 test files, while `npm run test:foundation` passes `6/6`; the historical `RS-WO-002-14` direct cross-role check and `RS-WO-002-15` isolated browser walkthrough also passed with authoritative versions `1 → 6` and no browser errors or warnings. The `RIGHTSPOT-030` dashboard race repair also passed its isolated browser reruns. Deployment and future integrations remain unclaimed |
 
 ## 3. Confirmed working inputs
 

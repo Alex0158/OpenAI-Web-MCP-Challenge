@@ -2,9 +2,10 @@
 
 Agent identity: RightSpot Architecture and Project Management Audit Advisor.
 Work mode: Continuous thinking and investigation; read-only advisory work, not implementation.
-Decision status: The following is analysis and recommendation only. It is not a confirmed task,
-accepted decision, implementation authorization, or canonical product writeback. The main thread
-must decide whether to register any follow-on work.
+Decision status: The initial audit sections are preserved as read-only analysis. The subsequent
+controlled reproduction was accepted by Main and repaired through `RIGHTSPOT-030`; its closure record
+is in Section 10 and the Task File remains the implementation authority for that bounded repair. This
+report remains evidence and does not authorize work outside the registered boundary.
 
 ## 1. Executive conclusion
 
@@ -14,17 +15,17 @@ branch, agent-decline branch, empty request state, listing discovery/filter stat
 and role-specific navigation were inspected against the current Main source. The browser evidence
 showed no application console error or warning beyond normal React development information.
 
-One actionable process defect is confirmed: the package's default `npm test` command executes only
+One actionable process defect was confirmed: the package's default `npm test` command executed only
 `tests/foundation.test.ts` (6 tests), while the current RightSpot test surface contains 28 test files
-and the complete direct command passes 133 tests. A green default command therefore does not prove
-the application or workflow suite. This should be repaired as a small verification-governance Task
-before the next closure claim.
+and the complete direct command passes 133 tests. A green default command therefore did not prove
+the application or workflow suite. It was repaired as `RIGHTSPOT-029`, within its verification-
+command boundary.
 
-The current source also contains an unguarded asynchronous read path in the tenant request and
-listing-detail pages. An overlapping refresh/mutation or route change could theoretically let an old
-read overwrite a newer server response. The browser tool could not reproduce this because its page
-context does not expose `fetch` for controlled-delay instrumentation. This remains an
-`EVIDENCE_GAP`, not a confirmed product defect or an automatic repair authorization.
+The current source also contained unguarded asynchronous read paths in the tenant request and
+listing-detail pages. A supported isolated browser harness confirmed that the tenant request
+dashboard could let an older response overwrite a newer server response; this dashboard portion was
+repaired and is now `CLOSED_VERIFIED` through `RIGHTSPOT-030`. The analogous listing-detail route
+concern remains `F-08`/`EVIDENCE_GAP` and is not included in that Task.
 
 No new defect was found in the authoritative workflow state machine, role/privacy boundary, reset
 authority, listing filter behavior, or normal tenant/agent happy paths. Information Request,
@@ -142,31 +143,54 @@ RightSpot test glob and preserve the six-test foundation check under an explicit
 language; do not rewrite test behavior, migrate frameworks, add dependencies, or alter product
 runtime behavior.
 
-### F-08 — Overlapping tenant reads need a controlled reproduction
+### F-08 — Tenant request-dashboard reads can apply stale responses
 
-**Classification:** `EVIDENCE_GAP`
-**Priority:** `P2` until reproduced
+**Classification:** `VERIFIED_DEFECT` for the tenant request dashboard; the related listing-detail
+concern remains `EVIDENCE_GAP`.
+**Priority:** `P1` for tenant state fidelity
 **Static evidence:** `src/ui/tenant/tenant-request-page.tsx` applies every `readTenantRequest()` result
 without a request-sequence guard, and its Refresh button remains enabled during a confirm/decline
 mutation. `src/ui/tenant/tenant-listing-page.tsx` similarly applies unguarded concurrent listing and
 request reads after a dynamic `listingId` change. The discovery and favourites pages already use
-latest-read guards, so this is an inconsistency worth examining.
+latest-read guards, so the tenant request dashboard was a concrete inconsistency worth testing.
 
-**Potential impact:** A slower pre-mutation or previous-route read could temporarily replace a newer
-server response in the rendered UI. The authoritative server state is not thereby changed, and no
-controlled browser reproduction was obtained.
+**Controlled reproduction — 2026-09-02:** An isolated `agent-browser` session loaded the real
+`/tenant/requests` route against the local server and intercepted only the page's
+`GET /api/tenant/request`. The first response was delayed 1500 ms; the second returned a newer draft
+payload. Two Refresh actions 100 ms apart produced `start-1 → start-2 → return-2 → return-1`, and
+the DOM ended in the older empty state (`Start with one promising home`) rather than the newer draft.
+The harness was isolated and page-local; it did not alter product source or authoritative workflow
+state. The fixture was reset afterward.
 
-**Next evidence gate:** Reproduce with a real controllable delayed-response test or a supported
-browser/network harness. If reproduced, register a separate bounded UI concurrency Task with a
-focused failing regression before changing the components. If not reproduced or judged immaterial
-to the bounded demo, record the accepted residual and do not add speculative guards.
+**Adjacent mutation/read reproduction — 2026-09-02:** With a real tenant draft fixture, the same
+isolated harness captured the pre-save response, started a draft Save action, and immediately
+activated the still-enabled dashboard Refresh. The event order was
+`mutation-start → read-start → mutation-return → read-return`; the updated save result was first
+rendered, then the delayed older read replaced it with `Original draft`. This is a second confirmed
+stale-write path through the editor's direct `onSaved` callback. A post-repair control check showed
+that Refresh is now disabled during a real draft mutation; the repair also invalidates any forced or
+already-started read when server data is accepted.
+
+**Impact:** The tenant can be shown an older request projection after a newer read or mutation result
+has completed. The server state machine and authoritative state are not changed by this presentation
+race.
+
+**Bounded action and resolution:** `RIGHTSPOT-030` / `RS-WO-030-01` added latest-read sequencing,
+invalidated older reads when authoritative page/editor data was accepted, and disabled Refresh while
+a read or draft/decision mutation was in flight. It did not change the API, state machine,
+persistence, or listing-detail component. The closure evidence is recorded in Section 10 and the
+Task File.
+
+**Residual evidence gap:** The analogous `tenant-listing-page.tsx` dynamic-route overlap has not been
+reproduced with the same controlled harness and remains outside Task 030. Do not add a speculative
+guard until it has its own evidence and accepted scope.
 
 ## 6. Recommended next gate
 
-Proceed with `RIGHTSPOT-029` for F-07 as a small serial verification-contract repair. After its
-Red→Green change and current-document reconciliation, rerun the full pinned suite, typecheck,
-build, and the minimum browser smoke. Then return to the Main-thread audit and decide whether F-08
-has enough evidence to become a real Task.
+The recommended `RIGHTSPOT-030` serial TDD repair has completed. Its focused Red→Green evidence,
+frozen-source review, full pinned suite, typecheck, build, local health/reset, and both isolated
+browser race reruns are recorded in Section 10. The next gate is a fresh Main-thread cross-layer audit;
+the separate listing-detail evidence gap remains outside this closed Task.
 
 ## 7. Claim boundary
 
@@ -184,9 +208,9 @@ health, reset, and minimum tenant empty-state browser smoke passed. Current stat
 roadmap, Runbook, Development index, and Task index were reconciled. F-07 is therefore
 `CLOSED_VERIFIED` within its command/documentation scope.
 
-F-08 remains `EVIDENCE_GAP`: no controlled delayed-response reproduction was obtained, so no UI
-concurrency Task has been registered. The next Main-thread audit should revisit it only with a
-supported network-delay or deterministic test harness.
+At the end of the initial audit checkpoint, F-08 remained `EVIDENCE_GAP` because no controlled
+delayed-response reproduction had yet been obtained. The later supported harness result and Task
+registration are recorded in the current F-08 finding above and in the follow-up below.
 
 ## 9. Main-thread authority-coherence follow-up — 2026-09-02
 
@@ -210,5 +234,34 @@ verification contract, and the accepted responsive/accessibility baseline. No pr
 registered because this was a bounded Main-owned documentation correction, not a runtime defect or
 new product outcome.
 
-F-08 remains an `EVIDENCE_GAP`; this documentation correction does not authorize speculative async
-read guards or any other source change. The next active route remains a fresh Main-thread audit.
+The tenant request-dashboard portion of F-08 is now `CLOSED_VERIFIED` through `RIGHTSPOT-030`; its
+separate Work Order is integrated. The listing-detail dynamic-route portion remains an `EVIDENCE_GAP`
+and is not a repair authorization.
+
+## 10. RIGHTSPOT-030 closure — 2026-09-02
+
+`RIGHTSPOT-030` closed the confirmed tenant request-dashboard stale-read defect within its declared
+single-page boundary. The Green repair makes `applyServerData` the single parent-owned server-data
+writer, guards every `load()` settlement with a monotonic read id, invalidates in-flight reads when
+authoritative mutation/refetch data is accepted, and lifts the editor pending signal only to disable
+Refresh during draft/decision overlap. The unchanged listing-detail consumer remains compatible.
+
+Recorded evidence:
+
+- TDD focused regression: `3/3` passed after the staged Red failures, including the later review-found
+  direct `setData` bypass.
+- Pinned full suite: `npm test` `136/136` across `29` authored test files; foundation check
+  `6/6`; typecheck, production build, exact-scope `git diff --check`, and `/api/health` passed.
+- Independent read-only source/static review: `VERIFIED`, with full-suite/build/browser claims left to
+  Main and covered above.
+- Isolated browser race 1: `start-1 → start-2 → return-2 → return-1`; `Newer race home` remained
+  visible and the stale empty state did not return.
+- Isolated browser race 2: `mutation-start → read-start → mutation-return → read-return`;
+  `Updated draft` remained visible, `Original draft` did not return, and no unavailable/error state
+  appeared.
+- The disposable fixture was reset to generation `15`, and a fresh tenant request page showed the
+  truthful no-active-request state. Temporary verification browser sessions were closed.
+
+The analogous `tenant-listing-page.tsx` dynamic-route overlap remains an `EVIDENCE_GAP` and was not
+silently folded into this repair. No production concurrency, external-auth, deployment, WebMCP, Cloud
+Receiver, WebRTC, or Redis claim follows from this closure.

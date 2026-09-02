@@ -128,9 +128,43 @@ The 2026-09-02 Main-thread cross-layer audit also reproduced a verification-gove
 suite contains 28 test files and the complete pinned glob command passes `133/133`. This was recorded
 as `F-07` and repaired through `RIGHTSPOT-029`: `npm test` now runs the complete suite, while
 `npm run test:foundation` reports the foundation-only result separately. The Task is
-`CLOSED_VERIFIED` within that command/documentation boundary. The same audit recorded the
-un-reproduced overlapping-read concern as `F-08`/`EVIDENCE_GAP`; it requires a supported
-controlled-delay reproduction before any UI change is registered.
+`CLOSED_VERIFIED` within that command/documentation boundary. The same audit initially recorded the
+overlapping-read concern as `F-08`/`EVIDENCE_GAP`. A subsequent supported isolated browser harness
+reproduced the tenant request-dashboard race: two reads completed in the order
+`start-1 → start-2 → return-2 → return-1`, and the older response overwrote the newer rendered
+projection. The dashboard portion is therefore `VERIFIED_DEFECT` and is registered as
+`RIGHTSPOT-030` for a bounded latest-read, mutation-invalidation, and Refresh guard. A second
+isolated reproduction started a draft Save and the still-enabled Refresh together; the updated save
+result was then overwritten by the delayed older parent read. The separate un-reproduced
+`tenant-listing-page.tsx` dynamic-route concern remains `EVIDENCE_GAP` and is not included in that
+Task. The reproduction harness was page-local and isolated; it did not mutate authoritative
+workflow state or serve as a product fallback.
+
+## 3.1 RIGHTSPOT-030 stale-read closure evidence — 2026-09-02
+
+`RIGHTSPOT-030` is `CLOSED_VERIFIED` for the tenant request-dashboard portion of `F-08`. The
+minimal TDD repair centralizes server-data acceptance in `applyServerData`, sequences parent reads,
+invalidates an in-flight read when authoritative mutation/refetch data is accepted, and disables
+Refresh while a read or draft/decision mutation is pending. It preserves the existing API,
+workflow state machine, persistence, listing-detail consumer compatibility, and role boundary.
+
+The focused regression passes `3/3` after the recorded Red checkpoints. The pinned complete suite
+passes `136/136` across `29` authored test files; `npm run test:foundation` passes `6/6`; typecheck,
+production build, exact-scope `git diff --check`, and local `/api/health` pass. An independent
+read-only source/static verifier returned `VERIFIED`, with its claim limit explicitly excluding the
+full suite, build, and browser; Main supplied those checks.
+
+Two isolated browser races were rerun against the repaired source. The delayed-read sequence
+`start-1 → start-2 → return-2 → return-1` left the newer `Newer race home` visible and did not return
+the stale empty state. The forced adjacent mutation/read sequence
+`mutation-start → read-start → mutation-return → read-return` left `Updated draft` visible and did
+not return `Original draft` or an unavailable/error state. The fixture was reset to generation `15`
+and the fresh tenant request page showed the truthful no-active-request state afterward.
+
+The analogous `tenant-listing-page.tsx` dynamic-route overlap remains an `EVIDENCE_GAP`; no
+speculative guard or broader async infrastructure is claimed. This closure does not prove production
+concurrency guarantees, deployment, external authentication, WebMCP, Cloud Receiver, WebRTC, or
+Redis readiness.
 
 ## 4.1 Post-MVP shared CSS evidence
 

@@ -42,6 +42,7 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-027 — Make terminal Viewing Request response state-accurate`](RIGHTSPOT-027-clarify-terminal-request-response-state.md)
 - [`RIGHTSPOT-028 — Restore deterministic workflow fixture reset`](RIGHTSPOT-028-fix-deterministic-workflow-fixture-reset.md)
 - [`RIGHTSPOT-029 — Align the default RightSpot test command with the complete suite`](RIGHTSPOT-029-align-default-test-command.md)
+- [`RIGHTSPOT-030 — Prevent stale tenant request reads from overwriting newer state`](RIGHTSPOT-030-fix-tenant-request-read-concurrency.md)
 
 `RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
 `RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`,
@@ -121,6 +122,14 @@ the package scripts and current command guidance: `npm test` now runs the comple
 foundation check. Typecheck, production build, local health, reset, and minimum browser smoke passed;
 no product behavior or closed business-flow Task was reopened.
 
+`RIGHTSPOT-030` is `CLOSED_VERIFIED` for the confirmed dashboard portion of `F-08`. Its single Work
+Order changed only latest-read sequencing, mutation-result invalidation, and the Refresh/mutation
+overlap boundary in `src/ui/tenant/tenant-request-page.tsx`; focused `3/3`, full `136/136` across
+29 test files, foundation `6/6`, typecheck, build, exact-scope review, local health/reset, and both
+isolated browser race reruns passed. It does not authorize listing-detail changes, server workflow
+changes, or speculative async infrastructure. The analogous listing-detail concern remains a separate
+`EVIDENCE_GAP`.
+
 Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, the corrected `RS-WO-002-02` rerun returned
 `VERIFIED`, `RS-WO-002-03` returned `VERIFIED` after its bounded repair, and `RS-WO-002-04` returned
@@ -150,11 +159,12 @@ register. The parent remained `in_progress` when a checkpoint was locally blocke
 work remained; it is now `closed` for the accepted local MVP. The Side Chat process lane is separately
 declared and user-authorized.
 
-**Current gate:** There is no active implementation gate for the accepted local MVP. `RIGHTSPOT-029`
-is closed within its verification-command scope; `RS-WO-002-14` direct evidence and `RS-WO-002-15`
-browser evidence are reconciled in the
-[`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](../Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md), and
-`RIGHTSPOT-002` is closed.
+**Current gate:** There is no active implementation gate for the accepted local MVP or the confirmed
+tenant-request dashboard race. `RIGHTSPOT-029` is closed within its verification-command scope and
+`RIGHTSPOT-030` is closed within its bounded read-concurrency scope. The next route is a fresh
+Main-thread cross-layer audit; `RS-WO-002-14` direct evidence and `RS-WO-002-15` browser evidence
+remain reconciled in the [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](../Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md),
+and `RIGHTSPOT-002` is closed.
 
 **Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain pending
 (credential, decision, and read-only audit gates respectively); `RIGHTSPOT-023` and `RIGHTSPOT-024`
@@ -170,11 +180,15 @@ Main `c977ea4`, and `RS-WO-020-05` fresh-reset browser verification passed again
 independently verified and integrated at `edd7575`; `RS-WO-017-03` is independently verified and
 integrated at `2a53917`, with `RS-WO-017-04` browser verification complete. `RS-WO-019-01` is closed
 after its bounded browser/form regression passed. No closed task is an active implementation gate.
+`RIGHTSPOT-030` is closed within its single serial tenant-request-page behavior boundary. Its
+focused regression and browser evidence are recorded in the Task File; no implementation Worktree
+is open.
 
-**Current route:** No RightSpot implementation route is active. `RIGHTSPOT-028` is closed after
+**Current route:** No product-defect implementation route is currently open. `RIGHTSPOT-030` is
+closed for the confirmed dashboard portion of `F-08`; its next route is a fresh Main-thread audit.
+`RIGHTSPOT-028` is closed after
 `RS-WO-028-01` passed Main Red→Green checks and persistent frozen-source independent verification;
-the canonical Main Worktree remains the only source authority. The next route is a fresh
-Main-thread cross-layer audit. `RIGHTSPOT-027`, `RIGHTSPOT-026`,
+the canonical Main Worktree remains the only source authority. `RIGHTSPOT-027`, `RIGHTSPOT-026`,
 `RIGHTSPOT-022`, and `RIGHTSPOT-021` remain closed within their separately recorded
 presentation/navigation boundaries. `RIGHTSPOT-020` remains closed after its Favourite/listing-interest
 implementation and fresh-reset browser verification. `RIGHTSPOT-006` stays gated on explicit external
