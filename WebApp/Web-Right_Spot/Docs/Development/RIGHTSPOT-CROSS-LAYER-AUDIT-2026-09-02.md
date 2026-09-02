@@ -265,3 +265,33 @@ Recorded evidence:
 The analogous `tenant-listing-page.tsx` dynamic-route overlap remains an `EVIDENCE_GAP` and was not
 silently folded into this repair. No production concurrency, external-auth, deployment, WebMCP, Cloud
 Receiver, WebRTC, or Redis claim follows from this closure.
+
+## 11. Fresh Main-thread audit continuation — 2026-09-02
+
+The Main thread continued the audit after `RIGHTSPOT-030` without opening a product implementation
+Task. A read-only advisory scan found no new confirmed business-flow defect. Its static test-file count
+appeared to differ from the documented suite, but the pinned `npm test` command was rerun directly and
+confirmed the current result is `136/136` across `29` authored test files; the apparent discrepancy was
+an inventory-method false alarm, not `RIGHTSPOT-031`.
+
+A fresh isolated temporary browser session then replayed the ordinary agent-decline branch against the
+local server at `http://127.0.0.1:3100`. The tenant submitted a real request; the assigned agent opened
+the queue, started review, prepared a decline with separate tenant-facing and internal notes, and
+explicitly sent it. The agent surface showed a read-only `Declined` outcome. After re-authentication as
+the tenant, `/tenant/requests` showed `Agent Declined`, the tenant-facing note, no tenant action, and
+the expected five-step timeline through `AGENT_DECLINED`. The internal note did not cross the tenant
+projection boundary, no slot side effect appeared, and no application browser error was observed.
+
+The temporary browser session was closed and `npm run db:reset` was run afterward; the reset returned
+workflow fixture generation `16`, and `/api/health` returned `{"ok":true,"service":"rightspot"}`.
+The user's existing in-app browser tab was not used or changed. This closes the fresh local browser
+evidence residual for `RS-FLOW-11`. `RS-FLOW-13` remains `IMPLEMENTED_WITH_RESIDUAL_EVIDENCE` until a
+fresh tenant-decline mutation browser branch is replayed; that evidence gap is not itself a product
+defect and does not authorize a speculative repair. The analogous listing-detail async concern remains
+`F-08`/`EVIDENCE_GAP` for the same reason.
+
+The audit therefore found no new product Task to register. The next audit action is the bounded fresh
+tenant-decline evidence branch; if it reproduces a real user-visible defect, Main will register one
+single outcome Task with a falsifiable scope. Otherwise Main will record the evidence and continue the
+cross-layer audit. No deployment, external authentication, WebMCP, Cloud Receiver, WebRTC, Redis, or
+production-readiness claim follows from this continuation.

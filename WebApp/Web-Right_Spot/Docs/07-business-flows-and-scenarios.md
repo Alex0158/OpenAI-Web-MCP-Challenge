@@ -138,9 +138,9 @@ Status values used below:
 | `RS-FLOW-08` | Open an assigned request and start review | Agent queue/detail | `CLOSED_VERIFIED` — submitted work remains actionable and pre-submission drafts are non-visible |
 | `RS-FLOW-09` | Prepare or revise an agent response | Agent request detail | Preparation only; remains `AGENT_REVIEWING` | `CLOSED_VERIFIED` |
 | `RS-FLOW-10` | Send a slot proposal | Agent request detail | `SLOT_PROPOSED`; slot held; 24-hour window | `CLOSED_VERIFIED` |
-| `RS-FLOW-11` | Send an agent decline | Agent request detail | `AGENT_DECLINED` terminal | `IMPLEMENTED_WITH_RESIDUAL_EVIDENCE` |
+| `RS-FLOW-11` | Send an agent decline | Agent request detail | `AGENT_DECLINED` terminal | `CLOSED_VERIFIED` — fresh isolated local browser branch verified on 2026-09-02 |
 | `RS-FLOW-12` | Tenant confirms a proposal | `/tenant/requests` | `VIEWING_CONFIRMED`; slot confirmed | `CLOSED_VERIFIED` — transition and terminal response presentation verified by `RIGHTSPOT-027` |
-| `RS-FLOW-13` | Tenant declines a proposal | `/tenant/requests` | `TENANT_DECLINED`; slot released | `CLOSED_VERIFIED` — transition and terminal response presentation verified by `RIGHTSPOT-027` |
+| `RS-FLOW-13` | Tenant declines a proposal | `/tenant/requests` | `TENANT_DECLINED`; slot released | `IMPLEMENTED_WITH_RESIDUAL_EVIDENCE` — transition and terminal response presentation are verified by `RIGHTSPOT-027`; fresh mutation browser branch remains unclaimed |
 | `RS-FLOW-14` | Proposal expires without a scheduler | Relevant tenant/agent read or write | `EXPIRED`; slot released | `CLOSED_VERIFIED` — transition and terminal response presentation verified by `RIGHTSPOT-027` |
 | `RS-FLOW-15` | Reset and replay a deterministic fixture | Development script/test boundary | New generation; empty request/Favourites | `CLOSED_VERIFIED` — `F-06` / `RIGHTSPOT-028` repaired the CLI composition and passed focused and independent verification |
 | `RS-FLOW-16` | Show privacy-preserving listing interest to an agent | `/agent` embedded section | Read-only aggregate | `CLOSED_VERIFIED` |
@@ -475,11 +475,16 @@ evidence.
 slot is held.
 **Acceptance:** Decline is terminal; internal note never crosses the projection boundary; no proposal
 or slot side effect is manufactured; invalid/stale send fails without mutation.
-**Evidence:** `tests/api/workflow.test.ts`, `tests/domain/workflow.test.ts`, and agent/tenant DTO
-projection tests.
+**Evidence:** `tests/api/workflow.test.ts`, `tests/domain/workflow.test.ts`, agent/tenant DTO
+projection tests, and a fresh isolated local browser walkthrough on 2026-09-02. The walkthrough
+submitted a real tenant request, moved it through agent review and decline preparation, explicitly
+sent the decline, and then re-authenticated as the tenant. The agent saw a read-only `Declined`
+outcome; the tenant saw `Agent Declined` and only the tenant-facing note, with no tenant action
+remaining. The internal note did not cross the projection boundary, no slot was held, and no browser
+application error was observed.
 
-**Residual evidence:** The branch is covered by direct domain/application/API tests. A full built-server
-browser decline walkthrough is not currently claimed.
+**Evidence boundary:** This verifies the ordinary local browser branch only. It does not claim external
+notification, deployment, production concurrency, or any deferred integration.
 
 ### RS-FLOW-12 — Tenant confirms a proposal
 
@@ -752,9 +757,9 @@ present, not that every evidence branch is closed.
 | `RS-FLOW-08` | Implemented for submitted requests | Implemented | Domain/API/browser primary path plus `RIGHTSPOT-025` draft boundary regression | No current defect; keep submitted-request review path bounded |
 | `RS-FLOW-09` | Implemented | Implemented | Domain/application/API/UI tests and browser evidence | No automatic send claim |
 | `RS-FLOW-10` | Implemented | Implemented | Domain/API and primary browser evidence | No delivery provider claim |
-| `RS-FLOW-11` | Implemented | Implemented | Direct/domain/API evidence | Fresh browser decline evidence remains optional and is unrelated to the closed F-01 repair |
+| `RS-FLOW-11` | Implemented | Implemented | Direct/domain/API and fresh isolated local browser evidence | No external notification or deployment claim |
 | `RS-FLOW-12` | Implemented and verified | Implemented and verified | Domain/API, primary browser, and `RIGHTSPOT-027` state-matrix evidence | No booking/payment or real-world appointment claim |
-| `RS-FLOW-13` | Implemented and verified | Implemented and verified | Direct/domain/API and `RIGHTSPOT-027` state-matrix evidence | Fresh mutation browser branch remains unclaimed |
+| `RS-FLOW-13` | Implemented and verified | Implemented and verified | Direct/domain/API and `RIGHTSPOT-027` state-matrix evidence | `IMPLEMENTED_WITH_RESIDUAL_EVIDENCE`: fresh tenant-decline mutation browser branch remains unclaimed |
 | `RS-FLOW-14` | Implemented and verified | Implemented indirectly on reads/writes and verified | Direct/application/API and `RIGHTSPOT-027` state-matrix evidence | No scheduler/notification claim |
 | `RS-FLOW-15` | Implemented in application authority and CLI composition | Development boundary only | Focused child-process regression, full suite, and frozen-source independent verification for `F-06` / `RIGHTSPOT-028` | No public reset route; arbitrary corrupt-database salvage remains unclaimed |
 | `RS-FLOW-16` | Implemented | Implemented on `/agent` | Domain/API/UI and browser aggregate evidence | No analytics/history claim |

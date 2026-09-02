@@ -28,9 +28,10 @@ agent surfaces have since passed their respective independent verification gates
 at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression passed at frozen source
 `4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Start a fresh Main-thread cross-layer audit after the bounded
-`RIGHTSPOT-030` repair for the confirmed tenant request-dashboard read race. The latest audit
-found no new business-flow blocker and registered `RIGHTSPOT-029` for the verification-contract gap
+**Current next product action:** Continue the fresh Main-thread cross-layer audit after the bounded
+`RIGHTSPOT-030` repair for the confirmed tenant request-dashboard read race. The latest continuation
+found no new business-flow blocker and completed fresh local browser evidence for the agent-decline
+branch (`RS-FLOW-11`); it registered `RIGHTSPOT-029` for the verification-contract gap
 where the default `npm test` command executed only foundation tests `6/6` while the complete authored
 suite passed `133/133` across 28 test files. That Task is now `CLOSED_VERIFIED`: `npm test` runs the
 complete suite and `npm run test:foundation` names the fast foundation check. The current suite,
@@ -45,7 +46,8 @@ reconciliation. The dashboard portion of `F-08` is now `CLOSED_VERIFIED` through
 `RIGHTSPOT-030`: latest-read sequencing, mutation-result invalidation, and the full Refresh overlap
 gate passed focused/full tests, typecheck/build, independent source review, and both isolated browser
 race reruns. The separate `tenant-listing-page.tsx` dynamic-route overlap remains an `EVIDENCE_GAP`
-and is not included in that repair. The canonical business-flow and scenario
+and is not included in that repair. `RS-FLOW-13` remains implemented with residual evidence because
+its fresh tenant-decline mutation browser branch has not yet been claimed. The canonical business-flow and scenario
 baseline is
 [`07-business-flows-and-scenarios.md`](07-business-flows-and-scenarios.md). The only product source
 authority remains the canonical Main Worktree.
@@ -284,7 +286,7 @@ final response can remain a normal application action.
 | Cloud Receiver | **Not a first-phase dependency** | Future integration boundary only |
 | WebMCP | **Not a first-phase design center** | Later Hackathon integration boundary |
 | Runtime / deployment | **Not started** | No service, hosting, credentials, or public URL |
-| Evidence | **LOCAL MVP IMPLEMENTATION + DIRECT AND BROWSER HAPPY PATH VERIFIED** | Current pinned `npm test` passes the complete authored suite `136/136` across 29 test files, while `npm run test:foundation` passes `6/6`; the historical `RS-WO-002-14` direct cross-role check and `RS-WO-002-15` isolated browser walkthrough also passed with authoritative versions `1 → 6` and no browser errors or warnings. The `RIGHTSPOT-030` dashboard race repair also passed its isolated browser reruns. Deployment and future integrations remain unclaimed |
+| Evidence | **LOCAL MVP IMPLEMENTATION + DIRECT AND BROWSER HAPPY PATH VERIFIED** | Current pinned `npm test` passes the complete authored suite `136/136` across 29 test files, while `npm run test:foundation` passes `6/6`; the historical `RS-WO-002-14` direct cross-role check and `RS-WO-002-15` isolated browser walkthrough also passed with authoritative versions `1 → 6` and no browser errors or warnings. The `RIGHTSPOT-030` dashboard race repair passed its isolated browser reruns, and the fresh local agent-decline branch passed its browser walkthrough. The tenant-decline mutation branch remains an explicit evidence gap. Deployment and future integrations remain unclaimed |
 
 ## 3. Confirmed working inputs
 
