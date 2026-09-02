@@ -29,7 +29,7 @@ at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression pa
 `4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current next product task:** `RIGHTSPOT-022` is `in_progress`; its `RS-WO-022-01` Builder is
-`ASSIGNED` to persistent supporting task `01a0602e-e947-7231-bf6f-37ed685681e2`. Main selected the
+`IN_PROGRESS` in persistent supporting task `01a0602e-e947-7231-bf6f-37ed685681e2`. Main selected the
 already accepted `320px` responsive floor after the `RIGHTSPOT-021` post-closure audit found the
 third tenant navigation link initially clipped at `320–342px`. The repair remains a separate,
 tenant-scoped CSS-only boundary on serialized canonical Main; no implementation Worktree is open and
@@ -328,7 +328,7 @@ task `01a05ff5-ccf1-75c3-b873-5b39f0e3e28f` returned `VERIFIED` against the froz
 Worktree snapshot. The bounded implementation gate remains closed for its declared acceptance
 matrix. A subsequent Main-thread audit found the documented `320–342px` narrow-viewport clipping
 residual; Main selected the existing `320px` floor and registered `RIGHTSPOT-022` as a separate
-responsive repair. Its `RS-WO-022-01` Builder is now assigned to the persistent supporting task
+responsive repair. Its `RS-WO-022-01` Builder is now in progress in the persistent supporting task
 `01a0602e-e947-7231-bf6f-37ed685681e2`; it has not changed product source and does not change the
 `RIGHTSPOT-021` source.
 `RS-WO-020-05` returned `VERIFIED` against the frozen Main baseline `f49e1ca` after rebuilding and serving

@@ -171,7 +171,7 @@ change. Those are new authority or scope decisions, not reasons to widen this CS
 **Parent task:** `RIGHTSPOT-022`
 **Role:** `Builder`
 **Pre-dispatch status:** `GATED` (advanced to `ASSIGNED` after dispatch confirmation)
-**Execution state:** `ASSIGNED`
+**Execution state:** `IN_PROGRESS`
 **Owner:** Persistent supporting Builder task `01a0602e-e947-7231-bf6f-37ed685681e2` (`local`), under the authority of the Main RightSpot thread
 **Dispatch state:** `dispatched at main@cbf7643e26503ed0b49cc874c4a591f82e2aef18; serialized canonical Main Worktree; product source clean at dispatch`
 **Parallelization:** `SERIAL`

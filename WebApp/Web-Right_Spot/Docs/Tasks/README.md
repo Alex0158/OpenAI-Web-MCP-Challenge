@@ -75,7 +75,7 @@ Work Order returned `READY_FOR_VERIFICATION` after changing only its declared tw
 persistent Verifier task `01a05ff5-ccf1-75c3-b873-5b39f0e3e28f` independently returned `VERIFIED`.
 The post-closure audit found the separate `320–342px` initial-visibility residual, Main selected the
 existing `320px` support floor, and `RIGHTSPOT-022` is now registered as its bounded responsive repair.
-Its `RS-WO-022-01` Builder is `ASSIGNED` to persistent supporting task
+Its `RS-WO-022-01` Builder is `IN_PROGRESS` in persistent supporting task
 `01a0602e-e947-7231-bf6f-37ed685681e2` against the serialized canonical Main Worktree.
 
 Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
@@ -126,7 +126,7 @@ after its bounded browser/form regression passed. No closed task is an active im
 
 **Current route:** `RIGHTSPOT-022` is the active bounded route. Main selected the existing `320px`
 support floor after the `RIGHTSPOT-021` post-closure audit found initial clipping of the third tenant
-navigation link at `320–342px`. Its `RS-WO-022-01` Builder is `ASSIGNED` to persistent supporting task
+navigation link at `320–342px`. Its `RS-WO-022-01` Builder is `IN_PROGRESS` in persistent supporting task
 `01a0602e-e947-7231-bf6f-37ed685681e2`; the boundary is CSS-only, tenant-scoped, and serialized on
 the canonical Main Worktree. No implementation Worktree is open. `RIGHTSPOT-021` remains closed for
 its bounded implementation and verification. Its

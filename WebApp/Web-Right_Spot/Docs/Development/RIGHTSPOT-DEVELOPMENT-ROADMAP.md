@@ -110,7 +110,7 @@ returned `READY_FOR_VERIFICATION` after changing only its declared two product p
 bounded parent gate is closed for its declared acceptance matrix. A subsequent Main-thread browser
 audit found a `P2` residual at `320–342px`, where the third tenant navigation link is initially
 clipped until the links container is scrolled. Main selected the existing `320px` support floor and
-registered `RIGHTSPOT-022` as a separate CSS-only responsive repair. `RS-WO-022-01` is assigned to
+registered `RIGHTSPOT-022` as a separate CSS-only responsive repair. `RS-WO-022-01` is in progress in
 persistent supporting task `01a0602e-e947-7231-bf6f-37ed685681e2` against serialized canonical Main;
 no implementation Worktree is open and no product source has changed for this Task. The accepted
 two-path source is committed locally at product commit `66615d0`.
@@ -145,7 +145,7 @@ Only an explicitly selected, implementation-ready Task opens a new code Work Ord
 Worktree. Each accepted output is integrated into Main and its physical Worktree is retired at the
 first safe checkpoint-scoped opportunity under the orchestration Runbook. `RIGHTSPOT-021` is closed
 for its bounded repair and verification. Main selected the existing `320px` floor and registered
-in-progress `RIGHTSPOT-022`; its `RS-WO-022-01` is assigned to persistent supporting task
+in-progress `RIGHTSPOT-022`; its `RS-WO-022-01` is in progress in persistent supporting task
 `01a0602e-e947-7231-bf6f-37ed685681e2`, with no implementation Worktree open. `RIGHTSPOT-006`,
 `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain separate credential, decision, or read-only audit gates
 and do not reopen `RIGHTSPOT-020`. Local Git closure is recorded at `66615d0`.
