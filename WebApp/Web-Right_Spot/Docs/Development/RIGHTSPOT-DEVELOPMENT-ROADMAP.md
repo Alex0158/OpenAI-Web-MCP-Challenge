@@ -5,8 +5,8 @@
 is complete. The continuous cross-layer audit registered six bounded defects: `F-01` (agent draft
 visibility), `F-02` (signed-out root session resolution), `F-03` (the loopback development origin
 gap), `F-04` (listing-detail request-status notice), `F-05` (terminal request-response presentation),
-and `F-06` (the deterministic workflow-fixture reset command). `F-01`–`F-05` are closed within their
-bounded local claims; `F-06` is registered as pending `RIGHTSPOT-028`. The first implementation route was
+and `F-06` (the deterministic workflow-fixture reset command). `F-01`–`F-06` are closed within their
+bounded local claims; `F-06` was repaired and independently verified through `RIGHTSPOT-028`. The first implementation route was
 the `RIGHTSPOT-023` session-client repair, now verified in its Main Builder and independent read-only
 verification checkpoints. The same rendered audit registered `F-03` (the documented 127.0.0.1 dev
 origin gap) as the separately gated `RIGHTSPOT-024` configuration route. A subsequent page-entry audit
@@ -96,7 +96,7 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
   findings `F-01` (agent draft privacy), `F-02` (signed-out session resolution), `F-03`
   (`127.0.0.1:3100` development-origin resolution), `F-04` (listing-detail request-status notice),
   `F-05` (terminal request-response presentation), and `F-06` (deterministic workflow-fixture reset).
-  `F-01`–`F-05` remain closed within their bounded claims; `F-06` is open and tracked by
+  `F-01`–`F-06` remain closed within their bounded claims, with `F-06` closed through
   `RIGHTSPOT-028`. Each remains distinct from the others and from deferred integrations; the next
   audit must re-check them against current source.
 - The current physical state is one Worktree: canonical Main. The stopped `RS-WO-020-02` and
@@ -142,13 +142,13 @@ separate P2 terminal-response presentation defect; its single presentation-only 
 independent verification after the persistent Builder task `01a060bf-17c7-7c32-96ad-2ea1aa028ebf` and
 Verifier task `01a060a8-6f2d-7141-98d0-385483a9104f` completed their gates. No implementation Worktree
 is open.
-The fresh Main-thread audit then reproduced `F-06`: the documented `npm run db:reset` command
-bypasses the full workflow reset, leaves request/Favourite state behind, and can desynchronise
-foundation metadata from the workflow snapshot on repeated use. `RIGHTSPOT-028` is the current
-in-progress bounded route. Its `RS-WO-028-01` Work Order passed Main design review and its
-Red→Green candidate is ready for frozen-source independent verification; the repair is limited to
-CLI composition and an isolated child-process regression, with no automatic recovery or
-persistence-contract redesign. No supporting implementation Worktree is open.
+The fresh Main-thread audit reproduced `F-06`: the documented `npm run db:reset` command bypassed the
+full workflow reset, left request/Favourite state behind, and could desynchronise foundation metadata
+from the workflow snapshot on repeated use. `RIGHTSPOT-028` closed this bounded route: its
+`RS-WO-028-01` Work Order passed Main Red→Green checks and persistent frozen-source independent
+verification at integrated commit `b2c1682a`; the repair remains limited to CLI composition and an
+isolated child-process regression, with no automatic recovery or persistence-contract redesign. No
+supporting implementation Worktree was opened.
 The independent static verification `RS-WO-020-04` and fresh-reset browser verification `RS-WO-020-05`
 are reconciled in the owning Task File; the `RS-WO-021-01` implementation and `RS-WO-021-02`
 independent verification gates are closed:
@@ -179,16 +179,16 @@ independent verification gates are closed:
     presentation-only `RIGHTSPOT-026`/`RIGHTSPOT-027` status-notice repairs closed within their exact
     boundaries. Keep the closed `RIGHTSPOT-023`/`024` entry routes and all deferred integrations
     separate; do not reopen a completed route without a newly reproduced finding.
-11. Complete the in-progress `RIGHTSPOT-028` reset-command route through focused
-    Red→Green regression, frozen-source independent verification, and documentation reconciliation.
-    Keep the repair at the CLI/test composition boundary; do not broaden foundation-only reset
-    semantics or add automatic recovery for already-invalid databases.
+11. Record the completed `RIGHTSPOT-028` reset-command route, including focused Red→Green regression,
+    frozen-source independent verification, and documentation reconciliation. Keep the repair at the
+    CLI/test composition boundary; do not broaden foundation-only reset semantics or add automatic
+    recovery for already-invalid databases.
 
 Only an explicitly selected, implementation-ready Task opens a new code Work Order or temporary
 Worktree. `RIGHTSPOT-023`, `RIGHTSPOT-024`, `RIGHTSPOT-025`, `RIGHTSPOT-026`, and `RIGHTSPOT-027` are
 closed after exact-path verification and documentation writeback, with no active implementation
-Worktree. `RIGHTSPOT-028` is in progress after design review and has no supporting implementation
-Worktree. Its Main candidate must pass independent verification before closure. Each
+Worktree. `RIGHTSPOT-028` is closed after Main checks, persistent frozen-source independent
+verification, and documentation reconciliation; it had no supporting implementation Worktree. Each
 accepted output is integrated into Main and its physical Worktree is retired at the
 first safe checkpoint-scoped opportunity under the orchestration Runbook. `RIGHTSPOT-021` is closed
 for its bounded repair and verification. Main selected the existing `320px` floor and registered

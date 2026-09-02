@@ -1,7 +1,7 @@
 # RIGHTSPOT-028: Restore deterministic workflow fixture reset
 
 **Type:** `defect`  
-**Lifecycle:** `in_progress`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for local demo reproducibility and stateful test safety  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-02  
@@ -11,16 +11,16 @@ Node.js `v24.20.0`
 ## Task control
 
 - **Type:** `defect`
-- **Lifecycle:** `in_progress`
+- **Lifecycle:** `closed`
 - **Priority:** `P1` within the local development/test boundary; no production impact is claimed
 - **Owner:** Main RightSpot thread
 - **Current increment:** Make the documented `npm run db:reset` command perform the authoritative
   deterministic workflow-fixture reset and leave a valid, reopenable database.
-- **Execution posture:** `MAIN_BUILDER_READY_FOR_VERIFICATION`
-- **Evidence status:** `VERIFIED_DEFECT` from an isolated stateful reproduction against the current
-  Main source
-- **Next gate:** Freeze the exact candidate and use a persistent independent Verifier. Builder and
-  Verifier results are not closure by themselves.
+- **Execution posture:** `CLOSED_VERIFIED`
+- **Evidence status:** `CLOSED_VERIFIED` after Main Red→Green checks, frozen-source independent
+  verification, and canonical documentation reconciliation
+- **Next gate:** Return to the Main-thread cross-layer audit. Reopen only if a later audit reproduces
+  a reset regression or the repair requires a boundary outside this Task.
 - **Reopen condition:** Reopen or replace this Task if the repair requires changing workflow state
   semantics, generation authority, arbitrary-database recovery, or any path outside the declared
   bounded scope.
@@ -101,8 +101,8 @@ state machine, persistence schema, fixture contents, or public application behav
 ### RS-WO-028-01 — Repair the local deterministic workflow reset command
 
 **Role:** Main-thread Builder → frozen-source independent Verifier → Main documentation/closure  
-**Status:** `READY_FOR_VERIFICATION`  
-**Execution state:** `READY_FOR_VERIFICATION`  
+**Status:** `INTEGRATED`  
+**Execution state:** `CLOSED_VERIFIED`  
 **Owner:** Main RightSpot thread  
 **Parallelization:** `SERIAL_RESET_COMMAND` — reset authority, CLI behavior, and its focused regression
 share one persistence boundary; no other worker may alter the reset script or run a competing reset
@@ -111,7 +111,9 @@ against the same database during the lane.
 **Supporting task policy:** Use a persistent task/thread for any formal Builder or independent
 Verifier. A transient SubAgent may assist only with disposable read-only analysis and cannot own
 source, verification, repair, or closure.  
-**Next gate:** Freeze the exact candidate and dispatch one persistent independent read-only Verifier.
+**Independent Verifier task/thread:** `01a060fa-3cc5-7f22-9d74-d8c0eb95d21b` on host `local`  
+**Next gate:** Complete. The frozen candidate passed independent verification and is integrated in
+the canonical Main Worktree; no supporting implementation Worktree was opened.
 
 ### Authority and design decision
 
@@ -306,10 +308,51 @@ child `cwd` and inspects the resulting database through `WorkflowApplication`.
   default database, UI/API/auth code, package dependencies, outer Web-Game, generated output, and
   deferred integrations were not changed by this increment. The test leaves only its own ignored
   `var/test` evidence and never touches the running app database.
-- **Handoff:** The exact candidate paths and hashes must be recaptured immediately before dispatch;
-  the independent Verifier must use that frozen source and remain read-only.
+- **Handoff (completed):** The exact candidate paths and hashes were recaptured before dispatch; the
+  independent Verifier used that frozen source and remained read-only.
 
-## Suggested focused test boundary
+### Independent verification result — 2026-09-02
+
+Persistent independent Verifier task/thread `01a060fa-3cc5-7f22-9d74-d8c0eb95d21b` on host `local`
+returned `VERIFIED/PASS` against the frozen candidate integrated at:
+
+- repository root `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge`;
+- RightSpot package root `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge/WebApp/Web-Right_Spot`;
+- branch `main`, HEAD `b2c1682a34a395ff9471f4338b213a0ede938134`; and
+- the only physical Worktree, the canonical Main Worktree.
+
+The verifier independently confirmed pinned Node.js `v24.20.0` / npm `11.19.0`, focused coverage
+`1/1`, full direct suite `133/133` with no skip or todo, typecheck, production build on Next.js
+`16.3.4`, candidate whitespace and `git diff --check HEAD^ HEAD`. An isolated direct CLI capture
+exited `0`, printed exactly `workflow fixture generation 1`, and emitted no stderr. The verifier
+also ran the stateful reset/reopen boundary and confirmed repeated valid resets produce matching
+metadata/snapshot generations while clearing the disposable workflow state.
+
+The exact candidate source hashes were independently confirmed:
+
+- `scripts/reset-db.ts` —
+  `1e90c6ecc00f7cbda881ed70044448c07ac0af7b53187522cbe255b95626f6db`;
+- `tests/application/reset-script.test.ts` —
+  `fe97b0560707873dfcfd51da40c3bf1093c48b24be5589a8603e5de19e5c8f5b`.
+
+The default `var/rightspot.sqlite` SHA-256, size, mtime, and inode were unchanged. No source,
+documentation, database, commit, or integration mutation was performed by the verifier. The
+repair remains limited to CLI composition and its isolated regression: no workflow/API/UI/auth
+behavior, schema, dependency, external integration, deployment, or production data-management
+claim is made. Arbitrary corrupt or generation-mismatched database salvage remains intentionally
+unimplemented and unverified; it is a visible recovery boundary.
+
+### Closure result — 2026-09-02
+
+`RIGHTSPOT-028` and `RS-WO-028-01` are closed in the canonical Main Worktree at
+`b2c1682a34a395ff9471f4338b213a0ede938134`. The documented `npm run db:reset` command now composes
+the existing `WorkflowApplication.reset` authority, reports the workflow fixture generation, and
+closes its application handle in `finally`. The focused Red→Green regression, Main aggregate
+checks, frozen-source independent verification, exact-path review, and documentation writeback all
+passed. The next action is a fresh Main-thread cross-layer audit; no supporting implementation
+Worktree is active.
+
+## Original focused test boundary (satisfied)
 
 The test may use the established `var/test` convention and should:
 

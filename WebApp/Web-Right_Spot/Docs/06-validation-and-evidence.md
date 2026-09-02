@@ -114,6 +114,15 @@ production build, exact scope/hash checks, and safe browser smoke passed. The fi
 workflow, projection, privacy, or slot-transition defect; the existing response presentation now
 consumes authoritative request state and removes actionable deadline language from terminal outcomes.
 
+The subsequent reset-boundary audit reproduced `F-06`: the documented `npm run db:reset` command
+previously bypassed the full workflow reset. `RIGHTSPOT-028` repaired only that CLI composition and
+its isolated child-process regression. Main Red→Green checks and persistent frozen-source independent
+verification passed at integrated commit `b2c1682a34a395ff9471f4338b213a0ede938134`: focused `1/1`,
+full direct suite `133/133`, pinned typecheck, production build, whitespace, exact scope, and
+repeated reset/reopen evidence all passed. The reset remains a disposable local development/test
+boundary; arbitrary corrupt-database salvage, production data management, deployment, WebMCP, and
+external authentication remain non-claims.
+
 ## 4.1 Post-MVP shared CSS evidence
 
 `RS-WO-007-02` is independently `VERIFIED` and integrated at product commit `89a50c7`. The

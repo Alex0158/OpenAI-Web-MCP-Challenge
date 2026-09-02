@@ -106,11 +106,12 @@ confirmed, declined, or expired. Its single presentation-only Work Order passed 
 and independent verification by persistent tasks `01a060bf-17c7-7c32-96ad-2ea1aa028ebf` and
 `01a060a8-6f2d-7141-98d0-385483a9104f`; no separate implementation Worktree was open.
 
-`RIGHTSPOT-028` is now an in-progress P1 verified defect: the documented `npm run db:reset`
-command currently updates only foundation metadata, leaves workflow request/Favourite state in place,
-and diverges metadata from the workflow snapshot on a repeated reset. Its single
-`RS-WO-028-01` command-composition and isolated child-process regression passed Main design review
-and is now at the Main Builder Red checkpoint; no supporting implementation Worktree is open and
+`RIGHTSPOT-028` is now a closed P1 reset-boundary repair: the documented `npm run db:reset` command
+composes the authoritative workflow reset and no longer leaves request/Favourite state behind or
+desynchronises metadata from the workflow snapshot. Its single `RS-WO-028-01` command-composition
+and isolated child-process regression passed Main Red→Green checks and independent frozen-source
+verification by persistent task `01a060fa-3cc5-7f22-9d74-d8c0eb95d21b`; it is integrated at
+`b2c1682a34a395ff9471f4338b213a0ede938134`. No supporting implementation Worktree was opened and
 no recovery fallback is authorized.
 
 Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
@@ -148,8 +149,7 @@ browser evidence are reconciled in the
 `RIGHTSPOT-002` is closed.
 
 **Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain pending
-(credential, decision, and read-only audit gates respectively); `RIGHTSPOT-028` is in progress as a
-bounded reset repair; `RIGHTSPOT-023` and `RIGHTSPOT-024`
+(credential, decision, and read-only audit gates respectively); `RIGHTSPOT-023` and `RIGHTSPOT-024`
 are closed within their bounded outcomes; `RIGHTSPOT-025` and `RIGHTSPOT-026` are closed within their
 bounded outcomes; `RIGHTSPOT-027` is closed after its Builder handoff and independent verification;
 `RIGHTSPOT-021` is closed as an implementation gate, and `RIGHTSPOT-022` is closed at product commit `f0dbd99` after
@@ -163,10 +163,10 @@ independently verified and integrated at `edd7575`; `RS-WO-017-03` is independen
 integrated at `2a53917`, with `RS-WO-017-04` browser verification complete. `RS-WO-019-01` is closed
 after its bounded browser/form regression passed. No closed task is an active implementation gate.
 
-**Current route:** `RIGHTSPOT-028` is the current bounded route from the fresh Main-thread
-cross-layer audit. Its `RS-WO-028-01` Work Order passed Main design review and is at the Main
-Builder Red checkpoint. No supporting implementation Worktree is open; the
-canonical Main Worktree remains the only source authority. `RIGHTSPOT-027`, `RIGHTSPOT-026`,
+**Current route:** No RightSpot implementation route is active. `RIGHTSPOT-028` is closed after
+`RS-WO-028-01` passed Main Red→Green checks and persistent frozen-source independent verification;
+the canonical Main Worktree remains the only source authority. The next route is a fresh
+Main-thread cross-layer audit. `RIGHTSPOT-027`, `RIGHTSPOT-026`,
 `RIGHTSPOT-022`, and `RIGHTSPOT-021` remain closed within their separately recorded
 presentation/navigation boundaries. `RIGHTSPOT-020` remains closed after its Favourite/listing-interest
 implementation and fresh-reset browser verification. `RIGHTSPOT-006` stays gated on explicit external
