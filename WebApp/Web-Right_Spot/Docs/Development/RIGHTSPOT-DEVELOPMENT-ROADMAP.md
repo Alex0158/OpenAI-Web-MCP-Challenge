@@ -2,9 +2,10 @@
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
 **Status:** Phase 5 is complete for the accepted local MVP, and the earlier Phase 6 post-MVP closure increment
-is complete. The continuous cross-layer audit registered three bounded defects: `F-01` (agent draft
-visibility), `F-02` (signed-out root session resolution), and `F-03` (the loopback development origin
-gap). All three are now closed within their bounded local claims. The first implementation route was
+is complete. The continuous cross-layer audit registered five bounded defects: `F-01` (agent draft
+visibility), `F-02` (signed-out root session resolution), `F-03` (the loopback development origin
+gap), `F-04` (listing-detail request-status notice), and `F-05` (terminal request-response presentation).
+All five are now closed within their bounded local claims. The first implementation route was
 the `RIGHTSPOT-023` session-client repair, now verified in its Main Builder and independent read-only
 verification checkpoints. The same rendered audit registered `F-03` (the documented 127.0.0.1 dev
 origin gap) as the separately gated `RIGHTSPOT-024` configuration route. A subsequent page-entry audit
@@ -91,8 +92,9 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
   Cloud Receiver, WebMCP, Redis, WebRTC media/signaling, and external services remain deferred.
 - [`../07-business-flows-and-scenarios.md`](../07-business-flows-and-scenarios.md) is now the
   canonical audit baseline for the tenant and agent business chains. It records the closed bounded
-  findings `F-01` (agent draft privacy), `F-02` (signed-out session resolution), and `F-03`
-  (`127.0.0.1:3100` development-origin resolution). Each remains distinct from the others and from
+  findings `F-01` (agent draft privacy), `F-02` (signed-out session resolution), `F-03`
+  (`127.0.0.1:3100` development-origin resolution), `F-04` (listing-detail request-status notice),
+  and `F-05` (terminal request-response presentation). Each remains distinct from the others and from
   deferred integrations; the next audit must re-check them against current source.
 - The current physical state is one Worktree: canonical Main. The stopped `RS-WO-020-02` and
   `RS-WO-020-03` UI candidates were adopted into Main and their physical Worktrees were retired after
@@ -164,14 +166,13 @@ independent verification gates are closed:
 9. Keep `RIGHTSPOT-012` as a non-blocking, read-only audit lane. It may identify follow-on work but
    does not itself constitute a product implementation milestone.
 10. Keep the separately registered `RIGHTSPOT-025` read-boundary/TDD route for `F-01` and the
-    presentation-only `RIGHTSPOT-026` status-notice repair closed within their exact boundaries. Route
-    the separate `RIGHTSPOT-027` terminal-response presentation finding through its single Work Order;
-    keep the closed `RIGHTSPOT-023`/`024` entry routes and all deferred integrations separate.
+    presentation-only `RIGHTSPOT-026`/`RIGHTSPOT-027` status-notice repairs closed within their exact
+    boundaries. Keep the closed `RIGHTSPOT-023`/`024` entry routes and all deferred integrations
+    separate; do not reopen a completed route without a newly reproduced finding.
 
 Only an explicitly selected, implementation-ready Task opens a new code Work Order or temporary
-Worktree. `RIGHTSPOT-023`, `RIGHTSPOT-024`, `RIGHTSPOT-025`, and `RIGHTSPOT-026` are closed after
-exact-path verification and documentation writeback, with no active implementation Worktree. The
-`RIGHTSPOT-027` is now closed within its bounded presentation-only claim and has no active implementation
+Worktree. `RIGHTSPOT-023`, `RIGHTSPOT-024`, `RIGHTSPOT-025`, `RIGHTSPOT-026`, and `RIGHTSPOT-027` are
+closed after exact-path verification and documentation writeback, with no active implementation
 Worktree. No implementation-ready product repair route is currently selected; each
 accepted output is integrated into Main and its physical Worktree is retired at the
 first safe checkpoint-scoped opportunity under the orchestration Runbook. `RIGHTSPOT-021` is closed
