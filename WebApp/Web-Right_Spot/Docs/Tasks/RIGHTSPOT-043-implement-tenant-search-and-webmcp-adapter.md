@@ -1,7 +1,7 @@
 # RIGHTSPOT-043 — Implement Tenant Discovery Search and WebMCP adapter
 
 **Type:** `implementation`  
-**Lifecycle:** `pending`  
+**Lifecycle:** `in_progress`  
 **Priority:** `P1` for the first WebMCP/product integration slice; the closed ordinary MVP remains runnable without it  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-03  
@@ -11,18 +11,23 @@ page/session-bound read-only WebMCP capability without creating a second listing
 
 ## Task control
 
-- **Lifecycle:** `pending`
+- **Lifecycle:** `in_progress`
 - **Execution posture:** `SERIAL_PRODUCT_SEARCH_WITH_SEQUENTIAL_WEBMCP_GATE`
 - **Owner:** Main RightSpot thread
-- **Current gate:** Exact source/runtime/browser baseline and implementation Work Order prompt must be
-  reviewed before dispatch. No source, dependency, WebMCP registration, fixture, or Worktree change
-  is authorized by registration alone.
-- **Dispatch state:** `not dispatched`
-- **Supporting workers:** None assigned; a read-only Hubble review of the preceding contract decision
-  is process evidence only and has no implementation authority.
-- **Source identity:** Recapture the Main repository root, branch, commit, dirty/untracked paths,
-  RightSpot package/runtime, local health, and supported WebMCP/browser capability immediately before
-  dispatch. Do not reuse the `RIGHTSPOT-042` documentation baseline as an implementation baseline.
+- **Current gate:** `RS-WO-043-01` is dispatched in the canonical Main Worktree for the ordinary
+  Search authority/UI/API slice. The later adapter and verifier remain gated on this handoff. No
+  source, dependency, WebMCP registration, fixture, or extra Worktree change is authorized outside
+  the active Work Order.
+- **Dispatch state:** `RS-WO-043-01 dispatched`
+- **Supporting workers:** Hubble is the delegated Builder for `RS-WO-043-01`; Main retains source
+  integration, shared-file serialization, verification acceptance, canonical documentation, and Git
+  closure authority.
+- **Source identity:** Dispatch baseline captured at repository root `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge`,
+  branch `main`, commit `74737bda1031b8c84cde63beb61f08a96a4ee5cd` (`origin/main` equal). RightSpot
+  tracked source was clean; five pre-existing untracked boundary artifacts were recorded and remain
+  protected. Node `v24.20.0`, npm `11.19.0`, `npm test` `159/159`, typecheck, build, and `/api/health`
+  passed before dispatch. The current browser bridge could not list WebMCP tools under this model;
+  that compatibility check remains explicitly gated to the adapter/verifier and is not a WebMCP claim.
 - **Integration authority:** Main owns source integration, shared-file serialization, verification
   acceptance, canonical documentation, Git commit/push, and candidate Worktree retirement.
 
@@ -50,7 +55,7 @@ unsupported criterion, or fall back from an empty result to the full catalogue.
 ### RS-WO-043-01 — Implement shared Search semantics and ordinary UI/API parity
 
 **Role:** Builder — application/API and Tenant UI  
-**Status:** `PENDING_REVIEW`  
+**Status:** `IN_PROGRESS`
 **Parallelization:** `SERIAL_SEARCH_AUTHORITY` — this Work Order owns the shared Search authority and
 must complete before the WebMCP adapter Work Order.  
 **Risk:** `Assured` — crosses server validation, UI interpretation, DTO parity, and stale/error states.  
@@ -203,7 +208,6 @@ widening the semantic contract.
 
 ## Closure evidence
 
-This Task remains `pending` and `not dispatched` until Main completes the dispatch baseline. The closed
-decision gate is recorded in `RIGHTSPOT-042` and ADR-RS-0015; implementation, runtime registration,
-browser support, deployment, and judge reproducibility are not yet claimed.
-
+This Task is `in_progress` while `RS-WO-043-01` executes. The closed decision gate is recorded in
+`RIGHTSPOT-042` and ADR-RS-0015. The current handoff does not claim WebMCP runtime registration,
+browser support, deployment, or judge reproducibility; those remain later gates.

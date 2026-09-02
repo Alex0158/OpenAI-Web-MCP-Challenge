@@ -170,7 +170,7 @@ bounded W0 disposition:
   and tool registration.
 
 W0 recaptured the decision context. Its output is the accepted product outcome in ADR-RS-0015; the
-implementation baseline and browser capability must be recaptured by `RIGHTSPOT-043` before dispatch.
+implementation baseline and browser capability were recaptured at the `RIGHTSPOT-043` dispatch gate.
 
 **W0 exit gate (historical):** The first goal, page, role, read-only outcome, existing authority, and
 named Main owner were accepted. The exact tool boundary, Area semantics, result schema, browser
@@ -208,7 +208,7 @@ API.
 
 ### W2 — First read-only WebMCP vertical slice
 
-**State:** `PENDING — RIGHTSPOT-043 dispatch baseline`  
+**State:** `IN_PROGRESS — RIGHTSPOT-043 / RS-WO-043-01`  
 **Outcome:** one page-authored read-only tool that performs one bounded goal through existing authority.
 
 The implementation must:
@@ -426,17 +426,17 @@ or a new cross-origin/external integration is proposed.
 
 ## 10. Current next action
 
-The current action is to execute [`RIGHTSPOT-043`](../Tasks/RIGHTSPOT-043-implement-tenant-search-and-webmcp-adapter.md)
-as the W2 implementation gate for the accepted Tenant Discovery Search contract. It must first align
-the ordinary UI/API Area and date semantics, then add the thin page-bound read-only adapter, and then
-produce independent supported-browser evidence before any WebMCP success claim.
+The current action is to complete the dispatched `RS-WO-043-01` ordinary Search authority/UI/API phase
+of [`RIGHTSPOT-043`](../Tasks/RIGHTSPOT-043-implement-tenant-search-and-webmcp-adapter.md), then
+review its exact handoff before dispatching the thin page-bound adapter and independent supported-
+browser verification. No WebMCP success claim is made during the current Builder phase.
 
 Until the `RIGHTSPOT-043` implementation and verification gate is accepted:
 
 - `RIGHTSPOT-010` remains `pending` and `RS-WO-010-01` remains `READY_FOR_REVIEW`;
-- `RIGHTSPOT-042` is `CLOSED_VERIFIED` as a documentation/decision gate and `RIGHTSPOT-043` remains
-  pending;
-- no WebMCP implementation Work Order is active until `RIGHTSPOT-043`'s exact dispatch gate is accepted;
+- `RIGHTSPOT-042` is `CLOSED_VERIFIED` as a documentation/decision gate and `RIGHTSPOT-043` is
+  `in_progress` through `RS-WO-043-01`;
+- the WebMCP adapter Work Order is not active until the shared Search handoff is accepted;
 - ordinary RightSpot MVP behavior remains the only runnable product claim; and
 - Cloud Receiver, WebRTC, Redis, external authentication, deployment, and production-readiness remain
   deferred or gated.

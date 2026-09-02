@@ -293,15 +293,15 @@ authorized no source or registration change; implementation is separately regist
 `RIGHTSPOT-043`. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal and is
 not absorbed by this task.
 
-`RIGHTSPOT-043` is the current pending P1 implementation Task for the accepted Tenant Discovery Search
-contract. It contains sequential Work Orders for ordinary UI/API semantics, the thin WebMCP adapter,
-and independent supported-browser verification. It is registered but not dispatched; no source,
-dependency, fixture, registration, or Worktree change is authorized until its exact dispatch baseline
-and prompt are reviewed.
+`RIGHTSPOT-043` is the current in-progress P1 implementation Task for the accepted Tenant Discovery
+Search contract. It contains sequential Work Orders for ordinary UI/API semantics, the thin WebMCP
+adapter, and independent supported-browser verification. `RS-WO-043-01` has been dispatched in the
+canonical Main Worktree against the captured Node 24/source baseline; the adapter and verifier remain
+gated on its handoff. No extra Worktree is open.
 
-**Current route:** `RIGHTSPOT-043` is the current pending Main-owned implementation gate for the accepted
-Tenant Discovery/WebMCP Search direction; it is registered but not dispatched. `RIGHTSPOT-042` is
-closed as the decision gate. `RIGHTSPOT-041` and
+**Current route:** `RIGHTSPOT-043` is the current active Main-owned implementation route for the
+accepted Tenant Discovery/WebMCP Search direction; `RS-WO-043-01` is executing the ordinary Search
+authority/UI/API phase. `RIGHTSPOT-042` is closed as the decision gate. `RIGHTSPOT-041` and
 `RIGHTSPOT-040` remain closed within their exact tenant consumer boundaries. No extra code Worktree is
 open.
 `RIGHTSPOT-032` through `RIGHTSPOT-040` remain closed within their exact tenant and Agent

@@ -106,9 +106,10 @@ deterministic suggestions, shared normalization, explicit unknown-value handling
 catalogue fallback. ADR-RS-0015 now accepts the complete first Search contract: the four criteria,
 inclusive AND semantics, compatibility date mapping, deterministic source order, bounded full result,
 truthful empty/error/stale behavior, page/tool parity, Tenant-only privacy, and page/session-scoped
-WebMCP lifecycle. `RIGHTSPOT-042` is closed as a decision gate; `RIGHTSPOT-043` is the new pending
-implementation gate. No WebMCP registration or source claim is made before that Task's implementation
-and independent browser verification. `RIGHTSPOT-010` remains a separate pending Agent
+WebMCP lifecycle. `RIGHTSPOT-042` is closed as a decision gate; `RIGHTSPOT-043` is the active
+implementation route, with `RS-WO-043-01` currently dispatched for the ordinary Search slice. No
+WebMCP registration or source claim is made before the later adapter and independent browser
+verification gates. `RIGHTSPOT-010` remains a separate pending Agent
 Operations/WebMCP proposal.
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-03, Europe/London
@@ -118,11 +119,12 @@ short-lived `RS-WO-020-02` and `RS-WO-020-03` candidate Worktrees were adopted i
 exact-path review. Their historical snapshots remain in the owning Task File records; no candidate
 Worktree is an active source or writer.
 
-**Current gate:** No implementation Worktree is open. The accepted local MVP and the `RIGHTSPOT-039` /
-`RS-WO-039-01` F-17 listing-detail partial-read repair are closed within their bounded outcomes. The
-current Main-owned gate is pending `RIGHTSPOT-043` Tenant Discovery Search implementation; its source,
-WebMCP registration, and browser evidence remain unverified. `RIGHTSPOT-042` is closed as the preceding
-contract decision, and the Main-thread cross-layer audit remains non-blocking evidence work.
+**Current gate:** No extra implementation Worktree is open; `RS-WO-043-01` is active in the canonical
+Main Worktree. The accepted local MVP and the `RIGHTSPOT-039` / `RS-WO-039-01` F-17 listing-detail
+partial-read repair are closed within their bounded outcomes. `RIGHTSPOT-043` ordinary Search source,
+WebMCP registration, and browser evidence remain unverified until their respective handoff gates.
+`RIGHTSPOT-042` is closed as the preceding contract decision, and the Main-thread cross-layer audit
+remains non-blocking evidence work.
 `RIGHTSPOT-033`, `RIGHTSPOT-034`, `RIGHTSPOT-035`, `RIGHTSPOT-036`, `RIGHTSPOT-037`, and `RIGHTSPOT-038` are `CLOSED_VERIFIED` within their bounded presentation scopes in
 the canonical Main Worktree; no extra implementation Worktree is open. `RS-WO-002-13` is integrated at product commit
 `3765747`, repaired `RS-WO-002-12` is integrated at `9348aa5`, `RS-WO-002-14` passed direct combined
@@ -269,8 +271,9 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 
 ### 3.1 Current next route
 
-The current route is the pending Main-owned `RIGHTSPOT-043` Tenant Discovery/WebMCP Search
-implementation Task. The first WebMCP goal is selected as read-only Tenant listing discovery on
+The current route is the active Main-owned `RIGHTSPOT-043` Tenant Discovery/WebMCP Search implementation
+Task; `RS-WO-043-01` is executing the ordinary Search authority/UI/API phase. The first WebMCP goal is
+selected as read-only Tenant listing discovery on
 `/tenant`; ADR-RS-0014 accepts the canonical Area direction and ADR-RS-0015 accepts the complete
 criteria, result/page-state, error/freshness, privacy, and browser-fallback contract. `RIGHTSPOT-043`
 must align the ordinary UI/API path before adding the thin adapter, then pass independent supported-
