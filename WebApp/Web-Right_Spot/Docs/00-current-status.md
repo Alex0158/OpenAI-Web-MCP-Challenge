@@ -34,9 +34,11 @@ reports healthy at `/api/health`. A fresh rendered route/role sweep covered the 
 catalogue, Favourites, Viewing Requests, listing detail, wrong-role Agent access, and the valid Agent
 queue/listing-interest surface without workflow-fixture mutation or browser errors. No new
 `VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`, `VERIFIED_POLISH`, or `DOCUMENTATION_DRIFT` finding was accepted.
-**Current executable identity (2026-09-02):** `main` at `898fea29eec7db80753819d020b89d19868dfff1`, with
-`HEAD` equal to `origin/main`; RightSpot tracked source is clean. The known untracked RightSpot boundary
-artifacts remain preserved and are not product source changes.
+**Last executable product-source baseline (2026-09-02):** `898fea29eec7db80753819d020b89d19868dfff1`,
+captured while `HEAD` equalled `origin/main`; the subsequent `19bb483` commit contains only this
+source-identity documentation reconciliation and no product-source change. RightSpot tracked source
+remains clean, and the known untracked boundary artifacts remain preserved and are not product source
+changes.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current next product action:** Continue the Main-thread cross-layer audit from the closed
 `RIGHTSPOT-041` / `RS-WO-041-01` tenant request mutation-feedback repair. `RIGHTSPOT-039` /
