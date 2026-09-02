@@ -579,3 +579,11 @@ and `/api/health` all passed. `HEAD` and `origin/main` matched at `63e141e`, wit
 Worktree and no source, fixture, or runtime mutation. This adds no new finding and does not close the
 continuous lane; `F-08`, `F-20`, the native datetime-input harness limitation, and the unpublished
 Favourite evidence limitation remain unchanged.
+
+The subsequent native-picker follow-up used a fresh isolated Tenant listing-detail session and a real
+pointer click on the rendered calendar affordance followed by human-like keyboard input. The control
+showed only an incomplete date/time segment while the page's controlled value remained empty; no complete
+datetime value reached React, no Save draft request was sent, and no workflow fixture changed. This
+strengthens the tooling/evidence-boundary classification but does not constitute successful native-picker
+evidence or authorize a repair, fallback, Task, or Work Order. The prior successful `RIGHTSPOT-019`
+browser/form record remains the populated-control authority. `RIGHTSPOT-012` stays `pending`.

@@ -1683,3 +1683,19 @@ canonical physical Worktree remained. No source, fixture, or runtime behavior ch
 This confirms the current committed baseline but does not close the continuous audit lane. `F-08`,
 `F-20`, the native `datetime-local` harness boundary, and the unpublished Favourite evidence limitation
 remain as previously classified; no new finding, Task, or Work Order was registered.
+
+## 66. Native picker interaction follow-up — tooling evidence boundary remains — 2026-09-02
+
+Main repeated the native `datetime-local` check in a fresh isolated Tenant listing-detail session using
+pointer interaction on the rendered calendar affordance, followed by human-like keyboard entry. The
+control visibly accepted only a partial date segment and later displayed an incomplete date/time value;
+the controlled input value read by the page remained empty, and no complete `datetime-local` value reached
+the Tenant Request editor state. The normal textarea remained independently operable. No Save draft
+request was sent and no workflow fixture state changed.
+
+This is stronger pointer evidence of the available harness limitation, but it is not trusted successful
+native-picker evidence: the interaction did not produce a complete value or a committed React change
+event. The prior successful `RIGHTSPOT-019` browser/form record remains the authoritative populated
+control evidence. No product repair, fallback, workaround, Task, or Work Order was authorized; a real
+native picker interaction or known-capable browser runtime is still required before changing the
+classification.

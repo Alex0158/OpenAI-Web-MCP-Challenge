@@ -27,11 +27,12 @@ tooling mutation preserved as procedure evidence. The Field Desk shared CSS, ten
 agent surfaces have since passed their respective independent verification gates and are integrated
 at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression passed at frozen source
 `4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
-**Post-commit audit checkpoint (2026-09-02):** The canonical Main Worktree is at `9f75523b38a624cb68b4df815ac5fe5284380d42`,
-`origin/main` is identical, and no additional RightSpot Worktree is present. The current local server
-still reports healthy at `/api/health`. A fresh rendered route/role sweep covered the signed-out root,
-Tenant catalogue, Favourites, Viewing Requests, listing detail, wrong-role Agent access, and the valid
-Agent queue/listing-interest surface without workflow-fixture mutation or browser errors. No new
+**Post-commit audit checkpoint (2026-09-02):** The canonical Main Worktree remains the only RightSpot
+product source authority and is synchronized with `origin/main`; each audit checkpoint recaptures the
+exact current Git identity. No additional RightSpot Worktree is present. The current local server still
+reports healthy at `/api/health`. A fresh rendered route/role sweep covered the signed-out root, Tenant
+catalogue, Favourites, Viewing Requests, listing detail, wrong-role Agent access, and the valid Agent
+queue/listing-interest surface without workflow-fixture mutation or browser errors. No new
 `VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`, `VERIFIED_POLISH`, or `DOCUMENTATION_DRIFT` finding was accepted.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current next product action:** Continue the Main-thread cross-layer audit from the closed
