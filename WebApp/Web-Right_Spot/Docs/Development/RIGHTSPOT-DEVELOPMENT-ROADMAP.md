@@ -112,8 +112,9 @@ audit found a `P2` residual at `320–342px`, where the third tenant navigation 
 clipped until the links container is scrolled. Main selected the existing `320px` support floor and
 registered `RIGHTSPOT-022` as a separate CSS-only responsive repair. `RS-WO-022-01` returned
 `READY_FOR_VERIFICATION` in persistent supporting task `01a0602e-e947-7231-bf6f-37ed685681e2`; Main
-froze the exact CSS candidate at local product commit `f0dbd99`, and independent `RS-WO-022-02`
-verification is the next gate. No implementation Worktree is open.
+froze the exact CSS candidate at local product commit `f0dbd99`, and assigned independent
+`RS-WO-022-02` verification to persistent supporting task `01a06039-6eea-7033-aaf8-ae34c69aebe7`.
+No implementation Worktree is open.
 The independent static verification `RS-WO-020-04` and fresh-reset browser verification `RS-WO-020-05`
 are reconciled in the owning Task File; the `RS-WO-021-01` implementation and `RS-WO-021-02`
 independent verification gates are closed:
@@ -147,7 +148,8 @@ first safe checkpoint-scoped opportunity under the orchestration Runbook. `RIGHT
 for its bounded repair and verification. Main selected the existing `320px` floor and registered
 in-progress `RIGHTSPOT-022`; its `RS-WO-022-01` Builder returned `READY_FOR_VERIFICATION` and Main
 froze the exact CSS candidate at product commit `f0dbd99`. Independent `RS-WO-022-02` verification is
-the next gate; no implementation Worktree is open. `RIGHTSPOT-006`, `RIGHTSPOT-010`, and
+assigned to persistent supporting task `01a06039-6eea-7033-aaf8-ae34c69aebe7`; no implementation
+Worktree is open. `RIGHTSPOT-006`, `RIGHTSPOT-010`, and
 `RIGHTSPOT-012` remain separate credential, decision, or read-only audit gates and do not reopen
 `RIGHTSPOT-020`. Local Git closure for the prior `RIGHTSPOT-021` increment is recorded at `66615d0`.
 

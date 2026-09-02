@@ -77,7 +77,8 @@ The post-closure audit found the separate `320–342px` initial-visibility resid
 existing `320px` support floor, and `RIGHTSPOT-022` is now registered as its bounded responsive repair.
 Its `RS-WO-022-01` Builder returned `READY_FOR_VERIFICATION` in persistent supporting task
 `01a0602e-e947-7231-bf6f-37ed685681e2`; Main froze the exact CSS candidate at product commit `f0dbd99`,
-and independent `RS-WO-022-02` verification is the next gate.
+and independent `RS-WO-022-02` verification is assigned to persistent supporting task
+`01a06039-6eea-7033-aaf8-ae34c69aebe7`.
 
 Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, the corrected `RS-WO-002-02` rerun returned
@@ -116,8 +117,8 @@ browser evidence are reconciled in the
 **Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain pending
 (credential, decision, and read-only audit gates respectively); `RIGHTSPOT-021` is closed as an
 implementation gate, and `RIGHTSPOT-022` is `in_progress` with `RS-WO-022-01` at
-`READY_FOR_VERIFICATION` and `RS-WO-022-02` as the next independent gate for the separately registered
-`320–342px` responsive repair. `RIGHTSPOT-020` is closed with
+`READY_FOR_VERIFICATION` and assigned `RS-WO-022-02` as the independent gate for the separately
+registered `320–342px` responsive repair. `RIGHTSPOT-020` is closed with
 `RS-WO-020-01R` verified,
 its UI candidates adopted into Main at product commit `c29e80d`, `RS-WO-020-04` independently verified at
 Main `c977ea4`, and `RS-WO-020-05` fresh-reset browser verification passed against Main `f49e1ca`.
@@ -130,7 +131,8 @@ after its bounded browser/form regression passed. No closed task is an active im
 support floor after the `RIGHTSPOT-021` post-closure audit found initial clipping of the third tenant
 navigation link at `320–342px`. Its `RS-WO-022-01` Builder returned `READY_FOR_VERIFICATION` in
 persistent supporting task `01a0602e-e947-7231-bf6f-37ed685681e2`; Main froze the exact CSS candidate at
-product commit `f0dbd99`, and `RS-WO-022-02` is the next independent gate. The boundary is CSS-only,
+product commit `f0dbd99`, and assigned `RS-WO-022-02` to persistent supporting task
+`01a06039-6eea-7033-aaf8-ae34c69aebe7` for independent verification. The boundary is CSS-only,
 tenant-scoped, and serialized on the canonical Main Worktree. No implementation Worktree is open.
 `RIGHTSPOT-021` remains closed for
 its bounded implementation and verification. Its

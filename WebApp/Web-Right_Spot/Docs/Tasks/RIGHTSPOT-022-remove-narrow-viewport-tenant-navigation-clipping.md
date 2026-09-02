@@ -369,10 +369,12 @@ The Builder's report must include:
 
 **Parent task:** `RIGHTSPOT-022`
 **Role:** `Verifier`
-**Pre-dispatch status:** `GATED`
-**Execution state:** `GATED`
-**Owner:** To be recorded by Main after the persistent supporting Verifier task is created
-**Dispatch state:** Not dispatched; source freeze is local product commit `f0dbd99`
+**Pre-dispatch status:** `GATED` (advanced to `ASSIGNED` after dispatch confirmation)
+**Execution state:** `ASSIGNED`
+**Owner:** Persistent supporting Verifier task `01a06039-6eea-7033-aaf8-ae34c69aebe7` (`local`),
+under the authority of the Main RightSpot thread
+**Dispatch state:** `dispatched at main@6451e41; serialized canonical Main Worktree; frozen product
+source at local product commit f0dbd99; verifier write set is empty`
 **Parallelization:** `SERIAL` after `RS-WO-022-01`
 **Execution profile:** `Standard` (independent static, runtime, and browser verification only)
 **Integration owner/order:** Main RightSpot thread; the Verifier must not edit source or canonical
