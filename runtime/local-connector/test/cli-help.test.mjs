@@ -29,6 +29,7 @@ test("CLI help presents the account-first install path", () => {
   assert.match(result.stdout, /opens no inbound port/);
   assert.match(result.stdout, /Temporary npx: npx --yes --package=@4xeoz\/re-entry re-entry <command>/);
   assert.match(result.stdout, /Global install: npm install --global @4xeoz\/re-entry, then re-entry <command>/);
+  assert.match(result.stdout, /Default Receiver:\n  https:\/\/cloud-receiver-delta\.vercel\.app/);
 });
 
 test("package documentation keeps temporary and global CLI invocation distinct", () => {
@@ -44,10 +45,9 @@ test("package installs both CLI spellings", () => {
   });
 });
 
-test("new connections require an explicit Receiver origin", () => {
-  const result = spawnSync(process.execPath, [entry, "connect", "--json"], {
+test("an empty Receiver override fails visibly", () => {
+  const result = spawnSync(process.execPath, [entry, "connect", "--json", "--receiver", ""], {
     encoding: "utf8",
-    env: { ...process.env, REENTRY_RECEIVER_ORIGIN: "" },
   });
 
   assert.equal(result.status, 1);

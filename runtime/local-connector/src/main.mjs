@@ -34,9 +34,10 @@ import {
 } from "./macos-service.mjs";
 import { createTerminalUi } from "./terminal-ui.mjs";
 
-// The former hosted Cloud Receiver is retired. New pairing must name an accepted replacement
-// explicitly instead of silently sending credentials to the old deployment alias.
-const DEFAULT_RECEIVER_ORIGIN = process.env.REENTRY_RECEIVER_ORIGIN;
+// This is the current Cloud Receiver v2 preview. A command-line --receiver override remains
+// authoritative, and REENTRY_RECEIVER_ORIGIN can override this built-in preview default.
+const BUILT_IN_RECEIVER_ORIGIN = "https://cloud-receiver-delta.vercel.app";
+const DEFAULT_RECEIVER_ORIGIN = process.env.REENTRY_RECEIVER_ORIGIN?.trim() || BUILT_IN_RECEIVER_ORIGIN;
 const DEFAULT_POLL_INTERVAL_MS = 5_000;
 const DEFAULT_MAX_CONSECUTIVE_ERRORS = 5;
 const DEFAULT_PAIRING_REQUEST_TIMEOUT_MS = 20_000;
@@ -149,13 +150,17 @@ Commands:
   pair         Legacy Host-code pairing preview
 
 Common options:
-  --receiver <url>       Accepted Receiver origin (required when pairing a new Mac)
+  --receiver <url>       Accepted Receiver origin (overrides the preview default)
   --codex-cd <path>      Workspace for Codex; interactive mode offers a folder picker if omitted
   --codex-binary <path>  Explicit Codex executable
   --json                 Machine-readable output
   --yes                  Confirm uninstall in a non-interactive script
   --help                 Show this help
   --version              Show the installed version
+
+Default Receiver:
+  https://cloud-receiver-delta.vercel.app
+  Override with --receiver or REENTRY_RECEIVER_ORIGIN for another accepted Receiver.
 
 Both commands are installed: re-entry and reentry.
 The Connector opens no inbound port. Host keys never belong on this Mac.

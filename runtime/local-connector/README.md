@@ -18,8 +18,7 @@ Requirements: macOS, Node.js 24+, Codex installed and signed in, and an absolute
 Codex may read and write.
 
 ```sh
-npx --yes --package=@4xeoz/re-entry re-entry install \
-  --receiver https://your-accepted-receiver.example
+npx --yes --package=@4xeoz/re-entry re-entry install
 ```
 
 `npx` runs a temporary copy, so it does not leave a permanent shell command behind. Install the
@@ -33,16 +32,16 @@ The package installs both `re-entry` and the older `reentry` spelling; `re-entry
 command. If you keep using the temporary `npx` form, run later commands with the same executable
 prefix, for example `npx --yes --package=@4xeoz/re-entry re-entry status`.
 
-The CLI no longer has a default hosted Receiver. For any new or historical test, pass an explicit
-accepted Receiver origin with `--receiver` or `REENTRY_RECEIVER_ORIGIN`; the former
-`https://re-entry-weld.vercel.app` alias is retired.
+The CLI defaults to the current Cloud Receiver v2 preview at
+`https://cloud-receiver-delta.vercel.app`. Override it with `--receiver` or
+`REENTRY_RECEIVER_ORIGIN` when using another accepted Receiver. This preview default is not a
+production deployment.
 
 The interactive CLI first offers Desktop, the current folder, or a small folder browser. Choose
 with ↑/↓ and Enter. If you want to skip the picker, pass the workspace directly:
 
 ```sh
 npx --yes --package=@4xeoz/re-entry re-entry install \
-  --receiver https://your-accepted-receiver.example \
   --codex-cd /absolute/path/to/your/project
 ```
 
@@ -60,7 +59,6 @@ installation instead:
 ```sh
 npm install --global @4xeoz/re-entry
 re-entry install \
-  --receiver https://your-accepted-receiver.example \
   --codex-cd /absolute/path/to/your/project
 ```
 
@@ -232,7 +230,8 @@ publishing with `npm version patch --no-git-tag-version`.
 
 After publishing, users run `npx --yes --package=@4xeoz/re-entry re-entry install`. The explicit
 `--package` form works across npm versions when the package is scoped; the executable itself is
-still named `re-entry`.
+still named `re-entry`. The command uses the built-in preview Receiver unless `--receiver` or
+`REENTRY_RECEIVER_ORIGIN` overrides it.
 
 A temporary `npx` invocation does not add `re-entry` to your shell `PATH`. If you prefer the shorter
 bare commands, run `npm install --global @4xeoz/re-entry` once and then use `re-entry install`
