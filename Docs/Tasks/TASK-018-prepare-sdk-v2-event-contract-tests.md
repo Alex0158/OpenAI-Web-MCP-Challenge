@@ -1,6 +1,6 @@
-# TASK-018 — Prepare SDK to Cloud Receiver v2 Event Contract Verification
+# TASK-018: Prepare SDK to Cloud Receiver v2 Event Contract Verification
 
-**Status:** `in_progress` — red suite prepared; green verification is blocked on the Cloud team's Feature 3 commit SHA
+**Status:** `closed` — SDK Event contract verified against the exact Feature 3 commit
 **Owner:** SDK development and Cloud Receiver v2 teams
 **Profile:** Assured
 **Scope:** `runtime/host-sdk/test/` plus the SDK Event evidence record; SDK production source remains unchanged
@@ -10,26 +10,32 @@
 ## Task Control
 
 - Type: `verification`
-- Lifecycle: `in_progress`
+- Lifecycle: `closed`
 - Priority: `P1`
 - Owner: SDK development and Cloud Receiver v2 teams.
-- Current increment: Prepare black-box `sendEvent()` contract tests for the signed Event envelope,
-  acceptance, duplicate, Grant, origin, signature, and invalid-Event boundaries.
-- Next gate: The Cloud team reports Feature 3 green and supplies its exact commit SHA; rerun the
-  opt-in suite against that same SHA and a fresh disposable PostgreSQL database.
+- Current increment: Complete. Black-box sendEvent contract tests verify the signed Event envelope, acceptance, duplicate, Grant, origin, signature, and invalid-Event boundaries.
+- Next gate: Delivery Claim and Acknowledgement remain separate Feature 4 gates; no work starts under TASK-018.
 - Dependencies: [TASK-017](TASK-017-build-cloud-receiver-v2-signed-event-ingress.md),
   [CLOUD-016](../Development/CLOUD-016-cloud-receiver-v2-signed-event-ingress.md),
   [ADR-0036](../Decisions/ADR-0036-adopt-cloud-receiver-v2-signed-event-ingress.md), and the
   [Primary Development Runbook](../Engineering/03-primary-development-runbook.md).
 
-## Objective
+## 1. Problem and objective
 
 Verify that the unchanged SDK sends the documented v2 Event envelope to `POST /v0.1/events`, that
 the Receiver returns only continuation acceptance, and that invalid signature, Grant, origin, and
 Event inputs fail with bounded machine-readable errors before any run is consumed or delivery is
 created.
 
-## Acceptance gates
+## 2. Authority and evidence
+
+The contract authority is [ADR-0036](../Decisions/ADR-0036-adopt-cloud-receiver-v2-signed-event-ingress.md),
+with the signed-ingress source contract in
+[Feature 03](../Cloud-Receiver-Handoff/v2-build/03-signed-event-ingress.md) and the SDK request
+mapping in the [SDK integration map](../Cloud-Receiver-Handoff/v2-build/08-sdk-cloud-receiver-integration.md).
+The tested Receiver checkout is the Cloud team's exact Feature 3 commit recorded below.
+
+## 3. Scope and acceptance gates
 
 - `SDK-V2-EVENT-001` verifies the canonical Event body, detached Ed25519 signature over
   `<timestamp>.<body>`, exact request headers, absence of an organization API key, and the `202`
@@ -48,7 +54,7 @@ created.
   `event_sequence_invalid` and leaves its Grant unchanged.
 - The `202` response is asserted to contain no claim, lease, effect, or acknowledgement field.
 
-## Assumptions and boundaries
+### Assumptions and boundaries
 
 - The SDK already implements the documented `sendEvent()` route and signing behavior. This task does
   not alter `runtime/host-sdk/src/` or add polling, fallback routes, alternate transports, retries,
@@ -62,17 +68,17 @@ created.
   mutates expiry through the test database, and uses the configured internal revocation authority.
   It does not call Delivery Claim or Acknowledgement routes.
 - A first `202` means accepted and queued only. It does not mean claimed, activated, or acknowledged.
-- No green Feature 3 commit SHA has been supplied in this increment. Feature 2 commit
-  `f67e741dd0392dd04f14d7d02764b7c0a7179dc5` is the red baseline only; it intentionally has no
-  `/v0.1/events` route.
+- Feature 2 commit `f67e741dd0392dd04f14d7d02764b7c0a7179dc5` remains historical red-baseline
+  evidence only; the green verification below uses Feature 3 commit
+  `b851c320fae0505e3cf098f979d149e04ab44310`.
 
-## Non-goals
+## 4. Non-goals
 
 - Do not modify SDK production code, the Core protocol, the v2 Receiver, or the Local Connector.
 - Do not implement or verify Delivery Claim, leases, Agent activation, effects, or Acknowledgement.
 - Do not claim deployment, hosted integration, or Feature 3 completion from the red baseline.
 
-## Verification and current blocker
+## 5. Verification and closure
 
 The test source is [`cloud-receiver-v2.event.contract.mjs`](../../runtime/host-sdk/test/cloud-receiver-v2.event.contract.mjs).
 It is opt-in so normal SDK tests do not require a Receiver or database:
@@ -98,19 +104,32 @@ SHA reported by the Cloud team. The green command must use that exact checkout a
   exited `1` as the intended pre-Feature 3 red result. `SDK-V2-EVENT-001` and `SDK-V2-EVENT-002`
   received `404` / `http_route_not_found`; `SDK-V2-EVENT-003` through `SDK-V2-EVENT-007` received
   the same missing-route error instead of their expected feature-specific errors.
-- No green Event verification has been run. This task remains open until the exact Feature 3 SHA
-  is supplied and the full suite passes against it.
+- The red baseline remains historical evidence only; it is superseded for this task by the green
+  exact-commit run below.
 
-## Closure condition
+### Green evidence — 2026-09-02
 
-Close only after all seven SDK Event cases pass against the Cloud team's exact reported Feature 3
+- The clean Cloud Receiver checkout had local `HEAD` and `origin/main` both equal to
+  `b851c320fae0505e3cf098f979d149e04ab44310`.
+- The checkout's Feature 3 migrations were applied to a new disposable PostgreSQL `14.18`
+  database. The test ran with Node `v26.8.1` and the Connector process stopped.
+- `SDK-V2-EVENT-001` through `SDK-V2-EVENT-007`: `7/7` passed, `0` failed.
+- The normal SDK syntax check and suite passed: `18/18` tests, `0` failed.
+- The exact response/error and Grant-state assertions passed, including duplicate replay without a
+  second run, invalid signature, expired/revoked Grant, wrong origin, and invalid sequence.
+- The `202` response contained only continuation acceptance fields; no claim, lease, effect, or
+  acknowledgement was inferred.
+
+### Closure condition
+
+Closed because all seven SDK Event cases pass against the Cloud team's exact reported Feature 3
 commit, the normal SDK suite remains green, the response/error and Grant-state assertions are
 recorded in [SDK-004](../Development/SDK-004-cloud-receiver-v2-event-contract-tests.md), and no
 claim or acknowledgement is inferred from `202`.
 
 After closure, stop at Feature 3. Delivery Claim and Acknowledgement require separate gates.
 
-## Reopen condition
+## 6. Reopen condition
 
 Reopen if the Event body fields, signature bytes, route, acceptance shape, error mapping, Grant
 authority, duplicate semantics, or `202` meaning changes; if the Cloud SHA cannot be matched; or if

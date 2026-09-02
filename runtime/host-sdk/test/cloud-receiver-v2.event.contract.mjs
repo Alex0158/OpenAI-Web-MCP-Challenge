@@ -1,13 +1,12 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
-import { generateKeyPairSync, randomBytes } from "node:crypto";
+import { generateKeyPairSync, randomBytes, sign as signBytes } from "node:crypto";
 import path from "node:path";
 import test, { after, before } from "node:test";
 
 import {
   canonicalJson,
-  createContinuationEventEnvelope,
   verifyContinuationEventEnvelope,
 } from "../../../reentry-core/src/protocol.mjs";
 import {
@@ -256,12 +255,20 @@ test(
         const envelope = JSON.parse(rawBody);
         const event = JSON.parse(envelope.body);
         event.event_sequence = 2;
-        const resigned = createContinuationEventEnvelope(event, {
-          privateKey: current.keys.privateKey,
-          keyId: envelope.headers["WebMCP-Reentry-Key-Id"],
-          timestamp: envelope.headers["WebMCP-Reentry-Timestamp"],
+        const body = canonicalJson(event);
+        const timestamp = envelope.headers["WebMCP-Reentry-Timestamp"];
+        const signature = signBytes(
+          null,
+          Buffer.from(`${timestamp}.${body}`, "utf8"),
+          current.keys.privateKey,
+        ).toString("base64url");
+        return canonicalJson({
+          body,
+          headers: {
+            ...envelope.headers,
+            "WebMCP-Reentry-Signature": signature,
+          },
         });
-        return canonicalJson(resigned);
       },
     );
 
@@ -311,6 +318,7 @@ async function createApprovedCase(h, label, eventBodyTransform = undefined) {
   const origin = `https://sdk-event-${h.suffix}-${label}.example`;
   const hostId = `host-${h.suffix}-${label}`;
   const keyId = `host-key-${h.suffix}-${label}`;
+  const canonicalUrl = `${origin}/workflows/${label}`;
   const requests = [];
   let sequence = 0;
   const sdk = createHostSdk({
@@ -335,7 +343,7 @@ async function createApprovedCase(h, label, eventBodyTransform = undefined) {
       id: `workflow-${h.suffix}-${label}`,
       type: "review",
       stateVersion: 1,
-      canonicalUrl: `${origin}/workflows/${label}`,
+      canonicalUrl,
     },
     display: {
       title: `Review ${label}`,
@@ -381,6 +389,7 @@ async function createApprovedCase(h, label, eventBodyTransform = undefined) {
     origin,
     requests,
     binding: status.binding,
+    canonicalUrl,
     consentSessionId: created.consent_session_id,
     grantId: grant.id,
   };
@@ -394,7 +403,9 @@ function eventInput(current, eventId, origin = current.origin) {
     workflow: {
       id: current.binding.workflow_id,
       stateVersion: 2,
-      canonicalUrl: `${origin}/workflows/${current.binding.workflow_id}`,
+      canonicalUrl: origin === current.origin
+        ? current.canonicalUrl
+        : `${origin}${new URL(current.canonicalUrl).pathname}`,
     },
   };
 }
