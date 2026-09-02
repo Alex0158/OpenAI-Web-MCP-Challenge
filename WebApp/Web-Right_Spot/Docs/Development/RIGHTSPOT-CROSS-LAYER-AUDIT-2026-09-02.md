@@ -1669,3 +1669,17 @@ same-document timing `EVIDENCE_GAP`, `F-20` remains low-severity responsive typo
 the native `datetime-local` limitation plus the unpublished Favourite branch remain evidence-boundary
 limitations. External authentication, Information Request, Operations/WebMCP, Cloud Receiver, WebRTC,
 deployment, and production-readiness remain deliberately deferred or gated.
+
+## 65. Final executable baseline revalidation — no new registered finding — 2026-09-02
+
+After the documentation-only evidence commit `63e141e34d2d0fa9735b4ab1f5d7eef30b44f6a1`, Main reran
+the pinned RightSpot executable checks from `WebApp/Web-Right_Spot` under Node `24.20.0` and npm
+`11.19.0`. The complete authored suite passed `159/159` with zero failures, skips, cancellations, or
+todos; non-incremental typecheck passed; the production build compiled and exposed the accepted Tenant,
+Agent, API, and health routes; and `GET /api/health` returned `{"ok":true,"service":"rightspot"}`.
+The repository remained on `main`, `HEAD` and `origin/main` were identical at `63e141e`, and only the
+canonical physical Worktree remained. No source, fixture, or runtime behavior changed in this check.
+
+This confirms the current committed baseline but does not close the continuous audit lane. `F-08`,
+`F-20`, the native `datetime-local` harness boundary, and the unpublished Favourite evidence limitation
+remain as previously classified; no new finding, Task, or Work Order was registered.

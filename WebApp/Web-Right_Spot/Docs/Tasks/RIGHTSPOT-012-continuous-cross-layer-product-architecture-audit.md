@@ -572,3 +572,10 @@ No new finding, Task, or Work Order was accepted. `F-08`, `F-20`, the native dat
 limitation, and the unpublished Favourite evidence limitation remain unchanged, while external auth,
 Information Request, Operations/WebMCP, Cloud Receiver, WebRTC, deployment, and production-readiness
 remain deferred or gated. `RIGHTSPOT-012` remains `pending` as the continuous audit lane.
+
+Main then reran the final executable baseline after documentation commit `63e141e`: pinned Node
+`24.20.0`/npm `11.19.0`, complete `npm test` `159/159`, non-incremental typecheck, production build,
+and `/api/health` all passed. `HEAD` and `origin/main` matched at `63e141e`, with one physical
+Worktree and no source, fixture, or runtime mutation. This adds no new finding and does not close the
+continuous lane; `F-08`, `F-20`, the native datetime-input harness limitation, and the unpublished
+Favourite evidence limitation remain unchanged.
