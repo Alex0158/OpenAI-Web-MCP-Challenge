@@ -1740,3 +1740,26 @@ documentation reconciliation, so it does not change product source, fixture, or 
 tracked source remains clean and known untracked boundary artifacts remain preserved. A fresh full test
 run passed `159/159`, and the local health endpoint remained healthy. The route/action and bounded
 fallback scan found no new orphan action, fake success, silent fallback, or required-flow gap.
+
+## 70. Visual route-surface revalidation — no new finding — 2026-09-02
+
+Main ran a visual-only browser checkpoint in isolated session `rightspot-visual-20260902` against the
+unchanged product source baseline represented by `898fea2`; the current repository HEAD at the time was
+the docs-only `1d8e593`. The signed-out Root, Tenant catalogue, and Agent queue all rendered with their
+accepted styled surfaces at desktop. Tenant navigation exposed Browse rentals, Favourites, and My
+request; all three seeded listing cards and Favourite controls were reachable. The Agent queue exposed
+its request-queue and Listing-interest surfaces, including explicit empty request/history states.
+
+At `375x812`, the Tenant and Agent renders measured equal `375px` body/document widths with no visible
+horizontal overflow. The browser log contained only normal React DevTools/HMR informational entries.
+Tenant and Agent demo sessions were entered and ended through the existing controls; no request,
+Favourite, fixture, or product source state changed. The earlier `F-20` `320px` heading-wrap polish
+remains unchanged and was not promoted by this `375px` check. No new `VERIFIED_INCOMPLETE`,
+`VERIFIED_DEFECT`, `VERIFIED_POLISH`, or `DOCUMENTATION_DRIFT` finding was accepted.
+
+An independent disposable read-only review then challenged the same residual classifications against the
+current source, tests, flow catalogue, and task controls. It found no required-flow defect or
+documentation drift: `RS-FLOW-04` remains an evidence-limited unpublished branch, `F-08` remains an
+unsupported same-document transition gap, the native datetime limitation remains a harness boundary,
+`F-20` remains non-gating polish, and `RIGHTSPOT-006`/`010`/`012` remain correctly gated or continuous.
+Main therefore opened no new Task or Work Order.

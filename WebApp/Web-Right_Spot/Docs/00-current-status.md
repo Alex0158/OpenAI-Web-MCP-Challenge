@@ -39,6 +39,15 @@ captured while `HEAD` equalled `origin/main`; the subsequent `19bb483` commit co
 source-identity documentation reconciliation and no product-source change. RightSpot tracked source
 remains clean, and the known untracked boundary artifacts remain preserved and are not product source
 changes.
+
+The latest visual-only revalidation used isolated session `rightspot-visual-20260902` against the
+unchanged product source baseline represented by `898fea2` (current repository HEAD was the docs-only
+`1d8e593`). Root, Tenant catalogue, and Agent queue rendered with the accepted visual system at desktop
+and `375x812`; Tenant navigation exposed Browse rentals, Favourites, and My request, the three seeded
+listing entries and Favourite controls were reachable, and Agent queue/history plus Listing interest
+were reachable. The narrow render measured equal `375px` body/document widths and the browser log had
+only normal React DevTools/HMR information. No fixture or product source changed, and no new finding or
+Task was accepted.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current next product action:** Continue the Main-thread cross-layer audit from the closed
 `RIGHTSPOT-041` / `RS-WO-041-01` tenant request mutation-feedback repair. `RIGHTSPOT-039` /
