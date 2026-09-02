@@ -330,8 +330,10 @@ inspection/revocation route; ADR-0013 remains the gate for that capability.
 
 The current exact Cloud Receiver checkout is `saas-boilerplate` commit
 `300bce02e6a6f9b643a6de95a3596691304749b7`, with Feature 4 implementation at
-`d840439efe628a24c89fec6b74f37f04a701cb58`. It is a clean committed checkout containing the
-acknowledgement route, six migrations, and Feature 6 transport/operations shell. The Claim matrix
+`d840439efe628a24c89fec6b74f37f04a701cb58`. It is the committed backend counterpart containing
+the acknowledgement route, six migrations, and Feature 6 transport/operations shell. The backend
+subtree used by these tests is unchanged from that commit; unrelated frontend changes in the Cloud
+worktree were not modified or tested by Local Connector. The Claim matrix
 passes `5/5`; the acknowledgement matrix passes `5/5` against the accepted ACK-003 mapping.
 Cloud's own Feature 5 and Feature 6 tests pass `10/10` against that
 checkout. The Local Connector production implementation remains at the pairing baseline

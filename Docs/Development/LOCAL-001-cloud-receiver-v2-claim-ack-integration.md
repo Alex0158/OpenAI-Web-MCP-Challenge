@@ -178,7 +178,8 @@ Cloud Receiver counterpart:
 
 - Commit: `300bce02e6a6f9b643a6de95a3596691304749b7`.
 - Branch: `main`.
-- Worktree: clean.
+- The backend subtree used by these tests is unchanged from that exact commit. The Cloud worktree
+  has unrelated uncommitted frontend changes; Local Connector did not modify or test those files.
 - The Cloud commit is local-only and is three commits ahead of its `origin/main`; it was not
   treated as pushed or deployed evidence.
 
