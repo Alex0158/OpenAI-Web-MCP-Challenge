@@ -117,6 +117,8 @@ genuine WebMCP, deployment, or judge reproducibility.
 
 - [`SDK v2 Verification Report`](SDK-V2-Verification-Report.md) — post-push SDK-to-Cloud-Receiver v2
   contract and real-browser evidence.
+- [`SDK v2 Full-Chain Verification Report`](SDK-V2-Full-Chain-Verification-Report.md) — exact
+  Cloud Receiver Feature 4–6 compatibility results and the open acknowledgement mismatch.
 
 ## Lean implementation rules
 
