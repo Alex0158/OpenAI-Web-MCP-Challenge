@@ -59,6 +59,10 @@ The follow-up semantic check confirmed that each request time is one native `dat
 labelled by its visible `Option 1`, `Option 2`, or `Option 3` wrapper. Chrome's accessibility tree may
 expand that native field into `Day`, `Month`, and similar sub-controls; those are platform internals,
 not duplicate authored labels or a new accessibility defect.
+The follow-up keyboard pass also confirmed first-Tab skip-link entry on Tenant and Agent surfaces,
+main-content continuation after activation, ordered Tenant editor controls, and a non-exposed disabled
+submit action until the draft is eligible. The Agent queue remained free of a product focus trap; the
+browser reported no errors.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current next product action:** Continue the Main-thread cross-layer audit from the closed
 `RIGHTSPOT-041` / `RS-WO-041-01` tenant request mutation-feedback repair. `RIGHTSPOT-039` /

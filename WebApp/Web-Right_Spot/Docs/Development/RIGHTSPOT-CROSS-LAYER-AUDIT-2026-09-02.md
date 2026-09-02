@@ -1803,3 +1803,21 @@ cannot reliably generate a complete native change event, and it does not justify
 custom date-time replacement. No source, fixture, workflow, or Task state changed; no new
 `VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`, `VERIFIED_POLISH`, or `DOCUMENTATION_DRIFT` finding was
 accepted.
+
+## 73. Keyboard focus and semantic control revalidation — no new finding — 2026-09-02
+
+Main ran an isolated keyboard pass over the Tenant catalogue, listing-detail request editor, and
+Agent queue at the narrow viewport. Tenant and Agent both placed the skip link first in the tab order;
+activating it moved the viewport to `#main-content`, and the next Tab reached the first main-content
+control rather than replaying the navigation. The Tenant catalogue exposed its filter controls,
+listing links, and Favourite buttons in order. The listing-detail editor exposed the native time
+control, add-time action, note field, and Save action; the ineligible Submit action remained disabled
+and was not incorrectly presented as an available step.
+
+The native date-time field's internal segment focus behavior and accessibility-tree names remain a
+browser/platform representation of one labelled field, as recorded in Section 72. The Agent queue
+exposed its queue refresh, disclosure, and listing-interest refresh controls without a product focus
+trap; the only extra development-only focus surface was the injected Next.js Dev Tools portal. Browser
+error checks were empty, no request/Favourite/fixture state changed, and no source changed. No new
+`VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`, `VERIFIED_POLISH`, or `DOCUMENTATION_DRIFT` finding was
+accepted; no Task or Work Order was registered.
