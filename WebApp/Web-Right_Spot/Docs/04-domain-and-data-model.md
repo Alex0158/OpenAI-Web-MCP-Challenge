@@ -162,7 +162,15 @@ external Agent context locators, or copied private notes in shared fields.
 ### Tenant projection
 
 The tenant may see the listing, its own request preferences, request state, the tenant-facing agent
-response, permitted slot details, deadlines, and a tenant-safe status timeline.
+response, permitted slot details, deadlines, and a tenant-safe status timeline. When a sent response
+is a `SLOT_PROPOSAL`, the projection resolves its `slotId` against the authoritative slot record for
+the request listing and exposes a dedicated `viewingSlot` value containing exactly `startsAt` and
+`endsAt`. It is retained for the confirmed, tenant-declined, and expired response views so the
+recorded appointment remains understandable; it is not a reusable raw availability-slot shape.
+
+If that sent-slot relation is missing or belongs to another listing, the projection fails visibly
+with the existing bounded `NOT_FOUND` error. It must not substitute a tenant preference, guessed time,
+or opaque slot identifier as a successful tenant-facing resolution.
 
 The tenant must not see `AgentReviewNote`, unrelated requests, agent credentials, or internal
 availability reasoning.

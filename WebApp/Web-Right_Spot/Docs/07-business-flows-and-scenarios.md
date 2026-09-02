@@ -2,9 +2,30 @@
 
 **Role:** Canonical business-flow, scenario, state-transition, and acceptance authority for the
 RightSpot Web application
-**Status:** Accepted current-flow baseline; `F-01`–`F-06` and `F-09` are closed within their recorded
-bounded claims, with the deterministic-reset repair recorded in `RIGHTSPOT-028` and the tenant
-conflict-feedback repair recorded in `RIGHTSPOT-031`
+**Status:** Accepted current-flow baseline; `F-01`–`F-06`, `F-09`–`F-19` are closed within their
+recorded claims. `RIGHTSPOT-032` added the tenant-safe selected-slot projection
+and presentation
+needed by the proposal and retained terminal response flows.
+`RIGHTSPOT-034` added the truthful cross-listing request-status notice grouping for saved drafts,
+active requests, and recorded outcomes.
+`RIGHTSPOT-035` added distinct accessible names to repeated preferred-time removal controls without
+changing the Viewing Request state or mutation boundary.
+`RIGHTSPOT-036` made structural preferred-time removal clear stale local editor feedback without
+changing validation, dirty tracking, or request mutation behavior.
+`RIGHTSPOT-037` made the Agent queue and request-detail consumers withhold retained projections while
+the latest read is loading or has failed, without changing server authority or workflow behavior.
+`RIGHTSPOT-038` made the Agent request-detail consumer render an authoritative recovery read after a
+stale action conflict while retaining neutral conflict feedback and a fail-closed recovery boundary.
+`RIGHTSPOT-039` separated listing-detail listing-fact and tenant request-context reads so a partial
+request-context failure does not mislabel successful listing facts as unavailable.
+`F-18` was a tenant Discovery error-copy defect tracked by `RIGHTSPOT-040`; the bounded consumer
+repair is now closed and verified.
+The continuing audit then reproduced `F-19`, tracked by `RIGHTSPOT-041`, where successful tenant draft
+save and explicit submit feedback was lost when the authoritative response rehydrated the version-keyed
+request editor. The bounded parent-owned UI repair is now closed and verified; the underlying server
+mutation and request state remain authoritative.
+The deterministic-reset repair is recorded in `RIGHTSPOT-028` and the tenant conflict-feedback repair
+in `RIGHTSPOT-031`.
 **As of:** 2026-09-02, Europe/London
 **Owner:** Main RightSpot thread
 
@@ -129,24 +150,24 @@ Status values used below:
 
 | ID | Business chain | Main surface | State/effect | Current disposition |
 |---|---|---|---|---|
-| `RS-FLOW-01` | Establish, resolve, and end a role session | `/`, `/api/session` | Session cookie only | `CLOSED_VERIFIED` — signed-out resolution and documented local hosts are verified |
-| `RS-FLOW-02` | Discover and filter published rentals | `/tenant` | Read-only listing projection | `CLOSED_VERIFIED` |
-| `RS-FLOW-03` | Inspect a listing and enter a request | `/tenant/listings/:listingId` | No implicit write | `CLOSED_VERIFIED` — same-listing request notice state copy is verified by `RIGHTSPOT-026` |
-| `RS-FLOW-04` | Save, remove, reload, and re-save a Favourite | Listing cards/detail, `/tenant/favourites` | Favourite `ACTIVE/REMOVED` | `IMPLEMENTED_WITH_RESIDUAL_EVIDENCE` |
-| `RS-FLOW-05` | Create and revise a Viewing Request draft | Listing detail, `/tenant/requests` | `TENANT_DRAFT`, version increment; `RIGHTSPOT-031` preserves truthful stale-write recovery feedback | `CLOSED_VERIFIED` |
-| `RS-FLOW-06` | Explicitly submit the draft | Tenant request surface | `TENANT_DRAFT` → `REQUEST_SUBMITTED`; `RIGHTSPOT-031` preserves truthful stale-write recovery feedback | `CLOSED_VERIFIED` |
-| `RS-FLOW-07` | Expose submitted work to the assigned agent | `/agent` | Queue read only | `CLOSED_VERIFIED` — draft privacy enforced at queue and direct-detail read boundaries |
-| `RS-FLOW-08` | Open an assigned request and start review | Agent queue/detail | `CLOSED_VERIFIED` — submitted work remains actionable and pre-submission drafts are non-visible |
-| `RS-FLOW-09` | Prepare or revise an agent response | Agent request detail | Preparation only; remains `AGENT_REVIEWING` | `CLOSED_VERIFIED` |
-| `RS-FLOW-10` | Send a slot proposal | Agent request detail | `SLOT_PROPOSED`; slot held; 24-hour window | `CLOSED_VERIFIED` |
-| `RS-FLOW-11` | Send an agent decline | Agent request detail | `AGENT_DECLINED` terminal | `CLOSED_VERIFIED` — fresh isolated local browser branch verified on 2026-09-02 |
-| `RS-FLOW-12` | Tenant confirms a proposal | `/tenant/requests` | `VIEWING_CONFIRMED`; slot confirmed | `CLOSED_VERIFIED` — transition and terminal response presentation verified by `RIGHTSPOT-027` |
-| `RS-FLOW-13` | Tenant declines a proposal | `/tenant/requests` | `TENANT_DECLINED`; slot released | `CLOSED_VERIFIED` — transition, terminal response presentation, and fresh local mutation browser branch verified on 2026-09-02 |
-| `RS-FLOW-14` | Proposal expires without a scheduler | Relevant tenant/agent read or write | `EXPIRED`; slot released | `CLOSED_VERIFIED` — transition and terminal response presentation verified by `RIGHTSPOT-027` |
+| `RS-FLOW-01` | Establish, resolve, and end a role session | `/`, `/api/session` | Session cookie only | `CLOSED_VERIFIED` — signed-out resolution, role mismatch, sign-out recovery, and documented local hosts are verified; fresh browser evidence in `rightspot-audit-082` |
+| `RS-FLOW-02` | Discover and filter published rentals | `/tenant` | Read-only listing projection | `CLOSED_VERIFIED` — `RIGHTSPOT-040` keeps local validation feedback separate from bounded catalogue-read error copy; normal success, filtered, empty, retry, and recovery behavior remains verified |
+| `RS-FLOW-03` | Inspect a listing and enter a request | `/tenant/listings/:listingId` | No implicit write | `CLOSED_VERIFIED` — same-listing notice copy is verified by `RIGHTSPOT-026`; cross-listing draft/active/terminal notice copy is verified by `RIGHTSPOT-034`; supported catalogue anchors were directly rechecked as full-document navigation in `rightspot-audit-081` |
+| `RS-FLOW-04` | Save, remove, reload, and re-save a Favourite | Listing cards/detail, `/tenant/favourites` | Favourite `ACTIVE/REMOVED` | `IMPLEMENTED_WITH_RESIDUAL_EVIDENCE` — fresh save/reload/remove/empty/re-save replay passed at generation `73`; unpublished reactivation remains static/direct evidence because no supported user-facing unpublish action exists |
+| `RS-FLOW-05` | Create and revise a Viewing Request draft | Listing detail, `/tenant/requests` | `TENANT_DRAFT`, version increment; `RIGHTSPOT-031` preserves truthful stale-write recovery feedback; `RIGHTSPOT-041` preserves parent-owned post-save feedback after rehydration | `CLOSED_VERIFIED` within state, mutation, completion-feedback, and fresh end-to-end boundaries (`rightspot-audit-083`) |
+| `RS-FLOW-06` | Explicitly submit the draft | Tenant request surface | `TENANT_DRAFT` → `REQUEST_SUBMITTED`; `RIGHTSPOT-031` preserves truthful stale-write recovery feedback; `RIGHTSPOT-041` preserves parent-owned post-submit feedback after rehydration | `CLOSED_VERIFIED` within state, mutation, completion-feedback, and fresh end-to-end boundaries (`rightspot-audit-083`) |
+| `RS-FLOW-07` | Expose submitted work to the assigned agent | `/agent` | Queue read only | `CLOSED_VERIFIED` — draft privacy remains closed at the authoritative read boundary; active/history presentation is closed by `RIGHTSPOT-033`, failed latest reads withhold retained queue content through `RIGHTSPOT-037`, and fresh submitted/terminal queue transitions passed in `rightspot-audit-083` |
+| `RS-FLOW-08` | Open an assigned request and start review | Agent queue/detail | `REQUEST_SUBMITTED` → `AGENT_REVIEWING` | `CLOSED_VERIFIED` — submitted work remains actionable after a successful read, pre-submission drafts are non-visible, failed latest reads withhold retained detail/actions through `RIGHTSPOT-037`, stale-action `409` recovery renders authoritative detail through `RIGHTSPOT-038`, and fresh UI review passed in `rightspot-audit-083` |
+| `RS-FLOW-09` | Prepare or revise an agent response | Agent request detail | Preparation only; remains `AGENT_REVIEWING` | `CLOSED_VERIFIED` — a successful detail recovery after a stale action preserves the current preparation surface and neutral conflict feedback through `RIGHTSPOT-038`; fresh save-without-send boundary passed in `rightspot-audit-083` |
+| `RS-FLOW-10` | Send a slot proposal | Agent request detail | `SLOT_PROPOSED`; slot held; 24-hour window | `CLOSED_VERIFIED` — fresh prepare → explicit send → read-only decision record passed in `rightspot-audit-083` |
+| `RS-FLOW-11` | Send an agent decline | Agent request detail | `AGENT_DECLINED` terminal | `CLOSED_VERIFIED` — fresh rendered decline → send → Tenant terminal/read-only and Agent history branch verified in `rightspot-audit-084` |
+| `RS-FLOW-12` | Tenant confirms a proposal | `/tenant/requests` | `VIEWING_CONFIRMED`; slot confirmed | `CLOSED_VERIFIED` — selected time is shown before confirmation and retained after the terminal transition under `RIGHTSPOT-032`; fresh end-to-end confirmation/reload passed in `rightspot-audit-083` |
+| `RS-FLOW-13` | Tenant declines a proposal | `/tenant/requests` | `TENANT_DECLINED`; slot released | `CLOSED_VERIFIED` — selected time is tenant-visible and retained without reopening action under `RIGHTSPOT-032` |
+| `RS-FLOW-14` | Proposal expires without a scheduler | Relevant tenant/agent read or write | `EXPIRED`; slot released | `CLOSED_VERIFIED` — projection retains the selected time while terminal expiry remains non-actionable under `RIGHTSPOT-032` |
 | `RS-FLOW-15` | Reset and replay a deterministic fixture | Development script/test boundary | New generation; empty request/Favourites | `CLOSED_VERIFIED` — `F-06` / `RIGHTSPOT-028` repaired the CLI composition and passed focused and independent verification |
 | `RS-FLOW-16` | Show privacy-preserving listing interest to an agent | `/agent` embedded section | Read-only aggregate | `CLOSED_VERIFIED` |
 | `RS-FLOW-17` | Query the isolated Operations profile | Domain/persistence tests only | Projection envelope; no relay mutation | `ISOLATED_SEAM_NOT_USER_FACING` |
-| `RS-FLOW-18` | Enforce role, privacy, version, and failure boundaries | All API/projection surfaces | Visible bounded error; no invalid mutation | `CLOSED_VERIFIED` for the audited role/privacy/version/failure matrix; future audits remain required |
+| `RS-FLOW-18` | Enforce role, privacy, version, and failure boundaries | All API/projection surfaces | Visible bounded error; no invalid mutation | `CLOSED_VERIFIED` for the tenant Discovery error-copy consumer boundary through `RIGHTSPOT-040`; other audited role/privacy/version/failure claims remain closed within their recorded scopes |
 | `RS-FLOW-19` | Information Request, external auth, WebMCP, Cloud Receiver, or Remote Viewing | Future integration | No current state effect | `DEFERRED` / `GATED` |
 
 ## 6. Canonical scenario definitions
@@ -303,10 +324,14 @@ listing; listing is published
 audit entry per successful write.
 **Acceptance:** No duplicate request; at least one preference is required for save/submit; maximum
 three preferences; ordering and note bounds are enforced; stale generation/version writes fail
-without overwrite; refresh shows the authoritative draft.
+without overwrite; refresh shows the authoritative draft; when two or three options are present,
+each removal control is keyboard-reachable and programmatically identifies its numbered option; removing
+an option clears stale local editor feedback without fabricating a success state.
 **Evidence:** `src/server/domain/workflow.ts`, `src/server/application/workflow-http.ts`,
 `src/ui/tenant/tenant-request-page.tsx`, `tests/domain/workflow.test.ts`,
-`tests/application/workflow.test.ts`, `tests/api/workflow.test.ts`.
+`tests/application/workflow.test.ts`, `tests/api/workflow.test.ts`,
+`tests/ui/tenant-request-editor-accessibility.test.ts`, `tests/ui/tenant-request-editor-feedback.test.ts`,
+and `RIGHTSPOT-035`/`RIGHTSPOT-036` browser evidence.
 
 **Boundary:** Draft save is not contact, submission, agent notification, slot reservation, or tenant
 commitment. Cancel, reschedule after submission, and a second request are out of scope; reset is the
@@ -356,6 +381,13 @@ calendar booking, payment, lease, or external continuation consequence.
    `NOT_FOUND`/non-visible resource rather than reveal that a private draft exists.
 5. An empty queue is a normal `200` result, not a failure.
 
+**Presentation acceptance:** The queue consumer must make the current/history distinction explicit.
+It must expose counts for the seven non-draft states in two truthful groups: active/non-terminal
+(`REQUEST_SUBMITTED`, `AGENT_REVIEWING`, `SLOT_PROPOSED`) and terminal/recorded
+(`VIEWING_CONFIRMED`, `TENANT_DECLINED`, `EXPIRED`, `AGENT_DECLINED`). Active cards may link with
+`Review request` language; terminal cards remain available as read-only context and must not imply
+that the Agent can take another workflow action. `TENANT_DRAFT` remains absent from both groups.
+
 **Historical finding and disposition:** The initial audit found that `readAgentQueue` and
 `readAgentProjection` returned the single stored request for the assigned agent regardless of state.
 A direct probe after `CREATE_REQUEST_DRAFT` returned an agent queue item with state `TENANT_DRAFT`.
@@ -403,6 +435,13 @@ rejected without mutation; a read never starts review; a valid start is visible 
 assignment reassignment, or bulk action. The non-visible queue/detail regression is part of the
 `RIGHTSPOT-025` closure evidence.
 
+**Stale-action boundary:** If the explicit review action loses an optimistic-concurrency race, the
+`409` remains a failed attempted action. When the immediate authoritative detail read succeeds, the
+page renders that returned request and current state/action surface beside neutral conflict feedback;
+when the recovery read fails, it withholds request facts and state-changing controls behind the bounded
+unavailable/retry surface. It never treats the action as successful, patches state optimistically, or
+keeps an older projection as current. This presentation boundary is closed by `RIGHTSPOT-038`.
+
 ### RS-FLOW-09 — Prepare or revise an agent response
 
 **Actor:** Assigned property agent
@@ -430,6 +469,12 @@ not overwrite current work.
 `tests/api/workflow.test.ts`.
 
 **Boundary:** Preparation is not approval, reservation, notification, or an automatic send.
+
+**Recovery boundary:** A stale preparation/send attempt follows the same consumer rule as review:
+the server remains authoritative, a successful detail recovery restores the current preparation state
+without implying that the attempted mutation succeeded, and a failed recovery remains fail-closed.
+`RIGHTSPOT-038` verifies this local Agent detail feedback/read lifecycle without changing the
+preparation or send contracts.
 
 ### RS-FLOW-10 — Send a slot proposal
 
@@ -496,7 +541,9 @@ by this request; generation/version match
 
 **Flow:**
 
-1. The tenant reads the current request and sees the agent's permitted response and expiry context.
+1. The tenant reads the current request and sees the agent's permitted response, the selected
+   proposed viewing date/time, and expiry context. The selected time is distinct from the tenant's
+   own preferred times.
 2. The tenant explicitly chooses confirm.
 3. The server rechecks ownership, state, deadline, held-slot identity, generation, and request version.
 4. It commits `VIEWING_CONFIRMED` and changes the slot to `CONFIRMED`.
@@ -507,11 +554,13 @@ audit increment.
 **Acceptance:** Only the tenant can confirm; expired, stale, wrong-slot, terminal, or wrong-role
 actions fail without mutation; the browser flow displays the final result.
 **Evidence:** `src/server/domain/workflow.ts`, `src/ui/tenant/tenant-request-page.tsx`,
-`tests/api/workflow.test.ts`, `tests/domain/workflow.test.ts`, and `RS-WO-002-15` browser evidence.
+`tests/api/workflow.test.ts`, `tests/domain/workflow.test.ts`, `RS-WO-002-15` browser evidence,
+and the fresh proposal/confirmed-response evidence recorded in `RIGHTSPOT-032`.
 
 **Presentation rule:** Once the transition is terminal, the retained response is historical. The
-tenant response card shows a recorded outcome rather than an actionable proposal or an active
-deadline; this bounded presentation repair is verified in `RIGHTSPOT-027`.
+tenant response card shows the recorded selected viewing time and outcome rather than an actionable
+proposal or an active deadline; the terminal action/deadline rule is verified in `RIGHTSPOT-027`,
+and the selected-time projection/presentation is verified in `RIGHTSPOT-032`.
 
 **Boundary:** Confirmation is a viewing record only. It is not a booking payment, lease, calendar
 reservation outside the local slot record, or guaranteed real-world appointment.
@@ -540,9 +589,10 @@ sent a real slot proposal, had the tenant explicitly decline it, and then read t
 the property agent. The tenant saw `Tenant Declined` with no remaining action and a version-6 timeline;
 the agent saw the terminal state and the previously held slot as `Available`.
 
-**Presentation rule:** The retained slot proposal may remain visible as history, but a terminal
-`TENANT_DECLINED` request is not labelled actionable and does not retain an active `Respond by` deadline;
-this bounded presentation repair is verified in `RIGHTSPOT-027`.
+**Presentation rule:** The retained slot proposal may remain visible as history, including its
+recorded selected viewing time, but a terminal `TENANT_DECLINED` request is not labelled actionable
+and does not retain an active `Respond by` deadline; the terminal action/deadline repair is verified
+in `RIGHTSPOT-027`, and selected-time presentation is verified in `RIGHTSPOT-032`.
 
 **Evidence boundary:** This verifies the ordinary local browser branch and slot-release projection only.
 It does not claim external notification, deployment, production concurrency, or any deferred integration.
@@ -569,8 +619,9 @@ does not mutate when the proposal is still current; no stale confirm can succeed
 `tests/application/workflow-views.test.ts`, `tests/api/workflow.test.ts`.
 
 **Presentation rule:** An expired retained proposal is a closed historical outcome. The tenant card
-does not show `Action needed` or a past `Respond by` deadline; this bounded presentation repair is
-verified in `RIGHTSPOT-027`.
+shows its recorded selected viewing time but does not show `Action needed` or a past `Respond by`
+deadline; the terminal action/deadline repair is verified in `RIGHTSPOT-027`, and selected-time
+presentation is verified in `RIGHTSPOT-032`.
 
 **Residual evidence:** Direct/application/API expiry evidence exists. The product does not claim
 real-time expiry notification or a scheduler.
@@ -685,7 +736,9 @@ the following matrix:
 
 The former draft-visibility finding was closed by `RIGHTSPOT-025` with regression coverage for both
 queue and direct detail at the authoritative read boundary. This matrix remains a recurring audit
-obligation; its closure does not imply external-authentication, deployment, or production-readiness
+obligation. `RIGHTSPOT-038` additionally verifies that a stale Agent mutation remains visibly failed
+while a successful authoritative recovery read is rendered, and that a failed recovery withholds
+detail/actions. Its closure does not imply external-authentication, deployment, or production-readiness
 evidence.
 
 ### RS-FLOW-19 — Deferred and gated product branches
@@ -753,23 +806,162 @@ present, not that every evidence branch is closed.
 |---|---|---|---|---|
 | `RS-FLOW-01` | Implemented | Implemented and verified | Session/config TDD evidence plus fresh browser evidence for `F-02`/`F-03` | External auth remains gated |
 | `RS-FLOW-02` | Implemented | Implemented | Listing application/API and browser closure evidence | No live inventory claim |
-| `RS-FLOW-03` | Implemented | Implemented and verified | Listing/API/UI source and browser evidence; `RIGHTSPOT-026` exact-path verification | Published-only detail remains intentional |
-| `RS-FLOW-04` | Implemented | Implemented | Domain/API/UI tests; save cycle browser evidence | Unpublish path lacks a user-facing admin trigger |
-| `RS-FLOW-05` | Implemented | Implemented | Domain/application/API/UI tests and browser evidence | One request per reset remains bounded |
+| `RS-FLOW-03` | Implemented | Implemented and verified | Listing/API/UI source and browser evidence; `RIGHTSPOT-026` same-listing and `RIGHTSPOT-034` cross-listing notice verification | Published-only detail remains intentional |
+| `RS-FLOW-04` | Implemented | Implemented | Domain/API/UI tests; fresh save/remove/reload/re-save browser evidence in `rightspot-audit-077` | Unpublish path lacks a user-facing admin trigger |
+| `RS-FLOW-05` | Implemented | Implemented | Domain/application/API/UI tests, `RIGHTSPOT-035`/`RIGHTSPOT-036` editor contracts, and browser evidence | One request per reset remains bounded |
 | `RS-FLOW-06` | Implemented | Implemented | API/domain and browser evidence | No external notification claim |
-| `RS-FLOW-07` | Implemented and verified | Implemented and verified | `RIGHTSPOT-025` focused regression, full suite, formal persistent verification, and direct source review | Re-check on the next cross-layer audit |
-| `RS-FLOW-08` | Implemented for submitted requests | Implemented | Domain/API/browser primary path plus `RIGHTSPOT-025` draft boundary regression | No current defect; keep submitted-request review path bounded |
+| `RS-FLOW-07` | Implemented and verified | Implemented; active/history presentation is separated, all seven non-draft counts are rendered, and failed latest reads withhold retained queue content | `RIGHTSPOT-025` focused regression, full suite, formal persistent verification, direct source review, `RIGHTSPOT-033` Red→Green/browser evidence, and `RIGHTSPOT-037` failure/retry browser evidence | Re-check on the next cross-layer audit without changing the authoritative read boundary |
+| `RS-FLOW-08` | Implemented for submitted requests | Implemented; successful detail remains actionable and failed latest reads withhold retained detail/actions | Domain/API/browser primary path, `RIGHTSPOT-025` draft boundary regression, and `RIGHTSPOT-037` failure/retry browser evidence | No current defect; keep submitted-request review path bounded |
 | `RS-FLOW-09` | Implemented | Implemented | Domain/application/API/UI tests and browser evidence | No automatic send claim |
 | `RS-FLOW-10` | Implemented | Implemented | Domain/API and primary browser evidence | No delivery provider claim |
 | `RS-FLOW-11` | Implemented | Implemented | Direct/domain/API and fresh isolated local browser evidence | No external notification or deployment claim |
-| `RS-FLOW-12` | Implemented and verified | Implemented and verified | Domain/API, primary browser, and `RIGHTSPOT-027` state-matrix evidence | No booking/payment or real-world appointment claim |
-| `RS-FLOW-13` | Implemented and verified | Implemented and verified | Direct/domain/API, `RIGHTSPOT-027` state-matrix, and fresh isolated local browser evidence | No external notification or deployment claim |
-| `RS-FLOW-14` | Implemented and verified | Implemented indirectly on reads/writes and verified | Direct/application/API and `RIGHTSPOT-027` state-matrix evidence | No scheduler/notification claim |
+| `RS-FLOW-12` | Implemented and verified; tenant-safe selected time resolves from the sent slot | Implemented and browser-verified for proposal and confirmed response | `RIGHTSPOT-032` projection/UI contracts, full suite, fresh generation-25 browser proposal and confirm evidence | No booking/payment or real-world appointment claim |
+| `RS-FLOW-13` | Implemented and verified; tenant-decline transition retains the selected time | Implemented and retained terminal presentation covered by the same contract | `RIGHTSPOT-032` terminal projection regression plus prior decline evidence | No external notification or deployment claim |
+| `RS-FLOW-14` | Implemented and verified; expiry retains the selected time | Implemented on relevant reads/writes with terminal no-action presentation | `RIGHTSPOT-032` expiry projection regression plus prior expiry evidence | No scheduler/notification claim |
 | `RS-FLOW-15` | Implemented in application authority and CLI composition | Development boundary only | Focused child-process regression, full suite, and frozen-source independent verification for `F-06` / `RIGHTSPOT-028` | No public reset route; arbitrary corrupt-database salvage remains unclaimed |
-| `RS-FLOW-16` | Implemented | Implemented on `/agent` | Domain/API/UI and browser aggregate evidence | No analytics/history claim |
+| `RS-FLOW-16` | Implemented | Implemented on `/agent` | Domain/API/UI and fresh populated Agent UI aggregate evidence in `rightspot-audit-078` | No analytics/history claim |
 | `RS-FLOW-17` | Implemented seam | No current route | Domain/persistence tests | Separate authority/route decision required |
 | `RS-FLOW-18` | Implemented and verified for audited boundaries | Implemented and verified | Broad negative tests plus formal `RIGHTSPOT-025` F-01 and browser `F-02`/`F-03` evidence | Re-check on the next cross-layer audit; no production-readiness claim |
 | `RS-FLOW-19` | Deliberately absent | Deliberately absent | ADR/task boundaries | Do not use fallback implementations |
+
+## 9.1 Fresh primary-chain evidence — 2026-09-02
+
+The Main thread replayed the canonical local chain from a fresh fixture generation `57`: tenant
+discovery and primary listing detail, draft save, explicit submission, Agent queue exposure, Agent
+review, response preparation, explicit slot-proposal send, tenant proposal read, explicit confirmation,
+terminal tenant read, and Agent history read. The authoritative transitions were observed from
+`TENANT_DRAFT` version `1` through `REQUEST_SUBMITTED` version `2`, `AGENT_REVIEWING` versions `3` and
+`4`, `SLOT_PROPOSED` version `5`, and `VIEWING_CONFIRMED` version `6`. Each operation returned `200`;
+the selected `4 Sept 2026, 15:00–15:30` slot was distinct from the tenant's `15 Sept 2026, 10:00`
+preference and retained in the terminal projection.
+
+The Agent-only internal preparation note did not cross into the tenant projection. The terminal Agent
+queue moved the request out of active work and into one `Confirmed` history item. Both terminal surfaces
+passed the accepted `320px` width floor, first-Tab skip-link check, and empty browser page-error check.
+The fixture was reset to generation `58` after the replay. No new scenario defect or Task was registered;
+the existing `F-08` listing-detail timing concern remains an evidence gap rather than a speculative
+repair authorization.
+
+## 9.2 Fresh tenant-decline terminal evidence — 2026-09-02
+
+The Main thread also replayed the alternate `RS-FLOW-11` branch from fixture generation `59`: tenant
+draft/save/submit, Agent review, `AGENT_DECLINE` preparation, explicit send, tenant terminal read, and
+Agent history read. The request ended at `AGENT_DECLINED` version `5`; all three availability slots were
+`Available` again, the tenant-facing note was visible only to the tenant and Agent response surfaces,
+and the Agent-only internal note did not cross the role projection boundary.
+
+The tenant terminal page exposed no action, the Agent detail was read-only with no mutation controls,
+and the Agent queue contained no active request plus one `Declined` history item. Both terminal surfaces
+passed the `320px` width floor, first-Tab skip-link check, and empty browser page-error check. The fixture
+was reset to generation `60`; no new scenario defect or Task was registered.
+
+## 9.3 Direct route-entry and browser postcondition evidence — 2026-09-02
+
+At the current reset generation `60`, Main rechecked the signed-out role entry, tenant catalogue,
+listing detail, Favourites, Viewing Requests, tenant-to-Agent wrong-role boundary, Agent queue, and
+embedded Listing interest surface in an isolated browser session. Direct URL navigation produced the
+expected rendered pages and explicit empty states; the browser page-error log was empty; and the accepted
+`320px` body/document width and first-Tab skip-link checks passed.
+
+One stale accessibility-tree reference returned a CLI `Done` acknowledgement without completing the
+expected full-document navigation. After the target was reacquired, direct URL navigation verified the
+actual route and rendered identity. This is tooling evidence, not a product defect; browser command
+acknowledgement is not accepted as route evidence without a URL/DOM postcondition check. The ordinary
+catalogue links still use full document navigation. A follow-up at generation `61` used the actual DOM
+anchor and confirmed navigation type `navigate`, referrer `/tenant`, final path
+`/tenant/listings/listing-primary`, and rendered listing `Canal Wharf Apartment`. `F-08` remains an
+evidence gap and no route repair Task was registered. The fixture was reset to generation `62` afterward.
+
+## 9.4 Fresh Favourite persistence and role-boundary evidence — 2026-09-02
+
+At fixture generation `73`, Main used isolated browser session `rightspot-audit-077` to replay
+`RS-FLOW-04`. The tenant saved `Canal Wharf Apartment`, opened `/tenant/favourites`, reloaded the
+route, removed the record, observed the explicit no-saved-homes state, and saved the same listing
+again. The authoritative relation version advanced `1 → 2 → 3`; `GET /api/tenant/request` remained
+empty, so the Favourite operation did not create or mutate a Viewing Request. The page exposed the
+saved card after reload and the correct save/remove controls.
+
+The assigned Agent then saw only listing-level `currentSaves` and `availableInterest` aggregates
+(`1/1` for the primary listing and `0/0` for the other two), while the request queue remained separate
+and empty. At `320px`, the Favourite route had equal body/document widths, no horizontal overflow,
+and first-Tab skip-link focus. No browser page errors were observed during the audit. The fixture was
+reset to generation `74` afterward and `/api/health` returned `{"ok":true,"service":"rightspot"}`.
+The unpublished Favourite branch remains direct/static-only because the bounded MVP exposes no
+supported user-facing unpublish action; no hidden endpoint or fixture mutation was used. No new
+finding or Task was registered.
+
+## 9.5 Populated Agent listing-interest presentation evidence — 2026-09-02
+
+After the Favourite persistence replay, Main reset the fixture to generation `74`, saved
+`Canal Wharf Apartment` as the tenant, and opened the assigned Agent dashboard in isolated
+`agent-browser` session `rightspot-audit-078`. The rendered Listing interest surface showed the
+three assigned listings and the expected listing-level pairs: `1/1` (`Current saves` /
+`Available interest`) for the saved published primary listing and `0/0` for the other two. The
+request queue remained separate and empty, with all seven non-draft state counts at zero. No tenant
+identity, contact value, Favourite timestamp, request state, or private field appeared in the page
+text or the server projection.
+
+At `320px`, body and document widths were both `320px`, no horizontal overflow was present, and the
+first Tab reached the skip link. The populated surface had readable metric definitions and no obvious
+clipping in the mobile screenshot; the browser error check returned no page errors. The fixture was
+reset to generation `75` afterward and `/api/health` remained healthy. The unpublished branch remains
+direct/static-only because no supported user-facing unpublish action exists. No new finding or Task
+was registered.
+
+## 9.6 Supported listing navigation and F-08 boundary evidence — 2026-09-02
+
+In isolated `agent-browser` session `rightspot-audit-081` at fixture generation `77`, Main followed
+the actual rendered catalogue anchor from `/tenant` to `listing-primary`, returned to `/tenant`, and
+then followed the anchor to `listing-north`. Each transition reported browser navigation type
+`navigate` and the prior route as referrer; the final page rendered the authoritative `Northfield
+Garden Flat` identity and its matching detail surface. The browser error check was empty, and no
+fixture or source state changed.
+
+The supported catalogue-to-detail path is therefore evidenced as full-document navigation. The
+suspected same-document read-order race was not reproduced in the ordinary user path. A future
+router-reuse implementation would require a new route contract and separate evidence, so `F-08`
+remains an `EVIDENCE_GAP` rather than an authorized speculative repair. The session was closed and
+`/api/health` returned `{"ok":true,"service":"rightspot"}`.
+
+## 9.7 Fresh Agent-decline terminal evidence — 2026-09-02
+
+Main reset the fixture to generation `80` and used isolated browser session `rightspot-audit-084` to
+replay the alternate terminal branch. Tenant saved and explicitly submitted one request. The Agent
+started review, selected `Decline request`, entered a bounded tenant-facing reason, saved preparation
+without sending, and then explicitly sent the decline. The server-authoritative Agent state became
+`AGENT_DECLINED` at version `5`; the decision record was read-only and no internal review field entered
+the tenant-safe response.
+
+After switching roles through the root, the Tenant dashboard rendered `Agent Declined`, the bounded
+response reason, preferred time, and a five-entry tenant-safe timeline. Reload retained the terminal
+state and left only `Refresh`; no tenant decision controls remained. The Agent queue showed zero active
+requests and one `Declined` history item, and terminal detail exposed only read/refresh controls. Browser
+error checks were empty. The fixture was reset to generation `81` with healthy `/api/health`, and no
+new finding or Task was registered.
+
+## 9.8 Rendered route-entry and accessibility sweep — 2026-09-02
+
+In isolated `agent-browser` session `rightspot-audit-085` at fixture generation `81`, Main reviewed
+the signed-out Root, all current Tenant routes, Agent queue, and Agent request-unavailable detail.
+Rendered role entry, Tenant `Browse rentals`/`Favourites`/`My request` navigation, three listing-detail
+anchors, empty-state handoffs, Agent Request queue entry, and missing-request Back to queue/Retry
+controls were present and bounded. The primary, Northfield, and Riverside details each rendered the
+matching listing identity, media, and Viewing Request entry surface.
+
+At `320px`, every checked route kept body and document widths at `320px`; listing images were complete,
+and the first Tab on both Tenant and Agent workspaces focused the skip link before main content. Browser
+error checks were empty, the fixture was not mutated, the session was closed, and `/api/health` remained
+healthy. No new finding or Task was registered.
+
+## 9.9 Fresh Tenant-decline terminal evidence — 2026-09-02
+
+In isolated `agent-browser` session `rightspot-audit-086` at fixture generation `81`, Main replayed the
+rendered proposal branch through explicit Tenant decline. The Agent prepared and sent an available
+slot with separate tenant-facing and agent-only notes; the Tenant saw the proposed time separately
+from the preferred time, explicitly declined, and then saw a terminal read-only request with its
+tenant-safe timeline. The Agent queue showed zero active work and one `Tenant declined` history item
+whose detail was read-only. Browser error checks were empty; the fixture was reset to generation `82`
+with healthy `/api/health`, and no new finding or Task was registered.
 
 ## 10. Open findings and change-control rules
 
@@ -936,12 +1128,196 @@ optimistic workflow patch, API/domain/persistence change, or listing-detail `loa
 was made.
 **Not authorised by this finding:** changing the 409/API contract, adding retry or cancellation
 infrastructure, altering workflow state or role/privacy projections, or speculatively repairing the
-separate listing-detail dynamic-route `F-08` evidence gap.
+separate listing-detail dynamic-route `F-08` evidence gap. The current catalogue entry uses full
+document navigation, so a delayed same-document `listingId` transition remains unproven and must not
+be inferred from the static `load()` shape.
+
+### F-10 — Tenant proposal response does not show the selected viewing time
+
+**Severity:** P1 for primary tenant decision comprehension; no workflow state-machine or data-integrity
+failure was reproduced
+**Reproduction:** After resetting the local fixture to generation `24`, a tenant submitted a request
+with a preferred time rendered as `18 September 2026, 10:00`. The assigned agent explicitly sent a
+proposal for `slot-primary-2`, whose authoritative slot was `4 September 2026, 15:00–15:30` in the
+existing Europe/London display contract. The tenant `/tenant/requests` page showed the tenant's own
+preferred time, the opaque `Slot reference slot-primary-2`, the agent note, deadline, and decision
+controls, but did not show the proposed date or time. The isolated browser run had no application
+console or route errors; local rendered evidence is retained at
+`var/test/audit-proposal-missing-slot.png`.
+**Expected:** A tenant must see the exact selected proposal date/time as a separate tenant-safe
+viewing fact before confirming or declining. The same recorded time remains visible as history after
+confirmation, tenant decline, or expiry, while the existing terminal presentation rule removes action
+and past-deadline language.
+**Impact:** The tenant can be asked to confirm a slot without knowing the date/time being confirmed,
+and the visible preferred time can be mistaken for the agent's proposal. This leaves `RS-FLOW-12`–
+`RS-FLOW-14` transition evidence intact but makes their tenant-facing response projection incomplete.
+**Disposition:** `CLOSED_VERIFIED` through `RIGHTSPOT-032` on 2026-09-02. The serial Work Order
+implemented the authoritative tenant-safe selected-slot projection and UI presentation, then passed
+the required focused and complete verification gates.
+**Boundary:** The correction must expose only `startsAt`/`endsAt` for the selected sent slot. It must
+not expose slot status, holder, other availability, agent internal notes, or guessed/preferred-time
+fallback data. Missing or mismatched authoritative relations must use the existing visible error
+boundary rather than silently rendering an opaque reference as a successful resolution.
+**Verification:** Focused projection/presentation contracts passed, including missing and wrong-listing
+relation failures, terminal selected-time retention, tenant-safe parser filtering, and incomplete
+proposal action blocking. The pinned complete suite passed `143/143` across `32` authored test files;
+foundation passed `6/6`, typecheck, production build, and `git diff --check` passed. A fresh isolated
+browser run at fixture generation `25` rendered the agent-selected `4 Sept 2026, 15:00–15:30` separately
+from the tenant's `18 Sept 2026, 10:00` preference, then confirmed the proposal and rendered the
+recorded time in the terminal `VIEWING_CONFIRMED` state without `Action needed`, `Respond by`, or
+decision controls. The tenant response JSON contained only `startsAt`/`endsAt` under `viewingSlot`; no
+slot status, holder, internal note, or other private field crossed the boundary, and no application
+browser error was observed. Evidence screenshots are retained at
+`var/test/rightspot-032-proposal-after.png` and `var/test/rightspot-032-terminal-response-final.png`.
+
+**Not authorised by this finding:** changing workflow transitions, slot lifecycle, persistence schema,
+request commands, agent projections/UI, auth, listing loading, calendar/notification behavior, or any
+deferred WebMCP, Cloud Receiver, WebRTC, Redis, external-auth, deployment, or commercial feature.
+
+### F-11 — Agent queue mixes terminal history with active work and omits truthful state counts
+
+**Severity:** P2 for Agent action clarity and judge-facing state truthfulness; no workflow, API, privacy,
+or persistence failure was reproduced
+**Controlled reproduction — 2026-09-02:** After a fresh reset to workflow fixture generation `26`, an
+isolated browser session completed the tenant proposal/confirmation path. On `/agent`, the dashboard
+showed `See what needs a human response`, four visible zero-valued cards (`Needs review`, `In review`,
+`Proposal sent`, and `Declined`), and a `Current work` / `Requests assigned to you` list containing a
+`Confirmed` version-6 request whose footer still said `Review request →`. The run had no application
+console or route error; evidence is retained at
+`var/test/audit-agent-queue-terminal-counts.png`.
+**Static evidence:** `toAgentQueueView` returns counts for every workflow state and the assigned request
+for every non-draft state. `agent-dashboard-page.tsx` renders only four states, includes terminal
+`AGENT_DECLINED` in that partial metric set, omits `VIEWING_CONFIRMED`, `TENANT_DECLINED`, and `EXPIRED`,
+and gives all returned cards the same review footer. The defect is therefore in the UI consumer, not in
+the authoritative queue read or state machine.
+**Expected:** The Agent dashboard describes state tracking rather than implying all visible items need
+an Agent response; presents all seven non-draft counts in explicit active and terminal groups; separates
+active requests from recorded outcomes; and uses non-action language for terminal cards. Draft privacy,
+the existing API/domain contract, request detail, and terminal state semantics remain unchanged.
+**Disposition:** `CLOSED_VERIFIED` through `RIGHTSPOT-033` / `RS-WO-033-01`. The focused TDD
+contract first failed against the four-state consumer and then passed after the local UI repair.
+Fresh isolated browser evidence at generation `27` showed active request counts and cards separated
+from the four recorded-outcome counts and confirmed history; the terminal card used `View recorded
+request`, while the active card retained `Review request`. The accepted `320px` check reported no
+horizontal overflow, keyboard focus reached the terminal link, and a fresh generation-`28` reset
+kept `TENANT_DRAFT` absent with truthful empty states. Full tests, foundation tests, typecheck, build,
+and exact-scope review passed. No API, workflow, persistence, privacy, or dependency change was made.
+
+### F-12 — Cross-listing tenant notice mislabels drafts and terminal requests as active
+
+**Severity:** P2 for tenant state comprehension and truthful cross-listing handoff; no workflow, API,
+privacy, or persistence failure was reproduced.
+**Controlled reproduction — 2026-09-02:** In isolated browser session `rightspot-audit-20260902`, a
+fresh reset at generation `30` produced an `AGENT_DECLINED` request for `listing-primary`; opening
+`/tenant/listings/listing-north` showed `Your active request is for another listing` even though the
+request was terminal. A fresh reset at generation `31` produced a tenant-only `TENANT_DRAFT` for
+`listing-primary`; the same cross-listing page again called it active. Both runs had no application
+console error. The pre-repair draft evidence is retained at
+`var/test/audit-034-draft-cross-listing-notice-content.png`.
+**Static evidence:** `tenant-listing-page.tsx` already receives the server-authoritative
+`TenantRequestDto.state`, but its cross-listing condition checked only the listing id and rendered one
+unconditional active notice. Same-listing state notices and the request dashboard handoff were already
+explicit and are not implicated.
+**Expected:** A cross-listing `TENANT_DRAFT` is described as a saved draft; submitted, reviewing, and
+proposed states remain active; confirmed, declined, and expired states are recorded outcomes. The
+copy must not imply submission, active work, or a second request, and must retain the existing dashboard
+handoff.
+**Disposition:** `CLOSED_VERIFIED` through `RIGHTSPOT-034` / `RS-WO-034-01`. The single serial
+presentation Work Order added an exhaustive draft/active/terminal state mapping and preserved the
+one-request, same-listing, and typed-state boundaries. Focused TDD moved from Red `3 tests; 2 passed;
+1 failed` (missing `TENANT_DRAFT` case) to Green `3/3`; full `npm test` passed `145/145` across `33`
+test files, foundation `6/6`, typecheck, and production build passed. Fresh reset generations `32`–`34`
+verified draft, active, terminal, and same-listing submitted notices; the 320px viewport had no
+horizontal overflow and keyboard focus reached the skip link and primary navigation. Evidence is
+retained at `var/test/audit-034-draft-cross-listing-notice-after-content.png`,
+`var/test/audit-034-terminal-cross-listing-notice-after.png`, and
+`var/test/audit-034-same-listing-submitted-after.png`. No server/API/domain/persistence/shared
+contract, dependency, auth, CSS, or route-read behavior changed.
+
+### F-13 — Preferred-time removal controls share an ambiguous accessible name
+
+**Severity:** P2 for tenant keyboard and screen-reader operation; no workflow, validation, API, or
+persistence failure was reproduced.
+**Controlled reproduction — 2026-09-02:** In isolated browser session
+`rightspot-audit-20260902-next`, a tenant opened the listing-detail request editor, added a second
+preferred time, and the accessibility snapshot exposed two controls both named `Remove`. The controls
+were visually beside `Option 1` and `Option 2`, but the programmatic names did not identify the target
+row. No application browser error was observed.
+**Static evidence:** The existing editor rendered the repeated controls from the same `times.map`
+loop and already derived the visible option number from `index`; the removal handler filtered only the
+selected index. The defect was limited to accessible naming.
+**Expected:** With two or three options, each removal control has the distinct accessible name
+`Remove preferred viewing time option N`, remains keyboard-reachable, and still removes only its own
+row. With one option, no removal control is rendered.
+**Disposition:** `CLOSED_VERIFIED` through `RIGHTSPOT-035` / `RS-WO-035-01`. The component-only repair
+added the option-numbered `aria-label`; focused TDD moved from Red `2 tests; 1 passed; 1 failed` to
+Green `2/2`, and the complete suite passed `147/147` across `34` test files with foundation `6/6`,
+typecheck, production build, and isolated browser evidence. The browser confirmed distinct names,
+correct Option 2 removal, blocked reverse-order save with `No requests captured`, no `320px` overflow,
+and empty browser errors. The separate observation that a validation alert remains visible immediately
+after structural row removal is not included in this disposition and requires independent reproduction
+before a new Task is registered.
+
+### F-14 — Structural preferred-time removal leaves stale validation feedback
+
+**Severity:** P2 for truthful tenant editor recovery; no validation, request mutation, API, or
+persistence failure was reproduced.
+**Controlled reproduction — 2026-09-02:** In isolated browser session
+`rightspot-audit-20260902-036` at fixture generation `37`, the tenant entered
+`2026-09-18T10:00` followed by `2026-09-17T10:00`. The editor correctly showed the strict-order alert.
+After the tenant removed Option 2, the remaining value was valid, but the alert stayed visible. The
+request log was cleared before the invalid Save draft and reported `No requests captured`.
+**Static evidence:** `updateTime` already clears both local `error` and `statusMessage`, while the
+structural removal callback previously filtered `times` without clearing either state. The defect was
+limited to local feedback lifecycle.
+**Expected:** Removing a preferred-time row clears stale editor error/status feedback, removes only the
+selected row, and does not fabricate a success state or issue a server request.
+**Disposition:** `CLOSED_VERIFIED` through `RIGHTSPOT-036` / `RS-WO-036-01`. The callback-only repair
+clears `error` and `statusMessage` after the existing row filter. Focused TDD moved from Red
+`2 tests; 1 passed; 1 failed` to Green `2/2`; the complete suite passed `149/149` across `35` test
+files with foundation `6/6`, typecheck, production build, and isolated browser evidence. After
+removal, the browser showed one valid value, no alert, no stale editor status, and no removal control;
+the existing `RIGHTSPOT-035` names, `320px` width, and empty browser errors remained valid. No server,
+workflow, validation-rule, dirty-tracking, API, persistence, or dependency behavior changed.
+
+### F-15 — Agent read failure leaves a stale projection and action surface visible
+
+**Severity:** P2 for Agent workspace truthfulness and action clarity; no server mutation or state
+machine failure was reproduced.
+**Controlled reproduction — 2026-09-02:** After a fresh reset to fixture generation `41`, an
+isolated browser session created and submitted `request-1` through the ordinary tenant UI. With the
+populated Agent queue showing `Needs review 1`, a page-local fetch harness rejected only the latest
+`/api/agent/requests` read. The page showed the queue error and `Retry queue read` while retaining the
+previous count and `Review request` card. The same request-detail read failure retained the previous
+request facts, availability, and enabled `Start review` action beside `Could not load the agent detail`.
+The harness was client-local and did not alter server data; full evidence is retained at
+`var/test/audit-037-agent-queue-refresh-failure-full.png` and
+`var/test/audit-037-agent-detail-refresh-failure-full.png`.
+**Static evidence:** `AgentQueue` rendered `QueueContent` whenever `queue` existed, regardless of
+`error`, while `AgentRequestWorkspace` rendered `detail` and its action panels whenever `detail`
+existed, regardless of `error`. The existing `AgentListingInterest` consumer already withheld its
+projection during loading/failure and supplies the accepted local reference behavior.
+**Expected:** While an Agent queue/detail read is in flight, the corresponding retained projection is
+not presented as the completed current read. If the read fails, only its bounded error/unavailable
+state and retry path remain; a successful retry restores the server response and normal actions.
+**Disposition:** `CLOSED_VERIFIED` through `RIGHTSPOT-037` / `RS-WO-037-01`. The two consumer-only
+render guards now put loading and error ahead of retained queue/detail content. Focused TDD moved from
+Red `2/2` to Green `2/2`; pinned full suite passed `151/151` across `36` test files, foundation `6/6`,
+typecheck, production build, and `git diff --check` passed. Fresh generation-`43` browser evidence
+confirmed queue/detail stale content and actions were absent during synthetic failure and returned
+after restoring the read path and using each retry. At `320px`, body/document widths were `320`, Tab
+reached `Retry request read`, and browser page errors were empty. No API, workflow, persistence,
+role/privacy, queue-grouping, CSS, dependency, or listing-interest behavior changed; the fixture was
+reset to generation `44` afterward.
+**Not authorised by this finding:** adding a cache, polling, arbitrary retry, timeout, offline mode,
+new state, server fallback, or widening the repair to Tenant, listing-interest, or deferred external
+integrations.
 
 No other implementation gap discovered in this documentation audit should be promoted to a product
-defect without reproducing it against current source, tests, or runtime. `F-01`–`F-06` and `F-09` are
-closed within their bounded claims and remain separate from deferred integrations. The next fresh
-audit is required to re-check the full chain against current source, tests, and runtime.
+defect without reproducing it against current source, tests, or runtime. `F-01`–`F-06`, `F-09`–`F-15`
+are closed within their bounded claims. All remain separate
+from deferred integrations. The next fresh audit is required to re-check the full chain against
+current source, tests, and runtime after the bounded presentation repairs.
 A future audit must classify each new observation as:
 
 1. intended behavior already accepted by an ADR or this catalogue;
@@ -991,7 +1367,90 @@ tenant session
 ```
 
 The next audit may continue this walkthrough against the current source because `F-01`, `F-02`, and
-`F-03` are closed within their bounded local claims, `F-04`, `F-05`, and `F-09` are closed within
-their bounded presentation-only claims, and `F-06` is closed at the reset boundary. The audit must
-still verify the full chain from the current fixture and classify any new observation before
-registering another Task; no closure here claims external integrations or production readiness.
+`F-03` are closed within their bounded local claims, `F-04`, `F-05`, `F-09`, and `F-10` are closed
+within their bounded presentation/projection claims, and `F-06` is closed at the reset boundary. No
+closure here claims external integrations or production readiness.
+
+## 11.1 Reverse same-document listing read-order probe — 2026-09-02
+
+The Main thread ran a controlled reverse probe with the Next App Router in isolated
+`rightspot-audit-063`. Both old primary-listing reads were held while the route moved to the primary
+listing and then back to `/tenant/listings/listing-north`; releasing the held responses did not replace
+the final `Northfield Garden Flat` identity or its matching image. This strengthens the evidence that
+the suspected stale projection is not reproduced under the tested client transition, but it is not a
+claim about every future router or transport schedule. `F-08` remains an `EVIDENCE_GAP`; no Task or
+Work Order was registered, and the fixture remained at generation `62`.
+
+## 11.2 Listing-detail partial-read boundary — `F-17` / `RIGHTSPOT-039`
+
+The listing-detail flow has two independent read responsibilities: authoritative listing facts and
+the signed-in tenant's current Viewing Request context. A failure of the request-context read must
+not make the listing appear unavailable. The listing may remain readable, while request-derived
+status, editor, and actions remain withheld behind a request-context-specific unavailable/retry state.
+A listing-read failure remains listing-specific and must not render stale or fabricated listing facts.
+
+This boundary was repaired and verified in `RIGHTSPOT-039` / `RS-WO-039-01`. It is a UI-consumer
+repair only and does not change the scenario transition matrix, API contracts, workflow state,
+persistence, role privacy, or the separate `F-08` dynamic-route evidence gap.
+
+## 11.3 Tenant Discovery error-copy boundary — `F-18` / `RIGHTSPOT-040`
+
+The tenant Discovery consumer must distinguish a local filter-validation message from a failed
+catalogue read. A `TenantApiError` may retain server response metadata for classification, but its
+user-facing message must come only from the existing bounded `tenantApiErrorMessage` mapping. The
+Discovery page must not render arbitrary server response text or announce the same read failure twice.
+
+The Main thread reproduced this boundary on 2026-09-02 with a page-local fetch harness that returned
+`503` and the controlled marker `CONTROLLED_PRIVATE_SERVER_TEXT` for the collection read. Applying an
+area filter rendered both the marker and the mapped local-service error, without changing workflow or
+fixture state. `RIGHTSPOT-040` then completed as one Main-owned serial UI-consumer Work Order. The
+focused TDD contract, full checks, and isolated browser verification preserved local invalid-filter
+feedback, successful/empty/filter/retry results, Favourite controls, and all server/API contracts.
+The browser failure branch now omits the marker and renders one bounded error surface; keyboard retry
+and clear restore the filtered and full catalogue respectively.
+
+**Disposition:** `F-18` is `CLOSED_VERIFIED`, `P2`, within the tenant Discovery error-copy consumer
+boundary. This closure does not claim a listing API, domain, persistence, role, or data-integrity
+change and does not authorize a generic error framework or speculative repairs in other consumers.
+
+## 11.4 Tenant request mutation completion feedback — `F-19` / `RIGHTSPOT-041`
+
+The tenant request editor must give a clear, bounded completion signal after a draft create/update or
+explicit request submission succeeds. The signal must be based on the accepted server response and must
+remain visible after the authoritative request version rehydrates the editor in both `/tenant/requests`
+and `/tenant/listings/[listingId]`.
+
+The Main-thread audit reproduced this boundary on 2026-09-02 in isolated browser session
+`rightspot-audit-073`. A successful `PATCH /api/tenant/request` returned `200` and the updated draft
+was rendered, but the editor's local success message was lost because `onSaved(response)` changed the
+parent's version-keyed editor before the child set its success state. The explicit submit handler uses
+the same ordering and is therefore included in the same bounded finding. No server, API, domain,
+persistence, role, or workflow-state defect was reproduced.
+
+The accepted design kept version-keyed editor rehydration and moved the bounded completion message to
+the parent through the existing `onSaved(response, message)` callback. The editor no longer renders a
+remount-prone local success state; both `/tenant/requests` and `/tenant/listings/[listingId]` render one
+parent-level status surface, and scoped editor interactions clear stale completion copy.
+
+Focused Red→Green, full checks, and isolated browser evidence passed. A generation-68 listing-detail
+save returned `POST /api/tenant/request` `200` with visible draft-save feedback; the subsequent
+generation-68 `/tenant/requests` submit returned `POST /api/tenant/request/submit` `200` with visible
+submit feedback after the state/version changed. A generation-69 stale UI save returned `409`, recovered
+with `GET /api/tenant/request` `200`, showed only the neutral conflict notice, and did not show success.
+The fixture was reset to generation `70` with healthy `/api/health`.
+
+**Disposition:** `F-19` is `CLOSED_VERIFIED`, `P2`, tracked by `RIGHTSPOT-041` / `RS-WO-041-01` within
+the tenant request mutation-completion-feedback consumer boundary. No server, API, domain, persistence,
+role, workflow, external integration, or notification-framework behavior changed.
+
+## 9.10 Agent preparation validation boundary evidence — 2026-09-02
+
+The Agent preparation flow continues to require an explicitly selected available slot for a slot
+proposal. The rendered required control blocks an empty selection before the application command is
+constructed; the authoritative server still rechecks slot identity and availability when a prepared
+response is submitted. Preparation does not send, hold, or otherwise change the tenant-visible state.
+
+Main exercised this boundary in isolated session `rightspot-audit-087` at generation `83` after a
+normal tenant submission and Agent review start. No new business-flow defect was reproduced. The
+fixture was reset to generation `84`; this does not add a new state, alter `RS-FLOW-09`, or claim a
+multi-actor availability-concurrency flow beyond the current bounded fixture.

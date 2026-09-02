@@ -16,10 +16,69 @@
 - Lifecycle: `pending`
 - Priority: `P1`
 - Owner: Main RightSpot thread
-- Current increment: Produce a baseline cross-layer audit of the existing RightSpot product and a reusable high-quality prompt for repeating that audit after each meaningful source increment.
-- Next gate: The main thread reviews the returned report, accepts only bounded follow-on proposals that have a clear owner and next gate, and records whether this audit lane should remain open for the next source baseline.
+- Current increment: Continue the cross-layer audit against the current canonical Main source, including the ordinary tenant-to-Agent chain, route and role entries, read/projection/privacy boundaries, UI/UX/accessibility floor, and one bounded supporting flow per cycle.
+- Latest result: The 2026-09-02 replay reproduced `F-18`, a P2 tenant Discovery error-copy defect;
+  `RIGHTSPOT-040` / `RS-WO-040-01` then closed as one Main-owned serial TDD repair after focused/full
+  checks and fresh browser failure/recovery evidence. A clean generation-66 tenant-to-Agent replay
+  then passed the primary confirmation chain, terminal/read-only, and role/session boundaries with no
+  new finding before the fixture was reset to generation `67`. The separate `F-08` same-document
+  dynamic-route concern remains an evidence gap. The subsequent Favourite audit used generation `73`
+  and isolated session `rightspot-audit-077` to pass save → reload → remove → empty state → re-save;
+  relation versions advanced `1 → 2 → 3`, the tenant request remained empty, and the assigned Agent
+  received only listing-level aggregates. The `320px` no-overflow and first-Tab skip-link checks passed;
+  no new finding was reproduced, and the fixture was reset to generation `74` with healthy health.
+  The next populated Agent listing-interest check at generation `74` rendered the authoritative `1/1`
+  and `0/0` metric pairs, kept the request queue separate, exposed no private text, and passed the
+  `320px`/focus/browser-error checks. No new finding was reproduced; the fixture was reset to generation
+  `75` with healthy health.
+  The follow-up Tenant visual/entry review at generation `75` checked catalogue, listing detail, empty
+  request handoff, navigation, and CTA hierarchy at desktop, with the existing mobile evidence as the
+narrow-viewport cross-check. No new finding was reproduced; the fixture was reset to generation `76`
+with healthy health.
+  The following Agent Listing-interest failure/retry check used generation `76`: controlled `503`
+  feedback was bounded, stale/raw counts were withheld, the Request queue remained visible, Retry
+  restored the projection, and `320px`/browser-error checks passed. No new finding was reproduced; the
+  fixture was reset to generation `77` with healthy health.
+  The subsequent `rightspot-audit-081` route-boundary check followed the real catalogue anchors
+  through `listing-primary`, back to the catalogue, and `listing-north`. Each transition was a
+  full-document `navigate` with the expected referrer, the final Northfield detail rendered the
+  correct listing identity, and no browser error or fixture mutation occurred. This strengthens the
+  supported-route evidence while retaining the hypothetical future router-reuse concern as `F-08` /
+  `EVIDENCE_GAP`; no speculative repair Task was registered. The session was closed and `/api/health`
+  remained healthy.
+  The next `rightspot-audit-083` fresh end-to-end replay passed the rendered Tenant draft/save/submit,
+  Agent review/prepare/send, Tenant proposal/confirm, reload persistence, and Agent terminal-history
+  boundaries. Authoritative versions progressed `1 → 6`; the selected slot remained tenant-visible and
+  tenant-safe; terminal surfaces retained read-only boundaries; browser errors were empty. The fixture
+  was reset to generation `79` with healthy health, and no new finding or follow-on Task was registered.
+  The following `rightspot-audit-082` role/session re-check covered signed-out entry, both valid role
+  workspaces, direct wrong-role routes, sign-out recovery, an unknown listing, and Agent detail under a
+  Tenant session. All rendered boundaries were bounded and privacy-safe with no browser errors or
+  fixture mutation; valid-session navigation remained limited to the actor's own workspace. No new
+  finding or follow-on Task was registered, and `/api/health` remained healthy after the session.
+  The next `rightspot-audit-084` Agent-decline replay passed the rendered Tenant submit, Agent
+  review/prepare/decline/send, Tenant terminal/reload, and Agent history/read-only boundaries. The
+  authoritative state became `AGENT_DECLINED` at version `5`; no browser error or fixture mutation was
+  observed. The fixture was reset to generation `81` with healthy health, and no new finding or
+  follow-on Task was registered.
+  The subsequent `rightspot-audit-085` rendered route-entry sweep passed Root role entry, Tenant
+  navigation/listing anchors, all Tenant empty/detail routes, Agent queue/interest controls, and Agent
+  missing-request recovery. The `320px` responsive floor, first-Tab skip-link entry, image loading, and
+  browser-error checks passed with no fixture mutation or new finding. The session was closed with
+  healthy health, and no new Task was registered.
+  The following `rightspot-audit-086` proposal-to-tenant-decline replay passed rendered Tenant submit,
+  Agent review/prepare/send, Tenant proposal/decline, Tenant reload, and Agent terminal-history
+  boundaries. Authoritative versions progressed `1 → 6`; the selected slot was released after decline,
+  no browser error or fixture mutation remained after reset, and health was healthy at generation `82`.
+  No new finding or follow-on Task was registered.
+  A current-status reconciliation then corrected stale adjacent Task/ADR wording that described the
+  closed `RIGHTSPOT-020` Favourite implementation as absent or unresolved. Historical dispatch narrative
+  was retained, Information Request remained deferred, and no source, runtime behavior, Task state, or
+  follow-on Work Order changed.
+- Next gate: Re-run the cross-layer audit against the verified source. Register another follow-on Task
+  only after reproducing a new bounded gap and recording its owner, scope, and acceptance gate.
 - Execution posture: `READ_ONLY_ADVISORY`; the Advisor may inspect the current implementation and run safe, bounded verification, but must not implement findings or write canonical product truth.
-- Dependencies: Current RightSpot source, tests, runtime evidence where safely available, and the accepted documentation/decision hierarchy. `RIGHTSPOT-008` is closed with the bounded ADR-RS-0013 direction but has no implementation yet; `RIGHTSPOT-009` is closed as `REVIEWED_DEFERRED`; and `RIGHTSPOT-010` remains proposal-only. None authorizes unregistered implementation behavior.
+- Dependencies: Current RightSpot source, tests, runtime evidence where safely available, and the accepted documentation/decision hierarchy. `RIGHTSPOT-008` and its `RIGHTSPOT-020` implementation are closed within the bounded ADR-RS-0013 direction; `RIGHTSPOT-009` is closed as `REVIEWED_DEFERRED`; and `RIGHTSPOT-010` remains proposal-only. None authorizes unregistered implementation behavior.
 
 ## Bounded objective
 
@@ -48,12 +107,12 @@ and one review gate. Do not accumulate unrelated findings indefinitely.
 
 ## Why this task is registered now
 
-RightSpot is in active development after the ordinary local MVP closure. The current next implementation
-lane is the bounded Favourite Task `RIGHTSPOT-020`; the Information Request proposal is reviewed and
-deferred, while Agent Operations Insights remains a separate proposal task. The project therefore
-needs a disciplined way to distinguish unfinished work from defects and from worthwhile refinement,
-without allowing every observation to become a feature or every missing fallback to be treated as a
-solution.
+RightSpot is in active development after the ordinary local MVP closure. At registration, this lane
+provided the cross-layer review needed to distinguish unfinished work from defects and worthwhile
+refinement without allowing every observation to become a feature or every missing fallback to be
+treated as a solution. The latest run reproduced `F-18`, registered, repaired, and verified the
+bounded `RIGHTSPOT-040` Discovery consumer boundary; the Information Request proposal remains
+reviewed/deferred and Agent Operations Insights remains a separate proposal task.
 
 The audit is especially important because the product must serve two purposes at once:
 
@@ -98,9 +157,11 @@ The audit must start from current evidence, not from the older project history:
   actual current map rather than assume a file is complete because its route exists.
 - WebMCP, Cloud Receiver, a concrete Agent adapter, and production Re-entry integration are later
   boundaries unless current source and evidence prove otherwise.
-- ADR-RS-0013 and `RIGHTSPOT-020` define the accepted but not-yet-implemented Favourite direction;
-  `RIGHTSPOT-009` contains a reviewed but deferred Information Request proposal; and `RIGHTSPOT-010`
-  remains proposal input, not an implementation authority.
+- ADR-RS-0013 and `RIGHTSPOT-020` define the accepted bounded Favourite direction, which is now closed
+  within its recorded outcome; `RIGHTSPOT-009` contains a reviewed but deferred Information Request
+  proposal; `RIGHTSPOT-010` remains proposal input, not an implementation authority; and
+  `RIGHTSPOT-040` is closed within its bounded Discovery-consumer repair authority for `F-18`; the
+  next authority is the continuing audit lane itself.
 - Documentation may lag the source. For example, an older README implementation summary may not
   match the current status record. The Advisor must identify and report material documentation drift
   instead of silently choosing one source or rewriting it.
@@ -380,3 +441,123 @@ rejected/not-planned findings with residual risk, or a decision that the audit l
 Reopen or re-dispatch the same task when a meaningful source increment changes the route, data,
 permissions, UI interaction, WebMCP/Re-entry boundary, or current evidence claim. Each rerun must
 capture a new baseline and report only the relevant delta plus any still-open high-impact findings.
+
+## Main-thread review disposition — 2026-09-02
+
+The Main Thread reviewed the current audit delta against HEAD `4224f3ae53f6d4be87a7be17e74532f5785357b0`
+on the canonical `main` Worktree. Read-only isolated-browser checks covered the Agent surface,
+Tenant route entries, filter no-result recovery, Favourite and Viewing Request empty states,
+listing-detail/editor and missing-listing failure, the Agent missing-request failure, keyboard focus,
+the `320px` no-overflow floor, and browser/console error state. The pinned executable baseline remained
+full suite `149/149`, foundation `6/6`, typecheck, build, health, and `git diff --check`.
+A disposable populated-flow walkthrough at reset generation `40` additionally exercised the rendered
+Agent request workspace through Start review, preparation, explicit send, tenant selected-time
+confirmation, and Agent terminal history; the shared fixture was reset to generation `41` afterward.
+The datetime value was supplied through the rendered input in the isolated harness, so this extends
+populated downstream-state evidence without changing the existing keyboard-entry claim.
+
+The Main Thread then reviewed the Favourite persistence and role-boundary delta against the same
+canonical source. The fresh browser round-trip and the existing domain/API/UI tests jointly cover
+active/removal continuity, strict server authority, the no-Viewing-Request boundary, aggregate privacy,
+unpublished retention/removal as a direct/static branch, and the mobile/focus floor. No follow-on Task
+or Work Order was registered; `RIGHTSPOT-012` remains `pending` for the next meaningful audit scope.
+
+No new `VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`, `VERIFIED_POLISH`, or `DOCUMENTATION_DRIFT` finding
+was accepted, so no follow-on Task or Work Order was registered. The remaining `F-08` listing-detail
+same-document concern is still an `EVIDENCE_GAP`, and the deferred/gated integrations remain outside
+this lane. `RIGHTSPOT-012` stays `pending` because it is a continuous re-audit lane; the next run must
+recapture identity after a meaningful source increment rather than close the lane after one clean pass.
+
+The next code-quality and Agent preparation review inspected the authoritative preparation/send
+boundary, HTTP parser, role-safe projection, and rendered required-slot control. In isolated session
+`rightspot-audit-087`, an empty slot selection was blocked by the native required constraint before an
+application mutation; no new finding was reproduced. The fixture reset from generation `83` to `84`,
+browser errors were empty, health was healthy, the complete pinned suite remained `159/159`, and no
+new Task or Work Order was registered.
+
+The subsequent responsive audit in isolated session `rightspot-audit-088` recorded one low-severity
+`F-20 VERIFIED_POLISH` observation: the terminal Agent request-detail `Request workspace` heading split
+the final word at `320x800`, while the page stayed overflow-free and the heading wrapped intact at
+`375x812`. Tenant catalogue and request-dashboard headings remained intact at `320px`. This is not a
+business-flow or accessibility blocker, so no implementation Task was opened; the fixture was reset to
+generation `85` after the audit.
+
+The next Main-thread read-only code-quality pass reviewed the current tenant and agent UI consumers,
+session frame, workflow HTTP parser and error mapper, role-safe projections, persistence transaction
+boundary, and Operations projection helpers against canonical Main HEAD
+`4224f3ae53f6d4be87a7be17e74532f5785357b0`. The working tree was already dirty with collaborator-owned
+changes and remained untouched. Inspected `catch`, null, retry, and conflict branches were bounded to
+neutral error presentation, authoritative re-read, conditional absence, or persistence rollback; no
+new unbounded fallback, false-success mutation, diagnostic leakage, or business-state fabrication was
+accepted. Pinned typecheck, build, full tests (`159/159`), repository/docs validation, sensitive scan,
+RightSpot diff check, and `/api/health` passed. No new Task or Work Order was registered. Lint and
+dead-code categories remain unclaimed because the package has no configured tools; `F-08` and `F-20`
+remain unchanged.
+
+The subsequent route and business-flow entry audit cross-checked the actual Next route files, role
+navigation, visible handoffs, and accepted `RS-FLOW-01` through `RS-FLOW-18` surface against the route
+matrix. The signed-out root, Tenant discovery/listing/Favourites/Viewing Request surfaces, Agent queue,
+and Agent request detail are present and connected by reachable primary links or explicit action
+handoffs. All inspected user-facing mutation controls map to an accepted current workflow boundary;
+the Agent listing-interest view remains intentionally embedded in `/agent`. Operations, Information
+Request, listing administration, and deferred integrations remain absent by decision rather than
+being treated as broken routes. No new orphaned surface, inert primary action, or business-flow gap was
+accepted. This static checkpoint does not close `F-08` or promote `F-20`, and no follow-on Task or Work
+Order was registered.
+
+The next API boundary smoke used pinned Node `24.20.0` and an isolated empty SQLite database. An
+authenticated Agent queue read returned the explicit empty projection with all workflow-state counts at
+zero, while a direct read of a missing Agent request returned bounded `404 NOT_FOUND`. The current HTTP
+handlers continue to resolve role before access, validate identifiers and strict JSON bodies, forward
+generation/version authority to the application command, enforce assigned-request paths, and map
+tenant/Agent DTOs without crossing private fields. The complete pinned suite passed `159/159`, including
+role, assignment, privacy, strict input, stale/duplicate, terminal, persistence-failure, and malformed
+resource coverage. No new finding, Task, or Work Order was accepted; deferred integrations and the
+separate `F-08` evidence gap remain unchanged.
+
+The latest Main revalidation repeated the dependency-complete package checks against the current dirty
+source: pinned Node `24.20.0`/npm `11.19.0`, full suite `159/159`, non-incremental typecheck, production
+build, repository validation, documentation validation, sensitive-pattern scan, `git diff --check`,
+and `/api/health` all passed. The repository remained on Main HEAD
+`4224f3ae53f6d4be87a7be17e74532f5785357b0` with one physical Worktree; existing collaborator and
+owner-held changes were preserved. This run added no browser evidence and reproduced no new finding.
+`F-08`, `F-20`, and the direct/static-only unpublished Favourite evidence limitation remain unchanged;
+no follow-on Task or Work Order was registered.
+
+The current populated replay also exposed a browser-harness evidence gap: the in-app browser's native
+`datetime-local` automation made a valid value visible but did not update the controlled React state,
+so Save draft returned the existing empty-time validation message. A normal textarea synchronized on the
+same form, and no API mutation occurred. This is not a verified product defect because the current
+source boundary is unchanged and `RIGHTSPOT-019` records prior successful native-control browser/form
+evidence in a separate runtime. No Task was registered; a trusted native-picker or independent browser
+runtime must reproduce the actual input event before a repair is considered. The current run therefore
+adds a tooling/evidence limitation only and does not change `F-08`, `F-20`, or the unpublished Favourite
+evidence disposition.
+
+The latest rendered browser revalidation checked the current local source without workflow mutation:
+signed-out role selection, Tenant catalogue and workspace navigation, empty request/Favourite routes,
+listing-detail draft-entry and explicit-action boundaries, sign-out recovery, and the Agent empty queue
+and listing-interest projection all rendered with reachable entries. At the effective `355px` by `888px`
+narrow viewport there was no horizontal overflow, first Tab reached the skip link, and the browser
+error/warning log was empty. The fixture remained empty, so this run added no populated request-detail
+claim; prior populated-chain evidence remains separate. No new finding or follow-on Task was registered;
+`F-08`, `F-20`, and the unpublished Favourite evidence limitation remain unchanged.
+
+The same native `datetime-local` boundary was then repeated in a fresh Chrome extension-runtime tab.
+Automation displayed `2026-09-04T15:00` but Save draft still observed the controlled empty state;
+locator keyboard and DOM-based CUA entry did not commit the native value, while the ordinary textarea
+did. No workflow mutation occurred. This confirms a limitation shared by the available automation
+surfaces rather than a product defect: the run did not use a real native picker and the current source
+`onChange` boundary is unchanged. The prior successful `RIGHTSPOT-019` browser/form evidence remains
+the authoritative populated-control record. No repair Task was registered; only trusted native-picker
+or known-capable runtime evidence can reopen this finding.
+
+The subsequent focused `RS-FLOW-14` proposal-expiry revalidation used pinned Node `24.20.0` and the
+test-name filter `expiry|expired|terminal|proposal` across the domain, application, projection, and
+workflow HTTP test surfaces. All `38/38` selected tests passed with zero failures, skips,
+cancellations, or todos. The evidence reconfirmed deterministic expiry, exact slot release, one
+expiry audit entry, persistence across reopen, post-expiry replay rejection without a second
+mutation, tenant-safe selected-time retention, and terminal removal of decision/deadline actions.
+This adds direct/application/API evidence but no new browser expiry claim; no new finding, Task,
+Work Order, source change, or fixture mutation was accepted. `F-08`, `F-20`, the native input
+tooling boundary, and the intentionally scheduler-free MVP scope remain unchanged.

@@ -31,7 +31,7 @@ test("server data acceptance invalidates an in-flight read", () => {
     /export default function TenantRequestPage\(\) \{([\s\S]*?)\n\}\n\ntype RequestDashboardProps/,
   )?.[1];
   const applyServerData = requestPage.match(
-    /function applyServerData\(nextData: TenantRequestResponse\) \{([\s\S]*?)\n  \}/,
+    /function applyServerData\(nextData: TenantRequestResponse, successMessage\?: string\) \{([\s\S]*?)\n  \}/,
   )?.[1];
 
   assert.ok(pageComponent, "missing tenant request page component");
@@ -39,6 +39,7 @@ test("server data acceptance invalidates an in-flight read", () => {
   assert.ok(applyServerData, "missing parent-owned server data acceptance function");
   assert.match(applyServerData, /latestReadId\.current \+= 1;/);
   assert.match(applyServerData, /setIsLoading\(false\);/);
+  assert.match(applyServerData, /if \(successMessage\) setStatusMessage\(successMessage\);/);
   assert.match(loadBody, /applyServerData\(nextData\);/);
   assert.doesNotMatch(loadBody, /setData\(nextData\);/);
   assert.equal(requestPage.match(/setData\(/g)?.length, 1, "server data must have one parent-owned writer");

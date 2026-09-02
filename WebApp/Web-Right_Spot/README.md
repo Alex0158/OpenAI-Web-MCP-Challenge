@@ -3,8 +3,8 @@
 **Role:** Independent child application inside the WebMCP Challenge repository  
 **Working identity:** RightSpot — the rental-workflow candidate previously documented as
 `Rental Marketplace Relay`  
-**Status:** Accepted ordinary local MVP implemented and closed within its bounded scope; the business-flow catalogue is now the source for the next cross-layer coverage audit
-**Implementation:** Tenant and agent role pages, durable workflow HTTP/DTO transport, Favourites, listing-interest projection, local synthetic media, and responsive navigation are integrated; the bounded F-01–F-06 audit findings are closed within their recorded claims, with the deterministic reset-command repair verified through RIGHTSPOT-028
+**Status:** Accepted ordinary local MVP remains implemented and closed within its bounded business-state scope; the continuing cross-layer audit has closed `RIGHTSPOT-041` within its tenant mutation-feedback consumer boundary
+**Implementation:** Tenant and agent role pages, durable workflow HTTP/DTO transport, Favourites, listing-interest projection, local synthetic media, and responsive navigation are integrated; `F-01`–`F-07` and `F-09`–`F-19` are closed within their recorded bounded claims, and `F-08` remains an evidence gap. The current complete suite passes `159/159` across 39 authored test files.
 **Formal outer app-selection decision:** Pending
 
 ## Purpose

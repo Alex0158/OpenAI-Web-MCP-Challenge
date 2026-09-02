@@ -21,7 +21,8 @@
 - Next gate: `RIGHTSPOT-016` may now begin its separate pure projection checkpoint; no transport,
   route, UI, navigation, or WebMCP consumer is implied by this closure.
 - Execution posture: `CLOSED`; this task is separate from the closed relay MVP,
-  closed Field Desk lane, and unresolved Favourite/Information Request proposals.
+  closed Field Desk lane, the closed Favourite implementation, and the deferred Information Request
+  proposal.
 
 ## Accepted implementation boundary
 

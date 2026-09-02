@@ -210,7 +210,8 @@ all-time analytics, archive/hard-delete/relisting semantics, Information Request
 WebMCP, and Re-entry remain out of scope. The durable decision is [ADR-RS-0013](../Decisions/ADR-RS-0013-favourites-and-listing-interest-boundary.md).
 
 This proposal Task is now `closed`. It authorized no code itself. The separately registered
-`RIGHTSPOT-020` Task is the only implementation authority, and it remains `REGISTERED_NOT_DISPATCHED`.
+`RIGHTSPOT-020` Task was the only implementation authority and is now closed within its accepted
+bounded outcome.
 
 ## Closure gate
 

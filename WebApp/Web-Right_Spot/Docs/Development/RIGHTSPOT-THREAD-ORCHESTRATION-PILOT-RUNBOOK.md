@@ -1352,6 +1352,17 @@ amend, rebase, branch switch, or process-document write is allowed while the Ver
 still active. A `NEEDS_REPAIR` or `BLOCKED` result is recorded and triaged instead of being committed
 as verified.
 
+### 12.1.3 Browser acknowledgement is not a postcondition
+
+A browser command acknowledgement such as `Done` is only an operation attempt. It is not evidence that
+navigation, a click, a form mutation, or a rendered state change actually occurred. After every action
+that can cross a document or change the route, the operator must verify the authoritative postcondition:
+the expected URL, rendered identity/content, and relevant enabled/disabled or read-only controls. If a
+document navigation invalidates accessibility-tree references, reacquire the target snapshot before
+continuing; for a deterministic cross-document route check, direct URL navigation is acceptable and must
+still be followed by the same URL/DOM verification. A stale reference, `Done` acknowledgement, or
+session state alone must never be recorded as product/browser evidence.
+
 ### 12.2 Verification selection
 
 Choose the narrowest checks that can prove the Work Order, then expand for affected contracts:

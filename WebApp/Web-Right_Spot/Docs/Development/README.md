@@ -31,6 +31,18 @@ record is [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md). 
 checkpoint-locally blocked by an out-of-scope tracked verifier Worktree mutation, which remains preserved
 for separate ownership/recoverability handling; the physical verifier Worktree is no longer present.
 
+The latest listing-detail partial-read audit reproduced `F-17`; `RIGHTSPOT-039` / `RS-WO-039-01` is
+closed within its Main-owned tenant UI-consumer boundary after focused TDD, the complete `156/156`
+suite, foundation, typecheck, build, repository validation, and fresh browser failure/recovery
+verification. The continuation then reproduced `F-18`: a controlled catalogue-read failure exposed
+raw server-controlled text in the tenant Discovery page beside the bounded error copy.
+`RIGHTSPOT-040` / `RS-WO-040-01` is now `CLOSED_VERIFIED` within the Main-owned serial Discovery
+consumer boundary after focused TDD, the complete `158/158` suite across 39 test files, full static
+checks, and fresh browser failure/recovery evidence. A clean generation-66 tenant-to-Agent replay
+completed the primary confirmation chain and role/terminal boundaries without a new finding; `F-08`
+remains an evidence gap and the disposable fixture was reset to generation `67` with healthy local
+health.
+
 **Current physical workspace:** The canonical Main Worktree remains the only source authority. The stopped,
 short-lived `RS-WO-020-02` and `RS-WO-020-03` candidate Worktrees were adopted into Main and retired after
 exact-path review; their historical snapshots remain in the owning Task Files and named local-only archive
@@ -53,8 +65,13 @@ flow definition.
 
 The latest Main-thread audit record is
 [`RIGHTSPOT-CROSS-LAYER-AUDIT-2026-09-02.md`](RIGHTSPOT-CROSS-LAYER-AUDIT-2026-09-02.md). It records
-the current verification-command gap and the separate un-reproduced asynchronous-read concern;
-`RIGHTSPOT-029` is the authoritative Task record for the former.
+the closed bounded findings through `F-19`, the separate un-reproduced asynchronous-read evidence gap,
+and the latest cross-layer/Favourite/Discovery failure replay. The latest audit registered and closed
+`F-19` / `RIGHTSPOT-041` after reproducing lost tenant draft-save and explicit-submit success feedback
+during version-keyed editor rehydration; its single Main-owned Work Order is now closed after parent-owned
+feedback repair, focused TDD, full checks, and isolated browser verification.
+`RIGHTSPOT-012` remains the authoritative continuous audit lane; registered implementation Tasks remain
+the authoritative route for any follow-on repair.
 
 ## Accepted MVP state
 

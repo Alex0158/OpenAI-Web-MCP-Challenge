@@ -36,17 +36,19 @@ export default function TenantRequestPage() {
   const [pendingDraftMutation, setPendingDraftMutation] = useState(false);
   const latestReadId = useRef(0);
 
-  function applyServerData(nextData: TenantRequestResponse) {
+  function applyServerData(nextData: TenantRequestResponse, successMessage?: string) {
     latestReadId.current += 1;
     setData(nextData);
     setIsLoading(false);
     setConflictNotice(null);
+    if (successMessage) setStatusMessage(successMessage);
   }
 
   function load(message?: string) {
     const readId = ++latestReadId.current;
     setIsLoading(true);
     setError(null);
+    setStatusMessage(null);
     setConflictNotice(null);
     void readTenantRequest()
       .then((nextData) => {
@@ -151,6 +153,7 @@ export default function TenantRequestPage() {
           onRespond={respond}
           pendingResponse={pendingResponse}
           onPendingChange={setPendingDraftMutation}
+          onFeedbackChange={setStatusMessage}
           onConflictNotice={setConflictNotice}
         />
       ) : null}
@@ -160,14 +163,15 @@ export default function TenantRequestPage() {
 
 type RequestDashboardProps = {
   data: TenantRequestResponse;
-  onSaved: (data: TenantRequestResponse) => void;
+  onSaved: (data: TenantRequestResponse, successMessage?: string) => void;
   onRespond: (type: "confirm" | "decline") => void;
   pendingResponse: "confirm" | "decline" | null;
   onPendingChange?: (pending: boolean) => void;
+  onFeedbackChange: (message: string | null) => void;
   onConflictNotice: (notice: TenantRequestConflictNotice) => void;
 };
 
-function RequestDashboard({ data, onSaved, onRespond, pendingResponse, onPendingChange, onConflictNotice }: RequestDashboardProps) {
+function RequestDashboard({ data, onSaved, onRespond, pendingResponse, onPendingChange, onFeedbackChange, onConflictNotice }: RequestDashboardProps) {
   if (!data.request || !data.listing) {
     return (
       <section className={`${styles.feedbackState} ${styles.emptyRequestState}`} aria-labelledby="empty-request-title">
@@ -196,6 +200,7 @@ function RequestDashboard({ data, onSaved, onRespond, pendingResponse, onPending
           request={data.request}
           onSaved={onSaved}
           onPendingChange={onPendingChange}
+          onFeedbackChange={onFeedbackChange}
           onConflictNotice={onConflictNotice}
         />
       ) : null}
@@ -233,8 +238,12 @@ function RequestDashboard({ data, onSaved, onRespond, pendingResponse, onPending
             <p>{data.request.tenantNote}</p>
           </div>
         ) : null}
-        <TenantResponse state={data.request.state} response={data.request.response} expiresAt={data.request.proposalExpiresAt} />
-        {data.request.state === "SLOT_PROPOSED" ? (
+        <TenantResponse state={data.request.state}
+          response={data.request.response}
+          viewingSlot={data.request.viewingSlot}
+          expiresAt={data.request.proposalExpiresAt}
+        />
+        {data.request.state === "SLOT_PROPOSED" && data.request.viewingSlot ? (
           <section className={styles.decisionPanel} aria-labelledby="tenant-decision-title">
             <p className="eyebrow">Your decision</p>
             <h3 id="tenant-decision-title">Does the proposed viewing work?</h3>
@@ -248,6 +257,8 @@ function RequestDashboard({ data, onSaved, onRespond, pendingResponse, onPending
               </button>
             </div>
           </section>
+        ) : data.request.state === "SLOT_PROPOSED" ? (
+          <p className={styles.readOnlyNote} role="alert">The proposed viewing time is unavailable. Refresh before deciding.</p>
         ) : data.request.state !== "TENANT_DRAFT" ? (
           <p className={styles.readOnlyNote}>There is no tenant action to take in this state. Refresh for the latest response or reset the demo fixture outside this workspace.</p>
         ) : null}
@@ -272,19 +283,20 @@ export function TenantRequestEditor({
   request,
   onSaved,
   onPendingChange,
+  onFeedbackChange,
   onConflictNotice,
 }: {
   listing: WorkflowListingDto;
   fixtureGeneration: number;
   request: TenantRequestDto | null;
-  onSaved: (data: TenantRequestResponse) => void;
+  onSaved: (data: TenantRequestResponse, successMessage?: string) => void;
   onPendingChange?: (pending: boolean) => void;
+  onFeedbackChange?: (message: string | null) => void;
   onConflictNotice: (notice: TenantRequestConflictNotice) => void;
 }) {
   const [times, setTimes] = useState(() => request?.preferredTimes.map(toInputDateTime) ?? [""]);
   const [tenantNote, setTenantNote] = useState(request?.tenantNote ?? "");
   const [error, setError] = useState<string | null>(null);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
   const [savedSignature, setSavedSignature] = useState(() => signature(times, tenantNote));
   const dirty = savedSignature !== signature(times, tenantNote);
@@ -292,7 +304,7 @@ export function TenantRequestEditor({
   function updateTime(index: number, value: string) {
     setTimes(times.map((time, currentIndex) => currentIndex === index ? value : time));
     setError(null);
-    setStatusMessage(null);
+    onFeedbackChange?.(null);
   }
 
   function validateTimes(): string[] | null {
@@ -318,12 +330,12 @@ export function TenantRequestEditor({
 
   async function saveDraft(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    onFeedbackChange?.(null);
     const preferredTimes = validateTimes();
     if (!preferredTimes) return;
     setIsPending(true);
     onPendingChange?.(true);
     setError(null);
-    setStatusMessage(null);
     try {
       const response = request
         ? await updateTenantDraft({
@@ -342,9 +354,8 @@ export function TenantRequestEditor({
             preferredTimes,
             ...(tenantNote.trim() ? { tenantNote: tenantNote.trim() } : {}),
           });
-      onSaved(response);
       setSavedSignature(signature(times, tenantNote));
-      setStatusMessage("Draft saved from the server response. Review it, then submit explicitly.");
+      onSaved(response, "Draft saved from the server response. Review it, then submit explicitly.");
     } catch (errorValue: unknown) {
       await handleMutationError(errorValue, "save the draft");
     } finally {
@@ -358,7 +369,7 @@ export function TenantRequestEditor({
     setIsPending(true);
     onPendingChange?.(true);
     setError(null);
-    setStatusMessage(null);
+    onFeedbackChange?.(null);
     try {
       const response = await submitTenantRequest({
         commandId: createCommandId("submit-request"),
@@ -366,8 +377,7 @@ export function TenantRequestEditor({
         expectedRequestVersion: request.version,
         expectedListingVersion: listing.version,
       });
-      onSaved(response);
-      setStatusMessage("Viewing Request submitted from the server response.");
+      onSaved(response, "Viewing Request submitted from the server response.");
     } catch (errorValue: unknown) {
       await handleMutationError(errorValue, "submit the request");
     } finally {
@@ -416,18 +426,30 @@ export function TenantRequestEditor({
                 Option {index + 1}
                 <input type="datetime-local" value={time} onChange={(event) => updateTime(index, event.target.value)} />
               </label>
-              {times.length > 1 ? <button className="button button-quiet" type="button" onClick={() => setTimes(times.filter((_, currentIndex) => currentIndex !== index))}>Remove</button> : null}
+              {times.length > 1 ? (
+                <button
+                  className="button button-quiet"
+                  type="button"
+                  aria-label={`Remove preferred viewing time option ${index + 1}`}
+                  onClick={() => {
+                    setTimes(times.filter((_, currentIndex) => currentIndex !== index));
+                    setError(null);
+                    onFeedbackChange?.(null);
+                  }}
+                >
+                  Remove
+                </button>
+              ) : null}
             </div>
           ))}
-          {times.length < 3 ? <button className="button button-quiet" type="button" onClick={() => setTimes([...times, ""])}>Add another time</button> : null}
+          {times.length < 3 ? <button className="button button-quiet" type="button" onClick={() => { setTimes([...times, ""]); onFeedbackChange?.(null); }}>Add another time</button> : null}
           <label className={styles.noteField}>
             Note for the property agent (optional)
-            <textarea maxLength={500} rows={4} value={tenantNote} onChange={(event) => { setTenantNote(event.target.value); setError(null); setStatusMessage(null); }} />
+            <textarea maxLength={500} rows={4} value={tenantNote} onChange={(event) => { setTenantNote(event.target.value); setError(null); onFeedbackChange?.(null); }} />
             <span>Keep this to access or scheduling information the agent needs.</span>
           </label>
         </fieldset>
         {error ? <div className={styles.inlineError} role="alert">{error}</div> : null}
-        {statusMessage ? <div className={styles.inlineSuccess} role="status" aria-live="polite">{statusMessage}</div> : null}
         <div className={styles.editorActions} aria-label="Draft and submission actions">
           <div className={styles.actionStep}>
             <div className={styles.actionStepCopy}>
@@ -454,15 +476,18 @@ export function TenantRequestEditor({
 function TenantResponse({
   state,
   response,
+  viewingSlot,
   expiresAt,
 }: {
   state: TenantRequestDto["state"];
   response?: TenantRequestDto["response"];
+  viewingSlot?: TenantRequestDto["viewingSlot"];
   expiresAt?: string;
 }) {
   if (!response) return null;
   const presentation = tenantResponsePresentation(state, response);
   if (!presentation) return null;
+  const hasViewingSlot = response.kind === "SLOT_PROPOSAL" && viewingSlot !== undefined;
   return (
     <section className={styles.responseBlock} aria-labelledby="tenant-response-title">
       <div className={styles.responseHeading}>
@@ -472,9 +497,25 @@ function TenantResponse({
         </div>
         <span>{presentation.badge}</span>
       </div>
-      {response.kind === "SLOT_PROPOSAL" ? <p className={styles.slotReference}>Slot reference <code>{response.slotId}</code></p> : null}
+      {hasViewingSlot ? (
+        <p className={styles.slotReference}>
+          <span>{state === "SLOT_PROPOSED" ? "Proposed viewing time:" : "Recorded viewing time:"}</span>
+          {" "}
+          <strong>
+            <time dateTime={viewingSlot.startsAt} aria-label={formatViewingSlot(viewingSlot.startsAt, viewingSlot.endsAt)}>
+              {formatViewingSlot(viewingSlot.startsAt, viewingSlot.endsAt)}
+            </time>
+          </strong>
+        </p>
+      ) : response.kind === "SLOT_PROPOSAL" ? (
+        <p className={styles.inlineError} role="alert">
+          {state === "SLOT_PROPOSED"
+            ? "The proposed viewing time is unavailable. Refresh before deciding."
+            : "The recorded viewing time is unavailable. Refresh before relying on this response."}
+        </p>
+      ) : null}
       {response.tenantNote ? <p className={styles.responseNote}>{response.tenantNote}</p> : null}
-      {presentation.showDeadline && expiresAt ? <p className={styles.responseDeadline}><span>Respond by</span><strong>{formatDateTime(expiresAt)}</strong></p> : null}
+      {presentation.showDeadline && expiresAt && hasViewingSlot ? <p className={styles.responseDeadline}><span>Respond by</span><strong>{formatDateTime(expiresAt)}</strong></p> : null}
     </section>
   );
 }
@@ -549,6 +590,14 @@ function toInputDateTime(value: string): string {
 function formatDateTime(value: string): string {
   const date = new Date(value);
   return Number.isNaN(date.valueOf()) ? value : new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short", timeZone: "Europe/London" }).format(date);
+}
+
+function formatViewingSlot(startsAt: string, endsAt: string): string {
+  const endTime = new Intl.DateTimeFormat("en-GB", {
+    timeStyle: "short",
+    timeZone: "Europe/London",
+  }).format(new Date(endsAt));
+  return `${formatDateTime(startsAt)}–${endTime}`;
 }
 
 function formatState(state: string): string {

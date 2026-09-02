@@ -28,22 +28,35 @@ agent surfaces have since passed their respective independent verification gates
 at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression passed at frozen source
 `4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Continue the fresh Main-thread cross-layer audit after the bounded
-`RIGHTSPOT-030` read-race repair and `RIGHTSPOT-031` conflict-feedback repair. The earlier continuation
-found no new business-flow blocker and completed fresh local browser evidence for both decline branches
-(`RS-FLOW-11` and `RS-FLOW-13`); a subsequent isolated stale-submit replay reproduced and closed
-`F-09` through `RIGHTSPOT-031` on both tenant request surfaces. The earlier audit had registered
+**Current next product action:** Continue the Main-thread cross-layer audit from the closed
+`RIGHTSPOT-041` / `RS-WO-041-01` tenant request mutation-feedback repair. `RIGHTSPOT-039` /
+`RS-WO-039-01`, the listing-detail partial-read error-boundary repair, is also closed. `RIGHTSPOT-033` /
+`RS-WO-033-01`,
+`RIGHTSPOT-034` / `RS-WO-034-01`, `RIGHTSPOT-035` / `RS-WO-035-01`, `RIGHTSPOT-036` /
+`RS-WO-036-01`, `RIGHTSPOT-037` / `RS-WO-037-01`, and `RIGHTSPOT-038` / `RS-WO-038-01` are now closed within their
+UI-only scopes.
+The fresh isolated proposal reproduction showed that the agent selected `slot-primary-2` for
+`4 September 2026, 15:00–15:30` Europe/London while the tenant page showed only the tenant's different
+preferred time and an opaque slot reference. `RIGHTSPOT-032` now resolves and renders the authoritative
+selected time and retains it in terminal history without reopening action/deadline controls. The earlier continuation found no new business-flow blocker and
+completed fresh local browser evidence for both decline branches (`RS-FLOW-11` and `RS-FLOW-13`); a
+subsequent isolated stale-submit replay reproduced and closed `F-09` through `RIGHTSPOT-031` on both
+tenant request surfaces. The earlier audit had registered
 `RIGHTSPOT-029` for the
 verification-contract gap where the default `npm test` command executed only foundation tests `6/6`
 while the complete authored suite passed `133/133` across 28 test files. That Task is now `CLOSED_VERIFIED`: `npm test` runs the
 complete suite and `npm run test:foundation` names the fast foundation check. The current suite,
-including the `RIGHTSPOT-030` and `RIGHTSPOT-031` regressions, passes `137/137` across 30 test files.
+including the `RIGHTSPOT-030`, `RIGHTSPOT-031`, `RIGHTSPOT-032`, `RIGHTSPOT-033`, `RIGHTSPOT-034`,
+`RIGHTSPOT-035`, `RIGHTSPOT-036`, `RIGHTSPOT-037`, `RIGHTSPOT-038`, `RIGHTSPOT-039`, and
+`RIGHTSPOT-040` and `RIGHTSPOT-041` regressions, passes `159/159` across 39 test files. `RIGHTSPOT-040` is
+`CLOSED_VERIFIED` within its Discovery consumer boundary.
 `F-06` remains closed
 through `RIGHTSPOT-028`: the documented `npm run db:reset` command now composes the authoritative
 workflow reset, and `RS-WO-028-01` passed Main Red→Green checks, frozen-source independent
 verification, and documentation reconciliation at product commit `b2c1682a`. No supporting
 implementation Worktree is open. `RIGHTSPOT-023`, `RIGHTSPOT-024`, `RIGHTSPOT-025`, `RIGHTSPOT-026`,
-`RIGHTSPOT-027`, `RIGHTSPOT-028`, `RIGHTSPOT-029`, and `RIGHTSPOT-031` remain closed within their bounded outcomes
+`RIGHTSPOT-027`, `RIGHTSPOT-028`, `RIGHTSPOT-029`, `RIGHTSPOT-031`, `RIGHTSPOT-032`, `RIGHTSPOT-033`,
+`RIGHTSPOT-034`, `RIGHTSPOT-035`, `RIGHTSPOT-036`, `RIGHTSPOT-037`, and `RIGHTSPOT-038` remain closed within their bounded outcomes
 after applicable TDD, independent verification, browser/build evidence, and documentation
 reconciliation. The dashboard portion of `F-08` is now `CLOSED_VERIFIED` through
 `RIGHTSPOT-030`: latest-read sequencing, mutation-result invalidation, and the full Refresh overlap
@@ -54,9 +67,172 @@ baseline is
 [`07-business-flows-and-scenarios.md`](07-business-flows-and-scenarios.md). The only product source
 authority remains the canonical Main Worktree. The fresh Main-thread route, role, and responsive audit
 also reran `npm test` at `137/137`, foundation `6/6`, typecheck, health, signed-out/wrong-role guards,
-and 320px overflow checks without reproducing a new defect. The separate listing-detail dynamic-route
-concern remains an evidence gap because the current anchor navigation did not provide a valid
-same-document delayed-read reproduction.
+and 320px overflow checks without reproducing a defect within that route/role/responsive scope. A
+subsequent controlled proposal-response comparison reproduced `F-10` and registered `RIGHTSPOT-032`:
+the tenant could not see the agent-selected viewing time when it differed from tenant preferences.
+The separate listing-detail dynamic-route concern remains an evidence gap because the current anchor
+navigation did not provide a valid same-document delayed-read reproduction. The fresh post-`032` audit
+also reproduced `F-11`: the Agent dashboard mixed a confirmed terminal request into a section labelled
+as human-response work while omitting several terminal state counts. `RIGHTSPOT-033` closed this as a
+P2 UI-consumer repair: active and terminal requests/counts are now explicit, terminal links are
+non-action-labelled, and no API, workflow, persistence, privacy, or dependency change was made.
+The subsequent cross-listing audit reproduced a P2 tenant presentation defect: the listing-detail
+notice called both a private `TENANT_DRAFT` and terminal request active. `RIGHTSPOT-034` closed the
+copy-only state grouping with focused TDD, full checks, and fresh draft/terminal/same-listing browser
+evidence; no workflow, API, persistence, privacy, or route behavior changed.
+The next Main-thread audit reproduced `F-13`: repeated preferred-time removal controls had the same
+accessible name. `RIGHTSPOT-035` closed this P2 tenant-editor accessibility defect with a component-only
+option-numbered `aria-label`, focused TDD, full checks, and isolated browser evidence; no request
+workflow, API, persistence, CSS, or navigation behavior changed.
+The subsequent Main-thread audit reproduced `F-14`: after an invalid reverse-ordered time set was
+corrected by removing the offending row, the editor retained stale validation feedback. `RIGHTSPOT-036`
+closed this P2 local-feedback defect with a removal-handler-only repair, focused TDD, full checks, and
+isolated browser evidence; validation rules, dirty tracking, and the server boundary remain unchanged.
+The next populated Agent read audit reproduced `F-15`: after a successful queue or request-detail read,
+a failed refresh left retained counts, facts, and (on detail) `Start review` visible alongside the error.
+`RIGHTSPOT-037` closed this P2 latest-read truthfulness defect with two local render guards, focused
+TDD, full checks, and isolated queue/detail failure-and-retry browser evidence; the Agent API, request
+workflow, role/privacy boundary, and server state remain unchanged.
+The subsequent Agent action-conflict audit reproduced `F-16`: after a competing review advanced the
+request and the original action returned `409`, a successful recovery read was hidden behind the old
+error/unavailable branch. `RIGHTSPOT-038` is now `CLOSED_VERIFIED`; its local consumer-only repair
+renders the authoritative recovered detail beside neutral conflict feedback and remains fail-closed
+when recovery fails. Focused Red→Green, full `153/153` tests across 37 files, typecheck, build,
+validators, sensitive scan, docs validation, fresh isolated browser success/failure evidence, 320px,
+keyboard, and no-page-error checks passed. No Agent API, workflow, persistence, role/privacy, or
+shared-contract behavior changed.
+The following listing-detail partial-read audit reproduced `F-17`: a failed tenant Viewing Request
+context read was presented as listing details being unavailable even though the listing read
+succeeded. `RIGHTSPOT-039` / `RS-WO-039-01` is now `CLOSED_VERIFIED` after a Main-owned serial repair
+that preserves listing facts, withholds request-derived UI while request data is unavailable, and
+offers a request-context-specific retry. Focused Red→Green, full `156/156` tests across 38 files,
+foundation, typecheck, build, validators, docs validation, fresh isolated browser failure/recovery,
+listing-only failure, 320px, keyboard, and no-page-error checks passed. No API, workflow, persistence,
+role/privacy, dependency, CSS, or F-08 behavior changed.
+The subsequent fresh Main-thread cross-layer replay completed the Favourite round-trip and then
+reproduced `F-18`: a controlled catalogue read failure exposed raw server-controlled text in the tenant
+Discovery page alongside the bounded error copy. `RIGHTSPOT-040` / `RS-WO-040-01` then closed as a
+Main-owned serial consumer repair: local validation has explicit ownership, catalogue failure copy is
+bounded and rendered once, and the adapter/server/filter contracts are unchanged. Focused Red→Green,
+full checks, and fresh isolated browser failure/recovery evidence passed, including keyboard retry and
+clear recovery, invalid-filter feedback without a catalogue request, and the `320px` no-overflow floor.
+The Favourite round-trip saved `Canal Wharf Apartment`, showed one authoritative saved card, removed it,
+and returned to the explicit no-saved-homes state. A subsequent clean post-`040` replay completed the
+tenant-to-Agent submit → review → prepare → send → confirm chain and verified terminal/read-only and
+wrong-role/signed-out boundaries without a new finding. The disposable fixture was reset to generation
+`67` and `/api/health` remained healthy; `F-08` remains an evidence gap. The next focused audit then
+reproduced `F-19`: a successful tenant draft save returned `200` and updated authoritative state, but
+the version-keyed request editor lost its local completion message during rehydration. `RIGHTSPOT-041`
+closed as one Main-owned serial UI Work Order covering parent-owned draft-save and explicit-submit
+feedback in the request dashboard and listing detail; focused TDD, full checks, and isolated browser
+save/submit/conflict evidence passed, with no extra Worktree opened. The fixture was reset to generation
+`70` and health remained healthy. A subsequent fresh post-`041` replay used generation `72` and
+completed tenant draft/save/submit, Agent review/prepare/send, tenant confirmation, Agent terminal
+history, wrong-role, 320px, keyboard, and browser-error checks without a new finding. The fixture was
+reset to generation `73` and `/api/health` remained healthy. `F-08` remains an evidence gap because
+the supported catalogue links are full-document navigations and no valid ordinary same-document
+delayed-read reproduction exists.
+The subsequent `RS-FLOW-04` Favourite recheck at generation `73` saved, reloaded, removed, and
+re-saved `Canal Wharf Apartment`; relation versions advanced `1 → 2 → 3`, the tenant request remained
+null, and the assigned Agent received only listing-level `currentSaves`/`availableInterest` aggregates.
+The Favourite route also passed the `320px` no-overflow and first-Tab skip-link checks. No new finding
+was reproduced; the fixture was reset to generation `74` and `/api/health` remained healthy.
+The follow-up populated `RS-FLOW-16` Agent projection audit used generation `74`: after a tenant save,
+the Agent rendered all three assigned listings with `1/1` for the primary listing and `0/0` for the
+other two, kept Listing interest separate from the empty request queue, and exposed no tenant/private
+fields. The populated surface passed the `320px` no-overflow, first-Tab skip-link, and browser-error
+checks. No new finding was reproduced; the fixture was reset to generation `75` and health remained
+healthy.
+The subsequent Tenant visual/entry review at generation `75` checked the rendered catalogue, listing
+detail, and empty request dashboard at desktop, with the existing `320px` Favourite/Agent evidence as
+the narrow-viewport cross-check. Navigation, CTAs, empty handoff, readability, and browser-error
+boundaries remained truthful; no new finding was reproduced. The fixture was reset to generation `76`
+and health remained healthy.
+The following Agent Listing-interest failure/retry audit used generation `76`: a controlled `503`
+produced one bounded error surface without raw server text or stale counts, while the Request queue
+remained visible; restoring the read and using Retry returned the authoritative projection. The `320px`
+no-overflow and browser-error checks passed. No new finding was reproduced; the fixture was reset to
+generation `77` and health remained healthy.
+The immediate F-08 boundary re-check then followed the real catalogue anchors through
+`listing-primary`, back to the catalogue, and `listing-north`. Each transition was a full-document
+`navigate` with the expected referrer, the final Northfield detail rendered the correct listing
+identity, and no browser error or fixture mutation occurred. This strengthens the evidence for the
+supported path but keeps the hypothetical future router-reuse concern as `F-08`/`EVIDENCE_GAP`; no
+speculative repair Task was registered. Health remained `{"ok":true,"service":"rightspot"}`.
+The fresh end-to-end replay at generation `78` then completed the rendered Tenant draft/save/submit,
+Agent review/prepare/send, Tenant proposal/confirm, reload persistence, and Agent terminal-history
+chain. Authoritative versions progressed `1 → 6`, selected time remained tenant-safe, terminal actions
+were removed, and no browser error or fixture mutation occurred. No new defect or Task was registered;
+the fixture was reset to generation `79` and health remained healthy.
+The following role/session boundary re-check used isolated session `rightspot-audit-082`: signed-out
+root entry, Tenant and Agent workspaces, direct wrong-role routes, sign-out recovery, unknown listing,
+and Tenant access to Agent request detail all showed bounded, privacy-safe surfaces with no browser
+errors or fixture mutation. Valid-session navigation remained limited to the actor's own workspace;
+no new defect or Task was registered. Health remained healthy after the session closed.
+The alternate Agent-decline replay at generation `80` then passed Tenant submit, Agent
+review/prepare/decline/send, Tenant terminal/reload, and Agent history/read-only boundaries. The
+authoritative state became `AGENT_DECLINED` at version `5`, with bounded tenant response and no
+decision actions after terminal state. No browser error or fixture mutation occurred; the fixture was
+reset to generation `81` and health remained healthy.
+The subsequent rendered route-entry sweep used isolated session `rightspot-audit-085` at generation
+`81`: Root role entry, Tenant navigation and listing anchors, all Tenant empty/detail routes, Agent
+queue/interest controls, and Agent missing-request recovery were present and bounded. At `320px`, all
+checked routes stayed within the viewport; Tenant and Agent first-Tab skip-link entry passed, listing
+images loaded, browser errors were empty, and the fixture was not mutated. No new defect or Task was
+registered; the session was closed and health remained healthy.
+The next rendered proposal-to-tenant-decline replay used isolated session `rightspot-audit-086` at
+generation `81`: Tenant submit, Agent review/prepare/send, Tenant proposal/decline, reload persistence,
+and Agent terminal-history boundaries passed. Versions progressed `1 → 6`, the selected slot was
+released after the decline, browser errors were empty, and the fixture was reset to generation `82`;
+health remained healthy. No new defect or Task was registered.
+The subsequent current-status reconciliation found stale adjacent Task/ADR wording that treated the
+closed `RIGHTSPOT-020` Favourite implementation as absent or unresolved. Main corrected only those
+current dependency/evidence statements, retained historical dispatch narrative, confirmed that
+`RIGHTSPOT-009` Information Request remains deferred, and registered no new Task. No source or runtime
+behavior changed.
+The immediate post-`RIGHTSPOT-038` route/role/fallback recheck at generation `55` passed tenant
+catalogue/filter/detail, tenant empty request/Favourite states, wrong-role and missing-resource
+boundaries, Agent empty queue/listing-interest entry, exact reviewed media readiness, `320px` no-overflow,
+keyboard entry, and an empty browser page-error log. No new defect or Task was registered; `F-08`
+remains an evidence gap because no valid same-document delayed-read reproduction exists. The fixture was
+reset to generation `56` and health remained OK. The next route is another fresh Main-thread audit.
+The clean post-037 route/role/responsive checkpoint at reset generation `46` re-confirmed signed-out
+role entry, tenant Browse rentals/Favourites/My request/listing detail, agent Request queue/listing
+interest, truthful empty states, the `320px` width floor, keyboard entry, and an empty browser error
+log. No new defect was reproduced and no new Task was registered; the separate listing-detail dynamic-
+route `F-08` concern remains an evidence gap.
+The controlled follow-up `F-08` read-order probe delayed `listing-primary` by `450ms` while immediately
+navigating to `listing-north`; the final URL and rendered listing facts correctly resolved to Northfield
+Garden Flat with no browser errors. This synthetic client-navigation probe did not close the evidence
+gap or authorize a speculative repair; the fixture was reset to generation `47` and health remained OK.
+The subsequent Favourite persistence and aggregate-boundary re-check at generation `48` completed the
+supported save → Favourite-list reload → remove → reload → re-save path. The assigned Agent saw only
+listing-level `Current saves: 1` and `Available interest: 1`; no tenant/private data crossed the
+projection boundary, and the `320px` width and browser-error checks passed. The unpublished branch
+remains direct/static-only because the bounded MVP exposes no user-facing admin action to produce an
+unpublished listing; no hidden endpoint or fixture mutation was used. No new Task was registered; the
+fixture was reset to generation `49` and health remained OK. The next route remains a fresh Main-thread
+cross-layer audit.
+The post-036 fresh Main-thread audit then re-ran the local tenant-to-agent loop at reset generations `38`
+and `39`: listing discovery, Favourite save/remove/empty state, draft/save/submit, agent review/prepare/
+send, tenant selected-time projection/confirmation, agent active/history movement, wrong-role and
+signed-out boundaries, and the `320px` floor all passed with an empty browser error log. No new bounded
+workflow, API, persistence, projection, privacy, navigation, responsive, or runtime defect was
+reproduced; the separate listing-detail dynamic-route `F-08` concern remains an evidence gap. A focused
+follow-up confirmed that the ordinary catalogue-to-detail entry uses full document navigation, so no
+valid same-document delayed-read reproduction was available; no speculative repair Task was opened.
+The subsequent read-only Agent-surface audit at reset generation `39` confirmed truthful empty active
+and terminal states, read-only listing-interest presentation, keyboard focus through the primary
+controls, a `320px` no-overflow floor, and no application browser errors; it produced no new finding.
+The subsequent Tenant-surface route audit confirmed catalogue entries, no-result filter recovery,
+Favourite and Viewing Request empty-state entries, listing-detail editor availability, missing-listing
+truthful failure, `320px` no-overflow, and an empty browser error log; it produced no new finding.
+The Agent direct-request unavailable path was also rechecked: a missing request stayed visibly
+unavailable, retry did not claim success, and Back to queue returned to `/agent`; no new finding was
+registered.
+The subsequent populated request-detail walkthrough at reset generation `40` verified the rendered
+Agent Start review → prepare → explicit send path, tenant selected-time confirmation, and truthful
+Agent terminal history; the fixture was reset to generation `41` and no new finding was registered.
 **Current closure state:** `RS-WO-016-01` passed its bounded repair and fresh independent verification;
 Main integrated the repaired exact two-path projection at product commit `edd7575`. `RS-WO-017-03`
 passed persistent re-gate and independent verification and is integrated at product commit `2a53917`;
@@ -139,8 +315,23 @@ now both pass under the named commands. Its subsequent controlled isolated brows
 confirmed the tenant request-dashboard portion of `F-08`; `RIGHTSPOT-030` then closed that bounded
 repair with its historical `136/136` evidence. Only the separate listing-detail dynamic-route concern remains
 an `EVIDENCE_GAP`; `RIGHTSPOT-031` is closed with current conflict-recovery evidence on both tenant
-request surfaces. The current suite is `137/137` across 30 test files and no implementation Worktree
-is open.
+request surfaces. `RIGHTSPOT-032` is closed with current projection, parser, terminal-retention, and
+browser evidence. The fresh follow-up audit reproduced `F-11`: the Agent dashboard mixed terminal
+history into human-response work and omitted terminal state counts. `RIGHTSPOT-033` / `RS-WO-033-01` is
+now `CLOSED_VERIFIED`; the current Agent dashboard separates active work from recorded outcomes and
+shows all seven non-draft counts. `RIGHTSPOT-034` / `RS-WO-034-01` is also `CLOSED_VERIFIED`; its
+cross-listing tenant notice distinguishes saved draft, active, and recorded request states.
+`RIGHTSPOT-035` / `RS-WO-035-01` is `CLOSED_VERIFIED`; its repeated preferred-time removal controls
+expose distinct option-numbered accessible names. At that closure checkpoint, the suite was `147/147`
+across 34 test files and no implementation Worktree was open.
+`RIGHTSPOT-036` / `RS-WO-036-01` is `CLOSED_VERIFIED`; its preferred-time row removal clears stale
+local editor feedback without changing validation or request behavior. `RIGHTSPOT-037` /
+`RS-WO-037-01` is `CLOSED_VERIFIED`; its Agent queue and request-detail consumers withhold retained
+projections and actions while the latest read is loading or failed, while successful retry recovery
+remains intact. `RIGHTSPOT-038` / `RS-WO-038-01` is also `CLOSED_VERIFIED`; its request-detail
+consumer renders authoritative detail after a stale action conflict when recovery succeeds, while
+remaining unavailable/retry when recovery fails. The current suite is `153/153` across 37 test files
+and no implementation Worktree is open.
 `RIGHTSPOT-005` is closed and integrated at local commit `27f5391`; its Builder changed only the
 declared shared-shell write set and corrected independent verification returned `VERIFIED`. The
 preserved `.gitignore` incident is procedure evidence, not a product defect.
@@ -231,8 +422,8 @@ verification. They are historical checkpoints, not active Work Orders.
 completed its exact two-path Builder handoff at `5b05c78`, `RS-WO-011-02` independently verified it,
 and the main thread integrated it at product commit `7ff0fbd`. The seam remains a server-side contract
 only; no Operations route, dashboard, WebMCP, or future 008/009 metric is authorized.
-Its pure projection module and focused tests are available against the existing workflow state without
-waiting for the unresolved Favourite or Information Request semantics. It does not authorize an
+  Its pure projection module and focused tests are available against the existing workflow state without
+  waiting for the deferred Information Request semantics. It does not authorize an
 Operations route, dashboard UI, reporting history, WebMCP, or external service.
 
 **Current post-MVP closure:** `RS-WO-016-01` is independently verified and integrated at `edd7575`;
@@ -294,7 +485,7 @@ final response can remain a normal application action.
 | Cloud Receiver | **Not a first-phase dependency** | Future integration boundary only |
 | WebMCP | **Not a first-phase design center** | Later Hackathon integration boundary |
 | Runtime / deployment | **Not started** | No service, hosting, credentials, or public URL |
-| Evidence | **LOCAL MVP IMPLEMENTATION + DIRECT AND BROWSER HAPPY PATH VERIFIED** | Current pinned `npm test` passes the complete authored suite `137/137` across 30 test files, while `npm run test:foundation` passes `6/6`; the historical `RS-WO-002-14` direct cross-role check and `RS-WO-002-15` isolated browser walkthrough also passed with authoritative versions `1 → 6` and no browser errors or warnings. The `RIGHTSPOT-030` dashboard race repair passed its isolated browser reruns, `RIGHTSPOT-031` passed fresh conflict-recovery browser reproductions on both tenant request surfaces, and fresh local browser walkthroughs passed for both agent decline and tenant decline, including slot release. Deployment and future integrations remain unclaimed |
+| Evidence | **LOCAL MVP IMPLEMENTATION + DIRECT AND BROWSER HAPPY PATH VERIFIED WITH NO OPEN REGISTERED UI FINDING** | Current pinned `npm test` passes the complete authored suite `159/159` across 39 test files, while `npm run test:foundation` passes `6/6`; the historical `RS-WO-002-14` direct cross-role check and `RS-WO-002-15` isolated browser walkthrough also passed with authoritative versions `1 → 6` and no browser errors or warnings. The `RIGHTSPOT-030` dashboard race repair and `RIGHTSPOT-031` conflict-feedback repair passed their isolated browser reruns. `RIGHTSPOT-032` passed projection/privacy regressions plus a fresh generation-25 proposal/confirm browser walkthrough showing separate preferred and selected times and retained terminal history. `RIGHTSPOT-033` passed focused Red→Green, full checks, fresh active/terminal queue browser evidence, a 320px overflow/focus check, and fresh-reset draft privacy verification. `RIGHTSPOT-034` passed focused Red→Green, full checks, and fresh draft/active/terminal cross-listing notice browser evidence. `RIGHTSPOT-035` passed focused Red→Green, full checks, and fresh two-option accessibility/removal/validation browser evidence. `RIGHTSPOT-036` passed focused Red→Green, full checks, and fresh invalid-correction/removal browser evidence. `RIGHTSPOT-037` passed focused Red→Green, full checks, and fresh queue/detail latest-read failure, retry-recovery, 320px, keyboard, and browser-error evidence at generations `43`/`44`. `RIGHTSPOT-038` passed focused Red→Green, full checks, fresh stale-action recovery success/failure browser evidence, 320px, keyboard, and browser-error checks at generations `50`–`53`; `RIGHTSPOT-039` passed focused Red→Green, full checks, and fresh listing-detail partial-read failure/recovery browser evidence with no page errors. `RIGHTSPOT-040` passed focused Red→Green, full checks, and fresh Discovery failure/recovery browser evidence: raw server text was absent, one bounded error surface remained, keyboard retry/clear recovered filtered/full results, invalid-filter feedback issued no catalogue request, and the 320px/no-page-error checks passed. A clean generation-66 tenant-to-Agent replay also passed draft/submit/review/prepare/send/confirm, terminal/read-only, and role/session boundaries; the disposable fixture was reset to generation `67` with healthy health. `RIGHTSPOT-041` passed focused Red→Green, full checks, listing-detail save and request-dashboard submit feedback persistence, and controlled stale-version conflict recovery; the fixture was reset to generation `70` with healthy health. Deployment and future integrations remain unclaimed |
 
 ## 3. Confirmed working inputs
 
@@ -348,8 +539,20 @@ implementation decisions for the local MVP.
 
 ## 5. Current gate and closure
 
-There is no active implementation gate for the accepted local MVP, the closed F-08 dashboard repair,
-or the closed F-09 conflict-feedback repair. The read-only `RS-WO-002-14`
+There is no active Green implementation Worktree for the accepted local MVP, the closed F-08 dashboard repair,
+the closed `RIGHTSPOT-039` / `RS-WO-039-01` F-17 repair, or the closed `RIGHTSPOT-040` /
+`RS-WO-040-01` F-18 Discovery error-copy repair. The
+closed F-09 conflict-feedback repair, the closed F-10 selected-time projection repair, the
+closed F-11 Agent-dashboard presentation repair, the closed F-12 cross-listing notice repair, or the
+closed F-13 preferred-time removal accessibility repair, the closed F-14 editor-feedback repair, or the
+closed F-15 Agent latest-read truthfulness repair and F-16 Agent stale-action recovery presentation
+repair. `RIGHTSPOT-038` is closed within its exact request-detail consumer boundary.
+`RIGHTSPOT-033` / `RS-WO-033-01`, `RIGHTSPOT-034` / `RS-WO-034-01`, `RIGHTSPOT-035` /
+`RS-WO-035-01`, `RIGHTSPOT-036` / `RS-WO-036-01`, `RIGHTSPOT-037` / `RS-WO-037-01`,
+`RIGHTSPOT-038` / `RS-WO-038-01`, `RIGHTSPOT-040` / `RS-WO-040-01`, and `RIGHTSPOT-041` /
+`RS-WO-041-01` are `CLOSED_VERIFIED` in the canonical Main Worktree; no extra code Worktree is open.
+The
+read-only `RS-WO-002-14`
 combined cross-role verification passed against integrated source
 `9348aa50b63e3f4f46e77238ad370670383d9d6`, and the main-thread `RS-WO-002-15` isolated browser
 walkthrough then passed against the same source from a fresh database. The agent candidate `169cb95d`
@@ -357,6 +560,40 @@ is integrated at product commit `3765747`, the repaired tenant candidate `52cba8
 `9348aa5`, and both slices use the verified shared frame at `6a0b4b8` and stable transport, listing,
 and DTO boundaries. The durable evidence is recorded in
 [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md).
+
+The latest Main-thread primary-chain replay used fixture generation `57` and passed tenant listing
+detail, draft save, explicit submission, Agent queue/review/preparation/send, tenant proposal
+confirmation, terminal tenant projection, and Agent confirmed history. It also confirmed separate
+tenant-facing versus Agent-only notes, the selected-time projection, six truthful timeline entries,
+the `320px` width floor, first-Tab skip-link focus, and empty browser page-error logs. The fixture was
+reset to generation `58` with healthy `/api/health`; no new implementation finding was reproduced or
+registered. `F-08` remains an evidence gap, not an authorization for speculative route repair.
+
+The latest alternate terminal replay used fixture generation `59` and passed tenant draft/save/submit,
+Agent review, bounded decline preparation/send, tenant `Agent Declined` terminal read, and Agent
+read-only history. It confirmed `AGENT_DECLINED`/version `5`, release of all three held/available
+slot candidates, separate tenant-facing versus Agent-only notes, no terminal action controls, the
+`320px` width floor, first-Tab skip-link focus, and empty browser page-error logs. The fixture was reset
+to generation `60` with healthy `/api/health`; no new finding or Task was registered.
+
+The latest generation-`60` direct route/role re-check confirmed signed-out role entry, tenant catalogue,
+listing detail, Favourites, Viewing Requests, tenant-to-Agent wrong-role handling, Agent queue, and
+embedded Listing interest entry with truthful empty states. It also passed direct URL route checks,
+`320px` body/document width equality, first-Tab skip-link focus, and an empty browser page-error log.
+One cross-document accessibility-tree reference returned a CLI `Done` acknowledgement without changing
+the expected URL; this was a browser-operation false success and was not classified as a product defect.
+Direct URL navigation after reacquiring the target produced the expected rendered surfaces. A follow-up
+at generation `61` used the actual DOM catalogue anchor and confirmed navigation type `navigate`, referrer
+`/tenant`, final listing-detail URL, and rendered `Canal Wharf Apartment`. The fixture was reset to
+generation `62` with healthy `/api/health`; no new Task was registered. `F-08` remains an evidence gap
+and the browser postcondition caution is now recorded in the delegated-work Runbook.
+
+The follow-up reverse synthetic same-document probe in isolated `rightspot-audit-063` held both old
+primary-listing reads while the App Router moved back to `/tenant/listings/listing-north`; releasing
+the old responses left `Northfield Garden Flat` and its matching image identity rendered. This
+strengthens but does not close `F-08`, because it remains page-local timing evidence and the supported
+catalogue links are full document navigations. No Task or Work Order was registered, and the fixture
+remained at generation `62`.
 
 The remaining paragraphs record the earlier checkpoint sequence for audit context; they do not reopen the
 closed parent or override the current closure statement above.
@@ -408,6 +645,24 @@ the exact source on a separate local port, and its evidence is recorded in the o
 13. register, repair, independently verify, and close `RIGHTSPOT-028` for the reproduced deterministic
     workflow-fixture reset defect; keep the repair in the CLI/test composition boundary and do not
     broaden foundation-only reset semantics or add automatic database recovery.
+14. review, implement, independently verify, and close `RIGHTSPOT-032` for the reproduced tenant
+    selected-slot projection defect; keep it tenant-safe and separate from workflow transitions,
+    persistence, agent/private projections, and deferred integrations. This gate is now closed with
+    focused/full and fresh browser evidence.
+15. execute and close `RIGHTSPOT-033` for the reproduced Agent queue active/history presentation defect;
+    this bounded UI-consumer-only gate is now closed and did not alter the authoritative queue contract.
+16. execute and close `RIGHTSPOT-034` for the reproduced cross-listing tenant notice defect; this
+    bounded UI-consumer-only gate is now closed and did not alter the request state or read boundary.
+17. execute and close `RIGHTSPOT-035` for the reproduced preferred-time removal accessibility defect;
+    this bounded tenant-editor-only gate is now closed and did not alter the request workflow.
+18. execute and close `RIGHTSPOT-036` for the reproduced stale editor-feedback defect after structural
+    removal; this bounded local-feedback gate is now closed and did not alter validation or request behavior.
+19. execute and close `RIGHTSPOT-037` for the reproduced stale Agent projection/action after a failed
+    latest read; this bounded two-consumer UI gate is now closed and did not alter the Agent API,
+    workflow, or server state.
+20. continue the Main-thread cross-layer audit from the canonical Main Worktree; reproduce any new
+    gap before registering another bounded Task, and keep deferred credentials, external integrations,
+    and the separate listing-detail `F-08` evidence gap outside the current route.
 
 Only an explicitly selected, implementation-ready Task may open a code Work Order or temporary
 Worktree. `RIGHTSPOT-023`, `RIGHTSPOT-024`, and `RIGHTSPOT-025` are closed after their exact-path
@@ -418,8 +673,16 @@ never opened a supporting implementation Worktree. The accepted Worktree lifecyc
 checkpoint-scoped retirement. `RIGHTSPOT-021` is closed for its bounded navigation repair and
 independent verification; its post-closure `320–342px` residual was resolved by closed
 `RIGHTSPOT-022`, whose Builder handoff and independent verification are complete at product commit
-`f0dbd99`. `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain
-separate credential, decision, and read-only audit gates and do not reopen `RIGHTSPOT-020`.
+`f0dbd99`. `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain separate credential,
+decision, and read-only audit gates; `RIGHTSPOT-032` is closed within its tenant projection boundary
+and does not reopen `RIGHTSPOT-020`. `RIGHTSPOT-033` is closed within its Agent presentation boundary.
+`RIGHTSPOT-034` is closed within its tenant listing-detail presentation boundary, and `RIGHTSPOT-035`
+is closed within its tenant request-editor accessibility boundary. `RIGHTSPOT-036` is closed within
+its tenant editor-feedback boundary. `RIGHTSPOT-037` is closed within its Agent latest-read
+truthfulness boundary. `RIGHTSPOT-038` is closed within its Agent stale-action recovery
+presentation boundary.
+The next route is a fresh Main-thread cross-layer audit; no server, workflow, persistence, privacy, or
+dependency change is authorized without a newly reproduced bounded finding.
 
 ## 5.2 Accepted MVP Work Order boundary (historical closure)
 
@@ -474,3 +737,68 @@ bounded Repairer completed it in post-repair commit `6e70c9f`; fresh independent
 RightSpot currently does not claim a validated rental business, production-ready marketplace,
 selected Agent runtime, Cloud Receiver compatibility, WebMCP proof, WebRTC Remote Viewing,
 Redis-backed distributed operation, live deployment, or Hackathon submission readiness.
+
+The latest Main-thread audit also ran a reverse synthetic same-document listing read-order probe:
+both old primary-listing reads were held while the App Router moved back to the Northfield listing,
+and releasing the old responses left the final route and `Northfield Garden Flat` identity correct.
+This strengthens but does not close the separate `F-08` evidence gap; ordinary catalogue links remain
+full document navigations, and no Task or Work Order was registered. The fixture remained at generation
+`62`.
+
+The latest Main-thread code-quality and Agent preparation review used isolated session
+`rightspot-audit-087` at fixture generation `83`. The rendered required slot control blocked an empty
+preparation before the application handler, no new defect or task was reproduced, and the fixture was
+reset to generation `84` with empty browser errors and healthy `/api/health`. The complete pinned suite
+remains `159/159`; typecheck, build, repository validators, sensitive scans, documentation validation,
+and RightSpot diff checks passed. `RIGHTSPOT-012` remains the active read-only audit lane and `F-08`
+remains an evidence gap.
+
+The same audit recorded low-severity `F-20 VERIFIED_POLISH`: at `320px`, the terminal Agent request
+detail heading splits `workspace` inside the word, while there is no horizontal overflow and the same
+heading wraps intact at `375px`. This is non-gating responsive typography polish; no implementation
+Task was opened and no ordinary flow, role boundary, or runtime claim changed. The disposable fixture
+was reset afterward to generation `85` with healthy `/api/health`.
+
+The follow-up read-only code-quality audit reviewed current UI, workflow HTTP, projections, persistence,
+and Operations error/fallback boundaries on Main HEAD `4224f3ae53f6d4be87a7be17e74532f5785357b0`.
+No unbounded retry, false-success mutation, diagnostic leakage, or business-state fallback was found
+in the inspected scope. Pinned typecheck, build, full tests (`159/159`), repository/docs validation,
+sensitive scan, diff check, and health passed. No new Task was registered; `RIGHTSPOT-012` remains the
+active non-blocking audit lane, `F-08` remains an evidence gap, and `F-20` remains non-gating polish.
+
+The latest current-source regression revalidation kept the canonical repository on `main` at HEAD
+`4224f3ae53f6d4be87a7be17e74532f5785357b0`, with only the Main Worktree present and the existing dirty
+collaborator/owner changes preserved. Pinned Node `24.20.0`/npm `11.19.0` passed the complete package
+suite `159/159`, `typecheck`, production `build`, repository validation, documentation validation,
+sensitive-pattern scan, `git diff --check`, and `/api/health`. No new finding or follow-on Task was
+accepted. This revalidation adds no fresh browser claim; `F-08` remains an evidence gap, `F-20` remains
+non-gating polish, and the unpublished Favourite branch remains direct/static-only within the current
+bounded UI.
+
+The current populated browser replay found an evidence limitation in the in-app browser harness for the
+native Tenant `datetime-local` control: `fill` displayed a valid value, but Save draft retained the
+controlled empty state and showed the existing client validation message. A normal textarea on the same
+form synchronized correctly, and no API mutation occurred. This is not accepted as a product defect
+because the page source is unchanged and `RIGHTSPOT-019` contains prior native-control browser/form
+success evidence in a separate runtime. No Task was opened; a trusted native-picker or independent
+browser rerun is required before treating this as a product finding. `F-08`, `F-20`, and the Favourite
+unpublish evidence limitation remain unchanged.
+
+The latest current-source browser revalidation used the local server without mutating workflow data.
+Signed-out role selection, Tenant catalogue/navigation, empty Viewing Request and Favourite states,
+listing detail draft-entry boundaries, sign-out recovery, and the Agent queue plus read-only
+listing-interest projection all rendered through reachable user-facing entries. The effective narrow
+viewport floor was `355px` by `888px` with no horizontal overflow; first Tab reached the skip link and
+the browser error/warning log was empty. No populated request-detail replay was claimed in this check;
+the prior populated-chain evidence remains the authority for that claim. No new finding or Task was
+accepted, and `F-08`, `F-20`, and the direct/static-only unpublished Favourite evidence limitation remain
+unchanged.
+
+The current audit also repeated the Tenant native `datetime-local` input check in the available Chrome
+extension runtime. Automation could display a valid value but could not commit the native control's
+change to the controlled React state; Save draft therefore showed the existing bounded empty-time
+validation, while the ordinary textarea worked and no workflow data changed. This reproduces the
+in-app-browser harness limitation across both available automation surfaces, not a verified product
+defect. The prior successful `RIGHTSPOT-019` native-control browser/form evidence remains the product
+claim boundary; no speculative repair or workaround Task is registered. A real native picker or a
+known-capable browser harness is still required to close this evidence gap.

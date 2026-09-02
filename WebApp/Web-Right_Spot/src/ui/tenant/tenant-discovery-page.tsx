@@ -32,6 +32,7 @@ export default function TenantDiscoveryPage() {
   const [appliedFilters, setAppliedFilters] = useState<TenantListingFilters>({});
   const [data, setData] = useState<TenantListingsResponse | null>(null);
   const [error, setError] = useState<unknown>(null);
+  const [filterError, setFilterError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const latestRequestId = useRef(0);
   const favourites = useTenantFavourites();
@@ -62,7 +63,8 @@ export default function TenantDiscoveryPage() {
     if (filters.maxRent) {
       const value = Number(filters.maxRent);
       if (!Number.isSafeInteger(value) || value < 1) {
-        setError(new Error("Enter a whole-number maximum rent above zero."));
+        setError(null);
+        setFilterError("Enter a whole-number maximum rent above zero.");
         return;
       }
       nextFilters.maxRent = value;
@@ -70,19 +72,22 @@ export default function TenantDiscoveryPage() {
     if (filters.minSizeSqM) {
       const value = Number(filters.minSizeSqM);
       if (!Number.isSafeInteger(value) || value < 1) {
-        setError(new Error("Enter a whole-number minimum size above zero."));
+        setError(null);
+        setFilterError("Enter a whole-number minimum size above zero.");
         return;
       }
       nextFilters.minSizeSqM = value;
     }
     if (filters.availableFrom) nextFilters.availableFrom = filters.availableFrom;
     setError(null);
+    setFilterError(null);
     setAppliedFilters(nextFilters);
   }
 
   function clearFilters() {
     setFilters(EMPTY_FILTERS);
     setError(null);
+    setFilterError(null);
     setAppliedFilters({});
   }
 
@@ -158,8 +163,8 @@ export default function TenantDiscoveryPage() {
           </div>
         </form>
 
-        {error && !(error instanceof Error && error.message.startsWith("Could not")) ? (
-          <div className={styles.inlineError} role="alert">{error instanceof Error ? error.message : "Filters are invalid."}</div>
+        {filterError ? (
+          <div className={styles.inlineError} role="alert">{filterError}</div>
         ) : null}
 
         <FavouriteFeedback controller={favourites} />

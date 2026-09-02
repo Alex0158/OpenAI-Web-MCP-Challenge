@@ -303,6 +303,11 @@ function parseTenantRequest(value: Record<string, unknown>): TenantRequestRespon
     || (value.proposalExpiresAt !== undefined && typeof value.proposalExpiresAt !== "string")) {
     throw invalidResponse();
   }
+  const response = value.response !== undefined ? parseResponse(value.response) : undefined;
+  const viewingSlot = value.viewingSlot !== undefined ? parseTenantViewingSlot(value.viewingSlot) : undefined;
+  if (viewingSlot !== undefined && response?.kind !== "SLOT_PROPOSAL") {
+    throw invalidResponse();
+  }
   return {
     id: value.id,
     listingId: value.listingId,
@@ -310,9 +315,17 @@ function parseTenantRequest(value: Record<string, unknown>): TenantRequestRespon
     ...(value.tenantNote !== undefined ? { tenantNote: value.tenantNote } : {}),
     state: value.state as WorkflowRequestState,
     version: value.version as number,
-    ...(value.response !== undefined ? { response: parseResponse(value.response) } : {}),
+    ...(response !== undefined ? { response } : {}),
+    ...(viewingSlot !== undefined ? { viewingSlot } : {}),
     ...(value.proposalExpiresAt !== undefined ? { proposalExpiresAt: value.proposalExpiresAt } : {}),
   };
+}
+
+function parseTenantViewingSlot(value: unknown): NonNullable<TenantRequestResponse["request"]>["viewingSlot"] {
+  if (!isRecord(value) || typeof value.startsAt !== "string" || typeof value.endsAt !== "string") {
+    throw invalidResponse();
+  }
+  return { startsAt: value.startsAt, endsAt: value.endsAt };
 }
 
 function parseResponse(value: unknown): WorkflowResponseDto {

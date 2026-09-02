@@ -47,6 +47,9 @@ export function toTenantRequestView(
       response: outcome.projection.request.response
         ? toResponse(outcome.projection.request.response)
         : undefined,
+      ...(outcome.projection.request.viewingSlot
+        ? { viewingSlot: { ...outcome.projection.request.viewingSlot } }
+        : {}),
       proposalExpiresAt: outcome.projection.request.proposalExpiresAt,
     },
     listing: toListing(outcome.projection.listing),

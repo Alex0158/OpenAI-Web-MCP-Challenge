@@ -44,6 +44,16 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-029 — Align the default RightSpot test command with the complete suite`](RIGHTSPOT-029-align-default-test-command.md)
 - [`RIGHTSPOT-030 — Prevent stale tenant request reads from overwriting newer state`](RIGHTSPOT-030-fix-tenant-request-read-concurrency.md)
 - [`RIGHTSPOT-031 — Preserve truthful tenant conflict-recovery feedback`](RIGHTSPOT-031-preserve-tenant-conflict-recovery-feedback.md)
+- [`RIGHTSPOT-032 — Expose the selected proposal time in the tenant response`](RIGHTSPOT-032-expose-tenant-proposed-viewing-time.md)
+- [`RIGHTSPOT-033 — Make Agent queue state counts and terminal history truthful`](RIGHTSPOT-033-agent-queue-state-and-history-truthfulness.md)
+- [`RIGHTSPOT-034 — Make the cross-listing request notice status-truthful`](RIGHTSPOT-034-cross-listing-request-status-truthfulness.md)
+- [`RIGHTSPOT-035 — Give preferred-time removal controls unique accessible names`](RIGHTSPOT-035-name-preferred-time-removal-controls.md)
+- [`RIGHTSPOT-036 — Clear stale editor feedback after removing a preferred time`](RIGHTSPOT-036-clear-stale-editor-feedback-after-removal.md)
+- [`RIGHTSPOT-037 — Prevent stale Agent read surfaces after a failed refresh`](RIGHTSPOT-037-prevent-stale-agent-read-surfaces.md)
+- [`RIGHTSPOT-038 — Recover the Agent request detail after a stale action conflict`](RIGHTSPOT-038-recover-agent-detail-after-stale-action.md)
+- [`RIGHTSPOT-039 — Keep listing-detail partial read failures truthful`](RIGHTSPOT-039-separate-listing-detail-read-failures.md)
+- [`RIGHTSPOT-040 — Keep tenant Discovery error copy server-safe`](RIGHTSPOT-040-keep-discovery-error-copy-server-safe.md)
+- [`RIGHTSPOT-041 — Preserve tenant request mutation success feedback`](RIGHTSPOT-041-preserve-tenant-request-success-feedback.md)
 
 `RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
 `RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`,
@@ -131,6 +141,11 @@ isolated browser race reruns passed. It does not authorize listing-detail change
 changes, or speculative async infrastructure. The analogous listing-detail concern remains a separate
 `EVIDENCE_GAP`.
 
+`RIGHTSPOT-039` is `CLOSED_VERIFIED` as a separately reproduced P2 listing-detail consumer defect.
+Its Main-owned serial Work Order changed only independent listing/request-context read ownership and
+recovery, passed focused/full checks and fresh browser failure/recovery evidence, and does not close
+or authorize server, workflow, contract, auth, navigation, deferred integration, or F-08 work.
+
 Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, the corrected `RS-WO-002-02` rerun returned
 `VERIFIED`, `RS-WO-002-03` returned `VERIFIED` after its bounded repair, and `RS-WO-002-04` returned
@@ -161,14 +176,17 @@ work remained; it is now `closed` for the accepted local MVP. The Side Chat proc
 declared and user-authorized.
 
 **Current gate:** There is no active implementation gate for the accepted local MVP or the confirmed
-tenant-request dashboard race. `RIGHTSPOT-029` is closed within its verification-command scope and
-`RIGHTSPOT-030` is closed within its bounded read-concurrency scope. The next route is a fresh
-Main-thread cross-layer audit; `RS-WO-002-14` direct evidence and `RS-WO-002-15` browser evidence
+tenant-request dashboard race. `RIGHTSPOT-029`, `RIGHTSPOT-030`, `RIGHTSPOT-033`, `RIGHTSPOT-034`,
+`RIGHTSPOT-035`, `RIGHTSPOT-036`, and `RIGHTSPOT-039` are closed within their bounded verification and presentation
+scopes. The fresh Main-thread cross-layer audit,
+`RS-WO-002-14` direct evidence and `RS-WO-002-15` browser evidence
 remain reconciled in the [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](../Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md),
 and `RIGHTSPOT-002` is closed.
 
 **Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain pending
-(credential, decision, and read-only audit gates respectively); `RIGHTSPOT-023` and `RIGHTSPOT-024`
+(credential, decision, and read-only audit gates respectively); `RIGHTSPOT-033` is closed within its
+accepted Agent-dashboard contract; `RIGHTSPOT-032` is closed within its
+bounded tenant projection/presentation outcome. `RIGHTSPOT-023` and `RIGHTSPOT-024`
 are closed within their bounded outcomes; `RIGHTSPOT-025` and `RIGHTSPOT-026` are closed within their
 bounded outcomes; `RIGHTSPOT-027` is closed after its Builder handoff and independent verification;
 `RIGHTSPOT-021` is closed as an implementation gate, and `RIGHTSPOT-022` is closed at product commit `f0dbd99` after
@@ -193,10 +211,86 @@ truthful recovery failure, and passed focused TDD, full regression, build, and i
 verification on both tenant request surfaces. It does not authorize workflow/API changes or the
 separate un-reproduced listing-detail async-read repair.
 
-**Current route:** `RIGHTSPOT-031` is closed within its exact presentation boundary. The next route is
-a fresh Main-thread cross-layer audit; `RIGHTSPOT-030` remains closed for the confirmed dashboard
-portion of `F-08`, and the separate listing-detail async-read concern remains an evidence gap. No
-Worktree is open.
+`RIGHTSPOT-032` is closed after the fresh Main-thread audit reproduced `F-10`: its single serial Work
+Order now resolves the selected slot's tenant-safe date/time, keeps it distinct from the tenant's
+preferred time, retains it in terminal history, and blocks incomplete proposal payloads without a
+fallback. Focused projection/UI contracts, the complete static suite, and fresh browser proposal/
+confirm evidence passed; no implementation Worktree was opened.
+
+`RIGHTSPOT-033` is now `CLOSED_VERIFIED` for the fresh `F-11` Agent queue presentation defect. Its
+single Agent-dashboard Work Order passed focused Red→Green, full static checks, and fresh isolated
+browser verification: active requests are separated from terminal recorded outcomes, all seven
+non-draft counts are visible, and terminal card action language is truthful. It did not change API,
+workflow, persistence, privacy, or dependency behavior.
+
+`RIGHTSPOT-034` is `CLOSED_VERIFIED` for the reproduced P2 tenant listing-detail presentation defect.
+Its single Main-owned Work Order now groups cross-listing notices into explicit draft, active, and
+terminal copy while preserving the existing one-request dashboard handoff. Focused Red→Green, full
+static checks, and fresh isolated browser evidence passed. It did not change workflow, API,
+persistence, privacy, or dynamic-route behavior.
+
+`RIGHTSPOT-035` is `CLOSED_VERIFIED` for the reproduced P2 tenant editor accessibility defect. Its
+single Main-owned Work Order gives repeated preferred-time removal controls unique option-numbered
+accessible names while preserving visible copy, removal behavior, validation, and the one-to-three
+boundary. Focused Red→Green, full `147/147` tests across `34` authored test files, foundation
+`6/6`, typecheck, production build, and isolated browser evidence passed. It did not change workflow,
+API, persistence, CSS, or shared navigation behavior. At that closure checkpoint, stale validation
+copy after structural removal remained outside the 035 boundary; the subsequent Main audit reproduced
+and closed it separately through `RIGHTSPOT-036`.
+
+`RIGHTSPOT-036` is `CLOSED_VERIFIED` for the separately reproduced P2 stale-feedback defect. Its
+single Main-owned Work Order clears local editor error/status feedback when a preferred-time row is
+removed while preserving `RIGHTSPOT-035` accessible names, row filtering, validation, dirty tracking,
+and the server boundary. Focused Red→Green, full `149/149` tests across `35` authored test files,
+foundation `6/6`, typecheck, production build, and isolated browser evidence passed; no supporting
+Worktree was opened.
+
+`RIGHTSPOT-037` is `CLOSED_VERIFIED` for the separately reproduced P2 Agent read-failure defect. A
+populated queue refresh failure retained the prior counts and request card beside the error/retry
+state; a populated request-detail refresh failure retained request facts, availability, and the
+enabled `Start review` action beside the detail error. Its single serial Work Order now withholds
+retained projections and actions during refresh/failure, while preserving successful retry recovery;
+it did not change API, workflow, persistence, role/privacy, or listing-interest behavior. Focused Red
+`2/2`, full `151/151`, foundation `6/6`, typecheck, build, 320px browser, keyboard, and failure/retry
+evidence passed in the canonical Main Worktree; the final fixture generation is `44`.
+
+`RIGHTSPOT-038` is `CLOSED_VERIFIED` for the separately reproduced P1 Agent stale-action recovery
+defect. Its single Main-owned Work Order keeps the stale action failed, renders the authoritative
+detail after a successful recovery read with neutral conflict feedback, and keeps the bounded
+unavailable/retry surface when that recovery read fails. Focused Red→Green, full static checks,
+fresh isolated browser success/failure evidence, 320px/keyboard checks, and documentation
+reconciliation passed without changing the Agent API, workflow, persistence, role/privacy, or shared
+contract boundaries. No supporting implementation Worktree was opened.
+
+`RIGHTSPOT-039` is `CLOSED_VERIFIED` for the separately reproduced P2 tenant listing-detail
+partial-read defect. Its single Main-owned Work Order separates listing and tenant request-context
+read ownership, preserves successful listing facts, withholds request-derived UI while its context is
+unavailable, and provides a context-specific retry. Focused Red→Green, full `156/156` tests across
+38 authored test files, foundation, typecheck, build, repository validation, and fresh isolated
+browser failure/recovery evidence passed without changing API, workflow, persistence, privacy, CSS,
+dependency, or `F-08` behavior.
+
+`RIGHTSPOT-040` is `CLOSED_VERIFIED` for the separately reproduced P2 tenant Discovery error-boundary
+defect. Its single Main-owned Work Order keeps local filter-validation feedback separate from
+catalogue-read failure copy and prevents raw server-controlled error text or duplicate read-failure
+feedback. Focused Red→Green, full checks, and fresh isolated browser failure/recovery evidence passed;
+the repair remained Main-owned and was not externally dispatched. No adapter, server, API, workflow,
+persistence, or shared component change was made.
+
+`RIGHTSPOT-041` is `CLOSED_VERIFIED` as the newly reproduced P2 tenant request-editor feedback defect.
+Its single Main-owned Work Order covers the shared version-keyed editor in the request dashboard and
+listing detail. Parent-owned bounded success feedback now survives the authoritative response and editor
+remount; focused TDD, full checks, and isolated browser evidence passed. No supporting implementation
+Worktree was opened.
+
+**Current route:** `RIGHTSPOT-041` is closed within its exact tenant request mutation-feedback consumer
+boundary and was not dispatched; the Main thread continues the cross-layer audit. `RIGHTSPOT-040` is
+closed within its exact tenant Discovery consumer boundary. No extra code Worktree is open.
+`RIGHTSPOT-032` through `RIGHTSPOT-040` remain closed within their exact tenant and Agent
+presentation boundaries.
+`RIGHTSPOT-030`
+remains closed for the confirmed dashboard portion of `F-08`, and the separate listing-detail
+async-read concern remains an evidence gap.
 `RIGHTSPOT-028` is closed after
 `RS-WO-028-01` passed Main Red→Green checks and persistent frozen-source independent verification;
 the canonical Main Worktree remains the only source authority. `RIGHTSPOT-027`, `RIGHTSPOT-026`,

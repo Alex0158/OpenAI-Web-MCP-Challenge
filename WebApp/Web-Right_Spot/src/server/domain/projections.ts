@@ -7,6 +7,7 @@ import {
   type ProjectionOutcome,
   type TenantListing,
   type TenantProjection,
+  type TenantViewingSlot,
   type WorkflowState,
 } from "./types";
 
@@ -24,6 +25,9 @@ export function readTenantProjection(
     throw domainError("NOT_FOUND", "Viewing request was not found");
   }
   const listing = getListing(evaluated.state, request.listingId);
+  const viewingSlot = request.sentResponse?.kind === "SLOT_PROPOSAL"
+    ? toTenantViewingSlot(evaluated.state, request.listingId, request.sentResponse.slotId)
+    : undefined;
 
   return {
     state: evaluated.state,
@@ -36,11 +40,29 @@ export function readTenantProjection(
         state: request.state,
         version: request.version,
         response: request.sentResponse ? cloneRequest(request.sentResponse) : undefined,
+        ...(viewingSlot ? { viewingSlot } : {}),
         proposalExpiresAt: request.proposalExpiresAt,
       },
       listing: toTenantListing(listing),
       timeline: evaluated.state.audit.map((entry) => ({ ...entry })),
     },
+  };
+}
+
+function toTenantViewingSlot(
+  state: WorkflowState,
+  listingId: string,
+  slotId: string,
+): TenantViewingSlot {
+  const slot = state.slots.find(
+    (candidate) => candidate.id === slotId && candidate.listingId === listingId,
+  );
+  if (!slot) {
+    throw domainError("NOT_FOUND", "Availability slot was not found");
+  }
+  return {
+    startsAt: slot.startsAt,
+    endsAt: slot.endsAt,
   };
 }
 

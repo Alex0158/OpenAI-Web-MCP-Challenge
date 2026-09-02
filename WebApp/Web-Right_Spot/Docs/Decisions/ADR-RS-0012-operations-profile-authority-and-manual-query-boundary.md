@@ -212,7 +212,8 @@ SQL-like interface.
 ## Consequences
 
 - RightSpot can develop a meaningful Operations demonstration without weakening the accepted relay
-  workflow or waiting for unresolved Favourite/Information Request semantics.
+  workflow or waiting for the deferred Information Request semantics. The closed Favourite boundary
+  remains separate until a later Operations consumer explicitly adopts its contract.
 - The first Operations profile is a separate synthetic demonstration authority, not production
   analytics or live market truth.
 - Separate-file persistence introduces a second reset/opening path and requires explicit tests for

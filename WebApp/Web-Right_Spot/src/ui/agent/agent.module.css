@@ -341,9 +341,34 @@
   margin-top: 0.75rem;
 }
 
+.metricGroups {
+  display: grid;
+  gap: 1.35rem;
+}
+
+.metricGroup {
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.metricGroupHeader {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.metricGroupHeader :global(.eyebrow) {
+  margin-bottom: 0;
+}
+
+.metricGroupHeader h3 {
+  margin-bottom: 0;
+  font-size: 1.15rem;
+}
+
 .metricGrid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
   margin: 0;
   padding: 0;
   border-block: 1px solid var(--line);
@@ -450,6 +475,38 @@
   margin: 0;
 }
 
+.requestGroups {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.requestGroup {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.requestGroup + .requestGroup {
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.requestGroupHeader {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.requestGroupHeader :global(.eyebrow) {
+  margin-bottom: 0.35rem;
+}
+
+.requestGroupHeader h4 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
 .requestList {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -487,6 +544,15 @@
   border-left-color: var(--muted);
 }
 
+.requestCard[data-state="VIEWING_CONFIRMED"] {
+  border-left-color: var(--success);
+}
+
+.requestCard[data-state="TENANT_DECLINED"],
+.requestCard[data-state="EXPIRED"] {
+  border-left-color: var(--muted);
+}
+
 .requestCard:hover {
   border-color: var(--accent);
   background: var(--accent-soft);
@@ -508,6 +574,10 @@
   color: var(--accent-strong);
   font-size: 0.78rem;
   font-weight: 750;
+}
+
+.requestCardFooter[data-terminal="true"] {
+  color: var(--muted);
 }
 
 .requestCardBody {

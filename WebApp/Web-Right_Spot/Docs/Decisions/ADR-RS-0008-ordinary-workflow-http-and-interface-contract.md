@@ -77,10 +77,17 @@ or internal persistence details.
 
 The tenant request view contains only the tenant's request ID, listing ID, preferred times, tenant
 note, state, version, sent tenant-facing response, proposal expiry, the tenant-safe `Listing`, and
-a timeline reduced to non-sensitive sequence/operation/state/version facts. It never contains
-`assignedAgentId`, `internalReviewNote`, prepared response data, agent-only context, or raw actor
-identifiers. `GET /api/tenant/request` returns `200` with `request: null`, `listing: null`, and an
-empty timeline when the fixture has no request; that normal state is not a failure.
+a timeline reduced to non-sensitive sequence/operation/state/version facts. For a `SLOT_PROPOSAL`,
+the view also contains a dedicated tenant-safe `viewingSlot` with exactly `startsAt` and `endsAt`,
+resolved from the authoritative slot selected by the sent response and scoped to the request listing.
+The value is retained for confirmed, tenant-declined, and expired response views, and omitted for an
+agent decline, no response, or other response kind. It never carries slot status, holder, other
+availability, or agent-private data. The view never contains `assignedAgentId`, `internalReviewNote`,
+prepared response data, agent-only context, or raw actor identifiers. `GET /api/tenant/request`
+returns `200` with `request: null`, `listing: null`, and an empty timeline when the fixture has no
+request; that normal state is not a failure. A missing or wrong-listing sent-slot relation fails
+through the existing bounded resource error; no client fallback may substitute preferences, guessed
+data, or an opaque slot identifier.
 
 The agent queue returns `200` with a deterministic list of assigned submitted/current requests and
 bounded state counts; an empty queue is an ordinary empty result. A `TENANT_DRAFT` is private

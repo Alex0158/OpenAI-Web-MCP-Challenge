@@ -74,6 +74,14 @@ Relevant reads and writes evaluate a proposal deadline through the application c
 that has passed transitions `SLOT_PROPOSED` to `EXPIRED` and releases the held slot. No operation
 may transition a terminal state to another state.
 
+The tenant request DTO includes `viewingSlot?: { startsAt: string; endsAt: string }` only for a
+sent `SLOT_PROPOSAL`. The value is resolved from the authoritative selected slot for the request's
+listing and is retained for confirmed, tenant-declined, and expired response views. It is omitted
+for an agent decline, no response, or another response kind. The dedicated shape excludes slot
+status, holder, other availability, and agent-private fields. A missing or wrong-listing relation
+fails at the authoritative projection boundary; an incomplete client payload must remain visibly
+unavailable and must not enable a tenant decision or substitute preferences/guessed data.
+
 ## 4. Request and response rules
 
 Every write must carry or derive:

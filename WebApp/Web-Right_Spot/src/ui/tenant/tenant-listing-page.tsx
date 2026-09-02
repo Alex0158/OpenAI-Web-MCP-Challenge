@@ -22,30 +22,50 @@ import type { TenantRequestDto, TenantRequestResponse } from "../../shared/contr
 export default function TenantListingPage({ listingId }: { listingId: string }) {
   const [listingData, setListingData] = useState<TenantListingResponse | null>(null);
   const [requestData, setRequestData] = useState<TenantRequestResponse | null>(null);
+  const [requestStatusMessage, setRequestStatusMessage] = useState<string | null>(null);
   const [requestNotice, setRequestNotice] = useState<TenantRequestConflictNotice | null>(null);
-  const [error, setError] = useState<unknown>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [listingError, setListingError] = useState<unknown>(null);
+  const [requestError, setRequestError] = useState<unknown>(null);
+  const [isListingLoading, setIsListingLoading] = useState(true);
+  const [isRequestLoading, setIsRequestLoading] = useState(true);
   const favourites = useTenantFavourites();
 
-  function applyRequestData(nextData: TenantRequestResponse) {
+  function applyRequestData(nextData: TenantRequestResponse, successMessage?: string) {
     setRequestData(nextData);
+    setRequestError(null);
+    setIsRequestLoading(false);
+    setRequestStatusMessage(successMessage ?? null);
     setRequestNotice(null);
   }
 
-  function load() {
-    setIsLoading(true);
-    setError(null);
+  function loadListing() {
+    setListingData(null);
+    setIsListingLoading(true);
+    setListingError(null);
+    setRequestStatusMessage(null);
     setRequestNotice(null);
-    void Promise.all([readListing(listingId), readTenantRequest()])
-      .then(([nextListing, nextRequest]) => {
-        setListingData(nextListing);
-        setRequestData(nextRequest);
-      })
-      .catch(setError)
-      .finally(() => setIsLoading(false));
+    void readListing(listingId)
+      .then(setListingData)
+      .catch(setListingError)
+      .finally(() => setIsListingLoading(false));
   }
 
-  useEffect(() => { load(); }, [listingId]);
+  function loadRequestContext() {
+    setRequestData(null);
+    setIsRequestLoading(true);
+    setRequestError(null);
+    setRequestStatusMessage(null);
+    setRequestNotice(null);
+    void readTenantRequest()
+      .then(setRequestData)
+      .catch(setRequestError)
+      .finally(() => setIsRequestLoading(false));
+  }
+
+  useEffect(() => {
+    loadListing();
+    loadRequestContext();
+  }, [listingId]);
 
   return (
     <RolePageFrame
@@ -56,6 +76,9 @@ export default function TenantListingPage({ listingId }: { listingId: string }) 
       description="The facts below come from the tenant listing service. A request is saved separately and only submitted through an explicit action."
     >
       <FavouriteFeedback controller={favourites} />
+      {requestStatusMessage ? (
+        <div className={styles.inlineSuccess} role="status" aria-live="polite">{requestStatusMessage}</div>
+      ) : null}
       {requestNotice ? (
         <div
           className={requestNotice.tone === "error" ? styles.inlineError : styles.inlineStatus}
@@ -65,32 +88,36 @@ export default function TenantListingPage({ listingId }: { listingId: string }) 
           {requestNotice.message}
         </div>
       ) : null}
-      {isLoading ? (
+      {isListingLoading ? (
         <div className={`${styles.feedbackState} ${styles.loadingState}`} role="status" aria-live="polite" aria-busy="true">
           <span className={styles.feedbackMarker} aria-hidden="true" />
           <div>
             <h2>Preparing the listing</h2>
-            <p>RightSpot is loading the property facts and your current request context together.</p>
+            <p>RightSpot is loading the property facts.</p>
           </div>
         </div>
       ) : null}
-      {!isLoading && error ? (
+      {!isListingLoading && listingError ? (
         <div className={`${styles.feedbackState} ${styles.errorState}`} role="alert">
           <span className={styles.feedbackMarker} aria-hidden="true" />
           <div>
             <h2>Listing details are unavailable</h2>
-            <p>{tenantApiErrorMessage(error, "load this listing")}</p>
-            <button className="button button-quiet" type="button" onClick={load}>Retry listing</button>
+            <p>{tenantApiErrorMessage(listingError, "load this listing")}</p>
+            <button className="button button-quiet" type="button" onClick={loadListing}>Retry listing</button>
           </div>
         </div>
       ) : null}
-      {!isLoading && !error && listingData && requestData ? (
+      {!isListingLoading && !listingError && listingData ? (
         <ListingDetailContent
           listingData={listingData}
           requestData={requestData}
+          requestError={requestError}
+          isRequestLoading={isRequestLoading}
           favourites={favourites}
           onRequestData={applyRequestData}
+          onFeedbackChange={setRequestStatusMessage}
           onConflictNotice={setRequestNotice}
+          onRetryRequest={loadRequestContext}
         />
       ) : null}
     </RolePageFrame>
@@ -100,24 +127,25 @@ export default function TenantListingPage({ listingId }: { listingId: string }) 
 function ListingDetailContent({
   listingData,
   requestData,
+  requestError,
+  isRequestLoading,
   favourites,
   onRequestData,
+  onFeedbackChange,
   onConflictNotice,
+  onRetryRequest,
 }: {
   listingData: TenantListingResponse;
-  requestData: TenantRequestResponse;
+  requestData: TenantRequestResponse | null;
+  requestError: unknown;
+  isRequestLoading: boolean;
   favourites: TenantFavouritesController;
-  onRequestData: (data: TenantRequestResponse) => void;
+  onRequestData: (data: TenantRequestResponse, successMessage?: string) => void;
+  onFeedbackChange: (message: string | null) => void;
   onConflictNotice: (notice: TenantRequestConflictNotice) => void;
+  onRetryRequest: () => void;
 }) {
   const listing = listingData.listing;
-  const request = requestData.request;
-  const requestTargetsAnotherListing = request !== null && request.listingId !== listing.id;
-  const canEditDraft = request === null || (request.listingId === listing.id && request.state === "TENANT_DRAFT");
-  const requestState = request?.state;
-  const existingRequestNotice = !requestTargetsAnotherListing && requestState && requestState !== "TENANT_DRAFT"
-    ? requestNoticeForState(requestState)
-    : null;
 
   return (
     <div className={styles.detailLayout}>
@@ -158,16 +186,74 @@ function ListingDetailContent({
         </div>
       </section>
 
-      {requestTargetsAnotherListing ? (
+      {isRequestLoading ? (
+        <section className={`${styles.feedbackState} ${styles.loadingState}`} role="status" aria-live="polite" aria-busy="true">
+          <span className={styles.feedbackMarker} aria-hidden="true" />
+          <div>
+            <h2>Preparing your Viewing Request context</h2>
+            <p>Listing facts remain available while RightSpot checks your current request.</p>
+          </div>
+        </section>
+      ) : null}
+      {!isRequestLoading && requestError ? (
+        <section className={`${styles.feedbackState} ${styles.errorState}`} role="alert" aria-labelledby="request-context-error-title">
+          <span className={styles.feedbackMarker} aria-hidden="true" />
+          <div>
+            <h2 id="request-context-error-title">Viewing Request context is unavailable</h2>
+            <p>Listing facts remain available. {tenantApiErrorMessage(requestError, "load your current request context")}</p>
+            <button className="button button-quiet" type="button" onClick={onRetryRequest}>Retry request context</button>
+          </div>
+        </section>
+      ) : null}
+      {!isRequestLoading && !requestError && requestData ? (
+        <RequestContextContent
+          listing={listing}
+          requestData={requestData}
+          onRequestData={onRequestData}
+          onFeedbackChange={onFeedbackChange}
+          onConflictNotice={onConflictNotice}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function RequestContextContent({
+  listing,
+  requestData,
+  onRequestData,
+  onFeedbackChange,
+  onConflictNotice,
+}: {
+  listing: TenantListingResponse["listing"];
+  requestData: TenantRequestResponse;
+  onRequestData: (data: TenantRequestResponse, successMessage?: string) => void;
+  onFeedbackChange: (message: string | null) => void;
+  onConflictNotice: (notice: TenantRequestConflictNotice) => void;
+}) {
+  const request = requestData.request;
+  const requestTargetsAnotherListing = request !== null && request.listingId !== listing.id;
+  const canEditDraft = request === null || (request.listingId === listing.id && request.state === "TENANT_DRAFT");
+  const requestState = request?.state;
+  const existingRequestNotice = !requestTargetsAnotherListing && requestState && requestState !== "TENANT_DRAFT"
+    ? requestNoticeForState(requestState)
+    : null;
+  const crossListingRequestNotice = requestTargetsAnotherListing && request
+    ? crossListingNoticeForState(request.state)
+    : null;
+
+  return (
+    <>
+      {crossListingRequestNotice ? (
         <section className={styles.noticeCard} aria-labelledby="existing-request-title">
           <div className={styles.noticeHeading}>
             <span aria-hidden="true">01</span>
             <div>
               <p className="eyebrow">Current request</p>
-              <h2 id="existing-request-title">Your active request is for another listing</h2>
+              <h2 id="existing-request-title">{crossListingRequestNotice.heading}</h2>
             </div>
           </div>
-          <p className={styles.noticeCopy}>This bounded demo keeps one Viewing Request in play. Open the request dashboard to review the existing home and its latest status.</p>
+          <p className={styles.noticeCopy}>{crossListingRequestNotice.copy}</p>
           <a className="button button-primary" href="/tenant/requests">Open request dashboard</a>
         </section>
       ) : canEditDraft ? (
@@ -177,6 +263,7 @@ function ListingDetailContent({
           fixtureGeneration={requestData.fixtureGeneration}
           request={request}
           onSaved={onRequestData}
+          onFeedbackChange={onFeedbackChange}
           onConflictNotice={onConflictNotice}
         />
       ) : existingRequestNotice ? (
@@ -192,7 +279,7 @@ function ListingDetailContent({
           <a className="button button-primary" href="/tenant/requests">Open request dashboard</a>
         </section>
       ) : null}
-    </div>
+    </>
   );
 }
 
@@ -202,6 +289,34 @@ type RequestNotice = {
   heading: string;
   copy: string;
 };
+
+function crossListingNoticeForState(state: TenantRequestDto["state"]): RequestNotice {
+  switch (state) {
+    case "TENANT_DRAFT":
+      return {
+        heading: "Your saved draft is for another listing",
+        copy: "This bounded demo keeps one Viewing Request record in play. Open the request dashboard to review or edit that saved draft before choosing another home.",
+      };
+    case "REQUEST_SUBMITTED":
+    case "AGENT_REVIEWING":
+    case "SLOT_PROPOSED":
+      return {
+        heading: "Your active request is for another listing",
+        copy: "This bounded demo keeps one Viewing Request in play. Open the request dashboard to review the existing home and its latest status.",
+      };
+    case "VIEWING_CONFIRMED":
+    case "TENANT_DECLINED":
+    case "EXPIRED":
+    case "AGENT_DECLINED":
+      return {
+        heading: "Your recorded request is for another listing",
+        copy: "This bounded demo keeps one Viewing Request record in play. Open the request dashboard to review the existing home and its completed status.",
+      };
+  }
+
+  const exhaustiveState: never = state;
+  return exhaustiveState;
+}
 
 function requestNoticeForState(state: ExistingRequestState): RequestNotice {
   switch (state) {

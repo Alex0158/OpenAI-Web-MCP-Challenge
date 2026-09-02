@@ -40,6 +40,11 @@ export type Listing = {
 
 export type TenantListing = Omit<Listing, "assignedAgentId" | "status">;
 
+export type TenantViewingSlot = {
+  startsAt: string;
+  endsAt: string;
+};
+
 export type AvailabilitySlot = {
   id: string;
   listingId: string;
@@ -263,6 +268,7 @@ export type TenantProjection = {
     state: RequestState;
     version: number;
     response?: SentResponse;
+    viewingSlot?: TenantViewingSlot;
     proposalExpiresAt?: string;
   };
   listing: TenantListing;

@@ -43,6 +43,24 @@ const acceptedNotices = [
   ],
 ] as const;
 
+const acceptedCrossListingNotices = [
+  [
+    "TENANT_DRAFT",
+    "Your saved draft is for another listing",
+    "Open the request dashboard to review or edit that saved draft before choosing another home.",
+  ],
+  [
+    "REQUEST_SUBMITTED|AGENT_REVIEWING|SLOT_PROPOSED",
+    "Your active request is for another listing",
+    "Open the request dashboard to review the existing home and its latest status.",
+  ],
+  [
+    "VIEWING_CONFIRMED|TENANT_DECLINED|EXPIRED|AGENT_DECLINED",
+    "Your recorded request is for another listing",
+    "Open the request dashboard to review the existing home and its completed status.",
+  ],
+] as const;
+
 test("listing detail has explicit truthful copy for every non-draft request state", () => {
   const detail = readFileSync(detailPath, "utf8");
 
@@ -66,4 +84,25 @@ test("listing detail preserves the existing request boundaries and dashboard han
   assert.match(detail, /<TenantRequestEditor/);
   assert.match(detail, /href="\/tenant\/requests"/);
   assert.match(detail, /Open request dashboard/);
+});
+
+test("cross-listing notice distinguishes draft, active, and terminal request states", () => {
+  const detail = readFileSync(detailPath, "utf8");
+
+  assert.match(detail, /requestTargetsAnotherListing/);
+  assert.match(detail, /request\.state/);
+
+  for (const [states, heading, copy] of acceptedCrossListingNotices) {
+    for (const state of states.split("|")) {
+      assert.match(detail, new RegExp(`case "${state}"`), `missing cross-listing state ${state}`);
+    }
+    assert.ok(detail.includes(heading), `missing cross-listing heading for ${states}`);
+    assert.ok(detail.includes(copy), `missing cross-listing copy for ${states}`);
+  }
+
+  assert.doesNotMatch(
+    detail,
+    /requestTargetsAnotherListing[\s\S]*Your active request is for another listing[\s\S]*: null/,
+    "cross-listing copy must not be unconditional",
+  );
 });

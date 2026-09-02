@@ -70,6 +70,11 @@ export type WorkflowResponseDto =
       tenantNote?: string;
     };
 
+export type TenantViewingSlotDto = {
+  startsAt: string;
+  endsAt: string;
+};
+
 export type WorkflowAvailabilitySlotDto = {
   id: string;
   listingId: string;
@@ -94,6 +99,7 @@ export type TenantRequestDto = {
   state: WorkflowRequestState;
   version: number;
   response?: WorkflowResponseDto;
+  viewingSlot?: TenantViewingSlotDto;
   proposalExpiresAt?: string;
 };
 

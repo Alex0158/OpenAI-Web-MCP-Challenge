@@ -12,10 +12,18 @@ import {
 import styles from "./agent.module.css";
 import AgentListingInterest from "./agent-listing-interest";
 
-const QUEUE_STATES = [
+type QueueState = keyof AgentQueueResponse["counts"];
+
+const ACTIVE_QUEUE_STATES = [
   "REQUEST_SUBMITTED",
   "AGENT_REVIEWING",
   "SLOT_PROPOSED",
+] as const;
+
+const TERMINAL_QUEUE_STATES = [
+  "VIEWING_CONFIRMED",
+  "TENANT_DECLINED",
+  "EXPIRED",
   "AGENT_DECLINED",
 ] as const;
 
@@ -37,7 +45,7 @@ export default function AgentDashboardPage() {
       currentPath="/agent"
       title="Your request queue"
       eyebrow="Property agent workspace"
-      description="Review the next request, compare the available times, and keep the human response explicit."
+      description="Track assigned requests, review active work, and keep recorded outcomes easy to understand."
     >
       <div className={styles.dashboardStack}>
         <AgentQueue />
@@ -77,7 +85,7 @@ function AgentQueue() {
       <div className={styles.workspaceHeader}>
         <div className={styles.headerCopy}>
           <p className="eyebrow">Assigned work</p>
-          <h2 id="queue-heading">See what needs a human response</h2>
+          <h2 id="queue-heading">Know where every request stands</h2>
           <p className="panel-copy">Scan the current states, then open one server-authorized request to review its facts and availability.</p>
         </div>
         <button
@@ -104,7 +112,7 @@ function AgentQueue() {
         </div>
       ) : null}
 
-      {isLoading ? <QueueLoading /> : queue ? <QueueContent queue={queue} /> : null}
+      {isLoading || isRefreshing ? <QueueLoading /> : !error && queue ? <QueueContent queue={queue} /> : null}
     </section>
   );
 }
@@ -130,22 +138,33 @@ function QueueLoading() {
 }
 
 function QueueContent({ queue }: { queue: AgentQueueResponse }) {
+  const activeRequests = queue.requests.filter((request) => isStateIn(request.state, ACTIVE_QUEUE_STATES));
+  const terminalRequests = queue.requests.filter((request) => isStateIn(request.state, TERMINAL_QUEUE_STATES));
+
   return (
     <>
-      <dl className={styles.metricGrid} aria-label="Request state counts">
-        {QUEUE_STATES.map((state) => (
-          <div className={styles.metric} data-state={state} key={state}>
-            <dt className={styles.metricLabel}>{STATE_LABELS[state]}</dt>
-            <dd>{queue.counts[state]}</dd>
+      <div className={styles.metricGroups}>
+        <section className={styles.metricGroup} aria-labelledby="active-states-heading">
+          <div className={styles.metricGroupHeader}>
+            <p className="eyebrow">Active workflow</p>
+            <h3 id="active-states-heading">Active request states</h3>
           </div>
-        ))}
-      </dl>
+          <QueueMetrics states={ACTIVE_QUEUE_STATES} counts={queue.counts} />
+        </section>
+        <section className={styles.metricGroup} aria-labelledby="terminal-states-heading">
+          <div className={styles.metricGroupHeader}>
+            <p className="eyebrow">Recorded outcomes</p>
+            <h3 id="terminal-states-heading">Completed request states</h3>
+          </div>
+          <QueueMetrics states={TERMINAL_QUEUE_STATES} counts={queue.counts} />
+        </section>
+      </div>
 
       <div className={styles.queueSection}>
         <div className={styles.sectionHeader}>
           <div>
-            <p className="eyebrow">Current work</p>
-            <h3>Requests assigned to you</h3>
+            <p className="eyebrow">Assigned requests</p>
+            <h3>Active work and recorded outcomes</h3>
           </div>
           <details className={styles.technicalDetails}>
             <summary>Queue details</summary>
@@ -153,40 +172,110 @@ function QueueContent({ queue }: { queue: AgentQueueResponse }) {
           </details>
         </div>
 
-        {queue.requests.length === 0 ? (
-          <div className={styles.emptyState} role="status">
-            <span className={styles.emptyMark} aria-hidden="true">—</span>
-            <div className={styles.emptyStateBody}>
-              <h3>No requests are waiting</h3>
-              <p className="panel-copy">The assigned queue is empty. Refresh when a tenant request is submitted.</p>
-            </div>
-          </div>
-        ) : (
-          <div className={styles.requestList}>
-            {queue.requests.map((request) => (
-              <a
-                className={styles.requestCard}
-                data-state={request.state}
-                href={`/agent/requests/${encodeURIComponent(request.id)}`}
-                key={request.id}
-              >
-                <span className={styles.requestCardTopline}>
-                  <span className={styles.statePill} data-state={request.state}>{STATE_LABELS[request.state]}</span>
-                  <span className={styles.requestVersion}>v{request.version}</span>
-                </span>
-                <span className={styles.requestCardBody}>
-                  <strong>Viewing request</strong>
-                  <span>Listing reference · {request.listingId}</span>
-                  <small>Request {request.id}</small>
-                </span>
-                <span className={styles.requestCardFooter}>Review request <span aria-hidden="true">→</span></span>
-              </a>
-            ))}
-          </div>
-        )}
+        <div className={styles.requestGroups}>
+          <RequestGroup
+            eyebrow="Active workflow"
+            title="Active requests"
+            requests={activeRequests}
+            emptyTitle={queue.requests.length === 0 ? "No assigned requests" : "No active requests"}
+            emptyCopy="Submitted, in-review, and proposal states appear here while the request remains non-terminal."
+          />
+          <RequestGroup
+            eyebrow="Recorded outcomes"
+            title="Request history"
+            requests={terminalRequests}
+            terminal
+            emptyTitle="No recorded outcomes"
+            emptyCopy="Confirmed, declined, and expired requests will remain available here as read-only context."
+          />
+        </div>
       </div>
     </>
   );
+}
+
+function QueueMetrics({
+  states,
+  counts,
+}: {
+  states: readonly QueueState[];
+  counts: AgentQueueResponse["counts"];
+}) {
+  return (
+    <dl className={styles.metricGrid} aria-label="Request state counts">
+      {states.map((state) => (
+        <div className={styles.metric} data-state={state} key={state}>
+          <dt className={styles.metricLabel}>{STATE_LABELS[state]}</dt>
+          <dd>{counts[state]}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+function RequestGroup({
+  eyebrow,
+  title,
+  requests,
+  terminal = false,
+  emptyTitle,
+  emptyCopy,
+}: {
+  eyebrow: string;
+  title: string;
+  requests: AgentQueueResponse["requests"];
+  terminal?: boolean;
+  emptyTitle: string;
+  emptyCopy: string;
+}) {
+  return (
+    <section className={styles.requestGroup} aria-labelledby={`${terminal ? "terminal" : "active"}-requests-heading`}>
+      <div className={styles.requestGroupHeader}>
+        <div>
+          <p className="eyebrow">{eyebrow}</p>
+          <h4 id={`${terminal ? "terminal" : "active"}-requests-heading`}>{title}</h4>
+        </div>
+      </div>
+      {requests.length === 0 ? (
+        <div className={styles.emptyState} role="status">
+          <span className={styles.emptyMark} aria-hidden="true">—</span>
+          <div className={styles.emptyStateBody}>
+            <h3>{emptyTitle}</h3>
+            <p className="panel-copy">{emptyCopy}</p>
+          </div>
+        </div>
+      ) : (
+        <div className={styles.requestList}>
+          {requests.map((request) => (
+            <a
+              className={styles.requestCard}
+              data-state={request.state}
+              data-terminal={terminal ? "true" : "false"}
+              href={`/agent/requests/${encodeURIComponent(request.id)}`}
+              key={request.id}
+            >
+              <span className={styles.requestCardTopline}>
+                <span className={styles.statePill} data-state={request.state}>{STATE_LABELS[request.state]}</span>
+                <span className={styles.requestVersion}>v{request.version}</span>
+              </span>
+              <span className={styles.requestCardBody}>
+                <strong>Viewing request</strong>
+                <span>Listing reference · {request.listingId}</span>
+                <small>Request {request.id}</small>
+              </span>
+              <span className={styles.requestCardFooter} data-terminal={terminal ? "true" : "false"}>
+                {terminal ? "View recorded request" : "Review request"} <span aria-hidden="true">→</span>
+              </span>
+            </a>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function isStateIn<T extends readonly string[]>(state: string, states: T): state is T[number] {
+  return states.includes(state);
 }
 
 function agentErrorMessage(error: unknown, surface: "queue" | "detail"): string {

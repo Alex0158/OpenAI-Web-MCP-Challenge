@@ -42,6 +42,7 @@ function AgentRequestWorkspace({ requestId }: AgentRequestPageProps) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [conflictNotice, setConflictNotice] = useState<string | null>(null);
   const [mutation, setMutation] = useState<"review" | "prepare" | "send" | null>(null);
   const [preparationKind, setPreparationKind] = useState<PreparationKind>("SLOT_PROPOSAL");
   const [selectedSlotId, setSelectedSlotId] = useState("");
@@ -53,6 +54,7 @@ function AgentRequestWorkspace({ requestId }: AgentRequestPageProps) {
     if (mode === "initial") setIsLoading(true);
     else setIsRefreshing(true);
     setError(null);
+    setConflictNotice(null);
 
     try {
       setDetail(await readAgentRequest(requestId));
@@ -84,6 +86,7 @@ function AgentRequestWorkspace({ requestId }: AgentRequestPageProps) {
 
   async function handleStartReview() {
     if (!detail) return;
+    setConflictNotice(null);
     setMutation("review");
     setError(null);
     setNotice(null);
@@ -133,6 +136,7 @@ function AgentRequestWorkspace({ requestId }: AgentRequestPageProps) {
           ...(tenantNote.length > 0 ? { tenantNote } : {}),
         };
 
+    setConflictNotice(null);
     setMutation("prepare");
     setError(null);
     setNotice(null);
@@ -154,6 +158,7 @@ function AgentRequestWorkspace({ requestId }: AgentRequestPageProps) {
 
   async function handleSend() {
     if (!detail?.request.preparedResponse) return;
+    setConflictNotice(null);
     setMutation("send");
     setError(null);
     setNotice(null);
@@ -175,10 +180,13 @@ function AgentRequestWorkspace({ requestId }: AgentRequestPageProps) {
 
   async function handleMutationError(caught: unknown) {
     if (caught instanceof AgentApiError && caught.status === 409) {
-      setError("The workflow changed before that action completed. The latest request state is shown below.");
       try {
-        setDetail(await readAgentRequest(requestId));
+        const refreshed = await readAgentRequest(requestId);
+        setDetail(refreshed);
+        setError(null);
+        setConflictNotice("The workflow changed before that action completed. The latest request state is shown below.");
       } catch (refreshError: unknown) {
+        setConflictNotice(null);
         setError(agentErrorMessage(refreshError, "detail"));
       }
       return;
@@ -211,16 +219,17 @@ function AgentRequestWorkspace({ requestId }: AgentRequestPageProps) {
         </div>
       </div>
 
-      {error || notice ? (
+      {error || notice || conflictNotice ? (
         <div className={styles.feedbackStack}>
           {error ? <StatusBanner tone="error" message={error} /> : null}
           {notice ? <StatusBanner tone="success" message={notice} /> : null}
+          {conflictNotice ? <StatusBanner tone="info" message={conflictNotice} /> : null}
         </div>
       ) : null}
 
-      {isLoading ? (
+      {isLoading || isRefreshing ? (
         <RequestLoading />
-      ) : detail ? (
+      ) : !error && detail ? (
         <>
           <RequestSummary detail={detail} />
           {detail.request.state === "REQUEST_SUBMITTED" ? (

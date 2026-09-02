@@ -41,12 +41,13 @@ test("tenant conflict recovery is parent-owned and truthful", () => {
   assert.match(listingPage, /requestNotice\.tone === "error" \? styles\.inlineError : styles\.inlineStatus/);
   assert.match(listingPage, /role=\{requestNotice\.tone === "error" \? "alert" : "status"\}/);
   assert.match(listingPage, /setRequestNotice\(null\)/);
-  assert.match(listingPage, /function applyRequestData\(nextData: TenantRequestResponse\)/);
+  assert.match(listingPage, /function applyRequestData\(nextData: TenantRequestResponse, successMessage\?: string\)/);
   const applyRequestData = listingPage.match(
-    /function applyRequestData\(nextData: TenantRequestResponse\) \{([\s\S]*?)\n  \}/,
+    /function applyRequestData\(nextData: TenantRequestResponse, successMessage\?: string\) \{([\s\S]*?)\n  \}/,
   )?.[1];
   assert.ok(applyRequestData, "missing listing request data acceptance function");
   assert.match(applyRequestData, /setRequestData\(nextData\);/);
+  assert.match(applyRequestData, /setRequestStatusMessage\(successMessage \?\? null\);/);
   assert.match(applyRequestData, /setRequestNotice\(null\);/);
   assert.match(listingPage, /onRequestData=\{applyRequestData\}/);
 

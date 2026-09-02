@@ -23,8 +23,8 @@ without treating that proposal as canonical authority
 - Next gate: `RIGHTSPOT-015` must implement and independently verify the Operations profile authority
   and reset boundary before any Operations projection consumer, route, API, UI, or WebMCP work begins.
 - Execution posture: `REVIEWED_ACCEPTED_CLOSED`; this task is independent of the closed Field Desk lane,
-  the closed `RIGHTSPOT-011` relay-only seam, and the unresolved Favourite/Information Request
-  proposals.
+  the closed `RIGHTSPOT-011` relay-only seam, the closed Favourite implementation, and the deferred
+  Information Request proposal.
 
 ## Why this task exists
 
@@ -45,9 +45,10 @@ accepted product truth:
   before any Agent/WebMCP interaction.
 - Use an application-owned deterministic Operations profile or equivalent governed authority instead
   of hard-coded dashboard counts, an external BI service, or a disconnected fake reporting database.
-- Keep the first query families narrow: upcoming viewings and listing pipeline. Favourite and
-  Information Request signals remain unavailable until `RIGHTSPOT-008` and `RIGHTSPOT-009` are jointly
-  reviewed and accepted.
+- Keep the first query families narrow: upcoming viewings and listing pipeline. The closed Favourite
+  implementation may be considered only where a later Operations consumer explicitly adopts its
+  bounded aggregate contract; Information Request signals remain unavailable while `RIGHTSPOT-009`
+  is deferred.
 - Keep external authentication, outbound communication, Cloud Receiver, WebMCP registration, and
   Re-entry integration out of this architecture proposal.
 
