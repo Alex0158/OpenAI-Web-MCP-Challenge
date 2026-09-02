@@ -106,12 +106,11 @@ No whole-system completion claim is made.
 ## 3. Exact commit SHA
 
 - Previous finalized verification-report commit: `e1beae65019ad85af120ee5126d45df48407ea5f`.
-- Root local HEAD before this report revision: `22e0f04ab80e7c2382abba0431cbe6e01b9ac309` on
-  `codex/eyad-reentry-core-foundation`. The root worktree is dirty with pre-existing collaborator
-  changes; the report file is clean at the start of this revision. The final report revision commit
-  is recorded separately in the handoff; no push or deployment is claimed.
-- Root remote readback: `77c9cbcd7d2dbb71ba62308c0b3a5e0e47805dac`. The local branch is 23 commits
-  ahead; no push or deployment is claimed here.
+- Root evidence-closure HEAD readback: `c1e84f79b6a4e3fe369cd0abb145b0c2d19ceb9e` on
+  `codex/eyad-reentry-core-foundation`. The root worktree remains dirty with pre-existing
+  collaborator changes; no push or deployment is claimed.
+- Root remote readback at that check: `77c9cbcd7d2dbb71ba62308c0b3a5e0e47805dac`. The local
+  branch was 26 commits ahead at the readback; no push or deployment is claimed here.
 - SDK production-code baseline: `77c9cbcd7d2dbb71ba62308c0b3a5e0e47805dac`, the last commit
   touching `runtime/host-sdk/src` before this evidence increment. SDK production code is unchanged.
 - Cloud Receiver exact test checkout: `300bce02e6a6f9b643a6de95a3596691304749b7`.
@@ -122,6 +121,8 @@ No whole-system completion claim is made.
 - SDK-owned full-chain test prepared in this increment:
   `runtime/host-sdk/test/cloud-receiver-v2.full-chain.contract.mjs`.
 - SDK full-chain test/evidence increment commit: `315c2a3c473e85365adaea5927a40e9a6a10062e`.
+- Latest report-clarification commit at the evidence-closure readback:
+  `c1e84f79b6a4e3fe369cd0abb145b0c2d19ceb9e`.
 - Initial verification report commit: `3d90820dda3ea327d5324d8baf478628d768aad1`.
 - Verification-report link commit: `2233c5214fae2a23908d4f36c6757f7440169ac5`.
 - Local Connector acknowledgement test harness: `ac62e724a010b855df8494ec6f57c071f614212d`.

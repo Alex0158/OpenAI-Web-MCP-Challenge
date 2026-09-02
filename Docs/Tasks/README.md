@@ -119,9 +119,6 @@ or perform a destructive action.
 - [TASK-001 — Select the Host application](TASK-001-select-host-application.md)
 - [TASK-003 — Productionize and deploy Cloud Receiver](TASK-003-productionize-and-deploy-cloud-receiver.md)
 
-- [TASK-022](TASK-022-prepare-sdk-v2-full-chain-integration.md) — Prepare and gate the SDK-to-Cloud
-  Receiver full-chain contract through Host-effect-backed acknowledgement.
-
 Discover all task records with:
 
 ```sh
