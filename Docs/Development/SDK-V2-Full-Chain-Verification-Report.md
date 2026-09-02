@@ -35,7 +35,7 @@ All tests below used Cloud Receiver commit `300bce02` unless stated otherwise.
 | Cloud Feature 6 HTTP/operations tests | **5/5 passed** |
 | Normal SDK suite | **18/18 passed** |
 | Normal Local Connector clean-counterpart baseline | **34/34 executed passed; 10 opt-in tests skipped** |
-| Current shared-tree Local Connector aggregate | **34/45 passed; 11 opt-in tests skipped** (includes an untracked collaborator E2E gate; not counterpart evidence) |
+| Current shared-tree Local Connector aggregate | **34/45 passed; 11 opt-in tests skipped** (includes a collaborator E2E gate; not clean-counterpart evidence) |
 | Prepared SDK full-chain gate `SDK-V2-E2E-001` | **Syntax passed; 1 gated test skipped; not run** |
 | SDK validators and sensitive-data scans | **6/6 validator tests; 3/3 sensitive-scan tests; sensitive-pattern scan passed** |
 | Repository validation | **Blocked by one pre-existing collaborator-owned finding: LOCAL-001 has no H1** |
@@ -121,6 +121,7 @@ No whole-system completion claim is made.
 - SDK evidence-index update: `0b32eac2c6ee81aa67495ea56b2f721ca92069ad`.
 - SDK-owned full-chain test prepared in this increment:
   `runtime/host-sdk/test/cloud-receiver-v2.full-chain.contract.mjs`.
+- SDK full-chain test/evidence increment commit: `315c2a3c473e85365adaea5927a40e9a6a10062e`.
 - Initial verification report commit: `3d90820dda3ea327d5324d8baf478628d768aad1`.
 - Verification-report link commit: `2233c5214fae2a23908d4f36c6757f7440169ac5`.
 - Local Connector acknowledgement test harness: `ac62e724a010b855df8494ec6f57c071f614212d`.
