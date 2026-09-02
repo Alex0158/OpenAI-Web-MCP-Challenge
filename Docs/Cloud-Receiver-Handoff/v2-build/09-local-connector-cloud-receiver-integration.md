@@ -364,4 +364,6 @@ The combined flow remains gated only by final cross-team execution and deploymen
 The accepted ACK-003 mapping is now explicit: malformed or far-future normalization returns
 `host_effect_invalid`; `host_effect_time_invalid` is reserved for a normalized effect outside the
 valid lease/Grant/revocation window. The Local Connector test and the Cloud handler agree, and the
-fresh-database ACK matrix is green. The SDK-owned E2E and deployed Receiver evidence remain open.
+fresh-database ACK matrix is green. Deployed/browser E2E remains unavailable because no authorized
+staging/production base URL or remote deployment evidence was provided; the deprecated hosted
+alias was not reused. The SDK-owned E2E and deployed Receiver evidence remain open.

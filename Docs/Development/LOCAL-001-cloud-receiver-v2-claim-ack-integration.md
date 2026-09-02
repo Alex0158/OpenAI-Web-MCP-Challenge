@@ -243,6 +243,10 @@ Cloud Receiver counterpart:
   `4b8215156d814551f8da06dad16319deaff549d7`; provide the staging/production endpoint, SHA,
   database, TLS, and secret-custody evidence next. Do not add a fallback route, hidden retry, or
   alternate transport.
+- **Deployment/release owner:** provide an authorized HTTPS staging or production base URL before
+  any deployed test. `REENTRY_RECEIVER_ORIGIN`, `CLOUD_RECEIVER_V2_BASE_URL`,
+  `CLOUD_RECEIVER_PREVIEW_URL`, `CLOUD_RECEIVER_PRODUCTION_URL`, and `RECEIVER_PUBLIC_URL` were
+  unset in this run. The former hosted alias is deprecated and was not reused.
 - **SDK/Host team:** provide the clean Host SDK counterpart SHA and an independent
   Host-effect authority fixture. Next gate: run `SDK-V2-E2E-001`, verify terminal durable
   `acknowledged` state, then replay the exact acknowledgement.
@@ -286,6 +290,7 @@ matches Cloud `29cdfa4ab4af329d39af361fa3a0a1dc33eab919`:
   host_effect_time_invalid`.
 
 The Local fresh-database ACK matrix and exact-counterpart full opt-in aggregate are green. A
-deployed E2E is unavailable because no staging/preview URL or remote deployment evidence was
-provided. The SDK-owned cross-team E2E, staging/production evidence, and final deployment remain
-open; no whole-system or deployed completion claim is made.
+deployed/browser E2E is unavailable because no authorized staging/preview base URL or remote
+deployment evidence was provided; only the local loopback counterpart was reachable. The
+SDK-owned cross-team E2E, staging/production evidence, and final deployment remain open; no
+whole-system or deployed completion claim is made.
