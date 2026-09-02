@@ -7,8 +7,9 @@ bounded Favourite increment, deferred the PII-sensitive Information Request boun
 `RIGHTSPOT-020`; its initial serial contract/data Work Order `RS-WO-020-01` and follow-up
 `RS-WO-020-01R` relation-version continuity repair are independently verified, with the repair frozen at
 `adfd37e`. The disjoint tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched,
-adopted into Main at product commit `c29e80d`, and passed dependency-complete typecheck, full-suite `121/121`,
-and production-build checks; independent verification remains the next gate.
+adopted into Main at product commit `c29e80d`, passed dependency-complete typecheck, full-suite `121/121`,
+production-build checks, and `RS-WO-020-04` independent verification at Main `c977ea4`; fresh-reset browser
+verification remains the next gate.
 `RS-WO-005-01` has passed corrected independent verification and is integrated at local product
 commit `27f5391`; `RS-WO-007-01` is accepted as a read-only UI decomposition and `RS-WO-007-02` has
 passed final independent browser verification and is integrated at product commit `89a50c7` after
@@ -99,8 +100,8 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 ### 3.1 Current next route
 
 The accepted local MVP and the earlier Phase 6 post-MVP closure increment are complete. The current
-`RIGHTSPOT-020` route is at the frozen-source independent verification gate after a bounded implementation
-sequence:
+`RIGHTSPOT-020` route is at the fresh-reset browser verification gate after bounded implementation and
+independent static verification:
 
 1. Keep the reviewed documentation/procedure baseline and unrelated collaborator changes separate.
 2. Implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; the
@@ -108,18 +109,20 @@ sequence:
 3. Dispatch tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` in parallel with their
    declared disjoint paths; adopt both candidates into Main and serialize shared navigation, listing-card/
    detail integration, and global CSS.
-4. Freeze the integrated product source at `c29e80d`, independently verify it, then reconcile the evidence;
-   the two temporary UI Worktrees were already retired after Main adoption at the first safe
-   checkpoint-scoped opportunity.
-5. Keep the reviewed `RIGHTSPOT-009` Information Request proposal deferred until contact/PII authority,
+4. Freeze the integrated product source at `c29e80d`; `RS-WO-020-04` independently verified Main `c977ea4`,
+   and the two temporary UI Worktrees were retired after Main adoption at the first safe checkpoint-scoped
+   opportunity.
+5. Dispatch the bounded `RS-WO-020-05` fresh-reset browser verification, then reconcile its evidence before
+   closing `RIGHTSPOT-020`; do not infer browser, deployment, or external-integration claims from static gates.
+6. Keep the reviewed `RIGHTSPOT-009` Information Request proposal deferred until contact/PII authority,
    retention, erasure, and agent-access decisions are accepted; it must not enter `RIGHTSPOT-020`.
-6. Keep `RIGHTSPOT-006` outside the implementation lane until the explicit external credential and
+7. Keep `RIGHTSPOT-006` outside the implementation lane until the explicit external credential and
    local-origin gate is authorized. It is a separate high-risk lane and must not block ordinary product
    progress.
-7. Review `RIGHTSPOT-010` later, after its proposal is dispositioned and the product value of an
+8. Review `RIGHTSPOT-010` later, after its proposal is dispositioned and the product value of an
    Operations or WebMCP surface is explicitly selected. Its proposal does not authorize WebMCP or
    dashboard implementation.
-8. Keep `RIGHTSPOT-012` as a non-blocking, read-only audit lane. It may identify follow-on work but
+9. Keep `RIGHTSPOT-012` as a non-blocking, read-only audit lane. It may identify follow-on work but
    does not itself constitute a product implementation milestone.
 
 Only an explicitly selected, implementation-ready Task opens a new code Work Order or temporary

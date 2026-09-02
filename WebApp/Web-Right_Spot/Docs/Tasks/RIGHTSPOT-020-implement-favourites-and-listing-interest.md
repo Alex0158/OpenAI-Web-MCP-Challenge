@@ -11,15 +11,17 @@
 
 - Type: `implementation`
 - Lifecycle: `in_progress`
-- Execution posture: `UI_INTEGRATED_PENDING_VERIFICATION`
++- Execution posture: `BROWSER_VERIFICATION_GATED`
 - Current increment: The pre-UI relation-version continuity repair is independently verified at
   `adfd37e`; both disjoint UI candidates have completed their Builder turns, passed T2 exact-path/diff
   review, and are adopted in Main together with the serialized shared navigation integration at product
   commit `c29e80d`. Main's dependency-complete typecheck, full suite, and production build pass;
-  independent verification is the remaining gate.
-- Next gate: Dispatch one independent read-only Verifier against frozen product source `c29e80d`, then
-  reconcile the verification evidence. The two short-lived candidate Worktrees were already retired
-  after exact-path review; only Main remains as the current source authority.
+  independent integrated-source verification `RS-WO-020-04` passed against Main `c977ea4`; fresh-reset
+  browser evidence is now the remaining acceptance gate.
+- Next gate: Dispatch the independent read-only browser Verifier `RS-WO-020-05` against the frozen
+  post-registration Main baseline, then reconcile browser evidence and close the bounded increment if all
+  acceptance criteria pass. The two short-lived candidate Worktrees were already retired after exact-path
+  review; only Main remains as the current source authority.
 - Parent role: This is one registered Task File. Builder, Verifier, Repairer, and Integrator are
   checkpoints under this file, not additional Tasks.
 
@@ -317,7 +319,7 @@ baseline.
 ### RS-WO-020-04 — Independent integrated-source verification
 
 **Role:** Read-only integrated-source Verifier  
-**Status:** `GATED` — ready to dispatch from the reconciled Main baseline  
+**Status:** `VERIFIED` — independent static verification passed  
 **Parallelization:** `SERIAL_AFTER_INTEGRATION` — the product source is frozen for this checkpoint; no
 other product writer or verifier may change the verified source until this checkpoint closes  
 **Execution mode:** Shared canonical Main Worktree, read-only; no candidate Worktree is required or permitted  
@@ -327,6 +329,20 @@ owner-held RightSpot `AGENTS.md`, `CLAUDE.md`, and `Docs/Reference/` untracked c
 of the product source under verification and must not be staged, restored, deleted, or otherwise changed.  
 **Ownership:** The Verifier may inspect and execute checks only. Main owns any interpretation, canonical
 writeback, repair, browser evidence, and Git closure.
+**Supporting task:** `RightSpot RS-WO-020-04 integrated source verifier`, task/thread
+`01a05fad-77b5-7570-bbac-0d626885297e`, host `local`.
+
+#### Verification result
+
+The independent Verifier returned `VERIFIED` against Main `c977ea4fd8487c515c353e7e0ed7f3d39418ad26`.
+It confirmed the canonical repository root and the only remaining Worktree, Node `v24.20.0`, npm
+`11.19.0`, product implementation `c29e80d`, and a read-only Main source boundary. The required
+typecheck, focused Favourite/UI plus tenant/agent API suite `28/28`, full direct suite `121/121`,
+production build, validators `6/6`, sensitive tests `3/3`, repository validation, sensitive-pattern
+scan, and `git diff --check` all passed. The product/source/test/package aggregate and `next-env.d.ts`
+remained byte-identical during verification; only permitted ignored `.next/` build output was produced.
+The report confirmed the accepted role/privacy projection boundary and made no browser, deployment,
+WebMCP, Cloud Receiver, external-authentication, or production-privacy claim.
 
 #### Objective
 
@@ -380,6 +396,50 @@ file changes during the checkpoint are detected, a required check needs a write 
 or the result requires interpreting a scope/contract change. Do not install dependencies, edit files,
 stage/commit, move refs, create/remove Worktrees, or broaden the verification surface.
 
+### RS-WO-020-05 — Fresh-reset browser verification
+
+**Role:** Independent read-only browser Verifier  
+**Status:** `GATED` — dispatch after this process record is committed and a fresh exact baseline is captured  
+**Parallelization:** `SERIAL_AFTER_RS-WO-020-04` — browser evidence uses the static-verified integrated source;
+no product writer may change the source during the browser checkpoint  
+**Execution mode:** Dedicated browser session against a locally served frozen Main source; no code Worktree
+or source writer is permitted. Runtime state and generated output must remain within the documented RightSpot
+boundary.  
+**Source baseline:** Capture and record the full Main `HEAD` immediately before dispatch; the product source
+must remain the accepted `c29e80d` change set.  
+**Ownership:** The browser Verifier records observed UI evidence only. Main owns server lifecycle, any
+interpretation, canonical writeback, Git closure, and any repair.
+
+#### Objective
+
+Prove the accepted Favourite/listing-interest browser Happy Path from a fresh reset without expanding
+the product scope: tenant discovery/detail save and remove, Favourite-list reload and re-save continuity,
+unavailable-listing representation, and the assigned agent's listing-level interest summary.
+
+#### Required walkthrough
+
+1. Confirm the exact repository/source identity, pinned runtime, local server identity, fresh browser context,
+   and a fresh isolated RightSpot database at fixture generation `1` using the documented local procedure.
+2. As the synthetic tenant, enter the tenant workspace, view the seeded listings, save `listing-primary`
+   from discovery or detail, open the Favourite list, remove it, reload the Favourite projection, and
+   save it again. Record the visible state and relevant URLs.
+3. Confirm an unavailable/unpublished Favourite remains represented as unavailable and removable while it
+   is excluded from the agent's `Available interest` count and retained in `Current saves`.
+4. In an independent fresh session, enter the synthetic assigned-agent workspace and confirm only the
+   listing-level `Current saves` and `Available interest` projection is visible; no tenant identity,
+   contact value, or private note may appear.
+5. Record browser console/error evidence, exact server/runtime/database boundary, and post-run source/status
+   comparison. Stop if the browser harness requires a tracked-file mutation, cannot establish the frozen
+   source, or needs external auth/deployment/WebMCP/Cloud Receiver behavior.
+
+#### Forbidden actions and claim limits
+
+Do not edit source, tests, package files, docs, `.gitignore`, generated configuration, or owner-held files;
+do not stage, commit, push, reset, clean, delete, create/remove Worktrees, or change Git refs. Do not
+claim production, deployment, WebMCP, Cloud Receiver, external authentication, or production privacy
+evidence. A browser run that changes a tracked file or writes outside the documented RightSpot generated
+set is `BLOCKED` even when the visible flow passes.
+
 ## Acceptance criteria
 
 1. From a fresh reset, the tenant can save one published listing, see it in the Favourite list, remove
@@ -415,5 +475,6 @@ Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched in parallel, their exac
 were adopted into Main, the shared navigation integration was serialized in Main, and the two short-lived
 candidate Worktrees were retired after exact-path review. Dependency-
 complete Main verification now reports typecheck pass, full suite `121/121`, and production build pass;
-one independent read-only Verifier remains before closure. No browser, deployment, production privacy,
-WebMCP, Cloud Receiver, or external-auth evidence is claimed.
+independent static verification `RS-WO-020-04` returned `VERIFIED` against Main `c977ea4`. Fresh-reset
+browser verification `RS-WO-020-05` remains before closure. No deployment, production privacy, WebMCP,
+Cloud Receiver, or external-auth evidence is claimed.

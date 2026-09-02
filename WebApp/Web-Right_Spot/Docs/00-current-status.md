@@ -56,7 +56,8 @@ boundary repair and completed browser/form regression, and is closed.
 `RS-WO-020-01R` tenant Favourite relation-version continuity repair are independently verified; both
 UI candidates from `RS-WO-020-02` and `RS-WO-020-03` are adopted in Main with shared navigation at
 product commit `c29e80d`, and Main typecheck, full suite `121/121`, and production build pass.
-Independent verification remains open; checkpoint-scoped Worktree retirement is complete.
+`RS-WO-020-04` independently verified the frozen Main source at `c977ea4`; fresh-reset browser evidence
+remains the only acceptance gate, and checkpoint-scoped Worktree retirement is complete.
 The bounded Operations seam `RS-WO-011-01` passed independent verification and is integrated at
 product commit `7ff0fbd`; its verifier evidence remains recorded in the owning Task File, and its
 physical Worktree was removed during the documented cleanup.
@@ -308,8 +309,9 @@ closed parent or override the current closure statement above.
 ## 5.1 Current post-MVP route
 
 The accepted local MVP and the Phase 6 post-MVP closure increment are complete. The current bounded
-`RIGHTSPOT-020` implementation lane has passed its pre-UI repair gate and T2 UI adoption; the integrated
-source now awaits one frozen-source independent verification:
+`RIGHTSPOT-020` implementation lane has passed its pre-UI repair gate, T2 UI adoption, and the frozen-source
+independent verification `RS-WO-020-04` at Main `c977ea4`; the integrated source now awaits one fresh-reset
+browser verification:
 
 1. keep the reviewed documentation/procedure baseline and unrelated collaborator work separate;
 2. implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; the
@@ -318,7 +320,7 @@ source now awaits one frozen-source independent verification:
    adopted in Main after exact-path review;
 4. serialize shared navigation, listing-card/detail integration, global CSS, source freeze, Main
    integration, independent verification, and Worktree retirement; the current frozen product source
-   is `c29e80d`.
+   is `c29e80d`, with static verification recorded at Main `c977ea4`.
 5. keep the reviewed `RIGHTSPOT-009` Information Request proposal deferred until its contact/PII
    authority decisions are accepted; it must not be absorbed into `RIGHTSPOT-020`;
 6. keep `RIGHTSPOT-006` gated on explicit external credentials and local-origin authorization;
