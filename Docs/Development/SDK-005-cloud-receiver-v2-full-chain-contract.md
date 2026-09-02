@@ -1,6 +1,6 @@
 # SDK-005 — Cloud Receiver v2 Full Host-to-Acknowledgement Contract
 
-**Status:** `verification_pending` — SDK Host/Event/Claim gates pass against Cloud `300bce02`; Cloud Feature 5/6 tests pass `10/10`; received Acknowledgement is now `5/5` after the approved ACK-003 mapping; combined flow remains open pending the exact clean Cloud SHA and effect-authority gate
+**Status:** `verification_pending` — SDK, Cloud, Local Connector, and the local full-chain contract pass against pinned commits; publication and separately spawned real-browser/Connector-process evidence remain open
 **Date:** 2026-09-02
 **Owner:** SDK development team
 **Task:** [TASK-022](../Tasks/TASK-022-prepare-sdk-v2-full-chain-integration.md)
@@ -14,16 +14,17 @@ Receiver setup/status calls, and owns the browser consent handoff. It does not c
 verify a Host effect, or acknowledge a delivery. Those operations belong to the Cloud Receiver and
 Local Connector, and their contracts are included here so the teams can run one compatible flow.
 
-The SDK production source remains unchanged for this increment. No public Grant inspection or
-revocation route is added or assumed; internal test-only Grant control remains governed by ADR-0013.
+The Host SDK production source was updated only through the project-manager-authorized source-owner
+fix for the missing Consent integration APIs. No public Grant inspection or revocation route is
+added or assumed; internal test-only Grant control remains governed by ADR-0013.
 
 ### SDK compatibility surface
 
 - Package: `@4xeoz/re-entry-sdk@0.3.0`.
 - Supported runtime: Node.js `>=24`; the current verification runtime is Node.js `v26.8.1` with
   npm `11.19.0`.
-- Clean SDK production-code baseline: `77c9cbcd7d2dbb71ba62308c0b3a5e0e47805dac`; no files under
-  `runtime/host-sdk/src/` changed in this increment.
+- SDK production/source commit: `1f308cfdcadc09b99aa16741ccc362542bc6f186`; it contains the
+  Host Consent integration APIs and focused tests/docs authorized for this release gate.
 - Public entrypoints remain `@4xeoz/re-entry-sdk/server`, `@4xeoz/re-entry-sdk/client`, and
   `@4xeoz/re-entry-sdk/next`. The exact Host-key, Consent, browser, and Event request/response
   contracts remain the existing `SDK-V2-001`–`004` and `SDK-V2-EVENT-001`–`007` gates below.
@@ -48,21 +49,21 @@ claimed, activated, effected, or acknowledged.
 
 | ID | Boundary | Required assertion | Current state |
 |---|---|---|---|
-| `SDK-V2-001` | SDK `registerHostKey()` -> Receiver | Exact public-key registration request, `201` first result, `200` idempotent result, bounded identity envelope | Existing Feature 2 gate; rerun against the exact current Cloud checkout |
-| `SDK-V2-002` | SDK `createConsentSession()` -> Receiver | Signed Manifest, organization authentication, opaque consent URL/session envelope, no raw token field | Existing Feature 2 gate; rerun against the exact current Cloud checkout |
-| `SDK-V2-003` | SDK `getConsentSession()` -> Receiver | Pending and approved status; approved binding contains no Connector/target/private values | Existing Feature 2 gate; rerun against the exact current Cloud checkout |
-| `SDK-V2-004` | Receiver consent page -> browser SDK | Exact-origin, exact-popup completion event for approve and decline; no private data | Existing Feature 2 gate; rerun against the exact current Cloud checkout |
-| `SDK-V2-EVENT-001` | SDK `sendEvent()` -> `/v0.1/events` | Canonical signed envelope, no organization API key, `202` continuation acceptance only | Existing Feature 3 gate; rerun against the exact current Cloud checkout |
-| `SDK-V2-EVENT-002` | Identical Event replay | Same identifiers and `202`, `duplicate: true`, no second delivery or Grant run consumption | Existing Feature 3 gate; rerun against the exact current Cloud checkout |
-| `SDK-V2-EVENT-003..007` | Invalid Event/Grant inputs | Exact bounded signature, expiry, revocation, origin, and sequence errors with no mutation | Existing Feature 3 gate; rerun against the exact current Cloud checkout |
-| `SDK-V2-CLAIM-001..005` | Received Connector client -> `/v0.1/delivery-claims` | Exact body, target scope, lease/replay/expiry/exhaustion behavior, durable digest-only state | `5/5` passed against exact Cloud `300bce02` and fresh PostgreSQL |
-| `SDK-V2-ACK-001` | Connector success without effect proof | Delivery remains `leased`; adapter/Agent success is not acknowledgement | Passed in received run against exact Cloud `300bce02` |
-| `SDK-V2-ACK-002` | Connector + configured Host-effect authority -> `/v0.1/delivery-acknowledgements` | Exact context-bound effect attestation, one atomic `200` acknowledgement | Passed in received run against exact Cloud `300bce02` |
+| `SDK-V2-001` | SDK `registerHostKey()` -> Receiver | Exact public-key registration request, `201` first result, `200` idempotent result, bounded identity envelope | `4/4` Host matrix passed against clean Cloud `29cdfa4` |
+| `SDK-V2-002` | SDK `createConsentSession()` -> Receiver | Signed Manifest, organization authentication, opaque consent URL/session envelope, no raw token field | `4/4` Host matrix passed against clean Cloud `29cdfa4` |
+| `SDK-V2-003` | SDK `getConsentSession()` -> Receiver | Pending and approved status; approved binding contains no Connector/target/private values | `4/4` Host matrix passed against clean Cloud `29cdfa4` |
+| `SDK-V2-004` | Receiver consent page -> browser SDK | Exact-origin, exact-popup completion event for approve and decline; no private data | `4/4` Host matrix passed against clean Cloud `29cdfa4` |
+| `SDK-V2-EVENT-001` | SDK `sendEvent()` -> `/v0.1/events` | Canonical signed envelope, no organization API key, `202` continuation acceptance only | `7/7` Event matrix passed against clean Cloud `29cdfa4` |
+| `SDK-V2-EVENT-002` | Identical Event replay | Same identifiers and `202`, `duplicate: true`, no second delivery or Grant run consumption | `7/7` Event matrix passed against clean Cloud `29cdfa4` |
+| `SDK-V2-EVENT-003..007` | Invalid Event/Grant inputs | Exact bounded signature, expiry, revocation, origin, and sequence errors with no mutation | `7/7` Event matrix passed against clean Cloud `29cdfa4` |
+| `SDK-V2-CLAIM-001..005` | Received Connector client -> `/v0.1/delivery-claims` | Exact body, target scope, lease/replay/expiry/exhaustion behavior, durable digest-only state | `5/5` passed against built exact Cloud `29cdfa4` and fresh PostgreSQL |
+| `SDK-V2-ACK-001` | Connector success without effect proof | Delivery remains `leased`; adapter/Agent success is not acknowledgement | Passed in received run against exact Cloud `29cdfa4` |
+| `SDK-V2-ACK-002` | Connector + configured Host-effect authority -> `/v0.1/delivery-acknowledgements` | Exact context-bound effect attestation, one atomic `200` acknowledgement | Passed in received run against exact Cloud `29cdfa4` |
 | `SDK-V2-ACK-003` | Invalid/stale/mismatched effect or lease | Stable `4xx`; no acknowledgement or overwrite | Passed after the approved mapping: future/malformed normalization returns `403 host_effect_invalid`; valid-but-out-of-window effects use `403 host_effect_time_invalid` |
-| `SDK-V2-ACK-004` | Identical acknowledgement replay | Same result with `duplicate: true`; no second effect or state transition | Passed in received run against exact Cloud `300bce02` |
-| `SDK-V2-ACK-005` | Different effect or wrong Connector | Stable conflict/identity error; original attestation remains | Passed in received run against exact Cloud `300bce02` |
-| `SDK-V2-HTTP-001..005` | All SDK/Connector HTTP boundaries | Bounded JSON, size limits, no redirect, no-store, stable errors, health/readiness, secret-free logs | Cloud Feature 6 test file `5/5` passed against exact Cloud `300bce02` |
-| `SDK-V2-E2E-001` | Host SDK -> Receiver -> Connector -> Host effect -> acknowledgement | Complete response sequence and durable terminal `acknowledged` state, then exact acknowledgement replay | Prepared in `cloud-receiver-v2.full-chain.contract.mjs`; blocked only by the exact clean Cloud counterpart and effect-authority gate |
+| `SDK-V2-ACK-004` | Identical acknowledgement replay | Same result with `duplicate: true`; no second effect or state transition | Passed in received run against exact Cloud `29cdfa4` |
+| `SDK-V2-ACK-005` | Different effect or wrong Connector | Stable conflict/identity error; original attestation remains | Passed in received run against exact Cloud `29cdfa4` |
+| `SDK-V2-HTTP-001..005` | All SDK/Connector HTTP boundaries | Bounded JSON, size limits, no redirect, no-store, stable errors, health/readiness, secret-free logs | Included in Cloud backend `42/42` regression against exact Cloud `29cdfa4` |
+| `SDK-V2-E2E-001` | Host SDK -> Receiver -> Connector -> Host effect -> acknowledgement | Complete response sequence and durable terminal `acknowledged` state, then exact acknowledgement replay | `1/1` passed against exact Cloud `29cdfa4` and Local `4b821515` |
 
 The existing SDK test sources remain the executable SDK-owned coverage:
 
@@ -483,20 +484,20 @@ CLOUD_RECEIVER_V2_FULL_CHAIN=1 \
   node --test test/cloud-receiver-v2.full-chain.contract.mjs
 ```
 
-### Current source blocker
+### Final counterpart and release blockers
 
-Cloud HEAD remains `300bce02e6a6f9b643a6de95a3596691304749b7`, which includes Features 4, 5, and 6,
-all six committed Prisma migrations, `/v0.1/delivery-acknowledgements`, `/healthz`, and `/readyz`.
-The last clean readback was three commits ahead of remote `origin/main` at
-`b851c320fae0505e3cf098f979d149e04ab44310`; the current Cloud worktree has uncommitted dashboard
-and pairing files, so it is not yet the clean release counterpart for E2E. This remains local
-checkout evidence, not pushed, deployed, or public-runtime evidence.
+Cloud Receiver final exact test commit is
+`29cdfa4ab4af329d39af361fa3a0a1dc33eab919`, on top of
+`6f4b35fc6cfb0d9a6a134a69264e5ebb4277a50a`. It was tested from a clean detached worktree after
+`npm run build` and `npm run type-check`; its backend regression passed `42/42` across 11 suites.
+The Cloud nested `main` branch is five commits ahead of remote
+`b851c320fae0505e3cf098f979d149e04ab44310`; the final commit is local-only evidence, not pushed,
+deployed, or public-runtime evidence.
 
-Cloud's own Feature 5 acknowledgement and Feature 6 transport/operations tests pass `10/10` on
-the tested backend. After the project-manager decision, the Local Connector acknowledgement matrix
-passes `5/5` on Local test commit
-`4b8215156d814551f8da06dad16319deaff549d7`, including `ACK-003` with
-`403 host_effect_invalid` for malformed/far-future normalization. The accepted split retains
+The received Local Connector Claim and Acknowledgement matrices pass `5/5` each against the final
+Cloud commit and fresh PostgreSQL on Local test commit
+`4b8215156d814551f8da06dad16319deaff549d7`. `ACK-003` uses the accepted split:
+`403 host_effect_invalid` for malformed/far-future normalization and
 `403 host_effect_time_invalid` for a normalized effect outside the valid lease/Grant/revocation
 window.
 
@@ -530,71 +531,75 @@ CLOUD_RECEIVER_V2_ACK_CONTRACT=1 \
   node --test runtime/local-connector/test/cloud-receiver-v2-ack.contract.mjs
 ```
 
-Green result: exit `0`, `5` passed, `0` failed, `0` skipped. No SDK production source or fallback
-was added.
+Green result: exit `0`, `5` passed, `0` failed, `0` skipped. No SDK production fallback or
+protocol route was added by that ACK mapping rerun.
 
 No SDK production fallback, guessed effect token, direct database mutation, v1 route, polling, or
-alternate transport was added. The combined test remains open until Cloud supplies a clean tested
-SHA, real browser/runtime reachability is evidenced, and the exact Host SDK -> Receiver -> Connector
--> Host effect -> acknowledgement flow is run.
+alternate transport was added. The exact combined contract passed against the pinned commits. Its
+test uses the real Local Connector implementation in-process and a fake browser DOM/window around
+the real consent HTTP page; separately spawned Local Connector-process and external real-browser
+evidence remain open.
 
 ## 8. Executed verification — 2026-09-02
 
-The tested Cloud Receiver backend is at `300bce02e6a6f9b643a6de95a3596691304749b7`; its nested
-remote readback remains `b851c320fae0505e3cf098f979d149e04ab44310`, while the current Cloud
-worktree is dirty in frontend-only files. Runtime evidence is Node `v26.8.1`, npm `11.19.0`, and
-PostgreSQL `14.18` on `127.0.0.1:55440`. Each focused run used a separate disposable database and
-all six committed migrations. The database process remains available for the pending Cloud work;
-it will be stopped before SDK closure.
+The final tested Cloud Receiver backend is at `29cdfa4ab4af329d39af361fa3a0a1dc33eab919`, with
+remote readback `b851c320fae0505e3cf098f979d149e04ab44310`; it was exercised from a clean detached
+worktree after build. Runtime evidence is Node `v26.8.1`, npm `11.19.0`, and PostgreSQL `14.18` on
+`127.0.0.1:55440`. Each final focused run used a separate disposable database and all six committed
+Prisma migrations.
 
-- `SDK-V2-001` through `SDK-V2-004`: `4/4` passed against Cloud `300bce02` using
-  `sdk_receiver_300bce_sdk`.
-- `SDK-V2-EVENT-001` through `SDK-V2-EVENT-007`: `7/7` passed against Cloud `300bce02` using
-  `sdk_receiver_300bce_event`. This includes the signed envelope, no organization API key on
-  `/v0.1/events`, `202` acceptance-only semantics, duplicate replay, invalid signature,
+- `SDK-V2-001` through `SDK-V2-004`: `4/4` passed using
+  `sdk_receiver_29cdf_host_20260902`.
+- `SDK-V2-EVENT-001` through `SDK-V2-EVENT-007`: `7/7` passed using
+  `sdk_receiver_29cdf_event_20260902`. This includes the signed envelope, no organization API key
+  on `/v0.1/events`, `202` acceptance-only semantics, duplicate replay, invalid signature,
   expired/revoked Grant, wrong origin, invalid Event, and no-mutation assertions.
-- Received `CONNECTOR-V2-CLAIM-001` through `CONNECTOR-V2-CLAIM-005`: `5/5` passed against Cloud
-  `300bce02` using `sdk_receiver_300bce_claim`.
-- Received `CONNECTOR-V2-ACK-001` through `CONNECTOR-V2-ACK-005`: `5/5` passed against Cloud
-  `300bce02` using fresh database `sdk_receiver_300bce_ack_green_20260902` and Local test commit
-  `4b821515`.
-- Cloud Feature 5 acknowledgement tests: `5/5` passed using `sdk_receiver_300bce_http`.
-- Cloud Feature 6 HTTP/operations tests: `5/5` passed using `sdk_receiver_300bce_http`.
-- Normal SDK verification: `npm run verify` passed `18/18` with syntax checks green.
+- Received `CONNECTOR-V2-CLAIM-001` through `CONNECTOR-V2-CLAIM-005`: `5/5` passed using built
+  Cloud `29cdfa4` and `sdk_receiver_29cdf_claim_built_20260902`.
+- Received `CONNECTOR-V2-ACK-001` through `CONNECTOR-V2-ACK-005`: `5/5` passed using
+  `sdk_receiver_29cdf_ack_20260902` and Local test commit `4b821515`.
+- `SDK-V2-E2E-001`: `1/1` passed using `sdk_receiver_29cdf_e2e_20260902`. It verified the
+  Host-key/Consent/Event sequence, delivery claim, effect authority, durable terminal
+  `acknowledged` state, secret-free persistence, and exact acknowledgement replay with
+  `duplicate: true`.
+- Independent project-manager rerun of `SDK-V2-E2E-001`: `1/1` passed on
+  `sdk_receiver_pm_full_chain_20260902_1` against the same pinned Cloud and Local SHAs, including
+  Receiver restart and exact acknowledgement replay.
+- Cloud backend regression: `42/42` passed across 11 suites using
+  `sdk_receiver_29cdf_cloud_built_20260902`; `npm run build` and `npm run type-check` passed first.
+- Normal SDK verification: `npm run verify` passed `18/18` from SDK commit `1f308cfd`.
 - `npm pack --dry-run --json` passed using task-local cache
   `/private/tmp/sdk-v2-npm-cache-20260902`; it reported a 21-file bundled package for
   `@4xeoz/re-entry-sdk@0.3.0`.
 - `npm whoami --registry=https://registry.npmjs.org/` returned `401 Unauthorized`; no publication
   was attempted.
-- Normal Local Connector verification: syntax passed for `28` modules and `34/34` executed tests;
-  its `10` opt-in Claim/Acknowledgement tests remain skipped without their database gates.
-- Repository governance checks passed: `test_validators.py`, `test_sensitive_scan.py`,
-  `validate_repository.py --root .`, and `scan_sensitive_patterns.py --root .`.
 
-Earlier environment-only attempts are retained as evidence: the mutable mixed Cloud worktree
-produced setup/Prisma failures, and the first new exact-checkout Local Connector run was blocked by
-unprivileged loopback access (`connect EPERM`). Neither is treated as a protocol result; the
-privileged rerun above is the current result.
+The initial unbuilt Cloud attempt was `39/41` with two restart tests failing because
+`backend/dist/index.js` was absent from the clean worktree. After the exact checkout was built,
+the fresh-database rerun passed `41/41` at `6f4b35fc`; the final `29cdfa4` rerun passed `42/42`.
+These are environment prerequisites, not protocol mismatches.
 
 ## 9. Evidence status
 
 | Evidence | Status |
 |---|---|
-| Existing SDK Host-key/consent/status/browser gate | `4/4` passed against exact Cloud `300bce02` and fresh PostgreSQL |
-| Existing SDK Event gate | `7/7` passed against exact Cloud `300bce02` and fresh PostgreSQL |
-| Cloud Feature 4 Claim compatibility | Received matrix `5/5` passed against exact Cloud `300bce02` and fresh PostgreSQL |
-| Cloud Feature 5 Acknowledgement | Cloud own tests `5/5`; received Local Connector matrix `5/5` after the approved ACK-003 mapping |
-| Cloud Feature 6 HTTP/operations | `5/5` Cloud tests passed against exact Cloud `300bce02` and fresh PostgreSQL |
-| Combined Host SDK -> Receiver -> Connector -> effect -> acknowledgement | Not run; remains open until a clean Cloud SHA, real browser/runtime reachability, and the effect authority are available |
+| SDK Host-key/consent/status/browser gate | `4/4` passed against exact Cloud `29cdfa4` and fresh PostgreSQL |
+| SDK Event gate | `7/7` passed against exact Cloud `29cdfa4` and fresh PostgreSQL |
+| Cloud Feature 4 Claim compatibility | Received matrix `5/5` passed against built exact Cloud `29cdfa4` and fresh PostgreSQL |
+| Cloud Feature 5 Acknowledgement | Cloud backend coverage included in `42/42`; received Local Connector matrix `5/5` after the approved ACK-003 mapping |
+| Cloud Feature 6 HTTP/operations | Included in the `42/42` Cloud backend regression against exact Cloud `29cdfa4` |
+| Combined Host SDK -> Receiver -> Connector -> effect -> acknowledgement | `1/1` local contract passed; separate OS-process/browser and deployed evidence remains open |
 
 No whole-system completion claim is made by this record.
 
-## 9. Closure and reopen conditions
+## 10. Closure and reopen conditions
 
-Close only after the exact Cloud Receiver and Local Connector commits are recorded, the SDK and
-received matrices pass with a fresh database, the normal SDK suite remains green, the effect
-authority verifies the exact Host effect, the combined flow reaches durable `acknowledged`, and an
-identical acknowledgement replays as `duplicate: true`.
+The local contract gate is satisfied: exact Cloud and Local commits are recorded, every SDK and
+received matrix passes on fresh databases, the normal SDK suite is green, the effect authority
+verifies the exact Host effect, the combined flow reaches durable `acknowledged`, and an identical
+acknowledgement replays as `duplicate: true`. Release closure remains open until the commits are
+promoted/deployed, npm authentication is restored, and any required separately spawned browser and
+Connector-process evidence is available.
 
 Keep open on any mismatch, missing route, missing authority, database mutation, secret leak,
 unexpected retry, protocol drift, or failed earlier feature. Reopen if a later change proposes
