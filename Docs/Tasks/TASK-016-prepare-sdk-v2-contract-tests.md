@@ -41,8 +41,8 @@ adding production fallbacks or treating local evidence as deployed integration.
 ## 3. Assumptions and boundaries
 
 - Feature 2 and the consent-popup handoff are green locally at Receiver commit
-  `f67e741dd0392dd04f14d7d02764b7c0a7179dc5`; the commit is not claimed pushed, deployed, or
-  externally verified.
+  `f67e741dd0392dd04f14d7d02764b7c0a7179dc5`; the exact commit is pushed to `origin/main` and
+  remote-matched, but is not deployed or externally verified.
 - The test harness uses the real Express app through Supertest and a fresh PostgreSQL database. It
   does not fabricate successful Receiver responses and does not prove a hosted endpoint.
 - The account decision is Receiver-owned at `POST /v0.1/account-consent-decisions`. The SDK's
@@ -79,11 +79,12 @@ flows through the Receiver. No SDK fallback, polling, or alternate route was add
   each decision returned HTTP `200`, the SDK accepted the exact completion event from the matching
   popup source and origin, and Receiver status was verified as `approved` / `active` or `declined`
   with no binding.
-- Runtime/database: Node `v26.8.1`; PostgreSQL `14.18` on `127.0.0.1:55436`, database
-  `sdk_v2_contract_final`; credentials were supplied only in the shell.
-- Receiver commit: `f67e741dd0392dd04f14d7d02764b7c0a7179dc5`; Local Connector source was unchanged.
+- Runtime/database: Node `v26.8.1`; PostgreSQL `14.18` on `127.0.0.1:55437`, database
+  `sdk_v2_contract_pushed`; credentials were supplied only in the shell.
+- Receiver commit: `f67e741dd0392dd04f14d7d02764b7c0a7179dc5`, pushed and remote-matched on
+  `origin/main`; Local Connector source was unchanged.
 - Browser assumption: the real-browser run used same-origin local configuration with
-  `FRONTEND_URL=RECEIVER_PUBLIC_URL=http://127.0.0.1:4010`; no split-origin or deployed integration
+  `FRONTEND_URL=RECEIVER_PUBLIC_URL=http://127.0.0.1:4011`; no split-origin or deployed integration
   claim is made.
 - Public Grant control, Event work, deployment, and production integration remain out of scope.
 

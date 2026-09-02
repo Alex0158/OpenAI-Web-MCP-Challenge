@@ -1,7 +1,7 @@
 # SDK v2 Verification Report
 
-**Date:** 2026-09-02  
-**Result:** Local SDK-to-Cloud-Receiver v2 contract verified  
+**Date:** 2026-09-02
+**Result:** Local SDK-to-Cloud-Receiver v2 contract verified
 **Receiver commit:** `f67e741dd0392dd04f14d7d02764b7c0a7179dc5`
 
 ## Conclusion
@@ -49,13 +49,14 @@ Approve produced Receiver status `approved` with effective status `active`. Decl
 
 ## Evidence boundary and assumptions
 
-- The Receiver was tested from the clean nested `saas-boilerplate/` clone at the commit above; its
-  local `main` is four commits ahead of `origin/main` and has not been pushed.
+- The Receiver was tested from the clean nested `saas-boilerplate/` clone at the commit above; the
+  exact tested commit was pushed to `origin/main`, and direct remote readback matched the local
+  `HEAD` at `f67e741dd0392dd04f14d7d02764b7c0a7179dc5`. It is not deployed.
 - Tests used Node `v26.8.1`, Homebrew PostgreSQL `14.18`, and a fresh disposable database on
-  `127.0.0.1:55436`. The database was stopped after verification and credentials were supplied only
+  `127.0.0.1:55437`. The database was stopped after verification and credentials were supplied only
   in the shell.
 - The real browser run used the explicit same-origin local configuration
-  `FRONTEND_URL=RECEIVER_PUBLIC_URL=http://127.0.0.1:4010`.
+  `FRONTEND_URL=RECEIVER_PUBLIC_URL=http://127.0.0.1:4011`.
 - This is local process evidence only. It does not prove deployment, a hosted endpoint, a split-origin
   deployment, or full product integration. Event ingress, delivery, acknowledgement, and public
   Grant control remain separate gates.

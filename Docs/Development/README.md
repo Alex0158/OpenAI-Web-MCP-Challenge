@@ -111,6 +111,11 @@ genuine WebMCP, deployment, or judge reproducibility.
 | [`ENG-003`](ENG-003-collaborative-source-of-truth-and-git-gates.md) | Establish human-request authority checks, canonical writeback, and multi-computer Git synchronization gates | `locally_verified` |
 | [`CLOUD-001`](CLOUD-001-stage-one-cloud-receiver-shell.md) | Implement the loopback-only Cloud Receiver process shell around the existing Core and file-backed SQLite | `locally_verified` |
 
+## Verification reports
+
+- [`SDK v2 Verification Report`](SDK-V2-Verification-Report.md) — post-push SDK-to-Cloud-Receiver v2
+  contract and real-browser evidence.
+
 ## Lean implementation rules
 
 - Prefer one narrow module and one real consumer over a generic framework.

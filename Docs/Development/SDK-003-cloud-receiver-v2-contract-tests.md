@@ -59,10 +59,11 @@ not point at the retired Receiver database and does not claim a deployed endpoin
 
 ## Executed verification — 2026-09-02
 
-The suite was run with Node `v26.8.1` against the actual `saas-boilerplate/backend` Express app at
-Receiver commit `f67e741dd0392dd04f14d7d02764b7c0a7179dc5` and a fresh Homebrew PostgreSQL `14.18`
-cluster on loopback port `55436`, database `sdk_v2_contract_final`. The cluster was stopped after
-the run; credentials were supplied only in the shell and are not recorded here.
+The suite was rerun after push with Node `v26.8.1` against the actual `saas-boilerplate/backend`
+Express app at Receiver commit `f67e741dd0392dd04f14d7d02764b7c0a7179dc5`. Both the clean local
+checkout and remote `origin/main` resolve to that SHA. The run used a fresh Homebrew PostgreSQL
+`14.18` cluster on loopback port `55437`, database `sdk_v2_contract_pushed`. The cluster was stopped
+after the run; credentials were supplied only in the shell and are not recorded here.
 
 Results:
 
@@ -78,7 +79,7 @@ Results:
   Receiver status `declined` with no binding.
 - Docker was unavailable, so the equivalent disposable local PostgreSQL installation was used; no
   deployed or external Receiver endpoint was involved. The browser run used the explicit same-origin
-  local configuration `FRONTEND_URL=RECEIVER_PUBLIC_URL=http://127.0.0.1:4010`; a split-origin
+  local configuration `FRONTEND_URL=RECEIVER_PUBLIC_URL=http://127.0.0.1:4011`; a split-origin
   deployment was not claimed or tested here.
 
 The default opt-out check was:
