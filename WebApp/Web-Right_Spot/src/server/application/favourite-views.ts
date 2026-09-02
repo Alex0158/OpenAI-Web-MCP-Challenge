@@ -14,6 +14,7 @@ export function toTenantFavouritesView(
 ): TenantFavouritesResponse {
   return {
     fixtureGeneration: outcome.state.fixtureGeneration,
+    favouriteVersions: { ...outcome.projection.favouriteVersions },
     favourites: outcome.projection.favourites.map((favourite) => ({
       listingId: favourite.listingId,
       state: favourite.state,

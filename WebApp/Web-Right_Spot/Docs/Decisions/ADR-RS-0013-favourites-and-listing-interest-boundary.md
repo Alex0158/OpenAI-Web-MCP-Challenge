@@ -21,6 +21,12 @@ sensitive PII, retention, and agent-access boundary that is not yet accepted.
 This decision therefore accepts a bounded Favourite increment and records the explicit boundary that
 the Information Request proposal remains deferred and proposal-only.
 
+The tenant read contract must preserve the ability to complete the accepted save/remove/re-save loop:
+visible active records may remain the only records rendered in the Favourite list, but the server must
+also expose each current tenant relation's version in `favouriteVersions`, including relations in the
+`REMOVED` state. A client must use that map for expected-version fields after reload; it must not infer
+version `0` from an empty visible list.
+
 ## Decision
 
 ### 1. Product boundary
@@ -77,6 +83,13 @@ The first tenant surface is:
 - a dedicated tenant Favourite list route, reachable from the tenant workspace navigation; and
 - active and unavailable grouping with truthful empty, loading, stale, and mutation-failure states.
 
+The tenant Favourite read response also carries a server-owned `favouriteVersions` map keyed by
+listing id. It includes the current relation version for both `ACTIVE` and `REMOVED` relations, while
+the visible `favourites` collection contains only active relations. This small relation-version
+projection lets a tenant re-save a removed listing after a page reload without guessing version `0`.
+It is scoped to the current tenant, contains no private or contact data, and is not a second visible
+Favourite list.
+
 The control must expose its state and action through an accessible name and `aria-pressed`, remain
 keyboard operable, provide a target of at least 44 by 44 CSS pixels, and not rely on colour alone.
 The page must identify unavailable saved records without silently discarding them. It must not offer an
@@ -122,6 +135,8 @@ GET    /api/agent/listing-interest
 Exact request and response types belong to the implementation Task and must follow the existing
 allowlisted-body, role-safe DTO, `401/403/404/409/503`, `Cache-Control: no-store`, command-id, and
 fixture-generation conventions. Clients never supply the tenant identity or agent assignment.
+The tenant response's `favouriteVersions` map is the authoritative version source for a later save or
+remove after reload; clients must not reconstruct relation versions from visible list membership.
 
 ### 6. Implementation ownership and sequencing
 
@@ -188,10 +203,10 @@ a demonstrated requirement.
 ## Validation and reopen triggers
 
 The implementation Task must prove, from a fresh reset, tenant save/list/remove, idempotent replay,
-stale/conflict rejection, unpublished-listing retention, agent assignment isolation, no tenant identity
-leakage, current-versus-available metric separation, migration, reset, build, and focused browser
-evidence. These checks do not prove production privacy compliance, external delivery, deployment, or
-WebMCP activation.
+stale/conflict rejection, unpublished-listing retention, reload-and-re-save version continuity, agent
+assignment isolation, no tenant identity leakage, current-versus-available metric separation, migration,
+reset, build, and focused browser evidence. These checks do not prove production privacy compliance,
+external delivery, deployment, or WebMCP activation.
 
 Reopen this ADR if the product requires full contact information, external communication, a new listing
 lifecycle state, hard deletion, relisting lineage, historical save analytics, cross-agent portfolio

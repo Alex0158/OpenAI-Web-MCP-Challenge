@@ -11,18 +11,20 @@
 
 - Type: `implementation`
 - Lifecycle: `in_progress`
-- Execution posture: `UI_SLICES_READY`
-- Current increment: The server-side Favourite contract/data foundation is independently verified;
-  the next bounded increment is the tenant and agent UI consumer pair.
-- Next gate: Main may dispatch `RS-WO-020-02` and `RS-WO-020-03` in parallel because their write sets
-  are disjoint; shared navigation, card/detail integration, and global CSS remain serialized Main work.
+- Execution posture: `FOUNDATION_REPAIR_BEFORE_UI`
+- Current increment: A pre-dispatch review found that a removed Favourite's relation version was not
+  recoverable after a tenant page reload. Main is repairing and re-verifying the server read contract
+  before dispatching the tenant and agent UI consumer pair.
+- Next gate: After the repair is independently verified, Main may dispatch `RS-WO-020-02` and
+  `RS-WO-020-03` in parallel because their write sets are disjoint; shared navigation, card/detail
+  integration, and global CSS remain serialized Main work.
 - Parent role: This is one registered Task File. Builder, Verifier, Repairer, and Integrator are
   checkpoints under this file, not additional Tasks.
 
 ## RS-WO-020-01 — Favourite contract/data foundation
 
 **Role:** Domain, persistence, application, API, and focused-test Builder  
-**Status:** `CLOSED` — Main candidate independently verified  
+**Status:** `REOPENED_FOR_REPAIR` — pre-UI relation-version continuity defect found  
 **Parallelization:** `SERIAL_FIRST` — no other RightSpot product writer is admitted against these shared contract/state paths  
 **Risk profile:** `High` for data/role/privacy boundaries; bounded implementation scope  
 **Supporting worker:** `Ramanujan`, multi-agent `01a05f63-c270-7dc0-aa47-9c3a2b19a2e1` (stopped after a partial candidate); Main completed the bounded candidate from that work; `Hypatia`, multi-agent `01a05f76-7603-7792-abf9-47c76705ea8a`, independently verified it  
@@ -106,6 +108,9 @@ Deliver the smallest coherent Favourite experience for the current three-listing
   existing persistence conventions.
 - Require a published listing for first save; retain active Favourite state when that listing becomes
   unpublished and expose a safe unavailable projection.
+- Return a server-owned `favouriteVersions` map keyed by listing id for the current tenant. It includes
+  both active and removed relation versions so a re-save after reload can provide the exact expected
+  version without treating visible list membership as source of truth.
 
 ### Tenant experience
 
@@ -146,8 +151,9 @@ Deliver the smallest coherent Favourite experience for the current three-listing
 
 ## Planned checkpoint decomposition
 
-The contract/data slice above is the closed `RS-WO-020-01`. The two UI slices below are now ready for
-disjoint parallel dispatch; shared integration remains Main-owned and serialized.
+The contract/data slice above was initially closed as `RS-WO-020-01`, but a pre-UI review reopened it
+for the relation-version repair below. The two UI slices remain prepared for disjoint parallel dispatch
+after that repair is independently verified; shared integration remains Main-owned and serialized.
 
 ### Contract/data slice — serial first
 
@@ -175,12 +181,38 @@ tests/api/favourites.test.ts
 This slice owns the schema/migration, command semantics, server-derived identity, listing lifecycle
 join, role-safe DTOs, and focused tests. It must not edit tenant/agent pages or global CSS.
 
+### RS-WO-020-01R — Restore Favourite relation-version continuity
+
+**Role:** Main Repairer  
+**Status:** `IN_PROGRESS`  
+**Parallelization:** `SERIAL` — blocks the UI consumer pair until independently re-verified  
+**Dependency:** Initial `RS-WO-020-01` candidate at `96b1bca`; no product writer may modify the same
+server contract paths during this repair  
+**Objective:** Make a tenant's saved/re-removed relation version recoverable after a fresh read, so a
+tenant can remove a Favourite, reload, and save it again without a guessed version or hidden client
+state.
+
+**Repair boundary:** Add `favouriteVersions` to the tenant Favourite projection and shared response,
+populate it from the server-owned relation records for the current tenant, and add regression coverage
+for remove, read, and re-save continuity. Preserve active-only visible Favourite entries, existing
+version conflicts, role/privacy boundaries, and all Viewing Request behavior. Do not change listing
+lifecycle, introduce a second store, or add client-side persistence.
+
+**Write set:** The existing `RS-WO-020-01` server contract/projection/view/test paths only, including
+`src/server/domain/favourite-projections.ts`, `src/server/application/favourite-views.ts`,
+`src/shared/contracts/favourites-api.ts`, and `tests/api/favourites.test.ts`. Main owns canonical
+documentation and final integration.
+
+**Verification gate:** Re-run the Favourite-focused suite, the full suite, typecheck, build, repository
+validators, and an independent read-only verification of the new reload-and-re-save path. The repair
+must return `VERIFIED` before either UI Work Order changes from `READY_TO_DISPATCH`.
+
 ### RS-WO-020-02 — Tenant Favourite UI
 
 **Role:** Tenant UI Builder  
 **Status:** `READY_TO_DISPATCH`  
 **Parallelization:** `PARALLEL_WITH_RS-WO-020-03` — exact write set is disjoint from the agent UI slice  
-**Dependency:** Closed and independently verified `RS-WO-020-01`  
+**Dependency:** `RS-WO-020-01R` independently verified after the relation-version continuity repair
 **Objective:** Consume the Favourite API to add accessible save/remove controls to tenant discovery and
 detail, a dedicated Favourite list route, and truthful active/unavailable/loading/stale/error states.
 
@@ -205,7 +237,7 @@ edit shared navigation, global CSS, agent files, server/domain/API files, docs, 
 **Role:** Agent UI Builder  
 **Status:** `READY_TO_DISPATCH`  
 **Parallelization:** `PARALLEL_WITH_RS-WO-020-02` — exact write set is disjoint from the tenant UI slice  
-**Dependency:** Closed and independently verified `RS-WO-020-01`  
+**Dependency:** `RS-WO-020-01R` independently verified after the relation-version continuity repair
 **Objective:** Add a compact read-only listing-interest section to the assigned agent dashboard using the
 server projection, with explicit current-saves versus available-interest labels and bounded loading/error/empty states.
 
@@ -239,7 +271,8 @@ baseline.
 
 ## Acceptance criteria
 
-1. From a fresh reset, the tenant can save one published listing and see it in the Favourite list.
+1. From a fresh reset, the tenant can save one published listing, see it in the Favourite list, remove
+   it, reload the Favourite projection, and save it again successfully.
 2. Repeating the same command is idempotent; conflicting command reuse and stale versions fail without
    a partial mutation.
 3. Removing a Favourite is idempotent and does not create or mutate a Viewing Request.
@@ -262,9 +295,10 @@ that cannot be serialized, an external provider, or a source baseline that canno
 
 The original Builder stopped before handoff after writing a partial domain/persistence candidate. Main
 completed and reviewed the bounded candidate in the canonical working tree. Independent Verifier
-`Hypatia` returned `VERIFIED` after confirming the migration ledger guard, role/privacy boundary,
-cross-operation command-id conflict behavior, and route wiring. Main evidence is 12 Favourite-focused
-tests, 112 full tests, typecheck, production build, and `git diff --check`; the Verifier independently
-reported 18 Favourite/foundation checks and 112 full tests. No browser, deployment, production privacy,
-WebMCP, Cloud Receiver, or external-auth evidence is claimed. `RS-WO-020-01` is closed; UI Work Orders
-`RS-WO-020-02` and `RS-WO-020-03` are prepared but not yet dispatched.
+`Hypatia` returned `VERIFIED` for the original candidate after confirming the migration ledger guard,
+role/privacy boundary, cross-operation command-id conflict behavior, and route wiring. A pre-UI review
+then found that the active-only tenant projection did not expose a removed relation's version after
+reload, so the prior verification is not sufficient for the amended contract. Main is repairing that
+continuity gap under `RS-WO-020-01R`. No browser, deployment, production privacy, WebMCP, Cloud
+Receiver, or external-auth evidence is claimed. UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` remain
+prepared but gated on the repair's independent verification.

@@ -25,6 +25,7 @@ test("WorkflowApplication persists Favourite commands and role-safe projections"
   const tenant = application.readTenantFavourites(TENANT, NOW);
   assert.equal(tenant.projection.favourites.length, 1);
   assert.equal(tenant.projection.favourites[0]!.listingId, "listing-primary");
+  assert.deepEqual(tenant.projection.favouriteVersions, { "listing-primary": 1 });
   const agent = application.readAgentListingInterest(AGENT, NOW);
   assert.equal(agent.projection.listings.find((listing) => listing.listingId === "listing-primary")?.currentSaves, 1);
   application.close();

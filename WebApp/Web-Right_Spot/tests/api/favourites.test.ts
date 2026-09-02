@@ -25,7 +25,7 @@ test("Favourite API supports save, list, agent aggregate, remove, and idempotent
   const deps = dependencies(path);
   const initial = handleReadTenantFavourites(request("http://localhost/api/tenant/favourites", TENANT_COOKIE), deps);
   assert.equal(initial.status, 200);
-  assert.deepEqual(await initial.json(), { fixtureGeneration: 1, favourites: [] });
+  assert.deepEqual(await initial.json(), { fixtureGeneration: 1, favourites: [], favouriteVersions: {} });
 
   const saved = await handleSaveFavourite(jsonRequest("http://localhost/api/tenant/favourites", {
     commandId: "save-primary-1",
@@ -73,7 +73,24 @@ test("Favourite API supports save, list, agent aggregate, remove, and idempotent
     version: 2,
   });
   const afterRemove = handleReadTenantFavourites(request("http://localhost/api/tenant/favourites", TENANT_COOKIE), deps);
-  assert.deepEqual(await afterRemove.json(), { fixtureGeneration: 1, favourites: [] });
+  assert.deepEqual(await afterRemove.json(), {
+    fixtureGeneration: 1,
+    favourites: [],
+    favouriteVersions: { "listing-primary": 2 },
+  });
+
+  const reSaved = await handleSaveFavourite(jsonRequest("http://localhost/api/tenant/favourites", {
+    commandId: "save-primary-2",
+    fixtureGeneration: 1,
+    listingId: "listing-primary",
+    expectedListingVersion: 1,
+    expectedFavouriteVersion: 2,
+  }, TENANT_COOKIE), deps);
+  assert.equal(reSaved.status, 200);
+  assert.deepEqual((await reSaved.json() as Record<string, any>).result, {
+    state: "ACTIVE",
+    version: 3,
+  });
 });
 
 test("Favourite API enforces roles, strict bodies, and version conflicts", async () => {

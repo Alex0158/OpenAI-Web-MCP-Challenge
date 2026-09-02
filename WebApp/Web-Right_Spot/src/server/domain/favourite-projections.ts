@@ -28,6 +28,7 @@ export type TenantFavouriteProjectionItem = {
 
 export type TenantFavouritesProjection = {
   favourites: TenantFavouriteProjectionItem[];
+  favouriteVersions: Record<string, number>;
 };
 
 export type AgentListingInterestProjection = {
@@ -56,10 +57,15 @@ export function readTenantFavourites(
       const rightOrder = listingOrder.get(right.listingId) ?? Number.MAX_SAFE_INTEGER;
       return leftOrder - rightOrder || left.listingId.localeCompare(right.listingId);
     });
+  const favouriteVersions = Object.fromEntries(
+    evaluated.state.favourites
+      .filter((favourite) => favourite.tenantId === actor.id)
+      .map((favourite) => [favourite.listingId, favourite.version]),
+  );
 
   return {
     state: evaluated.state,
-    projection: { favourites },
+    projection: { favourites, favouriteVersions },
   };
 }
 

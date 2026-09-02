@@ -50,8 +50,9 @@ product claim.
 `RIGHTSPOT-018` records two independently reproduced relay-domain defects in one serialized
 shared-workflow Work Order and is closed; `RIGHTSPOT-019` records the integrated London-time UI
 boundary repair and completed browser/form regression, and is closed.
-`RIGHTSPOT-020` remains in progress: its server-side `RS-WO-020-01` checkpoint is independently
-verified and closed, while the tenant and agent UI Work Orders are prepared for the next dispatch.
+`RIGHTSPOT-020` remains in progress: a pre-UI review reopened the server-side `RS-WO-020-01` checkpoint
+to repair tenant Favourite relation-version continuity after reload. The tenant and agent UI Work Orders
+remain prepared but gated until that repair is independently verified.
 The bounded Operations seam `RS-WO-011-01` passed independent verification and is integrated at
 product commit `7ff0fbd`; its verifier evidence remains recorded in the owning Task File, and its
 physical Worktree was removed during the documented cleanup.
@@ -302,14 +303,14 @@ closed parent or override the current closure statement above.
 
 ## 5.1 Current post-MVP route
 
-The accepted local MVP and the Phase 6 post-MVP closure increment are complete. The server-side
-`RS-WO-020-01` checkpoint is independently verified and closed. The current bounded `RIGHTSPOT-020`
-implementation lane is:
+The accepted local MVP and the Phase 6 post-MVP closure increment are complete. The current bounded
+`RIGHTSPOT-020` implementation lane is in a pre-UI repair gate because the tenant Favourite read
+contract must preserve removed relation versions across reload:
 
 1. keep the reviewed documentation/procedure baseline and unrelated collaborator work separate;
-2. implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; `RS-WO-020-01` is
-   closed after independent verification;
-3. dispatch `RS-WO-020-02` and `RS-WO-020-03` in parallel only with disjoint paths;
+2. implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; complete and
+   independently verify `RS-WO-020-01R` before consuming it from UI;
+3. dispatch `RS-WO-020-02` and `RS-WO-020-03` in parallel only after the repair, with disjoint paths;
 4. serialize shared navigation, listing-card/detail integration, global CSS, source freeze, Main
    integration, and Worktree retirement;
 5. keep the reviewed `RIGHTSPOT-009` Information Request proposal deferred until its contact/PII

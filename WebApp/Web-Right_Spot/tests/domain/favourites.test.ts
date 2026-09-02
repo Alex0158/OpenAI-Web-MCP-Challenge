@@ -102,6 +102,18 @@ test("Favourite commands are idempotent and reject stale or conflicting retries"
   if (stale.ok) return;
   assert.equal(stale.error.code, "STALE_VERSION");
   assert.equal(stale.state.favourites[0]!.state, "REMOVED");
+
+  const afterReload = readTenantFavourites(removed, TENANT, LATER);
+  assert.deepEqual(afterReload.projection.favourites, []);
+  assert.deepEqual(afterReload.projection.favouriteVersions, { "listing-primary": 2 });
+  const reSaved = executeFavouriteCommand(removed, saveCommand({
+    commandId: "save-primary-2",
+    expectedFavouriteVersion: afterReload.projection.favouriteVersions["listing-primary"]!,
+  }), LATER);
+  assert.equal(reSaved.ok, true);
+  if (!reSaved.ok) return;
+  assert.equal(reSaved.result.favouriteVersion, 3);
+  assert.equal(reSaved.state.favourites[0]!.state, "ACTIVE");
 });
 
 test("projections isolate roles, expose changed-since-save, and omit private identity", () => {
@@ -115,6 +127,7 @@ test("projections isolate roles, expose changed-since-save, and omit private ide
 
   const tenant = readTenantFavourites(saved, TENANT, LATER);
   assert.equal(tenant.projection.favourites[0]!.changedSinceSaved, true);
+  assert.deepEqual(tenant.projection.favouriteVersions, { "listing-primary": 1 });
   const serializedTenant = JSON.stringify(tenant.projection);
   assert.equal(serializedTenant.includes("tenant-demo"), false);
   assert.equal(serializedTenant.includes("agent-demo"), false);

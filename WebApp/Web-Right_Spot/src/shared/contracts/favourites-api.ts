@@ -25,6 +25,7 @@ export type TenantFavouriteDto = {
 export type TenantFavouritesResponse = {
   fixtureGeneration: number;
   favourites: TenantFavouriteDto[];
+  favouriteVersions: Record<string, number>;
 };
 
 export type FavouriteMutationResultDto = {

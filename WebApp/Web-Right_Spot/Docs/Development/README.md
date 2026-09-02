@@ -94,8 +94,10 @@ applications.
 The current post-MVP route is now implementation-ready for the bounded Favourite increment: the main
 thread jointly reviewed `RS-WO-008-01` and `RS-WO-009-01`, accepted the Favourite boundary in
 ADR-RS-0013, deferred the PII-sensitive Information Request boundary, and registered `RIGHTSPOT-020`.
-Its serial contract/data Work Order `RS-WO-020-01` is independently verified and closed; the tenant and
-agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` are prepared for disjoint parallel dispatch.
+Its initial serial contract/data Work Order `RS-WO-020-01` was independently verified, then reopened
+under `RS-WO-020-01R` after a pre-UI review found that a removed relation version could not be recovered
+after reload. The tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` remain prepared for
+disjoint parallel dispatch after the repair is independently verified.
 `RIGHTSPOT-006` remains credential-gated,
 `RIGHTSPOT-010` remains a later Operations/WebMCP decision gate, and `RIGHTSPOT-012` is a non-blocking
 read-only audit lane. The authoritative sequence is maintained in the [development roadmap](RIGHTSPOT-DEVELOPMENT-ROADMAP.md#31-current-next-route).

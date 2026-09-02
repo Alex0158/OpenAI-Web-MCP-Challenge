@@ -4,9 +4,10 @@
 **Status:** Phase 5 is complete for the accepted local MVP, and the Phase 6 post-MVP closure increment
 is complete. The joint review of `RS-WO-008-01` and `RS-WO-009-01` accepted ADR-RS-0013 for the
 bounded Favourite increment, deferred the PII-sensitive Information Request boundary, and registered
-`RIGHTSPOT-020`; its serial contract/data Work Order `RS-WO-020-01` is independently verified and
-closed, with the disjoint tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` prepared
-for dispatch.
+`RIGHTSPOT-020`; its initial serial contract/data Work Order `RS-WO-020-01` was independently verified,
+then reopened under `RS-WO-020-01R` after a pre-UI relation-version continuity defect was found. The
+disjoint tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` remain prepared for dispatch
+after the repair is independently verified.
 `RS-WO-005-01` has passed corrected independent verification and is integrated at local product
 commit `27f5391`; `RS-WO-007-01` is accepted as a read-only UI decomposition and `RS-WO-007-02` has
 passed final independent browser verification and is integrated at product commit `89a50c7` after
@@ -97,11 +98,12 @@ The accepted local MVP and the Phase 6 post-MVP closure increment are complete. 
 bounded implementation sequence, not an open-ended implementation wave:
 
 1. Keep the reviewed documentation/procedure baseline and unrelated collaborator changes separate.
-2. Implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; its serial
-   contract/data Work Order `RS-WO-020-01` is independently verified and closed.
-3. Dispatch tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` in parallel only with
-   their declared disjoint paths; shared navigation, listing-card/detail integration, and global CSS
-   remain serialized.
+2. Implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; complete and
+   independently verify the `RS-WO-020-01R` relation-version continuity repair before consuming the
+   contract from UI.
+3. Dispatch tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` in parallel only after
+   the repair, with their declared disjoint paths; shared navigation, listing-card/detail integration,
+   and global CSS remain serialized.
 4. Freeze the integrated source before independent verification, then reconcile evidence and retire
    any temporary Worktree at the first safe checkpoint-scoped opportunity.
 5. Keep the reviewed `RIGHTSPOT-009` Information Request proposal deferred until contact/PII authority,
