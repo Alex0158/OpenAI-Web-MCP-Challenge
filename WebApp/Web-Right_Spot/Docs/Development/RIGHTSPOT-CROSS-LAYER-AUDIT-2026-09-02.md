@@ -27,12 +27,12 @@ The following tenant request-editor audit found `F-19`, registered as `RIGHTSPOT
 draft-save and explicit-submit feedback was lost during version-keyed editor rehydration. Its bounded
 parent-owned feedback repair is now `CLOSED_VERIFIED` after focused TDD, full checks, and fresh isolated
 browser save/submit/conflict verification.
-The subsequent Tenant Discovery Search review selected the read-only Tenant Search goal as the first
-WebMCP direction and registered `F-21` / `RIGHTSPOT-042`. The existing filter implementation remains
-operational under its current rules, but Area matching is not discoverable and the future ordinary
-UI/API/WebMCP Search contract is not yet frozen. `RIGHTSPOT-042` is a pending Main-owned decision
-Task; no source, fixture, dependency, route, WebMCP registration, or implementation Worktree is
-authorized by that registration.
+At the time of this 2026-09-02 audit, the subsequent Tenant Discovery Search review selected the
+read-only Tenant Search goal as the first WebMCP direction and registered `F-21` / `RIGHTSPOT-042`.
+The existing filter implementation remained operational under its current rules, but Area matching
+was not discoverable and the future ordinary UI/API/WebMCP Search contract was not yet frozen. The
+then-current record was a pending Main-owned decision Task; no source, fixture, dependency, route,
+WebMCP registration, or implementation Worktree was authorized by that registration.
 This report remains evidence and does not authorize work outside the registered boundary.
 
 ## 1. Executive conclusion
@@ -1910,7 +1910,15 @@ new Worktree. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP
 
 On 2026-09-03, Main accepted the bounded Area direction through ADR-RS-0014: canonical structured
 selection, deterministic suggestion discovery, shared trim/case normalization, explicit handling for
-unselected or unknown values, and no fuzzy, alias, geospatial, or full-catalogue fallback. This is a
-partial contract decision only. `RIGHTSPOT-042` remains pending for the complete Search schema,
-result/error/freshness/page-state contract, and WebMCP lifecycle; no implementation or registration
-is authorized by this writeback.
+unselected or unknown values, and no fuzzy, alias, geospatial, or full-catalogue fallback. This was
+the partial contract checkpoint recorded by this audit.
+
+## Main reconciliation after the audit — 2026-09-03
+
+Main subsequently accepted ADR-RS-0015 for the complete four-criterion Tenant Discovery Search and
+read-only WebMCP boundary: public `availableBy` mapped to compatibility `availableFrom`, inclusive AND
+semantics, deterministic source order, full return of the bounded synthetic catalogue, explicit
+result/error/freshness/page-state behavior, tenant-safe output, and page/session-scoped lifecycle.
+`RIGHTSPOT-042` is now `CLOSED_VERIFIED` as the decision/documentation gate. `RIGHTSPOT-043` is the
+separate pending implementation Task; no implementation, registration, browser-support, deployment,
+Cloud Receiver, or production-readiness claim is made by this reconciliation.

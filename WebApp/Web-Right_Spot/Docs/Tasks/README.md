@@ -55,6 +55,7 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-040 — Keep tenant Discovery error copy server-safe`](RIGHTSPOT-040-keep-discovery-error-copy-server-safe.md)
 - [`RIGHTSPOT-041 — Preserve tenant request mutation success feedback`](RIGHTSPOT-041-preserve-tenant-request-success-feedback.md)
 - [`RIGHTSPOT-042 — Define Tenant Discovery and WebMCP Search contract`](RIGHTSPOT-042-define-tenant-search-and-webmcp-search-contract.md)
+- [`RIGHTSPOT-043 — Implement Tenant Discovery Search and WebMCP adapter`](RIGHTSPOT-043-implement-tenant-search-and-webmcp-adapter.md)
 
 `RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
 `RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`,
@@ -284,17 +285,23 @@ listing detail. Parent-owned bounded success feedback now survives the authorita
 remount; focused TDD, full checks, and isolated browser evidence passed. No supporting implementation
 Worktree was opened.
 
-`RIGHTSPOT-042` is `pending` as the P1 Tenant Discovery/WebMCP Search contract decision. It records
-`F-21`: the current Area control presents an unseeded `Shoreditch` example while the authoritative
-listing read applies undocumented exact Area equality, leaving the user-facing and future tool
-semantics undiscoverable. Its single Main-owned decision Work Order must settle Area normalization,
-criteria, result/error/freshness boundaries, ordinary UI/API parity, and the first read-only WebMCP
-tool contract. It authorizes no source, dependency, route, fixture, WebMCP registration, or
-implementation Worktree change. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP
-proposal and is not absorbed by this task.
+`RIGHTSPOT-042` is `CLOSED_VERIFIED` as the P1 Tenant Discovery/WebMCP Search contract decision. It
+recorded `F-21` and accepted ADR-RS-0015: four bounded criteria, canonical Area resolution, date
+mapping, inclusive AND semantics, deterministic bounded results, truthful error/empty/stale behavior,
+ordinary UI/API parity, tenant-safe output, and page/session-scoped read-only WebMCP lifecycle. It
+authorized no source or registration change; implementation is separately registered as
+`RIGHTSPOT-043`. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal and is
+not absorbed by this task.
 
-**Current route:** `RIGHTSPOT-042` is the current pending Main-owned contract gate for the selected
-Tenant Discovery/WebMCP Search direction; it is registered but not dispatched. `RIGHTSPOT-041` and
+`RIGHTSPOT-043` is the current pending P1 implementation Task for the accepted Tenant Discovery Search
+contract. It contains sequential Work Orders for ordinary UI/API semantics, the thin WebMCP adapter,
+and independent supported-browser verification. It is registered but not dispatched; no source,
+dependency, fixture, registration, or Worktree change is authorized until its exact dispatch baseline
+and prompt are reviewed.
+
+**Current route:** `RIGHTSPOT-043` is the current pending Main-owned implementation gate for the accepted
+Tenant Discovery/WebMCP Search direction; it is registered but not dispatched. `RIGHTSPOT-042` is
+closed as the decision gate. `RIGHTSPOT-041` and
 `RIGHTSPOT-040` remain closed within their exact tenant consumer boundaries. No extra code Worktree is
 open.
 `RIGHTSPOT-032` through `RIGHTSPOT-040` remain closed within their exact tenant and Agent
@@ -309,8 +316,8 @@ the canonical Main Worktree remains the only source authority. `RIGHTSPOT-027`, 
 presentation/navigation boundaries. `RIGHTSPOT-020` remains closed after its Favourite/listing-interest
 implementation and fresh-reset browser verification. `RIGHTSPOT-006` stays gated on explicit external
 credentials and local-origin authorization; `RIGHTSPOT-010` remains a separate Operations/WebMCP
-decision gate; `RIGHTSPOT-012` is non-blocking read-only audit work; and `RIGHTSPOT-042` is the
-selected Tenant Search contract gate. Only an explicitly selected,
+decision gate; `RIGHTSPOT-012` is non-blocking read-only audit work; `RIGHTSPOT-042` is closed as the
+selected Tenant Search contract gate; and `RIGHTSPOT-043` is the current implementation gate. Only an explicitly selected,
 implementation-ready Task may open code Work Orders or temporary Worktrees.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)

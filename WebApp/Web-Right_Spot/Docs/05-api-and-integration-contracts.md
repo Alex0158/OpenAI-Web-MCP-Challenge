@@ -171,8 +171,44 @@ case-insensitive normalization. An unselected fragment is not an applied Area fi
 is a bounded validation outcome; and a selected Area with no published matches remains an explicit
 empty result without fallback.
 
-This is an accepted semantic direction, not an implementation claim. `RIGHTSPOT-042` still owns the
-complete Search input/result/error/freshness contract and the later WebMCP registration decision.
+This is an accepted semantic direction, not an implementation claim. The complete Search contract is
+now frozen in [ADR-RS-0015](Decisions/ADR-RS-0015-tenant-search-and-webmcp-contract.md).
+
+### 8.2 Tenant Discovery Search contract
+
+The first Search capability is one authenticated Tenant read on `/tenant`, exposed to a future
+page-authored WebMCP adapter as `search_listings`. The ordinary form, HTTP/API path, and adapter must
+share the existing listing application authority and one semantic predicate.
+
+The first slice accepts exactly four optional criteria:
+
+```text
+area?: canonical listing-area string
+maxRent?: safe integer in 1..100000 GBP/month
+minSizeSqM?: safe integer in 1..10000 square metres
+availableBy?: valid ISO calendar date (YYYY-MM-DD)
+```
+
+All supplied criteria are ANDed. Rent, size, and availability are inclusive; `availableBy` maps to
+the existing `availableFrom` storage/API field and means available on or before that calendar date.
+Area is resolved to a canonical stored label after shared trim and case-insensitive comparison, then
+matched by exact canonical equality. Prefix input is suggestion discovery only; unknown or unresolved
+Area is bounded validation, while a known canonical Area with no published matches is an explicit
+empty result. Only `PUBLISHED` listings enter the tenant-safe projection, in deterministic source
+order. The bounded synthetic catalogue is returned in full: no caller limit, pagination, ranking,
+or silent truncation is part of this slice.
+
+The logical tool result includes the evaluated `fixtureGeneration`, normalized applied filters,
+`matchedCount`, the existing tenant-safe `TenantListing[]`, `/tenant` as `pagePath`, and `results` or
+`empty` as `pageState`. The existing HTTP response may retain its compatibility shape, but it must
+map to the same application result and page state. Invalid, unavailable, malformed, superseded,
+unauthenticated, and wrong-role outcomes remain bounded and never expose raw server text or stale
+listing data as current. A valid empty result never falls back to an unfiltered catalogue.
+
+The future WebMCP registration is page/session scoped: feature-detect the current supported API,
+register only after a server-resolved Tenant session is present on `/tenant`, and unregister/cancel
+on route, session, role, capability, or component teardown. Registration does not grant auth or
+listing access. A browser without WebMCP continues through the ordinary manual Search path.
 
 ## 9. Open contract decisions
 
@@ -184,6 +220,10 @@ The remaining choices are implementation or later integration details:
 - event/outbox representation and future external event mapping; and
 - public versus internal operation exposure; and
 - whether a future Remote Viewing capability requires a dedicated signaling service.
+
+The exact external WebMCP registration API and browser capability remain implementation-gate checks;
+the logical Search schema and lifecycle above are the accepted product boundary, not a claim that
+the draft WebMCP API is stable or already present in source.
 
 The accepted local baseline is Next.js App Router with React and TypeScript on Node.js 24, using
 SQLite for initial durable storage. Redis, WebRTC media, and WebRTC signaling are not MVP runtime

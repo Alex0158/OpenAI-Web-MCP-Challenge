@@ -1,26 +1,27 @@
 # RIGHTSPOT-042 — Define Tenant Discovery and WebMCP Search Contract
 
 **Type:** `decision`  
-**Lifecycle:** `pending`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for the first WebMCP/product integration gate; not a blocker to the closed ordinary MVP  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-02  
 **Finding:** `F-21` — Tenant Area search discoverability and contract gap  
 **Accepted partial decision:** Area is a canonical structured facet; see [ADR-RS-0014](../Decisions/ADR-RS-0014-area-search-semantics.md)  
+**Accepted complete decision:** Tenant Discovery Search and read-only WebMCP boundary; see [ADR-RS-0015](../Decisions/ADR-RS-0015-tenant-search-and-webmcp-contract.md)  
 **Depends on:** `RS-FLOW-02`; the existing Tenant listing application/API and DTO boundary; the staged [RightSpot WebMCP roadmap](../Development/RIGHTSPOT-WEBMCP-ROADMAP.md); and the accepted ordinary UI direction in ADR-RS-0009
 
 ## Task Control
 
 - Type: `decision`
-- Lifecycle: `pending`
+- Lifecycle: `closed`
 - Execution posture: `MAIN_THREAD_SERIAL_CONTRACT_REVIEW`
 - Priority: `P1` — this contract is the prerequisite for the first selected WebMCP Search capability, although it does not block the already-closed ordinary MVP.
 - Owner: Main RightSpot thread
-- Current increment: Freeze one implementation-ready, read-only Tenant Discovery Search contract that resolves the current Area ambiguity and can be shared by the ordinary UI, the authoritative application/API boundary, and the first page-authored WebMCP adapter.
-- Next gate: Main accepts or revises the proposed Search contract, records an ADR if the accepted choice changes a durable product or interface rule, reconciles the owning Core/Flow/API/WebMCP documents, and only then registers a separate implementation Task or Work Order.
+- Current increment: Completed — freeze one implementation-ready, read-only Tenant Discovery Search contract that resolves the current Area ambiguity and can be shared by the ordinary UI, the authoritative application/API boundary, and the first page-authored WebMCP adapter.
+- Next gate: Execute the separately registered [`RIGHTSPOT-043`](RIGHTSPOT-043-implement-tenant-search-and-webmcp-adapter.md) implementation Task from ADR-RS-0015. It owns source changes, TDD, adapter registration, and independent browser verification; it does not reopen this decision unless a contract boundary changes.
 - Dependencies: The current published-listing authority, tenant role/privacy boundary, and ordinary `RS-FLOW-02` surface remain authoritative. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal and is not an implementation dependency. External authentication, Cloud Receiver, WebRTC, Redis, deployment, and production readiness remain outside this task.
-- Dispatch state: `not dispatched` — Main-owned decision and documentation checkpoint; no Builder, Verifier, dependency installation, WebMCP registration, or Worktree is authorized by this file.
-- Evidence status: `PARTIALLY_DECIDED_OPEN_CONTRACT` — the Area interaction direction is accepted in ADR-RS-0014, while the complete Search input/result/error/freshness and WebMCP contract remains open.
+- Dispatch state: `not dispatched` — Main-owned decision and documentation checkpoint; no Builder, Verifier, dependency installation, WebMCP registration, or Worktree was authorized by this file.
+- Evidence status: `ACCEPTED_CONTRACT_READY_FOR_IMPLEMENTATION` — ADR-RS-0014 and ADR-RS-0015 resolve the Area, criteria, result, error/freshness, page parity, role/privacy, and WebMCP lifecycle boundaries.
 
 ## Bounded objective
 
@@ -38,9 +39,9 @@ Define the smallest coherent Search contract for the first RightSpot WebMCP goal
    combination rule, result/error envelope, freshness identity, no-result behavior, and manual fallback
    needed for the first Search slice without becoming a generic marketplace search or SQL interface.
 
-This is a product/API/WebMCP contract decision task. It must not implement the Search redesign, add a
-tool, install a WebMCP dependency, change the fixture, or change ordinary product behavior before the
-contract is accepted.
+This was a product/API/WebMCP contract decision task. It did not implement the Search redesign, add a
+tool, install a WebMCP dependency, change the fixture, or change ordinary product behavior. Those
+changes are now separately gated by `RIGHTSPOT-043`.
 
 ## Verified current state
 
@@ -108,7 +109,7 @@ contract is accepted.
 The Main thread must record a decision for every item below. “To be decided” is not implementation
 permission.
 
-### 1. Search goal and first capability
+### 1. Search goal and first capability — accepted
 
 The default proposal is:
 
@@ -116,15 +117,16 @@ The default proposal is:
   resulting cards in the normal Tenant Discovery page.
 - **Page:** `/tenant`.
 - **Role:** authenticated `tenant` only.
-- **Tool shape:** one proposed read-only capability, tentatively named `search_listings`; the name,
-  description, and exact schema remain unaccepted until this task closes.
-- **Authority:** the existing `readTenantListings` application boundary or an explicitly accepted thin
-  adapter over it; no direct SQLite access and no duplicate predicate implementation.
-- **Result:** the same tenant-safe listing projection and source/generation identity that the page can
-  render; no chat-only answer is sufficient.
+- **Tool shape:** one read-only capability named `search_listings`, with exactly the four optional
+  criteria accepted in ADR-RS-0015; no `limit`, `query`, sort, or pagination field.
+- **Authority:** the existing `readTenantListings` application boundary behind a thin page adapter;
+  no direct SQLite access and no duplicate predicate implementation.
+- **Result:** the ADR-RS-0015 logical envelope containing normalized filters, `fixtureGeneration`,
+  `matchedCount`, the existing tenant-safe listing projection, `/tenant`, and `results`/`empty`
+  page state; no chat-only answer is sufficient.
 
-The decision must state whether “comprehensive” for this first slice means the existing four filters
-only or also a separately named keyword field. It must not silently turn `area` into a universal query.
+The accepted meaning of “comprehensive” for this first slice is the existing four bounded filters
+only. It does not turn `area` into a universal query.
 
 ### 2. Area semantics
 
@@ -142,13 +144,13 @@ accepts Area as a canonical structured facet rather than an absolute match over 
 - fuzzy spelling, aliases, geospatial expansion, ranking guesses, and a universal keyword query remain
   outside the boundary.
 
-This resolves the raw-text versus canonical-facet ambiguity. The complete Search contract still needs
-to define the public error envelope, suggestion-source read boundary, exact UI selection behavior,
-result parity, and the relationship between the ordinary API and future WebMCP schema.
+This resolves the raw-text versus canonical-facet ambiguity. ADR-RS-0015 now defines the public error
+envelope, suggestion-source read boundary, exact UI resolution behavior, result parity, and the
+relationship between the ordinary API and future WebMCP schema.
 
-### 3. Criteria and comparison semantics
+### 3. Criteria and comparison semantics — accepted
 
-The contract must explicitly define:
+The accepted contract explicitly defines:
 
 - whether the first slice supports only `area`, `maxRent`, `minSizeSqM`, and `availableBy`/the existing
   `availableFrom` mapping, or adds `query`, bedrooms, or another criterion;
@@ -164,9 +166,9 @@ The contract must reuse current safe bounds unless a deliberate product decision
 bound, bedroom filter, keyword search, sort, pagination, geospatial search, saved search, or ranking
 feature is not implied by the phrase “powerful Search”.
 
-### 4. Empty, invalid, unavailable, and stale states
+### 4. Empty, invalid, unavailable, and stale states — accepted
 
-Define separate outcomes for:
+The accepted outcomes are separate for:
 
 - valid criteria with zero matches: successful empty result, explicit no-results copy, Clear/widen
   recovery, no automatic unfiltered fallback;
@@ -181,9 +183,9 @@ Define separate outcomes for:
 - unsupported WebMCP: ordinary UI remains fully usable without invented success, silent no-op, or
   app-wide failure.
 
-### 5. Result and page-state contract
+### 5. Result and page-state contract — accepted
 
-The accepted contract must specify:
+The accepted contract specifies:
 
 - the exact tool result envelope and whether it includes `fixtureGeneration`, applied normalized
   filters, `matchedCount`, result cap/truncation, and a canonical page path;
@@ -196,7 +198,7 @@ The accepted contract must specify:
 - how listing title, address, description, image metadata, and other content are treated as untrusted
   content rather than model instructions.
 
-### 6. Identity, role, and lifecycle
+### 6. Identity, role, and lifecycle — accepted
 
 The first capability must obey all of the following:
 
@@ -210,9 +212,9 @@ The first capability must obey all of the following:
   notification, lease, or any workflow state; and
 - the ordinary manual Search remains the recovery and baseline path when WebMCP is absent.
 
-### 7. Compatibility and external boundary
+### 7. Compatibility and external boundary — accepted
 
-The task must record, without implementing:
+The decision record includes, without implementing:
 
 - the currently supported WebMCP API surface and browser/flag/origin assumptions to recheck at the
   implementation gate;
@@ -223,9 +225,10 @@ The task must record, without implementing:
   this read-only contract; and
 - the manual fallback and judge-evidence boundary for a browser without WebMCP.
 
-## Proposed first-slice contract for Main review
+## Historical candidate first-slice contract
 
-This subsection is a recommendation, not accepted canonical behavior.
+This subsection is retained as the pre-acceptance proposal. ADR-RS-0015 is the accepted canonical
+contract and supersedes this candidate where they differ.
 
 ```text
 Capability: search_listings                         # provisional name
@@ -238,8 +241,6 @@ Input (candidate):
   maxRent?: safe integer within the existing monthly-rent bound
   minSizeSqM?: safe integer within the existing listing-size bound
   availableBy?: ISO calendar date in Europe/London  # maps to existing "availableFrom" semantics
-  limit?: bounded positive integer                 # include only if a result cap is accepted
-  query?: bounded keyword                          # include only if separately accepted
 
 Semantics (candidate):
   supplied criteria are ANDed;
@@ -253,12 +254,12 @@ Result (candidate):
   source/generation identity;
   normalized applied criteria;
   matched count and bounded tenant-safe listing records;
-  explicit empty/truncated status where applicable;
+  explicit empty state; truncation is prohibited for the bounded first slice;
   visible page-state agreement at /tenant.
 ```
 
-Main must either accept this candidate, revise it with explicit reasons, or reject/defer the first
-Tenant Search goal. No implementation may treat the code block as a frozen schema before that review.
+Main accepted and revised this candidate through ADR-RS-0015. The code block remains historical
+context and is not an implementation schema.
 
 ## Business scenario and acceptance matrix
 
@@ -267,18 +268,18 @@ The final contract must provide an observable answer for each scenario below.
 | Scenario | Input | Expected business result | Required boundary |
 |---|---|---|---|
 | Unfiltered Tenant discovery | no criteria | all current published tenant-safe listings | no mutation; deterministic source identity |
-| Canonical Area match | selected `Southwark` | only matching published listing(s) | exact/canonical or explicitly selected alternative semantics |
-| Case/whitespace normalization | ` southwark ` if free text is accepted | same result as normalized value, or explicit bounded rejection if contract chooses strict input | UI/API/tool parity |
-| Partial Area | `Isling` | explicit result under the accepted match rule; no accidental implied fuzzy behavior | semantics must be documented and tested |
-| Unknown Area | `Camden` | explicit empty or canonical-value validation outcome, as selected | never restore full catalogue |
+| Canonical Area match | selected `Southwark` | only matching published listing(s) | exact canonical equality |
+| Case/whitespace normalization | ` southwark ` | same result as normalized `Southwark` | shared trim and case-insensitive resolution |
+| Partial Area | `Isling` | bounded validation failure; no catalogue read | no prefix auto-selection or fuzzy behavior |
+| Unknown Area | `Camden` | bounded `VALIDATION_FAILED` outcome | never restore full catalogue |
 | Rent boundary | exact listing rent and one below | inclusive result boundary as documented | integer/range validation |
 | Size boundary | exact listing size and one above | inclusive result boundary as documented | integer/range validation |
-| Availability boundary | exact date and one earlier date | “Available by” behavior as documented | Europe/London calendar-date semantics |
+| Availability boundary | exact date and one earlier date | listing is included on the exact date and excluded when its availability is later | date-only `availableBy`, inclusive on/before |
 | Combined criteria | Area + rent + size + date | intersection only | AND semantics and stable ordering |
 | Unpublished record | criteria that would otherwise match an unpublished record | record absent | server authority, not UI hiding |
 | Empty result recovery | valid no-match criteria | explicit no-results plus Clear/widen/manual recovery | no silent fallback |
-| Invalid input | malformed/empty/duplicate/out-of-range input | bounded validation failure | no authoritative mutation/read where pre-validation applies |
-| Authority failure | unavailable/malformed listing response | bounded failure/retry | no raw server text or stale-current claim |
+| Invalid input | malformed/empty/duplicate/unknown/out-of-range input | bounded validation failure | no authoritative mutation/read where pre-validation applies |
+| Authority failure | unavailable/malformed listing response | bounded `PERSISTENCE_ERROR`/`INVALID_RESPONSE` failure with Retry | no raw server text or stale-current claim |
 | Session boundary | signed-out or wrong-role page | no authenticated tool and no private result | server-resolved role enforcement |
 | WebMCP unavailable | browser without supported capability | ordinary manual Search remains usable | no invented registration/success |
 | Repeated read | same criteria twice | same authority semantics and no state change | idempotent read |
@@ -287,12 +288,12 @@ The final contract must provide an observable answer for each scenario below.
 
 | Concern | Current verified behavior | Intended task output |
 |---|---|---|
-| Area input | Free text, placeholder `Shoreditch`, exact case-insensitive equality after UI trim | One explicit discoverable Area contract and a truthful example/source |
-| Area values | Any non-empty bounded string is syntactically accepted; unknown value returns empty | Decide canonical-value, free-text, or another bounded policy |
-| Date naming | UI says `Available by`; API/application field is `availableFrom` and compares on/before | Freeze user-facing and tool-facing semantic name/mapping |
-| Result set | Published tenant-safe DTOs, no explicit result cap/order contract | Freeze result cap, ordering, freshness identity, and DTO boundary |
-| Ordinary UI | Manual form, loading/error/empty/result/Clear states | Preserve as baseline and make WebMCP visibly agree |
-| WebMCP | No registration or dependency | Later thin page adapter only after contract acceptance |
+| Area input | Free text, placeholder `Shoreditch`, exact case-insensitive equality after UI trim | Canonical stored label resolved through bounded prefix suggestions or exact canonical entry |
+| Area values | Any non-empty bounded string is syntactically accepted; unknown value returns empty | Unknown/unresolved value is `VALIDATION_FAILED`; known canonical value with no published match is empty |
+| Date naming | UI says `Available by`; API/application field is `availableFrom` and compares on/before | Public/tool name is `availableBy`; compatibility HTTP name maps to the same date-only meaning |
+| Result set | Published tenant-safe DTOs, no explicit result cap/order contract | Fixture-bounded full result, deterministic source order, `fixtureGeneration`, count, safe DTO, page state |
+| Ordinary UI | Manual form, loading/error/empty/result/Clear states | Same normalized criteria and authoritative result as the future adapter |
+| WebMCP | No registration or dependency | One page/session-scoped read-only `search_listings` adapter after `RIGHTSPOT-043` |
 
 ## Non-goals and forbidden expansion
 
@@ -331,7 +332,6 @@ The final contract must provide an observable answer for each scenario below.
 - [RightSpot validation and evidence](../06-validation-and-evidence.md)
 - [RightSpot business flows](../07-business-flows-and-scenarios.md), especially `RS-FLOW-02`
 - [RightSpot WebMCP roadmap](../Development/RIGHTSPOT-WEBMCP-ROADMAP.md)
-- [RightSpot development roadmap](../Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md)
 - [RightSpot cross-layer audit](../Development/RIGHTSPOT-CROSS-LAYER-AUDIT-2026-09-02.md)
 - ADR-RS-0001, ADR-RS-0006, ADR-RS-0008, ADR-RS-0009, and any ADR identified as affected by the
   accepted Search decision
@@ -347,16 +347,16 @@ The final contract must provide an observable answer for each scenario below.
 ## RS-WO-042-01 — Search contract analysis and main-thread decision
 
 **Role:** Main-thread Product, Architecture, API, UX, and WebMCP boundary decision owner  
-**Status:** `PENDING_REVIEW` — task registered; contract decision not yet accepted  
+**Status:** `CLOSED_VERIFIED` — contract accepted and reconciled; implementation routed to `RIGHTSPOT-043`  
 **Parallelization:** `SERIAL_SHARED_SEARCH_CONTRACT` — read-only specialist review may be consulted in parallel only against a stable source; the canonical decision and writeback remain Main-owned and serialized  
 **Risk profile:** `Assured` for decision quality because the output crosses ordinary UI semantics, application/API authority, WebMCP compatibility, privacy, and evidence boundaries; no code is authorized  
-**Supporting worker:** None dispatched  
-**Source baseline:** Main branch and current RightSpot package/runtime must be recaptured before any future advisor or implementation dispatch. The current observed runtime evidence is recorded above; a later worker must not assume those identities remain current.  
+**Supporting worker:** Hubble was consulted read-only for an adversarial contract review; no worker edited source or canonical files  
+**Source baseline:** Main branch and current RightSpot package/runtime were reviewed at the documentation checkpoint. `RIGHTSPOT-043` must recapture source identity, package/runtime, browser capability, and dirty paths before implementation dispatch.  
 **Write policy:** This task file may be updated by Main with the decision analysis and review disposition. A supporting Advisor may return a proposal only and must not edit this file, canonical product documents, source, tests, fixtures, package manifests, or Git state.  
 
-### Required decision deliverable
+### Decision deliverable — completed
 
-The completed Work Order must return a compact but implementation-ready decision record containing:
+The completed Work Order returned a compact implementation-ready decision record containing:
 
 1. the selected first user goal, role, page, capability mode, and relation to `RIGHTSPOT-010`;
 2. verified current behavior versus intended behavior, including the placeholder/fixture mismatch;
@@ -367,12 +367,12 @@ The completed Work Order must return a compact but implementation-ready decision
    behavior;
 7. the ordinary UI/API/WebMCP authority and shared-contract ownership map;
 8. privacy, untrusted-content, prompt-injection, cross-origin, and output-size boundaries;
-9. the proposed tool metadata/schema as a decision candidate, clearly marked accepted or unaccepted;
+9. the accepted logical tool metadata/schema, with the external draft registration API left to the implementation gate;
 10. TDD Red→Green→Refactor scenarios and the later implementation/browser/evaluation evidence matrix;
 11. exact likely read/write/forbidden/generated paths for the later implementation Task, including
     shared-file serialization and no-WebMCP manual fallback; and
-12. unresolved decisions, non-goals, rejected alternatives, stop conditions, and the required ADR or
-    canonical document updates before implementation.
+12. unresolved implementation-gate compatibility checks, non-goals, rejected alternatives, stop
+    conditions, and the required ADR/canonical document updates before implementation.
 
 ### Required TDD contract catalogue for the later implementation
 
@@ -393,35 +393,30 @@ boundary. At minimum, the later implementation plan must include:
 - signed-out, wrong-role, unsupported-WebMCP, registration-lifecycle, and manual-fallback behavior;
 - actual supported-browser discovery/invocation evidence separate from ordinary unit/API tests.
 
-## Later implementation decomposition (proposal only)
+## Later implementation decomposition (routed to RIGHTSPOT-043)
 
-This task does not authorize these stages; it records the dependency shape so the decision does not
-accidentally become an oversized implementation brief.
+This task does not authorize source changes. It records the dependency shape used to create
+`RIGHTSPOT-043` so the decision does not become an oversized implementation brief.
 
-1. **Contract acceptance:** Main reviews `RS-WO-042-01`, updates an ADR if required, and reconciles
-   Flow/API/WebMCP/current-status records. No source change is part of this stage unless the accepted
-   decision explicitly authorizes a separate bounded UI contract repair.
-2. **Ordinary Search contract repair, if needed:** one serial implementation Task for any accepted
-   manual UI/API behavior required for parity, with its own exact write set and TDD gate. It may not
-   silently absorb WebMCP registration.
-3. **Read-only WebMCP adapter:** one separate implementation Work Order over the accepted existing
-   authority. It must use the same normalized Search contract, be page/session scoped, and preserve
-   the manual UI. It must not add new listing authority or direct database access.
-4. **Independent verification:** a Verifier uses frozen post-Builder source and a disposable fixture
-   to prove registration, schema discovery, valid/invalid invocation, page-state agreement, role/privacy,
-   unsupported-browser fallback, and no mutation. WebMCP browser evidence is not substituted by tests.
-5. **Main integration and closure:** Main inspects exact paths/diff/source identity, reruns affected
-   checks, reconciles the Task and canonical documents, commits promptly when the complete verified
-   increment is closed, and retires only the exact clean candidate Worktree if one was used.
+1. **Ordinary Search contract repair:** align canonical Area resolution, the `availableBy` mapping,
+   shared validation, and manual page/API parity with TDD.
+2. **Read-only WebMCP adapter:** add one thin page/session-scoped adapter over the accepted authority;
+   it must preserve the manual UI and must not add a second listing authority.
+3. **Independent verification:** use frozen post-Builder source and a disposable fixture to prove
+   registration, schema discovery, valid/invalid invocation, page-state agreement, role/privacy,
+   unsupported-browser fallback, and no mutation. Browser evidence is not substituted by tests.
+4. **Main integration and closure:** inspect exact paths/diff/source identity, rerun affected checks,
+   reconcile the implementation Task and canonical documents, commit the verified increment, and
+   retire only an exact clean candidate Worktree if one was used.
 
 The later implementation should normally remain one product Task with bounded Work Orders rather than
 registering separate Tasks for Search UI, API, WebMCP, and verification. A separate Task is justified
 only if it produces an independently valuable outcome with a different authority/owner and explicit
 integration boundary.
 
-## Verification and closure gate for this decision Task
+## Verification and closure record for this decision Task
 
-Close this Task only when:
+This Task is closed because:
 
 - Main has accepted, revised, or explicitly deferred the Tenant Discovery first Search goal;
 - Area matching and normalization are no longer ambiguous;
@@ -432,7 +427,7 @@ Close this Task only when:
 - the proposed result/tool schema is marked accepted or rejected, not left as an accidental contract;
 - TDD, browser, and agent-evaluation evidence required by the next implementation gate is specified;
 - any durable accepted change has its ADR and Flow/API/WebMCP/current-status reconciliation;
-- a separate implementation Task is registered only if the accepted outcome actually requires code;
+- the separate implementation Task `RIGHTSPOT-043` is registered because the accepted outcome requires code;
 - the Task File records the review disposition, unresolved risks, non-claims, and next gate; and
 - no claim is made that WebMCP is implemented, registered, browser-supported, deployed, or judge-
   reproducible merely because this decision Task is closed.
@@ -478,12 +473,29 @@ Main accepted the Area direction through ADR-RS-0014: Area is a canonical struct
 input is limited to bounded deterministic suggestion discovery, the applied filter uses a selected
 canonical label after shared trim and case-insensitive normalization, unknown or unselected values
 receive bounded validation, and no fuzzy, alias, geospatial, or full-catalogue fallback is allowed.
-This does not close `RIGHTSPOT-042`; the complete Search schema, result/error/freshness contract,
-page-state agreement, and WebMCP lifecycle remain pending.
+This was the partial checkpoint; the complete decision was subsequently accepted in ADR-RS-0015.
+
+## Final decision writeback — 2026-09-03
+
+Main accepted ADR-RS-0015 after reviewing the current application/API, UI, business-flow, runtime,
+and official WebMCP boundary guidance. The first slice supports only `area`, `maxRent`, `minSizeSqM`,
+and public `availableBy` (compatibility HTTP mapping to `availableFrom`), with shared trim/case
+normalization, canonical Area resolution, inclusive AND semantics, published-only projection,
+deterministic source order, and full return of the bounded synthetic catalogue. The logical result
+includes normalized filters, `fixtureGeneration`, `matchedCount`, tenant-safe listings, `/tenant`,
+and `results`/`empty` page state. Invalid/unknown, unavailable, malformed, superseded, signed-out,
+wrong-role, unsupported, privacy, untrusted-content, and manual-fallback boundaries are explicit;
+empty results never fall back to the full catalogue and read execution never mutates workflow state.
+
+The contract is reconciled in the API, Flow, current-status, development-roadmap, and WebMCP-roadmap
+documents. `RIGHTSPOT-042` is `CLOSED_VERIFIED` as a decision/documentation gate. The separate
+implementation Task [`RIGHTSPOT-043`](RIGHTSPOT-043-implement-tenant-search-and-webmcp-adapter.md)
+is registered but not dispatched; it must recapture its source/runtime/browser identity before any
+source change or WebMCP registration.
 
 ## Reopen condition
 
 Reopen this Task if the accepted first Search goal changes, the Area data taxonomy or matching rule
 changes, a later WebMCP/browser capability requires a different result or lifecycle boundary, or the
-ordinary UI/API and tool contract diverge. A later implementation or WebMCP adapter must be registered
-as a separate explicit gate after this decision is accepted.
+ordinary UI/API and tool contract diverge. `RIGHTSPOT-043` must return here before widening the
+contract to a new authority, criterion, mutation, output cap, or external integration.

@@ -88,15 +88,23 @@ suggestion discovery; the applied filter uses a selected canonical `listing.area
 trim and case-insensitive normalization. Unknown or unselected values receive bounded validation,
 selected values with no published matches remain explicit empty results, and no fuzzy, alias, or full-
 catalogue fallback is allowed. The current source still reflects the pre-decision free-text/exact-
-equality behavior because no implementation Task has been accepted; `RIGHTSPOT-042` remains pending
-for the complete Search and WebMCP contract.
+equality behavior because the implementation Task `RIGHTSPOT-043` is registered but not yet executed;
+the implementation gap remains explicitly tracked below.
+**Accepted Search contract (2026-09-03):** [ADR-RS-0015](Decisions/ADR-RS-0015-tenant-search-and-webmcp-contract.md)
+freezes the first slice at the four optional criteria `area`, `maxRent`, `minSizeSqM`, and public
+`availableBy` (mapped to the compatibility `availableFrom` field). Criteria are ANDed with inclusive
+rent/size/date comparisons; published results retain deterministic source order; the bounded local
+catalogue is returned in full without caller pagination or silent truncation. The logical result
+includes the evaluated fixture generation, normalized filters, matched count, tenant-safe listings,
+`/tenant` page identity, and `results`/`empty` state. Invalid, unknown-area, unavailable, malformed,
+superseded, signed-out, and wrong-role outcomes are bounded; empty results never fall back to all
+listings. This is a contract decision, not an implementation or WebMCP registration claim.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Complete the remaining `RIGHTSPOT-042` Tenant Discovery/WebMCP Search
-contract gate against the staged [`RIGHTSPOT-WEBMCP-ROADMAP`](Development/RIGHTSPOT-WEBMCP-ROADMAP.md),
-including result/error/freshness and page-state semantics, then
-register a separate implementation Task only after the Area, criterion, result, role/privacy, and
-browser fallback semantics are accepted. `RIGHTSPOT-010` remains a separate pending Agent
-Operations/WebMCP decision proposal. The Main-thread cross-layer audit Goal is closed
+**Current next product action:** Execute the separately registered `RIGHTSPOT-043` Tenant Discovery
+Search implementation Task from the accepted ADR, first aligning the ordinary Area/date/UI/API path,
+then adding the thin page-bound read-only WebMCP adapter, and finally performing independent supported-
+browser verification. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP decision
+proposal. The Main-thread cross-layer audit Goal is closed
 for the accepted ordinary local MVP; `RIGHTSPOT-039` /
 `RS-WO-039-01`, the listing-detail partial-read error-boundary repair, is also closed. `RIGHTSPOT-033` /
 `RS-WO-033-01`,

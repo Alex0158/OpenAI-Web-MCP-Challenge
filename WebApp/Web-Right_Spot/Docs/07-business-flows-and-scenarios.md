@@ -221,7 +221,7 @@ resolved as `F-03`/`RIGHTSPOT-024`. Neither finding is a request to add external
 
 1. The page reads `GET /api/listings` and renders loading, error/retry, empty, or result state.
 2. The tenant may provide any combination of bounded `area`, `maxRent`, `minSizeSqM`, and
-   `availableFrom` filters.
+   `availableBy` filters; the compatibility HTTP query name remains `availableFrom`.
 3. The server validates an allowlisted query, returns only `PUBLISHED` listings, and returns
    listing cards with image key, title, area, rent, bedrooms, size, and available-from facts.
 4. The tenant may clear filters and retry without creating a request or contacting an agent.
@@ -242,7 +242,17 @@ discovery; Apply and the future WebMCP capability use a selected canonical Area 
 case-insensitive normalization. An unselected or unknown value must receive bounded validation, while
 a selected Area with no published matches remains an explicit empty result with no catalogue fallback.
 This direction is accepted but not yet implemented; the existing closed status above describes the
-current four-filter behavior only, and `RIGHTSPOT-042` remains the gate for the complete Search contract.
+current four-filter behavior only.
+
+**Accepted Search contract:** [ADR-RS-0015](Decisions/ADR-RS-0015-tenant-search-and-webmcp-contract.md)
+freezes the first slice at the four optional criteria `area`, `maxRent`, `minSizeSqM`, and public
+`availableBy`. Criteria are ANDed, numeric/date comparisons are inclusive, published results retain
+deterministic source order, and the bounded synthetic catalogue is returned without caller-defined
+pagination or silent truncation. The Area control resolves an exact canonical stored label after
+bounded prefix suggestions; unresolved/unknown input is validation, and a known Area with no current
+published match is truthful empty state. The future `search_listings` capability is read-only,
+Tenant-only, page-bound to `/tenant`, and must update the same visible page state as the human form.
+The accepted contract is documented before implementation; no WebMCP registration claim is made here.
 
 ### RS-FLOW-03 — Inspect a listing and enter a request
 

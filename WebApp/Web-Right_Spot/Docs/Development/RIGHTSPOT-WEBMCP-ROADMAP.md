@@ -1,7 +1,7 @@
 # RightSpot WebMCP Integration Roadmap
 
 **Role:** Engineering roadmap and gate definition for the later RightSpot WebMCP capability  
-**Status:** `ROADMAP_ESTABLISHED` — Tenant Discovery Search selected as the first goal; contract work is pending and implementation/tool registration are not yet authorized  
+**Status:** `ROADMAP_ESTABLISHED` — Tenant Discovery Search contract accepted; implementation and tool registration remain gated by `RIGHTSPOT-043`  
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-03, Europe/London  
 **Applies to:** `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge/WebApp/Web-Right_Spot`
@@ -47,7 +47,7 @@ The following sources remain authoritative in their respective areas:
 - [`RIGHTSPOT-010`](../Tasks/RIGHTSPOT-010-define-agent-operations-insights-dashboard-boundary.md)
   for the pending read-only Agent Operations/WebMCP proposal.
 - [`RIGHTSPOT-042`](../Tasks/RIGHTSPOT-042-define-tenant-search-and-webmcp-search-contract.md)
-  for the selected Tenant Discovery/WebMCP Search contract decision and the current Area gap.
+  for the selected Tenant Discovery/WebMCP Search contract decision and implementation gate.
 
 The current RightSpot source has no WebMCP registration, no page-authored tool adapter, and no
 WebMCP dependency. The accepted ordinary MVP is a normal Next.js application with an authoritative
@@ -135,11 +135,12 @@ The product goal, not the number of exposed controls, determines the first slice
 | Login, expose internal notes, contact a tenant, send notifications, or operate Cloud Receiver | Separate or deferred authority | High | Exclude | Not part of the current WebMCP slice and would expand security/integration scope |
 
 Main has selected the lower-risk read-only Tenant Discovery Search goal as the first WebMCP direction.
-The current candidate is one `search_listings`-type capability on the existing Tenant Discovery page,
-with bounded structured filters and a visible update of the ordinary listing results. ADR-RS-0014 now
-accepts the canonical Area facet and bounded suggestion direction; the exact tool name, complete
-schema, result boundary, and remaining Search semantics remain pending in `RIGHTSPOT-042`. Selection of
-the goal or the partial Area decision does not authorize implementation or registration.
+The accepted contract is one `search_listings` capability on the existing Tenant Discovery page, with
+the four bounded structured filters, a visible update of the ordinary listing results, truthful empty/
+error/stale behavior, and no mutation. ADR-RS-0014 accepts the canonical Area facet and bounded
+suggestion direction; ADR-RS-0015 accepts the complete schema, result boundary, page parity, privacy,
+and lifecycle semantics. `RIGHTSPOT-043` now owns implementation and independent browser evidence.
+Selection of the goal and contract does not claim implementation or registration.
 `RIGHTSPOT-010` remains a separate pending Operations Insights alternative and is not silently replaced
 by this selection.
 
@@ -153,9 +154,9 @@ only for the next approved product outcome after its gate is passed.
 
 ### W0 — Main-thread decision and capability baseline
 
-**State:** `GOAL_SELECTED — CONTRACT_PENDING`  
+**State:** `GOAL_SELECTED — CONTRACT_ACCEPTED; IMPLEMENTATION_PENDING`  
 **Owner:** Main RightSpot thread  
-**No code or registration is authorized.**
+**No code or registration was authorized in W0.**
 
 The Main Thread has selected the Tenant Discovery read-only Search goal and recorded the following
 bounded W0 disposition:
@@ -165,23 +166,22 @@ bounded W0 disposition:
 - first outcome: a visible, tenant-safe published-listing result;
 - first capability mode: read-only;
 - first authority: the existing listing application/API projection; and
-- current next gate: `RIGHTSPOT-042` freezes the Search contract before any implementation or tool
-  registration.
+- current next gate: `RIGHTSPOT-042` froze the Search contract; `RIGHTSPOT-043` now gates implementation
+  and tool registration.
 
-W0 must recapture the current Main source identity, package/runtime, browser capability, route/session
-state, existing authority, dirty/untracked paths, and the external WebMCP API status. Its output is a
-main-thread decision disposition and, if accepted, an implementation-ready product outcome—not a
-placeholder backlog.
+W0 recaptured the decision context. Its output is the accepted product outcome in ADR-RS-0015; the
+implementation baseline and browser capability must be recaptured by `RIGHTSPOT-043` before dispatch.
 
-**Exit gate:** The first goal, page, role, read-only outcome, existing authority, and named Main owner
-are accepted. The exact tool boundary, Area semantics, result schema, browser capability, and remaining
-non-goals are intentionally W1 work; they must not be hidden inside an implementation Task.
+**W0 exit gate (historical):** The first goal, page, role, read-only outcome, existing authority, and
+named Main owner were accepted. The exact tool boundary, Area semantics, result schema, browser
+capability, and remaining non-goals were then routed to W1 rather than hidden inside an implementation
+Task. W1 has since closed through ADR-RS-0015.
 
 ### W1 — Capability and contract design
 
-**State:** `IN_PROGRESS — RIGHTSPOT-042`  
-**Likely role:** WebMCP/API/UX/Security boundary Advisor  
-**Output:** one implementation-ready contract and one bounded Work Order.
+**State:** `CLOSED — RIGHTSPOT-042`; implementation routed to `RIGHTSPOT-043`  
+**Role:** Main-thread WebMCP/API/UX/Security boundary decision owner  
+**Output:** ADR-RS-0015 and one implementation Task.
 
 Freeze, for the selected goal:
 
@@ -199,16 +199,16 @@ Freeze, for the selected goal:
 - exact read/write/forbidden/generated paths and shared-file ownership; and
 - focused, browser, and agent-evaluation evidence required for the next gate.
 
-The contract must consume existing listing or Operations authority. It must not add a new database,
+The accepted contract consumes existing listing authority. It must not add a new database,
 new workflow state, arbitrary natural-language-to-SQL parser, generic chat layer, or unreviewed public
 API.
 
-**Exit gate:** Main Thread accepts the contract and registers a single outcome Task. If the contract
-changes product scope, authority, data ownership, or security, record an ADR before implementation.
+**Exit gate:** Main accepted ADR-RS-0015, reconciled the Flow/API/Status documents, and registered
+`RIGHTSPOT-043`. No source or WebMCP registration is implied by this completed phase.
 
 ### W2 — First read-only WebMCP vertical slice
 
-**State:** `GATED_ON_W1`  
+**State:** `PENDING — RIGHTSPOT-043 dispatch baseline`  
 **Outcome:** one page-authored read-only tool that performs one bounded goal through existing authority.
 
 The implementation must:
@@ -426,18 +426,17 @@ or a new cross-origin/external integration is proposed.
 
 ## 10. Current next action
 
-The current action is to complete [`RIGHTSPOT-042`](../Tasks/RIGHTSPOT-042-define-tenant-search-and-webmcp-search-contract.md)
-as the W1 Main-thread contract gate for the selected Tenant Discovery Search goal. It must resolve the
-Area discoverability/matching gap, freeze the supported criteria and result/error/page-state contract,
-and reconcile the ordinary UI/API authority with the future read-only WebMCP adapter before any
-implementation Task, dependency installation, WebMCP registration, route, schema, fixture, or Worktree
-is created.
+The current action is to execute [`RIGHTSPOT-043`](../Tasks/RIGHTSPOT-043-implement-tenant-search-and-webmcp-adapter.md)
+as the W2 implementation gate for the accepted Tenant Discovery Search contract. It must first align
+the ordinary UI/API Area and date semantics, then add the thin page-bound read-only adapter, and then
+produce independent supported-browser evidence before any WebMCP success claim.
 
-Until that review is accepted:
+Until the `RIGHTSPOT-043` implementation and verification gate is accepted:
 
 - `RIGHTSPOT-010` remains `pending` and `RS-WO-010-01` remains `READY_FOR_REVIEW`;
-- `RIGHTSPOT-042` remains `pending` and `RS-WO-042-01` remains `PENDING_REVIEW`;
-- no WebMCP implementation Work Order is active;
+- `RIGHTSPOT-042` is `CLOSED_VERIFIED` as a documentation/decision gate and `RIGHTSPOT-043` remains
+  pending;
+- no WebMCP implementation Work Order is active until `RIGHTSPOT-043`'s exact dispatch gate is accepted;
 - ordinary RightSpot MVP behavior remains the only runnable product claim; and
 - Cloud Receiver, WebRTC, Redis, external authentication, deployment, and production-readiness remain
   deferred or gated.

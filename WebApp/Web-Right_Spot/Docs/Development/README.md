@@ -43,12 +43,13 @@ completed the primary confirmation chain and role/terminal boundaries without a 
 remains an evidence gap and the disposable fixture was reset to generation `67` with healthy local
 health.
 
-The subsequent Tenant Discovery Search review registered `F-21` / `RIGHTSPOT-042` as a pending P1
-contract decision. The existing four filters and tenant-safe listing read remain operational, but the
-Area control uses an unseeded `Shoreditch` example and does not disclose that the current application
-uses exact Area equality. The task must freeze the ordinary UI/API and first read-only WebMCP Search
-contract before implementation; it does not change source, dependencies, routes, fixtures, or WebMCP
-registration. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal.
+The subsequent Tenant Discovery Search review registered `F-21` / `RIGHTSPOT-042` as a P1 contract
+decision. At that checkpoint, the existing four filters and tenant-safe listing read remained
+operational, but the Area control used an unseeded `Shoreditch` example and did not disclose the exact
+Area rule. Main later accepted ADR-RS-0015 for the ordinary UI/API and first read-only WebMCP Search
+contract, reconciled the core documents, and registered `RIGHTSPOT-043` for implementation. No source,
+dependency, route, fixture, or WebMCP registration is claimed yet. `RIGHTSPOT-010` remains a separate
+pending Agent Operations/WebMCP proposal.
 
 **Current physical workspace:** The canonical Main Worktree remains the only source authority. The stopped,
 short-lived `RS-WO-020-02` and `RS-WO-020-03` candidate Worktrees were adopted into Main and retired after

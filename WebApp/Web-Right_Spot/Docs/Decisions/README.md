@@ -31,7 +31,8 @@ The current working decisions are:
 - [`ADR-RS-0011 — Bounded Agent Operations read-model seam`](ADR-RS-0011-bounded-agent-operations-read-model-seam.md).
 - [`ADR-RS-0012 — Operations Profile Authority and Manual Query Boundary`](ADR-RS-0012-operations-profile-authority-and-manual-query-boundary.md); and
 - [`ADR-RS-0013 — Tenant Favourites and Agent Listing-Interest Boundary`](ADR-RS-0013-favourites-and-listing-interest-boundary.md); and
-- [`ADR-RS-0014 — Canonical Area search semantics`](ADR-RS-0014-area-search-semantics.md).
+- [`ADR-RS-0014 — Canonical Area search semantics`](ADR-RS-0014-area-search-semantics.md); and
+- [`ADR-RS-0015 — Tenant Discovery Search contract and read-only WebMCP boundary`](ADR-RS-0015-tenant-search-and-webmcp-contract.md).
 
 They define a RightSpot internal MVP baseline. They do not replace the outer project's formal
 application-selection ADR or authorize changes to the outer Re-entry Core.

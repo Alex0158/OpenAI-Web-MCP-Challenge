@@ -49,8 +49,10 @@ and is not itself an applied Area filter.
 ### 3. Unknown and missing values
 
 - No Area supplied means no Area restriction.
-- A typed value with one or more matching suggestions must be explicitly selected before Apply or
-  WebMCP invocation.
+- A typed value that is only a prefix, or that resolves to more than one canonical suggestion, must
+  be explicitly selected before Apply or WebMCP invocation. A typed value that resolves to one exact
+  canonical label after shared trim/case normalization may be applied directly; the invocation still
+  carries that canonical value rather than the raw prefix.
 - A supplied value that does not resolve to a canonical Area is a bounded validation outcome. It must
   not silently become an empty full-text search, select a nearby Area, or restore the unfiltered
   catalogue.
@@ -59,7 +61,7 @@ and is not itself an applied Area filter.
 
 The ordinary UI must provide a clear, recoverable message for an unselected or unknown value. The
 WebMCP contract must expose the same distinction as an invalid argument or bounded validation error;
-the exact public error envelope remains part of the open `RIGHTSPOT-042` Search contract.
+the complete public envelope and lifecycle are defined by the accepted `ADR-RS-0015` Search contract.
 
 ### 4. Boundaries
 
@@ -80,7 +82,8 @@ DTO projection, and fixture generation remain governed by the existing authoriti
 ### Exact comparison of raw free text
 
 Rejected for the user-facing interaction. It is deterministic but makes partial input and the current
-placeholder misleading. Exact comparison is retained only after a canonical value is selected.
+placeholder misleading. Exact comparison is retained only after the input resolves to one canonical
+value; an exact canonical typed value may resolve without an additional suggestion click.
 
 ### Free-text prefix or substring filtering as the applied predicate
 
@@ -100,12 +103,13 @@ authority that are not justified by the bounded Tenant Discovery/WebMCP goal.
   filter engines.
 - The current implementation remains an as-built legacy behavior until a separate implementation Task
   applies this accepted direction; this ADR does not claim that suggestions are already implemented.
-- The remaining `RIGHTSPOT-042` decisions still include the full Search schema, date naming, result
-  ordering/cap, freshness envelope, page-state agreement, and WebMCP lifecycle.
+- The complete Search schema, date naming, result ordering/bound, freshness envelope, page-state
+  agreement, and WebMCP lifecycle are accepted in [ADR-RS-0015](ADR-RS-0015-tenant-search-and-webmcp-contract.md).
 
 ## Validation and reopen triggers
 
-The later implementation must prove canonical suggestion discovery, trim/case parity, explicit selection,
-unknown/unselected handling, exact canonical result membership, no fallback, tenant-only access, and
-ordinary UI/WebMCP parity. Reopen this ADR if the product requires an Area taxonomy, aliases, geospatial
-matching, free-text applied semantics, a separate keyword field, or a different canonical value model.
+The later implementation must prove canonical suggestion discovery, trim/case parity, exact canonical
+resolution, explicit selection for prefix/ambiguous input, unknown/unselected handling, exact result
+membership, no fallback, tenant-only access, and ordinary UI/WebMCP parity. Reopen this ADR if the
+product requires an Area taxonomy, aliases, geospatial matching, free-text applied semantics, a
+separate keyword field, or a different canonical value model.
