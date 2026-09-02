@@ -43,6 +43,7 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-028 — Restore deterministic workflow fixture reset`](RIGHTSPOT-028-fix-deterministic-workflow-fixture-reset.md)
 - [`RIGHTSPOT-029 — Align the default RightSpot test command with the complete suite`](RIGHTSPOT-029-align-default-test-command.md)
 - [`RIGHTSPOT-030 — Prevent stale tenant request reads from overwriting newer state`](RIGHTSPOT-030-fix-tenant-request-read-concurrency.md)
+- [`RIGHTSPOT-031 — Preserve truthful tenant conflict-recovery feedback`](RIGHTSPOT-031-preserve-tenant-conflict-recovery-feedback.md)
 
 `RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
 `RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`,
@@ -184,8 +185,18 @@ after its bounded browser/form regression passed. No closed task is an active im
 focused regression and browser evidence are recorded in the Task File; no implementation Worktree
 is open.
 
-**Current route:** No product-defect implementation route is currently open. `RIGHTSPOT-030` is
-closed for the confirmed dashboard portion of `F-08`; its next route is a fresh Main-thread audit.
+`RIGHTSPOT-031` is `CLOSED_VERIFIED` as a P2 tenant presentation repair. A stale submit was
+reproduced as `409` followed by a successful authoritative refetch, but the version-keyed editor
+remounted and lost the required conflict explanation. Its adjacent failed-refetch copy was also
+statically untruthful. The Main-owned serial Work Order now keeps the notice in parent state, reports
+truthful recovery failure, and passed focused TDD, full regression, build, and isolated browser
+verification on both tenant request surfaces. It does not authorize workflow/API changes or the
+separate un-reproduced listing-detail async-read repair.
+
+**Current route:** `RIGHTSPOT-031` is closed within its exact presentation boundary. The next route is
+a fresh Main-thread cross-layer audit; `RIGHTSPOT-030` remains closed for the confirmed dashboard
+portion of `F-08`, and the separate listing-detail async-read concern remains an evidence gap. No
+Worktree is open.
 `RIGHTSPOT-028` is closed after
 `RS-WO-028-01` passed Main Red→Green checks and persistent frozen-source independent verification;
 the canonical Main Worktree remains the only source authority. `RIGHTSPOT-027`, `RIGHTSPOT-026`,

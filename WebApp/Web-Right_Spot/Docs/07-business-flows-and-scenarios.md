@@ -2,8 +2,9 @@
 
 **Role:** Canonical business-flow, scenario, state-transition, and acceptance authority for the
 RightSpot Web application
-**Status:** Accepted current-flow baseline; `F-01`–`F-06` are closed within their recorded bounded
-claims, with the deterministic-reset repair recorded in `RIGHTSPOT-028`
+**Status:** Accepted current-flow baseline; `F-01`–`F-06` and `F-09` are closed within their recorded
+bounded claims, with the deterministic-reset repair recorded in `RIGHTSPOT-028` and the tenant
+conflict-feedback repair recorded in `RIGHTSPOT-031`
 **As of:** 2026-09-02, Europe/London
 **Owner:** Main RightSpot thread
 
@@ -132,8 +133,8 @@ Status values used below:
 | `RS-FLOW-02` | Discover and filter published rentals | `/tenant` | Read-only listing projection | `CLOSED_VERIFIED` |
 | `RS-FLOW-03` | Inspect a listing and enter a request | `/tenant/listings/:listingId` | No implicit write | `CLOSED_VERIFIED` — same-listing request notice state copy is verified by `RIGHTSPOT-026` |
 | `RS-FLOW-04` | Save, remove, reload, and re-save a Favourite | Listing cards/detail, `/tenant/favourites` | Favourite `ACTIVE/REMOVED` | `IMPLEMENTED_WITH_RESIDUAL_EVIDENCE` |
-| `RS-FLOW-05` | Create and revise a Viewing Request draft | Listing detail, `/tenant/requests` | `TENANT_DRAFT`, version increment | `CLOSED_VERIFIED` |
-| `RS-FLOW-06` | Explicitly submit the draft | Tenant request surface | `TENANT_DRAFT` → `REQUEST_SUBMITTED` | `CLOSED_VERIFIED` |
+| `RS-FLOW-05` | Create and revise a Viewing Request draft | Listing detail, `/tenant/requests` | `TENANT_DRAFT`, version increment; `RIGHTSPOT-031` preserves truthful stale-write recovery feedback | `CLOSED_VERIFIED` |
+| `RS-FLOW-06` | Explicitly submit the draft | Tenant request surface | `TENANT_DRAFT` → `REQUEST_SUBMITTED`; `RIGHTSPOT-031` preserves truthful stale-write recovery feedback | `CLOSED_VERIFIED` |
 | `RS-FLOW-07` | Expose submitted work to the assigned agent | `/agent` | Queue read only | `CLOSED_VERIFIED` — draft privacy enforced at queue and direct-detail read boundaries |
 | `RS-FLOW-08` | Open an assigned request and start review | Agent queue/detail | `CLOSED_VERIFIED` — submitted work remains actionable and pre-submission drafts are non-visible |
 | `RS-FLOW-09` | Prepare or revise an agent response | Agent request detail | Preparation only; remains `AGENT_REVIEWING` | `CLOSED_VERIFIED` |
@@ -912,10 +913,35 @@ arbitrary database is authorized.
 changing workflow/UI/auth behavior, or introducing WebMCP, Cloud Receiver, WebRTC, Redis, external
 authentication, or deployment behavior.
 
+### F-09 — Tenant conflict recovery can lose its explanation or claim a refresh succeeded (closed)
+
+**Severity:** P2 for tenant action clarity and truthful conflict-state presentation; no workflow or
+data-integrity impact is claimed
+**Reproduction:** A tenant listing-detail editor and the tenant request dashboard both held request
+version `1`. An external authenticated update advanced the authoritative draft, then the stale editor
+submitted its old version. The server correctly returned `409`, and the recovery read returned the
+newer request. The version-keyed editor remounted after accepting that response, so the old local
+error state disappeared and the tenant saw no explanation. The adjacent recovery-failure catch path
+also used copy claiming that the view was refreshed even when the refetch failed.
+**Expected:** A stale write remains non-mutating and the tenant sees the authoritative response plus
+a visible bounded conflict notice. If recovery fails, the notice must say that the latest view could
+not be refreshed and must direct the tenant to reload. The notice is presentation feedback, not a
+new workflow state or success result.
+**Disposition:** `CLOSED_VERIFIED` through `RIGHTSPOT-031` on 2026-09-02. The Main-thread serial
+repair owns the notice in both tenant parents, accepts the server response before reporting successful
+recovery, and uses distinct truthful failure copy. Focused Red→Green contract, full `137/137`
+suite across 30 test files, foundation `6/6`, typecheck, production build, and isolated browser
+reproductions on both `/tenant/listings/listing-primary` and `/tenant/requests` passed. No replay,
+optimistic workflow patch, API/domain/persistence change, or listing-detail `load()` sequencing change
+was made.
+**Not authorised by this finding:** changing the 409/API contract, adding retry or cancellation
+infrastructure, altering workflow state or role/privacy projections, or speculatively repairing the
+separate listing-detail dynamic-route `F-08` evidence gap.
+
 No other implementation gap discovered in this documentation audit should be promoted to a product
-defect without reproducing it against current source, tests, or runtime. `F-01`–`F-06` are closed
-within their bounded claims and remain separate from deferred integrations. The next fresh audit is
-required to re-check the full chain against current source, tests, and runtime.
+defect without reproducing it against current source, tests, or runtime. `F-01`–`F-06` and `F-09` are
+closed within their bounded claims and remain separate from deferred integrations. The next fresh
+audit is required to re-check the full chain against current source, tests, and runtime.
 A future audit must classify each new observation as:
 
 1. intended behavior already accepted by an ADR or this catalogue;
@@ -965,7 +991,7 @@ tenant session
 ```
 
 The next audit may continue this walkthrough against the current source because `F-01`, `F-02`, and
-`F-03` are closed within their bounded local claims, and `F-04` and `F-05` are closed within their
-bounded presentation-only claims. The audit must still verify the full chain from the current fixture
-and classify any new observation before registering another Task; no closure here claims external
-integrations or production readiness.
+`F-03` are closed within their bounded local claims, `F-04`, `F-05`, and `F-09` are closed within
+their bounded presentation-only claims, and `F-06` is closed at the reset boundary. The audit must
+still verify the full chain from the current fixture and classify any new observation before
+registering another Task; no closure here claims external integrations or production readiness.

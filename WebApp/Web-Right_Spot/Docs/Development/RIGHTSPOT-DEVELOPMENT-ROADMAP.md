@@ -2,19 +2,23 @@
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
 **Status:** Phase 5 is complete for the accepted local MVP, and the earlier Phase 6 post-MVP closure increment
-is complete. The continuous cross-layer audit registered six bounded product defects and one current
-verification-governance defect: `F-01` (agent draft
+is complete. The continuous cross-layer audit recorded eight bounded product findings (`F-01`–`F-06`,
+`F-08`, and `F-09`) plus one verification-governance defect (`F-07`): `F-01` (agent draft
 visibility), `F-02` (signed-out root session resolution), `F-03` (the loopback development origin
 gap), `F-04` (listing-detail request-status notice), `F-05` (terminal request-response presentation),
-and `F-06` (the deterministic workflow-fixture reset command). `F-01`–`F-06` are closed within their
-bounded local claims; `F-06` was repaired and independently verified through `RIGHTSPOT-028`. The
+and `F-06` (the deterministic workflow-fixture reset command). `F-01`–`F-06` and `F-09` are closed
+within their bounded local claims; `F-06` was repaired and independently verified through
+`RIGHTSPOT-028`, and `F-09` through `RIGHTSPOT-031`. The
 2026-09-02 audit registered `F-07` for the default test command under-covering the 28-file/133-test
 suite; `RIGHTSPOT-029` is now closed within its command/documentation scope. A subsequent isolated
 controlled browser reproduction confirmed the tenant request-dashboard portion of the asynchronous
 read concern as `F-08`/`VERIFIED_DEFECT`, now closed through `RIGHTSPOT-030`; the separate
 listing-detail dynamic-route concern remains an `EVIDENCE_GAP`. `RIGHTSPOT-030` covered latest-read
 sequencing, mutation-result invalidation, and the Refresh gate for draft/decision mutations; its
-focused/full, static, runtime, and browser closure evidence is reconciled in the Task File. The first
+focused/full, static, runtime, and browser closure evidence is reconciled in the Task File. A later
+conflict-recovery audit reproduced `F-09`, where a stale tenant write could lose its explanation after
+an authoritative refetch or claim refresh success when recovery failed; `RIGHTSPOT-031` closed that
+presentation-only boundary with parent-owned, truthful feedback. The first
 implementation route was
 the `RIGHTSPOT-023` session-client repair, now verified in its Main Builder and independent read-only
 verification checkpoints. The same rendered audit registered `F-03` (the documented 127.0.0.1 dev
@@ -104,10 +108,11 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
   canonical audit baseline for the tenant and agent business chains. It records the closed bounded
   findings `F-01` (agent draft privacy), `F-02` (signed-out session resolution), `F-03`
   (`127.0.0.1:3100` development-origin resolution), `F-04` (listing-detail request-status notice),
-  `F-05` (terminal request-response presentation), and `F-06` (deterministic workflow-fixture reset).
-  `F-01`–`F-06` remain closed within their bounded claims, with `F-06` closed through
-  `RIGHTSPOT-028`. Each remains distinct from the others and from deferred integrations; the next
-  audit must re-check them against current source.
+  `F-05` (terminal request-response presentation), `F-06` (deterministic workflow-fixture reset),
+  and `F-09` (tenant conflict-recovery feedback). `F-01`–`F-06` and `F-09` remain closed within
+  their bounded claims, with `F-06` closed through
+  `RIGHTSPOT-028` and `F-09` through `RIGHTSPOT-031`. Each remains distinct from the others and from
+  deferred integrations; the next audit must re-check them against current source.
 - The current physical state is one Worktree: canonical Main. The stopped `RS-WO-020-02` and
   `RS-WO-020-03` UI candidates were adopted into Main and their physical Worktrees were retired after
   exact-path review; their task records remain as historical evidence.
@@ -174,6 +179,11 @@ boundary. `RIGHTSPOT-030` is now closed after focused `3/3`, current full `136/1
 files, foundation `6/6`, typecheck/build, exact-scope review, local health/reset, independent static
 review, and both isolated browser race reruns passed. The separate listing-detail dynamic-route
 concern remains `F-08`/`EVIDENCE_GAP`.
+The subsequent conflict-recovery audit reproduced `F-09` on both tenant request surfaces. Its
+`RIGHTSPOT-031` serial presentation repair passed focused Red→Green, full `137/137` across 30 test
+files, foundation `6/6`, typecheck/build, and fresh isolated browser reproductions for the listing
+detail and request dashboard. The exact stale-write/API, role/privacy, and listing-detail `load()`
+boundaries remain unchanged; `F-09` is closed and no implementation Worktree is open.
 The fresh Main-thread audit continuation also replayed the ordinary local agent-decline browser branch;
 `RS-FLOW-11` is now `CLOSED_VERIFIED`. It also replayed the tenant-decision branch through proposal,
 explicit tenant decline, terminal readback, and slot release; `RS-FLOW-13` is now `CLOSED_VERIFIED`.
@@ -246,8 +256,10 @@ CSS candidate at product commit `f0dbd99`, and independent `RS-WO-022-02` verifi
 
 ## 5. Current closure
 
-There is no active implementation gate for the accepted local MVP or the confirmed F-08 dashboard
-race. `RIGHTSPOT-030` is closed within its bounded tenant request-dashboard scope. `RS-WO-002-14` passed direct
+There is no active implementation gate for the accepted local MVP, the confirmed F-08 dashboard race,
+or the closed F-09 conflict-feedback repair. `RIGHTSPOT-030` is closed within its bounded tenant
+request-dashboard scope, and `RIGHTSPOT-031` is closed within its bounded tenant presentation scope.
+`RS-WO-002-14` passed direct
 combined cross-role verification and `RS-WO-002-15` passed the isolated browser walkthrough from a
 fresh database against integrated source `9348aa50b63e3f4f46e77238ad370670383d9d6`. The durable
 evidence is recorded in [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSURE-RECORD.md), and

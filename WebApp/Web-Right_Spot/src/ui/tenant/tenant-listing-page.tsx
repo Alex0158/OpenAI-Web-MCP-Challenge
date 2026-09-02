@@ -9,7 +9,7 @@ import {
   tenantApiErrorMessage,
   type TenantListingResponse,
 } from "./tenant-api";
-import { TenantRequestEditor } from "./tenant-request-page";
+import { TenantRequestEditor, type TenantRequestConflictNotice } from "./tenant-request-page";
 import {
   FavouriteFeedback,
   FavouriteToggle,
@@ -22,13 +22,20 @@ import type { TenantRequestDto, TenantRequestResponse } from "../../shared/contr
 export default function TenantListingPage({ listingId }: { listingId: string }) {
   const [listingData, setListingData] = useState<TenantListingResponse | null>(null);
   const [requestData, setRequestData] = useState<TenantRequestResponse | null>(null);
+  const [requestNotice, setRequestNotice] = useState<TenantRequestConflictNotice | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [isLoading, setIsLoading] = useState(true);
   const favourites = useTenantFavourites();
 
+  function applyRequestData(nextData: TenantRequestResponse) {
+    setRequestData(nextData);
+    setRequestNotice(null);
+  }
+
   function load() {
     setIsLoading(true);
     setError(null);
+    setRequestNotice(null);
     void Promise.all([readListing(listingId), readTenantRequest()])
       .then(([nextListing, nextRequest]) => {
         setListingData(nextListing);
@@ -49,6 +56,15 @@ export default function TenantListingPage({ listingId }: { listingId: string }) 
       description="The facts below come from the tenant listing service. A request is saved separately and only submitted through an explicit action."
     >
       <FavouriteFeedback controller={favourites} />
+      {requestNotice ? (
+        <div
+          className={requestNotice.tone === "error" ? styles.inlineError : styles.inlineStatus}
+          role={requestNotice.tone === "error" ? "alert" : "status"}
+          aria-live="polite"
+        >
+          {requestNotice.message}
+        </div>
+      ) : null}
       {isLoading ? (
         <div className={`${styles.feedbackState} ${styles.loadingState}`} role="status" aria-live="polite" aria-busy="true">
           <span className={styles.feedbackMarker} aria-hidden="true" />
@@ -73,7 +89,8 @@ export default function TenantListingPage({ listingId }: { listingId: string }) 
           listingData={listingData}
           requestData={requestData}
           favourites={favourites}
-          onRequestData={setRequestData}
+          onRequestData={applyRequestData}
+          onConflictNotice={setRequestNotice}
         />
       ) : null}
     </RolePageFrame>
@@ -85,11 +102,13 @@ function ListingDetailContent({
   requestData,
   favourites,
   onRequestData,
+  onConflictNotice,
 }: {
   listingData: TenantListingResponse;
   requestData: TenantRequestResponse;
   favourites: TenantFavouritesController;
   onRequestData: (data: TenantRequestResponse) => void;
+  onConflictNotice: (notice: TenantRequestConflictNotice) => void;
 }) {
   const listing = listingData.listing;
   const request = requestData.request;
@@ -158,6 +177,7 @@ function ListingDetailContent({
           fixtureGeneration={requestData.fixtureGeneration}
           request={request}
           onSaved={onRequestData}
+          onConflictNotice={onConflictNotice}
         />
       ) : existingRequestNotice ? (
         <section className={styles.noticeCard} aria-labelledby="request-already-sent-title">

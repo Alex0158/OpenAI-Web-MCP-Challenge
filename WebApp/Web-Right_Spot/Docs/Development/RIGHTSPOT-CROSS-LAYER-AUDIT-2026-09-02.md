@@ -13,7 +13,9 @@ The accepted ordinary local MVP remains runnable and the highest-value tenant-to
 replayed through the browser without a new business-flow blocker. The tenant proposal/confirmation/
 decline branches, agent-decline branch, empty request state, listing discovery/filter states, listing
 detail, and role-specific navigation were inspected against the current Main source. The browser evidence
-showed no application console error or warning beyond normal React development information.
+showed no application console error or warning beyond normal React development information. A later
+conflict-recovery replay found the separate P2 presentation defect recorded as `F-09` below and closed
+through `RIGHTSPOT-031`.
 
 One actionable process defect was confirmed: the package's default `npm test` command executed only
 `tests/foundation.test.ts` (6 tests), while the current RightSpot test surface contains 28 test files
@@ -27,7 +29,7 @@ dashboard could let an older response overwrite a newer server response; this da
 repaired and is now `CLOSED_VERIFIED` through `RIGHTSPOT-030`. The analogous listing-detail route
 concern remains `F-08`/`EVIDENCE_GAP` and is not included in that Task.
 
-No new defect was found in the authoritative workflow state machine, role/privacy boundary, reset
+No defect was found in the authoritative workflow state machine, role/privacy boundary, reset
 authority, listing filter behavior, or normal tenant/agent happy paths. Information Request,
 external authentication, Operations UI, WebMCP, Cloud Receiver, WebRTC, Redis, deployment, and
 commercial marketplace behavior remain deliberately deferred or gated and are not audit failures.
@@ -188,12 +190,47 @@ Task File.
 reproduced with the same controlled harness and remains outside Task 030. Do not add a speculative
 guard until it has its own evidence and accepted scope.
 
+### F-09 — Tenant conflict recovery feedback can disappear or claim refresh success
+
+**Classification:** `VERIFIED_DEFECT` for tenant presentation truthfulness
+**Priority:** `P2` for tenant action clarity; no workflow or data-integrity defect was reproduced
+**Static evidence:** `TenantRequestEditor` previously set its stale/conflict message locally after
+calling `onSaved`. Both tenant parents key the editor by request version, so accepting a newer
+authoritative response remounted the editor and discarded that local message. Its recovery catch
+also retained copy claiming that the tenant view was refreshed even if `readTenantRequest()` failed.
+
+**Controlled reproduction — 2026-09-02:** In an isolated local browser session, a stale listing-detail
+editor submitted an old request version. The observed network sequence was
+`POST /api/tenant/request/submit → 409` followed by `GET /api/tenant/request → 200`; the authoritative
+request advanced from version `1` to `2`, but the old UI showed no conflict explanation. The same
+sequence was then reproduced on `/tenant/requests`, advancing the authoritative request from version
+`2` to `3`. Before repair, the response/remount behavior was the confirmed defect; after repair, both
+surfaces kept the conflict notice visible alongside the newer request and external note. The failed-
+refetch branch was not separately browser-intercepted because the route harness did not replace the
+exact recovery response.
+
+**Impact:** The tenant could see correct newer server data without understanding that the attempted
+command failed because the draft was stale. A failed recovery could also have presented an untruthful
+success implication. The server correctly rejected the stale command and no workflow state was
+corrupted.
+
+**Bounded action and resolution:** `RIGHTSPOT-031` / `RS-WO-031-01` keeps conflict feedback in
+parent-owned state for both tenant request surfaces, accepts the authoritative response before
+reporting successful recovery, and uses distinct truthful failure copy. Its focused TDD contract,
+full `137/137` suite across 30 test files, foundation `6/6`, typecheck, build, exact-scope review,
+and both isolated browser reproductions passed. No replay, optimistic patch, API/domain/persistence
+change, or listing-detail `load()` sequencing change was made. `F-09` is `CLOSED_VERIFIED`.
+
+**Residual boundary:** The separate listing-detail dynamic-route async-read concern remains the
+`F-08` `EVIDENCE_GAP`; it was not folded into this repair.
+
 ## 6. Recommended next gate
 
-The recommended `RIGHTSPOT-030` serial TDD repair has completed. Its focused Red→Green evidence,
-frozen-source review, full pinned suite, typecheck, build, local health/reset, and both isolated
-browser race reruns are recorded in Section 10. The next gate is a fresh Main-thread cross-layer audit;
-the separate listing-detail evidence gap remains outside this closed Task.
+The recommended `RIGHTSPOT-030` and subsequent `RIGHTSPOT-031` serial TDD repairs have completed.
+Their focused Red→Green evidence, frozen-source review, full pinned suite, typecheck, build, local
+health/reset, and isolated browser evidence are recorded in Sections 10 and 12. The next gate is a
+fresh Main-thread cross-layer audit; the separate listing-detail evidence gap remains outside both
+closed Tasks.
 
 ## 7. Claim boundary
 
@@ -301,3 +338,38 @@ found no new product Task to register. The analogous listing-detail async concer
 `F-08`/`EVIDENCE_GAP`; it was not reproduced and does not authorize a speculative repair. No
 deployment, external authentication, WebMCP, Cloud Receiver, WebRTC, Redis, or production-readiness
 claim follows from this continuation.
+
+## 12. RIGHTSPOT-031 closure — 2026-09-02
+
+The Main thread registered `RIGHTSPOT-031` after a fresh isolated reproduction showed a stale tenant
+draft submit returning `409`, followed by a successful authoritative refetch that remounted the
+version-keyed editor and lost its local conflict explanation. Static review also confirmed that the
+recovery-failure branch claimed refresh success when the refetch failed. This was classified as `F-09`,
+a bounded presentation defect rather than a workflow/API or persistence defect.
+
+The Main-owned serial repair adds a typed conflict-notice callback and parent-owned notice state to
+both `/tenant/requests` and listing detail. It accepts the refetched server response first, then
+reports a neutral visible status notice. A failed refetch reports an error requiring reload and does
+not claim that the latest view was refreshed. Ordinary accepted reads and mutations clear a prior
+notice. The separate listing-detail `load()`/`Promise.all` sequencing remains unchanged.
+
+Closure evidence:
+
+- TDD focused source contract: Red was captured against the registered baseline; final Green passed
+  `1/1` after a second review-found listing writer gap was also encoded and repaired;
+- pinned complete suite: `npm test` passed `137/137` across `30` authored test files;
+- pinned `npm run test:foundation` passed `6/6`; typecheck, production build, and `/api/health`
+  passed;
+- listing-detail browser reproduction: stale submit `409`, recovery read `200`, authoritative
+  version `2`, and visible truthful conflict notice with the external draft note;
+- request-dashboard browser reproduction: stale submit `409`, recovery read `200`, authoritative
+  version `3`, and the same notice visible outside the remounted editor;
+- failed recovery is covered by the focused source contract and explicit copy, without a separate
+  browser interception claim; and
+- the fixture was reset to generation `21`, the isolated browser session was closed, the only physical
+  Worktree remained canonical Main, and the user's existing in-app browser tab was not used or changed.
+
+`RIGHTSPOT-031` and `F-09` are therefore `CLOSED_VERIFIED` within their exact presentation scope.
+The next route is a fresh Main-thread cross-layer audit. This closure does not claim production
+concurrency, deployment, external authentication, WebMCP, Cloud Receiver, WebRTC, Redis, or external
+notification behavior.

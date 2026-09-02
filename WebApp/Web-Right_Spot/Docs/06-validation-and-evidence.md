@@ -192,6 +192,44 @@ the temporary session was closed before the fixture was reset.
 This closes the required local browser evidence for `RS-FLOW-13`. It does not claim external
 notification, deployment, production concurrency, or any deferred integration.
 
+## 3.3 RIGHTSPOT-031 conflict-recovery feedback closure — 2026-09-02
+
+The Main-thread audit reproduced a P2 tenant presentation defect on both request surfaces. A stale
+draft submit returned `409`, the recovery read returned `200` with the newer authoritative request,
+and the version-keyed editor remounted before its local conflict message could remain visible. The
+same editor also used refresh-success wording when its recovery read failed. The server state and
+workflow transition were correct; the defect was limited to feedback ownership and truthful copy.
+
+The serial `RIGHTSPOT-031` repair lifts the conflict notice to parent-owned state in both
+`/tenant/requests` and `/tenant/listings/listing-primary`. Successful recovery accepts the server
+response first and then reports a neutral status notice outside the version-keyed editor. Failed
+recovery reports an error that explicitly says the latest view could not be refreshed and asks the
+tenant to reload. Ordinary reads and successful mutations clear the notice. No retry, replay,
+optimistic workflow patch, API/domain/persistence change, or change to the listing-detail
+`Promise.all` read sequencing was introduced.
+
+Recorded evidence:
+
+- TDD focused source contract: initial Red before implementation, then final `1/1` Green;
+- pinned `npm test`: `137/137` across `30` authored test files;
+- pinned foundation check: `6/6`; typecheck, production build, and `/api/health` passed;
+- isolated listing-detail browser run: `POST /api/tenant/request/submit → 409`, recovery
+  `GET /api/tenant/request → 200`, authoritative request version `2`, and the conflict notice
+  remained visible with the externally updated draft;
+- isolated request-dashboard browser run: the same sequence reached authoritative version `3`,
+  retained the external note, and kept the conflict notice visible outside the editor;
+- the failed-refetch branch is covered by the focused source contract and explicit copy, without a
+  separate browser interception claim because the route harness did not replace the exact recovery
+  response; and
+- the stale command remained non-mutating in both browser runs, the fixture was reset to generation
+  `21`, the temporary browser session was closed, and the user's existing in-app browser tab was not
+  used or changed.
+
+This closes `F-09` and the `RIGHTSPOT-031` acceptance gate within the local presentation boundary.
+It does not close the separate `tenant-listing-page.tsx` dynamic-route `F-08` evidence gap or claim
+production concurrency, deployment, external authentication, WebMCP, Cloud Receiver, WebRTC, Redis,
+or external notification behavior.
+
 ## 4.1 Post-MVP shared CSS evidence
 
 `RS-WO-007-02` is independently `VERIFIED` and integrated at product commit `89a50c7`. The

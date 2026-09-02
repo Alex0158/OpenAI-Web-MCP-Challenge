@@ -21,11 +21,17 @@ import type { TenantApiError } from "./tenant-api";
 import { londonWallTimeToUtcIso, utcIsoToLondonInput } from "./tenant-request-time";
 import styles from "./tenant.module.css";
 
+export type TenantRequestConflictNotice = {
+  tone: "status" | "error";
+  message: string;
+};
+
 export default function TenantRequestPage() {
   const [data, setData] = useState<TenantRequestResponse | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [conflictNotice, setConflictNotice] = useState<TenantRequestConflictNotice | null>(null);
   const [pendingResponse, setPendingResponse] = useState<"confirm" | "decline" | null>(null);
   const [pendingDraftMutation, setPendingDraftMutation] = useState(false);
   const latestReadId = useRef(0);
@@ -34,12 +40,14 @@ export default function TenantRequestPage() {
     latestReadId.current += 1;
     setData(nextData);
     setIsLoading(false);
+    setConflictNotice(null);
   }
 
   function load(message?: string) {
     const readId = ++latestReadId.current;
     setIsLoading(true);
     setError(null);
+    setConflictNotice(null);
     void readTenantRequest()
       .then((nextData) => {
         if (readId !== latestReadId.current) return;
@@ -101,6 +109,15 @@ export default function TenantRequestPage() {
       description="Your request, the current response, and a safe status timeline stay together in one tenant projection."
     >
       {statusMessage ? <div className={styles.inlineSuccess} role="status">{statusMessage}</div> : null}
+      {conflictNotice ? (
+        <div
+          className={conflictNotice.tone === "error" ? styles.inlineError : styles.inlineStatus}
+          role={conflictNotice.tone === "error" ? "alert" : "status"}
+          aria-live="polite"
+        >
+          {conflictNotice.message}
+        </div>
+      ) : null}
       <div className={styles.toolbar}>
         <div>
           <span className={styles.toolbarLabel}>Current request view</span>
@@ -134,6 +151,7 @@ export default function TenantRequestPage() {
           onRespond={respond}
           pendingResponse={pendingResponse}
           onPendingChange={setPendingDraftMutation}
+          onConflictNotice={setConflictNotice}
         />
       ) : null}
     </RolePageFrame>
@@ -146,9 +164,10 @@ type RequestDashboardProps = {
   onRespond: (type: "confirm" | "decline") => void;
   pendingResponse: "confirm" | "decline" | null;
   onPendingChange?: (pending: boolean) => void;
+  onConflictNotice: (notice: TenantRequestConflictNotice) => void;
 };
 
-function RequestDashboard({ data, onSaved, onRespond, pendingResponse, onPendingChange }: RequestDashboardProps) {
+function RequestDashboard({ data, onSaved, onRespond, pendingResponse, onPendingChange, onConflictNotice }: RequestDashboardProps) {
   if (!data.request || !data.listing) {
     return (
       <section className={`${styles.feedbackState} ${styles.emptyRequestState}`} aria-labelledby="empty-request-title">
@@ -177,6 +196,7 @@ function RequestDashboard({ data, onSaved, onRespond, pendingResponse, onPending
           request={data.request}
           onSaved={onSaved}
           onPendingChange={onPendingChange}
+          onConflictNotice={onConflictNotice}
         />
       ) : null}
       <section className={styles.requestCard} aria-labelledby="request-status-title">
@@ -252,12 +272,14 @@ export function TenantRequestEditor({
   request,
   onSaved,
   onPendingChange,
+  onConflictNotice,
 }: {
   listing: WorkflowListingDto;
   fixtureGeneration: number;
   request: TenantRequestDto | null;
   onSaved: (data: TenantRequestResponse) => void;
   onPendingChange?: (pending: boolean) => void;
+  onConflictNotice: (notice: TenantRequestConflictNotice) => void;
 }) {
   const [times, setTimes] = useState(() => request?.preferredTimes.map(toInputDateTime) ?? [""]);
   const [tenantNote, setTenantNote] = useState(request?.tenantNote ?? "");
@@ -357,11 +379,18 @@ export function TenantRequestEditor({
   async function handleMutationError(errorValue: unknown, action: string) {
     if (isTenantApiError(errorValue) && errorValue.status === 409) {
       try {
-        onSaved(await readTenantRequest());
+        const refreshed = await readTenantRequest();
+        onSaved(refreshed);
+        onConflictNotice({
+          tone: "status",
+          message: "The request changed on the server. The latest tenant view is shown; review it before trying again.",
+        });
       } catch {
-        // Keep the bounded stale message visible when the refetch itself fails.
+        onConflictNotice({
+          tone: "error",
+          message: "The request changed on the server, but the latest tenant view could not be refreshed. Reload this page before trying again.",
+        });
       }
-      setError("This draft is stale or the request changed. The tenant view was refreshed; review it before trying again.");
       return;
     }
     setError(tenantApiErrorMessage(errorValue, action));
