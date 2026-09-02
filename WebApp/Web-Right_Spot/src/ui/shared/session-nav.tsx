@@ -37,6 +37,11 @@ export default function SessionNav({
           label: "Favourites",
           isCurrent: currentPath === "/tenant/favourites",
         },
+        {
+          href: "/tenant/requests",
+          label: "My request",
+          isCurrent: currentPath === "/tenant/requests",
+        },
       ]
     : actor?.role === "agent"
       ? [{
@@ -47,7 +52,11 @@ export default function SessionNav({
       : [];
 
   return (
-    <nav className="session-nav" aria-label="Primary navigation">
+    <nav
+      className="session-nav"
+      data-workspace-role={actor?.role}
+      aria-label="Primary navigation"
+    >
       <a className="brand" href="/" aria-current={currentPath === "/" ? "page" : undefined}>
         <span className="brand-mark" aria-hidden="true">RS</span>
         <span>RightSpot</span>

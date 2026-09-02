@@ -33,6 +33,7 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-018 — Harden relay workflow integrity`](RIGHTSPOT-018-harden-workflow-integrity.md)
 - [`RIGHTSPOT-019 — Normalize the tenant Europe/London time contract`](RIGHTSPOT-019-normalize-tenant-london-time-contract.md)
 - [`RIGHTSPOT-020 — Implement tenant favourites and agent listing-interest`](RIGHTSPOT-020-implement-favourites-and-listing-interest.md)
+- [`RIGHTSPOT-021 — Restore the tenant Viewing Request navigation entry`](RIGHTSPOT-021-restore-tenant-viewing-request-navigation.md)
 
 `RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
 `RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`,
@@ -65,6 +66,12 @@ remain necessary are referenced by the owning Task Files and local-only archive 
 `refs/archive/rightspot/rs-wo-017-03-regate`. These refs are evidence-only and do not authorize source
 editing or integration. `RIGHTSPOT-019` is closed after its integrated repair passed the bounded
 browser/form regression gate.
+
+`RIGHTSPOT-021` is closed as a verified, narrow tenant-navigation defect. It owned only the missing
+entry to the existing `/tenant/requests` dashboard; it did not authorize a workflow, API, data,
+authentication, Information Request, or Agent-navigation change. Its `RS-WO-021-01` implementation
+Work Order returned `READY_FOR_VERIFICATION` after changing only its declared two product paths, and
+persistent Verifier task `01a05ff5-ccf1-75c3-b873-5b39f0e3e28f` independently returned `VERIFIED`.
 
 Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, the corrected `RS-WO-002-02` rerun returned
@@ -101,7 +108,9 @@ browser evidence are reconciled in the
 `RIGHTSPOT-002` is closed.
 
 **Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain pending
-credential, decision, or read-only audit gates. `RIGHTSPOT-020` is closed with `RS-WO-020-01R` verified,
+(credential, decision, and read-only audit gates respectively); `RIGHTSPOT-021` is closed as an
+implementation gate, with a post-closure `320–342px` responsive follow-up decision recorded in its
+Task File. `RIGHTSPOT-020` is closed with `RS-WO-020-01R` verified,
 its UI candidates adopted into Main at product commit `c29e80d`, `RS-WO-020-04` independently verified at
 Main `c977ea4`, and `RS-WO-020-05` fresh-reset browser verification passed against Main `f49e1ca`.
 `RS-WO-016-01` is
@@ -109,7 +118,12 @@ independently verified and integrated at `edd7575`; `RS-WO-017-03` is independen
 integrated at `2a53917`, with `RS-WO-017-04` browser verification complete. `RS-WO-019-01` is closed
 after its bounded browser/form regression passed. No closed task is an active implementation gate.
 
-**Current route:** `RIGHTSPOT-020` is closed: `RS-WO-020-01R` is independently verified at `adfd37e`; the main thread jointly reviewed
+**Current route:** `RIGHTSPOT-021` is closed for its bounded implementation and verification. Its
+`RS-WO-021-01` implementation changed only the declared two product paths, and `RS-WO-021-02`
+independently returned `VERIFIED` against the frozen canonical Main Worktree. A subsequent
+Main-thread audit found that the third tenant navigation link is initially clipped at `320–342px`;
+the support-floor decision and any bounded repair are recorded as a follow-up gate in the owning Task
+File, and no new Task is registered yet. `RIGHTSPOT-020` remains closed: `RS-WO-020-01R` is independently verified at `adfd37e`; the main thread jointly reviewed
 `RS-WO-008-01` and `RS-WO-009-01`, accepted the bounded Favourite direction in ADR-RS-0013, deferred
 the PII-sensitive Information Request direction, and registered the now-closed `RIGHTSPOT-020` as a separate
 implementation Task. Its tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched

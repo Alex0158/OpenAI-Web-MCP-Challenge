@@ -2,7 +2,10 @@
 
 **Role:** Big-picture implementation, validation, and closure roadmap for the RightSpot child application  
 **Status:** Phase 5 is complete for the accepted local MVP, and the earlier Phase 6 post-MVP closure increment
-is complete. The joint review of `RS-WO-008-01` and `RS-WO-009-01` accepted ADR-RS-0013 for the
+is complete. A subsequent page-entry audit registered the bounded implementation defect `RIGHTSPOT-021`,
+which entered and completed bounded implementation through dispatched `RS-WO-021-01` and independent
+verification `RS-WO-021-02`. The joint review of
+`RS-WO-008-01` and `RS-WO-009-01` accepted ADR-RS-0013 for the
 bounded Favourite increment, deferred the PII-sensitive Information Request boundary, and registered
 `RIGHTSPOT-020`; its initial serial contract/data Work Order `RS-WO-020-01` and follow-up
 `RS-WO-020-01R` relation-version continuity repair are independently verified, with the repair frozen at
@@ -100,9 +103,17 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 ### 3.1 Current next route
 
 The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.
+The page-entry audit registered `RIGHTSPOT-021` as a bounded implementation route: restore a
+persistent tenant navigation entry to the existing `/tenant/requests` dashboard. `RS-WO-021-01`
+returned `READY_FOR_VERIFICATION` after changing only its declared two product paths, and independent
+`RS-WO-021-02` returned `VERIFIED` against the frozen serialized canonical Main Worktree source. The
+bounded parent gate is closed for its declared acceptance matrix. A subsequent Main-thread browser
+audit found a `P2` residual at `320–342px`, where the third tenant navigation link is initially
+clipped until the links container is scrolled. No new product task is active; the support-floor
+decision and any resulting bounded follow-up must be resolved before Git closure.
 The independent static verification `RS-WO-020-04` and fresh-reset browser verification `RS-WO-020-05`
-are reconciled in the owning Task File; there is no active implementation or verification gate for this
-increment:
+are reconciled in the owning Task File; the `RS-WO-021-01` implementation and `RS-WO-021-02`
+independent verification gates are closed:
 
 1. Kept the reviewed documentation/procedure baseline and unrelated collaborator changes separate.
 2. Implemented only the accepted bounded Favourite direction through `RIGHTSPOT-020`; the
@@ -129,9 +140,11 @@ increment:
 
 Only an explicitly selected, implementation-ready Task opens a new code Work Order or temporary
 Worktree. Each accepted output is integrated into Main and its physical Worktree is retired at the
-first safe checkpoint-scoped opportunity under the orchestration Runbook. The remaining `RIGHTSPOT-006`,
-`RIGHTSPOT-010`, and `RIGHTSPOT-012` records remain separate credential, decision, or read-only audit
-gates; they do not reopen `RIGHTSPOT-020`.
+first safe checkpoint-scoped opportunity under the orchestration Runbook. `RIGHTSPOT-021` is closed
+for its bounded repair and verification, with the post-closure `320–342px` responsive decision
+recorded in its Task File; `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain separate
+credential, decision, or read-only audit gates and do not reopen `RIGHTSPOT-020`. No new RightSpot
+product task is active while that support-floor decision remains open.
 
 ## 4. Roadmap operating rules
 
