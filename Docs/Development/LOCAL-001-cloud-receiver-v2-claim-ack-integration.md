@@ -28,6 +28,17 @@ All exact-counterpart commands below used Node `v26.8.1`, Cloud Receiver
 `300bce02e6a6f9b643a6de95a3596691304749b7`, and the disposable database
 `local_connector_v2_clean_300bce_0902` on PostgreSQL `127.0.0.1:55433`.
 
+Red-phase evidence:
+
+- Before the test-only Receiver wrapper existed, `CONNECTOR-V2-E2E-001` failed at readiness with
+  `E2E Receiver exited before readiness (1)`, proving the missing integration harness was red.
+- The first green attempt exposed a real fixture defect: a restarted test authority minted a
+  different `confirmed_at`, and the Receiver correctly returned `delivery_effect_conflict`.
+  The fixture was corrected to retain only a stable effect-token digest and canonical attestation
+  timestamp; the focused rerun then passed.
+- Two non-escalated loopback checks were rejected by the sandbox with `EPERM`; the process and
+  database results below were rerun with the required local-system permission.
+
 The clean Local Connector counterpart was tested from `/private/tmp/local-connector-v2-2233`,
 detached at `81e51a6b2299fa1f63c2b06180febebaab9ded04`.
 
