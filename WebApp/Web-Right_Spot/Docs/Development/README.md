@@ -43,6 +43,13 @@ completed the primary confirmation chain and role/terminal boundaries without a 
 remains an evidence gap and the disposable fixture was reset to generation `67` with healthy local
 health.
 
+The subsequent Tenant Discovery Search review registered `F-21` / `RIGHTSPOT-042` as a pending P1
+contract decision. The existing four filters and tenant-safe listing read remain operational, but the
+Area control uses an unseeded `Shoreditch` example and does not disclose that the current application
+uses exact Area equality. The task must freeze the ordinary UI/API and first read-only WebMCP Search
+contract before implementation; it does not change source, dependencies, routes, fixtures, or WebMCP
+registration. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal.
+
 **Current physical workspace:** The canonical Main Worktree remains the only source authority. The stopped,
 short-lived `RS-WO-020-02` and `RS-WO-020-03` candidate Worktrees were adopted into Main and retired after
 exact-path review; their historical snapshots remain in the owning Task Files and named local-only archive
@@ -67,7 +74,7 @@ flow definition.
 
 The latest Main-thread audit record is
 [`RIGHTSPOT-CROSS-LAYER-AUDIT-2026-09-02.md`](RIGHTSPOT-CROSS-LAYER-AUDIT-2026-09-02.md). It records
-the closed bounded findings through `F-19`, the separate un-reproduced asynchronous-read evidence gap,
+the closed bounded findings through `F-19`, the non-gating `F-20` typography polish, the newly registered `F-21` Search contract gap, and the separate un-reproduced asynchronous-read evidence gap,
 and the latest cross-layer/Favourite/Discovery failure replay. The latest audit registered and closed
 `F-19` / `RIGHTSPOT-041` after reproducing lost tenant draft-save and explicit-submit success feedback
 during version-keyed editor rehydration; its single Main-owned Work Order is now closed after parent-owned

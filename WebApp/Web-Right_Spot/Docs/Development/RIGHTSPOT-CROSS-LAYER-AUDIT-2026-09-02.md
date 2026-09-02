@@ -27,6 +27,12 @@ The following tenant request-editor audit found `F-19`, registered as `RIGHTSPOT
 draft-save and explicit-submit feedback was lost during version-keyed editor rehydration. Its bounded
 parent-owned feedback repair is now `CLOSED_VERIFIED` after focused TDD, full checks, and fresh isolated
 browser save/submit/conflict verification.
+The subsequent Tenant Discovery Search review selected the read-only Tenant Search goal as the first
+WebMCP direction and registered `F-21` / `RIGHTSPOT-042`. The existing filter implementation remains
+operational under its current rules, but Area matching is not discoverable and the future ordinary
+UI/API/WebMCP Search contract is not yet frozen. `RIGHTSPOT-042` is a pending Main-owned decision
+Task; no source, fixture, dependency, route, WebMCP registration, or implementation Worktree is
+authorized by that registration.
 This report remains evidence and does not authorize work outside the registered boundary.
 
 ## 1. Executive conclusion
@@ -1862,3 +1868,42 @@ replay produced no `VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`, `VERIFIED_POLISH`, 
 `DOCUMENTATION_DRIFT` finding, so no follow-on Task or Work Order was registered. This is fresh local
 evidence for the ordinary proposal/confirmation branch only; it does not claim external notification,
 deployment, WebMCP, Cloud Receiver, WebRTC, Redis, or production readiness.
+
+## 76. Tenant Discovery Area/Search contract audit — `F-21` / `RIGHTSPOT-042` — 2026-09-02
+
+Main reviewed the current Tenant Discovery Search surface across the UI, application filter predicate,
+HTTP query parser, tenant-safe listing projection, seeded catalogue, business-flow contract, and the
+staged WebMCP roadmap. The UI exposes a free-text Area input with placeholder `e.g. Shoreditch`, while
+the current synthetic published catalogue contains only `Islington`, `Haringey`, and `Southwark`.
+The application lowercases the supplied Area and compares it with exact equality; therefore `Southwark`
+and `southwark` return the same listing, while a partial value such as `Isling` returns an honest empty
+collection. The normal UI trims before the read; the direct application boundary rejects leading or
+trailing whitespace. Neither the current flow document nor the UI makes this exact-match/canonical
+value rule discoverable.
+
+Controlled loopback API and browser checks confirmed the expected one-result, case-normalized, partial-
+no-result, Clear-recovery, numeric, date, and combined-filter behavior. The page retained its loading,
+bounded failure, explicit empty-result, and latest-response guards. The complete suite passed `159/159`,
+typecheck passed, `/api/health` remained healthy, and the inspected browser error/warning log was empty.
+The native date `fill` discrepancy was reproduced only as an automation event-dispatch limitation;
+user-like keyboard entry exercised the actual controlled date path successfully. No API, role/privacy,
+workflow, persistence, fixture, or source defect was reproduced.
+
+This is classified as `F-21` / `OPEN_FINDING`, `P2`: a verified UX/contract gap, not a server filtering
+correctness failure. The current business flow can remain `CLOSED_VERIFIED` for its existing four-filter
+behavior, but it is insufficiently precise as the contract for a new WebMCP capability. The main risks
+are misleading Area affordance, no canonical-value discovery, ambiguity between Area and future keyword
+search, and the `Available by` UI label versus `availableFrom` parameter name. The small fixture also
+does not prove multi-result Area behavior or a stable ordering/cap contract.
+
+Main registered `RIGHTSPOT-042` with one serial decision Work Order, `RS-WO-042-01`, to freeze the
+first read-only Tenant Discovery/WebMCP Search contract. The task must decide Area semantics,
+normalization, unknown/no-result behavior, supported criteria, inclusive date/range rules, AND
+combination, ordering/cap/freshness, tenant-safe result fields, page-state agreement, role/lifecycle,
+unsupported-browser fallback, and the later TDD/browser/evaluation gate. The recommended candidate is
+a canonical Area facet with bounded suggestions and case-insensitive exact matching, plus a separately
+named keyword field only if explicitly accepted; no fuzzy guess or automatic full-catalogue fallback.
+
+This registration changes task and documentation state only. It does not authorize Search UI repair,
+WebMCP registration, dependency installation, schema/fixture expansion, external integration, or a
+new Worktree. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal.

@@ -1,7 +1,7 @@
 # RightSpot WebMCP Integration Roadmap
 
 **Role:** Engineering roadmap and gate definition for the later RightSpot WebMCP capability  
-**Status:** `ROADMAP_ESTABLISHED` — implementation and tool registration are not yet authorized  
+**Status:** `ROADMAP_ESTABLISHED` — Tenant Discovery Search selected as the first goal; contract work is pending and implementation/tool registration are not yet authorized  
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-02, Europe/London  
 **Applies to:** `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge/WebApp/Web-Right_Spot`
@@ -44,6 +44,8 @@ The following sources remain authoritative in their respective areas:
   for the separate Operations profile and its manual-query boundary; and
 - [`RIGHTSPOT-010`](../Tasks/RIGHTSPOT-010-define-agent-operations-insights-dashboard-boundary.md)
   for the pending read-only Agent Operations/WebMCP proposal.
+- [`RIGHTSPOT-042`](../Tasks/RIGHTSPOT-042-define-tenant-search-and-webmcp-search-contract.md)
+  for the selected Tenant Discovery/WebMCP Search contract decision and the current Area gap.
 
 The current RightSpot source has no WebMCP registration, no page-authored tool adapter, and no
 WebMCP dependency. The accepted ordinary MVP is a normal Next.js application with an authoritative
@@ -123,19 +125,19 @@ The product goal, not the number of exposed controls, determines the first slice
 
 | Candidate goal | Current authority | Risk | Recommendation | Reason |
 |---|---|---:|---|---|
-| Find published rentals by bounded area/filter and show the result on Tenant Discovery | Existing listing application/API and page | Low | **Default first slice** | Directly supports the core tenant journey, requires no new reporting model, and is read-only |
+| Find published rentals by bounded area/filter and show the result on Tenant Discovery | Existing listing application/API and page | Low | **Selected first slice** | Directly supports the core tenant journey, requires no new reporting model, and is read-only; contract work is registered in `RIGHTSPOT-042` |
 | Inspect one published listing and return to a human-readable detail surface | Existing listing detail route/API | Low | Follow-on read slice | Useful after discovery, but not necessary for the first registration proof |
 | Query upcoming Operations viewings or listing pipeline | Separate Operations authority/projection; `RIGHTSPOT-010` proposal | Medium | Decision-gated alternative | Potentially strong Hackathon value, but requires an accepted Operations page/query boundary |
 | Save a Favourite or Viewing Request draft | Existing mutation authority | Medium | Later mutation slice | State-changing and must preserve idempotency, version, role, and user-intent rules |
 | Submit a Viewing Request, send a proposal, confirm/decline a viewing | Existing workflow authority | High | Defer until read slice is verified | Human-consequential transitions need explicit confirmation and stronger browser evidence |
 | Login, expose internal notes, contact a tenant, send notifications, or operate Cloud Receiver | Separate or deferred authority | High | Exclude | Not part of the current WebMCP slice and would expand security/integration scope |
 
-The default recommendation is a single read-only `search_listings`-type capability on the existing
-Tenant Discovery page, with bounded structured filters and a visible update of the ordinary listing
-results. The exact name and schema remain `PROPOSED` until the main-thread review of
-`RIGHTSPOT-010` and the first implementation contract. If the main thread instead accepts the
-Operations Insights thesis as the primary Hackathon differentiator, it must explicitly select that
-route and accept its separate data/page contract before implementation.
+Main has selected the lower-risk read-only Tenant Discovery Search goal as the first WebMCP direction.
+The current candidate is one `search_listings`-type capability on the existing Tenant Discovery page,
+with bounded structured filters and a visible update of the ordinary listing results. The exact name,
+schema, Area semantics, and result boundary remain pending in `RIGHTSPOT-042`; selection of the goal
+does not authorize implementation or registration. `RIGHTSPOT-010` remains a separate pending
+Operations Insights alternative and is not silently replaced by this selection.
 
 This choice prevents the first WebMCP increment from silently becoming a new reporting product, a
 generic chatbot, or a full rewrite of the already-closed tenant-to-agent workflow.
@@ -147,29 +149,33 @@ only for the next approved product outcome after its gate is passed.
 
 ### W0 — Main-thread decision and capability baseline
 
-**State:** `READY_FOR_MAIN_REVIEW`  
+**State:** `GOAL_SELECTED — CONTRACT_PENDING`  
 **Owner:** Main RightSpot thread  
 **No code or registration is authorized.**
 
-The Main Thread must review `RIGHTSPOT-010` and record one of:
+The Main Thread has selected the Tenant Discovery read-only Search goal and recorded the following
+bounded W0 disposition:
 
-- accept its Operations/WebMCP direction as written or with explicit revisions;
-- select the lower-risk Tenant Discovery read-only goal as the first WebMCP slice;
-- reject or defer WebMCP for the current Hackathon scope; or
-- identify a different single user goal with a written boundary.
+- first role: authenticated Tenant;
+- first page: `/tenant`;
+- first outcome: a visible, tenant-safe published-listing result;
+- first capability mode: read-only;
+- first authority: the existing listing application/API projection; and
+- current next gate: `RIGHTSPOT-042` freezes the Search contract before any implementation or tool
+  registration.
 
 W0 must recapture the current Main source identity, package/runtime, browser capability, route/session
 state, existing authority, dirty/untracked paths, and the external WebMCP API status. Its output is a
 main-thread decision disposition and, if accepted, an implementation-ready product outcome—not a
 placeholder backlog.
 
-**Exit gate:** one user goal, one target page, one role, one result, one first tool boundary, explicit
-non-goals, and a named owner are accepted. No unresolved authority, privacy, browser-support, or
-scope question may be hidden inside the implementation Task.
+**Exit gate:** The first goal, page, role, read-only outcome, existing authority, and named Main owner
+are accepted. The exact tool boundary, Area semantics, result schema, browser capability, and remaining
+non-goals are intentionally W1 work; they must not be hidden inside an implementation Task.
 
 ### W1 — Capability and contract design
 
-**State:** `GATED_ON_W0`  
+**State:** `IN_PROGRESS — RIGHTSPOT-042`  
 **Likely role:** WebMCP/API/UX/Security boundary Advisor  
 **Output:** one implementation-ready contract and one bounded Work Order.
 
@@ -414,14 +420,17 @@ or a new cross-origin/external integration is proposed.
 
 ## 10. Current next action
 
-The next action is a Main-thread review of [`RIGHTSPOT-010`](../Tasks/RIGHTSPOT-010-define-agent-operations-insights-dashboard-boundary.md)
-against this roadmap. The review must select the first user goal and record the disposition before any
-implementation Task, dependency installation, WebMCP registration, route, schema, fixture, or
-Worktree is created.
+The current action is to complete [`RIGHTSPOT-042`](../Tasks/RIGHTSPOT-042-define-tenant-search-and-webmcp-search-contract.md)
+as the W1 Main-thread contract gate for the selected Tenant Discovery Search goal. It must resolve the
+Area discoverability/matching gap, freeze the supported criteria and result/error/page-state contract,
+and reconcile the ordinary UI/API authority with the future read-only WebMCP adapter before any
+implementation Task, dependency installation, WebMCP registration, route, schema, fixture, or Worktree
+is created.
 
 Until that review is accepted:
 
 - `RIGHTSPOT-010` remains `pending` and `RS-WO-010-01` remains `READY_FOR_REVIEW`;
+- `RIGHTSPOT-042` remains `pending` and `RS-WO-042-01` remains `PENDING_REVIEW`;
 - no WebMCP implementation Work Order is active;
 - ordinary RightSpot MVP behavior remains the only runnable product claim; and
 - Cloud Receiver, WebRTC, Redis, external authentication, deployment, and production-readiness remain

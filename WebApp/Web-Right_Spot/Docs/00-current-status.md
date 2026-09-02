@@ -73,10 +73,21 @@ tenant confirmation (`v1 → v7`). Tenant rendered the selected `4 Sept 2026, 15
 retained it after reload without decision controls; Agent rendered the confirmed history and a
 read-only detail without the Agent-only review note. The documented reset restored an empty request
 and Favourite projection at generation `87`.
+**Latest Search contract checkpoint (2026-09-02):** Main inspected the Tenant Discovery Search UI,
+listing application/API boundary, seeded catalogue, business-flow contract, and live filter behavior
+after the owner selected Tenant Discovery Search as the first WebMCP direction. The existing four
+filters, tenant-only read boundary, published-only projection, no-results state, and stale-response
+guard remain operational under their current semantics. A new P2 UX/contract gap `F-21` is registered
+as `RIGHTSPOT-042`: the Area control presents an unseeded `Shoreditch` example while the authoritative
+read applies undiscoverable exact Area equality, and the `Available by`/`availableFrom` date semantics
+need explicit wording for a future tool. No source, fixture, dependency, route, WebMCP registration,
+or implementation Worktree changed; the task is a pending Main-owned contract gate.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Review the staged
-[`RIGHTSPOT-WEBMCP-ROADMAP`](Development/RIGHTSPOT-WEBMCP-ROADMAP.md) and disposition
-`RIGHTSPOT-010` before any WebMCP implementation. The Main-thread cross-layer audit Goal is closed
+**Current next product action:** Complete the `RIGHTSPOT-042` Tenant Discovery/WebMCP Search contract
+gate against the staged [`RIGHTSPOT-WEBMCP-ROADMAP`](Development/RIGHTSPOT-WEBMCP-ROADMAP.md), then
+register a separate implementation Task only after the Area, criterion, result, role/privacy, and
+browser fallback semantics are accepted. `RIGHTSPOT-010` remains a separate pending Agent
+Operations/WebMCP decision proposal. The Main-thread cross-layer audit Goal is closed
 for the accepted ordinary local MVP; `RIGHTSPOT-039` /
 `RS-WO-039-01`, the listing-detail partial-read error-boundary repair, is also closed. `RIGHTSPOT-033` /
 `RS-WO-033-01`,

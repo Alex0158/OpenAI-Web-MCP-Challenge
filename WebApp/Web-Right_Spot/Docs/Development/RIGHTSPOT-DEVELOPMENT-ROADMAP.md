@@ -99,6 +99,12 @@ when the parent rehydrated it. `RIGHTSPOT-041` / `RS-WO-041-01` is registered as
 serial UI repair covering draft-save and explicit-submit completion feedback in the request dashboard
 and listing detail. The accepted parent-owned feedback repair is now `CLOSED_VERIFIED` after focused
 TDD, full checks, and isolated browser save/submit/conflict evidence.
+The subsequent Tenant Discovery Search review registered `F-21` / `RIGHTSPOT-042` as a pending P1
+contract decision. It keeps the existing four-filter read path, tenant-safe projection, and ordinary
+MVP behavior intact while requiring an explicit Area matching/discoverability rule and a shared,
+implementation-ready contract for the first read-only WebMCP Search capability. No WebMCP registration,
+Search implementation, dependency, route, fixture, or Worktree is authorized before this contract gate
+closes. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal.
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-02, Europe/London
 
@@ -109,7 +115,9 @@ Worktree is an active source or writer.
 
 **Current gate:** No implementation Worktree or active implementation gate is open. The accepted local
 MVP and the `RIGHTSPOT-039` / `RS-WO-039-01` F-17 listing-detail partial-read repair are closed within
-their bounded outcomes; return to the Main-thread cross-layer audit.
+their bounded outcomes. The current Main-owned gate is pending `RIGHTSPOT-042` Search contract review;
+only after it closes may a separate implementation Task be registered. The Main-thread cross-layer audit
+remains non-blocking and continues as evidence work.
 `RIGHTSPOT-033`, `RIGHTSPOT-034`, `RIGHTSPOT-035`, `RIGHTSPOT-036`, `RIGHTSPOT-037`, and `RIGHTSPOT-038` are `CLOSED_VERIFIED` within their bounded presentation scopes in
 the canonical Main Worktree; no extra implementation Worktree is open. `RS-WO-002-13` is integrated at product commit
 `3765747`, repaired `RS-WO-002-12` is integrated at `9348aa5`, `RS-WO-002-14` passed direct combined
@@ -252,9 +260,15 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | Complete; `RS-WO-002-14` passed independent direct cross-role verification and `RS-WO-002-15` passed the isolated browser walkthrough against integrated source `9348aa50b63e3f4f46e77238ad370670383d9d6` |
 | 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Complete; closure record reconciled and `RIGHTSPOT-002` closed |
 | 6. Post-MVP product refinement | Resolve high-impact navigation friction, strengthen visual credibility, and add a truthful Operations foundation without changing relay workflow authority | Each bounded candidate is independently verified and integrated before the next shared-surface change | Closure increment complete; `RS-WO-005-01` integrated at `27f5391`; `RIGHTSPOT-007` closed after `RS-WO-007-08` integrated regression; `RS-WO-011-01`/`02` verified and integrated at `7ff0fbd` as a server-only relay seam; `RIGHTSPOT-013` and `RIGHTSPOT-014` closed with their accepted decisions; `RIGHTSPOT-015` closed at `e7f30d5`; `RS-WO-016-01` independently verified and integrated at `edd7575`; `RS-WO-017-02` integrated at `b7369bd`; `RS-WO-017-03` independently verified and integrated at `2a53917`, with `RS-WO-017-04` browser verification complete; `RS-WO-018-01` integrated and closed at `5eef037`; `RS-WO-019-01` integrated and closed at `6f52686` after browser/form regression; and `RIGHTSPOT-022` independently verified and closed at `f0dbd99` |
-| 7. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary refinement is stable and a new explicit integration decision exists | WebMCP roadmap established; W0 decision gate pending; implementation not authorized |
+| 7. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary refinement is stable and a new explicit integration decision exists | Tenant Discovery Search selected; `RIGHTSPOT-042` W1 contract pending; implementation not authorized |
 
 ### 3.1 Current next route
+
+The current route is the pending Main-owned `RIGHTSPOT-042` Tenant Discovery/WebMCP Search contract
+decision. The first WebMCP goal is selected as read-only Tenant listing discovery on `/tenant`, but
+Area semantics, supported criteria, result/page-state contract, and browser fallback remain to be
+accepted before a separate implementation Task can open. `RIGHTSPOT-010` remains a separate pending
+Agent Operations/WebMCP proposal; `RIGHTSPOT-012` remains a non-blocking audit lane.
 
 The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.
 The page-entry audit registered `RIGHTSPOT-021` as a bounded implementation route: restore a
