@@ -18,10 +18,8 @@ tenant navigation from `RIGHTSPOT-020`
 - Current increment: Restore one persistent, role-safe tenant navigation entry to the existing
   Viewing Request dashboard without changing the request workflow or adding new business state.
 - Next gate: The bounded implementation, verification, and local Git closure gates are complete at
-  product commit `66615d0`. Main must still decide whether the newly observed `320–342px` navigation
-  clipping is inside the supported mobile floor. If it is supported, register a bounded responsive
-  repair; otherwise record the explicit support floor and retain the finding as a documented
-  non-goal. No repair is authorized by this audit.
+  product commit `66615d0`. Main selected the already accepted `320px` floor and registered the
+  separate bounded responsive repair `RIGHTSPOT-022`; no repair is authorized under this closed Task.
 - Dependencies: The existing `/tenant/requests` route, tenant role-page frame, shared navigation
   contract, and current local session/API boundaries remain authoritative.
 - Execution posture: `CLOSED`
@@ -566,13 +564,13 @@ The persistent Verifier must report in its task thread:
   the clipped link. This is a discoverability/accessibility residual, not a route, role-privacy, or
   request-workflow failure.
 - Scope interpretation: the previous `RS-WO-021-02` `VERIFIED` result remains valid for its
-  declared `390px+` browser matrix. The new audit means Main must not claim that all supported
-  mobile widths are proven until the minimum supported viewport is explicitly chosen.
-- Follow-up gate: if `320px` is a supported viewport, open a separate bounded responsive repair with
-  an explicit acceptance test for initial visibility or keyboard auto-reveal. If the supported floor
-  is intentionally `343px` or higher, record that boundary and add the narrow-width result to the
-  non-goals/residual evidence. Do not silently change this Task's scope or repair the source under
-  this audit record.
+  declared `390px+` browser matrix. Main selected `320px` as the supported floor and registered
+  `RIGHTSPOT-022`; all supported mobile widths remain unproven until that separate repair is verified.
+- Follow-up gate: Main selected `320px` as the supported viewport floor and registered
+  `RIGHTSPOT-022` with an explicit acceptance test for initial visibility and keyboard reachability.
+  No source repair is included in this closed Task; the new Task owns the responsive change and its
+  independent verification.
 - Git state: the verified two-path product change is committed in the canonical Main Worktree at
   local product commit `66615d0`; this action did not push or deploy it. The support-floor decision
-  remains open, and no responsive repair is included in the commit.
+  is resolved by the separate pending/gated `RIGHTSPOT-022`; no responsive repair is included in
+  this commit.

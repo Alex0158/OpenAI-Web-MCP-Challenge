@@ -28,13 +28,12 @@ agent surfaces have since passed their respective independent verification gates
 at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression passed at frozen source
 `4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product task:** No new RightSpot product task is active after the bounded
-`RIGHTSPOT-021` closure. A subsequent Main-thread browser audit recorded a `P2` responsive residual
-at `320–342px`: the third tenant navigation link is initially clipped until the links container is
-scrolled. The finding and support-floor decision gate are recorded in the owning Task File; the
-accepted two-path source is committed in the canonical Main Worktree at local product commit
-`66615d0` and has not been pushed by this action. The support-floor decision remains pending; no
-responsive repair is included in that commit.
+**Current next product task:** `RIGHTSPOT-022` is registered and `GATED`, but not dispatched. Main
+selected the already accepted `320px` responsive floor after the `RIGHTSPOT-021` post-closure audit
+found the third tenant navigation link initially clipped at `320–342px`. `RS-WO-022-01` is a
+separate, tenant-scoped CSS-only repair boundary; no product code or Worktree has been opened for it.
+The accepted two-path source remains committed in the canonical Main Worktree at local product commit
+`66615d0` and has not been pushed by this action.
 **Current closure state:** `RS-WO-016-01` passed its bounded repair and fresh independent verification;
 Main integrated the repaired exact two-path projection at product commit `edd7575`. `RS-WO-017-03`
 passed persistent re-gate and independent verification and is integrated at product commit `2a53917`;
@@ -327,7 +326,9 @@ its bounded route repair: `RS-WO-021-01` returned `READY_FOR_VERIFICATION`, and 
 task `01a05ff5-ccf1-75c3-b873-5b39f0e3e28f` returned `VERIFIED` against the frozen serialized Main
 Worktree snapshot. The bounded implementation gate remains closed for its declared acceptance
 matrix. A subsequent Main-thread audit found the documented `320–342px` narrow-viewport clipping
-residual; no new product task is registered while the support-floor decision is pending.
+residual; Main selected the existing `320px` floor and registered `RIGHTSPOT-022` as a separate
+pending/gated responsive repair. It has not been dispatched and does not change the `RIGHTSPOT-021`
+source.
 `RS-WO-020-05` returned `VERIFIED` against the frozen Main baseline `f49e1ca` after rebuilding and serving
 the exact source on a separate local port, and its evidence is recorded in the owning Task File. The
 `RS-WO-021-01` implementation and `RS-WO-021-02` independent verification gates are closed:
@@ -349,10 +350,10 @@ the exact source on a separate local port, and its evidence is recorded in the o
 Only an explicitly selected, implementation-ready Task may open a code Work Order or temporary
 Worktree. The accepted Worktree lifecycle is prompt integration into Main followed by
 checkpoint-scoped retirement. `RIGHTSPOT-021` is closed for its bounded navigation repair and
-independent verification, with its post-closure `320–342px` responsive follow-up decision recorded
-in the Task File; `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain separate credential,
-decision, and read-only audit gates and do not reopen `RIGHTSPOT-020`. No new RightSpot product task
-is active until the support-floor decision selects a bounded follow-up, if any.
+independent verification; its post-closure `320–342px` residual is now owned by pending/gated
+`RIGHTSPOT-022`, whose `RS-WO-022-01` has not been dispatched. `RIGHTSPOT-006`, `RIGHTSPOT-010`, and
+`RIGHTSPOT-012` remain separate credential, decision, and read-only audit gates and do not reopen
+`RIGHTSPOT-020`.
 
 ## 5.2 Accepted MVP Work Order boundary (historical closure)
 

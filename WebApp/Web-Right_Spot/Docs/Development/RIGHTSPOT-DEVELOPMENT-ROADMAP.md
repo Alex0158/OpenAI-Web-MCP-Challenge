@@ -109,9 +109,10 @@ returned `READY_FOR_VERIFICATION` after changing only its declared two product p
 `RS-WO-021-02` returned `VERIFIED` against the frozen serialized canonical Main Worktree source. The
 bounded parent gate is closed for its declared acceptance matrix. A subsequent Main-thread browser
 audit found a `P2` residual at `320–342px`, where the third tenant navigation link is initially
-clipped until the links container is scrolled. The accepted two-path source is committed locally at
-product commit `66615d0`; no new product task is active, and the support-floor decision remains open
-for any resulting bounded follow-up.
+clipped until the links container is scrolled. Main selected the existing `320px` support floor and
+registered `RIGHTSPOT-022` as a separate pending/gated CSS-only responsive repair; `RS-WO-022-01` is
+not dispatched and no implementation Worktree is open. The accepted two-path source is committed
+locally at product commit `66615d0`.
 The independent static verification `RS-WO-020-04` and fresh-reset browser verification `RS-WO-020-05`
 are reconciled in the owning Task File; the `RS-WO-021-01` implementation and `RS-WO-021-02`
 independent verification gates are closed:
@@ -142,11 +143,10 @@ independent verification gates are closed:
 Only an explicitly selected, implementation-ready Task opens a new code Work Order or temporary
 Worktree. Each accepted output is integrated into Main and its physical Worktree is retired at the
 first safe checkpoint-scoped opportunity under the orchestration Runbook. `RIGHTSPOT-021` is closed
-for its bounded repair and verification, with the post-closure `320–342px` responsive decision
-recorded in its Task File; `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain separate
-credential, decision, or read-only audit gates and do not reopen `RIGHTSPOT-020`. Local Git closure is
-recorded at `66615d0`; no new RightSpot product task is active while that support-floor decision
-remains open.
+for its bounded repair and verification. Main selected the existing `320px` floor and registered
+pending/gated `RIGHTSPOT-022`; its `RS-WO-022-01` is not dispatched and no implementation Worktree is
+open. `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain separate credential, decision, or
+read-only audit gates and do not reopen `RIGHTSPOT-020`. Local Git closure is recorded at `66615d0`.
 
 ## 4. Roadmap operating rules
 
