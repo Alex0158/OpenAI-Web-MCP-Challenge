@@ -99,7 +99,9 @@ Local Connector source/test integration counterpart:
 Local repository state:
 
 - Branch: `codex/eyad-reentry-core-foundation`.
-- Local HEAD: `81e51a6b2299fa1f63c2b06180febebaab9ded04`.
+- Local Connector source/test integration counterpart: `81e51a6b2299fa1f63c2b06180febebaab9ded04`.
+- The shared root currently has documentation-only follow-up commit `c0a4fc3`; it does not
+  change the Local Connector production or Core-client implementation.
 - The shared root worktree has `160` dirty paths from parallel work; none are Local Connector
   production or Core-client changes in this increment.
 - A clean detached Local Connector counterpart worktree was verified at
