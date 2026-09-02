@@ -74,8 +74,10 @@ retained it after reload without decision controls; Agent rendered the confirmed
 read-only detail without the Agent-only review note. The documented reset restored an empty request
 and Favourite projection at generation `87`.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Continue the Main-thread cross-layer audit from the closed
-`RIGHTSPOT-041` / `RS-WO-041-01` tenant request mutation-feedback repair. `RIGHTSPOT-039` /
+**Current next product action:** Review the staged
+[`RIGHTSPOT-WEBMCP-ROADMAP`](Development/RIGHTSPOT-WEBMCP-ROADMAP.md) and disposition
+`RIGHTSPOT-010` before any WebMCP implementation. The Main-thread cross-layer audit Goal is closed
+for the accepted ordinary local MVP; `RIGHTSPOT-039` /
 `RS-WO-039-01`, the listing-detail partial-read error-boundary repair, is also closed. `RIGHTSPOT-033` /
 `RS-WO-033-01`,
 `RIGHTSPOT-034` / `RS-WO-034-01`, `RIGHTSPOT-035` / `RS-WO-035-01`, `RIGHTSPOT-036` /
@@ -463,6 +465,15 @@ accepted Favourite lane. `RS-WO-020-01` has now passed independent verification 
 disjoint tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched, adopted
 into Main at product commit `c29e80d`, and later covered by independent source and fresh-reset browser
 verification. They are historical checkpoints, not active Work Orders.
+
+**WebMCP roadmap checkpoint (2026-09-02):** The staged
+[`RIGHTSPOT-WEBMCP-ROADMAP`](Development/RIGHTSPOT-WEBMCP-ROADMAP.md) is now the engineering gate
+for any later page-authored capability. It rejects an undefined “100% adaptation” target and requires
+Main-thread selection of one user goal, one page, one role, one bounded tool, explicit manual fallback,
+privacy/security rules, supported-browser registration evidence, and independent verification before
+implementation. The default recommendation is a read-only Tenant Discovery search slice; the
+Operations/WebMCP direction in `RIGHTSPOT-010` remains a pending decision alternative. No source,
+dependency, route, schema, fixture, registration, or implementation Task was created by this roadmap.
 
 `RIGHTSPOT-011` accepts ADR-RS-0011's bounded Agent Operations read-model seam. `RS-WO-011-01`
 completed its exact two-path Builder handoff at `5b05c78`, `RS-WO-011-02` independently verified it,

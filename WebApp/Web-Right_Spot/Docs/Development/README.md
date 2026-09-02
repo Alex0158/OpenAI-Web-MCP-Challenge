@@ -55,7 +55,9 @@ and closure records without duplicating product truth, decision records, task li
 command transcripts. Each implementation record should link its owning task, decision, files,
 verification commands, exact results, and residual risks.
 
-The Big Roadmap is [`RIGHTSPOT-DEVELOPMENT-ROADMAP`](RIGHTSPOT-DEVELOPMENT-ROADMAP.md). Task
+The Big Roadmap is [`RIGHTSPOT-DEVELOPMENT-ROADMAP`](RIGHTSPOT-DEVELOPMENT-ROADMAP.md). The staged
+WebMCP integration roadmap is [`RIGHTSPOT-WEBMCP-ROADMAP`](RIGHTSPOT-WEBMCP-ROADMAP.md); it is a
+planning and gate document, not an implementation queue. Task
 lifecycle, current increment, next gate, and any active Work Orders remain in
 [`Docs/Tasks/`](../Tasks/README.md); this directory must not become a second active-task register.
 The canonical user-facing business chains, transition rules, route map, acceptance gates, and

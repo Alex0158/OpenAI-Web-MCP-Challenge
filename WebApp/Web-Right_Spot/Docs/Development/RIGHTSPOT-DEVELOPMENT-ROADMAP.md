@@ -252,7 +252,7 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | Complete; `RS-WO-002-14` passed independent direct cross-role verification and `RS-WO-002-15` passed the isolated browser walkthrough against integrated source `9348aa50b63e3f4f46e77238ad370670383d9d6` |
 | 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Complete; closure record reconciled and `RIGHTSPOT-002` closed |
 | 6. Post-MVP product refinement | Resolve high-impact navigation friction, strengthen visual credibility, and add a truthful Operations foundation without changing relay workflow authority | Each bounded candidate is independently verified and integrated before the next shared-surface change | Closure increment complete; `RS-WO-005-01` integrated at `27f5391`; `RIGHTSPOT-007` closed after `RS-WO-007-08` integrated regression; `RS-WO-011-01`/`02` verified and integrated at `7ff0fbd` as a server-only relay seam; `RIGHTSPOT-013` and `RIGHTSPOT-014` closed with their accepted decisions; `RIGHTSPOT-015` closed at `e7f30d5`; `RS-WO-016-01` independently verified and integrated at `edd7575`; `RS-WO-017-02` integrated at `b7369bd`; `RS-WO-017-03` independently verified and integrated at `2a53917`, with `RS-WO-017-04` browser verification complete; `RS-WO-018-01` integrated and closed at `5eef037`; `RS-WO-019-01` integrated and closed at `6f52686` after browser/form regression; and `RIGHTSPOT-022` independently verified and closed at `f0dbd99` |
-| 7. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary refinement is stable and a new explicit integration decision exists | Deferred; not scheduled |
+| 7. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary refinement is stable and a new explicit integration decision exists | WebMCP roadmap established; W0 decision gate pending; implementation not authorized |
 
 ### 3.1 Current next route
 
@@ -329,9 +329,9 @@ independent verification gates are closed:
 7. Keep `RIGHTSPOT-006` outside the implementation lane until the explicit external credential and
    local-origin gate is authorized. It is a separate high-risk lane and must not block ordinary product
    progress.
-8. Review `RIGHTSPOT-010` later, after its proposal is dispositioned and the product value of an
-   Operations or WebMCP surface is explicitly selected. Its proposal does not authorize WebMCP or
-   dashboard implementation.
+8. Review `RIGHTSPOT-010` through the staged
+   [`RIGHTSPOT-WEBMCP-ROADMAP`](RIGHTSPOT-WEBMCP-ROADMAP.md). Its proposal does not authorize WebMCP
+   or dashboard implementation; W0 must first select one user goal and one bounded capability.
 9. Keep `RIGHTSPOT-012` as a non-blocking, read-only audit lane. It may identify follow-on work but
    does not itself constitute a product implementation milestone.
 10. Keep the separately registered `RIGHTSPOT-025` read-boundary/TDD route for `F-01` and the
