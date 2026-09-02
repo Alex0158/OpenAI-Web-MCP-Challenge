@@ -595,3 +595,12 @@ listing read occurred. Because current user-facing Discovery links are ordinary 
 the product exposes no supported same-document listing transition, this is not an equivalent defect
 reproduction. It documents the future-router boundary only; no source, fixture, repair, fallback,
 workaround, Task, or Work Order was authorized, and `F-08` remains `EVIDENCE_GAP`.
+
+The subsequent fallback/code audit reviewed Tenant and Agent loading, retry, conflict, malformed-payload,
+empty, stale-content, and role-boundary paths. No silent success, arbitrary retry, or retained stale
+content path was accepted as a new finding. A suspected duplicate `Requested home` label was reproduced
+against a populated rendered request and disproved: the DOM contained one label, while the apparent
+duplicate was caused by overlapping shell output ranges. The temporary request was removed with the
+documented reset command and the fixture returned to generation `86` with empty request/Favourite state.
+Full tests (`159/159`), non-incremental typecheck, production build, and health passed. `RIGHTSPOT-012`
+remains `pending`; no repair, fallback, Task, or Work Order was registered.

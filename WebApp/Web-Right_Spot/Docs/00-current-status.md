@@ -815,3 +815,9 @@ one listing detail to another. The URL changed without a new listing read and th
 rendered. This is outside the current supported navigation contract, whose Discovery anchors perform full
 document navigation; it confirms only the future-router evidence boundary and does not establish a product
 defect or authorize a workaround. `F-08` remains an evidence gap.
+
+The latest read-only fallback/code audit reviewed Tenant and Agent loading, retry, conflict, malformed
+payload, empty, stale-content, and role-boundary handling. No new product finding was accepted. A
+suspected duplicate request-card label was disproved in the rendered DOM and traced to overlapping shell
+output ranges; the temporary local draft was reset, leaving request and Favourite state empty at generation
+`86`. Full tests (`159/159`), typecheck, production build, and `/api/health` remain green.

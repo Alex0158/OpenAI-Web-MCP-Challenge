@@ -1714,3 +1714,19 @@ mismatch if a future router reuse path is introduced; it does not prove a defect
 navigation contract. No source, workflow fixture, or request state changed, and no repair, fallback,
 workaround, Task, or Work Order was authorized. `F-08` remains an `EVIDENCE_GAP` pending a supported
 same-document transition or an explicit router contract that makes that path in scope.
+
+## 68. Fallback and populated-request rendering audit — no new registered finding — 2026-09-02
+
+Main reviewed the current client/server error paths for silent defaults, swallowed failures, arbitrary
+retries, stale retained content, and role-boundary masking across the Tenant and Agent surfaces. The
+current paths expose bounded loading, error, retry, empty, conflict, and read-only states; malformed
+server payloads fail through the typed API error boundary; and failed Agent refreshes withhold retained
+queue/detail content rather than presenting it as current. No source change was authorized.
+
+During the review, a static command-output overlap appeared to show two `Requested home` labels in the
+Tenant request card. A populated local request was rendered and the actual DOM contained one visible
+label; the apparent duplicate came from overlapping `sed` ranges, not the source. The temporary draft
+was removed through the documented local reset boundary, which returned generation `86` with an empty
+Tenant request and Favourite projection. Full tests, typecheck, production build, and health remained
+green. No new `VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`, `VERIFIED_POLISH`, or `DOCUMENTATION_DRIFT`
+finding was accepted.
