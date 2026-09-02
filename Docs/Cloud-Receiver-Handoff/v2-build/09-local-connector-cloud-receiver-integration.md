@@ -2,9 +2,9 @@
 
 **Role:** Local Connector maintainer handoff
 
-**Status:** Connector-compatible; Feature 4, non-conflicting Feature 5 cases, and the local
-real-process E2E acceptance fixture verified against the exact Cloud checkout; ACK-003 remains
-blocked by a Core/contract error mapping gate
+**Status:** Connector-compatible; Feature 4, all Feature 5 acknowledgement cases, and the local
+real-process E2E acceptance fixture verified against the exact Cloud checkout; ACK-003 follows the
+accepted Core/Cloud error mapping
 
 **Owner:** Local Connector team
 
@@ -212,8 +212,8 @@ Host SDK registerHostKey/createConsentSession/sendEvent
 The test asserts the exact response envelopes, durable lease/attempt/acknowledgement fields,
 unchanged acknowledgement timestamp and attestation on replay, `0600` local credential custody,
 and absence of raw Connector, claim/lease, or effect tokens from Receiver output, logs, durable
-values, the effect fixture, and worker output. It does not resolve ACK-003, prove a deployed
-Receiver, or claim a production Host-effect authority.
+values, the effect fixture, and worker output. It does not prove a deployed Receiver or claim a
+production Host-effect authority.
 
 ## Test cases
 
@@ -332,19 +332,15 @@ The current exact Cloud Receiver checkout is `saas-boilerplate` commit
 `300bce02e6a6f9b643a6de95a3596691304749b7`, with Feature 4 implementation at
 `d840439efe628a24c89fec6b74f37f04a701cb58`. It is a clean committed checkout containing the
 acknowledgement route, six migrations, and Feature 6 transport/operations shell. The Claim matrix
-passes `5/5`; the acknowledgement matrix passes `4/5` because only ACK-003 has the unresolved
-error-code mismatch below. Cloud's own Feature 5 and Feature 6 tests pass `10/10` against that
+passes `5/5`; the acknowledgement matrix passes `5/5` against the accepted ACK-003 mapping.
+Cloud's own Feature 5 and Feature 6 tests pass `10/10` against that
 checkout. The Local Connector production implementation remains at the pairing baseline
 `7fab264d237b3e172acb091888643c831cadcb85`; the current claim/acknowledgement test and
-real-process E2E harness tip is `d1e0e55a91b4a6d1922cd7ab27b114cbfcf43262`. No Local Connector
+real-process E2E harness tip is `4b8215156d814551f8da06dad16319deaff549d7`. No Local Connector
 production or Core client files changed in that test/documentation increment.
-The combined flow remains blocked only on the ACK-003 decision and final cross-team execution.
+The combined flow remains gated only by final cross-team execution and deployment evidence.
 
-There is one additional contract mismatch to return to the project manager before either team
-changes implementation or tests. `CONNECTOR-V2-ACK-003` currently expects
-`host_effect_time_invalid` for a future `confirmed_at`. The authoritative Core implementation
-normalizes the attestation inside its effect-verification boundary and maps that normalization
-failure to `host_effect_invalid`; the Core test suite records that result. The Local Connector
-test remains unchanged and intentionally red for this unresolved decision. The project manager
-must choose the authoritative mapping and reconcile Core, the accepted ADR, the test, and this
-handoff together.
+The accepted ACK-003 mapping is now explicit: malformed or far-future normalization returns
+`host_effect_invalid`; `host_effect_time_invalid` is reserved for a normalized effect outside the
+valid lease/Grant/revocation window. The Local Connector test and the Cloud handler agree, and the
+fresh-database ACK matrix is green. The SDK-owned E2E and deployed Receiver evidence remain open.
