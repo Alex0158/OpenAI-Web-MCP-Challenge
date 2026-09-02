@@ -2,8 +2,8 @@
 
 **Role:** Local Connector maintainer handoff
 
-**Status:** Connector-compatible; Feature 4 verified against the exact Cloud checkout; Feature 5
-and Feature 6 counterpart verification blocked
+**Status:** Connector-compatible; Feature 4 and the non-conflicting Feature 5 cases verified
+against the exact Cloud checkout; ACK-003 remains blocked by a Core/contract error mapping gate
 
 **Owner:** Local Connector team
 
@@ -285,13 +285,16 @@ inspection/revocation route; ADR-0013 remains the gate for that capability.
 
 ## Current counterpart result
 
-The current local Cloud checkout is `saas-boilerplate` commit
-`b9f40617827467057b6c34dbe9e82a9893e5bee4`, with Feature 4 implementation at
-`d840439efe628a24c89fec6b74f37f04a701cb58`. The claim matrix passes against that exact checkout.
-The acknowledgement route and Feature 6 shell are not present in that commit, so the ACK matrix
-and combined flow remain blocked until the Cloud team supplies committed Feature 5 and Feature 6
-implementations plus the configured test authority. This is a counterpart readiness gap, not a
-reason to change the Local Connector protocol.
+The current exact Cloud Receiver checkout is `saas-boilerplate` commit
+`300bce02e6a6f9b643a6de95a3596691304749b7`, with Feature 4 implementation at
+`d840439efe628a24c89fec6b74f37f04a701cb58`. It is a clean committed checkout containing the
+acknowledgement route, six migrations, and Feature 6 transport/operations shell. The Claim matrix
+passes `5/5`; the acknowledgement matrix passes `4/5` because only ACK-003 has the unresolved
+error-code mismatch below. Cloud's own Feature 5 and Feature 6 tests pass `10/10` against that
+checkout. The current Local Connector contract source is committed in
+`9215d25e2dbfd98308f751e70979115d481d5b87`; no Local Connector or Core client files changed
+between that component commit and root HEAD `2233c5214fae2a23908d4f36c6757f7440169ac5`.
+The combined flow remains blocked only on the ACK-003 decision and final cross-team execution.
 
 There is one additional contract mismatch to return to the project manager before either team
 changes implementation or tests. `CONNECTOR-V2-ACK-003` currently expects
