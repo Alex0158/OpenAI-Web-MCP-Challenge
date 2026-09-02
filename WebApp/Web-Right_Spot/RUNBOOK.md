@@ -128,7 +128,7 @@ re-run by `RS-WO-002-02`. The corrected independent Verifier rerun reproduced th
 frozen source and runtime identity without violating the output boundary. This is foundation evidence
 only; a future implementation record must name the exact runtime, commands, test counts, fixtures,
 and residual risks rather than copying the outer Core's verification claims. For current RightSpot
-verification, `npm test` is intended to be the complete authored test suite, while
+verification, `npm test` is the complete authored test suite, while
 `npm run test:foundation` is the narrow six-test foundation check; `RIGHTSPOT-029` closed the package
 script repair and current-document reconciliation for this contract.
 

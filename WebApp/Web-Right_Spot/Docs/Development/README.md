@@ -54,7 +54,7 @@ flow definition.
 The latest Main-thread audit record is
 [`RIGHTSPOT-CROSS-LAYER-AUDIT-2026-09-02.md`](RIGHTSPOT-CROSS-LAYER-AUDIT-2026-09-02.md). It records
 the current verification-command gap and the separate un-reproduced asynchronous-read concern;
-`RIGHTSPOT-029` remains the authoritative task for the former.
+`RIGHTSPOT-029` is the authoritative Task record for the former.
 
 ## Accepted MVP state
 

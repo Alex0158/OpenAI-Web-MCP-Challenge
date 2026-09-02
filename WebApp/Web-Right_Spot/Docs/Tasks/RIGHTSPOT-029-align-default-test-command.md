@@ -77,6 +77,7 @@ The complete suite is green at the registered baseline.
 - RightSpot package root: `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge/WebApp/Web-Right_Spot`
 - Branch: `main`
 - Pre-Green baseline: `e71977a95c61383906d78527e4d3e392f24581d5`
+- Green integration commit: `552a458425cf68be2491ee7e988470a8b322afc3`
 - Physical Worktrees: canonical Main only
 - Green source change: `WebApp/Web-Right_Spot/package.json` only; no lockfile or dependency change
 - Current-document reconciliation: this Task, the RightSpot status, validation, roadmap, Runbook,
