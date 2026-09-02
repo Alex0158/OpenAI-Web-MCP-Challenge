@@ -809,3 +809,9 @@ in-app-browser harness limitation across both available automation surfaces, not
 defect. The prior successful `RIGHTSPOT-019` native-control browser/form evidence remains the product
 claim boundary; no speculative repair or workaround Task is registered. A real native picker or a
 known-capable browser harness is still required to close this evidence gap.
+
+A separate read-only probe used native `history.pushState` to imitate a same-document transition from
+one listing detail to another. The URL changed without a new listing read and the old listing remained
+rendered. This is outside the current supported navigation contract, whose Discovery anchors perform full
+document navigation; it confirms only the future-router evidence boundary and does not establish a product
+defect or authorize a workaround. `F-08` remains an evidence gap.

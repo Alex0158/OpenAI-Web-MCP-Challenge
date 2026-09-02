@@ -587,3 +587,11 @@ datetime value reached React, no Save draft request was sent, and no workflow fi
 strengthens the tooling/evidence-boundary classification but does not constitute successful native-picker
 evidence or authorize a repair, fallback, Task, or Work Order. The prior successful `RIGHTSPOT-019`
 browser/form record remains the populated-control authority. `RIGHTSPOT-012` stays `pending`.
+
+The next read-only probe attempted a direct same-document listing transition in a fresh Tenant detail
+session by calling native `history.pushState` from `listing-primary` to `listing-north` and dispatching
+`popstate`. The URL changed, but the rendered listing heading stayed on the original listing and no new
+listing read occurred. Because current user-facing Discovery links are ordinary full-document anchors and
+the product exposes no supported same-document listing transition, this is not an equivalent defect
+reproduction. It documents the future-router boundary only; no source, fixture, repair, fallback,
+workaround, Task, or Work Order was authorized, and `F-08` remains `EVIDENCE_GAP`.

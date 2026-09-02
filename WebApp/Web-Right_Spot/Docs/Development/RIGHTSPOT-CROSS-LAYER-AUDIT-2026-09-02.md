@@ -1699,3 +1699,18 @@ event. The prior successful `RIGHTSPOT-019` browser/form record remains the auth
 control evidence. No product repair, fallback, workaround, Task, or Work Order was authorized; a real
 native picker interaction or known-capable browser runtime is still required before changing the
 classification.
+
+## 67. Direct same-document history probe — unsupported transition boundary remains — 2026-09-02
+
+Main opened a fresh Tenant listing-detail session and instrumented the read-only browser fetch path.
+After the supported page had rendered `Canal Wharf Apartment`, the probe called the browser's native
+`history.pushState` for `/tenant/listings/listing-north` and dispatched `popstate`. The address changed,
+but the rendered listing heading remained `Canal Wharf Apartment` and no new listing read was observed.
+
+This is not a user-equivalent supported route reproduction: the current Discovery surface emits ordinary
+full-document anchors, and the current application does not expose an application-owned same-document
+listing transition. The result confirms that an arbitrary history mutation can create a URL/render
+mismatch if a future router reuse path is introduced; it does not prove a defect in the current supported
+navigation contract. No source, workflow fixture, or request state changed, and no repair, fallback,
+workaround, Task, or Work Order was authorized. `F-08` remains an `EVIDENCE_GAP` pending a supported
+same-document transition or an explicit router contract that makes that path in scope.
