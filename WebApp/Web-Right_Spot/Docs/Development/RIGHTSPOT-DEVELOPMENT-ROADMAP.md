@@ -109,8 +109,9 @@ returned `READY_FOR_VERIFICATION` after changing only its declared two product p
 `RS-WO-021-02` returned `VERIFIED` against the frozen serialized canonical Main Worktree source. The
 bounded parent gate is closed for its declared acceptance matrix. A subsequent Main-thread browser
 audit found a `P2` residual at `320–342px`, where the third tenant navigation link is initially
-clipped until the links container is scrolled. No new product task is active; the support-floor
-decision and any resulting bounded follow-up must be resolved before Git closure.
+clipped until the links container is scrolled. The accepted two-path source is committed locally at
+product commit `66615d0`; no new product task is active, and the support-floor decision remains open
+for any resulting bounded follow-up.
 The independent static verification `RS-WO-020-04` and fresh-reset browser verification `RS-WO-020-05`
 are reconciled in the owning Task File; the `RS-WO-021-01` implementation and `RS-WO-021-02`
 independent verification gates are closed:
@@ -143,8 +144,9 @@ Worktree. Each accepted output is integrated into Main and its physical Worktree
 first safe checkpoint-scoped opportunity under the orchestration Runbook. `RIGHTSPOT-021` is closed
 for its bounded repair and verification, with the post-closure `320–342px` responsive decision
 recorded in its Task File; `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain separate
-credential, decision, or read-only audit gates and do not reopen `RIGHTSPOT-020`. No new RightSpot
-product task is active while that support-floor decision remains open.
+credential, decision, or read-only audit gates and do not reopen `RIGHTSPOT-020`. Local Git closure is
+recorded at `66615d0`; no new RightSpot product task is active while that support-floor decision
+remains open.
 
 ## 4. Roadmap operating rules
 

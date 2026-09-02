@@ -123,7 +123,8 @@ after its bounded browser/form regression passed. No closed task is an active im
 independently returned `VERIFIED` against the frozen canonical Main Worktree. A subsequent
 Main-thread audit found that the third tenant navigation link is initially clipped at `320–342px`;
 the support-floor decision and any bounded repair are recorded as a follow-up gate in the owning Task
-File, and no new Task is registered yet. `RIGHTSPOT-020` remains closed: `RS-WO-020-01R` is independently verified at `adfd37e`; the main thread jointly reviewed
+File. The accepted two-path source is committed locally at `66615d0`; no new Task is registered yet.
+`RIGHTSPOT-020` remains closed: `RS-WO-020-01R` is independently verified at `adfd37e`; the main thread jointly reviewed
 `RS-WO-008-01` and `RS-WO-009-01`, accepted the bounded Favourite direction in ADR-RS-0013, deferred
 the PII-sensitive Information Request direction, and registered the now-closed `RIGHTSPOT-020` as a separate
 implementation Task. Its tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched

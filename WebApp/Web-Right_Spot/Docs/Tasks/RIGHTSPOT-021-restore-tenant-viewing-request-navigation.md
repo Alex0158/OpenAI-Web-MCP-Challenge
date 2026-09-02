@@ -17,11 +17,11 @@ tenant navigation from `RIGHTSPOT-020`
 - Owner: Main RightSpot thread
 - Current increment: Restore one persistent, role-safe tenant navigation entry to the existing
   Viewing Request dashboard without changing the request workflow or adding new business state.
-- Next gate: The bounded implementation and verification gate is closed. Before Git closure, Main
-  must decide whether the newly observed `320–342px` navigation clipping is inside the supported
-  mobile floor. If it is supported, register a bounded responsive repair; otherwise record the
-  explicit support floor and retain the finding as a documented non-goal. No repair is authorized
-  by this audit.
+- Next gate: The bounded implementation, verification, and local Git closure gates are complete at
+  product commit `66615d0`. Main must still decide whether the newly observed `320–342px` navigation
+  clipping is inside the supported mobile floor. If it is supported, register a bounded responsive
+  repair; otherwise record the explicit support floor and retain the finding as a documented
+  non-goal. No repair is authorized by this audit.
 - Dependencies: The existing `/tenant/requests` route, tenant role-page frame, shared navigation
   contract, and current local session/API boundaries remain authoritative.
 - Execution posture: `CLOSED`
@@ -147,8 +147,8 @@ no browser console errors or workflow mutations.
 
 The main thread may close this task only after exact-path review, independent verification, and
 integration into the canonical Main Worktree. `RS-WO-021-02` returned `VERIFIED`, Main completed the
-final exact-path/hash readback, and the parent Task is now closed. The source change remains
-uncommitted at `main` pending the next explicit Git closure decision.
+final exact-path/hash readback, and the parent Task is now closed. The accepted source change was
+subsequently committed locally at product commit `66615d0`; no push or deployment claim is made.
 
 ## Reopen condition
 
@@ -169,7 +169,8 @@ authority of the Main RightSpot thread
 **Dispatch state:** `dispatched at main@bd3d92aec10da38392845832694b4365f81387a5; shared canonical
 Main Worktree; worker paths clean at dispatch`  
 **Next gate:** Closed after `RS-WO-021-02` independently returned `VERIFIED`; the exact two-file
-source remains in the canonical Main Worktree and is not yet committed.  
+source remains in the canonical Main Worktree and was later committed locally at product commit
+`66615d0`.  
 **Parent execution posture if blocked:** `PROGRESSING`  
 **Blocker report:** The initial supporting turn completed before the post-acknowledgement status
 writeback was visible and correctly made no source changes, returning `BLOCKED` on the procedural gate.
@@ -572,6 +573,6 @@ The persistent Verifier must report in its task thread:
   is intentionally `343px` or higher, record that boundary and add the narrow-width result to the
   non-goals/residual evidence. Do not silently change this Task's scope or repair the source under
   this audit record.
-- Git state: the verified two-path product change remains uncommitted in the canonical Main
-  Worktree. Git closure is held until the support-floor decision and any resulting bounded follow-up
-  are reconciled.
+- Git state: the verified two-path product change is committed in the canonical Main Worktree at
+  local product commit `66615d0`; this action did not push or deploy it. The support-floor decision
+  remains open, and no responsive repair is included in the commit.

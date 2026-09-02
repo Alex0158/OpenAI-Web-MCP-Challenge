@@ -32,8 +32,9 @@ at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression pa
 `RIGHTSPOT-021` closure. A subsequent Main-thread browser audit recorded a `P2` responsive residual
 at `320–342px`: the third tenant navigation link is initially clipped until the links container is
 scrolled. The finding and support-floor decision gate are recorded in the owning Task File; the
-resulting source remains in the canonical Main Worktree as an uncommitted change, pending that
-decision and the next explicit Git closure decision.
+accepted two-path source is committed in the canonical Main Worktree at local product commit
+`66615d0` and has not been pushed by this action. The support-floor decision remains pending; no
+responsive repair is included in that commit.
 **Current closure state:** `RS-WO-016-01` passed its bounded repair and fresh independent verification;
 Main integrated the repaired exact two-path projection at product commit `edd7575`. `RS-WO-017-03`
 passed persistent re-gate and independent verification and is integrated at product commit `2a53917`;
