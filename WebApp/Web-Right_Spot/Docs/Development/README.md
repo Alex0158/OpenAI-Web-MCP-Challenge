@@ -92,7 +92,7 @@ The experimental delegated-work procedure is
 It is opt-in and scoped to RightSpot; it does not change outer repository governance or sibling
 applications.
 
-The current post-MVP route is now at the fresh-reset browser verification gate for the bounded Favourite increment: the main
+The current post-MVP route completed the fresh-reset browser verification gate for the bounded Favourite increment: the main
 thread jointly reviewed `RS-WO-008-01` and `RS-WO-009-01`, accepted the Favourite boundary in
 ADR-RS-0013, deferred the PII-sensitive Information Request boundary, and registered `RIGHTSPOT-020`.
 Its initial serial contract/data Work Order `RS-WO-020-01` was independently verified and the follow-up
@@ -100,7 +100,8 @@ Its initial serial contract/data Work Order `RS-WO-020-01` was independently ver
 relation version could not be recovered after reload. The tenant and agent UI Work Orders `RS-WO-020-02`
 and `RS-WO-020-03` were dispatched on disjoint paths, adopted into Main at product commit `c29e80d`,
 and passed dependency-complete typecheck, full-suite `121/121`, and production-build checks; `RS-WO-020-04`
-independently verified Main `c977ea4`; one fresh-reset browser verification remains.
+independently verified Main `c977ea4`, and `RS-WO-020-05` passed fresh-reset browser verification against
+Main `f49e1ca`. `RIGHTSPOT-020` is closed within its accepted local boundary.
 `RIGHTSPOT-006` remains credential-gated,
 `RIGHTSPOT-010` remains a later Operations/WebMCP decision gate, and `RIGHTSPOT-012` is a non-blocking
 read-only audit lane. The authoritative sequence is maintained in the [development roadmap](RIGHTSPOT-DEVELOPMENT-ROADMAP.md#31-current-next-route).

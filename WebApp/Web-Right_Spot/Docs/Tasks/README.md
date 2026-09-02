@@ -48,12 +48,13 @@ communication or implementation. `RIGHTSPOT-010` is a pending read-only decision
 proposed Agent Operations Insights dashboard and bounded WebMCP query surface; it does not authorize
 dashboard implementation, WebMCP registration, reporting-schema changes, or canonical product
 writeback. `RIGHTSPOT-012` is a pending read-only cross-layer audit lane and does not authorize
-implementation or canonical product writeback. `RIGHTSPOT-020` is in progress: its initial
+implementation or canonical product writeback. `RIGHTSPOT-020` is closed within its accepted bounded outcome: its initial
 `RS-WO-020-01` candidate was independently verified, then its `RS-WO-020-01R` relation-version continuity
 repair was independently verified at `adfd37e` after a pre-UI defect was found. Its disjoint tenant/agent
 UI Work Orders were dispatched, adopted into Main at product commit `c29e80d` after exact-path review, and
 passed dependency-complete typecheck, full-suite `121/121`, and production-build checks; `RS-WO-020-04`
-independently verified Main `c977ea4`; fresh-reset browser verification remains open.
+independently verified Main `c977ea4`, and fresh-reset browser verification `RS-WO-020-05` returned
+`VERIFIED` against Main `f49e1ca`.
 its implementation scope excludes `RIGHTSPOT-009` and all external providers. `RIGHTSPOT-016` is closed
 with its repaired projection independently verified and integrated at `edd7575`; `RIGHTSPOT-017` is
 closed with its tenant media consumer integrated at `2a53917` and its integrated browser gate verified.
@@ -100,20 +101,22 @@ browser evidence are reconciled in the
 `RIGHTSPOT-002` is closed.
 
 **Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain pending
-credential, decision, or read-only audit gates. `RIGHTSPOT-020` is the active implementation Task
-with `RS-WO-020-01R` verified, its UI candidates adopted into Main at product commit `c29e80d`, and
-`RS-WO-020-04` independently verified at Main `c977ea4`; fresh-reset browser verification remains pending.
+credential, decision, or read-only audit gates. `RIGHTSPOT-020` is closed with `RS-WO-020-01R` verified,
+its UI candidates adopted into Main at product commit `c29e80d`, `RS-WO-020-04` independently verified at
+Main `c977ea4`, and `RS-WO-020-05` fresh-reset browser verification passed against Main `f49e1ca`.
 `RS-WO-016-01` is
 independently verified and integrated at `edd7575`; `RS-WO-017-03` is independently verified and
 integrated at `2a53917`, with `RS-WO-017-04` browser verification complete. `RS-WO-019-01` is closed
 after its bounded browser/form regression passed. No closed task is an active implementation gate.
 
-**Current route:** `RS-WO-020-01R` is independently verified at `adfd37e`; the main thread jointly reviewed
+**Current route:** `RIGHTSPOT-020` is closed: `RS-WO-020-01R` is independently verified at `adfd37e`; the main thread jointly reviewed
 `RS-WO-008-01` and `RS-WO-009-01`, accepted the bounded Favourite direction in ADR-RS-0013, deferred
-the PII-sensitive Information Request direction, and registered `RIGHTSPOT-020` as the next separate
+the PII-sensitive Information Request direction, and registered the now-closed `RIGHTSPOT-020` as a separate
 implementation Task. Its tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched
 for disjoint parallel work and adopted into Main; their stopped candidate Worktrees were then retired
-after exact-path review, leaving only Main as the current source authority. `RIGHTSPOT-006`
+after exact-path review, leaving only Main as the current source authority. `RS-WO-020-04` passed static
+verification at `c977ea4`, and `RS-WO-020-05` passed fresh-reset browser verification at `f49e1ca`.
+`RIGHTSPOT-006`
 stays gated on explicit external credentials and local-origin authorization. `RIGHTSPOT-010` is a later
 Operations/WebMCP decision gate, while `RIGHTSPOT-012` is non-blocking read-only audit work. Only an
 explicitly selected, implementation-ready Task may open code Work Orders or temporary Worktrees.

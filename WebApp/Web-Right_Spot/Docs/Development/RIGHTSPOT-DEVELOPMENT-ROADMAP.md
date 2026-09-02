@@ -8,8 +8,8 @@ bounded Favourite increment, deferred the PII-sensitive Information Request boun
 `RS-WO-020-01R` relation-version continuity repair are independently verified, with the repair frozen at
 `adfd37e`. The disjoint tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched,
 adopted into Main at product commit `c29e80d`, passed dependency-complete typecheck, full-suite `121/121`,
-production-build checks, and `RS-WO-020-04` independent verification at Main `c977ea4`; fresh-reset browser
-verification remains the next gate.
+production-build checks, and `RS-WO-020-04` independent verification at Main `c977ea4`. The fresh-reset
+browser Verifier `RS-WO-020-05` returned `VERIFIED` against Main `f49e1ca`, closing the bounded increment.
 `RS-WO-005-01` has passed corrected independent verification and is integrated at local product
 commit `27f5391`; `RS-WO-007-01` is accepted as a read-only UI decomposition and `RS-WO-007-02` has
 passed final independent browser verification and is integrated at product commit `89a50c7` after
@@ -99,21 +99,23 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 
 ### 3.1 Current next route
 
-The accepted local MVP and the earlier Phase 6 post-MVP closure increment are complete. The current
-`RIGHTSPOT-020` route is at the fresh-reset browser verification gate after bounded implementation and
-independent static verification:
+The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.
+The independent static verification `RS-WO-020-04` and fresh-reset browser verification `RS-WO-020-05`
+are reconciled in the owning Task File; there is no active implementation or verification gate for this
+increment:
 
-1. Keep the reviewed documentation/procedure baseline and unrelated collaborator changes separate.
-2. Implement only the accepted bounded Favourite direction through `RIGHTSPOT-020`; the
+1. Kept the reviewed documentation/procedure baseline and unrelated collaborator changes separate.
+2. Implemented only the accepted bounded Favourite direction through `RIGHTSPOT-020`; the
    `RS-WO-020-01R` relation-version continuity repair is independently verified before UI consumption.
-3. Dispatch tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` in parallel with their
+3. Dispatched tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` in parallel with their
    declared disjoint paths; adopt both candidates into Main and serialize shared navigation, listing-card/
    detail integration, and global CSS.
-4. Freeze the integrated product source at `c29e80d`; `RS-WO-020-04` independently verified Main `c977ea4`,
+4. Froze the integrated product source at `c29e80d`; `RS-WO-020-04` independently verified Main `c977ea4`,
    and the two temporary UI Worktrees were retired after Main adoption at the first safe checkpoint-scoped
    opportunity.
-5. Dispatch the bounded `RS-WO-020-05` fresh-reset browser verification, then reconcile its evidence before
-   closing `RIGHTSPOT-020`; do not infer browser, deployment, or external-integration claims from static gates.
+5. Reconcile the bounded `RS-WO-020-05` fresh-reset browser evidence against frozen Main `f49e1ca`; it
+   passed and closed `RIGHTSPOT-020`. Do not infer deployment, production, or external-integration claims
+   from this local browser gate.
 6. Keep the reviewed `RIGHTSPOT-009` Information Request proposal deferred until contact/PII authority,
    retention, erasure, and agent-access decisions are accepted; it must not enter `RIGHTSPOT-020`.
 7. Keep `RIGHTSPOT-006` outside the implementation lane until the explicit external credential and
@@ -127,7 +129,9 @@ independent static verification:
 
 Only an explicitly selected, implementation-ready Task opens a new code Work Order or temporary
 Worktree. Each accepted output is integrated into Main and its physical Worktree is retired at the
-first safe checkpoint-scoped opportunity under the orchestration Runbook.
+first safe checkpoint-scoped opportunity under the orchestration Runbook. The remaining `RIGHTSPOT-006`,
+`RIGHTSPOT-010`, and `RIGHTSPOT-012` records remain separate credential, decision, or read-only audit
+gates; they do not reopen `RIGHTSPOT-020`.
 
 ## 4. Roadmap operating rules
 

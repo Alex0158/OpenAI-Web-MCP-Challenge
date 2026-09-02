@@ -1,7 +1,7 @@
 # RIGHTSPOT-020: Implement tenant favourites and agent listing-interest
 
 **Type:** `implementation`  
-**Lifecycle:** `in_progress`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for the next bounded post-MVP product increment  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-02  
@@ -10,18 +10,17 @@
 ## Task control
 
 - Type: `implementation`
-- Lifecycle: `in_progress`
-+- Execution posture: `BROWSER_VERIFICATION_GATED`
+- Lifecycle: `closed`
+- Execution posture: `CLOSED_VERIFIED`
 - Current increment: The pre-UI relation-version continuity repair is independently verified at
   `adfd37e`; both disjoint UI candidates have completed their Builder turns, passed T2 exact-path/diff
   review, and are adopted in Main together with the serialized shared navigation integration at product
   commit `c29e80d`. Main's dependency-complete typecheck, full suite, and production build pass;
   independent integrated-source verification `RS-WO-020-04` passed against Main `c977ea4`; fresh-reset
-  browser evidence is now the remaining acceptance gate.
-- Next gate: Dispatch the independent read-only browser Verifier `RS-WO-020-05` against the frozen
-  post-registration Main baseline, then reconcile browser evidence and close the bounded increment if all
-  acceptance criteria pass. The two short-lived candidate Worktrees were already retired after exact-path
-  review; only Main remains as the current source authority.
+  browser verification `RS-WO-020-05` passed against the frozen Main baseline `f49e1ca`.
+- Next gate: None for this bounded increment. The two short-lived candidate Worktrees were retired after
+  exact-path review; only Main remains as the current source authority. Any further Favourite, contact,
+  external-auth, WebMCP, or deployment work requires a separately accepted Task.
 - Parent role: This is one registered Task File. Builder, Verifier, Repairer, and Integrator are
   checkpoints under this file, not additional Tasks.
 
@@ -399,16 +398,18 @@ stage/commit, move refs, create/remove Worktrees, or broaden the verification su
 ### RS-WO-020-05 — Fresh-reset browser verification
 
 **Role:** Independent read-only browser Verifier  
-**Status:** `GATED` — dispatch after this process record is committed and a fresh exact baseline is captured  
+**Status:** `CLOSED` — independently verified against frozen Main source  
 **Parallelization:** `SERIAL_AFTER_RS-WO-020-04` — browser evidence uses the static-verified integrated source;
 no product writer may change the source during the browser checkpoint  
 **Execution mode:** Dedicated browser session against a locally served frozen Main source; no code Worktree
 or source writer is permitted. Runtime state and generated output must remain within the documented RightSpot
 boundary.  
-**Source baseline:** Capture and record the full Main `HEAD` immediately before dispatch; the product source
-must remain the accepted `c29e80d` change set.  
+**Source baseline:** Main `f49e1ca6051f9922cf37008df6ebe7ed264860da`; the product source remains the accepted
+`c29e80d` change set.  
 **Ownership:** The browser Verifier records observed UI evidence only. Main owns server lifecycle, any
 interpretation, canonical writeback, Git closure, and any repair.
+**Supporting task:** `RightSpot RS-WO-020-05 fresh reset browser verifier`, task/thread
+`01a05fb8-631f-7af1-9d24-e2e2f7a779ac`, host `local`.
 
 #### Objective
 
@@ -442,6 +443,29 @@ do not stage, commit, push, reset, clean, delete, create/remove Worktrees, or ch
 claim production, deployment, WebMCP, Cloud Receiver, external authentication, or production privacy
 evidence. A browser run that changes a tracked file or writes outside the documented RightSpot generated
 set is `BLOCKED` even when the visible flow passes.
+
+#### Verification record — 2026-09-02
+
+The independent browser Verifier `RightSpot RS-WO-020-05 fresh reset browser verifier` (task/thread
+`01a05fb8-631f-7af1-9d24-e2e2f7a779ac`, host `local`) returned `VERIFIED` against Main
+`f49e1ca6051f9922cf37008df6ebe7ed264860da`. It rebuilt the frozen source with Node `v24.20.0` and npm
+`11.19.0`, served it from the exact package root on `127.0.0.1:3120`, and confirmed `/api/health` returned
+`{"ok":true,"service":"rightspot"}`. The pre-existing server on port `3100` was identified but neither
+reused nor stopped.
+
+The fresh generation-1 browser run confirmed the visible tenant flow: three seeded published listings,
+save `listing-primary`, Favourite-list appearance, visible removal, reload persistence of the removal, and
+re-save. A repeat run produced the same result with empty browser warning/error logs. The independent agent
+session confirmed listing-level `Current saves: 1` and `Available interest: 1` for `listing-primary`, with no
+tenant identity, contact-like value, private note, or internal review note exposed.
+
+The current UI has no supported visible action for producing an unpublished listing. No hidden API or
+fixture mutation was used; unavailable-listing behavior remains covered only by the existing direct/static
+evidence recorded by `RS-WO-020-04`, and is not claimed as browser evidence here. The verifier's source and
+mutation audit found unchanged `HEAD`, branch, Worktree list, tracked product/docs (including owner-held
+`AGENTS.md`, `CLAUDE.md`, and `Docs/Reference/`), `.gitignore`, and `next-env.d.ts`; only permitted ignored
+`.next/` and `var/rightspot.sqlite*` generated state changed. The pre-reset mismatch database was preserved
+as `var/rightspot.sqlite.rs-wo-020-05-pre-reset-mismatch` and was not deleted.
 
 ## Acceptance criteria
 
@@ -478,6 +502,8 @@ Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched in parallel, their exac
 were adopted into Main, the shared navigation integration was serialized in Main, and the two short-lived
 candidate Worktrees were retired after exact-path review. Dependency-
 complete Main verification now reports typecheck pass, full suite `121/121`, and production build pass;
-independent static verification `RS-WO-020-04` returned `VERIFIED` against Main `c977ea4`. Fresh-reset
-browser verification `RS-WO-020-05` remains before closure. No deployment, production privacy, WebMCP,
-Cloud Receiver, or external-auth evidence is claimed.
+independent static verification `RS-WO-020-04` returned `VERIFIED` against Main `c977ea4`. The independent
+fresh-reset browser verification `RS-WO-020-05` returned `VERIFIED` against Main `f49e1ca` with the evidence
+recorded above. All accepted local criteria are now reconciled for this bounded increment, so
+`RIGHTSPOT-020` is closed. No deployment, production privacy, WebMCP, Cloud Receiver, external-auth,
+Redis, WebRTC, or production-readiness evidence is claimed.
