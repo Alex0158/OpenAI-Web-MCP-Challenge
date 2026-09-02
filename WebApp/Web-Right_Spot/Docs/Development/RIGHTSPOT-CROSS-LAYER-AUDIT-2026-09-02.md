@@ -1643,3 +1643,29 @@ mapping is already covered by the closed presentation evidence. No `VERIFIED_DEF
 change, fixture mutation, or external integration claim was created. `F-08` remains an evidence gap,
 `F-20` remains non-gating polish, and the native `datetime-local` limitation remains a tooling
 evidence boundary.
+
+## 64. Post-commit rendered route and role revalidation — no new registered finding — 2026-09-02
+
+Main repeated a bounded rendered-surface sweep after the RightSpot reconciliation commit
+`dc5019aa9d663ae276cf6653c9994cf8183020cb`. The canonical repository remained on `main` with
+`origin/main` at the same commit and one physical Worktree. Against the healthy local server, the
+fresh browser surface rendered the signed-out root role chooser, Tenant catalogue and navigation,
+Tenant empty Viewing Request and Favourite states, listing-detail facts and explicit draft/save/submit
+boundary, wrong-role Agent access, and the valid Agent queue with separate active/history counts and
+listing-interest metrics. The Agent role was entered only through the bounded local demo-session
+control and was signed out again; no request, Favourite, or fixture state was created or changed.
+
+The effective narrow browser viewport remained `355px` by `888px` despite requesting a `320px` override.
+The document viewport width matched the effective width; the body reported a one-pixel rounded
+`scrollWidth` difference caused by its fractional `355.555...px` layout width, with no element extending
+more than half a CSS pixel beyond the viewport. This is not a visible responsive defect and does not
+promote the existing non-gating `F-20` heading-wrap polish. The browser log contained only normal React
+DevTools/HMR informational entries and no warning or error. No new `VERIFIED_INCOMPLETE`,
+`VERIFIED_DEFECT`, `VERIFIED_POLISH`, or `DOCUMENTATION_DRIFT` finding was accepted; no follow-on Task
+or Work Order was registered.
+
+The continuous lane still does not claim closure: `F-08` remains the separate listing-detail
+same-document timing `EVIDENCE_GAP`, `F-20` remains low-severity responsive typography polish, and
+the native `datetime-local` limitation plus the unpublished Favourite branch remain evidence-boundary
+limitations. External authentication, Information Request, Operations/WebMCP, Cloud Receiver, WebRTC,
+deployment, and production-readiness remain deliberately deferred or gated.

@@ -561,3 +561,14 @@ mutation, tenant-safe selected-time retention, and terminal removal of decision/
 This adds direct/application/API evidence but no new browser expiry claim; no new finding, Task,
 Work Order, source change, or fixture mutation was accepted. `F-08`, `F-20`, the native input
 tooling boundary, and the intentionally scheduler-free MVP scope remain unchanged.
+
+The post-commit rendered route/role revalidation then checked the signed-out root, Tenant catalogue,
+Favourites, Viewing Requests, listing detail, wrong-role Agent access, and valid Agent queue/listing
+interest surface against Main `dc5019aa9d663ae276cf6653c9994cf8183020cb`. The local server was healthy;
+the Agent session was entered and ended through the bounded demo controls; no workflow fixture was
+mutated; and the browser log contained no warning or error. The effective `355px` viewport had no
+visible element overflow; its one-pixel body `scrollWidth` excess was fractional-width rounding only.
+No new finding, Task, or Work Order was accepted. `F-08`, `F-20`, the native datetime-input harness
+limitation, and the unpublished Favourite evidence limitation remain unchanged, while external auth,
+Information Request, Operations/WebMCP, Cloud Receiver, WebRTC, deployment, and production-readiness
+remain deferred or gated. `RIGHTSPOT-012` remains `pending` as the continuous audit lane.
