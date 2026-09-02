@@ -1,7 +1,7 @@
 # RightSpot — Current Status
 
 **Role:** Canonical current status for the RightSpot child application  
-**As of:** 2026-09-02, Europe/London  
+**As of:** 2026-09-03, Europe/London  
 **Physical workspace:** `git worktree list --porcelain` currently reports only the canonical Main Worktree at
 `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge` on `main`. The stopped `RS-WO-020-02` and
 `RS-WO-020-03` candidate snapshots were adopted into Main and their short-lived physical Worktrees were
@@ -82,9 +82,18 @@ as `RIGHTSPOT-042`: the Area control presents an unseeded `Shoreditch` example w
 read applies undiscoverable exact Area equality, and the `Available by`/`availableFrom` date semantics
 need explicit wording for a future tool. No source, fixture, dependency, route, WebMCP registration,
 or implementation Worktree changed; the task is a pending Main-owned contract gate.
+**Accepted Area direction (2026-09-03):** [ADR-RS-0014](Decisions/ADR-RS-0014-area-search-semantics.md)
+now defines Area as a canonical structured facet. Partial input is limited to bounded deterministic
+suggestion discovery; the applied filter uses a selected canonical `listing.area` value after shared
+trim and case-insensitive normalization. Unknown or unselected values receive bounded validation,
+selected values with no published matches remain explicit empty results, and no fuzzy, alias, or full-
+catalogue fallback is allowed. The current source still reflects the pre-decision free-text/exact-
+equality behavior because no implementation Task has been accepted; `RIGHTSPOT-042` remains pending
+for the complete Search and WebMCP contract.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Complete the `RIGHTSPOT-042` Tenant Discovery/WebMCP Search contract
-gate against the staged [`RIGHTSPOT-WEBMCP-ROADMAP`](Development/RIGHTSPOT-WEBMCP-ROADMAP.md), then
+**Current next product action:** Complete the remaining `RIGHTSPOT-042` Tenant Discovery/WebMCP Search
+contract gate against the staged [`RIGHTSPOT-WEBMCP-ROADMAP`](Development/RIGHTSPOT-WEBMCP-ROADMAP.md),
+including result/error/freshness and page-state semantics, then
 register a separate implementation Task only after the Area, criterion, result, role/privacy, and
 browser fallback semantics are accepted. `RIGHTSPOT-010` remains a separate pending Agent
 Operations/WebMCP decision proposal. The Main-thread cross-layer audit Goal is closed

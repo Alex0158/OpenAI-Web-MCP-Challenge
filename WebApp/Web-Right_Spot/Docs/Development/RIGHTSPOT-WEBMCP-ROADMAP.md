@@ -3,7 +3,7 @@
 **Role:** Engineering roadmap and gate definition for the later RightSpot WebMCP capability  
 **Status:** `ROADMAP_ESTABLISHED` — Tenant Discovery Search selected as the first goal; contract work is pending and implementation/tool registration are not yet authorized  
 **Owner:** Main RightSpot thread  
-**As of:** 2026-09-02, Europe/London  
+**As of:** 2026-09-03, Europe/London  
 **Applies to:** `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge/WebApp/Web-Right_Spot`
 
 ## 1. Purpose and outcome
@@ -42,6 +42,8 @@ The following sources remain authoritative in their respective areas:
   bounded relay-side Operations projection seam;
 - [ADR-RS-0012](../Decisions/ADR-RS-0012-operations-profile-authority-and-manual-query-boundary.md)
   for the separate Operations profile and its manual-query boundary; and
+- [ADR-RS-0014](../Decisions/ADR-RS-0014-area-search-semantics.md) for the accepted canonical Area
+  facet and bounded suggestion direction; and
 - [`RIGHTSPOT-010`](../Tasks/RIGHTSPOT-010-define-agent-operations-insights-dashboard-boundary.md)
   for the pending read-only Agent Operations/WebMCP proposal.
 - [`RIGHTSPOT-042`](../Tasks/RIGHTSPOT-042-define-tenant-search-and-webmcp-search-contract.md)
@@ -134,10 +136,12 @@ The product goal, not the number of exposed controls, determines the first slice
 
 Main has selected the lower-risk read-only Tenant Discovery Search goal as the first WebMCP direction.
 The current candidate is one `search_listings`-type capability on the existing Tenant Discovery page,
-with bounded structured filters and a visible update of the ordinary listing results. The exact name,
-schema, Area semantics, and result boundary remain pending in `RIGHTSPOT-042`; selection of the goal
-does not authorize implementation or registration. `RIGHTSPOT-010` remains a separate pending
-Operations Insights alternative and is not silently replaced by this selection.
+with bounded structured filters and a visible update of the ordinary listing results. ADR-RS-0014 now
+accepts the canonical Area facet and bounded suggestion direction; the exact tool name, complete
+schema, result boundary, and remaining Search semantics remain pending in `RIGHTSPOT-042`. Selection of
+the goal or the partial Area decision does not authorize implementation or registration.
+`RIGHTSPOT-010` remains a separate pending Operations Insights alternative and is not silently replaced
+by this selection.
 
 This choice prevents the first WebMCP increment from silently becoming a new reporting product, a
 generic chatbot, or a full rewrite of the already-closed tenant-to-agent workflow.
@@ -182,6 +186,8 @@ non-goals are intentionally W1 work; they must not be hidden inside an implement
 Freeze, for the selected goal:
 
 - tool name, purpose, description, input schema, required fields, limits, and ambiguity behavior;
+- the remaining public details of the accepted canonical Area selection, including the suggestion source
+  and validation/error envelope;
 - role/session preconditions and page starting state;
 - authorized data and result envelope, including empty, unavailable, freshness, and result-cap
   semantics;

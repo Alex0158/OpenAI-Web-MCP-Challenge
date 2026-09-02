@@ -6,6 +6,7 @@
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-02  
 **Finding:** `F-21` — Tenant Area search discoverability and contract gap  
+**Accepted partial decision:** Area is a canonical structured facet; see [ADR-RS-0014](../Decisions/ADR-RS-0014-area-search-semantics.md)  
 **Depends on:** `RS-FLOW-02`; the existing Tenant listing application/API and DTO boundary; the staged [RightSpot WebMCP roadmap](../Development/RIGHTSPOT-WEBMCP-ROADMAP.md); and the accepted ordinary UI direction in ADR-RS-0009
 
 ## Task Control
@@ -19,7 +20,7 @@
 - Next gate: Main accepts or revises the proposed Search contract, records an ADR if the accepted choice changes a durable product or interface rule, reconciles the owning Core/Flow/API/WebMCP documents, and only then registers a separate implementation Task or Work Order.
 - Dependencies: The current published-listing authority, tenant role/privacy boundary, and ordinary `RS-FLOW-02` surface remain authoritative. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal and is not an implementation dependency. External authentication, Cloud Receiver, WebRTC, Redis, deployment, and production readiness remain outside this task.
 - Dispatch state: `not dispatched` — Main-owned decision and documentation checkpoint; no Builder, Verifier, dependency installation, WebMCP registration, or Worktree is authorized by this file.
-- Evidence status: `OPEN_CONTRACT_GAP` — the current Area filter is operational under its existing implementation semantics, but the user-facing and future WebMCP contract is not sufficiently explicit or discoverable.
+- Evidence status: `PARTIALLY_DECIDED_OPEN_CONTRACT` — the Area interaction direction is accepted in ADR-RS-0014, while the complete Search input/result/error/freshness and WebMCP contract remains open.
 
 ## Bounded objective
 
@@ -127,20 +128,23 @@ only or also a separately named keyword field. It must not silently turn `area` 
 
 ### 2. Area semantics
 
-The recommended default is to treat `area` as a structured location facet:
+**Partially accepted on 2026-09-03:** [ADR-RS-0014](../Decisions/ADR-RS-0014-area-search-semantics.md)
+accepts Area as a canonical structured facet rather than an absolute match over raw user text:
 
-- expose canonical values through a bounded suggestion/select mechanism derived from the same listing
-  authority or accepted catalogue metadata;
-- normalize surrounding whitespace at the shared input boundary and compare case-insensitively;
-- use exact matching against the canonical `listing.area` value;
-- replace the misleading placeholder with an actual seeded/canonical example;
-- preserve a truthful empty result when a valid value has no matches; never fall back to the full
-  catalogue or silently guess a nearby Area.
+- ordinary UI suggestion discovery is bounded and deterministic, using case-insensitive prefix matching
+  over canonical values;
+- the applied Search boundary receives a selected canonical `listing.area` label, after shared trim
+  and case-insensitive normalization;
+- an unselected fragment is not an applied Area filter, and an unknown value is a bounded validation
+  outcome;
+- a selected Area with no currently published matches remains a truthful empty result with no fallback;
+  and
+- fuzzy spelling, aliases, geospatial expansion, ranking guesses, and a universal keyword query remain
+  outside the boundary.
 
-If Main instead chooses free-text Area, the accepted contract must explicitly choose deterministic
-prefix or substring semantics, define case/whitespace normalization, and reject fuzzy spelling,
-geospatial aliases, hidden borough/neighbourhood expansion, or ranking guesses unless each is separately
-accepted and evidenced. The two models must not coexist implicitly.
+This resolves the raw-text versus canonical-facet ambiguity. The complete Search contract still needs
+to define the public error envelope, suggestion-source read boundary, exact UI selection behavior,
+result parity, and the relationship between the ordinary API and future WebMCP schema.
 
 ### 3. Criteria and comparison semantics
 
@@ -467,6 +471,15 @@ first tool. The finding is registered as `F-21` / `RIGHTSPOT-042` with one Main-
 Work Order. No source, fixture, package, dependency, WebMCP registration, route, ADR, or implementation
 Worktree was changed by this registration checkpoint. The existing `RIGHTSPOT-010` Operations/WebMCP
 proposal remains separate and pending.
+
+## Partial decision writeback — 2026-09-03
+
+Main accepted the Area direction through ADR-RS-0014: Area is a canonical structured facet, partial
+input is limited to bounded deterministic suggestion discovery, the applied filter uses a selected
+canonical label after shared trim and case-insensitive normalization, unknown or unselected values
+receive bounded validation, and no fuzzy, alias, geospatial, or full-catalogue fallback is allowed.
+This does not close `RIGHTSPOT-042`; the complete Search schema, result/error/freshness contract,
+page-state agreement, and WebMCP lifecycle remain pending.
 
 ## Reopen condition
 

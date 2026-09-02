@@ -101,12 +101,14 @@ and listing detail. The accepted parent-owned feedback repair is now `CLOSED_VER
 TDD, full checks, and isolated browser save/submit/conflict evidence.
 The subsequent Tenant Discovery Search review registered `F-21` / `RIGHTSPOT-042` as a pending P1
 contract decision. It keeps the existing four-filter read path, tenant-safe projection, and ordinary
-MVP behavior intact while requiring an explicit Area matching/discoverability rule and a shared,
-implementation-ready contract for the first read-only WebMCP Search capability. No WebMCP registration,
-Search implementation, dependency, route, fixture, or Worktree is authorized before this contract gate
-closes. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal.
+MVP behavior intact. ADR-RS-0014 now accepts the Area direction as a canonical structured facet with
+bounded deterministic suggestions, shared normalization, explicit unknown-value handling, and no fuzzy
+or catalogue fallback. The remaining Search result/error/freshness, page-state, and WebMCP contract
+decisions are still open. No WebMCP registration, Search implementation, dependency, route, fixture,
+or Worktree is authorized before the full contract gate closes. `RIGHTSPOT-010` remains a separate
+pending Agent Operations/WebMCP proposal.
 **Owner:** Main RightSpot thread  
-**As of:** 2026-09-02, Europe/London
+**As of:** 2026-09-03, Europe/London
 
 **Physical workspace:** The canonical Main Worktree remains the only source authority. The stopped,
 short-lived `RS-WO-020-02` and `RS-WO-020-03` candidate Worktrees were adopted into Main and retired after
@@ -265,10 +267,11 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 ### 3.1 Current next route
 
 The current route is the pending Main-owned `RIGHTSPOT-042` Tenant Discovery/WebMCP Search contract
-decision. The first WebMCP goal is selected as read-only Tenant listing discovery on `/tenant`, but
-Area semantics, supported criteria, result/page-state contract, and browser fallback remain to be
-accepted before a separate implementation Task can open. `RIGHTSPOT-010` remains a separate pending
-Agent Operations/WebMCP proposal; `RIGHTSPOT-012` remains a non-blocking audit lane.
+decision. The first WebMCP goal is selected as read-only Tenant listing discovery on `/tenant`, and
+ADR-RS-0014 accepts the canonical Area direction. Supported criteria, result/page-state contract,
+error/freshness envelope, and browser fallback remain to be accepted before a separate implementation
+Task can open. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal;
+`RIGHTSPOT-012` remains a non-blocking audit lane.
 
 The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.
 The page-entry audit registered `RIGHTSPOT-021` as a bounded implementation route: restore a

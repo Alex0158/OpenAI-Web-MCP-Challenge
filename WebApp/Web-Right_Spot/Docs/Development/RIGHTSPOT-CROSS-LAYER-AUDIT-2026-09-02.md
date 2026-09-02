@@ -1907,3 +1907,10 @@ named keyword field only if explicitly accepted; no fuzzy guess or automatic ful
 This registration changes task and documentation state only. It does not authorize Search UI repair,
 WebMCP registration, dependency installation, schema/fixture expansion, external integration, or a
 new Worktree. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal.
+
+On 2026-09-03, Main accepted the bounded Area direction through ADR-RS-0014: canonical structured
+selection, deterministic suggestion discovery, shared trim/case normalization, explicit handling for
+unselected or unknown values, and no fuzzy, alias, geospatial, or full-catalogue fallback. This is a
+partial contract decision only. `RIGHTSPOT-042` remains pending for the complete Search schema,
+result/error/freshness/page-state contract, and WebMCP lifecycle; no implementation or registration
+is authorized by this writeback.

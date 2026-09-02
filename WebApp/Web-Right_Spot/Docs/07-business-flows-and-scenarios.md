@@ -236,6 +236,14 @@ tenant-only access is enforced.
 **Boundary:** This is not live inventory, ranking, recommendation, buying, saved-search, pagination,
 map search, or listing administration.
 
+**Accepted Area contract direction:** [ADR-RS-0014](Decisions/ADR-RS-0014-area-search-semantics.md)
+defines Area as a canonical structured facet. Partial input is limited to deterministic suggestion
+discovery; Apply and the future WebMCP capability use a selected canonical Area after shared trim and
+case-insensitive normalization. An unselected or unknown value must receive bounded validation, while
+a selected Area with no published matches remains an explicit empty result with no catalogue fallback.
+This direction is accepted but not yet implemented; the existing closed status above describes the
+current four-filter behavior only, and `RIGHTSPOT-042` remains the gate for the complete Search contract.
+
 ### RS-FLOW-03 — Inspect a listing and enter a request
 
 **Actor:** Tenant

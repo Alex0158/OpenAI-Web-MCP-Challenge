@@ -161,6 +161,19 @@ as the UI, not create a second business logic path.
 The first phase will not add WebMCP registration, Agent wake semantics, or Cloud Receiver-specific
 payloads merely to reserve names.
 
+### 8.1 Tenant Discovery Area contract direction
+
+[ADR-RS-0014](Decisions/ADR-RS-0014-area-search-semantics.md) accepts Area as a canonical structured
+facet for the future shared Tenant Discovery Search contract. The ordinary UI may use bounded,
+case-insensitive prefix suggestions to help a tenant select a canonical `listing.area` label, but the
+applied application/WebMCP filter uses the selected canonical label after shared trim and
+case-insensitive normalization. An unselected fragment is not an applied Area filter; an unknown value
+is a bounded validation outcome; and a selected Area with no published matches remains an explicit
+empty result without fallback.
+
+This is an accepted semantic direction, not an implementation claim. `RIGHTSPOT-042` still owns the
+complete Search input/result/error/freshness contract and the later WebMCP registration decision.
+
 ## 9. Open contract decisions
 
 The remaining choices are implementation or later integration details:
