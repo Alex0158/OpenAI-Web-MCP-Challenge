@@ -74,11 +74,11 @@ authentication, Information Request, or Agent-navigation change. Its `RS-WO-021-
 Work Order returned `READY_FOR_VERIFICATION` after changing only its declared two product paths, and
 persistent Verifier task `01a05ff5-ccf1-75c3-b873-5b39f0e3e28f` independently returned `VERIFIED`.
 The post-closure audit found the separate `320–342px` initial-visibility residual, Main selected the
-existing `320px` support floor, and `RIGHTSPOT-022` is now registered as its bounded responsive repair.
+existing `320px` support floor, and `RIGHTSPOT-022` was registered as its bounded responsive repair.
 Its `RS-WO-022-01` Builder returned `READY_FOR_VERIFICATION` in persistent supporting task
 `01a0602e-e947-7231-bf6f-37ed685681e2`; Main froze the exact CSS candidate at product commit `f0dbd99`,
-and independent `RS-WO-022-02` verification is assigned to persistent supporting task
-`01a06039-6eea-7033-aaf8-ae34c69aebe7`.
+and independent `RS-WO-022-02` verification in persistent supporting task
+`01a06039-6eea-7033-aaf8-ae34c69aebe7` returned `VERIFIED`. The bounded Task is closed.
 
 Work Orders are recorded inside the [`RIGHTSPOT-002` Task File](RIGHTSPOT-002-build-mvp-application-shell.md);
 `RS-WO-002-01` returned `READY_FOR_VERIFICATION`, the corrected `RS-WO-002-02` rerun returned
@@ -116,9 +116,9 @@ browser evidence are reconciled in the
 
 **Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain pending
 (credential, decision, and read-only audit gates respectively); `RIGHTSPOT-021` is closed as an
-implementation gate, and `RIGHTSPOT-022` is `in_progress` with `RS-WO-022-01` at
-`READY_FOR_VERIFICATION` and assigned `RS-WO-022-02` as the independent gate for the separately
-registered `320–342px` responsive repair. `RIGHTSPOT-020` is closed with
+implementation gate, and `RIGHTSPOT-022` is closed at product commit `f0dbd99` after
+`RS-WO-022-01` returned `READY_FOR_VERIFICATION` and `RS-WO-022-02` independently returned
+`VERIFIED` for the separately registered `320–342px` responsive repair. `RIGHTSPOT-020` is closed with
 `RS-WO-020-01R` verified,
 its UI candidates adopted into Main at product commit `c29e80d`, `RS-WO-020-04` independently verified at
 Main `c977ea4`, and `RS-WO-020-05` fresh-reset browser verification passed against Main `f49e1ca`.
@@ -127,20 +127,17 @@ independently verified and integrated at `edd7575`; `RS-WO-017-03` is independen
 integrated at `2a53917`, with `RS-WO-017-04` browser verification complete. `RS-WO-019-01` is closed
 after its bounded browser/form regression passed. No closed task is an active implementation gate.
 
-**Current route:** `RIGHTSPOT-022` is the active bounded route. Main selected the existing `320px`
-support floor after the `RIGHTSPOT-021` post-closure audit found initial clipping of the third tenant
-navigation link at `320–342px`. Its `RS-WO-022-01` Builder returned `READY_FOR_VERIFICATION` in
-persistent supporting task `01a0602e-e947-7231-bf6f-37ed685681e2`; Main froze the exact CSS candidate at
-product commit `f0dbd99`, and assigned `RS-WO-022-02` to persistent supporting task
-`01a06039-6eea-7033-aaf8-ae34c69aebe7` for independent verification. The boundary is CSS-only,
-tenant-scoped, and serialized on the canonical Main Worktree. No implementation Worktree is open.
-`RIGHTSPOT-021` remains closed for
+**Current route:** No RightSpot implementation route is active. The latest bounded route,
+`RIGHTSPOT-022`, closed after `RS-WO-022-01` returned `READY_FOR_VERIFICATION`, Main froze the exact
+CSS candidate at product commit `f0dbd99`, and persistent `RS-WO-022-02` independently returned
+`VERIFIED`. The boundary was CSS-only, tenant-scoped, and serialized on the canonical Main Worktree;
+no implementation Worktree is open. `RIGHTSPOT-021` remains closed for
 its bounded implementation and verification. Its
 `RS-WO-021-01` implementation changed only the declared two product paths, and `RS-WO-021-02`
 independently returned `VERIFIED` against the frozen canonical Main Worktree. A subsequent
 Main-thread audit found that the third tenant navigation link is initially clipped at `320–342px`;
 the support-floor decision and the bounded repair are now recorded in `RIGHTSPOT-022`. The exact
-five-line CSS candidate is committed locally at `f0dbd99`; independent verification is pending.
+five-line CSS candidate is committed locally at `f0dbd99` and independently verified.
 `RIGHTSPOT-020` remains closed: `RS-WO-020-01R` is independently verified at `adfd37e`; the main thread jointly reviewed
 `RS-WO-008-01` and `RS-WO-009-01`, accepted the bounded Favourite direction in ADR-RS-0013, deferred
 the PII-sensitive Information Request direction, and registered the now-closed `RIGHTSPOT-020` as a separate

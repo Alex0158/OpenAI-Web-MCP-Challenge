@@ -97,7 +97,7 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 3. Authoritative workflow core | Implement the Viewing Request state machine, availability lifecycle, role projections, version checks, audit facts, and explicit failures | Domain and Backbone checks pass without a browser or external service | Complete; post-repair source `6e70c9f` independently verified |
 | 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | Complete; `RS-WO-002-14` passed independent direct cross-role verification and `RS-WO-002-15` passed the isolated browser walkthrough against integrated source `9348aa50b63e3f4f46e77238ad370670383d9d6` |
 | 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Complete; closure record reconciled and `RIGHTSPOT-002` closed |
-| 6. Post-MVP product refinement | Resolve high-impact navigation friction, strengthen visual credibility, and add a truthful Operations foundation without changing relay workflow authority | Each bounded candidate is independently verified and integrated before the next shared-surface change | Closure increment complete; `RS-WO-005-01` integrated at `27f5391`; `RIGHTSPOT-007` closed after `RS-WO-007-08` integrated regression; `RS-WO-011-01`/`02` verified and integrated at `7ff0fbd` as a server-only relay seam; `RIGHTSPOT-013` and `RIGHTSPOT-014` closed with their accepted decisions; `RIGHTSPOT-015` closed at `e7f30d5`; `RS-WO-016-01` independently verified and integrated at `edd7575`; `RS-WO-017-02` integrated at `b7369bd`; `RS-WO-017-03` independently verified and integrated at `2a53917`, with `RS-WO-017-04` browser verification complete; `RS-WO-018-01` integrated and closed at `5eef037`; and `RS-WO-019-01` integrated and closed at `6f52686` after browser/form regression |
+| 6. Post-MVP product refinement | Resolve high-impact navigation friction, strengthen visual credibility, and add a truthful Operations foundation without changing relay workflow authority | Each bounded candidate is independently verified and integrated before the next shared-surface change | Closure increment complete; `RS-WO-005-01` integrated at `27f5391`; `RIGHTSPOT-007` closed after `RS-WO-007-08` integrated regression; `RS-WO-011-01`/`02` verified and integrated at `7ff0fbd` as a server-only relay seam; `RIGHTSPOT-013` and `RIGHTSPOT-014` closed with their accepted decisions; `RIGHTSPOT-015` closed at `e7f30d5`; `RS-WO-016-01` independently verified and integrated at `edd7575`; `RS-WO-017-02` integrated at `b7369bd`; `RS-WO-017-03` independently verified and integrated at `2a53917`, with `RS-WO-017-04` browser verification complete; `RS-WO-018-01` integrated and closed at `5eef037`; `RS-WO-019-01` integrated and closed at `6f52686` after browser/form regression; and `RIGHTSPOT-022` independently verified and closed at `f0dbd99` |
 | 7. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary refinement is stable and a new explicit integration decision exists | Deferred; not scheduled |
 
 ### 3.1 Current next route
@@ -112,9 +112,10 @@ audit found a `P2` residual at `320–342px`, where the third tenant navigation 
 clipped until the links container is scrolled. Main selected the existing `320px` support floor and
 registered `RIGHTSPOT-022` as a separate CSS-only responsive repair. `RS-WO-022-01` returned
 `READY_FOR_VERIFICATION` in persistent supporting task `01a0602e-e947-7231-bf6f-37ed685681e2`; Main
-froze the exact CSS candidate at local product commit `f0dbd99`, and assigned independent
-`RS-WO-022-02` verification to persistent supporting task `01a06039-6eea-7033-aaf8-ae34c69aebe7`.
-No implementation Worktree is open.
+froze the exact CSS candidate at local product commit `f0dbd99`, and independent `RS-WO-022-02`
+verification in persistent supporting task `01a06039-6eea-7033-aaf8-ae34c69aebe7` returned `VERIFIED`.
+The bounded Task is closed; no implementation Worktree is open, and no new RightSpot implementation
+route is currently active.
 The independent static verification `RS-WO-020-04` and fresh-reset browser verification `RS-WO-020-05`
 are reconciled in the owning Task File; the `RS-WO-021-01` implementation and `RS-WO-021-02`
 independent verification gates are closed:
@@ -146,10 +147,10 @@ Only an explicitly selected, implementation-ready Task opens a new code Work Ord
 Worktree. Each accepted output is integrated into Main and its physical Worktree is retired at the
 first safe checkpoint-scoped opportunity under the orchestration Runbook. `RIGHTSPOT-021` is closed
 for its bounded repair and verification. Main selected the existing `320px` floor and registered
-in-progress `RIGHTSPOT-022`; its `RS-WO-022-01` Builder returned `READY_FOR_VERIFICATION` and Main
-froze the exact CSS candidate at product commit `f0dbd99`. Independent `RS-WO-022-02` verification is
-assigned to persistent supporting task `01a06039-6eea-7033-aaf8-ae34c69aebe7`; no implementation
-Worktree is open. `RIGHTSPOT-006`, `RIGHTSPOT-010`, and
+`RIGHTSPOT-022`; its `RS-WO-022-01` Builder returned `READY_FOR_VERIFICATION`, Main froze the exact
+CSS candidate at product commit `f0dbd99`, and independent `RS-WO-022-02` verification returned
+`VERIFIED`. The bounded Task is closed and no implementation Worktree is open. `RIGHTSPOT-006`,
+`RIGHTSPOT-010`, and
 `RIGHTSPOT-012` remain separate credential, decision, or read-only audit gates and do not reopen
 `RIGHTSPOT-020`. Local Git closure for the prior `RIGHTSPOT-021` increment is recorded at `66615d0`.
 

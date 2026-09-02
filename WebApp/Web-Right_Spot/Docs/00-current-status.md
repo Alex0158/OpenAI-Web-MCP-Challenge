@@ -28,15 +28,12 @@ agent surfaces have since passed their respective independent verification gates
 at product commits `89a50c7`, `5abdaf3`, and `a2f6a19`; integrated regression passed at frozen source
 `4f8a1be`, so `RIGHTSPOT-007` is closed within its accepted behavior-preserving scope.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product task:** `RIGHTSPOT-022` is `in_progress`; its `RS-WO-022-01` Builder returned
-`READY_FOR_VERIFICATION` in persistent supporting task `01a0602e-e947-7231-bf6f-37ed685681e2`. Main
-selected the already accepted `320px` responsive floor after the `RIGHTSPOT-021` post-closure audit
-found the third tenant navigation link initially clipped at `320–342px`. The repair remains a
-separate, tenant-scoped CSS-only boundary on serialized canonical Main; no implementation Worktree is
-open. Main froze the exact five-line CSS candidate at local product commit `f0dbd99`; independent
-`RS-WO-022-02` verification is `ASSIGNED` to persistent supporting task
-`01a06039-6eea-7033-aaf8-ae34c69aebe7` against that frozen source, and the product commit has not
-been pushed by this action.
+**Current next product task:** No RightSpot implementation task is active. `RIGHTSPOT-022` closed its
+bounded responsive repair after `RS-WO-022-01` returned `READY_FOR_VERIFICATION`, Main froze the exact
+five-line CSS candidate at local product commit `f0dbd99`, and persistent Verifier
+`RS-WO-022-02` (`01a06039-6eea-7033-aaf8-ae34c69aebe7`) independently returned `VERIFIED`. The
+tenant-only `320px` floor repair is integrated on the serialized canonical Main Worktree; no
+implementation Worktree is open, and the product commit has not been pushed by this action.
 **Current closure state:** `RS-WO-016-01` passed its bounded repair and fresh independent verification;
 Main integrated the repaired exact two-path projection at product commit `edd7575`. `RS-WO-017-03`
 passed persistent re-gate and independent verification and is integrated at product commit `2a53917`;
@@ -332,8 +329,9 @@ matrix. A subsequent Main-thread audit found the documented `320–342px` narrow
 residual; Main selected the existing `320px` floor and registered `RIGHTSPOT-022` as a separate
 responsive repair. Its `RS-WO-022-01` Builder returned `READY_FOR_VERIFICATION` in the persistent
 supporting task `01a0602e-e947-7231-bf6f-37ed685681e2`; Main froze the exact CSS candidate at local
-product commit `f0dbd99`, and independent `RS-WO-022-02` verification is assigned to persistent
-supporting task `01a06039-6eea-7033-aaf8-ae34c69aebe7`. It does not change the `RIGHTSPOT-021` source.
+product commit `f0dbd99`, and independent `RS-WO-022-02` verification in persistent supporting task
+`01a06039-6eea-7033-aaf8-ae34c69aebe7` returned `VERIFIED`. The bounded gate is closed and it does not
+change the `RIGHTSPOT-021` source.
 `RS-WO-020-05` returned `VERIFIED` against the frozen Main baseline `f49e1ca` after rebuilding and serving
 the exact source on a separate local port, and its evidence is recorded in the owning Task File. The
 `RS-WO-021-01` implementation and `RS-WO-021-02` independent verification gates are closed:
@@ -355,10 +353,9 @@ the exact source on a separate local port, and its evidence is recorded in the o
 Only an explicitly selected, implementation-ready Task may open a code Work Order or temporary
 Worktree. The accepted Worktree lifecycle is prompt integration into Main followed by
 checkpoint-scoped retirement. `RIGHTSPOT-021` is closed for its bounded navigation repair and
-independent verification; its post-closure `320–342px` residual is now owned by in-progress
-`RIGHTSPOT-022`, whose Builder handoff is frozen at product commit `f0dbd99` and whose independent
-`RS-WO-022-02` Verifier is assigned to persistent supporting task
-`01a06039-6eea-7033-aaf8-ae34c69aebe7`. `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain
+independent verification; its post-closure `320–342px` residual was resolved by closed
+`RIGHTSPOT-022`, whose Builder handoff and independent verification are complete at product commit
+`f0dbd99`. `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain
 separate credential, decision, and read-only audit gates and do not reopen `RIGHTSPOT-020`.
 
 ## 5.2 Accepted MVP Work Order boundary (historical closure)

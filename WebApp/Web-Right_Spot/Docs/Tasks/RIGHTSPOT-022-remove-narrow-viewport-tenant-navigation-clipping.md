@@ -1,31 +1,31 @@
 # RIGHTSPOT-022: Remove narrow-viewport tenant navigation clipping
 
 **Type:** `defect`
-**Lifecycle:** `in_progress`
+**Lifecycle:** `closed`
 **Priority:** `P2` for the accepted 320px accessibility and demo-readiness baseline
 **Owner:** Main RightSpot thread
 **Opened:** 2026-09-02
 **Depends on:** Closed `RIGHTSPOT-021`; accepted
 [ADR-RS-0009](../Decisions/ADR-RS-0009-ui-ux-visual-system-and-navigation.md); the existing
-tenant route topology; and the current canonical product source at local product commit `66615d0`
+tenant route topology; and the current canonical product source at local product commit `f0dbd99`
 
 ## Task Control
 
 - Type: `defect`
-- Lifecycle: `in_progress`
+- Lifecycle: `closed`
 - Priority: `P2`
 - Owner: Main RightSpot thread
 - Current increment: Make the existing authenticated tenant navigation satisfy the already accepted
   `320px` minimum layout baseline without changing routes, request workflow, role authority, or data.
-- Next gate: `RS-WO-022-01` returned `READY_FOR_VERIFICATION` from persistent Builder task
-  `01a0602e-e947-7231-bf6f-37ed685681e2`. Main reviewed the exact candidate, froze the authorized CSS
-  path in local product commit `f0dbd99`, and must now dispatch `RS-WO-022-02` for independent
-  verification against that frozen source before closure.
+- Next gate: None for this bounded repair. `RS-WO-022-01` returned `READY_FOR_VERIFICATION`, Main
+  froze the exact authorized CSS path at local product commit `f0dbd99`, and persistent Verifier
+  `RS-WO-022-02` independently returned `VERIFIED` against that frozen source. Main has reconciled
+  the evidence and closed the Task.
 - Dependencies: The existing `SessionNav` component, `/tenant` route family, current global CSS,
   and ADR-RS-0009 remain authoritative. No new product or architecture decision is required.
-- Execution posture: `IN_PROGRESS`
-- Evidence status: `READY_FOR_VERIFICATION` after the Builder handoff and Main's exact-path source
-  freeze; independent verification is the next gate.
+- Execution posture: `CLOSED`
+- Evidence status: `VERIFIED` after exact-path review, source freeze, independent verification, and
+  canonical documentation writeback.
 - Affected surface: The responsive presentation of the authenticated tenant shared navigation only.
   Agent navigation, session authority, request state, APIs, persistence, and route ownership remain
   outside this Task.
@@ -176,12 +176,11 @@ change. Those are new authority or scope decisions, not reasons to widen this CS
 **Dispatch state:** `dispatched at main@cbf7643e26503ed0b49cc874c4a591f82e2aef18; serialized canonical Main Worktree; product source clean at dispatch`
 **Parallelization:** `SERIAL`
 **Execution profile:** `Standard` (shared navigation and accessibility behavior, but no contract, data, auth, or external-effect change)
-**Integration owner/order:** Main RightSpot thread; the exact candidate is frozen at local product
-commit `f0dbd99`; an independent Verifier must pass before Main records closure.
-**Next gate:** Main has completed the Builder handoff and source freeze. Dispatch one independent
-`RS-WO-022-02` Verifier against the frozen source. The Verifier returns `VERIFIED`, `NEEDS_REPAIR`, or
-`BLOCKED` and stops. A required boundary expansion is reported as part of the evidence; it is not a
-new worker status.
+**Integration owner/order:** Main RightSpot thread; the exact candidate was frozen at local product
+commit `f0dbd99`, independently verified, and integrated as the current product source.
+**Next gate:** Complete. `RS-WO-022-02` returned `VERIFIED`; Main reconciled the evidence and closed
+the parent Task. A required boundary expansion would have been reported as part of the evidence; it
+was not a new worker status.
 **Parent execution posture if blocked:** `AWAITING_DECISION`
 **Blocker report:** If the exact CSS-only write set cannot satisfy the acceptance matrix, report the
 first failing width, computed geometry, source identity, and the smallest required re-scope. Do not
@@ -370,17 +369,17 @@ The Builder's report must include:
 **Parent task:** `RIGHTSPOT-022`
 **Role:** `Verifier`
 **Pre-dispatch status:** `GATED` (advanced to `ASSIGNED` after dispatch confirmation)
-**Execution state:** `ASSIGNED`
+**Execution state:** `VERIFIED`
 **Owner:** Persistent supporting Verifier task `01a06039-6eea-7033-aaf8-ae34c69aebe7` (`local`),
 under the authority of the Main RightSpot thread
 **Dispatch state:** `dispatched at main@6451e41; serialized canonical Main Worktree; frozen product
-source at local product commit f0dbd99; verifier write set is empty`
+source at local product commit f0dbd99; verifier write set was empty`
 **Parallelization:** `SERIAL` after `RS-WO-022-01`
 **Execution profile:** `Standard` (independent static, runtime, and browser verification only)
 **Integration owner/order:** Main RightSpot thread; the Verifier must not edit source or canonical
 documents, and Main owns any repair, integration, and closure decision.
-**Next gate:** Main dispatches one persistent Verifier against the frozen canonical Main source at
-`f0dbd99`. The Verifier returns `VERIFIED`, `NEEDS_REPAIR`, or `BLOCKED` and stops.
+**Next gate:** Complete. The Verifier returned `VERIFIED` against the frozen canonical Main source at
+`f0dbd99` and stopped without source or documentation changes.
 
 ### Objective
 
@@ -426,3 +425,34 @@ runtime authority.
 - Return `VERIFIED` only when every required check passes and the exact source, command results,
   viewport matrix, role/privacy checks, activation mutation check, console review, skipped evidence,
   and residual risks are recorded. The Verifier must not claim Main integration or parent closure.
+
+### Verifier report (2026-09-02)
+
+- Result: `VERIFIED`; no source, documentation, Git metadata, fixture, or persisted request-state
+  mutation occurred in the Verifier checkpoint.
+- Source identity: Git root `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge`, package root
+  `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge/WebApp/Web-Right_Spot`, branch `main`, frozen product
+  commit `f0dbd99d5d0434a6aa88e8fa9dfc0b0712c75c35`, product parent
+  `6090d74ab2b2f0b6e8a905f0ca92b6573b1f80ad`, and CSS SHA-256
+  `ef9bfc92f21eb931e56204b072fa26b89b398eb5a568c8111676487b5e2afd1e` before and after.
+- Exact candidate: only `WebApp/Web-Right_Spot/app/globals.css`, five insertions and zero deletions;
+  `f0dbd99..HEAD` contained only the four canonical documentation writeback paths. Existing owner-held
+  RightSpot files and unrelated Web-Game changes were preserved.
+- Runtime/checks: pinned Node.js `v24.20.0`, npm `11.19.0`; `npm run typecheck`, `npm test` (`6/6`),
+  `npm run build` (Next.js `16.3.4`), and candidate-scoped `git diff --check` all passed.
+- Browser matrix: `/tenant`, `/tenant/listings/listing-primary`, `/tenant/favourites`, and
+  `/tenant/requests` each passed all twelve required widths (`320`, `321`, `342`, `343`, `390`, `480`,
+  `481`, `600`, `680`, `760`, `768`, `1440`) for `48/48` total combinations. Exact labels/hrefs and
+  `aria-current` semantics, initial visibility, no container/document overflow, no action overlap,
+  full labels, visible `3px` focus, and minimum `90.25 x 44px` link targets passed.
+- Role/privacy and behavior: Agent navigation remained queue-only; signed-out surfaces returned `401`
+  boundaries; wrong-role surfaces returned `403` and hid protected content. `My request` produced only
+  document `GET /tenant/requests`; request state remained byte-identical (`fixtureGeneration 1`,
+  `REQUEST_SUBMITTED`, version `2`, timeline length `2`). Reduced-motion and positive-path console
+  checks passed.
+- Tooling notes: two intermediate Playwright probe serialization/invocation errors were corrected and
+  rerun; they produced no product finding. The Agent `481px` residual reported by the Builder is outside
+  the tenant-only selector and was confirmed unchanged.
+- Main closure: only the canonical Main Worktree remains; no implementation Worktree is open. The
+  exact candidate is integrated at `f0dbd99`, and this Task is closed within its declared scope. No
+  deployment, push, or production-readiness claim is made by this record.
