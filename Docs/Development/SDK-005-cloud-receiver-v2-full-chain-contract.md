@@ -17,6 +17,21 @@ Local Connector, and their contracts are included here so the teams can run one 
 The SDK production source remains unchanged for this increment. No public Grant inspection or
 revocation route is added or assumed; internal test-only Grant control remains governed by ADR-0013.
 
+### SDK compatibility surface
+
+- Package: `@4xeoz/re-entry-sdk@0.3.0`.
+- Supported runtime: Node.js `>=24`; the current verification runtime is Node.js `v26.8.1` with
+  npm `11.19.0`.
+- Clean SDK production-code baseline: `77c9cbcd7d2dbb71ba62308c0b3a5e0e47805dac`; no files under
+  `runtime/host-sdk/src/` changed in this increment.
+- Public entrypoints remain `@4xeoz/re-entry-sdk/server`, `@4xeoz/re-entry-sdk/client`, and
+  `@4xeoz/re-entry-sdk/next`. The exact Host-key, Consent, browser, and Event request/response
+  contracts remain the existing `SDK-V2-001`–`004` and `SDK-V2-EVENT-001`–`007` gates below.
+- Prepared full-chain source:
+  [`cloud-receiver-v2.full-chain.contract.mjs`](../../runtime/host-sdk/test/cloud-receiver-v2.full-chain.contract.mjs).
+  It owns `SDK-V2-E2E-001`, is excluded from the normal `npm test` glob, and is gated on an explicit
+  ACK-003 mapping approval plus pinned counterpart checkouts.
+
 ```text
 Host business truth
   -> Host SDK signs
@@ -47,7 +62,7 @@ claimed, activated, effected, or acknowledged.
 | `SDK-V2-ACK-004` | Identical acknowledgement replay | Same result with `duplicate: true`; no second effect or state transition | Passed in received run against exact Cloud `300bce02` |
 | `SDK-V2-ACK-005` | Different effect or wrong Connector | Stable conflict/identity error; original attestation remains | Passed in received run against exact Cloud `300bce02` |
 | `SDK-V2-HTTP-001..005` | All SDK/Connector HTTP boundaries | Bounded JSON, size limits, no redirect, no-store, stable errors, health/readiness, secret-free logs | Cloud Feature 6 test file `5/5` passed against exact Cloud `300bce02` |
-| `SDK-V2-E2E-001` | Host SDK -> Receiver -> Connector -> Host effect -> acknowledgement | Complete response sequence and durable terminal `acknowledged` state, then exact acknowledgement replay | Blocked by ACK-003 mismatch; not run |
+| `SDK-V2-E2E-001` | Host SDK -> Receiver -> Connector -> Host effect -> acknowledgement | Complete response sequence and durable terminal `acknowledged` state, then exact acknowledgement replay | Prepared in `cloud-receiver-v2.full-chain.contract.mjs`; blocked by ACK-003 mismatch and exact-counterpart/effect-authority gate |
 
 The existing SDK test sources remain the executable SDK-owned coverage:
 
@@ -57,6 +72,14 @@ The existing SDK test sources remain the executable SDK-owned coverage:
   covers `SDK-V2-EVENT-001` through `SDK-V2-EVENT-007`.
 - The received Claim compatibility source is
   [`cloud-receiver-v2-claim.contract.mjs`](../../runtime/local-connector/test/cloud-receiver-v2-claim.contract.mjs).
+
+The prepared `SDK-V2-E2E-001` source is
+[`cloud-receiver-v2.full-chain.contract.mjs`](../../runtime/host-sdk/test/cloud-receiver-v2.full-chain.contract.mjs).
+It calls the real SDK in order for Host-key registration, Consent creation/status, browser handoff,
+and signed Event send; then it uses the real Local Connector client/adapter, an injected independent
+Host-effect authority, durable PostgreSQL assertions, acknowledgement, and exact replay. It performs
+no network polling, hidden retry, fallback, alternate route, or alternate transport. It remains
+outside the normal SDK regression glob so the existing `18/18` baseline is unchanged.
 
 The SDK does not add a production test client for Claim or Acknowledgement. Running the received
 Connector matrix verifies the downstream contract; it does not change the SDK ownership boundary.
@@ -443,6 +466,23 @@ cd runtime/host-sdk
 npm run verify
 ```
 
+The prepared full-chain command is intentionally blocked until the project manager approves the
+ACK-003 mapping and supplies the exact clean counterpart SHAs:
+
+```sh
+cd runtime/host-sdk
+CLOUD_RECEIVER_V2_FULL_CHAIN=1 \
+  CLOUD_RECEIVER_V2_ACK_MAPPING_APPROVED=1 \
+  CLOUD_RECEIVER_V2_ROOT="<exact-cloud-receiver-checkout>" \
+  CLOUD_RECEIVER_V2_CLOUD_SHA="<exact-cloud-receiver-sha>" \
+  CLOUD_RECEIVER_V2_LOCAL_CONNECTOR_SHA="<exact-local-connector-sha>" \
+  DATABASE_URL="<fresh-disposable-postgresql-url>" \
+  CLOUD_RECEIVER_RUNTIME_DATABASE_URL="" \
+  DIRECT_URL="" \
+  NODE_ENV=test \
+  node --test test/cloud-receiver-v2.full-chain.contract.mjs
+```
+
 ### Current source blocker
 
 The exact Cloud Receiver checkout used for the current rerun is clean at
@@ -462,6 +502,31 @@ also classifies a future `confirmed_at` as `host_effect_time_invalid` in
 `host_effect_invalid` for invalid authority output. This is a protocol/test authority conflict,
 not a reason to weaken either test. The project manager/owning teams must reconcile it before the
 SDK can close the acknowledgement gate.
+
+The exact red reproducer was rerun on 2026-09-02 against Cloud `300bce02` and a fresh disposable
+PostgreSQL database:
+
+```sh
+CLOUD_RECEIVER_V2_ACK_CONTRACT=1 \
+  CLOUD_RECEIVER_V2_ROOT=/Users/mac/Desktop/OpenAI-Web-MCP-Challenge/saas-boilerplate \
+  DATABASE_URL=postgresql://mac@127.0.0.1:55440/sdk_receiver_300bce_ack_red_20260902 \
+  CLOUD_RECEIVER_RUNTIME_DATABASE_URL= \
+  DIRECT_URL= \
+  NODE_ENV=test \
+  node --test --test-name-pattern='CONNECTOR-V2-ACK-003' \
+  runtime/local-connector/test/cloud-receiver-v2-ack.contract.mjs
+```
+
+Red result: exit `1`, `0` passed, `1` failed. The failing assertion is the expected
+`403 host_effect_time_invalid` versus observed `403 host_effect_invalid`; durable Delivery state
+remained leased and unchanged.
+
+The smallest candidate update is **unaccepted** pending the project-manager/Core decision: map only
+far-future `confirmed_at` normalization to `host_effect_invalid`, while retaining
+`host_effect_time_invalid` for a structurally valid attestation outside the lease, Grant-expiry, or
+revocation window. After approval, reconcile ADR-0038, Core, the Cloud implementation, the received
+Connector test, and TASK-022 together before rerunning the focused and aggregate gates. No source or
+test mapping was changed in this increment.
 
 No SDK production fallback, guessed effect token, direct database mutation, v1 route, polling, or
 alternate transport was added. The combined test remains open until ACK-003 is reconciled and the

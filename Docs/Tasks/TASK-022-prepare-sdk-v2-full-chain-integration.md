@@ -13,8 +13,8 @@
 - Lifecycle: `verification_pending`
 - Priority: `P1`
 - Owner: SDK development team.
-- Current increment: Prepare the exact SDK-to-Receiver and downstream full-chain contract matrix while leaving SDK production code unchanged.
-- Next gate: reconcile the ACK-003 future-effect error code against Core and ADR-0038, rerun the received Acknowledgement matrix on Cloud 300bce02, then run the combined flow with the exact Local Connector counterpart.
+- Current increment: Prepare the exact SDK-to-Receiver and downstream full-chain contract matrix, including the isolated SDK-owned SDK-V2-E2E-001 test, while leaving SDK production code unchanged.
+- Next gate: obtain the project-manager/Core ACK-003 mapping decision, rerun the received Acknowledgement matrix on Cloud 300bce02, then run SDK-V2-E2E-001 with exact clean Cloud/Local Connector counterparts and the independent Host-effect authority.
 - Dependencies: [SDK-005](../Development/SDK-005-cloud-receiver-v2-full-chain-contract.md), [TASK-019](TASK-019-build-cloud-receiver-v2-delivery-claim.md), [TASK-020](TASK-020-build-cloud-receiver-v2-delivery-acknowledgement.md), [TASK-021](TASK-021-build-cloud-receiver-v2-transport-operations.md), the Local Connector acknowledgement evidence, and the [Primary Development Runbook](../Engineering/03-primary-development-runbook.md).
 
 ## 1. Problem and objective
@@ -104,6 +104,12 @@ Current local evidence on 2026-09-02:
 - The combined flow remains unverified. ACK-003 is an exact contract conflict between the received
   Local Connector test, Cloud implementation/own test, Core's future-window classification, and the
   accepted ADR-0038 authority-output boundary. No implementation was weakened or changed by the SDK.
+- The exact ACK-003 red reproducer on a fresh database returned exit `1` with `0` passed and `1`
+  failed; the observed response was `403 host_effect_invalid`, while the received contract expects
+  `403 host_effect_time_invalid`. The candidate mapping is documented but unaccepted; no Core,
+  ADR, Cloud, Connector, or SDK production behavior was changed.
+- The isolated SDK-owned `SDK-V2-E2E-001` test is syntax-checked and explicitly gated until that
+  decision, exact counterpart SHAs, and an independent Host-effect authority are available.
 
 The exact-commit run must record:
 

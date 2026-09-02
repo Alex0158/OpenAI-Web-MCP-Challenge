@@ -11,6 +11,10 @@
   Consent status, browser handoff, signed Event ingress, and `sendEvent()` acceptance.
 - Prepared the SDK-to-Receiver contract matrix covering Host setup, Event ingress, Claim, lease,
   Host-effect verification, acknowledgement, replay, timing, durable state, and secret boundaries.
+- Added the isolated SDK-owned `SDK-V2-E2E-001` contract test for the complete Host-key, Consent,
+  browser handoff, signed Event, Claim/lease, effect-authority, acknowledgement, durable-state, and
+  replay sequence. It is explicitly gated until the ACK-003 authority decision and exact counterpart
+  SHAs are available.
 - Added the detailed integration document:
   [SDK-005](SDK-005-cloud-receiver-v2-full-chain-contract.md).
 - Added and updated the tracking record:
@@ -30,8 +34,11 @@ All tests below used Cloud Receiver commit `300bce02` unless stated otherwise.
 | Cloud Feature 5 acknowledgement tests | **5/5 passed** |
 | Cloud Feature 6 HTTP/operations tests | **5/5 passed** |
 | Normal SDK suite | **18/18 passed** |
-| Normal Local Connector suite | **34/34 executed passed; 10 opt-in tests skipped** |
-| Repository validators and sensitive-data scans | **6/6 validator tests; 3/3 sensitive-scan tests; repository checks passed** |
+| Normal Local Connector clean-counterpart baseline | **34/34 executed passed; 10 opt-in tests skipped** |
+| Current shared-tree Local Connector aggregate | **34/45 passed; 11 opt-in tests skipped** (includes an untracked collaborator E2E gate; not counterpart evidence) |
+| Prepared SDK full-chain gate `SDK-V2-E2E-001` | **Syntax passed; 1 gated test skipped; not run** |
+| SDK validators and sensitive-data scans | **6/6 validator tests; 3/3 sensitive-scan tests; sensitive-pattern scan passed** |
+| Repository validation | **Blocked by one pre-existing collaborator-owned finding: LOCAL-001 has no H1** |
 
 Commands used for the final focused runs:
 
@@ -59,6 +66,8 @@ DATABASE_URL=postgresql://mac@127.0.0.1:55440/sdk_receiver_300bce_http \
   src/modules/system-health/test/http.test.ts
 cd /Users/mac/Desktop/OpenAI-Web-MCP-Challenge/runtime/host-sdk && npm run verify
 cd /Users/mac/Desktop/OpenAI-Web-MCP-Challenge/runtime/local-connector && npm run verify
+cd /Users/mac/Desktop/OpenAI-Web-MCP-Challenge/runtime/host-sdk && node --check test/cloud-receiver-v2.full-chain.contract.mjs
+cd /Users/mac/Desktop/OpenAI-Web-MCP-Challenge/runtime/host-sdk && node --test test/cloud-receiver-v2.full-chain.contract.mjs
 cd /Users/mac/Desktop/OpenAI-Web-MCP-Challenge && python3 scripts/test_validators.py
 cd /Users/mac/Desktop/OpenAI-Web-MCP-Challenge && python3 scripts/test_sensitive_scan.py
 cd /Users/mac/Desktop/OpenAI-Web-MCP-Challenge && python3 scripts/validate_repository.py --root .
@@ -68,6 +77,17 @@ cd /Users/mac/Desktop/OpenAI-Web-MCP-Challenge && python3 scripts/scan_sensitive
 These are the final command forms; the two Local Connector commands required permitted loopback
 access. The SDK and Connector contract commands used the exact Cloud checkout path and separate
 fresh database URLs. The test runs used Node.js `v26.8.1`, npm `11.19.0`, and PostgreSQL `14.18`.
+The full-chain command is intentionally gated and reported `1` skipped test until ACK-003 is
+approved; it was not executed against the Receiver.
+
+The exact red ACK-003 command was also run against fresh database
+`sdk_receiver_300bce_ack_red_20260902` and returned exit `1`, with `0` passed and `1` failed. The
+observed response was `403 host_effect_invalid`; the received test expects
+`403 host_effect_time_invalid`. Durable Delivery state remained leased and unchanged.
+
+The SDK-owned Task Control validation passes. The full repository validator currently reports only
+the pre-existing collaborator-owned `Docs/Development/LOCAL-001-cloud-receiver-v2-claim-ack-integration.md`
+finding (`expected one H1, found 0`); the SDK team did not modify that file.
 
 Received Local Connector acknowledgement results:
 
@@ -85,12 +105,12 @@ No whole-system completion claim is made.
 
 ## 3. Exact commit SHA
 
-- Final verification-report commit: `5420b316089a701f5ee862f46badda9df3c2202c`.
-- Current root local HEAD: `81e51a6b2299fa1f63c2b06180febebaab9ded04` on
+- Previous finalized verification-report commit: `e1beae65019ad85af120ee5126d45df48407ea5f`.
+- Root local HEAD before this report revision: `22e0f04ab80e7c2382abba0431cbe6e01b9ac309` on
   `codex/eyad-reentry-core-foundation`. The root worktree is dirty with pre-existing collaborator
-  changes; the report file is clean, and the current HEAD commit is a collaborator documentation
-  commit after the final report commit.
-- Root remote readback: `77c9cbcd7d2dbb71ba62308c0b3a5e0e47805dac`. The local branch is 18 commits
+  changes; the report file is clean at the start of this revision. The final report revision commit
+  is recorded separately in the handoff; no push or deployment is claimed.
+- Root remote readback: `77c9cbcd7d2dbb71ba62308c0b3a5e0e47805dac`. The local branch is 23 commits
   ahead; no push or deployment is claimed here.
 - SDK production-code baseline: `77c9cbcd7d2dbb71ba62308c0b3a5e0e47805dac`, the last commit
   touching `runtime/host-sdk/src` before this evidence increment. SDK production code is unchanged.
@@ -99,9 +119,12 @@ No whole-system completion claim is made.
   is clean and three commits ahead of its remote; it is local-only evidence, not deployed evidence.
 - SDK evidence update: `99def9f392db041c19741ea52593a79db9415c4c`.
 - SDK evidence-index update: `0b32eac2c6ee81aa67495ea56b2f721ca92069ad`.
+- SDK-owned full-chain test prepared in this increment:
+  `runtime/host-sdk/test/cloud-receiver-v2.full-chain.contract.mjs`.
 - Initial verification report commit: `3d90820dda3ea327d5324d8baf478628d768aad1`.
 - Verification-report link commit: `2233c5214fae2a23908d4f36c6757f7440169ac5`.
 - Local Connector acknowledgement test harness: `ac62e724a010b855df8494ec6f57c071f614212d`.
+- Local Connector source/test integration counterpart: `81e51a6b2299fa1f63c2b06180febebaab9ded04`.
 - The Cloud worktree itself was clean at the tested SHA.
 
 ## 4. Runtime and database evidence
@@ -151,6 +174,10 @@ The complete SDK-to-Receiver integration-test document is
 - durable PostgreSQL assertions;
 - organization-key, Host-key, Connector-token, lease-token, and effect-token boundaries; and
 - exact commands for the SDK and received Claim/Acknowledgement/HTTP matrices.
+- `SDK-V2-E2E-001` is prepared at
+  [`cloud-receiver-v2.full-chain.contract.mjs`](../../runtime/host-sdk/test/cloud-receiver-v2.full-chain.contract.mjs);
+  its execution is gated on the ACK-003 decision, exact counterpart SHAs, and an independent
+  Host-effect authority.
 
 ## 7. Any unresolved mismatch
 
@@ -165,4 +192,6 @@ The complete SDK-to-Receiver integration-test document is
 
 This is an unresolved protocol/test-authority conflict. The task stays open until the project
 manager and owning teams select the authoritative mapping, align the implementation/tests, rerun
-the acknowledgement matrix, and pass the combined flow.
+the acknowledgement matrix, and pass the combined flow. The smallest candidate is documented but
+unaccepted: `host_effect_invalid` for far-future normalization, with `host_effect_time_invalid`
+reserved for a structurally valid attestation outside the lease/Grant/revocation window.
