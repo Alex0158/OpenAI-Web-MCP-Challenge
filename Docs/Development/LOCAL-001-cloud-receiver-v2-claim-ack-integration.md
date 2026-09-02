@@ -30,7 +30,9 @@ The earlier Claim and E2E evidence used Node `v26.8.1`, Cloud Receiver
 `300bce02e6a6f9b643a6de95a3596691304749b7`, and the disposable database
 `local_connector_v2_clean_300bce_0902` on PostgreSQL `127.0.0.1:55433`. The accepted ACK-003
 red-to-green rerun used the fresh database `local_connector_v2_ack_20260902_1f3559` on the same
-PostgreSQL endpoint.
+PostgreSQL endpoint. The latest exact Cloud counterpart run used commit
+`6f4b35fc6cfb0d9a6a134a69264e5ebb4277a50a` and fresh database
+`local_connector_v2_cloud_6f4b_20260902`.
 
 Red-phase evidence:
 
@@ -103,20 +105,20 @@ node --test --test-concurrency=1 runtime/local-connector/test/cloud-receiver-v2-
 
 Result: `CONNECTOR-V2-ACK-001`–`005`, `5/5` passed.
 
-Accepted-mapping full opt-in aggregate:
+Accepted-mapping full opt-in aggregate against Cloud `6f4b35fc6cfb0d9a6a134a69264e5ebb4277a50a`:
 
 ```sh
 CLOUD_RECEIVER_V2_CLAIM_CONTRACT=1 \
 CLOUD_RECEIVER_V2_ACK_CONTRACT=1 \
 CLOUD_RECEIVER_V2_ROOT=/Users/mac/Desktop/OpenAI-Web-MCP-Challenge/saas-boilerplate \
-DATABASE_URL=postgresql://mac@127.0.0.1:55433/local_connector_v2_ack_20260902_1f3559 \
-DIRECT_URL=postgresql://mac@127.0.0.1:55433/local_connector_v2_ack_20260902_1f3559 \
+DATABASE_URL=postgresql://mac@127.0.0.1:55433/local_connector_v2_cloud_6f4b_20260902 \
+DIRECT_URL=postgresql://mac@127.0.0.1:55433/local_connector_v2_cloud_6f4b_20260902 \
 CLOUD_RECEIVER_RUNTIME_DATABASE_URL= \
 NODE_ENV=test \
 node --test --test-concurrency=1 runtime/local-connector/test/*.test.mjs
 ```
 
-Result: `45` total, `45` passed, `0` failed, `0` skipped.
+Result: `45` total, `45` passed, `0` failed, `0` skipped (duration `6950.168042 ms`).
 
 The complete package suite after adding the opt-in harness was `45` tests: `34` passed, `0`
 failed, and `11` opt-in tests skipped when the Cloud contract flags were unset. The accepted full
@@ -178,11 +180,12 @@ Local repository state:
 
 Cloud Receiver counterpart:
 
-- Commit: `300bce02e6a6f9b643a6de95a3596691304749b7`.
+- Latest exact local counterpart commit: `6f4b35fc6cfb0d9a6a134a69264e5ebb4277a50a`.
+- The earlier Features 4–6 backend commit was `300bce02e6a6f9b643a6de95a3596691304749b7`.
 - Branch: `main`.
-- The backend subtree used by these tests is unchanged from that exact commit. The Cloud worktree
-  has unrelated uncommitted frontend changes; Local Connector did not modify or test those files.
-- The Cloud commit is local-only and is three commits ahead of its `origin/main`; it was not
+- The Cloud worktree was clean at the latest SHA readback, and the backend subtree used by these
+  tests matches that exact commit.
+- The latest Cloud commit is local-only and is four commits ahead of its `origin/main`; it was not
   treated as pushed or deployed evidence.
 
 ## 4. Runtime and database evidence
@@ -191,8 +194,9 @@ Cloud Receiver counterpart:
 - npm: `11.19.0`.
 - PostgreSQL: `14.18`.
 - Database endpoint: `127.0.0.1:55433`.
-- Disposable database: `local_connector_v2_ack_20260902_1f3559` for the accepted ACK-003 rerun;
-  earlier Claim/E2E evidence used `local_connector_v2_clean_300bce_0902`.
+- Disposable database: `local_connector_v2_cloud_6f4b_20260902` for the latest exact-counterpart
+  aggregate; the accepted ACK-003 rerun used `local_connector_v2_ack_20260902_1f3559`, and earlier
+  Claim/E2E evidence used `local_connector_v2_clean_300bce_0902`.
 - Six committed Cloud migrations were applied, including
   `20260902050000_delivery_acknowledgement`.
 - Teardown row counts were: users `0`, developers `0`, deliveries `0`, attempts `0`.
@@ -255,12 +259,13 @@ Host SDK -> Cloud Receiver -> Local Connector -> independent Host-effect authori
 ## 7. Any unresolved mismatch
 
 No ACK-003 protocol mismatch remains. The accepted mapping is now covered by the Local test and
-matches Cloud `300bce02e6a6f9b643a6de95a3596691304749b7`:
+matches Cloud `6f4b35fc6cfb0d9a6a134a69264e5ebb4277a50a`:
 
 - malformed or far-future normalization: HTTP `403 host_effect_invalid`;
 - normalized effect outside the lease/Grant/revocation window: HTTP `403
   host_effect_time_invalid`.
 
-The Local fresh-database ACK matrix and full opt-in aggregate are green. Remaining gates are the
-SDK-owned cross-team E2E, staging/production evidence, and final deployment; no whole-system or
-deployed completion claim is made.
+The Local fresh-database ACK matrix and exact-counterpart full opt-in aggregate are green. A
+deployed E2E is unavailable because no staging/preview URL or remote deployment evidence was
+provided. The SDK-owned cross-team E2E, staging/production evidence, and final deployment remain
+open; no whole-system or deployed completion claim is made.
