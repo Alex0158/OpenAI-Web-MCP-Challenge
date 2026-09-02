@@ -7,8 +7,8 @@ bounded Favourite increment, deferred the PII-sensitive Information Request boun
 `RIGHTSPOT-020`; its initial serial contract/data Work Order `RS-WO-020-01` and follow-up
 `RS-WO-020-01R` relation-version continuity repair are independently verified, with the repair frozen at
 `adfd37e`. The disjoint tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched,
-adopted into Main, and passed dependency-complete typecheck, full-suite `121/121`, and production-build
-checks; independent verification remains the next gate.
+adopted into Main at product commit `c29e80d`, and passed dependency-complete typecheck, full-suite `121/121`,
+and production-build checks; independent verification remains the next gate.
 `RS-WO-005-01` has passed corrected independent verification and is integrated at local product
 commit `27f5391`; `RS-WO-007-01` is accepted as a read-only UI decomposition and `RS-WO-007-02` has
 passed final independent browser verification and is integrated at product commit `89a50c7` after
@@ -107,8 +107,8 @@ sequence:
 3. Dispatch tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` in parallel with their
    declared disjoint paths; adopt both candidates into Main and serialize shared navigation, listing-card/
    detail integration, and global CSS.
-4. Freeze the integrated source at a local commit, independently verify it, then reconcile evidence and
-   retire both temporary Worktrees at the first safe checkpoint-scoped opportunity.
+4. Freeze the integrated product source at `c29e80d`, independently verify it, then reconcile evidence
+   and retire both temporary Worktrees at the first safe checkpoint-scoped opportunity.
 5. Keep the reviewed `RIGHTSPOT-009` Information Request proposal deferred until contact/PII authority,
    retention, erasure, and agent-access decisions are accepted; it must not enter `RIGHTSPOT-020`.
 6. Keep `RIGHTSPOT-006` outside the implementation lane until the explicit external credential and

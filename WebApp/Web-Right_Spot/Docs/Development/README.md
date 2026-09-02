@@ -100,8 +100,9 @@ ADR-RS-0013, deferred the PII-sensitive Information Request boundary, and regist
 Its initial serial contract/data Work Order `RS-WO-020-01` was independently verified and the follow-up
 `RS-WO-020-01R` repair was independently verified at `adfd37e` after a pre-UI review found that a removed
 relation version could not be recovered after reload. The tenant and agent UI Work Orders `RS-WO-020-02`
-and `RS-WO-020-03` were dispatched on disjoint paths, adopted into Main, and passed dependency-complete
-typecheck, full-suite `121/121`, and production-build checks; one independent read-only verification remains.
+and `RS-WO-020-03` were dispatched on disjoint paths, adopted into Main at product commit `c29e80d`,
+and passed dependency-complete typecheck, full-suite `121/121`, and production-build checks; one
+independent read-only verification remains.
 `RIGHTSPOT-006` remains credential-gated,
 `RIGHTSPOT-010` remains a later Operations/WebMCP decision gate, and `RIGHTSPOT-012` is a non-blocking
 read-only audit lane. The authoritative sequence is maintained in the [development roadmap](RIGHTSPOT-DEVELOPMENT-ROADMAP.md#31-current-next-route).

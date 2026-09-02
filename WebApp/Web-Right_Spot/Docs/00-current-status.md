@@ -55,9 +55,9 @@ shared-workflow Work Order and is closed; `RIGHTSPOT-019` records the integrated
 boundary repair and completed browser/form regression, and is closed.
 `RIGHTSPOT-020` remains in progress: the server-side `RS-WO-020-01` foundation and its
 `RS-WO-020-01R` tenant Favourite relation-version continuity repair are independently verified; both
-UI candidates from `RS-WO-020-02` and `RS-WO-020-03` are adopted in Main, shared navigation is integrated,
-and Main typecheck, full suite `121/121`, and production build pass. Independent verification and
-checkpoint-scoped Worktree retirement remain open.
+UI candidates from `RS-WO-020-02` and `RS-WO-020-03` are adopted in Main with shared navigation at
+product commit `c29e80d`, and Main typecheck, full suite `121/121`, and production build pass.
+Independent verification and checkpoint-scoped Worktree retirement remain open.
 The bounded Operations seam `RS-WO-011-01` passed independent verification and is integrated at
 product commit `7ff0fbd`; its verifier evidence remains recorded in the owning Task File, and its
 physical Worktree was removed during the documented cleanup.
@@ -318,7 +318,8 @@ source now awaits one frozen-source independent verification:
 3. dispatch `RS-WO-020-02` and `RS-WO-020-03` in parallel with disjoint paths; both candidates are now
    adopted in Main after exact-path review;
 4. serialize shared navigation, listing-card/detail integration, global CSS, source freeze, Main
-   integration, independent verification, and Worktree retirement;
+   integration, independent verification, and Worktree retirement; the current frozen product source
+   is `c29e80d`.
 5. keep the reviewed `RIGHTSPOT-009` Information Request proposal deferred until its contact/PII
    authority decisions are accepted; it must not be absorbed into `RIGHTSPOT-020`;
 6. keep `RIGHTSPOT-006` gated on explicit external credentials and local-origin authorization;

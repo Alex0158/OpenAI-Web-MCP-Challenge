@@ -14,11 +14,11 @@
 - Execution posture: `UI_INTEGRATED_PENDING_VERIFICATION`
 - Current increment: The pre-UI relation-version continuity repair is independently verified at
   `adfd37e`; both disjoint UI candidates have completed their Builder turns, passed T2 exact-path/diff
-  review, and are adopted in Main together with the serialized shared navigation integration. Main's
-  dependency-complete typecheck, full suite, and production build pass; independent verification is the
-  remaining gate.
-- Next gate: Freeze the integrated source at a local commit, dispatch one independent read-only Verifier
-  against that exact snapshot, then reconcile evidence and retire the two short-lived candidate Worktrees.
+  review, and are adopted in Main together with the serialized shared navigation integration at product
+  commit `c29e80d`. Main's dependency-complete typecheck, full suite, and production build pass;
+  independent verification is the remaining gate.
+- Next gate: Dispatch one independent read-only Verifier against frozen product source `c29e80d`, then
+  reconcile evidence and retire the two short-lived candidate Worktrees.
 - Parent role: This is one registered Task File. Builder, Verifier, Repairer, and Integrator are
   checkpoints under this file, not additional Tasks.
 
@@ -234,6 +234,7 @@ confirmed a refreshed activation snapshot. No product source mutation occurred d
 **Execution mode:** Isolated short-lived Worktree `/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-02-tenant-ui`; Main owns integration and retirement.  
 **Supporting task:** `RightSpot RS-WO-020-02 Tenant Favourite UI Builder`, task/thread
 `01a05f93-9d5a-7993-bdde-a41fe74a5907`, host `local`.  
+**Main adoption:** Product candidate integrated at `c29e80d`; independent verification remains open.  
 **Objective:** Consume the Favourite API to add accessible save/remove controls to tenant discovery and
 detail, a dedicated Favourite list route, and truthful active/unavailable/loading/stale/error states.
 
@@ -270,6 +271,8 @@ adoption. No browser, integration, deployment, or external-auth claim is made.
 **Execution mode:** Isolated short-lived Worktree `/Users/alex/Documents/Codex/2026-09-02/rightspot-rs-wo-020-03-agent-ui`; Main owns integration and retirement.  
 **Supporting task:** `RightSpot RS-WO-020-03 Agent listing-interest UI Builder`, task/thread
 `01a05f93-a02b-7da3-a950-1721bbc45b9d`, host `local`.  
+**Main adoption:** Product candidate integrated at `c29e80d`; the Builder's isolated dependency blocker
+was recovered by Main's dependency-complete checks, and independent verification remains open.  
 **Objective:** Add a compact read-only listing-interest section to the assigned agent dashboard using the
 server projection, with explicit current-saves versus available-interest labels and bounded loading/error/empty states.
 
