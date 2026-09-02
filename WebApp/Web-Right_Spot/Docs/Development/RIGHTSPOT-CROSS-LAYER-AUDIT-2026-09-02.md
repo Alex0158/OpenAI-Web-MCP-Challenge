@@ -1837,3 +1837,28 @@ listing reads. The empty Agent queue and listing-interest projection rendered wi
 the fixture remained unchanged and `/api/health` stayed healthy. No source, workflow, or Task state
 changed. No `VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`, `VERIFIED_POLISH`, or `DOCUMENTATION_DRIFT`
 finding was accepted, and no Task or Work Order was registered.
+
+## 75. Populated proposal and confirmation replay — no new finding — 2026-09-02
+
+Main exercised the highest-value populated local workflow against the current server using disposable
+fixture generation `86`. Through the authoritative Tenant and Agent surfaces, the request advanced as
+`TENANT_DRAFT v1` → `REQUEST_SUBMITTED v2` → `AGENT_REVIEWING v3` → prepared response `v4` and `v5`
+→ `SLOT_PROPOSED v6` → `VIEWING_CONFIRMED v7`. The Agent selected the returned
+`4 Sept 2026, 15:00–15:30` Europe/London slot and entered both a tenant-facing note and an Agent-only
+internal review note.
+
+The rendered Agent detail kept preparation separate from send, showed the exact selected slot and
+tenant-facing note in the send boundary, and after send replaced the action surface with a read-only
+confirmed response. The Tenant request dashboard then rendered the selected slot separately from its
+preferred times, exposed explicit Confirm/Decline controls only while `SLOT_PROPOSED`, and after
+confirmation retained the recorded viewing time and tenant-facing note across reload while removing
+decision controls. Agent queue moved the item to confirmed history, and the terminal detail was
+read-only; the internal review note did not cross into the Tenant projection. No browser error was
+observed.
+
+The documented `db:reset` command restored the fixture to generation `87` with an empty Tenant request
+and Favourite projection. No source, contract, role/privacy boundary, or Task state changed. The
+replay produced no `VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`, `VERIFIED_POLISH`, or
+`DOCUMENTATION_DRIFT` finding, so no follow-on Task or Work Order was registered. This is fresh local
+evidence for the ordinary proposal/confirmation branch only; it does not claim external notification,
+deployment, WebMCP, Cloud Receiver, WebRTC, Redis, or production readiness.

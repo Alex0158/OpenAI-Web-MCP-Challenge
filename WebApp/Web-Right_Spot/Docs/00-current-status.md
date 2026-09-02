@@ -67,6 +67,12 @@ The subsequent API/projection check confirmed Tenant responses expose only tenan
 Favourite, and request fields, while Agent responses expose only queue counts and assigned-listing
 aggregates. Missing Agent requests returned bounded `404` and cross-role reads returned bounded `403`;
 no actor-private fields, internal notes, or workflow ledger fields were exposed.
+The subsequent populated proposal/confirmation replay used disposable generation `86`: the
+authoritative request advanced through draft, submission, review, preparation, sent proposal, and
+tenant confirmation (`v1 → v7`). Tenant rendered the selected `4 Sept 2026, 15:00–15:30` slot and
+retained it after reload without decision controls; Agent rendered the confirmed history and a
+read-only detail without the Agent-only review note. The documented reset restored an empty request
+and Favourite projection at generation `87`.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current next product action:** Continue the Main-thread cross-layer audit from the closed
 `RIGHTSPOT-041` / `RS-WO-041-01` tenant request mutation-feedback repair. `RIGHTSPOT-039` /
