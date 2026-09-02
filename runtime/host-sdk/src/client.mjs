@@ -1,8 +1,40 @@
 const PROMPT_OPTION_FIELDS = Object.freeze(["documentRef"]);
 const PROMPT_INPUT_FIELDS = Object.freeze(["title", "reason"]);
+const REENTRY_PROMPT_OPTION_FIELDS = Object.freeze(["documentRef", "windowRef"]);
+const REENTRY_PROMPT_INPUT_FIELDS = Object.freeze([
+  "title",
+  "reason",
+  "consentUrl",
+  "consentSessionId",
+]);
+const REENTRY_ACTION_OPTION_FIELDS = Object.freeze([
+  "prompt",
+  "createConsentSession",
+  "confirmConsentSession",
+]);
+const REENTRY_ACTION_SESSION_FIELDS = Object.freeze([
+  "title",
+  "reason",
+  "consentUrl",
+  "consentSessionId",
+]);
+const REENTRY_ACTION_CONFIRMATION_FIELDS = Object.freeze([
+  "status",
+  "continuationId",
+]);
+const WEBMCP_TOOL_OPTION_FIELDS = Object.freeze([
+  "documentRef",
+  "name",
+  "description",
+  "inputSchema",
+  "annotations",
+  "execute",
+]);
 const TITLE_MAX_BYTES = 120;
 const REASON_MAX_BYTES = 500;
+const TOOL_DESCRIPTION_MAX_BYTES = 500;
 const PROMPT_CLASS = "webmcp-continuation";
+const TOOL_NAME_PATTERN = /^[a-z][a-z0-9_]{0,63}$/;
 let promptSequence = 0;
 
 const PROMPT_STYLES = `
@@ -53,24 +85,6 @@ const PROMPT_STYLES = `
     gap: 11px;
   }
 
-  .${PROMPT_CLASS}__mark {
-    display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 11px;
-    background: #202123;
-    color: #ffffff;
-  }
-
-  .${PROMPT_CLASS}__mark-glyph {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: -.16em;
-    transform: translateX(-1px);
-  }
-
   .${PROMPT_CLASS}__eyebrow {
     margin: 0 0 4px;
     color: #6b6b6b;
@@ -106,19 +120,19 @@ const PROMPT_STYLES = `
   }
 
   .${PROMPT_CLASS}__close {
-    display: grid;
-    place-items: center;
-    width: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     height: 32px;
     margin: -2px -2px 0 0;
-    padding: 0;
+    padding: 0 10px;
     border: 1px solid transparent;
     border-radius: 9px;
     background: transparent;
     color: #6b6b6b;
     cursor: pointer;
-    font-size: 21px;
-    font-weight: 300;
+    font-size: 12px;
+    font-weight: 650;
     line-height: 1;
     transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
   }
@@ -161,19 +175,6 @@ const PROMPT_STYLES = `
     border: 1px solid #e5e5e5;
     border-radius: 12px;
     background: #f7f7f7;
-  }
-
-  .${PROMPT_CLASS}__notice-icon {
-    display: grid;
-    flex: 0 0 auto;
-    place-items: center;
-    width: 27px;
-    height: 27px;
-    border-radius: 8px;
-    background: #e6f4f0;
-    color: #0d8a6a;
-    font-size: 14px;
-    font-weight: 750;
   }
 
   .${PROMPT_CLASS}__notice-copy {
@@ -248,14 +249,6 @@ const PROMPT_STYLES = `
     text-align: center;
   }
 
-  .${PROMPT_CLASS}__footer-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #10a37f;
-    box-shadow: 0 0 0 4px rgb(16 163 127 / 12%);
-  }
-
   @keyframes ${PROMPT_CLASS}-backdrop-in {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -326,8 +319,6 @@ export function createContinuationPrompt(options = {}) {
     const surface = documentRef.createElement("div");
     const topbar = documentRef.createElement("div");
     const brand = documentRef.createElement("div");
-    const mark = documentRef.createElement("div");
-    const markGlyph = documentRef.createElement("span");
     const brandCopy = documentRef.createElement("div");
     const eyebrow = documentRef.createElement("div");
     const brandNameLine = documentRef.createElement("div");
@@ -337,7 +328,6 @@ export function createContinuationPrompt(options = {}) {
     const title = documentRef.createElement("h2");
     const reason = documentRef.createElement("p");
     const notice = documentRef.createElement("div");
-    const noticeIcon = documentRef.createElement("span");
     const noticeCopy = documentRef.createElement("div");
     const noticeTitle = documentRef.createElement("strong");
     const noticeReason = documentRef.createElement("span");
@@ -345,7 +335,6 @@ export function createContinuationPrompt(options = {}) {
     const approve = documentRef.createElement("button");
     const decline = documentRef.createElement("button");
     const footer = documentRef.createElement("div");
-    const footerDot = documentRef.createElement("span");
     const footerText = documentRef.createElement("span");
 
     if (typeof dialog.showModal !== "function") {
@@ -359,8 +348,6 @@ export function createContinuationPrompt(options = {}) {
     surface.className = `${PROMPT_CLASS}__surface`;
     topbar.className = `${PROMPT_CLASS}__topbar`;
     brand.className = `${PROMPT_CLASS}__brand`;
-    mark.className = `${PROMPT_CLASS}__mark`;
-    markGlyph.className = `${PROMPT_CLASS}__mark-glyph`;
     brandCopy.className = `${PROMPT_CLASS}__brand-copy`;
     eyebrow.className = `${PROMPT_CLASS}__eyebrow`;
     brandNameLine.className = `${PROMPT_CLASS}__brand-name-line`;
@@ -370,13 +357,11 @@ export function createContinuationPrompt(options = {}) {
     title.className = `${PROMPT_CLASS}__title`;
     reason.className = `${PROMPT_CLASS}__reason`;
     notice.className = `${PROMPT_CLASS}__notice`;
-    noticeIcon.className = `${PROMPT_CLASS}__notice-icon`;
     noticeCopy.className = `${PROMPT_CLASS}__notice-copy`;
     actions.className = `${PROMPT_CLASS}__actions`;
     approve.className = `${PROMPT_CLASS}__button ${PROMPT_CLASS}__button--primary`;
     decline.className = `${PROMPT_CLASS}__button`;
     footer.className = `${PROMPT_CLASS}__footer`;
-    footerDot.className = `${PROMPT_CLASS}__footer-dot`;
 
     const titleId = `${PROMPT_CLASS}-title-${instanceId}`;
     const reasonId = `${PROMPT_CLASS}-reason-${instanceId}`;
@@ -385,13 +370,11 @@ export function createContinuationPrompt(options = {}) {
     title.textContent = input.title;
     reason.textContent = input.reason;
     eyebrow.textContent = "Codex continuation";
-    markGlyph.textContent = "</>";
     brandName.textContent = "WebMCP Continuation SDK";
     brandVersion.textContent = "v0.1";
-    closeButton.textContent = "×";
+    closeButton.textContent = "Close";
     closeButton.setAttribute("aria-label", "Close request");
     closeButton.setAttribute("title", "Close request");
-    noticeIcon.textContent = "✓";
     noticeTitle.textContent = "Codex is ready to continue";
     noticeReason.textContent = "Review before the next step runs.";
     footerText.textContent = "Codex waits for your approval";
@@ -403,15 +386,14 @@ export function createContinuationPrompt(options = {}) {
     dialog.setAttribute("aria-describedby", reasonId);
     dialog.setAttribute("aria-modal", "true");
 
-    mark.append(markGlyph);
     brandNameLine.append(brandName, brandVersion);
     brandCopy.append(eyebrow, brandNameLine);
-    brand.append(mark, brandCopy);
+    brand.append(brandCopy);
     topbar.append(brand, closeButton);
     noticeCopy.append(noticeTitle, noticeReason);
-    notice.append(noticeIcon, noticeCopy);
+    notice.append(noticeCopy);
     actions.append(decline, approve);
-    footer.append(footerDot, footerText);
+    footer.append(footerText);
     surface.append(topbar, title, reason, notice, actions, footer);
     card.append(surface);
     dialog.append(style, card);
@@ -445,6 +427,443 @@ export function createContinuationPrompt(options = {}) {
     if (dialog.open && typeof dialog.close === "function") dialog.close();
     dialog.remove();
     current.resolve({ action: "decline" });
+  }
+}
+
+/**
+ * Create the account-backed browser handoff.
+ *
+ * The Host dialog does not approve anything. It opens the Receiver-owned consent URL from a user
+ * gesture and accepts completion only from that exact Receiver origin and popup window.
+ */
+export function createReentryConsentPrompt(options = {}) {
+  requireExactRecord(
+    options,
+    REENTRY_PROMPT_OPTION_FIELDS,
+    [],
+    "Re-entry consent prompt options",
+  );
+  const documentRef = options.documentRef ?? globalThis.document;
+  const windowRef = options.windowRef ?? globalThis.window;
+  if (!documentRef || typeof documentRef.createElement !== "function") {
+    throw new TypeError("Re-entry consent prompt requires a browser document");
+  }
+  if (!windowRef || typeof windowRef.open !== "function" || typeof windowRef.addEventListener !== "function") {
+    throw new TypeError("Re-entry consent prompt requires a browser window");
+  }
+
+  let active;
+  return Object.freeze({ show, close });
+
+  function show(input) {
+    requireExactRecord(
+      input,
+      REENTRY_PROMPT_INPUT_FIELDS,
+      REENTRY_PROMPT_INPUT_FIELDS,
+      "Re-entry consent prompt input",
+    );
+    requireText(input.title, TITLE_MAX_BYTES, "Re-entry consent title");
+    requireText(input.reason, REASON_MAX_BYTES, "Re-entry consent reason");
+    const consent = requireConsentUrl(input.consentUrl);
+    const consentSessionId = requirePromptIdentifier(input.consentSessionId);
+    if (active !== undefined) throw new Error("Re-entry consent prompt is already open");
+    if (typeof documentRef.body?.append !== "function") {
+      throw new TypeError("Re-entry consent prompt requires document.body.append");
+    }
+
+    const dialog = documentRef.createElement("dialog");
+    if (typeof dialog.showModal !== "function") {
+      throw new TypeError("Re-entry consent prompt requires HTMLDialogElement.showModal");
+    }
+    const style = documentRef.createElement("style");
+    const card = documentRef.createElement("div");
+    const surface = documentRef.createElement("div");
+    const topbar = documentRef.createElement("div");
+    const brand = documentRef.createElement("div");
+    const brandCopy = documentRef.createElement("div");
+    const eyebrow = documentRef.createElement("div");
+    const brandNameLine = documentRef.createElement("div");
+    const brandName = documentRef.createElement("span");
+    const brandVersion = documentRef.createElement("span");
+    const closeButton = documentRef.createElement("button");
+    const title = documentRef.createElement("h2");
+    const reason = documentRef.createElement("p");
+    const notice = documentRef.createElement("div");
+    const noticeCopy = documentRef.createElement("div");
+    const noticeTitle = documentRef.createElement("strong");
+    const noticeReason = documentRef.createElement("span");
+    const status = documentRef.createElement("p");
+    const actions = documentRef.createElement("div");
+    const cancel = documentRef.createElement("button");
+    const review = documentRef.createElement("button");
+    const footer = documentRef.createElement("div");
+    const footerText = documentRef.createElement("span");
+    const instanceId = ++promptSequence;
+
+    style.textContent = `${PROMPT_STYLES}
+      .${PROMPT_CLASS}__handoff-status{min-height:20px;margin:14px 0 0;color:#0d8a6a;font-size:12px;line-height:1.4}
+      .${PROMPT_CLASS}__button[disabled]{cursor:not-allowed;opacity:.48;transform:none}
+    `;
+    dialog.className = `${PROMPT_CLASS}__dialog`;
+    card.className = `${PROMPT_CLASS}__card`;
+    surface.className = `${PROMPT_CLASS}__surface`;
+    topbar.className = `${PROMPT_CLASS}__topbar`;
+    brand.className = `${PROMPT_CLASS}__brand`;
+    brandCopy.className = `${PROMPT_CLASS}__brand-copy`;
+    eyebrow.className = `${PROMPT_CLASS}__eyebrow`;
+    brandNameLine.className = `${PROMPT_CLASS}__brand-name-line`;
+    brandName.className = `${PROMPT_CLASS}__brand-name`;
+    brandVersion.className = `${PROMPT_CLASS}__brand-version`;
+    closeButton.className = `${PROMPT_CLASS}__close`;
+    title.className = `${PROMPT_CLASS}__title`;
+    reason.className = `${PROMPT_CLASS}__reason`;
+    notice.className = `${PROMPT_CLASS}__notice`;
+    noticeCopy.className = `${PROMPT_CLASS}__notice-copy`;
+    status.className = `${PROMPT_CLASS}__handoff-status`;
+    actions.className = `${PROMPT_CLASS}__actions`;
+    review.className = `${PROMPT_CLASS}__button ${PROMPT_CLASS}__button--primary`;
+    cancel.className = `${PROMPT_CLASS}__button`;
+    footer.className = `${PROMPT_CLASS}__footer`;
+
+    const titleId = `${PROMPT_CLASS}-reentry-title-${instanceId}`;
+    const reasonId = `${PROMPT_CLASS}-reentry-reason-${instanceId}`;
+    title.id = titleId;
+    reason.id = reasonId;
+    status.setAttribute("role", "status");
+    title.textContent = input.title;
+    reason.textContent = input.reason;
+    eyebrow.textContent = "Codex re-entry";
+    brandName.textContent = "Re-entry";
+    brandVersion.textContent = "for Codex";
+    closeButton.type = "button";
+    closeButton.textContent = "Close";
+    closeButton.setAttribute("aria-label", "Close request");
+    noticeTitle.textContent = "Your approval lives in Re-entry";
+    noticeReason.textContent = "Your account and connected Mac stay private from this Host.";
+    review.type = "button";
+    review.textContent = "Review in Re-entry";
+    cancel.type = "button";
+    cancel.textContent = "Not now";
+    footerText.textContent = "Codex waits until Re-entry confirms";
+    dialog.setAttribute("aria-labelledby", titleId);
+    dialog.setAttribute("aria-describedby", reasonId);
+    dialog.setAttribute("aria-modal", "true");
+
+    brandNameLine.append(brandName, brandVersion);
+    brandCopy.append(eyebrow, brandNameLine);
+    brand.append(brandCopy);
+    topbar.append(brand, closeButton);
+    noticeCopy.append(noticeTitle, noticeReason);
+    notice.append(noticeCopy);
+    actions.append(cancel, review);
+    footer.append(footerText);
+    surface.append(topbar, title, reason, notice, status, actions, footer);
+    card.append(surface);
+    dialog.append(style, card);
+    documentRef.body.append(dialog);
+
+    return new Promise((resolve) => {
+      const onMessage = (event) => {
+        if (
+          event.origin !== consent.origin ||
+          event.source !== active?.popup ||
+          !isConsentCompletion(event.data, consentSessionId)
+        ) {
+          return;
+        }
+        settle(event.data.status === "approved" ? "approve" : "decline", event.data.status);
+      };
+      active = { dialog, resolve, popup: null, onMessage, popupTimer: null };
+      windowRef.addEventListener("message", onMessage);
+      review.addEventListener("click", openConsent);
+      cancel.addEventListener("click", () => settle("cancel", "cancelled"), { once: true });
+      closeButton.addEventListener("click", () => settle("cancel", "cancelled"), { once: true });
+      dialog.addEventListener("cancel", (event) => {
+        event.preventDefault?.();
+        settle("cancel", "cancelled");
+      }, { once: true });
+      dialog.showModal();
+
+      function openConsent() {
+        if (active?.popup && !active.popup.closed) {
+          active.popup.focus?.();
+          return;
+        }
+        const left = Math.max(0, Math.round((windowRef.screenX ?? 0) + ((windowRef.outerWidth ?? 960) - 560) / 2));
+        const top = Math.max(0, Math.round((windowRef.screenY ?? 0) + ((windowRef.outerHeight ?? 780) - 720) / 2));
+        const popup = windowRef.open(
+          consent.href,
+          `reentry-consent-${consentSessionId}`,
+          `popup=yes,width=560,height=720,left=${left},top=${top}`,
+        );
+        if (!popup) {
+          status.textContent = "Popup blocked. Allow popups for this site, then try again.";
+          return;
+        }
+        active.popup = popup;
+        status.textContent = "Re-entry is open. Complete the decision there.";
+        review.textContent = "Return to Re-entry";
+        active.popupTimer = windowRef.setInterval?.(() => {
+          if (active?.popup?.closed) {
+            windowRef.clearInterval?.(active.popupTimer);
+            active.popupTimer = null;
+            status.textContent = "Re-entry closed before a decision. Open it again when ready.";
+            review.textContent = "Review in Re-entry";
+          }
+        }, 500);
+      }
+    });
+
+    function settle(action, status) {
+      if (active === undefined || active.dialog !== dialog) return;
+      const current = active;
+      active = undefined;
+      cleanupPrompt(current, windowRef);
+      if (dialog.open && typeof dialog.close === "function") dialog.close();
+      dialog.remove();
+      current.resolve({ action, status });
+    }
+  }
+
+  function close() {
+    if (active === undefined) return;
+    const current = active;
+    active = undefined;
+    cleanupPrompt(current, windowRef);
+    if (current.dialog.open && typeof current.dialog.close === "function") current.dialog.close();
+    current.dialog.remove();
+    current.resolve({ action: "cancel", status: "cancelled" });
+  }
+}
+
+/**
+ * Create one browser action that can be called by ordinary page UI or used directly as a WebMCP
+ * Site Tool execute handler.
+ *
+ * The first callback asks the Host server to create a signed consent session. A trusted popup
+ * completion only allows the second callback to run; that callback must re-read Receiver status,
+ * retain the opaque binding on the Host server, and return only a safe continuation identifier.
+ */
+export function createReentryConsentAction(options) {
+  requireExactRecord(
+    options,
+    REENTRY_ACTION_OPTION_FIELDS,
+    ["createConsentSession", "confirmConsentSession"],
+    "Re-entry consent action options",
+  );
+  requireFunction(options.createConsentSession, "createConsentSession");
+  requireFunction(options.confirmConsentSession, "confirmConsentSession");
+  if (
+    options.prompt !== undefined &&
+    (!options.prompt || typeof options.prompt !== "object" || typeof options.prompt.show !== "function")
+  ) {
+    throw new TypeError("Re-entry consent action prompt requires show");
+  }
+
+  let active = false;
+  let prompt = options.prompt;
+
+  return Object.freeze(async function requestReentryConsent(input = {}) {
+    requirePlainRecord(input, "Re-entry consent action input");
+    if (active) throw new ReentryConsentActionError(
+      "reentry_consent_action_active",
+      "A Re-entry consent request is already open",
+    );
+
+    active = true;
+    try {
+      const session = await options.createConsentSession(input);
+      requireExactRecord(
+        session,
+        REENTRY_ACTION_SESSION_FIELDS,
+        REENTRY_ACTION_SESSION_FIELDS,
+        "Re-entry consent session",
+      );
+      requireText(session.title, TITLE_MAX_BYTES, "Re-entry consent title");
+      requireText(session.reason, REASON_MAX_BYTES, "Re-entry consent reason");
+      requireConsentUrl(session.consentUrl);
+      requirePromptIdentifier(session.consentSessionId);
+
+      prompt ??= createReentryConsentPrompt();
+      const decision = await prompt.show(session);
+      const decisionStatus = requireActionDecision(decision);
+      if (decisionStatus !== "approved") {
+        return Object.freeze({ status: decisionStatus });
+      }
+
+      const confirmation = await options.confirmConsentSession({
+        consentSessionId: session.consentSessionId,
+      });
+      requireExactRecord(
+        confirmation,
+        REENTRY_ACTION_CONFIRMATION_FIELDS,
+        REENTRY_ACTION_CONFIRMATION_FIELDS,
+        "Re-entry consent confirmation",
+      );
+      if (confirmation.status !== "approved") {
+        throw new ReentryConsentActionError(
+          "reentry_consent_not_confirmed",
+          "Re-entry approval was not confirmed by the Host server",
+        );
+      }
+      requirePromptIdentifier(confirmation.continuationId);
+      return Object.freeze({
+        status: "approved",
+        continuationId: confirmation.continuationId,
+      });
+    } finally {
+      active = false;
+    }
+  });
+}
+
+/**
+ * Register a top-level JavaScript Site Tool when the current browser exposes WebMCP.
+ *
+ * The execute function should normally be the function returned by createReentryConsentAction, so
+ * a human button and an Agent invocation enter exactly the same Host application logic.
+ */
+export async function registerReentryWebMcpTool(options) {
+  requireExactRecord(
+    options,
+    WEBMCP_TOOL_OPTION_FIELDS,
+    ["name", "description", "inputSchema", "execute"],
+    "Re-entry WebMCP tool options",
+  );
+  if (typeof options.name !== "string" || !TOOL_NAME_PATTERN.test(options.name)) {
+    throw new TypeError("Re-entry WebMCP tool name is invalid");
+  }
+  requireText(
+    options.description,
+    TOOL_DESCRIPTION_MAX_BYTES,
+    "Re-entry WebMCP tool description",
+  );
+  requireWebMcpInputSchema(options.inputSchema);
+  requireFunction(options.execute, "execute");
+  if (options.annotations !== undefined) {
+    requirePlainRecord(options.annotations, "Re-entry WebMCP tool annotations");
+  }
+
+  const documentRef = options.documentRef ?? globalThis.document;
+  const registerTool = documentRef?.modelContext?.registerTool;
+  if (typeof registerTool !== "function") {
+    return Object.freeze({ registered: false, reason: "webmcp_unavailable" });
+  }
+
+  await registerTool.call(documentRef.modelContext, {
+    name: options.name,
+    description: options.description,
+    inputSchema: options.inputSchema,
+    ...(options.annotations === undefined ? {} : { annotations: options.annotations }),
+    execute: options.execute,
+  });
+  return Object.freeze({ registered: true, name: options.name });
+}
+
+export class ReentryConsentActionError extends Error {
+  constructor(code, message) {
+    super(message);
+    this.name = "ReentryConsentActionError";
+    this.code = code;
+  }
+}
+
+function cleanupPrompt(active, windowRef) {
+  windowRef.removeEventListener?.("message", active.onMessage);
+  if (active.popupTimer !== null) windowRef.clearInterval?.(active.popupTimer);
+  if (active.popup && !active.popup.closed) active.popup.close?.();
+}
+
+function requireConsentUrl(value) {
+  if (typeof value !== "string" || value.length > 2_048) {
+    throw new TypeError("Re-entry consentUrl is invalid");
+  }
+  let url;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new TypeError("Re-entry consentUrl is invalid");
+  }
+  const loopback = ["127.0.0.1", "localhost", "[::1]", "::1"].includes(url.hostname);
+  if (
+    !["http:", "https:"].includes(url.protocol) ||
+    (url.protocol === "http:" && !loopback) ||
+    url.username ||
+    url.password ||
+    url.pathname !== "/consent" ||
+    url.hash ||
+    url.searchParams.getAll("token").length !== 1 ||
+    [...url.searchParams.keys()].some((key) => key !== "token") ||
+    !/^[A-Za-z0-9_-]{43}$/.test(url.searchParams.get("token") ?? "")
+  ) {
+    throw new TypeError("Re-entry consentUrl is invalid");
+  }
+  return url;
+}
+
+function requirePromptIdentifier(value) {
+  if (typeof value !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$/.test(value)) {
+    throw new TypeError("Re-entry consentSessionId is invalid");
+  }
+  return value;
+}
+
+function isConsentCompletion(value, consentSessionId) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const fields = Object.keys(value);
+  return fields.length === 3 &&
+    fields.every((field) => ["type", "consent_session_id", "status"].includes(field)) &&
+    value.type === "reentry.consent.complete" &&
+    value.consent_session_id === consentSessionId &&
+    ["approved", "declined"].includes(value.status);
+}
+
+function requireActionDecision(value) {
+  requireExactRecord(
+    value,
+    ["action", "status"],
+    ["action", "status"],
+    "Re-entry consent prompt result",
+  );
+  let expectedAction;
+  if (value.status === "approved") expectedAction = "approve";
+  if (value.status === "declined") expectedAction = "decline";
+  if (value.status === "cancelled") expectedAction = "cancel";
+  if (value.action !== expectedAction) {
+    throw new TypeError("Re-entry consent prompt result is invalid");
+  }
+  return value.status;
+}
+
+function requireWebMcpInputSchema(value) {
+  requirePlainRecord(value, "Re-entry WebMCP inputSchema");
+  if (value.type !== "object" || value.additionalProperties !== false) {
+    throw new TypeError("Re-entry WebMCP inputSchema must be a closed object schema");
+  }
+  if (value.properties !== undefined) {
+    requirePlainRecord(value.properties, "Re-entry WebMCP inputSchema properties");
+  }
+}
+
+function requireFunction(value, label) {
+  if (typeof value !== "function") {
+    throw new TypeError(`Re-entry consent action requires ${label}`);
+  }
+}
+
+function requirePlainRecord(value, label) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new TypeError(`${label} must be an object`);
+  }
+  const prototype = Object.getPrototypeOf(value);
+  if (prototype !== Object.prototype && prototype !== null) {
+    throw new TypeError(`${label} must be a plain object`);
+  }
+  for (const key of Reflect.ownKeys(value)) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    if (typeof key === "symbol" || !descriptor?.enumerable || !("value" in descriptor)) {
+      throw new TypeError(`${label} contains an invalid property`);
+    }
   }
 }
 

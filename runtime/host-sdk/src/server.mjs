@@ -1,9 +1,17 @@
-import { ReentryHostSdk } from "../../../reentry-core/src/host-sdk.mjs";
+import { createPublicKey } from "node:crypto";
+
+import { ReentryHostSdk } from "@webmcp-challenge/reentry-core/host-sdk";
 import {
   createContinuationAcceptance,
   canonicalJson,
-} from "../../../reentry-core/src/protocol.mjs";
-import { RECEIVER_HTTP_ROUTES } from "../../../reentry-core/src/receiver-http-contract.mjs";
+} from "@webmcp-challenge/reentry-core/protocol";
+import { RECEIVER_HTTP_ROUTES } from "@webmcp-challenge/reentry-core/receiver-http-contract";
+
+export const HOST_SDK_CONTROL_ROUTES = Object.freeze({
+  hostKeyRegistration: "/v0.1/host-keys",
+  consentSession: "/v0.1/consent-sessions",
+  consentDecision: "/v0.1/consent-decisions",
+});
 
 const OPTION_FIELDS = Object.freeze([
   "origin",
@@ -14,6 +22,7 @@ const OPTION_FIELDS = Object.freeze([
   "clock",
   "createId",
   "fetchImpl",
+  "organizationApiKey",
 ]);
 const REQUIRED_OPTION_FIELDS = Object.freeze([
   "origin",
@@ -26,6 +35,17 @@ const MIN_REQUEST_TIMEOUT_MS = 100;
 const MAX_REQUEST_TIMEOUT_MS = 60_000;
 const MAX_RESPONSE_BYTES = 32 * 1_024;
 const JSON_CONTENT_TYPE = "application/json";
+const IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$/;
+const CONTROL_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
+const CONTROL_SESSION_FIELDS = Object.freeze(["manifest", "hostSubjectRef"]);
+const CONTROL_DECISION_FIELDS = Object.freeze([
+  "challengeId",
+  "hostSubjectRef",
+  "action",
+  "consentToken",
+]);
+const CONTROL_STATUS_FIELDS = Object.freeze(["consentSessionId"]);
+const HOST_KEY_FIELDS = Object.freeze(["hostId"]);
 
 /**
  * Create the server half of the Host SDK.
@@ -51,6 +71,9 @@ export function createHostSdk(options) {
   const receiverOrigin = requireReceiverOrigin(options.receiverOrigin);
   const requestTimeoutMs = options.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS;
   requireRequestTimeout(requestTimeoutMs);
+  const organizationApiKey = options.organizationApiKey === undefined
+    ? undefined
+    : requireOrganizationApiKey(options.organizationApiKey);
 
   return Object.freeze({
     createManifest(input) {
@@ -66,6 +89,91 @@ export function createHostSdk(options) {
       return postEvent({
         receiverOrigin,
         issued,
+        fetchImpl,
+        requestTimeoutMs,
+      });
+    },
+
+    async registerHostKey(input) {
+      requireExactRecord(input, HOST_KEY_FIELDS, HOST_KEY_FIELDS, "Host key registration input");
+      const publicKeyPem = exportHostPublicKey(options.privateKey);
+      return postControl({
+        receiverOrigin,
+        path: HOST_SDK_CONTROL_ROUTES.hostKeyRegistration,
+        organizationApiKey: requireOrganizationApiKey(organizationApiKey),
+        body: {
+          host_id: requireIdentifier(input.hostId, "hostId"),
+          issuer_origin: options.origin,
+          key_id: requireIdentifier(options.keyId, "keyId"),
+          public_key_pem: publicKeyPem,
+        },
+        acceptedStatuses: [200, 201],
+        fetchImpl,
+        requestTimeoutMs,
+      });
+    },
+
+    async createConsentSession(input) {
+      requireExactRecord(
+        input,
+        CONTROL_SESSION_FIELDS,
+        CONTROL_SESSION_FIELDS,
+        "Consent session input",
+      );
+      requireRecordValue(input.manifest, "manifest");
+      return postControl({
+        receiverOrigin,
+        path: HOST_SDK_CONTROL_ROUTES.consentSession,
+        organizationApiKey: requireOrganizationApiKey(organizationApiKey),
+        body: {
+          host_subject_ref: requireIdentifier(input.hostSubjectRef, "hostSubjectRef"),
+          expected_origin: options.origin,
+          manifest: input.manifest,
+        },
+        acceptedStatuses: [200, 201],
+        fetchImpl,
+        requestTimeoutMs,
+      });
+    },
+
+    async getConsentSession(input) {
+      requireExactRecord(
+        input,
+        CONTROL_STATUS_FIELDS,
+        CONTROL_STATUS_FIELDS,
+        "Consent status input",
+      );
+      return getControl({
+        receiverOrigin,
+        path: `${HOST_SDK_CONTROL_ROUTES.consentSession}/${encodeURIComponent(requireIdentifier(input.consentSessionId, "consentSessionId"))}`,
+        organizationApiKey: requireOrganizationApiKey(organizationApiKey),
+        acceptedStatuses: [200],
+        fetchImpl,
+        requestTimeoutMs,
+      });
+    },
+
+    async decideConsent(input) {
+      requireExactRecord(
+        input,
+        CONTROL_DECISION_FIELDS,
+        CONTROL_DECISION_FIELDS,
+        "Consent decision input",
+      );
+      if (!['approve', 'decline'].includes(input.action)) {
+        throw new TypeError("Consent action must be approve or decline");
+      }
+      return postControl({
+        receiverOrigin,
+        path: HOST_SDK_CONTROL_ROUTES.consentDecision,
+        organizationApiKey: requireOrganizationApiKey(organizationApiKey),
+        body: {
+          challenge_id: requireIdentifier(input.challengeId, "challengeId"),
+          host_subject_ref: requireIdentifier(input.hostSubjectRef, "hostSubjectRef"),
+          action: input.action,
+          consent_token: requireControlToken(input.consentToken),
+        },
+        acceptedStatuses: [200],
         fetchImpl,
         requestTimeoutMs,
       });
@@ -142,6 +250,140 @@ async function postEvent({ receiverOrigin, issued, fetchImpl, requestTimeoutMs }
       { statusCode: response.status, cause: error },
     );
   }
+}
+
+async function postControl({
+  receiverOrigin,
+  path,
+  organizationApiKey,
+  body,
+  acceptedStatuses,
+  fetchImpl,
+  requestTimeoutMs,
+}) {
+  let payload;
+  try {
+    payload = canonicalJson(body);
+  } catch (error) {
+    throw new HostSdkTransportError(
+      "host_sdk_request_invalid",
+      "Host SDK could not serialize the control request",
+      { cause: error },
+    );
+  }
+
+  let response;
+  try {
+    response = await fetchImpl(`${receiverOrigin}${path}`, {
+      method: "POST",
+      headers: {
+        Accept: JSON_CONTENT_TYPE,
+        Authorization: `Bearer ${organizationApiKey}`,
+        "Content-Type": JSON_CONTENT_TYPE,
+      },
+      body: payload,
+      cache: "no-store",
+      credentials: "omit",
+      redirect: "manual",
+      signal: AbortSignal.timeout(requestTimeoutMs),
+    });
+  } catch (error) {
+    if (error?.name === "TimeoutError" || error?.name === "AbortError") {
+      throw new HostSdkTransportError(
+        "host_sdk_request_timeout",
+        "Host SDK request timed out",
+        { cause: error },
+      );
+    }
+    throw new HostSdkTransportError(
+      "host_sdk_network_error",
+      "Host SDK request failed",
+      { cause: error },
+    );
+  }
+
+  if (response.status >= 300 && response.status <= 399) {
+    await cancelResponse(response);
+    throw new HostSdkTransportError(
+      "host_sdk_redirect_rejected",
+      "Host SDK does not follow Receiver redirects",
+      { statusCode: response.status },
+    );
+  }
+
+  if (!acceptedStatuses.includes(response.status)) {
+    const code = await readErrorCode(response);
+    throw new HostSdkTransportError(
+      code,
+      "Receiver rejected the Host control request",
+      { statusCode: response.status },
+    );
+  }
+
+  try {
+    return await readJson(response);
+  } catch (error) {
+    if (error instanceof HostSdkTransportError) throw error;
+    throw new HostSdkTransportError(
+      "host_sdk_response_invalid",
+      "Receiver returned an invalid Host control response",
+      { statusCode: response.status, cause: error },
+    );
+  }
+}
+
+async function getControl({
+  receiverOrigin,
+  path,
+  organizationApiKey,
+  acceptedStatuses,
+  fetchImpl,
+  requestTimeoutMs,
+}) {
+  let response;
+  try {
+    response = await fetchImpl(`${receiverOrigin}${path}`, {
+      method: "GET",
+      headers: {
+        Accept: JSON_CONTENT_TYPE,
+        Authorization: `Bearer ${organizationApiKey}`,
+      },
+      cache: "no-store",
+      credentials: "omit",
+      redirect: "manual",
+      signal: AbortSignal.timeout(requestTimeoutMs),
+    });
+  } catch (error) {
+    if (error?.name === "TimeoutError" || error?.name === "AbortError") {
+      throw new HostSdkTransportError(
+        "host_sdk_request_timeout",
+        "Host SDK request timed out",
+        { cause: error },
+      );
+    }
+    throw new HostSdkTransportError(
+      "host_sdk_network_error",
+      "Host SDK request failed",
+      { cause: error },
+    );
+  }
+  if (response.status >= 300 && response.status <= 399) {
+    await cancelResponse(response);
+    throw new HostSdkTransportError(
+      "host_sdk_redirect_rejected",
+      "Host SDK does not follow Receiver redirects",
+      { statusCode: response.status },
+    );
+  }
+  if (!acceptedStatuses.includes(response.status)) {
+    const code = await readErrorCode(response);
+    throw new HostSdkTransportError(
+      code,
+      "Receiver rejected the Host control request",
+      { statusCode: response.status },
+    );
+  }
+  return readJson(response);
 }
 
 async function readErrorCode(response) {
@@ -224,6 +466,51 @@ function requireRequestTimeout(value) {
     value > MAX_REQUEST_TIMEOUT_MS
   ) {
     throw new TypeError("Host SDK requestTimeoutMs must be between 100 and 60000");
+  }
+}
+
+function exportHostPublicKey(privateKey) {
+  let publicKey;
+  try {
+    publicKey = createPublicKey(privateKey);
+  } catch (error) {
+    throw new TypeError("Host SDK privateKey must be a valid signing key", { cause: error });
+  }
+  if (publicKey.asymmetricKeyType !== "ed25519") {
+    throw new TypeError("Host SDK privateKey must be an Ed25519 key");
+  }
+  return publicKey.export({ type: "spki", format: "pem" }).toString();
+}
+
+function requireOrganizationApiKey(value) {
+  if (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    Buffer.byteLength(value, "utf8") > 4 * 1_024 ||
+    /[^\x21-\x7e]/.test(value)
+  ) {
+    throw new TypeError("Host SDK organizationApiKey is required for Receiver control requests");
+  }
+  return value;
+}
+
+function requireIdentifier(value, label) {
+  if (typeof value !== "string" || !IDENTIFIER_PATTERN.test(value)) {
+    throw new TypeError(`Host SDK ${label} is invalid`);
+  }
+  return value;
+}
+
+function requireControlToken(value) {
+  if (typeof value !== "string" || !CONTROL_TOKEN_PATTERN.test(value)) {
+    throw new TypeError("Host SDK consentToken is invalid");
+  }
+  return value;
+}
+
+function requireRecordValue(value, label) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new TypeError(`Host SDK ${label} must be an object`);
   }
 }
 

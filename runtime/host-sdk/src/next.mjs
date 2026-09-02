@@ -1,5 +1,7 @@
 const EVENT_ROUTE_OPTION_FIELDS = Object.freeze(["sdk", "getEventInput"]);
 const MANIFEST_ROUTE_OPTION_FIELDS = Object.freeze(["sdk", "getManifestInput"]);
+const CONSENT_SESSION_ROUTE_OPTION_FIELDS = Object.freeze(["sdk", "getConsentSessionInput"]);
+const CONSENT_DECISION_ROUTE_OPTION_FIELDS = Object.freeze(["sdk", "getConsentDecisionInput"]);
 const NO_STORE_HEADERS = Object.freeze({
   "Cache-Control": "no-store",
   "X-Content-Type-Options": "nosniff",
@@ -52,6 +54,93 @@ export function createManifestRoute(options) {
     try {
       const input = await options.getManifestInput({ request });
       return jsonResponse(200, options.sdk.createManifest(input));
+    } catch (error) {
+      return errorResponse(error);
+    }
+  };
+}
+
+/**
+ * Build a Next.js Route Handler for the Host server -> Reentry consent-session step.
+ *
+ * The callback must load the signed Manifest and the authenticated Host subject on the server.
+ * The browser request is only a trigger; it is not the source of identity or authority.
+ */
+export function createConsentSessionRoute(options) {
+  requireExactRecord(
+    options,
+    CONSENT_SESSION_ROUTE_OPTION_FIELDS,
+    CONSENT_SESSION_ROUTE_OPTION_FIELDS,
+    "Consent session route options",
+  );
+  requireSdk(options.sdk, "createConsentSession");
+  requireFunction(options.getConsentSessionInput, "getConsentSessionInput");
+
+  return async function POST(request) {
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return jsonResponse(400, { error: { code: "host_sdk_request_invalid" } });
+    }
+
+    try {
+      const input = await options.getConsentSessionInput({ body, request });
+      const session = await options.sdk.createConsentSession(input);
+      return jsonResponse(session.duplicate === true ? 200 : 201, session);
+    } catch (error) {
+      return errorResponse(error);
+    }
+  };
+}
+
+/**
+ * Build a Next.js Route Handler for the Host server -> Reentry consent-decision step.
+ *
+ * The callback must supply the authenticated Host subject on the server. The browser may provide
+ * the public challenge identifier, opaque consent token, and approve/decline action.
+ */
+export function createConsentDecisionRoute(options) {
+  requireExactRecord(
+    options,
+    CONSENT_DECISION_ROUTE_OPTION_FIELDS,
+    CONSENT_DECISION_ROUTE_OPTION_FIELDS,
+    "Consent decision route options",
+  );
+  requireSdk(options.sdk, "decideConsent");
+  requireFunction(options.getConsentDecisionInput, "getConsentDecisionInput");
+
+  return async function POST(request) {
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return jsonResponse(400, { error: { code: "host_sdk_request_invalid" } });
+    }
+
+    try {
+      const input = await options.getConsentDecisionInput({ body, request });
+      return jsonResponse(200, await options.sdk.decideConsent(input));
+    } catch (error) {
+      return errorResponse(error);
+    }
+  };
+}
+
+export function createConsentStatusRoute(options) {
+  requireExactRecord(
+    options,
+    ["sdk", "getConsentStatusInput"],
+    ["sdk", "getConsentStatusInput"],
+    "Consent status Route Handler options",
+  );
+  requireSdk(options.sdk, "getConsentSession");
+  requireFunction(options.getConsentStatusInput, "getConsentStatusInput");
+
+  return async function GET(request, context) {
+    try {
+      const input = await options.getConsentStatusInput(request, context);
+      return jsonResponse(200, await options.sdk.getConsentSession(input));
     } catch (error) {
       return errorResponse(error);
     }

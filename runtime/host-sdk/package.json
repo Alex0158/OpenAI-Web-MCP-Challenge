@@ -1,5 +1,5 @@
 {
-  "name": "re-entry-sdk",
+  "name": "@4xeoz/re-entry-sdk",
   "version": "0.3.0",
   "type": "module",
   "description": "Small Next.js-compatible Host SDK for the application-neutral Re-entry protocol.",
