@@ -48,6 +48,13 @@ listing entries and Favourite controls were reachable, and Agent queue/history p
 were reachable. The narrow render measured equal `375px` body/document widths and the browser log had
 only normal React DevTools/HMR information. No fixture or product source changed, and no new finding or
 Task was accepted.
+**Latest route/action revalidation (2026-09-02):** An isolated Tenant/Agent session rechecked the
+signed-in catalogue, empty Favourite and Viewing Request handoffs, listing-detail entry, filter no-result
+and Clear recovery, sign-out recovery, and direct wrong-role Agent surfaces. The Agent empty queue and
+listing-interest projection remained reachable and bounded. The page route matrix returned `200`, the
+unauthenticated API matrix returned `401`, `/api/health` returned the healthy RightSpot payload, and the
+browser reported no errors. Full tests remained `159/159` and typecheck passed; no new finding or Task
+was accepted.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current next product action:** Continue the Main-thread cross-layer audit from the closed
 `RIGHTSPOT-041` / `RS-WO-041-01` tenant request mutation-feedback repair. `RIGHTSPOT-039` /

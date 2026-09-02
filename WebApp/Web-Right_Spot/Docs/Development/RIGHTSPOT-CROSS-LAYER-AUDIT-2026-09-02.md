@@ -1763,3 +1763,28 @@ documentation drift: `RS-FLOW-04` remains an evidence-limited unpublished branch
 unsupported same-document transition gap, the native datetime limitation remains a harness boundary,
 `F-20` remains non-gating polish, and `RIGHTSPOT-006`/`010`/`012` remain correctly gated or continuous.
 Main therefore opened no new Task or Work Order.
+
+## 71. Route, role, filter, and API boundary revalidation — no new finding — 2026-09-02
+
+Main recaptured the canonical source at `HEAD=8b1cc8a`, equal to `origin/main`, with one physical
+Worktree and no tracked RightSpot source changes. The local server remained healthy at
+`GET /api/health`. A route matrix returned `200` for the signed-out root, Tenant catalogue,
+Favourite, Viewing Request, all three seeded listing details, Agent queue/detail, and the inspected
+API route pages; the same API endpoints returned the expected unauthenticated `401` boundary without a
+session.
+
+In isolated session `rightspot-cycle-20260902`, Main entered and ended the Tenant and Agent demo
+sessions, checked the Tenant empty Favourite and Viewing Request handoffs, opened listing detail,
+applied an impossible Area filter, observed the bounded `No listings match those filters` state, and
+used its Clear recovery to restore all three seeded listings. Direct Tenant access to `/agent` and an
+Agent request detail remained role-bounded. The Agent empty queue kept active work, terminal history,
+and listing interest as separate surfaces. No request, Favourite, fixture, or product source state was
+created or changed, and browser errors were empty.
+
+The current action/link scan found no orphaned primary action or unsupported user-facing route. The
+complete suite passed `159/159`, non-incremental typecheck passed, repository validation, sensitive
+scan, and `git diff --check` passed. No `VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`, `VERIFIED_POLISH`, or
+`DOCUMENTATION_DRIFT` finding was accepted; no Task or Work Order was registered. `F-08`, `F-20`, the
+native `datetime-local` harness boundary, and the unpublished Favourite evidence limitation retain
+their prior classifications, while external auth, Information Request, Operations/WebMCP,
+Cloud Receiver, WebRTC, deployment, and production-readiness remain deferred or gated.
