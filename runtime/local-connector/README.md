@@ -202,8 +202,14 @@ the npm account that owns the `4xeoz` scope, publish from this directory:
 
 ```sh
 npm login
+npm whoami
+npm version patch --no-git-tag-version
+npm run verify
 npm publish --access public
 ```
+
+NPM versions are immutable: if the current version has already been published, bump it before
+publishing (the current published `0.2.11` therefore requires `0.2.12` or another new version).
 
 After publishing, users run `npx --yes --package=@4xeoz/re-entry re-entry install`. The explicit
 `--package` form works across npm versions when the package is scoped; the executable itself is

@@ -11,8 +11,8 @@
     "src"
   ],
   "bin": {
-    "re-entry": "./src/main.mjs",
-    "reentry": "./src/main.mjs"
+    "re-entry": "src/main.mjs",
+    "reentry": "src/main.mjs"
   },
   "exports": {
     ".": "./src/index.mjs",

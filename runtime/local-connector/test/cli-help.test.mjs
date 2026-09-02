@@ -30,8 +30,8 @@ test("CLI help presents the account-first install path", () => {
 
 test("package installs both CLI spellings", () => {
   assert.deepEqual(packageJson.bin, {
-    "re-entry": "./src/main.mjs",
-    reentry: "./src/main.mjs",
+    "re-entry": "src/main.mjs",
+    reentry: "src/main.mjs",
   });
 });
 
