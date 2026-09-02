@@ -14,7 +14,7 @@ import { canonicalJson } from "../../../reentry-core/src/protocol.mjs";
 // package suite remains runnable without a Cloud Receiver database.
 const enabled = process.env.CLOUD_RECEIVER_V2_CLAIM_CONTRACT === "1";
 const testOptions = enabled
-  ? {}
+  ? { concurrency: false }
   : { skip: "Set CLOUD_RECEIVER_V2_CLAIM_CONTRACT=1 with a disposable v2 database to run" };
 
 const RECEIVER_ORIGIN = "http://127.0.0.1:4000";
@@ -599,7 +599,9 @@ async function readDurableDeliveryText(deliveryId) {
 async function startRestartedReceiver() {
   if (restartedReceiver) throw new Error("restart Receiver is already running");
   restartLogs = "";
-  const backendRoot = fileURLToPath(new URL("../../../saas-boilerplate/backend/", import.meta.url));
+  const receiverRoot = process.env.CLOUD_RECEIVER_V2_ROOT
+    ?? fileURLToPath(new URL("../../../saas-boilerplate/", import.meta.url));
+  const backendRoot = path.join(receiverRoot, "backend");
   const child = spawn(process.execPath, [path.join(backendRoot, "dist/index.js")], {
     cwd: backendRoot,
     env: {

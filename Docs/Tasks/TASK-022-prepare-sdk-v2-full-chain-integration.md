@@ -14,7 +14,7 @@
 - Priority: `P1`
 - Owner: SDK development team.
 - Current increment: Prepare the exact SDK-to-Receiver and downstream full-chain contract matrix while leaving SDK production code unchanged.
-- Next gate: Cloud `TASK-020` and `TASK-021` supply tested Feature 5–6 commits and the configured effect-authority boundary; Local Connector supplies its tested acknowledgement commit; then run this matrix against those exact checkouts.
+- Next gate: Cloud TASK-020 and TASK-021 supply tested Feature 5–6 commits and the configured effect-authority boundary; Local Connector supplies its tested acknowledgement commit; then run this matrix against those exact checkouts.
 - Dependencies: [SDK-005](../Development/SDK-005-cloud-receiver-v2-full-chain-contract.md), [TASK-019](TASK-019-build-cloud-receiver-v2-delivery-claim.md), [TASK-020](TASK-020-build-cloud-receiver-v2-delivery-acknowledgement.md), [TASK-021](TASK-021-build-cloud-receiver-v2-transport-operations.md), the Local Connector acknowledgement evidence, and the [Primary Development Runbook](../Engineering/03-primary-development-runbook.md).
 
 ## 1. Problem and objective

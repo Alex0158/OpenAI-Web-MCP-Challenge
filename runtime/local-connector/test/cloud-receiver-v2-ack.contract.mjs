@@ -14,7 +14,7 @@ import { LocalConnector } from "../src/local-connector.mjs";
 // Connector package suite remains runnable without a Cloud Receiver database.
 const enabled = process.env.CLOUD_RECEIVER_V2_ACK_CONTRACT === "1";
 const testOptions = enabled
-  ? {}
+  ? { concurrency: false }
   : { skip: "Set CLOUD_RECEIVER_V2_ACK_CONTRACT=1 with a disposable v2 database to run" };
 
 const RECEIVER_ORIGIN = "http://127.0.0.1:4000";
