@@ -8,6 +8,7 @@ const entry = fileURLToPath(new URL("../src/main.mjs", import.meta.url));
 const packageJson = JSON.parse(
   readFileSync(new URL("../package.json", import.meta.url), "utf8"),
 );
+const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
 
 test("CLI help presents the account-first install path", () => {
   const result = spawnSync(process.execPath, [entry, "--help"], {
@@ -26,6 +27,14 @@ test("CLI help presents the account-first install path", () => {
   assert.match(result.stdout, /Both commands are installed: re-entry and reentry/);
   assert.match(result.stdout, /Recommended first run/);
   assert.match(result.stdout, /opens no inbound port/);
+  assert.match(result.stdout, /Temporary npx: npx --yes --package=@4xeoz\/re-entry re-entry <command>/);
+  assert.match(result.stdout, /Global install: npm install --global @4xeoz\/re-entry, then re-entry <command>/);
+});
+
+test("package documentation keeps temporary and global CLI invocation distinct", () => {
+  assert.match(readme, /npx --yes --package=@4xeoz\/re-entry re-entry listen/);
+  assert.match(readme, /re-entry listen/);
+  assert.match(readme, /A temporary `npx` invocation does not add `re-entry` to your shell `PATH`/);
 });
 
 test("package installs both CLI spellings", () => {

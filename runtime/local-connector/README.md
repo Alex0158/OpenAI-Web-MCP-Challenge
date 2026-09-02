@@ -18,7 +18,8 @@ Requirements: macOS, Node.js 24+, Codex installed and signed in, and an absolute
 Codex may read and write.
 
 ```sh
-npx @4xeoz/re-entry install
+npx --yes --package=@4xeoz/re-entry re-entry install \
+  --receiver https://your-accepted-receiver.example
 ```
 
 `npx` runs a temporary copy, so it does not leave a permanent shell command behind. Install the
@@ -29,7 +30,8 @@ npm install --global @4xeoz/re-entry
 ```
 
 The package installs both `re-entry` and the older `reentry` spelling; `re-entry` is the documented
-command.
+command. If you keep using the temporary `npx` form, run later commands with the same executable
+prefix, for example `npx --yes --package=@4xeoz/re-entry re-entry status`.
 
 The CLI no longer has a default hosted Receiver. For any new or historical test, pass an explicit
 accepted Receiver origin with `--receiver` or `REENTRY_RECEIVER_ORIGIN`; the former
@@ -39,13 +41,14 @@ The interactive CLI first offers Desktop, the current folder, or a small folder 
 with ↑/↓ and Enter. If you want to skip the picker, pass the workspace directly:
 
 ```sh
-npx @4xeoz/re-entry install \
+npx --yes --package=@4xeoz/re-entry re-entry install \
+  --receiver https://your-accepted-receiver.example \
   --codex-cd /absolute/path/to/your/project
 ```
 
 The guided screen stays intentionally small: **Workspace → System check → Connect Re-entry**. It
-shows one clear next command when setup finishes; internal Connector IDs, credential paths, and log
-paths stay out of the normal success screen.
+shows one executable next command when setup finishes; internal Connector IDs, credential paths, and
+log paths stay out of the normal success screen.
 
 Run this from the Host project directory, your home directory, or another normal working
 directory—not from a checked-out `runtime/local-connector` package directory. npm can treat that
@@ -56,7 +59,9 @@ installation instead:
 
 ```sh
 npm install --global @4xeoz/re-entry
-re-entry install --codex-cd /absolute/path/to/your/project
+re-entry install \
+  --receiver https://your-accepted-receiver.example \
+  --codex-cd /absolute/path/to/your/project
 ```
 
 Use `--receiver` to select an accepted replacement Receiver, such as a local historical preview:
@@ -86,29 +91,43 @@ preview.
 
 ## Check it
 
+If you installed the package globally:
+
 ```sh
 re-entry status
 re-entry listen
 re-entry --help
+re-entry stop
+re-entry uninstall
+```
+
+If you used the temporary `npx` invocation:
+
+```sh
+npx --yes --package=@4xeoz/re-entry re-entry status
+npx --yes --package=@4xeoz/re-entry re-entry listen
+npx --yes --package=@4xeoz/re-entry re-entry --help
+npx --yes --package=@4xeoz/re-entry re-entry stop
+npx --yes --package=@4xeoz/re-entry re-entry uninstall
 ```
 
 The status view checks the local authorization, background job, Receiver reachability, Node, and
 Codex. If the Receiver rejects a previously saved device credential, the Connector pauses instead
-of retrying forever, and `status`/`listen` tell you to run `re-entry connect` again. `listen` watches
-the already-running background Connector and displays new activity until you press Ctrl+C; it does
-not start a competing second poller. Useful development commands are:
+of retrying forever, and `status`/`listen` print an executable `connect` command. `listen` watches the
+already-running background Connector and displays new activity until you press Ctrl+C; it does not
+start a competing second poller. Useful development commands are:
 
 ```sh
-re-entry doctor --codex-cd /absolute/path/to/project
-re-entry connect --receiver http://127.0.0.1:43224
-re-entry claim-once --codex-cd /absolute/path/to/project
-re-entry start --codex-cd /absolute/path/to/project
+npx --yes --package=@4xeoz/re-entry re-entry doctor --codex-cd /absolute/path/to/project
+npx --yes --package=@4xeoz/re-entry re-entry connect --receiver http://127.0.0.1:43224
+npx --yes --package=@4xeoz/re-entry re-entry claim-once --codex-cd /absolute/path/to/project
+npx --yes --package=@4xeoz/re-entry re-entry start --codex-cd /absolute/path/to/project
 ```
 
 Test the local Codex handoff without waiting for Cloud work:
 
 ```sh
-re-entry test "Reply with: Re-entry is working."
+npx --yes --package=@4xeoz/re-entry re-entry test "Reply with: Re-entry is working."
 ```
 
 This starts one fresh local Codex process through the same adapter seam used by real deliveries. It
@@ -117,8 +136,8 @@ does not create a Grant, claim Receiver work, or prove the browser/WebMCP return
 To pause or remove the local Connector:
 
 ```sh
-re-entry stop
-re-entry uninstall
+npx --yes --package=@4xeoz/re-entry re-entry stop
+npx --yes --package=@4xeoz/re-entry re-entry uninstall
 ```
 
 `stop` pauses the macOS background service and keeps the account connection. `uninstall` requires
@@ -139,8 +158,8 @@ Install the Re-entry Local Connector on this Mac. First read the package README.
 or newer and locate the Connector executable. Run `npx --yes --package=@4xeoz/re-entry re-entry install` with an absolute
 project directory. Let the human create or sign in to a Re-entry account, click Pair this Mac, and
 enter the code in the CLI; never copy browser cookies, organization keys, Connector tokens, or private keys
-into chat, logs, source files, or git. Finish by running `re-entry status` and report the bounded
-results without claiming Browser/WebMCP or production deployment.
+into chat, logs, source files, or git. Finish by running `npx --yes --package=@4xeoz/re-entry re-entry status`
+and report the bounded results without claiming Browser/WebMCP or production deployment.
 ```
 
 ## Package map
@@ -208,15 +227,16 @@ npm run verify
 npm publish --access public
 ```
 
-NPM versions are immutable: if the current version has already been published, bump it before
-publishing (the current published `0.2.11` therefore requires `0.2.12` or another new version).
+NPM versions are immutable: if the target version has already been published, bump it before
+publishing with `npm version patch --no-git-tag-version`.
 
 After publishing, users run `npx --yes --package=@4xeoz/re-entry re-entry install`. The explicit
 `--package` form works across npm versions when the package is scoped; the executable itself is
 still named `re-entry`.
 
-On npm installations affected by the temporary-bin `PATH` bug, use `npm install --global
-@4xeoz/re-entry` once and then run `re-entry install` directly.
+A temporary `npx` invocation does not add `re-entry` to your shell `PATH`. If you prefer the shorter
+bare commands, run `npm install --global @4xeoz/re-entry` once and then use `re-entry install`
+directly.
 
 ## Check a Mac before pairing
 

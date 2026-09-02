@@ -41,6 +41,8 @@ const DEFAULT_POLL_INTERVAL_MS = 5_000;
 const DEFAULT_MAX_CONSECUTIVE_ERRORS = 5;
 const DEFAULT_PAIRING_REQUEST_TIMEOUT_MS = 20_000;
 const CONNECTOR_VERSION = readConnectorVersion();
+// The npx form is executable even when this CLI was launched from a temporary npx cache.
+const TEMPORARY_CLI_COMMAND = "npx --yes --package=@4xeoz/re-entry re-entry";
 
 async function main() {
   let ui;
@@ -129,6 +131,10 @@ Usage:
   re-entry listen                                      Watch live activity
   re-entry test "Reply with hello"                     Test Codex locally
 
+Invocation:
+  Temporary npx: npx --yes --package=@4xeoz/re-entry re-entry <command>
+  Global install: npm install --global @4xeoz/re-entry, then re-entry <command>
+
 Commands:
   install      Check this Mac, connect the Re-entry account, and start at login
   status       Show account, Receiver, service, Node.js, and Codex readiness
@@ -154,6 +160,10 @@ Common options:
 Both commands are installed: re-entry and reentry.
 The Connector opens no inbound port. Host keys never belong on this Mac.
 `);
+}
+
+function cliCommand(command) {
+  return `${TEMPORARY_CLI_COMMAND} ${command}`;
 }
 
 function readConnectorVersion() {
@@ -265,7 +275,7 @@ async function pair(flags, ui, options = {}) {
   });
   if (ui.interactive) {
     ui.complete("Pairing complete", "Re-entry can now deliver approved work to this Mac.");
-    ui.next("re-entry start", "Wait for approved work in this terminal.");
+    ui.next(cliCommand("start"), "Wait for approved work in this terminal.");
   } else {
     process.stdout.write(`${JSON.stringify({ event: "connector_paired", connector_id: credentials.connector_id })}\n`);
   }
@@ -288,7 +298,7 @@ async function connect(flags, ui, options = {}) {
     if (ui.interactive) {
       ui.success("Account", "already connected");
       if (!options.guidedInstall) {
-        ui.next("re-entry start", "Wait for approved work in this terminal.");
+        ui.next(cliCommand("start"), "Wait for approved work in this terminal.");
       }
     } else {
       process.stdout.write(`${JSON.stringify({
@@ -347,7 +357,7 @@ async function connect(flags, ui, options = {}) {
   if (ui.interactive) {
     if (!options.guidedInstall) {
       ui.complete("This Mac is connected", "Re-entry can now route approved work here.");
-      ui.next("re-entry start", "Wait for approved work in this terminal.");
+      ui.next(cliCommand("start"), "Wait for approved work in this terminal.");
     }
   } else {
     process.stdout.write(`${JSON.stringify({
@@ -386,14 +396,14 @@ async function status(flags, ui) {
     else if (credentials) ui.warning("Cloud", "unavailable");
 
     if (reauthorizationRequired) {
-      ui.next("re-entry connect", "Approve this Mac again in your browser; the old credential was rejected.");
+      ui.next(cliCommand("connect"), "Approve this Mac again in your browser; the old credential was rejected.");
     } else if (!connected || !service.running) {
-      ui.next("re-entry install", "Finish setup and start Re-entry in the background.");
+      ui.next(cliCommand("install"), "Finish setup and start Re-entry in the background.");
     } else if (!receiverReady) {
-      ui.next("re-entry status", "Check again when the Re-entry Cloud service is available.");
+      ui.next(cliCommand("status"), "Check again when the Re-entry Cloud service is available.");
     } else {
       ui.complete("Everything looks good", "Re-entry is ready for approved work.");
-      ui.next("re-entry listen", "Watch live activity. Press Ctrl+C when you are done.");
+      ui.next(cliCommand("listen"), "Watch live activity. Press Ctrl+C when you are done.");
     }
   } else {
     process.stdout.write(`${JSON.stringify({
@@ -425,11 +435,11 @@ async function listen(flags, ui) {
     if (ui.interactive) {
       if (reauthorizationRequired) {
         ui.warning("Account", "reconnect required; the Cloud Receiver rejected this Mac");
-        ui.next("re-entry connect", "Approve this Mac again in your browser.");
+        ui.next(cliCommand("connect"), "Approve this Mac again in your browser.");
       }
       if (!credentials) ui.warning("Account", "not connected");
       if (!service.running) ui.warning("Background", "not running");
-      ui.next("re-entry install", "Finish setup and start the background Connector.");
+      ui.next(cliCommand("install"), "Finish setup and start the background Connector.");
     } else {
       process.stdout.write(`${JSON.stringify({
         event: "connector_listener_unavailable",
@@ -494,7 +504,7 @@ async function testCodex(flags, positionals, ui) {
   if (ui.interactive) {
     ui.stopWait("Codex", "completed the local test");
     ui.complete("Test passed", "The same fresh-session process seam is ready for Re-entry work.");
-    ui.next("re-entry listen", "Watch the background Connector for approved work.");
+    ui.next(cliCommand("listen"), "Watch the background Connector for approved work.");
   } else {
     process.stdout.write('{"event":"connector_codex_test_passed"}\n');
   }
@@ -511,7 +521,7 @@ function reportLiveActivity(event, ui) {
     );
   } else if (event.event === "connector_reauthorization_required" || event.code === "connector_identity_invalid") {
     ui.stopWait("Reconnect required", "the Cloud Receiver rejected this Mac's saved connection", "warning");
-    ui.next("re-entry connect", "Approve this Mac again in your browser.");
+    ui.next(cliCommand("connect"), "Approve this Mac again in your browser.");
     return;
   } else if (event.event === "connector_poll_failed" || event.event === "local_connector_failed") {
     ui.stopWait("Connection interrupted", "Re-entry is retrying", "warning");
@@ -534,7 +544,7 @@ async function stop(flags, ui) {
     if (!result.supported) ui.warning("Platform", "background service control currently supports macOS only");
     else if (result.stopped) ui.complete("Re-entry is paused", "Your account connection is still saved.");
     else ui.info("Already stopped", "no running background Connector was found");
-    if (result.supported) ui.next("re-entry install", "Start Re-entry in the background again.");
+    if (result.supported) ui.next(cliCommand("install"), "Start Re-entry in the background again.");
   } else {
     process.stdout.write(`${JSON.stringify({
       event: "connector_stopped",
@@ -557,7 +567,7 @@ async function uninstall(flags, ui) {
   });
   if (ui.interactive) {
     ui.complete("Removed from this Mac", "The local service, connection, and logs are gone.");
-    ui.next("npx @4xeoz/re-entry install", "Connect this Mac again whenever you are ready.");
+    ui.next(cliCommand("install"), "Connect this Mac again whenever you are ready.");
   } else {
     process.stdout.write(`${JSON.stringify({
       event: "connector_uninstalled",
@@ -589,7 +599,7 @@ async function install(flags, ui) {
   if (ui.interactive) {
     ui.stopWait("Background", "running at login");
     ui.complete("You're all set", "Re-entry is connected and waiting for approved work.");
-    ui.next("re-entry listen", "Watch live activity. Press Ctrl+C when you are done.");
+    ui.next(cliCommand("listen"), "Watch live activity. Press Ctrl+C when you are done.");
   } else {
     process.stdout.write(`${JSON.stringify({
       event: "connector_service_installed",
@@ -628,7 +638,7 @@ async function start(flags, ui) {
   } else if (await hasConnectorReauthorizationRequired(credentialFile)) {
     if (ui.interactive) {
       ui.warning("Account", "this Mac needs to be connected again");
-      ui.next("re-entry connect", "Create a new dashboard pairing code and connect this Mac again.");
+      ui.next(cliCommand("connect"), "Create a new dashboard pairing code and connect this Mac again.");
     } else {
       process.stdout.write('{"event":"connector_reauthorization_required"}\n');
     }
@@ -674,7 +684,7 @@ async function start(flags, ui) {
           });
           if (ui.interactive) {
             ui.stopWait("Reconnect required", "the Cloud Receiver rejected this Mac's saved connection", "warning");
-            ui.next("re-entry connect", "Approve this Mac again in your browser.");
+            ui.next(cliCommand("connect"), "Approve this Mac again in your browser.");
           } else {
             process.stdout.write('{"event":"connector_reauthorization_required"}\n');
           }
@@ -1038,15 +1048,15 @@ function errorHint(error) {
     connector_codex_cd_missing: "pass --codex-cd /absolute/path/to/your/Host-project",
     connector_codex_not_found: "install Codex, add it to PATH, or pass --codex-binary /path/to/codex",
     connector_codex_binary_not_found: "check --codex-binary or remove it to use automatic discovery",
-    connector_codex_unusable: "open Codex, complete login if needed, then run `npm run doctor` again",
+    connector_codex_unusable: `open Codex, complete login if needed, then run \`${cliCommand("doctor")}\` again`,
     connector_node_unsupported: "use Node.js 24 or newer, then run the command again",
     connector_receiver_missing: "pass --receiver <replacement-receiver-origin> or set REENTRY_RECEIVER_ORIGIN",
-    connector_credentials_missing: "connect this Mac once with `re-entry connect`",
-    connector_credentials_expired: "run `re-entry connect` to authorize this Mac again",
+    connector_credentials_missing: `connect this Mac once with \`${cliCommand("connect")}\``,
+    connector_credentials_expired: `run \`${cliCommand("connect")}\` to authorize this Mac again`,
     connector_credentials_already_exists: "use the existing Connector credential or ask for a new pairing code",
-    connector_identity_invalid: "run `re-entry connect` and approve this Mac again",
-    connector_reauthorization_required: "run `re-entry connect` and approve this Mac again",
-    connector_pairing_code_missing: "ask the Host backend for a new pairing code, then run pair in a terminal",
+    connector_identity_invalid: `run \`${cliCommand("connect")}\` and approve this Mac again`,
+    connector_reauthorization_required: `run \`${cliCommand("connect")}\` and approve this Mac again`,
+    connector_pairing_code_missing: `ask the Host backend for a new pairing code, then run \`${cliCommand("pair")}\` in a terminal`,
     pairing_code_invalid: "use the 16-character code returned by the Host, for example ABCD-EFGH-IJKL-MNOP",
     host_subject_already_paired: "use the existing Connector credential or revoke/reset the preview pairing",
     pairing_expired: "ask the Host backend for a new pairing code",
@@ -1054,14 +1064,14 @@ function errorHint(error) {
     pairing_network_error: "check your internet connection and the Receiver address, then try again",
     workspace_directory_unavailable: "choose a readable folder or pass --codex-cd /absolute/path",
     workspace_selection_cancelled: "run the command again when you are ready to choose a workspace",
-    device_authorization_expired: "run `re-entry connect` again and approve within ten minutes",
-    device_authorization_denied: "run `re-entry connect` again when you are ready to approve this Mac",
+    device_authorization_expired: `run \`${cliCommand("connect")}\` again and approve within ten minutes`,
+    device_authorization_denied: `run \`${cliCommand("connect")}\` again when you are ready to approve this Mac`,
     connector_poll_interval_invalid: "use a polling interval between 1000 and 60000 milliseconds",
     connector_max_errors_invalid: "use a maximum error count between 1 and 20",
-    connector_service_load_failed: "run `re-entry install` again; if it still fails, inspect the Connector error log",
-    connector_uninstall_confirmation_required: "run uninstall interactively and type DELETE, or pass `--yes` in a deliberate script",
-    connector_service_stop_failed: "check the Connector status and try `re-entry stop` again",
-    connector_test_prompt_missing: "use `re-entry test \"Reply with: Re-entry is working.\"`",
+    connector_service_load_failed: `run \`${cliCommand("install")}\` again; if it still fails, inspect the Connector error log`,
+    connector_uninstall_confirmation_required: `run \`${cliCommand("uninstall")}\` interactively and type DELETE, or pass \`--yes\` in a deliberate script`,
+    connector_service_stop_failed: `check the Connector status and try \`${cliCommand("stop")}\` again`,
+    connector_test_prompt_missing: `use \`${cliCommand('test "Reply with: Re-entry is working."')}\``,
     connector_test_prompt_invalid: "use one short, single-line prompt inside quotes",
     connector_activation_timeout_invalid: "use an activation timeout between 100 and 60000 milliseconds",
   };
