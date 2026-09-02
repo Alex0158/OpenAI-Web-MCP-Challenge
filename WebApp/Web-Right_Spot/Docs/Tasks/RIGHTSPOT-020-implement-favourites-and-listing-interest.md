@@ -11,11 +11,10 @@
 
 - Type: `implementation`
 - Lifecycle: `in_progress`
-- Execution posture: `FOUNDATION_REPAIR_BEFORE_UI`
-- Current increment: A pre-dispatch review found that a removed Favourite's relation version was not
-  recoverable after a tenant page reload. Main is repairing and re-verifying the server read contract
-  before dispatching the tenant and agent UI consumer pair.
-- Next gate: After the repair is independently verified, Main may dispatch `RS-WO-020-02` and
+- Execution posture: `UI_SLICES_READY`
+- Current increment: The pre-UI relation-version continuity repair is independently verified at
+  `adfd37e`; the tenant and agent UI consumer pair is now the next bounded increment.
+- Next gate: Main may dispatch `RS-WO-020-02` and
   `RS-WO-020-03` in parallel because their write sets are disjoint; shared navigation, card/detail
   integration, and global CSS remain serialized Main work.
 - Parent role: This is one registered Task File. Builder, Verifier, Repairer, and Integrator are
@@ -24,7 +23,7 @@
 ## RS-WO-020-01 — Favourite contract/data foundation
 
 **Role:** Domain, persistence, application, API, and focused-test Builder  
-**Status:** `REOPENED_FOR_REPAIR` — pre-UI relation-version continuity defect found  
+**Status:** `CLOSED` — initial foundation; continuity repair verified by `RS-WO-020-01R`  
 **Parallelization:** `SERIAL_FIRST` — no other RightSpot product writer is admitted against these shared contract/state paths  
 **Risk profile:** `High` for data/role/privacy boundaries; bounded implementation scope  
 **Supporting worker:** `Ramanujan`, multi-agent `01a05f63-c270-7dc0-aa47-9c3a2b19a2e1` (stopped after a partial candidate); Main completed the bounded candidate from that work; `Hypatia`, multi-agent `01a05f76-7603-7792-abf9-47c76705ea8a`, independently verified it  
@@ -184,10 +183,18 @@ join, role-safe DTOs, and focused tests. It must not edit tenant/agent pages or 
 ### RS-WO-020-01R — Restore Favourite relation-version continuity
 
 **Role:** Main Repairer  
-**Status:** `IN_PROGRESS`  
+**Status:** `ASSIGNED` — persistent read-only verification active  
+**Execution state:** `ASSIGNED`  
+**Dispatch state:** `dispatched at adfd37e885700f48c783ff134b17e50ca4f205d1`  
 **Parallelization:** `SERIAL` — blocks the UI consumer pair until independently re-verified  
 **Dependency:** Initial `RS-WO-020-01` candidate at `96b1bca`; no product writer may modify the same
 server contract paths during this repair  
+**Source baseline:** Main `adfd37e885700f48c783ff134b17e50ca4f205d1`; product source is frozen for the
+read-only verification gate.  
+**Execution mode:** Shared canonical Main Worktree, read-only verifier; the Main thread may update only
+the explicitly named process-status section after dispatch.  
+**Supporting task:** `RightSpot RS-WO-020-01R Favourite continuity verifier`, task/thread
+`01a05f8d-55ae-7810-b938-a7f8490a0b97`, host `local`, returned `VERIFIED`.  
 **Objective:** Make a tenant's saved/re-removed relation version recoverable after a fresh read, so a
 tenant can remove a Favourite, reload, and save it again without a guessed version or hidden client
 state.
@@ -205,7 +212,14 @@ documentation and final integration.
 
 **Verification gate:** Re-run the Favourite-focused suite, the full suite, typecheck, build, repository
 validators, and an independent read-only verification of the new reload-and-re-save path. The repair
-must return `VERIFIED` before either UI Work Order changes from `READY_TO_DISPATCH`.
+returned `VERIFIED` before either UI Work Order changes from `READY_TO_DISPATCH`.
+
+**Independent verification evidence:** The persistent Verifier confirmed Favourite-focused `12/12`,
+full direct suite `112/112`, typecheck, production build, repository validator tests `6/6`, sensitive-scan
+tests `3/3`, repository validation, high-confidence sensitive scan, and byte-identical `next-env.d.ts`.
+Dynamic checks proved save version `1`, remove version `2`, reload with
+`favouriteVersions[listing-primary] = 2`, and re-save at version `3`; a separate in-memory assertion
+confirmed a refreshed activation snapshot. No product source mutation occurred during verification.
 
 ### RS-WO-020-02 — Tenant Favourite UI
 
@@ -297,8 +311,8 @@ The original Builder stopped before handoff after writing a partial domain/persi
 completed and reviewed the bounded candidate in the canonical working tree. Independent Verifier
 `Hypatia` returned `VERIFIED` for the original candidate after confirming the migration ledger guard,
 role/privacy boundary, cross-operation command-id conflict behavior, and route wiring. A pre-UI review
-then found that the active-only tenant projection did not expose a removed relation's version after
-reload, so the prior verification is not sufficient for the amended contract. Main is repairing that
-continuity gap under `RS-WO-020-01R`. No browser, deployment, production privacy, WebMCP, Cloud
-Receiver, or external-auth evidence is claimed. UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` remain
-prepared but gated on the repair's independent verification.
+found that the active-only tenant projection did not expose a removed relation's version after reload;
+Main repaired that continuity gap under `RS-WO-020-01R`, and persistent Verifier
+`01a05f8d-55ae-7810-b938-a7f8490a0b97` independently returned `VERIFIED` against `adfd37e`. UI Work
+Orders `RS-WO-020-02` and `RS-WO-020-03` are now prepared for disjoint parallel dispatch. No browser,
+deployment, production privacy, WebMCP, Cloud Receiver, or external-auth evidence is claimed.

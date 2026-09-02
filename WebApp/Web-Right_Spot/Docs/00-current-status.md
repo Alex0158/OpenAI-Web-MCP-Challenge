@@ -50,9 +50,9 @@ product claim.
 `RIGHTSPOT-018` records two independently reproduced relay-domain defects in one serialized
 shared-workflow Work Order and is closed; `RIGHTSPOT-019` records the integrated London-time UI
 boundary repair and completed browser/form regression, and is closed.
-`RIGHTSPOT-020` remains in progress: a pre-UI review reopened the server-side `RS-WO-020-01` checkpoint
-to repair tenant Favourite relation-version continuity after reload. The tenant and agent UI Work Orders
-remain prepared but gated until that repair is independently verified.
+`RIGHTSPOT-020` remains in progress: the server-side `RS-WO-020-01` foundation and its
+`RS-WO-020-01R` tenant Favourite relation-version continuity repair are independently verified; the
+tenant and agent UI Work Orders are prepared for the next dispatch.
 The bounded Operations seam `RS-WO-011-01` passed independent verification and is integrated at
 product commit `7ff0fbd`; its verifier evidence remains recorded in the owning Task File, and its
 physical Worktree was removed during the documented cleanup.
