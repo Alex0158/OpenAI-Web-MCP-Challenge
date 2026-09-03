@@ -23,6 +23,9 @@ export type TenantListingResponse = {
   listing: WorkflowListingDto;
 };
 
+const LISTING_FILTER_NAMES = ["area", "maxRent", "minSizeSqM", "availableBy"] as const;
+type ListingFilterName = (typeof LISTING_FILTER_NAMES)[number];
+
 export class TenantApiError extends Error {
   readonly status: number;
   readonly code: string;
@@ -112,11 +115,12 @@ export async function readListings(
   filters: TenantListingFilters = {},
   options: Pick<RequestInit, "signal"> = {},
 ): Promise<TenantListingsResponse> {
-  const payload = await requestJson(buildListingsUrl(filters), {
+  const path = buildListingsUrl(filters);
+  const payload = await requestJson(path, {
     method: "GET",
     ...(options.signal !== undefined ? { signal: options.signal } : {}),
   });
-  return parseListingsResponse(payload);
+  return parseListingsResponse(payload, serializedListingFilterNames(path));
 }
 
 export async function readListing(listingId: string): Promise<TenantListingResponse> {
@@ -228,14 +232,28 @@ async function requestJson(path: string, options: RequestInit): Promise<unknown>
   return payload;
 }
 
-function parseListingsResponse(value: unknown): TenantListingsResponse {
+function parseListingsResponse(
+  value: unknown,
+  effectiveFilterNames: ReadonlySet<ListingFilterName>,
+): TenantListingsResponse {
   if (!isRecord(value) || !isPositiveInteger(value.fixtureGeneration) || !Array.isArray(value.listings)) {
+    throw invalidResponse();
+  }
+  if (effectiveFilterNames.size > 0 && (
+    value.appliedFilters === undefined
+    || value.matchedCount === undefined
+    || value.pagePath === undefined
+    || value.pageState === undefined
+  )) {
     throw invalidResponse();
   }
   const listings = value.listings.map(parseListing);
   const appliedFilters = value.appliedFilters === undefined
     ? {}
     : parseAppliedFilters(value.appliedFilters);
+  if ([...effectiveFilterNames].some((name) => !hasOwn(appliedFilters, name))) {
+    throw invalidResponse();
+  }
   const matchedCount = value.matchedCount === undefined
     ? listings.length
     : parseNonNegativeInteger(value.matchedCount);
@@ -317,7 +335,7 @@ function parseAppliedFilters(value: unknown): TenantListingsResponse["appliedFil
   if (!isRecord(value)) {
     throw invalidResponse();
   }
-  const allowedNames = new Set(["area", "maxRent", "minSizeSqM", "availableBy"]);
+  const allowedNames = new Set<string>(LISTING_FILTER_NAMES);
   if (Object.keys(value).some((name) => !allowedNames.has(name))) {
     throw invalidResponse();
   }
@@ -350,6 +368,12 @@ function parseAppliedFilters(value: unknown): TenantListingsResponse["appliedFil
     appliedFilters.availableBy = availableBy;
   }
   return appliedFilters;
+}
+
+function serializedListingFilterNames(path: string): ReadonlySet<ListingFilterName> {
+  const query = path.split("?", 2)[1];
+  const params = new URLSearchParams(query);
+  return new Set(LISTING_FILTER_NAMES.filter((name) => params.has(name)));
 }
 
 function parseNonNegativeInteger(value: unknown): number {
@@ -459,6 +483,10 @@ function invalidResponse(): TenantApiError {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function hasOwn(value: object, name: PropertyKey): boolean {
+  return Object.prototype.hasOwnProperty.call(value, name);
 }
 
 function isNullableRecord(value: unknown): value is Record<string, unknown> | null {

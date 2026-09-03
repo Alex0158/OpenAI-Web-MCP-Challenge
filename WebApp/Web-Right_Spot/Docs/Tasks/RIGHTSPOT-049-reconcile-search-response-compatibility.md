@@ -1,7 +1,7 @@
 # RIGHTSPOT-049 — Fail closed on filtered legacy Search responses
 
 **Type:** defect  
-**Lifecycle:** pending  
+**Lifecycle:** in_progress  
 **Priority:** P2 for Tenant Search result truthfulness and compatibility safety  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-03  
@@ -13,15 +13,16 @@
 - **Objective:** Make the Tenant Search client accept the documented minimal legacy response only for
   an actually unfiltered read, and fail closed when a filtered successful response cannot prove its
   normalized applied filters and page metadata.
-- **Execution posture:** PENDING_BOUNDED — the defect is registered and ready for one serial,
-  parser/test-only Builder Work Order; no source Work Order has started.
+- **Execution posture:** BUILDER_READY_FOR_VERIFICATION — the serial parser/test-only Builder Work
+  Order RS-WO-049-01 completed its handoff; no other writer owns either declared source path.
 - **Blocking status:** Non-blocking to RIGHTSPOT-012, the paused RIGHTSPOT-047 browser gate, and the
   BLOCKED_HARNESS RIGHTSPOT-048 lifecycle evidence gate.
-- **Current next gate:** Capture the exact Main source identity, dispatch RS-WO-049-01, review the
-  Red → Green → Refactor handoff, then freeze the candidate before RS-WO-049-02.
-- **Source identity:** Main will capture the exact commit, dirty-path record, Node runtime, and
-  generated-state boundary immediately before dispatch. The current registration does not authorize
-  a moving source baseline.
+- **Current next gate:** Commit the reviewed post-Builder candidate as a frozen Main checkpoint, then
+  dispatch RS-WO-049-02 against that exact source identity.
+- **Source identity:** Builder dispatch started from Main commit 0994e9245f003b68a9f4b301aa27af46b3d0c4d5.
+  Tracked RightSpot source/test paths were clean; protected untracked .playwright-cli/, :memory:,
+  local instruction files, and Docs/Reference/ were excluded from the write set. The required
+  runtime is Node v24.20.0 with npm 11.19.0.
 - **Main authority:** Main owns task admission, source identity, exact-path review, integration,
   independent verification acceptance, documentation, and Git closure. A supporting worker may not
   commit, push, modify the Git index, alter canonical decisions, or claim closure.
@@ -189,7 +190,7 @@ evidence must not be relabeled as a product failure or used to reopen the blocke
 ### RS-WO-049-01 — Filtered Search response parser repair
 
 **Role:** UI/API client Builder  
-**Status:** PENDING  
+**Status:** READY_FOR_VERIFICATION  
 **Parallelization:** SERIAL_TENANT_SEARCH_CLIENT — one writer only; do not overlap with another
   writer on tenant-api.ts or its focused test.  
 **Risk profile:** Bounded P2 client compatibility repair; no server or domain behavior change.  
@@ -197,6 +198,27 @@ evidence must not be relabeled as a product failure or used to reopen the blocke
 
 - src/ui/tenant/tenant-api.ts
 - tests/ui/tenant-api.test.ts
+
+**Dispatch record (2026-09-03):** Main dispatched this exact two-path Builder Work Order to
+Leibniz (supporting task 01a0669f-fe53-7b52-9fbb-79b4fc502fbd) with model gpt-5.6-sol and medium
+reasoning from the recorded Main baseline. The prompt requires the repository and RightSpot
+instruction surfaces, the complete Task/ADR contract, Red → Green → Refactor evidence, exact-path
+discipline, and the required static checks. It explicitly forbids Git/index operations, canonical
+documentation edits, server/shared-contract/page/WebMCP changes, fixture or SQLite changes,
+Worktree creation, and unrelated-file edits.
+
+**Builder handoff (2026-09-03):** The worker returned `READY_FOR_VERIFICATION` and Main reviewed the
+exact diff. Only `src/ui/tenant/tenant-api.ts` and `tests/ui/tenant-api.test.ts` changed. The parser
+now derives effective criteria from the serialized request, requires complete logical metadata and
+every effective public criterion for filtered success, preserves bounded unfiltered minimal-response
+compatibility, and keeps server-normalized Area values authoritative. Red evidence covered filtered
+minimal result/empty responses, partial metadata, and omitted criteria; Green/Refactor retained the
+existing full envelope and added the bounded compatibility cases. Focused and complete tests passed
+`221/221`, typecheck and production build passed, repository/docs/sensitive/diff checks passed, and
+the independent response probe produced `INVALID_RESPONSE` for filtered minimal data while retaining
+the unfiltered minimal result and normalized Area success. The build emitted only the existing
+Turbopack dynamic-filesystem tracing warning in `src/server/persistence/operations-store.ts`; no
+forbidden path, Git index, commit, Worktree, or unrelated file was changed.
 
 **Read set:**
 

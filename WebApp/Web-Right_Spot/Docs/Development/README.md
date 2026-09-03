@@ -173,10 +173,10 @@ further blind agent-browser retry is authorized. The original 047 five-path cand
 deterministic checks and Main browser smoke, while its independent browser gate must be re-baselined
 after a reviewed 048 evidence decision. The `F-01` queue/privacy defect is closed within `RIGHTSPOT-025`; `RIGHTSPOT-026`
 is also closed within its presentation-only boundary. `RIGHTSPOT-027` is closed after its bounded
-presentation repair and independent verification; no implementation Worktree is active. The next step
-is to make a reviewed decision on the 048 browser evidence boundary or an accepted alternative, then
-re-baseline `RS-WO-047-02` after the shared repair, while the fresh Main-thread cross-layer audit
-continues. Source push and Task closure remain gated by
+presentation repair and independent verification; no implementation Worktree is active. `RIGHTSPOT-049`
+has completed its serial two-path client repair handoff and is ready for independent frozen-source
+verification from the fresh Main-thread cross-layer audit, while the 048 browser evidence decision and
+the later 047 re-baseline remain separate gates. Source push and Task closure remain gated by
 exact-path review, focused/full checks, and complete frozen-source browser verification.
 The authoritative sequence is maintained in the [development roadmap](RIGHTSPOT-DEVELOPMENT-ROADMAP.md#31-current-next-route).
 

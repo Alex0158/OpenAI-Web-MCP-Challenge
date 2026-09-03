@@ -14,6 +14,20 @@ import {
 
 const originalFetch = globalThis.fetch;
 
+const LISTING = {
+  id: "listing-primary",
+  version: 1,
+  title: "Canal House",
+  address: "1 Example Walk",
+  area: "King's Cross",
+  monthlyRentGbp: 2200,
+  bedrooms: 2,
+  sizeSqM: 61,
+  availableFrom: "2026-09-15",
+  description: "A synthetic listing.",
+  imageKey: "listing-primary-image",
+};
+
 test.afterEach(() => {
   globalThis.fetch = originalFetch;
 });
@@ -89,27 +103,103 @@ test("listing reads forward an optional AbortSignal to the same GET request", as
   assert.equal(receivedMethod, "GET");
 });
 
+test("unfiltered listing reads retain bounded minimal-response compatibility", async () => {
+  globalThis.fetch = async () => jsonResponse({ fixtureGeneration: 4, listings: [LISTING] });
+
+  const response = await readListings({
+    area: undefined,
+    maxRent: undefined,
+    minSizeSqM: undefined,
+    availableBy: undefined,
+  });
+
+  assert.deepEqual(response.appliedFilters, {});
+  assert.equal(response.matchedCount, 1);
+  assert.equal(response.pagePath, "/tenant");
+  assert.equal(response.pageState, "results");
+});
+
+test("filtered listing reads reject minimal responses for results and empty results", async () => {
+  for (const listings of [[LISTING], []]) {
+    globalThis.fetch = async () => jsonResponse({ fixtureGeneration: 4, listings });
+    await assert.rejects(
+      () => readListings({ maxRent: 2500 }),
+      (error: unknown) => error instanceof TenantApiError && error.code === "INVALID_RESPONSE",
+    );
+  }
+});
+
+test("filtered listing reads reject partial logical metadata", async () => {
+  globalThis.fetch = async () => jsonResponse({
+    fixtureGeneration: 4,
+    appliedFilters: { minSizeSqM: 50 },
+    matchedCount: 1,
+    listings: [LISTING],
+    pagePath: "/tenant",
+  });
+
+  await assert.rejects(
+    () => readListings({ minSizeSqM: 50 }),
+    (error: unknown) => error instanceof TenantApiError && error.code === "INVALID_RESPONSE",
+  );
+});
+
+test("filtered listing reads require every serialized criterion in applied filters", async () => {
+  globalThis.fetch = async () => jsonResponse({
+    fixtureGeneration: 4,
+    appliedFilters: { area: "King's Cross" },
+    matchedCount: 1,
+    listings: [LISTING],
+    pagePath: "/tenant",
+    pageState: "results",
+  });
+
+  await assert.rejects(
+    () => readListings({ area: "king's cross", availableBy: "2026-09-20" }),
+    (error: unknown) => error instanceof TenantApiError && error.code === "INVALID_RESPONSE",
+  );
+});
+
+test("complete filtered responses preserve server-normalized Area values", async () => {
+  globalThis.fetch = async () => jsonResponse({
+    fixtureGeneration: 4,
+    appliedFilters: { area: "King's Cross" },
+    matchedCount: 1,
+    listings: [LISTING],
+    pagePath: "/tenant",
+    pageState: "results",
+  });
+
+  const response = await readListings({ area: "king's cross" });
+
+  assert.deepEqual(response.appliedFilters, { area: "King's Cross" });
+});
+
+test("complete filtered empty responses remain successful empty results", async () => {
+  globalThis.fetch = async () => jsonResponse({
+    fixtureGeneration: 4,
+    appliedFilters: { maxRent: 1000 },
+    matchedCount: 0,
+    listings: [],
+    pagePath: "/tenant",
+    pageState: "empty",
+  });
+
+  const response = await readListings({ maxRent: 1000 });
+
+  assert.equal(response.matchedCount, 0);
+  assert.deepEqual(response.listings, []);
+  assert.equal(response.pageState, "empty");
+});
+
 test("listing response parsing fails closed on inconsistent or malformed search envelopes", async () => {
-  const listing = {
-    id: "listing-primary",
-    version: 1,
-    title: "Canal House",
-    address: "1 Example Walk",
-    area: "King's Cross",
-    monthlyRentGbp: 2200,
-    bedrooms: 2,
-    sizeSqM: 61,
-    availableFrom: "2026-09-15",
-    description: "A synthetic listing.",
-    imageKey: "listing-primary-image",
-  };
   const invalidPayloads: unknown[] = [
-    { fixtureGeneration: 4, listings: [listing], matchedCount: 0 },
-    { fixtureGeneration: 4, listings: [listing], matchedCount: 1, pageState: "empty" },
-    { fixtureGeneration: 4, listings: [listing], appliedFilters: { maxRent: "2200" } },
-    { fixtureGeneration: 4, listings: [listing], appliedFilters: { availableBy: "2026-02-31" } },
-    { fixtureGeneration: 4, listings: [listing], appliedFilters: { availableFrom: "2026-09-15" } },
-    { fixtureGeneration: 4, listings: [listing], appliedFilters: { privateNote: "must not cross" } },
+    { fixtureGeneration: 4, listings: [LISTING], matchedCount: 0 },
+    { fixtureGeneration: 4, listings: [LISTING], matchedCount: 1, pageState: "empty" },
+    { fixtureGeneration: 4, listings: [LISTING], appliedFilters: { maxRent: "2200" } },
+    { fixtureGeneration: 4, listings: [LISTING], appliedFilters: { availableBy: "2026-02-31" } },
+    { fixtureGeneration: 4, listings: [LISTING], appliedFilters: { availableFrom: "2026-09-15" } },
+    { fixtureGeneration: 4, listings: [LISTING], appliedFilters: { privateNote: "must not cross" } },
   ];
 
   for (const payload of invalidPayloads) {
