@@ -160,8 +160,8 @@ as the UI, not create a second business logic path.
 
 The contract-design phase did not add WebMCP registration, Agent wake semantics, or Cloud
 Receiver-specific payloads merely to reserve names. The bounded `search_listings` page adapter is now
-integrated as a separate implementation checkpoint; supported-browser registration and invocation
-remain independently gated.
+integrated as a separate implementation checkpoint; its supported-browser registration and invocation
+gate passed in `RIGHTSPOT-043` against the declared local capability.
 
 ### 8.1 Tenant Discovery Area contract direction
 
@@ -175,15 +175,16 @@ empty result without fallback.
 
 The ordinary Search implementation applies this direction at product code commit `534f5c9`. The
 complete Search contract is frozen in [ADR-RS-0015](Decisions/ADR-RS-0015-tenant-search-and-webmcp-contract.md);
-the page-bound adapter source is integrated at `ec7a679`, while its supported-browser registration
-and invocation remain a separate verification gate.
+the page-bound adapter source is integrated at `ec7a679`, and its supported-browser registration
+and invocation passed in `RIGHTSPOT-043` against the declared local capability.
 
 ### 8.2 Tenant Discovery Search contract
 
 The first Search capability is one authenticated Tenant read on `/tenant`, exposed to the page-authored
-WebMCP adapter as `search_listings` once its registration gate is accepted. The ordinary form and
-HTTP/API path are integrated at `534f5c9`; the adapter source is integrated at `ec7a679` and shares
-the existing listing application authority and one semantic predicate.
+WebMCP adapter as `search_listings`. The ordinary form and HTTP/API path are integrated at `534f5c9`;
+the adapter source is integrated at `ec7a679`, and its supported-browser registration and invocation
+gate passed in `RIGHTSPOT-043` against the declared local capability. Both paths share the existing
+listing application authority and one semantic predicate.
 
 The first slice accepts exactly four optional criteria:
 
@@ -227,9 +228,10 @@ The remaining choices are implementation or later integration details:
 - public versus internal operation exposure; and
 - whether a future Remote Viewing capability requires a dedicated signaling service.
 
-The exact external WebMCP registration API and browser capability remain implementation-gate checks;
-the logical Search schema and lifecycle above are the accepted product boundary, not a claim that
-the draft WebMCP API is stable or already present in source.
+The exact external WebMCP registration API and browser capability were verified for this bounded
+local slice; future capabilities still require their own implementation-gate checks. The logical
+Search schema and lifecycle above remain the accepted product boundary, not a claim that the draft
+WebMCP API is stable, universally available, or production-ready.
 
 The accepted local baseline is Next.js App Router with React and TypeScript on Node.js 24, using
 SQLite for initial durable storage. Redis, WebRTC media, and WebRTC signaling are not MVP runtime

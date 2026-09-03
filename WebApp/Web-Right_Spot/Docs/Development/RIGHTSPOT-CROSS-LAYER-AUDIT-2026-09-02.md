@@ -1919,6 +1919,9 @@ Main subsequently accepted ADR-RS-0015 for the complete four-criterion Tenant Di
 read-only WebMCP boundary: public `availableBy` mapped to compatibility `availableFrom`, inclusive AND
 semantics, deterministic source order, full return of the bounded synthetic catalogue, explicit
 result/error/freshness/page-state behavior, tenant-safe output, and page/session-scoped lifecycle.
-`RIGHTSPOT-042` is now `CLOSED_VERIFIED` as the decision/documentation gate. `RIGHTSPOT-043` is the
-separate pending implementation Task; no implementation, registration, browser-support, deployment,
-Cloud Receiver, or production-readiness claim is made by this reconciliation.
+`RIGHTSPOT-042` is now `CLOSED_VERIFIED` as the decision/documentation gate. `RIGHTSPOT-043` is also
+`CLOSED_VERIFIED`: its ordinary Search and page-bound adapter source are integrated, and independent
+supported-browser registration, invocation, lifecycle, privacy, no-mutation, and browser evidence
+passed against frozen source baseline `afd5df67507dc81743bde02c706e1232faa7e12c`. This audit
+reconciliation still makes no deployment, Cloud Receiver, production, universal-browser, or judge
+reproducibility claim.

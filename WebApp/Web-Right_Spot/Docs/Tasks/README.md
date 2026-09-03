@@ -293,26 +293,26 @@ authorized no source or registration change; implementation is separately regist
 `RIGHTSPOT-043`. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal and is
 not absorbed by this task.
 
-`RIGHTSPOT-043` is the current in-progress P1 implementation Task for the accepted Tenant Discovery
-Search contract. It contains sequential Work Orders for ordinary UI/API semantics, the thin WebMCP
-adapter, and independent supported-browser verification. `RS-WO-043-01` is integrated in the
+`RIGHTSPOT-043` is now `CLOSED_VERIFIED` for the accepted Tenant Discovery Search contract and its
+thin page-bound WebMCP adapter. It contains the sequential Work Orders for ordinary UI/API semantics,
+the adapter, and independent supported-browser verification. `RS-WO-043-01` is integrated in the
 canonical Main Worktree at product code commit `534f5c9`; the amended `RS-WO-043-02` adapter is
 integrated at `ec7a679` after exact-path review, Node 24 checks, the complete `171/171` suite,
 production build, repository validators, sensitive scan, and ordinary browser smoke. The first
 adapter attempt was blocked before integration because the shared client could not forward
 `AbortSignal`; Main recorded the bounded `tenant-api.ts` scope amendment in `e7be681` and completed
-the amended handoff. `RS-WO-043-03` was dispatched against frozen source baseline `87884d1` for
-independent supported-browser verification, but returned `NOT_VERIFIED` because Chrome
-`152.0.7977.65` and the available in-app bridge exposed no usable WebMCP capability. No extra
-Worktree is open and no product defect was reproduced.
+the amended handoff. `RS-WO-043-03` then passed independent supported-browser verification against
+frozen source baseline `afd5df67507dc81743bde02c706e1232faa7e12c` using Chrome `152.0.7977.65`,
+agent-browser `0.25.3`, and `--enable-features=WebMCPTesting`. No extra Worktree is open and no
+product defect was reproduced.
 
-**Current route:** `RIGHTSPOT-043` is the current active Main-owned implementation route for the
-accepted Tenant Discovery/WebMCP Search direction; `RS-WO-043-01` and the amended
-`RS-WO-043-02` are integrated, and `RS-WO-043-03` remains open after its environment-blocked
-`NOT_VERIFIED` attempt against frozen source baseline `87884d1`/adapter commit `ec7a679`.
-`RIGHTSPOT-042` is closed as the decision gate. `RIGHTSPOT-041` and
-`RIGHTSPOT-040` remain closed within their exact tenant consumer boundaries. No extra code Worktree is
-open.
+**Current route:** `RIGHTSPOT-043` is closed for this bounded Main-owned Tenant Discovery/WebMCP
+Search outcome; `RS-WO-043-01`, amended `RS-WO-043-02`, and `RS-WO-043-03` are complete. The
+supported-browser evidence covered exact registration/invocation, page parity, filter/error/empty
+boundaries, role/privacy/no-mutation, lifecycle teardown, manual fallback, keyboard, responsive
+layout, sign-out cleanup, and console/page errors. `RIGHTSPOT-042` is closed as the decision gate.
+`RIGHTSPOT-041` and `RIGHTSPOT-040` remain closed within their exact tenant consumer boundaries. No
+extra code Worktree is open.
 `RIGHTSPOT-032` through `RIGHTSPOT-040` remain closed within their exact tenant and Agent
 presentation boundaries.
 `RIGHTSPOT-030`
@@ -326,7 +326,7 @@ presentation/navigation boundaries. `RIGHTSPOT-020` remains closed after its Fav
 implementation and fresh-reset browser verification. `RIGHTSPOT-006` stays gated on explicit external
 credentials and local-origin authorization; `RIGHTSPOT-010` remains a separate Operations/WebMCP
 decision gate; `RIGHTSPOT-012` is non-blocking read-only audit work; `RIGHTSPOT-042` is closed as the
-selected Tenant Search contract gate; and `RIGHTSPOT-043` is the current implementation gate. Only an explicitly selected,
+selected Tenant Search contract gate; and `RIGHTSPOT-043` is `CLOSED_VERIFIED`. Only an explicitly selected,
 implementation-ready Task may open code Work Orders or temporary Worktrees.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)

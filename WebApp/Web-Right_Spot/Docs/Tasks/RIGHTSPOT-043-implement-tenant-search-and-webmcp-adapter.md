@@ -1,7 +1,7 @@
 # RIGHTSPOT-043 — Implement Tenant Discovery Search and WebMCP adapter
 
 **Type:** `implementation`  
-**Lifecycle:** `in_progress`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for the first WebMCP/product integration slice; the closed ordinary MVP remains runnable without it  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-03  
@@ -11,16 +11,15 @@ page/session-bound read-only WebMCP capability without creating a second listing
 
 ## Task control
 
-- **Lifecycle:** `in_progress`
-- **Execution posture:** `SERIAL_PRODUCT_SEARCH_WITH_SEQUENTIAL_WEBMCP_GATE`
+- **Lifecycle:** `closed`
+- **Execution posture:** `CLOSED_VERIFIED`
 - **Owner:** Main RightSpot thread
-- **Current gate:** `RS-WO-043-02` is integrated in the canonical Main Worktree at `ec7a679` after
-  exact-path review and complete static checks. `RS-WO-043-03` was dispatched against frozen source
-  `87884d11c2b11b47a42eaabdce66f983575779aa` and returned `NOT_VERIFIED` because the available
-  browser/runtime surfaces do not expose `document.modelContext`; no product defect was reproduced,
-  but supported-browser WebMCP evidence is still absent. No source, dependency, fixture, or extra
-  Worktree change is authorized outside the active verification gate.
-- **Dispatch state:** `RS-WO-043-01 integrated; RS-WO-043-02 integrated; RS-WO-043-03 NOT_VERIFIED — environment capability gate`
+- **Current gate:** `RS-WO-043-01` and `RS-WO-043-02` are integrated in the canonical Main Worktree.
+  `RS-WO-043-03` is `VERIFIED` against frozen source baseline
+  `afd5df67507dc81743bde02c706e1232faa7e12c` after independent supported-browser runtime
+  verification. The bounded first Tenant Discovery WebMCP slice is closed; no extra source,
+  dependency, fixture, or Worktree change is authorized by this Task.
+- **Dispatch state:** `RS-WO-043-01 integrated; RS-WO-043-02 integrated; RS-WO-043-03 VERIFIED — supported-browser runtime gate`
 - **Supporting workers:** Hubble's first `RS-WO-043-02` attempt returned `BLOCKED` before adapter
   integration; its amended candidate was reviewed by Main and integrated after the exact-path and
   runtime-seam checks. Main retains source integration, shared-file serialization, verification
@@ -33,9 +32,13 @@ page/session-bound read-only WebMCP capability without creating a second listing
   production build, repository validators, sensitive scan, staged diff check, and `/api/health`
   passed. Fresh local browser smoke confirmed the ordinary initial catalogue and canonical
   `Southwark`/`Haringey` Area results with no console warnings/errors. Five pre-existing untracked
-  RightSpot boundary artifacts remain protected. The current in-app browser bridge could not expose
-  WebMCP documentation/tools under this model; supported-browser registration and invocation remain
-  the independent verifier gate and are not claimed by this checkpoint.
+  RightSpot boundary artifacts remain protected. The current in-app browser/Luna bridge still does not
+  expose the WebMCP site-tool surface under this model and is not used as success evidence. The final
+  supported-browser verifier used Chrome `152.0.7977.65`, agent-browser `0.25.3`, and
+  `--enable-features=WebMCPTesting` against the frozen source baseline above; it observed one
+  page-bound `search_listings` registration, direct runtime discovery/invocation, page/result
+  parity, lifecycle cleanup, privacy/no-mutation, keyboard, responsive, and clean-console
+  evidence. This proves the bounded local browser slice only, not production or universal support.
 - **Integration authority:** Main owns source integration, shared-file serialization, verification
   acceptance, canonical documentation, Git commit/push, and candidate Worktree retirement.
 
@@ -152,8 +155,8 @@ adapter/API tests, the complete `171/171` suite, typecheck, production build, re
 sensitive scan, staged diff review, and ordinary browser smoke. The adapter registers only the
 page-bound `search_listings` capability when `document.modelContext` is available, forwards the
 WebMCP execution signal through the existing GET boundary, guards stale results, and leaves the
-manual form as the fallback. This is an accepted source handoff, not independent supported-browser
-proof; `RS-WO-043-03` is the next gate.
+manual form as the fallback. This was an accepted source handoff; `RS-WO-043-03` was the next gate
+and subsequently passed independent supported-browser verification.
 
 **Read set:** the frozen post-WO-01 source, `src/ui/tenant/tenant-api.ts`, ADR-RS-0015, the supported
 official WebMCP documentation, the current browser/runtime configuration, and the existing Tenant
@@ -186,7 +189,11 @@ cancellation API must be revalidated at dispatch and verification. Do not add a 
 ### RS-WO-043-03 — Independent supported-browser verification and Main closure
 
 **Role:** Verifier — independent read-only evidence  
-**Status:** `BLOCKED — supported-browser capability unavailable in the current environment`  
+**Status:** `VERIFIED — independent supported-browser verification passed`  
+**Supporting verifier:** Nietzsche, task `01a06502-acf7-7d13-a036-18ea54a9ccd1`, model
+`gpt-5.6-sol` with `medium` reasoning.  
+**Frozen source:** `afd5df67507dc81743bde02c706e1232faa7e12c`; adapter product commit
+`ec7a67917c1df5a54b6187e6cf6ac80a7c2acbd7`.
 **Allowed write set:** none in product source or canonical docs; evidence may be written only through
 the Main closure process.  
 **Read set:** frozen post-Builder source, exact runtime/browser capability, fixture reset boundary,
@@ -250,16 +257,27 @@ widening the semantic contract.
 
 ## Closure evidence
 
-This Task remains `in_progress` after the ordinary Search and adapter source checkpoints. The closed
-decision gate is recorded in `RIGHTSPOT-042` and ADR-RS-0015. The first `RS-WO-043-02` attempt was
-blocked before integration because the original write set could not provide genuine transport
-cancellation; Main recorded the bounded `tenant-api.ts` amendment in `e7be681`, reviewed the
-amended five-path handoff, and integrated it at `ec7a679`. Main then dispatched `RS-WO-043-03` against
-the frozen source baseline `87884d11c2b11b47a42eaabdce66f983575779aa`. The independent verifier
-returned `NOT_VERIFIED`: Chrome `152.0.7977.65` reported `document.modelContext === undefined`, and
-the available in-app bridge rejected `fetchTools()` because the current model does not support
-`webmcp_list_tools`. Ordinary manual Search smoke, static checks, and source-boundary checks passed,
-but supported-browser registration, discovery, invocation, lifecycle teardown, and agent evidence
-could not be observed. This is an environment capability gate, not a reproduced product defect; the
-integrated result must not claim WebMCP success, deployment, or judge reproducibility until W3 is
-rerun in a compatible supported-browser environment.
+This Task is `CLOSED`. The decision gate is recorded in `RIGHTSPOT-042` and ADR-RS-0015. The first
+`RS-WO-043-02` attempt was blocked before integration because the original write set could not
+provide genuine transport cancellation; Main recorded the bounded `tenant-api.ts` amendment in
+`e7be681`, reviewed the amended five-path handoff, and integrated it at `ec7a679`. An initial
+`RS-WO-043-03` capability attempt against `87884d11c2b11b47a42eaabdce66f983575779aa` correctly
+returned `NOT_VERIFIED` because the available in-app/ordinary browser surface exposed no
+`document.modelContext`. That historical result was an environment capability gate, not a product
+defect, and did not become a success claim.
+
+Main then dispatched the unchanged product source to the independent Sol verifier Nietzsche with
+`medium` reasoning against frozen baseline `afd5df67507dc81743bde02c706e1232faa7e12c`. In isolated
+Chrome `152.0.7977.65` with agent-browser `0.25.3` and `--enable-features=WebMCPTesting`, the
+verifier observed the exact `search_listings` metadata/schema and direct RegisteredTool invocation
+through `document.modelContext`. Southwark and Haringey result/page agreement, four-filter AND
+semantics, empty/invalid/unknown/malformed handling, route/session teardown, signed-out/wrong-role
+absence, Favourite and Viewing Request no-mutation, tenant-safe output, unsupported-browser manual
+fallback, active-session sign-out (`DELETE /api/session 200` and tool count `1 → 0`), 12 real Tab
+steps, and a `320px` layout floor passed. Console output contained only normal React DevTools/HMR
+information and page errors were absent. The combined deterministic and browser evidence is accepted
+as `VERIFIED` for this bounded local slice.
+
+The closure claim deliberately excludes production deployment, universal WebMCP/browser support,
+probabilistic judge or LLM behavior, Cloud Receiver, external authentication, Redis, WebRTC, and
+any mutation capability. The ordinary manual Search path remains the authoritative fallback.

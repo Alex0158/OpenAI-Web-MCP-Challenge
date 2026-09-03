@@ -89,8 +89,8 @@ suggestion discovery; the applied filter uses a selected canonical `listing.area
 trim and case-insensitive normalization. Unknown or unselected values receive bounded validation,
 selected values with no published matches remain explicit empty results, and no fuzzy, alias, or full-
 catalogue fallback is allowed. The ordinary Search implementation now follows this direction at
-product code commit `534f5c9`; the thin WebMCP adapter source is integrated at `ec7a679`, while
-supported-browser registration and invocation remain a separate verification gate.
+product code commit `534f5c9`; the thin WebMCP adapter source is integrated at `ec7a679`, and the
+bounded supported-browser registration/invocation gate is independently verified in `RIGHTSPOT-043`.
 **Accepted Search contract (2026-09-03):** [ADR-RS-0015](Decisions/ADR-RS-0015-tenant-search-and-webmcp-contract.md)
 freezes the first slice at the four optional criteria `area`, `maxRent`, `minSizeSqM`, and public
 `availableBy` (mapped to the compatibility `availableFrom` field). Criteria are ANDed with inclusive
@@ -105,19 +105,21 @@ at `534f5c9`, and `RS-WO-043-02`'s amended five-path page-bound adapter handoff 
 canonical Main Worktree at product code commit
 `ec7a67917c1df5a54b6187e6cf6ac80a7c2acbd7` with Node `24.20.0`. Main reviewed the exact path boundary,
 the optional `AbortSignal` transport seam, bounded input/result/error handling, page/session lifecycle,
-and the ordinary manual fallback. The current in-app browser bridge did not expose WebMCP
-documentation/tools under this model, so supported-browser discovery, invocation, teardown, and
-agent evidence remain unverified; no runtime WebMCP success claim is made. Five pre-existing
-untracked RightSpot boundary artifacts remain preserved.
+  and the ordinary manual fallback. The current in-app browser/Luna bridge still does not expose
+  WebMCP site tools under this model and is not used as success evidence. The final supported-browser
+  verifier observed registration, invocation, teardown, privacy/no-mutation, and browser evidence in
+  Chrome `152.0.7977.65` with agent-browser `0.25.3` and `--enable-features=WebMCPTesting`. Five
+  pre-existing untracked RightSpot boundary artifacts remain preserved.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Obtain a compatible supported-browser WebMCP capability and rerun
-`RS-WO-043-03` against frozen source baseline `87884d11c2b11b47a42eaabdce66f983575779aa`. The first
-independent attempt returned `NOT_VERIFIED`: Chrome `152.0.7977.65` had no `document.modelContext`,
-and the available in-app bridge rejected `webmcp_list_tools`. Ordinary Search smoke and all static
-checks passed, but supported-browser registration/invocation, lifecycle teardown, privacy/no-mutation,
-failure/empty/stale boundaries, and agent evidence remain unobserved. The first adapter attempt was
-blocked before integration because `readListings` could not forward `AbortSignal`; the bounded client
-seam is now integrated and documented. No WebMCP success claim is made.
+**Current next product action:** `RIGHTSPOT-043` is `CLOSED_VERIFIED` for the bounded local Tenant
+Discovery Search/WebMCP slice. `RS-WO-043-03` passed against frozen source baseline
+`afd5df67507dc81743bde02c706e1232faa7e12c` using independent `gpt-5.6-sol` with `medium` reasoning,
+Chrome `152.0.7977.65`, agent-browser `0.25.3`, and `--enable-features=WebMCPTesting`. Direct
+runtime discovery/invocation, valid and boundary searches, page parity, role/privacy/no-mutation,
+route/session teardown, manual fallback, keyboard continuity, `320px` layout, active sign-out
+cleanup, and clean console/page-error evidence passed. The current in-app/Luna bridge remains
+unsupported and is not a failure of this product slice. No production, universal browser, judge, or
+probabilistic agent success claim is made.
 `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP decision proposal. The Main-thread
 cross-layer audit Goal is closed
 for the accepted ordinary local MVP; `RIGHTSPOT-039` /
@@ -651,6 +653,9 @@ repair. `RIGHTSPOT-038` is closed within its exact request-detail consumer bound
 `RS-WO-035-01`, `RIGHTSPOT-036` / `RS-WO-036-01`, `RIGHTSPOT-037` / `RS-WO-037-01`,
 `RIGHTSPOT-038` / `RS-WO-038-01`, `RIGHTSPOT-040` / `RS-WO-040-01`, and `RIGHTSPOT-041` /
 `RS-WO-041-01` are `CLOSED_VERIFIED` in the canonical Main Worktree; no extra code Worktree is open.
+`RIGHTSPOT-043` / `RS-WO-043-03` are also `CLOSED_VERIFIED` for the bounded local Tenant
+Discovery Search/WebMCP slice; its supported-browser evidence and non-claims are recorded in the
+owning Task File and WebMCP roadmap.
 The
 read-only `RS-WO-002-14`
 combined cross-role verification passed against integrated source

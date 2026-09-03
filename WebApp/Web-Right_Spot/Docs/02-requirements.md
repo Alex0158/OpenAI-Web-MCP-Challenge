@@ -221,19 +221,23 @@ Repeated submission or the same completed decision shall not create a duplicate 
 external consequence. A conflicting action shall fail with the current state and leave the record
 unchanged.
 
-## 7. Challenge-facing requirements deferred to integration
+## 7. Challenge-facing requirements and deferred integration
 
-The following are intentionally not first-phase requirements:
+The first bounded Tenant Discovery Search WebMCP slice is implemented and independently verified
+under `RIGHTSPOT-043`. It is a progressive enhancement to the ordinary local application and does
+not make the following broader requirements complete:
 
-- genuine page-bound WebMCP registration and invocation;
+- additional page-bound WebMCP capabilities beyond the verified Tenant Discovery Search slice;
 - Agent continuation or page re-entry;
 - Cloud Receiver delivery;
 - Local Connector pairing;
 - public hosting and judge clean-room access; and
 - a sub-three-minute Hackathon demonstration.
 
-They will be added only after the ordinary RightSpot workflow has a stable product and Backbone
-boundary.
+Additional challenge-facing integration will be added only after the ordinary RightSpot workflow has
+a stable product and Backbone boundary, and each capability has its own accepted contract, source
+boundary, and verification evidence. The first slice does not claim production, universal browser,
+judge, Agent continuation, Cloud Receiver, or public-hosting readiness.
 
 ## 8. Remaining implementation and integration decisions
 

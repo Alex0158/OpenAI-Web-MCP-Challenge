@@ -238,12 +238,12 @@ map search, or listing administration.
 
 **Accepted Area contract direction:** [ADR-RS-0014](Decisions/ADR-RS-0014-area-search-semantics.md)
 defines Area as a canonical structured facet. Partial input is limited to deterministic suggestion
-discovery; Apply and the future WebMCP capability use a selected canonical Area after shared trim and
+discovery; Apply and the page-bound WebMCP capability use a selected canonical Area after shared trim and
 case-insensitive normalization. An unselected or unknown value must receive bounded validation, while
 a selected Area with no published matches remains an explicit empty result with no catalogue fallback.
 The ordinary Tenant Search implementation now follows this direction at product code commit
-`534f5c9`; the page-bound adapter source is integrated at `ec7a679`, while supported-browser
-registration and invocation remain separately gated.
+`534f5c9`; the page-bound adapter source is integrated at `ec7a679`, and the supported-browser
+registration and invocation gate passed in `RIGHTSPOT-043` against the declared local capability.
 
 **Accepted Search contract:** [ADR-RS-0015](Decisions/ADR-RS-0015-tenant-search-and-webmcp-contract.md)
 freezes the first slice at the four optional criteria `area`, `maxRent`, `minSizeSqM`, and public
@@ -252,9 +252,9 @@ deterministic source order, and the bounded synthetic catalogue is returned with
 pagination or silent truncation. The Area control resolves an exact canonical stored label after
 bounded prefix suggestions; unresolved/unknown input is validation, and a known Area with no current
 published match is truthful empty state. The `search_listings` capability source is now integrated as
-read-only, Tenant-only, and page-bound to `/tenant`; it must update the same visible page state as the
-human form. Supported-browser registration/invocation evidence remains a separate gate, so this flow
-does not claim runtime WebMCP success.
+read-only, Tenant-only, and page-bound to `/tenant`; it updates the same visible page state as the
+human form. Supported-browser registration/invocation evidence passed in `RIGHTSPOT-043` for the
+bounded local slice. This flow still does not claim production, universal browser, or judge support.
 
 ### RS-FLOW-03 — Inspect a listing and enter a request
 
@@ -770,7 +770,7 @@ ordinary application flow:
 |---|---|
 | Information Request/contact preference | `DEFERRED`; requires an owner-approved PII, consent, retention, erasure, encryption, and agent-access decision before any field or route is added |
 | Username/password or Clerk/Gmail authentication | `GATED`; requires external credentials and provider-boundary implementation task; demo session remains the current local contract |
-| WebMCP capability registration/invocation | `DEFERRED`; only after normal UI/API flow is coherent and a separate integration acceptance claim is defined |
+| WebMCP capability registration/invocation | `CLOSED_VERIFIED` for the first bounded Tenant Discovery Search slice in `RIGHTSPOT-043`; later capabilities require separate acceptance |
 | Cloud Receiver delivery/continuation | `DEFERRED`; an adapter may relay a RightSpot-owned event but cannot own request state or human decisions |
 | WebRTC/Remote Viewing | `DEFERRED`; a future media/signaling session must remain separate from the Viewing Request state machine |
 | Live chat, email, push, calendar, payment, lease, buying, and listing CRUD | `DEFERRED`; none is a fallback for a missing current flow |

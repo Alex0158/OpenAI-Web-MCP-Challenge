@@ -106,10 +106,11 @@ deterministic suggestions, shared normalization, explicit unknown-value handling
 catalogue fallback. ADR-RS-0015 now accepts the complete first Search contract: the four criteria,
 inclusive AND semantics, compatibility date mapping, deterministic source order, bounded full result,
 truthful empty/error/stale behavior, page/tool parity, Tenant-only privacy, and page/session-scoped
-WebMCP lifecycle. `RIGHTSPOT-042` is closed as a decision gate; `RIGHTSPOT-043` is the active
-implementation route. `RS-WO-043-01` and the amended `RS-WO-043-02` source are integrated at
-product commits `534f5c9` and `ec7a679`; supported-browser WebMCP registration, invocation, and
-independent browser verification remain open gates. `RIGHTSPOT-010` remains a separate pending Agent
+WebMCP lifecycle. `RIGHTSPOT-042` is closed as a decision gate; `RIGHTSPOT-043` is now
+`CLOSED_VERIFIED`. `RS-WO-043-01` and the amended `RS-WO-043-02` source are integrated at product
+commits `534f5c9` and `ec7a679`; `RS-WO-043-03` passed independent supported-browser registration,
+invocation, and browser evidence against frozen source baseline
+`afd5df67507dc81743bde02c706e1232faa7e12c`. `RIGHTSPOT-010` remains a separate pending Agent
 Operations/WebMCP proposal.
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-03, Europe/London
@@ -120,12 +121,13 @@ exact-path review. Their historical snapshots remain in the owning Task File rec
 Worktree is an active source or writer.
 
 **Current gate:** No extra implementation Worktree is open; `RS-WO-043-01` and amended
-`RS-WO-043-02` are integrated in the canonical Main Worktree. `RS-WO-043-03` was attempted against
-frozen source baseline `87884d1` but returned `NOT_VERIFIED` because Chrome `152.0.7977.65` and the
-available in-app bridge exposed no usable WebMCP capability. The accepted local MVP and the
+`RS-WO-043-02` are integrated in the canonical Main Worktree, and `RS-WO-043-03` is
+`CLOSED_VERIFIED` against frozen source baseline `afd5df67507dc81743bde02c706e1232faa7e12c` in
+the declared local supported-browser capability. Chrome `152.0.7977.65` with agent-browser
+`0.25.3` and `--enable-features=WebMCPTesting` supplied runtime registration, invocation, lifecycle,
+privacy, no-mutation, keyboard, responsive, and console evidence. The accepted local MVP and the
 `RIGHTSPOT-039` / `RS-WO-039-01` F-17 listing-detail partial-read repair are closed within their
-bounded outcomes. `RIGHTSPOT-043` supported-
-browser WebMCP registration, invocation, and browser evidence remain unverified until the verifier gate.
+bounded outcomes.
 `RIGHTSPOT-042` is closed as the preceding contract decision, and the Main-thread cross-layer audit
 remains non-blocking evidence work.
 `RIGHTSPOT-033`, `RIGHTSPOT-034`, `RIGHTSPOT-035`, `RIGHTSPOT-036`, `RIGHTSPOT-037`, and `RIGHTSPOT-038` are `CLOSED_VERIFIED` within their bounded presentation scopes in
@@ -270,18 +272,19 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 | 4. Ordinary human application loop | Deliver tenant discovery/request submission, agent queue/review/response, and tenant confirmation/decline as one coherent UI flow | Local tenant-to-agent Happy Path is reproducible from reset | Complete; `RS-WO-002-14` passed independent direct cross-role verification and `RS-WO-002-15` passed the isolated browser walkthrough against integrated source `9348aa50b63e3f4f46e77238ad370670383d9d6` |
 | 5. Validation and closure | Complete focused domain checks, role/privacy and stale-state checks, browser walkthrough, evidence reconciliation, and development closure record | Main thread confirms the closure evidence and non-claims | Complete; closure record reconciled and `RIGHTSPOT-002` closed |
 | 6. Post-MVP product refinement | Resolve high-impact navigation friction, strengthen visual credibility, and add a truthful Operations foundation without changing relay workflow authority | Each bounded candidate is independently verified and integrated before the next shared-surface change | Closure increment complete; `RS-WO-005-01` integrated at `27f5391`; `RIGHTSPOT-007` closed after `RS-WO-007-08` integrated regression; `RS-WO-011-01`/`02` verified and integrated at `7ff0fbd` as a server-only relay seam; `RIGHTSPOT-013` and `RIGHTSPOT-014` closed with their accepted decisions; `RIGHTSPOT-015` closed at `e7f30d5`; `RS-WO-016-01` independently verified and integrated at `edd7575`; `RS-WO-017-02` integrated at `b7369bd`; `RS-WO-017-03` independently verified and integrated at `2a53917`, with `RS-WO-017-04` browser verification complete; `RS-WO-018-01` integrated and closed at `5eef037`; `RS-WO-019-01` integrated and closed at `6f52686` after browser/form regression; and `RIGHTSPOT-022` independently verified and closed at `f0dbd99` |
-| 7. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary refinement is stable and a new explicit integration decision exists | Tenant Discovery Search contract accepted in `RIGHTSPOT-042`/ADR-RS-0015; implementation is gated by `RIGHTSPOT-043` |
+| 7. Optional Hackathon integration | Add only the separately selected page capability, continuation adapter, Cloud Receiver boundary, deployment, or judge evidence that the ordinary app proves necessary | Ordinary refinement is stable and a new explicit integration decision exists | First bounded Tenant Discovery Search/WebMCP slice is verified and closed in `RIGHTSPOT-043`; later capabilities remain separately gated |
 
 ### 3.1 Current next route
 
-The current route is the active Main-owned `RIGHTSPOT-043` Tenant Discovery/WebMCP Search implementation
-Task; `RS-WO-043-01` and amended `RS-WO-043-02` are integrated, and `RS-WO-043-03` remains the open
-verification gate after an environment-blocked `NOT_VERIFIED` attempt against frozen source baseline
-`87884d1`/adapter commit `ec7a679`. The first WebMCP goal is
+The first Main-owned `RIGHTSPOT-043` Tenant Discovery/WebMCP Search implementation is now
+`CLOSED_VERIFIED`; `RS-WO-043-01` and amended `RS-WO-043-02` are integrated, and `RS-WO-043-03`
+passed independent supported-browser verification against frozen source baseline
+`afd5df67507dc81743bde02c706e1232faa7e12c`/adapter commit `ec7a679`. The first WebMCP goal is
 selected as read-only Tenant listing discovery on
 `/tenant`; ADR-RS-0014 accepts the canonical Area direction and ADR-RS-0015 accepts the complete
 criteria, result/page-state, error/freshness, privacy, and browser-fallback contract. `RIGHTSPOT-043`
-must pass independent supported-browser verification of the integrated adapter before closure.
+is closed within that bounded local outcome. No production, universal browser, judge, or deferred
+integration claim is implied.
 `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal;
 `RIGHTSPOT-012` remains a non-blocking audit lane.
 

@@ -49,8 +49,9 @@ operational, but the Area control used an unseeded `Shoreditch` example and did 
 Area rule. Main later accepted ADR-RS-0015 for the ordinary UI/API and first read-only WebMCP Search
 contract, reconciled the core documents, and registered `RIGHTSPOT-043` for implementation. The
 ordinary Search and amended page-bound adapter source are now integrated at product commits `534f5c9`
-and `ec7a679`; supported-browser WebMCP registration/invocation remains unverified. `RIGHTSPOT-010`
-remains a separate pending Agent Operations/WebMCP proposal.
+and `ec7a679`; the bounded supported-browser WebMCP registration/invocation gate is independently
+verified and recorded in `RIGHTSPOT-043`. `RIGHTSPOT-010` remains a separate pending Agent
+Operations/WebMCP proposal.
 
 **Current physical workspace:** The canonical Main Worktree remains the only source authority. The stopped,
 short-lived `RS-WO-020-02` and `RS-WO-020-03` candidate Worktrees were adopted into Main and retired after

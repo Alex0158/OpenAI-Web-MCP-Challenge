@@ -21,9 +21,9 @@ ADR-RS-0014 resolved the Area direction but intentionally did not freeze the com
 WebMCP boundary.
 
 This decision closes that contract without turning the MVP into a generic marketplace search,
-natural-language query engine, or second business authority. It is a semantic and integration
-decision only. It does not claim that WebMCP is implemented or that the current source already
-matches the accepted Area UI behavior.
+natural-language query engine, or second business authority. It is the semantic and integration
+authority for the slice; it did not itself constitute runtime evidence at decision time. The
+implemented and verified status is recorded in `RIGHTSPOT-043` and its closure evidence.
 
 ## Decision
 
@@ -275,8 +275,10 @@ authority must remain the only source of role-safe listing truth.
   broad keyword search, or a production-scale output contract.
 - The ordinary Search portion of `RIGHTSPOT-043` is integrated at `534f5c9`, and the amended
   page-bound adapter source is integrated at `ec7a679`. Independent supported-browser registration,
-  invocation, and lifecycle verification remain open gates; this ADR does not claim those gates have
-  passed.
+  invocation, and lifecycle verification passed in `RIGHTSPOT-043` against frozen source baseline
+  `afd5df67507dc81743bde02c706e1232faa7e12c`. This ADR remains the accepted contract authority;
+  the Task File records the runtime evidence and the closure does not claim production or universal
+  WebMCP support.
 
 ## Validation and reopen triggers
 
