@@ -158,6 +158,10 @@ not claim that the game is built or balanced.
 - [`87-cp12-causal-history-card-runtime-cross-functional-audit.md`](87-cp12-causal-history-card-runtime-cross-functional-audit.md)
   — CP-12 causal event card presentation across scoped projection fidelity, append-only ordering,
   explicit identity text, responsive wrapping, lifecycle, and unchanged external boundaries.
+- [`88-cp12-shelter-economy-summary-card-runtime-cross-functional-audit.md`](88-cp12-shelter-economy-summary-card-runtime-cross-functional-audit.md)
+  — CP-12 shelter economy summary presentation across Coins authority, ready/stale resource
+  semantics, fail-closed unavailable state, responsive layout, lifecycle, and unchanged external
+  boundaries.
 
 ## Current concept checks
 

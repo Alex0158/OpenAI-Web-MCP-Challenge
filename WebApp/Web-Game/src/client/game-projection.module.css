@@ -308,6 +308,66 @@
   font-size: 1.2rem;
 }
 
+.shelterSummary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+}
+
+.shelterSummaryCard {
+  display: grid;
+  min-width: 0;
+  gap: 0.35rem;
+  border: 1px solid #264438;
+  border-radius: 0.4rem;
+  background: #0d211a;
+  padding: 0.6rem 0.65rem;
+}
+
+.shelterSummaryCard[data-summary-kind="coins"] {
+  border-color: #6f6138;
+}
+
+.shelterSummaryHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.shelterSummaryLabel,
+.shelterSummaryValue,
+.shelterSummaryDetail {
+  overflow-wrap: anywhere;
+}
+
+.shelterSummaryLabel {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.35rem;
+  color: #c7dfd0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.shelterSummaryValue {
+  color: #f2f6e9;
+  font-size: 1.1rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.shelterSummaryDetail {
+  color: #9fb8aa;
+  font-size: 0.66rem;
+  line-height: 1.35;
+}
+
 .resourceSummary {
   display: flex;
   flex-wrap: wrap;
@@ -680,6 +740,10 @@
 }
 
 @media (max-width: 520px) {
+  .shelterSummary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .missionMeta,
   .eventMeta {
     grid-template-columns: minmax(0, 1fr);

@@ -34,6 +34,7 @@ import {
 } from "./projection-model";
 import { buildMissionStatusCards } from "./mission-presentation";
 import { buildCausalEventCards } from "./event-presentation";
+import { buildShelterSummaryCards } from "./shelter-summary-presentation";
 import {
   resolveActorVisual,
   resolveResourceVisual,
@@ -415,6 +416,10 @@ export function GameProjection({
   const rows = useMemo(() => buildAccessibleMissionRows(view), [view]);
   const missionCards = useMemo(() => buildMissionStatusCards(view.missions), [view.missions]);
   const causalEventCards = useMemo(() => buildCausalEventCards(view.recentEvents), [view.recentEvents]);
+  const shelterSummaryCards = useMemo(() => buildShelterSummaryCards({
+    shelter: view.shelter,
+    resourceNodes: view.snapshotStatus === "READY" ? view.resourceNodes : null,
+  }), [view.resourceNodes, view.shelter, view.snapshotStatus]);
   const rowBySoldier = useMemo(() => new Map(rows.map((row) => [row.soldierId, row.text])), [rows]);
   const selection = useMemo(() => resolveSelectionVisual({
     selectedSoldierId,
@@ -430,9 +435,6 @@ export function GameProjection({
     (choice) => choice.soldierId === selectedSoldierId && !choice.disabled,
   ) ?? null;
   const selectedTarget = dispatchChoices.targets.find((choice) => choice.targetId === selectedTargetId && !choice.disabled) ?? null;
-  const sensedWood = view.resourceNodes.filter((node) => node.resourceType === "wood").length;
-  const sensedRock = view.resourceNodes.filter((node) => node.resourceType === "rock").length;
-  const sensedNodeCount = view.snapshotStatus === "READY" ? { wood: sensedWood, rock: sensedRock } : null;
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -859,10 +861,19 @@ export function GameProjection({
               <h2 className={styles.sectionTitle}>Shelter</h2>
               <span>{view.shelter?.shelterId ?? "Waiting"}</span>
             </div>
-            <p className={styles.metric}><span className={styles.iconLabel}><VisualIcon name="icon_coin" className={styles.icon} /> Coins</span> <strong>{view.shelter?.coins ?? "—"}</strong></p>
-            <div className={styles.resourceSummary} aria-label="Sensed Wood and Rock resource nodes">
-              <span className={styles.resourceChip}><VisualIcon name="icon_wood" className={styles.icon} /> <span>Wood <strong>{sensedNodeCount?.wood ?? "—"}</strong></span></span>
-              <span className={styles.resourceChip}><VisualIcon name="icon_rock" className={styles.icon} /> <span>Rock <strong>{sensedNodeCount?.rock ?? "—"}</strong></span></span>
+            <div className={styles.shelterSummary} aria-label="Shelter economy summary">
+              {shelterSummaryCards.map((card) => (
+                <div key={card.kind} className={styles.shelterSummaryCard} data-summary-kind={card.kind}>
+                  <div className={styles.shelterSummaryHeader}>
+                    <span className={styles.shelterSummaryLabel}>
+                      <VisualIcon name={card.icon} className={styles.icon} />
+                      {card.label}
+                    </span>
+                    <strong className={styles.shelterSummaryValue}>{card.value}</strong>
+                  </div>
+                  <span className={styles.shelterSummaryDetail}>{card.detail}</span>
+                </div>
+              ))}
             </div>
             <p className={styles.muted}>All values come from the latest server snapshot.</p>
           </section>

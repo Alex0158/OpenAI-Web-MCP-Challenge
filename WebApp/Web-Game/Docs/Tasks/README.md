@@ -88,6 +88,12 @@ is unmade, a duplicate, or an external action added merely to make the queue loo
 
 ## 6. Current task routing
 
+[`SK-TASK-075`](SK-TASK-075-cp12-shelter-economy-summary-cards.md) is `verified` with `integrated`
+closure for the bounded CP-12 shelter economy summary cards under [`SK-EVID-062`](../Evidence/SK-EVID-062-cp12-shelter-economy-summary-card-runtime-verification.md)
+and [`Validation/88`](../Validation/88-cp12-shelter-economy-summary-card-runtime-cross-functional-audit.md).
+It is presentation-only over the existing shelter and ready resource-node projection, preserves the
+stale/invalid no-count behavior, and has no dependency on Eddy's external Receiver/Connector handoff.
+
 [`SK-TASK-074`](SK-TASK-074-cp12-causal-history-card-hierarchy.md) is `verified` with `integrated`
 closure for the bounded
 CP-12 causal history card hierarchy. It is presentation-only over the existing player-scoped event
