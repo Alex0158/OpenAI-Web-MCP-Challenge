@@ -1297,3 +1297,43 @@ this registration checkpoint. The next evidence gate is an accepted or rejected 
 an accepted contract may route a separate implementation Task. `RIGHTSPOT-012` remains a non-blocking
 read-only audit lane, and no universal browser, production, Cloud Receiver, external authentication,
 WebRTC, Redis, or deployment claim is made.
+
+## 7.27 Operations WebMCP contract review and acceptance — 2026-09-03
+
+Independent static review of `RIGHTSPOT-046` returned `REVISE`, identifying five implementation-level
+contract gaps: static tool metadata/schema was not frozen, runtime response keys were not explicitly
+allowlisted for privacy, page parity and superseded-read outcomes were underspecified, the page could
+not prove an unassigned Agent before registration, and the recorded source baseline was stale. The
+review also confirmed that excluding `upcomingViewings` is justified by the current server-clock and
+seeded-slot reproducibility boundary rather than by an undefined projection.
+
+Main resolved the findings in the Task File and accepted [ADR-RS-0017](Decisions/ADR-RS-0017-agent-operations-webmcp-listing-pipeline-contract.md).
+The accepted contract freezes one Agent-only, `/agent/operations`-bound, read-only
+`read_listing_pipeline` capability; exact optional input fields and bounds; exact/case-sensitive
+Operations Area semantics; safe age limits; the existing Operations authority and response variant;
+exact runtime allowlists; one page-owned latest-read coordinator; bounded error codes including
+`STALE_RESULT`; route/session teardown; unassigned-Agent server rejection; manual fallback; and the
+TDD/browser/evaluation gates. It still excludes mutations, natural-language parsing, direct SQL,
+second projections, `upcomingViewings`, Cloud Receiver, WebRTC, Redis, external authentication,
+deployment, and production claims.
+
+No product source, test, fixture, dependency, runtime, or WebMCP registration changed in this
+decision checkpoint. A separate implementation Task is required and must recapture the actual browser
+registration/cleanup behavior and current Main source identity before dispatch.
+
+## 7.28 Route and business-flow documentation reconciliation — 2026-09-03
+
+Main rechecked the route files, Agent navigation, Operations manual consumer, and
+`Docs/07-business-flows-and-scenarios.md` against Main documentation checkpoint `2f09d0a` and product
+source `3582ba4`. Declared Tenant and Agent pages had ordinary shell entries and intended handoffs;
+listing interest remained embedded in `/agent`; `/agent/requests` and `/agent/listing-interest` were
+intentionally absent parameterized/embedded routes; and runtime spot checks returned `200` for declared
+pages, `401` for unauthenticated Operations API access, and `200` for health. No fixture mutation or
+SQLite change occurred.
+
+The business-flow catalogue contained one documentation-only drift: it still described the verified
+`/agent/operations` manual surface as a future or test-only seam. Main corrected the Operations actor,
+flow entry, role matrix, and coverage rows to state the current Agent-only read-only manual route/API,
+its two bounded report families, and the separate `RIGHTSPOT-046` WebMCP gate. No product defect,
+route orphan, role/privacy gap, broken handoff, or new Task was found. `RIGHTSPOT-012` remains pending
+and non-blocking; the retained `F-08` evidence gap and existing browser claims are unchanged.

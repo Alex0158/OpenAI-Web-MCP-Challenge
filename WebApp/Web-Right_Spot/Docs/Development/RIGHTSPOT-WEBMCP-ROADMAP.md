@@ -44,6 +44,8 @@ The following sources remain authoritative in their respective areas:
   for the separate Operations profile and its manual-query boundary; and
 - [ADR-RS-0014](../Decisions/ADR-RS-0014-area-search-semantics.md) for the accepted canonical Area
   facet and bounded suggestion direction; and
+- [ADR-RS-0017](../Decisions/ADR-RS-0017-agent-operations-webmcp-listing-pipeline-contract.md) for
+  the accepted bounded Agent Operations `read_listing_pipeline` contract; and
 - [`RIGHTSPOT-010`](../Tasks/RIGHTSPOT-010-define-agent-operations-insights-dashboard-boundary.md)
   for the reviewed staged Agent Operations decision; its manual read-surface implementation is
   separately registered in [`RIGHTSPOT-044`](../Tasks/RIGHTSPOT-044-implement-agent-operations-manual-read-surface.md).
@@ -133,7 +135,7 @@ The product goal, not the number of exposed controls, determines the first slice
 |---|---|---:|---|---|
 | Find published rentals by bounded area/filter and show the result on Tenant Discovery | Existing listing application/API and page | Low | **Selected first slice** | Directly supports the core tenant journey, requires no new reporting model, and is read-only; contract work is registered in `RIGHTSPOT-042` |
 | Inspect one published listing and return to a human-readable detail surface | Existing listing detail route/API | Low | Follow-on read slice | Useful after discovery, but not necessary for the first registration proof |
-| Query upcoming Operations viewings or listing pipeline | Accepted Operations authority/projection; `ADR-RS-0016`; `RIGHTSPOT-044` manual surface | Medium | `RIGHTSPOT-046` pending bounded contract decision | The ordinary manual surface and consumer repair are verified; one `read_listing_pipeline` capability is under separate review while `upcomingViewings` remains deferred |
+| Query upcoming Operations viewings or listing pipeline | Accepted Operations authority/projection; `ADR-RS-0016`; `RIGHTSPOT-044` manual surface | Medium | `RIGHTSPOT-046` accepted; implementation Task pending | One `read_listing_pipeline` capability is admitted as a bounded follow-on; `upcomingViewings` remains deferred because its non-empty browser evidence is not reproducible under the current clock/fixture boundary |
 | Save a Favourite or Viewing Request draft | Existing mutation authority | Medium | Later mutation slice | State-changing and must preserve idempotency, version, role, and user-intent rules |
 | Submit a Viewing Request, send a proposal, confirm/decline a viewing | Existing workflow authority | High | Defer until read slice is verified | Human-consequential transitions need explicit confirmation and stronger browser evidence |
 | Login, expose internal notes, contact a tenant, send notifications, or operate Cloud Receiver | Separate or deferred authority | High | Exclude | Not part of the current WebMCP slice and would expand security/integration scope |
@@ -151,9 +153,10 @@ claim production, universal browser, judge, or probabilistic agent support.
 replaced by this selection. Its authority and pure projection are complete through
 `RIGHTSPOT-013`, `RIGHTSPOT-015`, and `RIGHTSPOT-016`; the ordinary manual consumer is registered as
 `RIGHTSPOT-044`. Any later Operations WebMCP capability remains separately gated after that manual
-surface is independently verified. `RIGHTSPOT-046` is now the single bounded Main-owned contract
-decision for a possible Agent-only `read_listing_pipeline` capability; no implementation or
-registration is admitted by its registration alone.
+surface is independently verified. `RIGHTSPOT-046` is now closed through accepted
+`ADR-RS-0017` as the single bounded Main-owned contract decision for an Agent-only
+`read_listing_pipeline` capability; it admits a separate implementation Task but no source change or
+registration by itself.
 
 This choice prevents the first WebMCP increment from silently becoming a new reporting product, a
 generic chatbot, or a full rewrite of the already-closed tenant-to-agent workflow.
@@ -471,10 +474,11 @@ record is in the owning Task File. A post-044 audit registered and Main has now 
 consumer repair `RIGHTSPOT-045` for the `F-22` latest-read race at product source `3582ba4`; its
 Main-controlled race evidence and explicit independent-browser harness limitation are recorded in
 the Task File. This does not admit an Operations WebMCP slice.
-The non-blocking `RIGHTSPOT-012` audit may continue in parallel. `RIGHTSPOT-046` is the explicit
-decision gate for whether one bounded Agent Operations WebMCP slice is worth admitting; its initial
-proposal covers only `read_listing_pipeline`. `upcomingViewings` remains deferred until its
-`asOf`/fixture-clock reproducibility boundary is explicitly resolved.
+The non-blocking `RIGHTSPOT-012` audit may continue in parallel. `RIGHTSPOT-046` is now accepted
+through `ADR-RS-0017` for one bounded Agent Operations WebMCP slice covering only
+`read_listing_pipeline`; a separate implementation Task must still be registered, baselined, and
+verified. `upcomingViewings` remains deferred until its `asOf`/fixture-clock reproducibility boundary
+is explicitly resolved.
 `RIGHTSPOT-010` is closed as a reviewed staged decision; its authority and projection are not being
 reimplemented. `RIGHTSPOT-046` owns the current bounded Operations WebMCP contract decision and does
 not authorize source work. Any later Operations WebMCP capability or W4 mutation requires its own
@@ -490,7 +494,7 @@ universal browser support, judge reproducibility, or probabilistic LLM-agent suc
 
 `RIGHTSPOT-010` is `closed` as `REVIEWED_STAGED_CLOSED`; `RS-WO-010-01` returned `READY_FOR_REVIEW`,
 and its disposition is recorded in the Task File and `ADR-RS-0016`. `RIGHTSPOT-044` is now
-`CLOSED_VERIFIED` for the ordinary manual Operations surface; no new Operations WebMCP capability is
-admitted without its own contract, Task, and evidence gate. Ordinary
+`CLOSED_VERIFIED` for the ordinary manual Operations surface; the accepted `ADR-RS-0017` contract
+admits only a separate implementation Task and evidence gate for `read_listing_pipeline`. Ordinary
 RightSpot UI/API behavior remains the runnable baseline. Cloud Receiver, WebRTC, Redis, external
 authentication, deployment, and production-readiness remain deferred or gated.

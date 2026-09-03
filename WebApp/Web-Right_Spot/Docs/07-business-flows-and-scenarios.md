@@ -26,7 +26,7 @@ request editor. The bounded parent-owned UI repair is now closed and verified; t
 mutation and request state remain authoritative.
 The deterministic-reset repair is recorded in `RIGHTSPOT-028` and the tenant conflict-feedback repair
 in `RIGHTSPOT-031`.
-**As of:** 2026-09-02, Europe/London
+**As of:** 2026-09-03, Europe/London
 **Owner:** Main RightSpot thread
 
 ## 1. Purpose and authority
@@ -67,12 +67,14 @@ The current local fixture contains:
 - one resettable Viewing Request at most;
 - three synthetic future slots for the primary demonstration listing;
 - tenant-owned Favourite relations; and
-- a separate, isolated Operations profile seam that is not yet a user-facing route.
+- a separate Operations profile consumed by the Agent-only `/agent/operations` manual read surface;
+  later Operations WebMCP remains separately gated.
 
 The application is a stable demonstration host, not a complete commercial marketplace. Buying,
 payments, lease execution, real listings, real identity, external messaging, live chat, calendar
-coordination, WebMCP, Cloud Receiver, external authentication, Redis, and WebRTC media are not
-prerequisites for these flows.
+coordination, Cloud Receiver, external authentication, Redis, and WebRTC media are not prerequisites
+for these flows. The verified Tenant Search WebMCP capability is a progressive enhancement, while any
+Operations WebMCP capability remains a separately gated follow-on.
 
 ## 3. Actors, identity, and profile boundaries
 
@@ -81,7 +83,7 @@ prerequisites for these flows.
 | Tenant | Browse published listings, manage own Favourites, create/edit/submit one request, read own response, confirm or decline own proposal | Read agent notes, other requests, unpublished catalogue records through discovery, or submit a second request |
 | Property agent | Read assigned submitted/current request work, inspect assigned listing and synthetic availability, prepare and send a response, read listing-level Favourite aggregates | Read tenant identity/contact data, agent-unassigned work, tenant credentials, or use preparation as an implicit decision |
 | System/application | Resolve session, validate authority and versions, persist transitions atomically, evaluate proposal expiry on relevant access, expose role-safe projections | Invent state in the UI, silently submit/send/confirm, call external services, or replace domain authority with an integration |
-| Operations profile consumer | Read the explicitly authorised isolated Operations projection in tests or a future gated surface | Treat the seam as a current page/API, merge it into relay workflow truth, or infer external dashboard support |
+| Agent Operations consumer | Read the assigned listing pipeline and upcoming viewing projection through `/agent/operations` and `GET /api/agent/operations` | Treat the projection as relay workflow authority, expose private fields, or infer Operations WebMCP registration |
 
 The current session is deliberately a seeded demo session selected at the root page. It is not
 provider-backed authentication. A future Clerk or other provider integration must map provider
@@ -166,9 +168,9 @@ Status values used below:
 | `RS-FLOW-14` | Proposal expires without a scheduler | Relevant tenant/agent read or write | `EXPIRED`; slot released | `CLOSED_VERIFIED` — projection retains the selected time while terminal expiry remains non-actionable under `RIGHTSPOT-032` |
 | `RS-FLOW-15` | Reset and replay a deterministic fixture | Development script/test boundary | New generation; empty request/Favourites | `CLOSED_VERIFIED` — `F-06` / `RIGHTSPOT-028` repaired the CLI composition and passed focused and independent verification |
 | `RS-FLOW-16` | Show privacy-preserving listing interest to an agent | `/agent` embedded section | Read-only aggregate | `CLOSED_VERIFIED` |
-| `RS-FLOW-17` | Query the isolated Operations profile | Domain/persistence tests only | Projection envelope; no relay mutation | `ISOLATED_SEAM_NOT_USER_FACING` |
+| `RS-FLOW-17` | Query the Agent Operations profile | `/agent/operations`, `GET /api/agent/operations` | Read-only projection; no relay mutation | `CLOSED_VERIFIED` for the manual surface through `RIGHTSPOT-044`/`045`; `RIGHTSPOT-046` / ADR-RS-0017 accepts the separate `read_listing_pipeline` contract, with implementation and tool-registration evidence pending |
 | `RS-FLOW-18` | Enforce role, privacy, version, and failure boundaries | All API/projection surfaces | Visible bounded error; no invalid mutation | `CLOSED_VERIFIED` for the tenant Discovery error-copy consumer boundary through `RIGHTSPOT-040`; other audited role/privacy/version/failure claims remain closed within their recorded scopes |
-| `RS-FLOW-19` | Information Request, external auth, WebMCP, Cloud Receiver, or Remote Viewing | Future integration | No current state effect | `DEFERRED` / `GATED` |
+| `RS-FLOW-19` | Information Request, external auth, later WebMCP capabilities, Cloud Receiver, or Remote Viewing | Future integration | No current state effect | `DEFERRED` / `GATED` |
 
 ## 6. Canonical scenario definitions
 
@@ -706,31 +708,44 @@ interest.
 **Boundary:** No separate agent route, analytics history, charts, exports, notifications, tenant
 matching, or contact request is part of this flow.
 
-### RS-FLOW-17 — Query the isolated Operations profile
+### RS-FLOW-17 — Query the Agent Operations profile
 
-**Actor:** Assigned agent through a future gated consumer; currently tests and domain/persistence only
-**Entry:** No current page or HTTP route
+**Actor:** Assigned property agent through `/agent/operations`
+**Entry:** Agent navigation `Operations insights` → `/agent/operations`; the page reads through
+`GET /api/agent/operations`
 **Preconditions:** Operations profile authority, assignment, query bounds, and freshness envelope
 
 **Flow:**
 
-1. The Operations profile validates its own schema, fixture metadata, timezone, assignment, and query
-   bounds.
-2. It can project bounded upcoming viewings or a listing pipeline with explicit `asOf`, `dataAsOf`,
-   freshness, counts, and truncation metadata.
-3. It does not mutate the relay `WorkflowState`, create a request, change a slot, expose Favourite
-   identity, or become the source for the current agent queue.
+1. The Agent-only HTTP consumer resolves the server session and rejects signed-out, Tenant, and
+   wrong-role access before reading the Operations application boundary.
+2. The Operations profile validates its schema, fixture metadata, timezone, assignment, and query
+   bounds, then projects either bounded upcoming viewings or a listing pipeline with explicit `asOf`,
+   `dataAsOf`, freshness, counts, and truncation metadata.
+3. The manual page renders the selected report, applied filters, freshness metadata, exact counts, and
+   Agent-safe rows. Viewing rows may link back to the assigned request detail.
+4. The read does not mutate the relay `WorkflowState`, create a request, change a slot, expose tenant
+   identity or Favourite identity, or become the source for the current Agent request queue.
 
-**Business effect:** None on the current user-facing relay flow.
-**Acceptance:** Domain/persistence tests prove the projection envelope, isolation, filters, caps, and
-empty states; no page/API/deployment claim is made until a separate product decision and route task
-exists.
-**Evidence:** `src/server/domain/operations-profile*.ts`, `src/server/persistence/operations-store.ts`,
-`tests/domain/operations-profile*.test.ts`, `tests/domain/operations-projection.test.ts`, and
-`tests/persistence/operations-store.test.ts`.
+**Business effect:** Read-only visibility into the assigned Agent Operations projection; no relay
+workflow state change.
+**Acceptance:** The Agent-only route and HTTP consumer preserve the projection envelope, isolation,
+filters, caps, empty states, bounded failures, and London date semantics. The manual page remains
+usable without WebMCP, and the latest-read consumer does not show stale results after overlapping
+queries. The separate `RIGHTSPOT-046` / ADR-RS-0017 contract accepts one future
+`read_listing_pipeline` capability; implementation and browser evidence remain required in a later
+Task.
+**Evidence:** `src/server/domain/operations-profile*.ts`,
+`src/server/application/operations-insights-http.ts`,
+`src/server/application/operations-insights.ts`, `src/server/persistence/operations-store.ts`,
+`src/ui/agent/operations/operations-page.tsx`, `src/ui/agent/operations/operations-api.ts`,
+`tests/domain/operations-profile*.test.ts`, `tests/domain/operations-projection.test.ts`,
+`tests/application/operations-insights.test.ts`, `tests/api/operations-insights.test.ts`,
+`tests/ui/operations-page.test.ts`, and `RIGHTSPOT-044`/`RIGHTSPOT-045`.
 
-**Boundary:** This is not yet an Operations dashboard, listing CRUD, status editor, CRM, calendar,
-or WebMCP surface.
+**Boundary:** This is a bounded manual Operations read surface, not listing CRUD, a status editor,
+CRM, calendar, or an Operations WebMCP capability. `RIGHTSPOT-046` / ADR-RS-0017 is the accepted
+contract gate for the separately implemented read-only `read_listing_pipeline` enhancement.
 
 ### RS-FLOW-18 — Enforce role, privacy, version, and failure boundaries
 
@@ -809,13 +824,15 @@ business state at `AGENT_REVIEWING`.
 | `/tenant/requests` | Tenant | Current request, timeline, response, confirm/decline | Available | `GET/PATCH/POST /api/tenant/request*` |
 | `/agent` | Property agent | Request queue plus embedded listing-interest projection | Available | `GET /api/agent/requests`; `GET /api/agent/listing-interest` |
 | `/agent/requests/:requestId` | Property agent | Request facts, availability, review, prepare, send | Available for visible assigned work | Agent request APIs |
-| Operations dashboard | Property agent | Future operations queries | Not implemented | Isolated Operations domain only |
+| `/agent/operations` | Property agent | Bounded listing-pipeline and upcoming-viewing reads | Available | `GET /api/agent/operations`; Operations authority/projection; WebMCP follow-on gated by `RIGHTSPOT-046` |
 | Information Request page | Tenant/agent | Contact enquiry | Not implemented by decision | `RIGHTSPOT-009` deferred |
 | Listing administration | Property agent | CRUD/status changes | Not implemented by decision | No current route/API |
 
 The agent listing-interest projection is intentionally a section of `/agent`, not a separate page.
-The Operations seam and deferred Information Request are not broken navigation links; they are
-explicitly non-user-facing or deferred boundaries.
+Operations is now a current manual page/API with an Agent-only navigation entry; the accepted
+`read_listing_pipeline` contract is not implied as a registration or implementation by that manual
+surface. The deferred Information Request and listing
+administration remain deliberate non-user-facing boundaries, not broken navigation links.
 
 ## 9. Current implementation coverage matrix
 
@@ -840,7 +857,7 @@ present, not that every evidence branch is closed.
 | `RS-FLOW-14` | Implemented and verified; expiry retains the selected time | Implemented on relevant reads/writes with terminal no-action presentation | `RIGHTSPOT-032` expiry projection regression plus prior expiry evidence | No scheduler/notification claim |
 | `RS-FLOW-15` | Implemented in application authority and CLI composition | Development boundary only | Focused child-process regression, full suite, and frozen-source independent verification for `F-06` / `RIGHTSPOT-028` | No public reset route; arbitrary corrupt-database salvage remains unclaimed |
 | `RS-FLOW-16` | Implemented | Implemented on `/agent` | Domain/API/UI and fresh populated Agent UI aggregate evidence in `rightspot-audit-078` | No analytics/history claim |
-| `RS-FLOW-17` | Implemented seam | No current route | Domain/persistence tests | Separate authority/route decision required |
+| `RS-FLOW-17` | Implemented and independently verified manual Operations authority | Implemented and verified on `/agent/operations` | `RIGHTSPOT-044` manual route/API/browser matrix and `RIGHTSPOT-045` latest-read repair; Operations domain/projection tests | `RIGHTSPOT-046` / ADR-RS-0017 accepts the separate `read_listing_pipeline` contract; implementation and tool-registration evidence remain pending |
 | `RS-FLOW-18` | Implemented and verified for audited boundaries | Implemented and verified | Broad negative tests plus formal `RIGHTSPOT-025` F-01 and browser `F-02`/`F-03` evidence | Re-check on the next cross-layer audit; no production-readiness claim |
 | `RS-FLOW-19` | Deliberately absent | Deliberately absent | ADR/task boundaries | Do not use fallback implementations |
 

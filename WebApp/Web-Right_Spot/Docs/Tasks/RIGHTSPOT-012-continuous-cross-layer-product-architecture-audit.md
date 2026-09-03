@@ -646,3 +646,29 @@ evidence remains applicable and the fresh-render evidence gap is retained. The z
 shell error was corrected without a product request or mutation. Main disposition: no new Task or Work
 Order; keep `RIGHTSPOT-012` `pending` and re-dispatch it only after a meaningful route, data, permission,
 UI interaction, integration-boundary, or evidence increment.
+
+## Latest route and business-flow documentation reconciliation — 2026-09-03
+
+Main re-audited the route files, Agent navigation, Operations manual consumer, business-flow catalogue,
+and the closed `RIGHTSPOT-044`/`RIGHTSPOT-045` records against documentation checkpoint `2f09d0a` and
+product source `3582ba4`. Static inspection confirmed the current route and handoff matrix: Tenant
+catalogue, Favourites, Viewing Requests, and listing detail are linked from the Tenant shell; Agent
+queue/request detail and Operations are linked from the Agent shell; listing interest remains an
+embedded `/agent` section; and `/agent/requests` and `/agent/listing-interest` are intentionally not
+standalone routes. Runtime spot checks returned `200` for the declared pages, `401` for unauthenticated
+Operations API access, and `200` for health. The absent standalone routes and the initially tested
+wrong `/api/tenant/listings` candidate were not product gaps; the listing API is `/api/listings`.
+
+The audit found one `DOCUMENTATION_DRIFT` finding in `Docs/07-business-flows-and-scenarios.md`: its
+Operations actor, flow entry, role matrix, and coverage rows still described the already verified
+`/agent/operations` manual surface as an isolated test seam or future dashboard. Main corrected the
+document to describe the Agent-only read-only manual route/API, its two bounded report families,
+latest-read evidence, and the separate `RIGHTSPOT-046` WebMCP gate. No product defect, route orphan,
+role/privacy gap, broken handoff, source change, fixture mutation, or new Task was found.
+
+`RIGHTSPOT-046` is now accepted separately through ADR-RS-0017 for one future
+`read_listing_pipeline` capability. That decision does not change the manual Operations surface or
+claim an Operations WebMCP registration; its implementation requires a new Task and source freeze.
+`RIGHTSPOT-012` remains `pending` and non-blocking. This reconciliation adds documentation evidence,
+not a new product-flow completion claim; the existing populated-browser evidence and the retained
+listing-detail same-document `F-08` evidence gap remain unchanged.

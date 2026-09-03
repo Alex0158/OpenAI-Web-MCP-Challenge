@@ -190,8 +190,9 @@ scopes. The fresh Main-thread cross-layer audit,
 remain reconciled in the [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](../Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md),
 and `RIGHTSPOT-002` is closed.
 
-**Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-012`, and `RIGHTSPOT-046` remain pending
-(credential, read-only audit, and Operations WebMCP contract decision gates respectively);
+**Current post-MVP gates:** `RIGHTSPOT-006` and `RIGHTSPOT-012` remain pending (credential and
+read-only audit gates); `RIGHTSPOT-046` is closed through accepted `ADR-RS-0017` as the Operations
+WebMCP contract decision, with its separate implementation Task still to be registered;
 `RIGHTSPOT-045` is now `CLOSED_VERIFIED` within its bounded
 Operations consumer repair boundary after Main-controlled race verification and an explicitly recorded
 independent-browser harness limitation;
@@ -340,9 +341,10 @@ decision; `RIGHTSPOT-012` is non-blocking read-only audit work; `RIGHTSPOT-042` 
 selected Tenant Search contract gate; `RIGHTSPOT-043` is `CLOSED_VERIFIED`; `RIGHTSPOT-044` is
 `CLOSED_VERIFIED` for its bounded manual Operations surface; and `RIGHTSPOT-045` is
 `CLOSED_VERIFIED` for its bounded Operations consumer latest-read boundary. `RIGHTSPOT-046` is
-pending as the separate Main-owned contract decision for one possible Agent Operations WebMCP
-`read_listing_pipeline` capability; it does not authorize implementation or registration. Only an
-explicitly selected, implementation-ready Task may open code Work Orders or temporary Worktrees.
+closed through accepted `ADR-RS-0017` as the separate Main-owned contract decision for one Agent
+Operations WebMCP `read_listing_pipeline` capability; it admits a separate implementation Task but
+does not authorize source change or registration. Only that implementation Task, after recaptured
+baseline and explicit paths, may open code Work Orders or a temporary Worktree.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.
