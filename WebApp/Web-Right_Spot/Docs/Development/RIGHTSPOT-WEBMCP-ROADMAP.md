@@ -45,7 +45,8 @@ The following sources remain authoritative in their respective areas:
 - [ADR-RS-0014](../Decisions/ADR-RS-0014-area-search-semantics.md) for the accepted canonical Area
   facet and bounded suggestion direction; and
 - [`RIGHTSPOT-010`](../Tasks/RIGHTSPOT-010-define-agent-operations-insights-dashboard-boundary.md)
-  for the pending read-only Agent Operations/WebMCP proposal.
+  for the reviewed staged Agent Operations decision; its manual read-surface implementation is
+  separately registered in [`RIGHTSPOT-044`](../Tasks/RIGHTSPOT-044-implement-agent-operations-manual-read-surface.md).
 - [`RIGHTSPOT-042`](../Tasks/RIGHTSPOT-042-define-tenant-search-and-webmcp-search-contract.md)
   for the selected Tenant Discovery/WebMCP Search contract decision and implementation gate.
 
@@ -132,7 +133,7 @@ The product goal, not the number of exposed controls, determines the first slice
 |---|---|---:|---|---|
 | Find published rentals by bounded area/filter and show the result on Tenant Discovery | Existing listing application/API and page | Low | **Selected first slice** | Directly supports the core tenant journey, requires no new reporting model, and is read-only; contract work is registered in `RIGHTSPOT-042` |
 | Inspect one published listing and return to a human-readable detail surface | Existing listing detail route/API | Low | Follow-on read slice | Useful after discovery, but not necessary for the first registration proof |
-| Query upcoming Operations viewings or listing pipeline | Separate Operations authority/projection; `RIGHTSPOT-010` proposal | Medium | Decision-gated alternative | Potentially strong Hackathon value, but requires an accepted Operations page/query boundary |
+| Query upcoming Operations viewings or listing pipeline | Accepted Operations authority/projection; `ADR-RS-0016`; `RIGHTSPOT-044` manual surface | Medium | Staged follow-on | Useful after the ordinary manual surface is implemented and verified; WebMCP remains a later separate capability gate |
 | Save a Favourite or Viewing Request draft | Existing mutation authority | Medium | Later mutation slice | State-changing and must preserve idempotency, version, role, and user-intent rules |
 | Submit a Viewing Request, send a proposal, confirm/decline a viewing | Existing workflow authority | High | Defer until read slice is verified | Human-consequential transitions need explicit confirmation and stronger browser evidence |
 | Login, expose internal notes, contact a tenant, send notifications, or operate Cloud Receiver | Separate or deferred authority | High | Exclude | Not part of the current WebMCP slice and would expand security/integration scope |
@@ -146,8 +147,11 @@ and lifecycle semantics. `RIGHTSPOT-043` now owns the integrated adapter source 
 evidence. Selection of the goal did not claim implementation; the bounded adapter source and
 supported-browser registration/invocation evidence are now independently verified. This does not
 claim production, universal browser, judge, or probabilistic agent support.
-`RIGHTSPOT-010` remains a separate pending Operations Insights alternative and is not silently replaced
-by this selection.
+`RIGHTSPOT-010` is closed as a reviewed staged Operations Insights decision and is not silently
+replaced by this selection. Its authority and pure projection are complete through
+`RIGHTSPOT-013`, `RIGHTSPOT-015`, and `RIGHTSPOT-016`; the ordinary manual consumer is registered as
+`RIGHTSPOT-044`. Any later Operations WebMCP capability remains separately gated after that manual
+surface is independently verified.
 
 This choice prevents the first WebMCP increment from silently becoming a new reporting product, a
 generic chatbot, or a full rewrite of the already-closed tenant-to-agent workflow.
@@ -459,8 +463,9 @@ is integrated at `534f5c9`, the amended page-bound adapter is integrated at `ec7
 `afd5df67507dc81743bde02c706e1232faa7e12c` in the declared local supported-browser capability.
 `RIGHTSPOT-043` is `CLOSED_VERIFIED`; there is no active product Work Order for this increment.
 
-The next action is only a separately accepted scope. `RIGHTSPOT-010` remains a pending Agent
-Operations/WebMCP proposal, and any W4 mutation or later page capability requires its own contract,
+The next action is the separately registered `RIGHTSPOT-044` manual Agent Operations read surface.
+`RIGHTSPOT-010` is closed as a reviewed staged decision; its authority and projection are not being
+reimplemented. Any later Operations WebMCP capability or W4 mutation requires its own contract,
 Task, write set, tests, browser evidence, and closure. Cloud Receiver, external authentication,
 deployment, WebRTC, Redis, and production readiness remain deferred.
 
@@ -471,8 +476,9 @@ universal WebMCP claim is implied by this closure.
 This roadmap records a verified first local page-bound WebMCP slice; it does not claim production,
 universal browser support, judge reproducibility, or probabilistic LLM-agent success.
 
-`RIGHTSPOT-010` remains `pending` and `RS-WO-010-01` remains `READY_FOR_REVIEW`; no active
-implementation Worktree is open, and no new WebMCP capability is admitted without a separately
-accepted contract, Task, and evidence gate. Ordinary RightSpot UI/API behavior remains the runnable
-baseline. Cloud Receiver, WebRTC, Redis, external authentication, deployment, and production-readiness
-remain deferred or gated.
+`RIGHTSPOT-010` is `closed` as `REVIEWED_STAGED_CLOSED`; `RS-WO-010-01` returned `READY_FOR_REVIEW`,
+and its disposition is recorded in the Task File and `ADR-RS-0016`. `RIGHTSPOT-044` is pending for
+the ordinary manual Operations surface; no new WebMCP capability is admitted until that surface is
+implemented and independently verified under its own contract, Task, and evidence gate. Ordinary
+RightSpot UI/API behavior remains the runnable baseline. Cloud Receiver, WebRTC, Redis, external
+authentication, deployment, and production-readiness remain deferred or gated.

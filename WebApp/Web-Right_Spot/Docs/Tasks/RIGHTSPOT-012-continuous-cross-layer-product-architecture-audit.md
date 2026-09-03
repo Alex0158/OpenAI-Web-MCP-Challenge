@@ -78,7 +78,7 @@ with healthy health.
 - Next gate: Re-run the cross-layer audit against the verified source. Register another follow-on Task
   only after reproducing a new bounded gap and recording its owner, scope, and acceptance gate.
 - Execution posture: `READ_ONLY_ADVISORY`; the Advisor may inspect the current implementation and run safe, bounded verification, but must not implement findings or write canonical product truth.
-- Dependencies: Current RightSpot source, tests, runtime evidence where safely available, and the accepted documentation/decision hierarchy. `RIGHTSPOT-008` and its `RIGHTSPOT-020` implementation are closed within the bounded ADR-RS-0013 direction; `RIGHTSPOT-009` is closed as `REVIEWED_DEFERRED`; and `RIGHTSPOT-010` remains proposal-only. None authorizes unregistered implementation behavior.
+- Dependencies: Current RightSpot source, tests, runtime evidence where safely available, and the accepted documentation/decision hierarchy. `RIGHTSPOT-008` and its `RIGHTSPOT-020` implementation are closed within the bounded ADR-RS-0013 direction; `RIGHTSPOT-009` is closed as `REVIEWED_DEFERRED`; `RIGHTSPOT-010` is closed as a reviewed staged decision; and `RIGHTSPOT-044` is the separately registered manual Operations implementation gate. None authorizes unregistered implementation behavior.
 
 ## Bounded objective
 
@@ -159,7 +159,8 @@ The audit must start from current evidence, not from the older project history:
   boundaries unless current source and evidence prove otherwise.
 - ADR-RS-0013 and `RIGHTSPOT-020` define the accepted bounded Favourite direction, which is now closed
   within its recorded outcome; `RIGHTSPOT-009` contains a reviewed but deferred Information Request
-  proposal; `RIGHTSPOT-010` remains proposal input, not an implementation authority; and
+  proposal; `RIGHTSPOT-010` is closed as reviewed staged input, not an implementation authority;
+  `RIGHTSPOT-044` is the separately registered manual Operations implementation authority; and
   `RIGHTSPOT-040` is closed within its bounded Discovery-consumer repair authority for `F-18`; the
   next authority is the continuing audit lane itself.
 - Documentation may lag the source. For example, an older README implementation summary may not

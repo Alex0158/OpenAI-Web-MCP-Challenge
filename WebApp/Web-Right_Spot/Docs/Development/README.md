@@ -50,8 +50,10 @@ Area rule. Main later accepted ADR-RS-0015 for the ordinary UI/API and first rea
 contract, reconciled the core documents, and registered `RIGHTSPOT-043` for implementation. The
 ordinary Search and amended page-bound adapter source are now integrated at product commits `534f5c9`
 and `ec7a679`; the bounded supported-browser WebMCP registration/invocation gate is independently
-verified and recorded in `RIGHTSPOT-043`. `RIGHTSPOT-010` remains a separate pending Agent
-Operations/WebMCP proposal.
+verified and recorded in `RIGHTSPOT-043`. `RIGHTSPOT-010` is closed as a reviewed staged Agent
+Operations decision through `ADR-RS-0016`; `RIGHTSPOT-044` is the current bounded manual
+Operations implementation gate, and later Operations WebMCP remains deferred until that surface is
+independently verified.
 
 **Current physical workspace:** The canonical Main Worktree remains the only source authority. The stopped,
 short-lived `RS-WO-020-02` and `RS-WO-020-03` candidate Worktrees were adopted into Main and retired after
@@ -154,8 +156,10 @@ and `RS-WO-020-03` were dispatched on disjoint paths, adopted into Main at produ
 and passed dependency-complete typecheck, full-suite `121/121`, and production-build checks; `RS-WO-020-04`
 independently verified Main `c977ea4`, and `RS-WO-020-05` passed fresh-reset browser verification against
 Main `f49e1ca`. `RIGHTSPOT-020` is closed within its accepted local boundary.
-`RIGHTSPOT-006` remains credential-gated,
-`RIGHTSPOT-010` remains a later Operations/WebMCP decision gate, and `RIGHTSPOT-012` is a non-blocking
+`RIGHTSPOT-006` remains credential-gated. `RIGHTSPOT-010` is now closed as a reviewed staged
+Operations decision through `ADR-RS-0016`; its existing authority and pure projection are complete,
+and `RIGHTSPOT-044` is the current bounded manual read-surface implementation gate. WebMCP remains
+deferred until that ordinary surface is independently verified. `RIGHTSPOT-012` is a non-blocking
 read-only audit lane. The `F-01` queue/privacy defect is closed within `RIGHTSPOT-025`; `RIGHTSPOT-026`
 is also closed within its presentation-only boundary. `RIGHTSPOT-027` is closed after its bounded
 presentation repair and independent verification; no implementation Worktree is active. The next step

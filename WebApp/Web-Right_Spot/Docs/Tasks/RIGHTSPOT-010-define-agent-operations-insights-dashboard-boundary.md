@@ -1,7 +1,7 @@
 # RIGHTSPOT-010: Define the Agent Operations Insights dashboard boundary
 
 **Type:** `decision`  
-**Lifecycle:** `pending`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for the next WebMCP/product milestone, independent of the Re-entry Core gate  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-01  
@@ -10,14 +10,19 @@
 ## Task Control
 
 - Type: `decision`
-- Lifecycle: `pending`
+- Lifecycle: `closed`
 - Priority: `P1`
 - Owner: Main RightSpot thread
-- Current increment: Produce one evidence-backed proposal for a read-first Agent Operations Insights dashboard in which a non-technical property agent can express bounded operational questions through a page-authored WebMCP tool surface and see the verified result in the normal RightSpot web UI.
-- Next gate: The main thread reviews the proposal and either accepts a bounded dashboard/tool/data decision plus a later implementation task, or records a rejected/not-planned disposition and its reopen condition.
-- Execution posture: `READ_ONLY_ADVISORY`; the proposal Advisor returned `READY_FOR_REVIEW` and the
-  main-thread review is pending. This does not authorize implementation, WebMCP registration, or
-  canonical writeback.
+- Current increment: The read-only proposal was reviewed and closed as a staged product decision. The
+  Operations authority and pure projection were accepted and implemented separately through
+  `RIGHTSPOT-013`, `RIGHTSPOT-015`, and `RIGHTSPOT-016`; the manual read surface remains a separate
+  implementation outcome.
+- Next gate: `RIGHTSPOT-044` owns the bounded `/agent/operations` and `GET /api/agent/operations`
+  manual read surface. WebMCP remains deferred until that ordinary surface is implemented and
+  independently verified.
+- Execution posture: `REVIEWED_STAGED_CLOSED`; `RS-WO-010-01` returned `READY_FOR_REVIEW` and the
+  main-thread disposition is recorded below. This task does not itself authorize WebMCP registration,
+  implementation, or changes outside the separately registered `RIGHTSPOT-044` boundary.
 - Dependencies: The accepted ordinary rental MVP, current role/privacy authority, and existing listing/request identity remain in force. ADR-RS-0013 and its implementation Task `RIGHTSPOT-020` are closed within the accepted Favourite/listing-interest boundary; `RIGHTSPOT-009` is closed as `REVIEWED_DEFERRED`. The existing Favourite signal may be considered as current bounded data, while Information Request remains unavailable until separately accepted and implemented. Neither supplies an implementation dependency for this proposal. No external authentication, WebMCP registration, Cloud Receiver, deployment, reporting provider, or credential gate is required for this proposal.
 
 ## Bounded objective
@@ -469,12 +474,38 @@ explicit non-goals. Return `BLOCKED` if current authority, source identity, or a
 does not permit a reliable proposal. A proposal return does not authorize implementation or canonical
 writeback.
 
+## Main-thread review disposition — 2026-09-03
+
+The Main thread reviewed the proposal returned by `RS-WO-010-01` from supporting task
+`01a05d88-8907-7063-8c93-030e296c9df0` (`Leibniz`) against the current Main source at
+`1f0ec339fbad273f6987ae8bc2b0e4ea68708c7d`.
+
+The proposal direction is accepted with staged scope and is not accepted as an immediate dashboard
+or WebMCP implementation. The review verified that the separate Operations profile authority and
+deterministic pure projection already exist through the closed `RIGHTSPOT-013`, `RIGHTSPOT-015`, and
+`RIGHTSPOT-016` records. The review also verified that no `/agent/operations` page, Agent navigation
+entry, `/api/agent/operations` route, or Operations WebMCP capability currently exists. Therefore the
+proposal must not be treated as an all-in-one implementation Task or as evidence that a dashboard is
+already available.
+
+The accepted staged decision is recorded in
+[`ADR-RS-0016`](../Decisions/ADR-RS-0016-agent-operations-manual-read-surface-boundary.md). It
+authorizes only the bounded manual read surface and its strict HTTP consumer in
+[`RIGHTSPOT-044`](RIGHTSPOT-044-implement-agent-operations-manual-read-surface.md). The two accepted
+query families are `listingPipeline` and `upcomingViewings`, both read-only and backed by the existing
+Operations store/projection. Favourite and Information Request metrics, historical reporting,
+natural-language interpretation, mutations, external communication, and WebMCP remain outside this
+stage.
+
+This review closes `RIGHTSPOT-010` as a decision/proposal Task. It does not claim that
+`RIGHTSPOT-044` is implemented, verified, or closed.
+
 ## Closure gate
 
-Close this task only after the main thread records a review disposition. If accepted, the main thread
-may create a separate durable decision record and a later bounded implementation task; those actions
-must be explicitly registered and independently verified. If rejected or not planned, preserve the
-reason, residual risk, and reopen condition in this task. This task itself must remain proposal-only.
+This task is closed after the Main-thread review disposition, `ADR-RS-0016`, and the separately
+registered `RIGHTSPOT-044` implementation boundary were recorded. The proposal remains a decision
+record and does not authorize implementation by itself; all implementation, verification, and later
+WebMCP work must pass the gates of their own registered Task Files.
 
 ## Reopen condition
 

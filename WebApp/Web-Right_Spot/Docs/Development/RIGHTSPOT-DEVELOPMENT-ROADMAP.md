@@ -110,8 +110,9 @@ WebMCP lifecycle. `RIGHTSPOT-042` is closed as a decision gate; `RIGHTSPOT-043` 
 `CLOSED_VERIFIED`. `RS-WO-043-01` and the amended `RS-WO-043-02` source are integrated at product
 commits `534f5c9` and `ec7a679`; `RS-WO-043-03` passed independent supported-browser registration,
 invocation, and browser evidence against frozen source baseline
-`afd5df67507dc81743bde02c706e1232faa7e12c`. `RIGHTSPOT-010` remains a separate pending Agent
-Operations/WebMCP proposal.
+`afd5df67507dc81743bde02c706e1232faa7e12c`. `RIGHTSPOT-010` is closed as a reviewed staged Agent
+Operations decision through `ADR-RS-0016`; `RIGHTSPOT-044` is the current bounded manual Operations
+implementation gate, and later Operations WebMCP remains deferred until that surface is verified.
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-03, Europe/London
 
@@ -285,8 +286,11 @@ selected as read-only Tenant listing discovery on
 criteria, result/page-state, error/freshness, privacy, and browser-fallback contract. `RIGHTSPOT-043`
 is closed within that bounded local outcome. No production, universal browser, judge, or deferred
 integration claim is implied.
-`RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal;
-`RIGHTSPOT-012` remains a non-blocking audit lane.
+`RIGHTSPOT-010` is closed as a reviewed staged Agent Operations decision through `ADR-RS-0016`;
+its authority and pure projection are already complete through `RIGHTSPOT-013`, `RIGHTSPOT-015`, and
+`RIGHTSPOT-016`. `RIGHTSPOT-044` is the current bounded manual Operations implementation gate;
+`RIGHTSPOT-012` remains a non-blocking audit lane. WebMCP remains deferred until the ordinary
+Operations surface is independently verified.
 
 The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.
 The page-entry audit registered `RIGHTSPOT-021` as a bounded implementation route: restore a
@@ -361,9 +365,10 @@ independent verification gates are closed:
 7. Keep `RIGHTSPOT-006` outside the implementation lane until the explicit external credential and
    local-origin gate is authorized. It is a separate high-risk lane and must not block ordinary product
    progress.
-8. Review `RIGHTSPOT-010` through the staged
-   [`RIGHTSPOT-WEBMCP-ROADMAP`](RIGHTSPOT-WEBMCP-ROADMAP.md). Its proposal does not authorize WebMCP
-   or dashboard implementation; W0 must first select one user goal and one bounded capability.
+8. Treat the reviewed staged `RIGHTSPOT-010` decision through [`ADR-RS-0016`](../Decisions/ADR-RS-0016-agent-operations-manual-read-surface-boundary.md)
+   as the basis for `RIGHTSPOT-044`; its proposal does not itself authorize WebMCP or dashboard
+   implementation. The ordinary manual surface must be implemented and independently verified before
+   any separate Operations WebMCP capability is considered.
 9. Keep `RIGHTSPOT-012` as a non-blocking, read-only audit lane. It may identify follow-on work but
    does not itself constitute a product implementation milestone.
 10. Keep the separately registered `RIGHTSPOT-025` read-boundary/TDD route for `F-01` and the
@@ -385,10 +390,11 @@ first safe checkpoint-scoped opportunity under the orchestration Runbook. `RIGHT
 for its bounded repair and verification. Main selected the existing `320px` floor and registered
 `RIGHTSPOT-022`; its `RS-WO-022-01` Builder returned `READY_FOR_VERIFICATION`, Main froze the exact
 CSS candidate at product commit `f0dbd99`, and independent `RS-WO-022-02` verification returned
-`VERIFIED`. The bounded Task is closed and no implementation Worktree is open. `RIGHTSPOT-006`,
-`RIGHTSPOT-010`, and
-`RIGHTSPOT-012` remain separate credential, decision, or read-only audit gates and do not reopen
-`RIGHTSPOT-020`. Local Git closure for the prior `RIGHTSPOT-021` increment is recorded at `66615d0`.
+`VERIFIED`. The bounded Task is closed and no implementation Worktree is open. `RIGHTSPOT-006` and
+`RIGHTSPOT-012` remain separate credential and read-only audit gates; `RIGHTSPOT-010` is closed as
+the reviewed staged decision, and `RIGHTSPOT-044` is the current manual Operations implementation
+gate. These do not reopen `RIGHTSPOT-020`. Local Git closure for the prior `RIGHTSPOT-021` increment
+is recorded at `66615d0`.
 
 The post-`RIGHTSPOT-036` fresh Main-thread audit covered reset generations `38` and `39`: the local
 tenant-to-agent Viewing Request path, Favourite save/remove/empty state, selected-time projection,

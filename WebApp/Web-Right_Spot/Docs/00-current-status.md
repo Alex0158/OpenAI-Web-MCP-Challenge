@@ -120,8 +120,11 @@ route/session teardown, manual fallback, keyboard continuity, `320px` layout, ac
 cleanup, and clean console/page-error evidence passed. The current in-app/Luna bridge remains
 unsupported and is not a failure of this product slice. No production, universal browser, judge, or
 probabilistic agent success claim is made.
-`RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP decision proposal. The Main-thread
-cross-layer audit Goal is closed
+`RIGHTSPOT-010` is closed as a reviewed staged Agent Operations decision through `ADR-RS-0016`.
+The Operations authority and pure projection are already implemented through `RIGHTSPOT-013`,
+`RIGHTSPOT-015`, and `RIGHTSPOT-016`; the manual `/agent/operations` page and
+`GET /api/agent/operations` consumer are not yet implemented and are registered as pending
+`RIGHTSPOT-044`. The Main-thread continuous cross-layer audit Goal is active
 for the accepted ordinary local MVP; `RIGHTSPOT-039` /
 `RS-WO-039-01`, the listing-detail partial-read error-boundary repair, is also closed. `RIGHTSPOT-033` /
 `RS-WO-033-01`,
@@ -502,11 +505,12 @@ were subsequently dispatched, adopted into Main at product commit `c29e80d`, ind
 from `01a05d7c-21b4-72f3-bbe8-1c34d1aee291`. It is closed as `REVIEWED_DEFERRED`: the Information
 Request boundary remains proposal evidence only because contact/PII authority, retention, and agent
 access decisions are not accepted. It cannot authorize implementation or outbound communication.
-`RIGHTSPOT-010` is a separate pending Agent Operations Insights/WebMCP boundary proposal; its
-read-only `RS-WO-010-01` returned `READY_FOR_REVIEW` from `01a05d88-8907-7063-8c93-030e296c9df0`
-(`Leibniz`) and cannot authorize dashboard implementation, WebMCP registration, reporting changes,
-or canonical product writeback. Its proposal record remains unimplemented and separate from the
-accepted Favourite lane. `RS-WO-020-01` has now passed independent verification and is closed; the
+`RIGHTSPOT-010` is closed as a reviewed staged Agent Operations decision; its read-only
+`RS-WO-010-01` returned `READY_FOR_REVIEW` from `01a05d88-8907-7063-8c93-030e296c9df0`
+(`Leibniz`) and its disposition is recorded in the Task File and `ADR-RS-0016`. The existing
+authority/projection was delivered by `RIGHTSPOT-013`, `RIGHTSPOT-015`, and `RIGHTSPOT-016`; the
+manual consumer is separately registered as pending `RIGHTSPOT-044`, and no WebMCP registration is
+authorized by either task. `RS-WO-020-01` has now passed independent verification and is closed; the
 disjoint tenant and agent UI Work Orders `RS-WO-020-02` and `RS-WO-020-03` were dispatched, adopted
 into Main at product commit `c29e80d`, and later covered by independent source and fresh-reset browser
 verification. They are historical checkpoints, not active Work Orders.
@@ -517,8 +521,10 @@ for any later page-authored capability. It rejects an undefined “100% adaptati
 Main-thread selection of one user goal, one page, one role, one bounded tool, explicit manual fallback,
 privacy/security rules, supported-browser registration evidence, and independent verification before
 implementation. The default recommendation is a read-only Tenant Discovery search slice; the
-Operations/WebMCP direction in `RIGHTSPOT-010` remains a pending decision alternative. No source,
-dependency, route, schema, fixture, registration, or implementation Task was created by this roadmap.
+Operations/WebMCP direction in `RIGHTSPOT-010` is now a reviewed staged decision. `RIGHTSPOT-044`
+owns the ordinary manual Operations surface; no Operations WebMCP capability is admitted until that
+surface is independently verified. No source, dependency, route, schema, fixture, registration, or
+implementation outside `RIGHTSPOT-044` was created by this roadmap.
 
 `RIGHTSPOT-011` accepts ADR-RS-0011's bounded Agent Operations read-model seam. `RS-WO-011-01`
 completed its exact two-path Builder handoff at `5b05c78`, `RS-WO-011-02` independently verified it,
@@ -585,9 +591,10 @@ final response can remain a normal application action.
 | Realtime / WebRTC | **DEFERRED FEATURE SEAM** | Future Remote Viewing is possible without making WebRTC or signaling an MVP dependency |
 | Delegated development | **EXPERIMENTAL PILOT — TASK-OWNED** | `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; corrected `RS-WO-002-02` rerun returned `VERIFIED`; `RS-WO-002-03` bounded repair commit `6e70c9f` passed fresh independent verification; `RS-WO-002-04` candidate `68bbc69` passed dedicated verification against frozen source `28105e4d`; `RS-WO-002-05` candidate is frozen at T2 code commit `de169ce` and passed dedicated independent verification against snapshot `bc3bc42`; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted/revised decomposition is recorded in ADR-RS-0008; `RS-WO-002-07` candidate `d71fe3e` passed dedicated independent verification and is integrated at `f700ba9`; `RS-WO-002-08` is integrated at `006d2fd` after process re-baseline `8b77bdd`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-11` candidate `f1f83c7` passed dedicated independent verification and is integrated at `6a0b4b8`; `RS-WO-002-13` candidate `169cb95d` passed dedicated independent verification and is integrated at `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final independent verification and is integrated at `9348aa5`; `RS-WO-002-14` passed direct read-only cross-role verification; `RS-WO-002-15` passed the isolated browser walkthrough and closure evidence is reconciled in `RIGHTSPOT-MVP-CLOSURE-RECORD.md` |
 | Cloud Receiver | **Not a first-phase dependency** | Future integration boundary only |
-| WebMCP | **Not a first-phase design center** | Later Hackathon integration boundary |
+| Agent Operations manual read surface | **NOT IMPLEMENTED; `RIGHTSPOT-044` PENDING** | Existing Operations authority/projection is available; `/agent/operations`, its HTTP consumer, and Agent navigation entry are the next bounded implementation outcome; no WebMCP is admitted before ordinary-surface verification |
+| WebMCP | **TENANT DISCOVERY SLICE VERIFIED; OPERATIONS CAPABILITY DEFERRED** | Page-bound `search_listings` is verified only in the declared local supported-browser capability; later capabilities require separate accepted contracts and evidence |
 | Runtime / deployment | **Not started** | No service, hosting, credentials, or public URL |
-| Evidence | **LOCAL MVP IMPLEMENTATION + DIRECT AND BROWSER HAPPY PATH VERIFIED WITH NO OPEN REGISTERED UI FINDING** | Current pinned `npm test` passes the complete authored suite `159/159` across 39 test files, while `npm run test:foundation` passes `6/6`; the historical `RS-WO-002-14` direct cross-role check and `RS-WO-002-15` isolated browser walkthrough also passed with authoritative versions `1 → 6` and no browser errors or warnings. The `RIGHTSPOT-030` dashboard race repair and `RIGHTSPOT-031` conflict-feedback repair passed their isolated browser reruns. `RIGHTSPOT-032` passed projection/privacy regressions plus a fresh generation-25 proposal/confirm browser walkthrough showing separate preferred and selected times and retained terminal history. `RIGHTSPOT-033` passed focused Red→Green, full checks, fresh active/terminal queue browser evidence, a 320px overflow/focus check, and fresh-reset draft privacy verification. `RIGHTSPOT-034` passed focused Red→Green, full checks, and fresh draft/active/terminal cross-listing notice browser evidence. `RIGHTSPOT-035` passed focused Red→Green, full checks, and fresh two-option accessibility/removal/validation browser evidence. `RIGHTSPOT-036` passed focused Red→Green, full checks, and fresh invalid-correction/removal browser evidence. `RIGHTSPOT-037` passed focused Red→Green, full checks, and fresh queue/detail latest-read failure, retry-recovery, 320px, keyboard, and browser-error evidence at generations `43`/`44`. `RIGHTSPOT-038` passed focused Red→Green, full checks, fresh stale-action recovery success/failure browser evidence, 320px, keyboard, and browser-error checks at generations `50`–`53`; `RIGHTSPOT-039` passed focused Red→Green, full checks, and fresh listing-detail partial-read failure/recovery browser evidence with no page errors. `RIGHTSPOT-040` passed focused Red→Green, full checks, and fresh Discovery failure/recovery browser evidence: raw server text was absent, one bounded error surface remained, keyboard retry/clear recovered filtered/full results, invalid-filter feedback issued no catalogue request, and the 320px/no-page-error checks passed. A clean generation-66 tenant-to-Agent replay also passed draft/submit/review/prepare/send/confirm, terminal/read-only, and role/session boundaries; the disposable fixture was reset to generation `67` with healthy health. `RIGHTSPOT-041` passed focused Red→Green, full checks, listing-detail save and request-dashboard submit feedback persistence, and controlled stale-version conflict recovery; the fixture was reset to generation `70` with healthy health. Deployment and future integrations remain unclaimed |
+| Evidence | **LOCAL MVP IMPLEMENTATION + DIRECT AND BROWSER HAPPY PATH VERIFIED; `RIGHTSPOT-044` PENDING** | Current pinned `npm test` passes the complete authored suite `171/171` across 39 test files, while `npm run test:foundation` passes `6/6`; the historical `RS-WO-002-14` direct cross-role check and `RS-WO-002-15` isolated browser walkthrough also passed with authoritative versions `1 → 6` and no browser errors or warnings. The `RIGHTSPOT-030` dashboard race repair and `RIGHTSPOT-031` conflict-feedback repair passed their isolated browser reruns. `RIGHTSPOT-032` passed projection/privacy regressions plus a fresh generation-25 proposal/confirm browser walkthrough showing separate preferred and selected times and retained terminal history. `RIGHTSPOT-033` passed focused Red→Green, full checks, fresh active/terminal queue browser evidence, a 320px overflow/focus check, and fresh-reset draft privacy verification. `RIGHTSPOT-034` passed focused Red→Green, full checks, and fresh draft/active/terminal cross-listing notice browser evidence. `RIGHTSPOT-035` passed focused Red→Green, full checks, and fresh two-option accessibility/removal/validation browser evidence. `RIGHTSPOT-036` passed focused Red→Green, full checks, and fresh invalid-correction/removal browser evidence. `RIGHTSPOT-037` passed focused Red→Green, full checks, and fresh queue/detail latest-read failure, retry-recovery, 320px, keyboard, and browser-error evidence at generations `43`/`44`. `RIGHTSPOT-038` passed focused Red→Green, full checks, fresh stale-action recovery success/failure browser evidence, 320px, keyboard, and browser-error checks at generations `50`–`53`; `RIGHTSPOT-039` passed focused Red→Green, full checks, and fresh listing-detail partial-read failure/recovery browser evidence with no page errors. `RIGHTSPOT-040` passed focused Red→Green, full checks, and fresh Discovery failure/recovery browser evidence: raw server text was absent, one bounded error surface remained, keyboard retry/clear recovered filtered/full results, invalid-filter feedback issued no catalogue request, and the 320px/no-page-error checks passed. A clean generation-66 tenant-to-Agent replay also passed draft/submit/review/prepare/send/confirm, terminal/read-only, and role/session boundaries; the disposable fixture was reset to generation `67` with healthy health. `RIGHTSPOT-041` passed focused Red→Green, full checks, listing-detail save and request-dashboard submit feedback persistence, and controlled stale-version conflict recovery; the fixture was reset to generation `70` with healthy health. `RIGHTSPOT-043` passed the complete `171/171` suite, typecheck, build, repository/sensitive checks, and independent supported-browser WebMCP evidence. Deployment and future integrations remain unclaimed |
 
 ## 3. Confirmed working inputs
 
@@ -656,6 +663,10 @@ repair. `RIGHTSPOT-038` is closed within its exact request-detail consumer bound
 `RIGHTSPOT-043` / `RS-WO-043-03` are also `CLOSED_VERIFIED` for the bounded local Tenant
 Discovery Search/WebMCP slice; its supported-browser evidence and non-claims are recorded in the
 owning Task File and WebMCP roadmap.
+`RIGHTSPOT-010` is closed as a reviewed staged decision through `ADR-RS-0016`; its existing
+Operations authority and pure projection are complete, but no Operations page or HTTP consumer exists
+yet. `RIGHTSPOT-044` is the pending bounded implementation gate for that manual read surface,
+starting with `RS-WO-044-01`; no supporting code Worktree is open.
 The
 read-only `RS-WO-002-14`
 combined cross-role verification passed against integrated source
@@ -705,6 +716,13 @@ closed parent or override the current closure statement above.
 
 ## 5.1 Current post-MVP route
 
+The current route is `RIGHTSPOT-044`: implement the already accepted Operations authority through an
+ordinary Agent-only `/agent/operations` page and strict `GET /api/agent/operations` consumer. The
+authority and pure projection are complete through `RIGHTSPOT-013`, `RIGHTSPOT-015`, and
+`RIGHTSPOT-016`; `RS-WO-044-01` is ready to dispatch, `RS-WO-044-02` is gated on its frozen response
+contract, and `RS-WO-044-03` is the later independent integrated verifier. WebMCP is explicitly
+deferred until this ordinary surface is verified.
+
 The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.
 The cross-layer page-entry audit then verified the narrow `RIGHTSPOT-021` defect: the existing
 `/tenant/requests` dashboard has no persistent tenant-navigation entry. `RIGHTSPOT-021` then completed
@@ -733,8 +751,9 @@ the exact source on a separate local port, and its evidence is recorded in the o
 5. keep the reviewed `RIGHTSPOT-009` Information Request proposal deferred until its contact/PII
    authority decisions are accepted; it must not be absorbed into `RIGHTSPOT-020`;
 6. keep `RIGHTSPOT-006` gated on explicit external credentials and local-origin authorization;
-7. treat `RIGHTSPOT-010` as a later Operations/WebMCP decision gate and `RIGHTSPOT-012` as a
-   non-blocking read-only audit lane;
+7. treat `RIGHTSPOT-010` as a closed reviewed staged Operations decision, implement its ordinary
+   manual surface through `RIGHTSPOT-044`, and keep `RIGHTSPOT-012` as a non-blocking read-only audit
+   lane;
 8. register and close `RIGHTSPOT-023` for the independently reproduced signed-out root session-read
    defect (`F-02`) after its serial TDD repair and independent evidence;
 9. register and close `RIGHTSPOT-024` for the independently reproduced `127.0.0.1:3100` Next.js
@@ -778,16 +797,18 @@ never opened a supporting implementation Worktree. The accepted Worktree lifecyc
 checkpoint-scoped retirement. `RIGHTSPOT-021` is closed for its bounded navigation repair and
 independent verification; its post-closure `320–342px` residual was resolved by closed
 `RIGHTSPOT-022`, whose Builder handoff and independent verification are complete at product commit
-`f0dbd99`. `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain separate credential,
-decision, and read-only audit gates; `RIGHTSPOT-032` is closed within its tenant projection boundary
+`f0dbd99`. `RIGHTSPOT-006` and `RIGHTSPOT-012` remain separate credential and read-only audit gates;
+`RIGHTSPOT-010` is closed as the reviewed staged decision, and `RIGHTSPOT-044` is the current manual
+Operations implementation gate. `RIGHTSPOT-032` is closed within its tenant projection boundary
 and does not reopen `RIGHTSPOT-020`. `RIGHTSPOT-033` is closed within its Agent presentation boundary.
 `RIGHTSPOT-034` is closed within its tenant listing-detail presentation boundary, and `RIGHTSPOT-035`
 is closed within its tenant request-editor accessibility boundary. `RIGHTSPOT-036` is closed within
 its tenant editor-feedback boundary. `RIGHTSPOT-037` is closed within its Agent latest-read
 truthfulness boundary. `RIGHTSPOT-038` is closed within its Agent stale-action recovery
 presentation boundary.
-The next route is a fresh Main-thread cross-layer audit; no server, workflow, persistence, privacy, or
-dependency change is authorized without a newly reproduced bounded finding.
+The next route is the bounded `RIGHTSPOT-044` manual Operations surface; the continuous Main-thread
+audit remains active in parallel as a read-only lane. No server, workflow, persistence, privacy, or
+dependency change outside a registered Task is authorized.
 
 ## 5.2 Accepted MVP Work Order boundary (historical closure)
 

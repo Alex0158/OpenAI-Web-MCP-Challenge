@@ -56,6 +56,7 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-041 — Preserve tenant request mutation success feedback`](RIGHTSPOT-041-preserve-tenant-request-success-feedback.md)
 - [`RIGHTSPOT-042 — Define Tenant Discovery and WebMCP Search contract`](RIGHTSPOT-042-define-tenant-search-and-webmcp-search-contract.md)
 - [`RIGHTSPOT-043 — Implement Tenant Discovery Search and WebMCP adapter`](RIGHTSPOT-043-implement-tenant-search-and-webmcp-adapter.md)
+- [`RIGHTSPOT-044 — Implement the bounded Agent Operations manual read surface`](RIGHTSPOT-044-implement-agent-operations-manual-read-surface.md)
 
 `RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
 `RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`,
@@ -67,10 +68,12 @@ recorded in ADR-RS-0013 and implementation is separately registered as `RIGHTSPO
 `RIGHTSPOT-009` is closed as `REVIEWED_DEFERRED`: its Information Request proposal remains useful
 review evidence but is not implementation-ready because its contact/PII authority and retention
 decisions remain open. It is separate from Viewing Requests and does not authorize outbound
-communication or implementation. `RIGHTSPOT-010` is a pending read-only decision task for the
-proposed Agent Operations Insights dashboard and bounded WebMCP query surface; it does not authorize
-dashboard implementation, WebMCP registration, reporting-schema changes, or canonical product
-writeback. `RIGHTSPOT-012` is a pending read-only cross-layer audit lane and does not authorize
+communication or implementation. `RIGHTSPOT-010` is closed as a reviewed staged decision: its
+Operations authority and pure projection were separately accepted and implemented through
+`RIGHTSPOT-013`, `RIGHTSPOT-015`, and `RIGHTSPOT-016`; the manual read surface is registered
+separately as `RIGHTSPOT-044`. It does not authorize dashboard implementation, WebMCP registration,
+reporting-schema changes, or canonical product writeback by itself. `RIGHTSPOT-012` is a pending
+read-only cross-layer audit lane and does not authorize
 implementation or canonical product writeback. `RIGHTSPOT-020` is closed within its accepted bounded outcome: its initial
 `RS-WO-020-01` candidate was independently verified, then its `RS-WO-020-01R` relation-version continuity
 repair was independently verified at `adfd37e` after a pre-UI defect was found. Its disjoint tenant/agent
@@ -185,8 +188,10 @@ scopes. The fresh Main-thread cross-layer audit,
 remain reconciled in the [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](../Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md),
 and `RIGHTSPOT-002` is closed.
 
-**Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-010`, and `RIGHTSPOT-012` remain pending
-(credential, decision, and read-only audit gates respectively); `RIGHTSPOT-033` is closed within its
+**Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-012`, and `RIGHTSPOT-044` remain pending
+(credential, read-only audit, and bounded manual Operations implementation gates respectively);
+`RIGHTSPOT-010` is closed as a reviewed staged decision through `ADR-RS-0016` and the earlier
+Operations authority/projection Tasks. `RIGHTSPOT-033` is closed within its
 accepted Agent-dashboard contract; `RIGHTSPOT-032` is closed within its
 bounded tenant projection/presentation outcome. `RIGHTSPOT-023` and `RIGHTSPOT-024`
 are closed within their bounded outcomes; `RIGHTSPOT-025` and `RIGHTSPOT-026` are closed within their
@@ -290,8 +295,8 @@ recorded `F-21` and accepted ADR-RS-0015: four bounded criteria, canonical Area 
 mapping, inclusive AND semantics, deterministic bounded results, truthful error/empty/stale behavior,
 ordinary UI/API parity, tenant-safe output, and page/session-scoped read-only WebMCP lifecycle. It
 authorized no source or registration change; implementation is separately registered as
-`RIGHTSPOT-043`. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal and is
-not absorbed by this task.
+`RIGHTSPOT-043`. `RIGHTSPOT-010` is closed as a separate reviewed staged Agent Operations decision
+and is not absorbed by this task; its manual-surface implementation is registered as `RIGHTSPOT-044`.
 
 `RIGHTSPOT-043` is now `CLOSED_VERIFIED` for the accepted Tenant Discovery Search contract and its
 thin page-bound WebMCP adapter. It contains the sequential Work Orders for ordinary UI/API semantics,
@@ -324,9 +329,10 @@ the canonical Main Worktree remains the only source authority. `RIGHTSPOT-027`, 
 `RIGHTSPOT-022`, and `RIGHTSPOT-021` remain closed within their separately recorded
 presentation/navigation boundaries. `RIGHTSPOT-020` remains closed after its Favourite/listing-interest
 implementation and fresh-reset browser verification. `RIGHTSPOT-006` stays gated on explicit external
-credentials and local-origin authorization; `RIGHTSPOT-010` remains a separate Operations/WebMCP
-decision gate; `RIGHTSPOT-012` is non-blocking read-only audit work; `RIGHTSPOT-042` is closed as the
-selected Tenant Search contract gate; and `RIGHTSPOT-043` is `CLOSED_VERIFIED`. Only an explicitly selected,
+credentials and local-origin authorization; `RIGHTSPOT-010` is closed as a reviewed staged Operations
+decision; `RIGHTSPOT-012` is non-blocking read-only audit work; `RIGHTSPOT-042` is closed as the
+selected Tenant Search contract gate; `RIGHTSPOT-043` is `CLOSED_VERIFIED`; and `RIGHTSPOT-044` is the
+current bounded manual Operations implementation gate. Only an explicitly selected,
 implementation-ready Task may open code Work Orders or temporary Worktrees.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
