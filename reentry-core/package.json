@@ -15,6 +15,7 @@
     "./receiver-core": "./src/receiver-core.mjs",
     "./cloud-receiver-http": "./src/cloud-receiver-http.mjs",
     "./local-connector-client": "./src/local-connector-client.mjs",
+    "./receiver-http-contract": "./src/receiver-http-contract.mjs",
     "./agent-adapter": "./src/agent-adapter.mjs",
     "./managed-context-adapter": "./src/managed-context-adapter.mjs",
     "./sqlite-receiver-store": "./src/sqlite-receiver-store.mjs"

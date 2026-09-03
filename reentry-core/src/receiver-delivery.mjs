@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 
 import {
+  PROTOCOL_LIMITS,
   PROTOCOL_VERSION,
   canonicalJson,
   parseContinuationEventBody,
@@ -66,6 +67,7 @@ const DELIVERY_STORE_METHODS = Object.freeze([
 ]);
 const AUTHORITY_FUTURE_SKEW_MS = 60 * 1_000;
 const CLAIM_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
+const CONTROL_CHARACTER_PATTERN = /[\u0000-\u001f\u007f]/;
 
 export class ReceiverDelivery {
   #store;
@@ -555,10 +557,27 @@ function buildDeliveryLeaseResult(delivery, leaseToken, duplicate) {
         state_version: event.state_version,
         occurred_at: event.occurred_at,
         canonical_url: event.canonical_url,
+        instruction: requireStoredInstruction(delivery.instruction),
       },
       receipt,
     },
   });
+}
+
+function requireStoredInstruction(value) {
+  if (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    value.trim() !== value ||
+    CONTROL_CHARACTER_PATTERN.test(value) ||
+    Buffer.byteLength(value, "utf8") > PROTOCOL_LIMITS.displayReasonBytes
+  ) {
+    throw invariant(
+      "delivery_private_state_invalid",
+      "Stored continuation instruction is invalid",
+    );
+  }
+  return value;
 }
 
 function buildDeliveryAcknowledgement(delivery, effectId, duplicate) {

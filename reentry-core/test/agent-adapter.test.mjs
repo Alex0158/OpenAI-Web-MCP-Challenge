@@ -54,6 +54,10 @@ test("Agent boundary derives one immutable credential-free activation", async ()
   assert.equal("effect_token" in calls[0], false);
   assert.equal("managed_context_id" in calls[0], false);
   assert.equal("prompt" in calls[0], false);
+  assert.equal(
+    calls[0].continuation.instruction,
+    "Review the completed report and prepare the next safe step.",
+  );
   assert.deepEqual(result, activationResult(calls[0]));
   assert.equal(Object.isFrozen(result), true);
 });
@@ -74,6 +78,26 @@ test("Agent boundary rejects stale, mismatched, extended, and accessor input bef
       name: "mismatched event type",
       value: deliveryLease({ continuation: { event_type: "workflow.other" } }),
       code: "agent_activation_scope_invalid",
+    },
+    {
+      name: "missing instruction",
+      value: deliveryLease({ continuation: { instruction: undefined } }),
+      code: "agent_activation_continuation_invalid",
+    },
+    {
+      name: "empty instruction",
+      value: deliveryLease({ continuation: { instruction: "" } }),
+      code: "agent_activation_continuation_invalid",
+    },
+    {
+      name: "instruction with control characters",
+      value: deliveryLease({ continuation: { instruction: "continue\nnow" } }),
+      code: "agent_activation_continuation_invalid",
+    },
+    {
+      name: "oversized instruction",
+      value: deliveryLease({ continuation: { instruction: "a".repeat(501) } }),
+      code: "agent_activation_continuation_invalid",
     },
     {
       name: "extended lease",
@@ -281,6 +305,7 @@ function deliveryLease({ lease = {}, continuation = {}, receipt = {} } = {}) {
       state_version: 4,
       occurred_at: "2026-08-31T11:59:00.000Z",
       canonical_url: "https://host.example/workflows/workflow_001",
+      instruction: "Review the completed report and prepare the next safe step.",
       ...continuation,
     },
     receipt: {

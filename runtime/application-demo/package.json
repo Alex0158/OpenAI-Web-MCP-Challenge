@@ -1,0 +1,21 @@
+{
+  "name": "@webmcp-challenge/application-demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Application-review sample Host for the local Re-entry vertical slice.",
+  "exports": {
+    ".": "./src/application-system.mjs",
+    "./host": "./src/application-host.mjs",
+    "./store": "./src/application-store.mjs"
+  },
+  "scripts": {
+    "start": "node src/main.mjs",
+    "check:syntax": "node scripts/check-syntax.mjs",
+    "test": "node --test test/*.test.mjs",
+    "verify": "npm run check:syntax && npm test"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

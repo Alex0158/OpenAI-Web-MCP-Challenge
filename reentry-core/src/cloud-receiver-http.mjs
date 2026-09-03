@@ -42,7 +42,7 @@ export function createCloudReceiverHttpHandler(options) {
   requireReceiver(options.receiver);
 
   return function cloudReceiverHttpHandler(request, response) {
-    handleRequest(options.receiver, request, response).catch((error) => {
+    return handleRequest(options.receiver, request, response).catch((error) => {
       if (response.destroyed) return;
       if (response.headersSent) {
         response.destroy();

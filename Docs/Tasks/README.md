@@ -2,7 +2,7 @@
 
 **Role:** CANONICAL task-lifecycle authority  
 **Status:** Active  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-03
 
 ## 1. Responsibility
 
@@ -116,13 +116,45 @@ or perform a destructive action.
 
 ## 5. Current non-terminal tasks
 
+- [TASK-012](TASK-012-reconcile-business-flow-and-implementation.md) — Reconcile the canonical
+  business-flow map with current implementation, tests, user-facing guides, and evidence.
+
+- [TASK-022](TASK-022-prepare-sdk-v2-full-chain-integration.md) — Prepare and gate the SDK-to-Cloud
+  Receiver full-chain contract through Host-effect-backed acknowledgement.
+
+- [TASK-023](TASK-023-build-connector-self-disconnection.md) — Add replay-safe Connector
+  self-disconnection across the active v2 Receiver, Local Connector, and account device projection.
+
+- [TASK-024](TASK-024-build-v2-consent-and-developer-experience.md) — Complete the active v2
+  consent/auth handoff, session-aware entry actions, and interactive Host SDK developer guidance.
+
 - [TASK-001 — Select the Host application](TASK-001-select-host-application.md)
-- [TASK-003 — Productionize and deploy Cloud Receiver](TASK-003-productionize-and-deploy-cloud-receiver.md)
+
+- [TASK-026](TASK-026-reconcile-pairing-claim-abuse-fence.md) — Select an enforceable anonymous
+  pairing-claim abuse fence.
+
+- [TASK-027](TASK-027-reconcile-consent-and-grant-expiry.md) — Select separate Consent-session and
+  effective-Grant lifetime and display rules.
+
+- [TASK-028](TASK-028-reconcile-cloud-v2-receiver-core-architecture.md) — Reconcile active v2's
+  independent Receiver implementation with the one-Receiver-Core architecture.
+
+- [TASK-029](TASK-029-integrate-connector-effect-acknowledgement.md) — Integrate a real Host-effect
+  authority and acknowledgement path into the default Connector composition.
+
+- [TASK-030](TASK-030-protect-browser-session-logout.md) — Bind user and developer logout to the
+  intended session and origin boundary.
+
+- [TASK-031](TASK-031-release-simple-sdk-facade.md) — Release the checkout-only simple SDK facade
+  under a new exact-source version and reconcile the active portal install guide.
+
+- [TASK-032](TASK-032-release-compatible-local-connector.md) — Release an exact-source Local
+  Connector that accepts the active instruction-bearing delivery contract.
 
 Discover all task records with:
 
 ```sh
-rg --files Docs/Tasks -g 'TASK-*.md'
+find Docs/Tasks -maxdepth 1 -type f -name 'TASK-*.md' -print
 ```
 
 The task record controls its own lifecycle. This section is navigation and must contain every
