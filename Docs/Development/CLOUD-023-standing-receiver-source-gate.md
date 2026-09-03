@@ -386,3 +386,28 @@ previous `21/21` suites and `158` tests remain prior evidence because Receiver
 production source, schema, and migration bytes are unchanged. The mandatory
 concurrent race, forced rollback, fresh-process recovery, release-enforcement,
 public-control, lifetime, and production gates remain open under TASK-028.
+
+## Shared duplicate-vector increment: 2026-09-03
+
+The shared standing-v0.2 scenario now submits the same signed Event envelope
+concurrently twice. The Core reference and pinned Receiver converge on one
+fresh `202` acceptance and one `202` duplicate response for the same Event ID;
+the sequence/Delivery contract therefore creates one activation rather than
+duplicating work. The earlier future-sequence rejection/no-mutation vector
+remains in the same shared oracle.
+
+Exact evidence for this increment:
+
+- Core scenario contract and cross-layer tests: `24/24` passed;
+- source-pin fixtures: `16/16` passed;
+- pinned Express/PostgreSQL Receiver trace: `1/1` passed;
+- Core commit: `68a306eef6b977ee530a6ac75754ad4c3a12dd64`;
+- selected Core/spec SHA-256: `0723f2db654bbe6088e46dc970bb482edfb27d59ddf62b8ec2a6e4aafc24b9fb`;
+- Receiver commit: `fa5de9de162f5746d00179200c8ba41320af1408`; and
+- runtime: Node `v26.5.0`, `release_conformance_verified: false`.
+
+The full backend aggregate was not rerun for this oracle-only increment; the
+previous `21/21` suites and `158` tests remain prior evidence because Receiver
+production source, schema, and migration bytes are unchanged. The mandatory
+distinct-Event race, forced rollback, fresh-process recovery, release-enforcement,
+public-control, lifetime, and production gates remain open under TASK-028.

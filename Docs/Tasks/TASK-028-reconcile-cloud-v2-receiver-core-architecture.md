@@ -242,6 +242,27 @@ not rerun for this oracle-only increment; prior `21/21` suites and `158` tests
 remain bounded evidence because Receiver production source, schema, and
 migration bytes are unchanged.
 
+## 4.6 Shared duplicate-vector increment
+
+**VERIFIED 2026-09-03:** the shared standing-v0.2 scenario submits the same
+signed Event envelope concurrently twice. The Core reference and pinned
+Receiver converge on one fresh `202` acceptance and one `202` duplicate for
+the same Event ID, so only one sequence reservation and Delivery are created.
+The preceding future-sequence rejection/no-mutation vector remains covered by
+the same oracle. Core scenario contract/cross-layer tests passed `24/24`,
+source-pin fixtures passed `16/16`, and the pinned real Express/PostgreSQL
+trace passed `1/1` at Core commit
+`68a306eef6b977ee530a6ac75754ad4c3a12dd64` (selected-source SHA-256
+`0723f2db654bbe6088e46dc970bb482edfb27d59ddf62b8ec2a6e4aafc24b9fb`) and
+Receiver commit `fa5de9de162f5746d00179200c8ba41320af1408`.
+
+This is one shared duplicate-convergence slice and does not close the remaining
+distinct-Event race, forced rollback, fresh-process recovery, release-enforcement,
+public-control, lifetime, or production gates. The full backend aggregate was
+not rerun for this oracle-only increment; prior `21/21` suites and `158` tests
+remain bounded evidence because Receiver production source, schema, and
+migration bytes are unchanged.
+
 ## 5. Verification and closure
 
 ADR-0044 moves this decision task to `verification_pending`; it does not prove implementation

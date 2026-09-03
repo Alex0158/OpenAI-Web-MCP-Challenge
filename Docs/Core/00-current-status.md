@@ -109,8 +109,8 @@ timestamps at their expiry boundaries, and fails closed on inconsistent private 
 Mutating reference operations resolve time and live authority after the SQLite writer lock;
 20 deterministic boundary regressions cover stale-authority and backdated-revocation risks.
 The shared scenario checks exact success/error envelopes and correlation, with 24 oracle self-tests;
-it now includes a future-sequence rejection with no mutation, but these additions do not establish
-the full shared race, rollback, or crash matrix.
+it now includes future-sequence rejection with no mutation and concurrent duplicate convergence, but
+these additions do not establish the full shared race, rollback, or crash matrix.
 Schema 6 preserves but security-disables older preview Grants lacking key-material evidence;
 ordinary new-Grant restarts do not require another Consent. **LOCALLY VERIFIED, NOT RELEASED:** the
 active Receiver `Re-Entry` source now adds separate standing tables and real Express v0.2
