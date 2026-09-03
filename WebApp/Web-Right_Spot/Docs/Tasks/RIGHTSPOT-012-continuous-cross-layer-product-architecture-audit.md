@@ -668,7 +668,8 @@ role/privacy gap, broken handoff, source change, fixture mutation, or new Task w
 
 `RIGHTSPOT-046` is now accepted separately through ADR-RS-0017 for one future
 `read_listing_pipeline` capability. That decision does not change the manual Operations surface or
-claim an Operations WebMCP registration; its implementation requires a new Task and source freeze.
+claim an Operations WebMCP registration; its implementation is registered in `RIGHTSPOT-047` and
+requires its own source freeze.
 `RIGHTSPOT-012` remains `pending` and non-blocking. This reconciliation adds documentation evidence,
 not a new product-flow completion claim; the existing populated-browser evidence and the retained
 listing-detail same-document `F-08` evidence gap remain unchanged.

@@ -300,8 +300,9 @@ is time-sensitive and not reproducible under the current seeded fixture without 
 ## Consequences
 
 - `RIGHTSPOT-046` is closed as an accepted contract decision through this ADR.
-- A separate implementation Task may now be registered, with disjoint source/test ownership and its
-  own browser capability and source-freeze gates.
+- The separate implementation Task [`RIGHTSPOT-047`](../Tasks/RIGHTSPOT-047-implement-agent-operations-webmcp-listing-pipeline.md)
+  is now registered with disjoint source/test ownership and its own browser capability and source-
+  freeze gates.
 - The ordinary Operations page/API, projection, fixture, role model, and Tenant Search adapter are
   unchanged by this decision.
 - The future adapter must harden the shared consumer or reconstruct an exact tool result; privacy

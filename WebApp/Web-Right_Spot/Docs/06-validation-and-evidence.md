@@ -1318,8 +1318,9 @@ second projections, `upcomingViewings`, Cloud Receiver, WebRTC, Redis, external 
 deployment, and production claims.
 
 No product source, test, fixture, dependency, runtime, or WebMCP registration changed in this
-decision checkpoint. A separate implementation Task is required and must recapture the actual browser
-registration/cleanup behavior and current Main source identity before dispatch.
+decision checkpoint. The separate implementation Task [`RIGHTSPOT-047`](Tasks/RIGHTSPOT-047-implement-agent-operations-webmcp-listing-pipeline.md)
+is now registered and must recapture the actual browser registration/cleanup behavior and current Main
+source identity before dispatch.
 
 ## 7.28 Route and business-flow documentation reconciliation — 2026-09-03
 
@@ -1334,6 +1335,7 @@ SQLite change occurred.
 The business-flow catalogue contained one documentation-only drift: it still described the verified
 `/agent/operations` manual surface as a future or test-only seam. Main corrected the Operations actor,
 flow entry, role matrix, and coverage rows to state the current Agent-only read-only manual route/API,
-its two bounded report families, and the separate `RIGHTSPOT-046` WebMCP gate. No product defect,
-route orphan, role/privacy gap, broken handoff, or new Task was found. `RIGHTSPOT-012` remains pending
-and non-blocking; the retained `F-08` evidence gap and existing browser claims are unchanged.
+its two bounded report families, and the separate `RIGHTSPOT-046` WebMCP contract/implementation gate.
+No product defect, route orphan, role/privacy gap, broken handoff, or new audit finding was found.
+`RIGHTSPOT-012` remains pending and non-blocking; `RIGHTSPOT-047` owns the accepted Operations tool
+implementation gate. The retained `F-08` evidence gap and existing browser claims are unchanged.

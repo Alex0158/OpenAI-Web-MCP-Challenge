@@ -733,8 +733,8 @@ workflow state change.
 filters, caps, empty states, bounded failures, and London date semantics. The manual page remains
 usable without WebMCP, and the latest-read consumer does not show stale results after overlapping
 queries. The separate `RIGHTSPOT-046` / ADR-RS-0017 contract accepts one future
-`read_listing_pipeline` capability; implementation and browser evidence remain required in a later
-Task.
+`read_listing_pipeline` capability; implementation and browser evidence remain required in the
+separate `RIGHTSPOT-047` Task.
 **Evidence:** `src/server/domain/operations-profile*.ts`,
 `src/server/application/operations-insights-http.ts`,
 `src/server/application/operations-insights.ts`, `src/server/persistence/operations-store.ts`,

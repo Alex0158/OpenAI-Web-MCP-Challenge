@@ -59,6 +59,7 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-044 — Implement the bounded Agent Operations manual read surface`](RIGHTSPOT-044-implement-agent-operations-manual-read-surface.md)
 - [`RIGHTSPOT-045 — Prevent stale Operations reads from overwriting the latest query`](RIGHTSPOT-045-prevent-stale-operations-read-results.md)
 - [`RIGHTSPOT-046 — Define Agent Operations WebMCP Listing Pipeline contract`](RIGHTSPOT-046-define-agent-operations-webmcp-listing-pipeline-contract.md)
+- [`RIGHTSPOT-047 — Implement Agent Operations WebMCP listing-pipeline capability`](RIGHTSPOT-047-implement-agent-operations-webmcp-listing-pipeline.md)
 
 `RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
 `RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`,
@@ -192,7 +193,7 @@ and `RIGHTSPOT-002` is closed.
 
 **Current post-MVP gates:** `RIGHTSPOT-006` and `RIGHTSPOT-012` remain pending (credential and
 read-only audit gates); `RIGHTSPOT-046` is closed through accepted `ADR-RS-0017` as the Operations
-WebMCP contract decision, with its separate implementation Task still to be registered;
+WebMCP contract decision, and `RIGHTSPOT-047` is the pending source implementation gate;
 `RIGHTSPOT-045` is now `CLOSED_VERIFIED` within its bounded
 Operations consumer repair boundary after Main-controlled race verification and an explicitly recorded
 independent-browser harness limitation;
@@ -342,9 +343,9 @@ selected Tenant Search contract gate; `RIGHTSPOT-043` is `CLOSED_VERIFIED`; `RIG
 `CLOSED_VERIFIED` for its bounded manual Operations surface; and `RIGHTSPOT-045` is
 `CLOSED_VERIFIED` for its bounded Operations consumer latest-read boundary. `RIGHTSPOT-046` is
 closed through accepted `ADR-RS-0017` as the separate Main-owned contract decision for one Agent
-Operations WebMCP `read_listing_pipeline` capability; it admits a separate implementation Task but
-does not authorize source change or registration. Only that implementation Task, after recaptured
-baseline and explicit paths, may open code Work Orders or a temporary Worktree.
+Operations WebMCP `read_listing_pipeline` capability; it admits the separate pending implementation Task
+`RIGHTSPOT-047` but does not authorize source change or registration. Only that implementation Task,
+after recaptured baseline and explicit paths, may open code Work Orders or a temporary Worktree.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.

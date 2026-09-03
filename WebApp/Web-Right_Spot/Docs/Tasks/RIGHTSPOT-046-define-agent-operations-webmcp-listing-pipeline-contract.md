@@ -22,7 +22,7 @@ local MVP or the already verified Tenant Search capability
 - Priority: `P1` — a bounded Operations WebMCP read capability is the next selectively admissible WebMCP milestone, but it is not required to keep the ordinary MVP runnable.
 - Owner: Main RightSpot thread
 - Current increment: Completed — admit one implementation-ready, read-only Agent Operations WebMCP contract for the assigned listing pipeline and freeze its authority, schema, page parity, lifecycle, privacy, and evidence boundaries.
-- Next gate: A separate implementation Task must recapture source/runtime/browser identity and own all source, test, and WebMCP registration changes. This decision Task does not authorize implementation or registration by itself.
+- Next gate: The separately registered [`RIGHTSPOT-047`](RIGHTSPOT-047-implement-agent-operations-webmcp-listing-pipeline.md) implementation Task must recapture source/runtime/browser identity and own all source, test, and WebMCP registration changes. This decision Task does not authorize implementation or registration by itself.
 - Dependencies: The Operations authority/projection and ordinary Agent-only manual surface must remain unchanged at the reviewed baseline; `RIGHTSPOT-012` may continue as a non-blocking read-only audit. The current WebMCP/browser capability must be rechecked at the later implementation gate.
 - Dispatch state: `not dispatched` — Main-owned contract/documentation review; no Builder, Verifier, dependency installation, WebMCP registration, product source change, fixture mutation, or Worktree was authorized by this Task.
 - Evidence status: `ACCEPTED_CONTRACT_READY_FOR_IMPLEMENTATION` — independent static review returned `REVISE`, Main resolved the identified contract gaps, and [ADR-RS-0017](../Decisions/ADR-RS-0017-agent-operations-webmcp-listing-pipeline-contract.md) accepts the bounded implementation gate.
@@ -299,7 +299,7 @@ Close this Task only when one of these explicit outcomes is recorded:
   the exact tool goal, schema, authority, page parity, latest-read identity, lifecycle, privacy,
   errors, browser gate, non-goals, and `upcomingViewings` exclusion;
 - the Task, local task index, WebMCP roadmap, current status, evidence ledger, and ADR index agree;
-- the ADR explicitly states that a separate implementation Task is required; and
+- the ADR explicitly states that the separate implementation Task `RIGHTSPOT-047` is required; and
 - no product source, test, dependency, fixture, runtime, or WebMCP registration changed as part of
   this decision checkpoint.
 
@@ -340,5 +340,5 @@ decision record before changing this Task's boundary.
 This Task was the next bounded WebMCP decision gate under the active Main-thread Goal. Independent
 review identified contract gaps; Main resolved them and accepted the exact proposal in ADR-RS-0017.
 The Task is closed as a decision/documentation gate. It still does not implement or register a tool;
-the next source-bearing increment requires a separate implementation Task with its own exact paths,
-TDD, browser capability check, source freeze, and verification closure.
+the next source-bearing increment is the separately registered `RIGHTSPOT-047` Task with its own exact
+paths, TDD, browser capability check, source freeze, and verification closure.

@@ -171,14 +171,16 @@ review of [`RIGHTSPOT-046`](Tasks/RIGHTSPOT-046-define-agent-operations-webmcp-l
 identified and Main resolved gaps in static metadata/schema, privacy allowlisting, page parity,
 stale/error outcomes, assignment semantics, and source identity. [ADR-RS-0017](Decisions/ADR-RS-0017-agent-operations-webmcp-listing-pipeline-contract.md)
 now accepts one bounded Agent-only, page-bound, read-only `read_listing_pipeline` contract. No product
-source, WebMCP registration, or manual Operations behavior changed; a separate implementation Task
-must still recapture browser capability, cleanup semantics, and source identity before dispatch.
+source, WebMCP registration, or manual Operations behavior changed; the newly registered
+`RIGHTSPOT-047` implementation Task must recapture browser capability, cleanup semantics, and source
+identity before dispatch.
 `upcomingViewings` remains excluded because its `asOf`/fixture-clock behavior needs deterministic
 reproducible non-empty evidence. The active `RIGHTSPOT-012` audit remains non-blocking.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Register and prepare the separate implementation Task for the accepted
-`RIGHTSPOT-046` Operations WebMCP contract, recapture the current browser/source baseline, and only then
-dispatch its bounded WebMCP implementation while the non-blocking `RIGHTSPOT-012` cross-layer audit
+**Current next product action:** Prepare and dispatch the single Builder Work Order under pending
+`RIGHTSPOT-047` for the accepted `RIGHTSPOT-046` Operations WebMCP contract only after recapturing the
+current browser/source baseline; then freeze and independently verify it while the non-blocking
+`RIGHTSPOT-012` cross-layer audit
 continues against the latest canonical Main source. `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its
 manual Operations consumer latest-read boundary at product source `3582ba4`; it does not reopen
 `RIGHTSPOT-044` or change the Operations API, domain, projection, fixture, role/privacy, navigation,
@@ -661,7 +663,7 @@ final response can remain a normal application action.
 | Cloud Receiver | **Not a first-phase dependency** | Future integration boundary only |
 | Agent Operations manual read surface | **CLOSED_VERIFIED; `RIGHTSPOT-044`** | Existing Operations authority/projection is consumed by the strict Agent-only `/agent/operations` page and HTTP route; independent local browser/API verification passed, while later Operations WebMCP remains separately gated |
 | Active product repair | **NONE; `RIGHTSPOT-045` CLOSED_VERIFIED** | The consumer-only latest-read sequencing guard for Operations is closed at product source `3582ba4` within the manual page boundary; Main-controlled race evidence passed, the independent browser-helper limitation is recorded, and no API/domain/projection/WebMCP change was authorized |
-| WebMCP | **TENANT DISCOVERY SLICE VERIFIED; OPERATIONS CONTRACT ACCEPTED, IMPLEMENTATION PENDING** | Page-bound `search_listings` is verified only in the declared local supported-browser capability; ADR-RS-0017 accepts one Agent Operations `read_listing_pipeline` contract, but separate implementation and supported-browser evidence are still required |
+| WebMCP | **TENANT DISCOVERY SLICE VERIFIED; `RIGHTSPOT-046` ACCEPTED; `RIGHTSPOT-047` PENDING** | Page-bound `search_listings` is verified only in the declared local supported-browser capability; ADR-RS-0017 accepts one Agent Operations `read_listing_pipeline` contract, and `RIGHTSPOT-047` owns its separate implementation and supported-browser evidence |
 | Runtime / deployment | **Not started** | No service, hosting, credentials, or public URL |
 | Evidence | **LOCAL MVP + `RIGHTSPOT-043`, `RIGHTSPOT-044`, AND `RIGHTSPOT-045` CLOSED_VERIFIED** | Current pinned `npm test` passes the complete authored suite `186/186`; 045 product commit `3582ba4` passed focused `8/8`, typecheck, production build, repository validators, sensitive scan, exact-path review, and Main-controlled browser race checks. The independent browser-helper limitation is recorded; no production/deployment claim is made |
 
