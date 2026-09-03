@@ -11,7 +11,11 @@ function pendingChallenge() {
   return {
     challenge_id: "challenge_001",
     manifest_id: "manifest_001",
-    manifest_json: "{}",
+    manifest_json: JSON.stringify({
+      display: {
+        reason: "Review the approved workflow and prepare the next safe step.",
+      },
+    }),
     expected_origin: "https://host.example",
     effective_expires_at: "2026-08-31T03:25:00.000Z",
     status: "pending",
@@ -67,7 +71,7 @@ test("file store persists schema version, uses WAL, and rejects unknown database
 
   const store = new SqliteReceiverStore({ filename: validPath });
   const probe = new DatabaseSync(validPath);
-  assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 2);
+  assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 3);
   assert.equal(probe.prepare("PRAGMA journal_mode").get().journal_mode, "wal");
   probe.close();
   store.close();
@@ -89,7 +93,7 @@ test("file store persists schema version, uses WAL, and rejects unknown database
   );
 });
 
-test("schema version 1 migrates pending deliveries atomically to version 2", async (t) => {
+test("schema version 1 migrates pending deliveries and instructions atomically to version 3", async (t) => {
   const directory = await mkdtemp(join(tmpdir(), "webmcp-sqlite-migration-"));
   const filename = join(directory, "receiver.sqlite");
   let store;
@@ -119,6 +123,7 @@ test("schema version 1 migrates pending deliveries atomically to version 2", asy
       canonical_url: "https://host.example/workflows/workflow_001",
       expires_at: "2026-08-31T03:25:00.000Z",
       human_boundary: "explicit_receiver_consent",
+      instruction: "Review the approved workflow and prepare the next safe step.",
       runs_remaining: 0,
       revoked_at: null,
       receipt_json: "{}",
@@ -148,6 +153,7 @@ test("schema version 1 migrates pending deliveries atomically to version 2", asy
   legacy.exec("DROP TABLE receiver_delivery_attempts");
   legacy.exec("DROP TABLE receiver_delivery_states");
   legacy.exec("DROP INDEX receiver_deliveries_target_order");
+  legacy.exec("ALTER TABLE receiver_grants DROP COLUMN instruction");
   legacy.exec("PRAGMA user_version = 1");
   legacy.close();
 
@@ -157,9 +163,13 @@ test("schema version 1 migrates pending deliveries atomically to version 2", asy
   assert.equal(migrated.maximum_attempts, 1);
   assert.equal(migrated.current_attempt, 0);
   assert.equal(migrated.current_lease_token_digest, null);
+  assert.equal(
+    migrated.instruction,
+    "Review the approved workflow and prepare the next safe step.",
+  );
 
   const probe = new DatabaseSync(filename);
-  assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 2);
+  assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 3);
   assert.equal(
     probe.prepare("SELECT count(*) AS count FROM receiver_delivery_states").get().count,
     1,
@@ -168,6 +178,63 @@ test("schema version 1 migrates pending deliveries atomically to version 2", asy
     probe.prepare("SELECT count(*) AS count FROM receiver_delivery_attempts").get().count,
     0,
   );
+  probe.close();
+});
+
+test("schema version 2 derives the immutable instruction from its consented Manifest", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "webmcp-sqlite-instruction-migration-"));
+  const filename = join(directory, "receiver.sqlite");
+  let store;
+  t.after(async () => {
+    store?.close();
+    for (const path of [filename, `${filename}-wal`, `${filename}-shm`]) {
+      await unlinkIfPresent(path);
+    }
+    await rmdir(directory);
+  });
+
+  store = new SqliteReceiverStore({ filename });
+  store.transaction((transaction) => {
+    transaction.insertChallenge(pendingChallenge());
+    transaction.insertGrant({
+      grant_id: "grant_001",
+      challenge_id: "challenge_001",
+      manifest_id: "manifest_001",
+      binding_id: "binding_001",
+      subject_id: "subject_001",
+      delivery_target_id: "target_001",
+      correlation_id: "correlation_001",
+      issuer_origin: "https://host.example",
+      workflow_type: "test.workflow",
+      workflow_id: "workflow_001",
+      event_type: "workflow.ready",
+      canonical_url: "https://host.example/workflows/workflow_001",
+      expires_at: "2026-08-31T03:25:00.000Z",
+      human_boundary: "explicit_receiver_consent",
+      instruction: "Review the approved workflow and prepare the next safe step.",
+      runs_remaining: 1,
+      revoked_at: null,
+      receipt_json: "{}",
+      created_at: "2026-08-31T03:05:00.000Z",
+    });
+  });
+  store.close();
+  store = undefined;
+
+  const legacy = new DatabaseSync(filename);
+  legacy.exec("ALTER TABLE receiver_grants DROP COLUMN instruction");
+  legacy.exec("PRAGMA user_version = 2");
+  legacy.close();
+
+  store = new SqliteReceiverStore({ filename });
+  const migrated = store.getGrantByBindingId("binding_001");
+  assert.equal(
+    migrated.instruction,
+    "Review the approved workflow and prepare the next safe step.",
+  );
+
+  const probe = new DatabaseSync(filename);
+  assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 3);
   probe.close();
 });
 

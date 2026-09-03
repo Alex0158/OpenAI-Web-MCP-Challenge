@@ -880,6 +880,10 @@ test("Connector claim is target-scoped, private, and exactly replayable", (t) =>
     new Date(FIXED_NOW.getTime() + LEASE_DURATION_MS).toISOString(),
   );
   assert.equal(claimed.lease.continuation.state_version, 4);
+  assert.equal(
+    claimed.lease.continuation.instruction,
+    "The authoritative Host state changed while the Agent was away.",
+  );
   assert.equal(claimed.lease.receipt.grant_id, delivery.grant_id);
   for (const forbidden of [
     "connector_001",

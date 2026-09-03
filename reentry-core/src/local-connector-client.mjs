@@ -1,6 +1,7 @@
 import { TextDecoder } from "node:util";
 
 import {
+  PROTOCOL_LIMITS,
   PROTOCOL_VERSION,
   canonicalJson,
   validateContinuationReceipt,
@@ -46,6 +47,7 @@ const CONTINUATION_FIELDS = Object.freeze([
   "state_version",
   "occurred_at",
   "canonical_url",
+  "instruction",
 ]);
 const ACKNOWLEDGEMENT_FIELDS = Object.freeze([
   "type",
@@ -62,6 +64,7 @@ const ERROR_FIELDS = Object.freeze(["code"]);
 const IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$/;
 const ERROR_CODE_PATTERN = /^[a-z][a-z0-9_]{0,95}$/;
 const CLAIM_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
+const CONTROL_CHARACTER_PATTERN = /[\u0000-\u001f\u007f]/;
 const CONTENT_TYPE_PATTERN = /^application\/json(?:\s*;\s*charset=utf-8)?$/i;
 const MAX_OPAQUE_TOKEN_BYTES = 4 * 1_024;
 const MIN_REQUEST_TIMEOUT_MS = 100;
@@ -348,7 +351,21 @@ function normalizeContinuation(value) {
     state_version: value.state_version,
     occurred_at: value.occurred_at,
     canonical_url: value.canonical_url,
+    instruction: requireInstruction(value.instruction),
   };
+}
+
+function requireInstruction(value) {
+  if (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    value.trim() !== value ||
+    CONTROL_CHARACTER_PATTERN.test(value) ||
+    Buffer.byteLength(value, "utf8") > PROTOCOL_LIMITS.displayReasonBytes
+  ) {
+    throw invalidResponse();
+  }
+  return value;
 }
 
 function normalizeAcknowledgement(value, expectedDeliveryId) {
