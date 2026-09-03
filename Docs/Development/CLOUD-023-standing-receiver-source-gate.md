@@ -4,8 +4,8 @@
 **Status:** Core and Receiver sources locally committed; minimum pinned trace,
 exact-commit PostgreSQL upgrade, one-shot Event rollback/retry vector, Core
 standing fresh-process recovery, and active Receiver/PostgreSQL fresh-process
-recovery are `locally_verified`; full release conformance and public controls
-remain open  
+recovery, and active Receiver transaction interruption are `locally_verified`;
+full release conformance and public controls remain open  
 **Date:** 2026-09-04  
 **Controls:** ADR-0043 through ADR-0045, TASK-027, TASK-028, TASK-033.
 
@@ -572,3 +572,31 @@ The increment does not prove transaction interruption at an arbitrary database
 boundary, supervision, distributed ownership, public controls, lifetime,
 deployment, release enforcement, or hosted recovery. Those gates remain open
 under TASK-027/TASK-028/TASK-033.
+
+## Active Receiver transaction-interruption increment: 2026-09-04
+
+The process fixture now terminates the active Receiver immediately after its
+standing Delivery write inside a Prisma transaction. PostgreSQL rolls the whole
+transaction back: the Grant sequence remains `0`, with no Event or Delivery row
+committed. A fresh process then accepts the exact same signed Event; a later
+process stop after the committed Delivery is followed by a new process that
+claims, effect-verifies, acknowledges, and replays the Event as a duplicate.
+
+Exact evidence:
+
+- focused `node --test backend/conformance/standing-v0.2/fresh-process.test.mjs`: `1/1` passed;
+- two additional focused stability reruns: `2/2` passed;
+- existing pinned active Receiver standing trace: `1/1` passed;
+- Core commit: `1446d73aa3e66533547471728ad8fa5344d51f9e`;
+- selected Core/spec SHA-256: `6210d7724417e0533c77d5989e8ffdd3c404af4063ac9d70d70db9b622f73d45`;
+- Receiver commits: `2429281b7b9f0db56aa8cf8250de18a450ea477f` (fixture),
+  `78e7e561d2779c7779d023b4c6a1461b150f95cf` (state assertion), and
+  `eb2837849dfb7c974a9e2508da2bf0ecbb68eeec` (record); and
+- runtime: Node `v26.5.0`, `release_conformance_verified: false`.
+
+The kill-after-write hook is a test-only wrapper around the active Prisma
+transaction client and changes no production code. This closes only the bounded
+active Receiver/PostgreSQL transaction-interruption vector. Supervision,
+distributed ownership, production effect authority, public controls, lifetime,
+deployment, release enforcement, and the remaining shared v0.1/v0.2 failure
+matrix remain open.

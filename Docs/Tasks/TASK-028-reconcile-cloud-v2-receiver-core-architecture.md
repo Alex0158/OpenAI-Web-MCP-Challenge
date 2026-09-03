@@ -14,12 +14,13 @@
   conflict, same-ID/different-body identity conflict, and one-shot post-write transaction rollback
   with exact-envelope retry, while a standing Core/SQLite pending-Delivery recovery trace now
   survives SIGKILL and fresh-process claim/ack/replay, and the active Receiver/PostgreSQL
-  implementation now passes the equivalent fresh-process recovery trace. The active-v2 lease/reclaim
-  profile also passes. CLOUD-023 owns the bounded evidence.
-- Next gate: Complete the mandatory shared v0.1/v0.2 failure/race/recovery matrix, including forced
-  termination and transaction-interruption paths across retained implementations, then enforce
-  release checks while retaining the separate active-v2 production lease profile. Public controls
-  need their own accepted contract.
+  implementation now passes both fresh-process recovery and a forced transaction-interruption
+  rollback trace. The active-v2 lease/reclaim profile also passes. CLOUD-023 owns the bounded
+  evidence.
+- Next gate: Complete the mandatory shared v0.1/v0.2 failure/race/recovery matrix, including any
+  remaining forced-termination and transaction-interruption paths across retained implementations,
+  then enforce release checks while retaining the separate active-v2 production lease profile.
+  Public controls need their own accepted contract.
 - Dependencies: ADR-0006, ADR-0012, ADR-0033 through ADR-0039, ADR-0043 through ADR-0045,
   AUDIT-V2-004 in Core/09, TASK-012, and TASK-033.
 
@@ -421,6 +422,35 @@ PostgreSQL store; it does not prove transaction interruption at an arbitrary
 database boundary, supervision, distributed ownership, production effect
 authority, deployment, public controls, lifetime, or release conformance. The
 remaining shared matrix and release gates stay open.
+
+## 4.13 Active Receiver transaction-interruption increment
+
+**VERIFIED 2026-09-04:** the active Receiver process fixture arms a test-only
+transaction wrapper that terminates the process immediately after the standing
+Delivery write. The PostgreSQL transaction rolls back completely: the Grant
+sequence remains `0`, and neither the Event nor Delivery row is committed. A
+fresh Receiver process accepts the exact same signed Event; a subsequent process
+termination after that committed Delivery is followed by a new process that
+claims, effect-verifies, acknowledges, and replays it as a duplicate.
+
+Evidence for this active Receiver increment:
+
+- focused `node --test backend/conformance/standing-v0.2/fresh-process.test.mjs`: `1/1` passed;
+- two additional focused stability reruns: `2/2` passed;
+- existing pinned active Receiver standing trace after the fixture: `1/1` passed;
+- Core commit: `1446d73aa3e66533547471728ad8fa5344d51f9e`;
+- selected Core/spec SHA-256: `6210d7724417e0533c77d5989e8ffdd3c404af4063ac9d70d70db9b622f73d45`;
+- Receiver commits: `2429281b7b9f0db56aa8cf8250de18a450ea477f` (fixture),
+  `78e7e561d2779c7779d023b4c6a1461b150f95cf` (state assertion), and
+  `eb2837849dfb7c974a9e2508da2bf0ecbb68eeec` (record); and
+- runtime: Node `v26.5.0`, `release_conformance_verified: false`.
+
+The kill-after-write hook is a test-only wrapper around the active Prisma
+transaction client; it does not alter production code or emulate every database
+failure. This closes the bounded active Receiver/PostgreSQL transaction
+interruption vector only. Supervision, distributed ownership, production effect
+authority, public controls, lifetime, deployment, release enforcement, and the
+remaining shared v0.1/v0.2 matrix stay open.
 
 ## 5. Verification and closure
 
