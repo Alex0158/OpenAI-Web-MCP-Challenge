@@ -58,6 +58,7 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-043 — Implement Tenant Discovery Search and WebMCP adapter`](RIGHTSPOT-043-implement-tenant-search-and-webmcp-adapter.md)
 - [`RIGHTSPOT-044 — Implement the bounded Agent Operations manual read surface`](RIGHTSPOT-044-implement-agent-operations-manual-read-surface.md)
 - [`RIGHTSPOT-045 — Prevent stale Operations reads from overwriting the latest query`](RIGHTSPOT-045-prevent-stale-operations-read-results.md)
+- [`RIGHTSPOT-046 — Define Agent Operations WebMCP Listing Pipeline contract`](RIGHTSPOT-046-define-agent-operations-webmcp-listing-pipeline-contract.md)
 
 `RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
 `RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`,
@@ -189,8 +190,9 @@ scopes. The fresh Main-thread cross-layer audit,
 remain reconciled in the [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](../Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md),
 and `RIGHTSPOT-002` is closed.
 
-**Current post-MVP gates:** `RIGHTSPOT-006` and `RIGHTSPOT-012` remain pending (credential and
-read-only audit gates respectively); `RIGHTSPOT-045` is now `CLOSED_VERIFIED` within its bounded
+**Current post-MVP gates:** `RIGHTSPOT-006`, `RIGHTSPOT-012`, and `RIGHTSPOT-046` remain pending
+(credential, read-only audit, and Operations WebMCP contract decision gates respectively);
+`RIGHTSPOT-045` is now `CLOSED_VERIFIED` within its bounded
 Operations consumer repair boundary after Main-controlled race verification and an explicitly recorded
 independent-browser harness limitation;
 `RIGHTSPOT-044` is `CLOSED_VERIFIED` for its bounded manual Operations implementation;
@@ -337,8 +339,10 @@ credentials and local-origin authorization; `RIGHTSPOT-010` is closed as a revie
 decision; `RIGHTSPOT-012` is non-blocking read-only audit work; `RIGHTSPOT-042` is closed as the
 selected Tenant Search contract gate; `RIGHTSPOT-043` is `CLOSED_VERIFIED`; `RIGHTSPOT-044` is
 `CLOSED_VERIFIED` for its bounded manual Operations surface; and `RIGHTSPOT-045` is
-`CLOSED_VERIFIED` for its bounded Operations consumer latest-read boundary. Only an explicitly selected,
-implementation-ready Task may open code Work Orders or temporary Worktrees.
+`CLOSED_VERIFIED` for its bounded Operations consumer latest-read boundary. `RIGHTSPOT-046` is
+pending as the separate Main-owned contract decision for one possible Agent Operations WebMCP
+`read_listing_pipeline` capability; it does not authorize implementation or registration. Only an
+explicitly selected, implementation-ready Task may open code Work Orders or temporary Worktrees.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.

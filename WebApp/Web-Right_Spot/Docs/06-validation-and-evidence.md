@@ -1272,3 +1272,28 @@ workflow POST actions. It therefore adds no fresh populated rendered happy-path 
 canonical browser evidence remains the authority. No new Task or Work Order was registered, and
 `RIGHTSPOT-012` remains a pending continuous audit lane. A shell failure caused by zsh's reserved
 `path` variable was corrected under Bash and was not a product request or mutation.
+
+## 7.26 Operations WebMCP contract decision registration — 2026-09-03
+
+Main reviewed the post-`RIGHTSPOT-045` Operations source and closure evidence against the canonical
+Main checkpoint `c728547` (the product source remains the reviewed `3582ba4` checkpoint). The existing
+Operations authority/projection, Agent-only HTTP/manual page, role/privacy boundary, bounded errors,
+and latest-read consumer sequencing are complete through `RIGHTSPOT-013`, `RIGHTSPOT-015`,
+`RIGHTSPOT-016`, `RIGHTSPOT-044`, and `RIGHTSPOT-045`. The current source contains no Operations
+WebMCP registration; the existing WebMCP adapter is the separate Tenant `search_listings` slice.
+
+This evidence makes a new admission review actionable but does not prove that a new tool should be
+implemented. Main registered [`RIGHTSPOT-046`](Tasks/RIGHTSPOT-046-define-agent-operations-webmcp-listing-pipeline-contract.md)
+as a pending decision Task for one possible Agent-only, page-bound, read-only
+`read_listing_pipeline` capability. The proposal accepts only the existing `listingPipeline` query
+fields (`area`, `publicationState`, `lifecycleState`, and `minPublishedAgeDays`) and requires the
+existing Operations response, page parity, one latest-read identity, server role authority, bounded
+errors, and route/session teardown. It explicitly excludes mutations, natural-language parsing,
+direct SQL, a second projection, and `upcomingViewings` until its `asOf`/fixture-clock reproducibility
+boundary is resolved.
+
+No source, test, fixture, package, dependency, runtime, WebMCP registration, or Worktree changed in
+this registration checkpoint. The next evidence gate is an accepted or rejected contract ADR; only
+an accepted contract may route a separate implementation Task. `RIGHTSPOT-012` remains a non-blocking
+read-only audit lane, and no universal browser, production, Cloud Receiver, external authentication,
+WebRTC, Redis, or deployment claim is made.

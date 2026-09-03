@@ -164,10 +164,12 @@ and `RIGHTSPOT-044` is `CLOSED_VERIFIED` for the bounded manual read surface. `R
 `CLOSED_VERIFIED` within its bounded manual Operations consumer latest-read boundary, while Operations
 WebMCP remains separately gated.
 `RIGHTSPOT-012` is a non-blocking
-read-only audit lane. The `F-01` queue/privacy defect is closed within `RIGHTSPOT-025`; `RIGHTSPOT-026`
+read-only audit lane, and `RIGHTSPOT-046` is the pending Main-owned contract decision for a possible
+Agent Operations `read_listing_pipeline` WebMCP capability. The `F-01` queue/privacy defect is closed within `RIGHTSPOT-025`; `RIGHTSPOT-026`
 is also closed within its presentation-only boundary. `RIGHTSPOT-027` is closed after its bounded
 presentation repair and independent verification; no implementation Worktree is active. The next step
-is a fresh Main-thread cross-layer audit before another implementation route is registered.
+is to review or defer `RIGHTSPOT-046` while the fresh Main-thread cross-layer audit continues; a
+separate implementation route can be registered only after an accepted contract.
 The authoritative sequence is maintained in the [development roadmap](RIGHTSPOT-DEVELOPMENT-ROADMAP.md#31-current-next-route).
 
 ## Closure record requirements

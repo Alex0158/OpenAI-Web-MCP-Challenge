@@ -164,14 +164,24 @@ six page routes returned `200`, unauthenticated/wrong-role/missing-resource API 
 defect or follow-on Task was reproduced or registered. Because this pass intentionally avoided fixture
 mutation and populated browser actions, it adds no new rendered happy-path claim; that evidence gap is
 explicitly retained. `RIGHTSPOT-012` remains the active pending audit lane.
+**Latest Operations WebMCP admission checkpoint (2026-09-03):** The accepted Operations authority,
+pure projection, Agent-only manual surface, and manual latest-read repair are complete through
+`RIGHTSPOT-013`, `RIGHTSPOT-015`, `RIGHTSPOT-016`, `RIGHTSPOT-044`, and `RIGHTSPOT-045`. Main therefore
+registered [`RIGHTSPOT-046`](Tasks/RIGHTSPOT-046-define-agent-operations-webmcp-listing-pipeline-contract.md)
+as a separate pending contract decision for one possible Agent-only, page-bound, read-only
+`read_listing_pipeline` capability. The Task is proposal/decision work only: it does not register a
+tool, change the Operations API/domain/projection/manual UI, install a dependency, or authorize an
+implementation Task. `upcomingViewings` remains excluded because its `asOf`/fixture-clock behavior
+needs a deterministic reproducibility decision. The active `RIGHTSPOT-012` audit remains non-blocking.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Continue the non-blocking `RIGHTSPOT-012` cross-layer audit against
-the latest canonical Main source and register a new bounded Task only if a fresh evidence-backed gap
-is reproduced. `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its manual Operations consumer latest-read
-boundary at product source `3582ba4`; it does not reopen `RIGHTSPOT-044` or change the Operations API,
-domain, projection, fixture, role/privacy, navigation, or WebMCP boundary. `RIGHTSPOT-006` remains
-credential-gated. Any later Operations WebMCP capability must first receive its own accepted contract,
-Task, write set, and evidence gate. The existing Tenant Discovery/WebMCP slice remains
+**Current next product action:** Main reviews and either accepts or defers the bounded
+`RIGHTSPOT-046` Operations WebMCP contract while the non-blocking `RIGHTSPOT-012` cross-layer audit
+continues against the latest canonical Main source. `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its
+manual Operations consumer latest-read boundary at product source `3582ba4`; it does not reopen
+`RIGHTSPOT-044` or change the Operations API, domain, projection, fixture, role/privacy, navigation,
+or WebMCP boundary. `RIGHTSPOT-006` remains credential-gated. No Operations WebMCP implementation or
+registration may begin until `RIGHTSPOT-046` has an accepted contract, separate implementation Task,
+write set, and evidence gate. The existing Tenant Discovery/WebMCP slice remains
 `RIGHTSPOT-043` `CLOSED_VERIFIED` in its declared local supported-browser capability. No production,
 universal browser, judge, or probabilistic agent success claim is made.
 `RIGHTSPOT-010` is closed as a reviewed staged Agent Operations decision through `ADR-RS-0016`.

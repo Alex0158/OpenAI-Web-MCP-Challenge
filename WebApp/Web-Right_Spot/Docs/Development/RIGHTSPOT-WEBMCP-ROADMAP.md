@@ -133,7 +133,7 @@ The product goal, not the number of exposed controls, determines the first slice
 |---|---|---:|---|---|
 | Find published rentals by bounded area/filter and show the result on Tenant Discovery | Existing listing application/API and page | Low | **Selected first slice** | Directly supports the core tenant journey, requires no new reporting model, and is read-only; contract work is registered in `RIGHTSPOT-042` |
 | Inspect one published listing and return to a human-readable detail surface | Existing listing detail route/API | Low | Follow-on read slice | Useful after discovery, but not necessary for the first registration proof |
-| Query upcoming Operations viewings or listing pipeline | Accepted Operations authority/projection; `ADR-RS-0016`; `RIGHTSPOT-044` manual surface | Medium | Manual surface `CLOSED_VERIFIED`; WebMCP follow-on gated | The ordinary manual surface is verified; a later WebMCP capability still requires its own contract, Task, and browser evidence |
+| Query upcoming Operations viewings or listing pipeline | Accepted Operations authority/projection; `ADR-RS-0016`; `RIGHTSPOT-044` manual surface | Medium | `RIGHTSPOT-046` pending bounded contract decision | The ordinary manual surface and consumer repair are verified; one `read_listing_pipeline` capability is under separate review while `upcomingViewings` remains deferred |
 | Save a Favourite or Viewing Request draft | Existing mutation authority | Medium | Later mutation slice | State-changing and must preserve idempotency, version, role, and user-intent rules |
 | Submit a Viewing Request, send a proposal, confirm/decline a viewing | Existing workflow authority | High | Defer until read slice is verified | Human-consequential transitions need explicit confirmation and stronger browser evidence |
 | Login, expose internal notes, contact a tenant, send notifications, or operate Cloud Receiver | Separate or deferred authority | High | Exclude | Not part of the current WebMCP slice and would expand security/integration scope |
@@ -151,7 +151,9 @@ claim production, universal browser, judge, or probabilistic agent support.
 replaced by this selection. Its authority and pure projection are complete through
 `RIGHTSPOT-013`, `RIGHTSPOT-015`, and `RIGHTSPOT-016`; the ordinary manual consumer is registered as
 `RIGHTSPOT-044`. Any later Operations WebMCP capability remains separately gated after that manual
-surface is independently verified.
+surface is independently verified. `RIGHTSPOT-046` is now the single bounded Main-owned contract
+decision for a possible Agent-only `read_listing_pipeline` capability; no implementation or
+registration is admitted by its registration alone.
 
 This choice prevents the first WebMCP increment from silently becoming a new reporting product, a
 generic chatbot, or a full rewrite of the already-closed tenant-to-agent workflow.
@@ -469,11 +471,14 @@ record is in the owning Task File. A post-044 audit registered and Main has now 
 consumer repair `RIGHTSPOT-045` for the `F-22` latest-read race at product source `3582ba4`; its
 Main-controlled race evidence and explicit independent-browser harness limitation are recorded in
 the Task File. This does not admit an Operations WebMCP slice.
-The non-blocking `RIGHTSPOT-012` audit may continue, followed by an explicit decision on whether an
-Operations WebMCP slice is worth admitting.
+The non-blocking `RIGHTSPOT-012` audit may continue in parallel. `RIGHTSPOT-046` is the explicit
+decision gate for whether one bounded Agent Operations WebMCP slice is worth admitting; its initial
+proposal covers only `read_listing_pipeline`. `upcomingViewings` remains deferred until its
+`asOf`/fixture-clock reproducibility boundary is explicitly resolved.
 `RIGHTSPOT-010` is closed as a reviewed staged decision; its authority and projection are not being
-reimplemented. Any later Operations WebMCP capability or W4 mutation requires its own contract,
-Task, write set, tests, browser evidence, and closure. Cloud Receiver, external authentication,
+reimplemented. `RIGHTSPOT-046` owns the current bounded Operations WebMCP contract decision and does
+not authorize source work. Any later Operations WebMCP capability or W4 mutation requires its own
+accepted contract, Task, write set, tests, browser evidence, and closure. Cloud Receiver, external authentication,
 deployment, WebRTC, Redis, and production readiness remain deferred.
 
 After `RIGHTSPOT-043` acceptance, the ordinary UI remains authoritative and the WebMCP adapter remains
