@@ -23,6 +23,12 @@ The cross-layer audit found a shared role-page session-lifecycle gap affecting p
 `RIGHTSPOT-048` now owns bounded focus/visibility revalidation, actor identity reconciliation, and
 adapter deactivation. The existing server role/session authority remains unchanged; this is not a
 data-leak or external-authentication claim.
+The 2026-09-03 audit also found `F-25`: a failed stale-write recovery can leave a Tenant request
+editor's old mutation controls usable; `RIGHTSPOT-050` owns the bounded action gate. It found `F-26`
+in both page-bound WebMCP adapters: registration failure can be silently discarded when production
+wiring omits the existing error callback. `RIGHTSPOT-051` owns the Tenant portion and `RS-WO-047-03`
+owns the Agent portion. These are open consumer/capability repairs and do not change the business
+state machine, server authority, or manual UI contract.
 `F-18` was a tenant Discovery error-copy defect tracked by `RIGHTSPOT-040`; the bounded consumer
 repair is now closed and verified.
 The continuing audit then reproduced `F-19`, tracked by `RIGHTSPOT-041`, where successful tenant draft
@@ -158,10 +164,10 @@ Status values used below:
 | ID | Business chain | Main surface | State/effect | Current disposition |
 |---|---|---|---|---|
 | `RS-FLOW-01` | Establish, resolve, and end a role session | `/`, `/api/session` | Session cookie only | `CLOSED_VERIFIED` — signed-out resolution, role mismatch, sign-out recovery, and documented local hosts are verified; fresh browser evidence in `rightspot-audit-082` |
-| `RS-FLOW-02` | Discover and filter published rentals | `/tenant` | Read-only listing projection | `CLOSED_VERIFIED` — `RIGHTSPOT-040` keeps local validation feedback separate from bounded catalogue-read error copy; normal success, filtered, empty, retry, and recovery behavior remains verified |
+| `RS-FLOW-02` | Discover and filter published rentals | `/tenant` | Read-only listing projection | `CLOSED_VERIFIED` for ordinary Search behavior; `RIGHTSPOT-040` keeps local validation feedback separate from bounded catalogue-read error copy, while `RIGHTSPOT-051` remains open only for WebMCP registration-failure observability |
 | `RS-FLOW-03` | Inspect a listing and enter a request | `/tenant/listings/:listingId` | No implicit write | `CLOSED_VERIFIED` — same-listing notice copy is verified by `RIGHTSPOT-026`; cross-listing draft/active/terminal notice copy is verified by `RIGHTSPOT-034`; supported catalogue anchors were directly rechecked as full-document navigation in `rightspot-audit-081` |
 | `RS-FLOW-04` | Save, remove, reload, and re-save a Favourite | Listing cards/detail, `/tenant/favourites` | Favourite `ACTIVE/REMOVED` | `IMPLEMENTED_WITH_RESIDUAL_EVIDENCE` — fresh save/reload/remove/empty/re-save replay passed at generation `73`; unpublished reactivation remains static/direct evidence because no supported user-facing unpublish action exists |
-| `RS-FLOW-05` | Create and revise a Viewing Request draft | Listing detail, `/tenant/requests` | `TENANT_DRAFT`, version increment; `RIGHTSPOT-031` preserves truthful stale-write recovery feedback; `RIGHTSPOT-041` preserves parent-owned post-save feedback after rehydration | `CLOSED_VERIFIED` within state, mutation, completion-feedback, and fresh end-to-end boundaries (`rightspot-audit-083`) |
+| `RS-FLOW-05` | Create and revise a Viewing Request draft | Listing detail, `/tenant/requests` | `TENANT_DRAFT`, version increment; `RIGHTSPOT-031` preserves truthful stale-write recovery feedback; `RIGHTSPOT-041` preserves parent-owned post-save feedback after rehydration; `RIGHTSPOT-050` gates actions after failed recovery | `CLOSED_VERIFIED` for ordinary state/mutation/completion behavior; `RIGHTSPOT-050` remains an open failed-recovery action-safety repair |
 | `RS-FLOW-06` | Explicitly submit the draft | Tenant request surface | `TENANT_DRAFT` → `REQUEST_SUBMITTED`; `RIGHTSPOT-031` preserves truthful stale-write recovery feedback; `RIGHTSPOT-041` preserves parent-owned post-submit feedback after rehydration | `CLOSED_VERIFIED` within state, mutation, completion-feedback, and fresh end-to-end boundaries (`rightspot-audit-083`) |
 | `RS-FLOW-07` | Expose submitted work to the assigned agent | `/agent` | Queue read only | `CLOSED_VERIFIED` — draft privacy remains closed at the authoritative read boundary; active/history presentation is closed by `RIGHTSPOT-033`, failed latest reads withhold retained queue content through `RIGHTSPOT-037`, and fresh submitted/terminal queue transitions passed in `rightspot-audit-083` |
 | `RS-FLOW-08` | Open an assigned request and start review | Agent queue/detail | `REQUEST_SUBMITTED` → `AGENT_REVIEWING` | `CLOSED_VERIFIED` — submitted work remains actionable after a successful read, pre-submission drafts are non-visible, failed latest reads withhold retained detail/actions through `RIGHTSPOT-037`, stale-action `409` recovery renders authoritative detail through `RIGHTSPOT-038`, and fresh UI review passed in `rightspot-audit-083` |
@@ -173,7 +179,7 @@ Status values used below:
 | `RS-FLOW-14` | Proposal expires without a scheduler | Relevant tenant/agent read or write | `EXPIRED`; slot released | `CLOSED_VERIFIED` — projection retains the selected time while terminal expiry remains non-actionable under `RIGHTSPOT-032` |
 | `RS-FLOW-15` | Reset and replay a deterministic fixture | Development script/test boundary | New generation; empty request/Favourites | `CLOSED_VERIFIED` — `F-06` / `RIGHTSPOT-028` repaired the CLI composition and passed focused and independent verification |
 | `RS-FLOW-16` | Show privacy-preserving listing interest to an agent | `/agent` embedded section | Read-only aggregate | `CLOSED_VERIFIED` |
-| `RS-FLOW-17` | Query the Agent Operations profile | `/agent/operations`, `GET /api/agent/operations` | Read-only projection; no relay mutation | Manual surface is `CLOSED_VERIFIED` through `RIGHTSPOT-044`/`045`; the `RIGHTSPOT-047` `read_listing_pipeline` candidate is implemented and frozen, with independent browser evidence incomplete |
+| `RS-FLOW-17` | Query the Agent Operations profile | `/agent/operations`, `GET /api/agent/operations` | Read-only projection; no relay mutation | Manual surface is `CLOSED_VERIFIED` through `RIGHTSPOT-044`/`045`; the `RIGHTSPOT-047` `read_listing_pipeline` candidate is implemented and frozen, with independent browser evidence incomplete and `RS-WO-047-03` pending for registration-failure observability |
 | `RS-FLOW-18` | Enforce role, privacy, version, and failure boundaries | All API/projection surfaces | Visible bounded error; no invalid mutation | `CLOSED_VERIFIED` for the tenant Discovery error-copy consumer boundary through `RIGHTSPOT-040`; other audited role/privacy/version/failure claims remain closed within their recorded scopes |
 | `RS-FLOW-19` | Information Request, external auth, later WebMCP capabilities, Cloud Receiver, or Remote Viewing | Future integration | No current state effect | `DEFERRED` / `GATED` |
 
@@ -1490,6 +1496,39 @@ The fixture was reset to generation `70` with healthy `/api/health`.
 **Disposition:** `F-19` is `CLOSED_VERIFIED`, `P2`, tracked by `RIGHTSPOT-041` / `RS-WO-041-01` within
 the tenant request mutation-completion-feedback consumer boundary. No server, API, domain, persistence,
 role, workflow, external integration, or notification-framework behavior changed.
+
+## 11.5 Tenant stale-action boundary after failed conflict recovery — `F-25` / `RIGHTSPOT-050`
+
+The Tenant request editor may receive a stale-write `409` when another authoritative read or write
+has advanced the request version. The existing recovery path must attempt a fresh request read and
+show a distinct bounded message when that read fails. When the recovery read fails, the old request
+data is not authoritative enough for another consequential mutation: the editor must withhold further
+edits, Save, and Submit until a fresh authoritative response is accepted or the page is remounted.
+
+This boundary applies to both `/tenant/requests` and listing detail. It does not alter the server's
+version guard, add a workflow state, replay a command, merge local edits, or change the separate
+listing-detail dynamic-route `F-08` evidence gap. Successful conflict recovery remains the existing
+review-before-retry path; ordinary pending-state clearing is not sufficient to clear the failed-
+recovery gate.
+
+**Disposition:** `F-25` is `OPEN_FINDING`, `P2`, and is tracked by pending `RIGHTSPOT-050`. The
+authoritative workflow and privacy rules remain valid; only the stale consumer action boundary is open.
+
+## 11.6 Page-bound WebMCP registration-failure boundary — `F-26` / `RIGHTSPOT-051` and `RS-WO-047-03`
+
+The Tenant `search_listings` and Agent `read_listing_pipeline` capabilities are progressive,
+page-bound enhancements. If a supported `modelContext.registerTool()` call throws or rejects, the
+production component must not silently present the capability as available. The adapter must stop or
+deactivate its failed page-bound lifecycle and expose one bounded neutral signal to its page owner;
+the signal must not include raw exception or server-controlled diagnostic text.
+
+An unavailable WebMCP capability remains the ordinary manual fallback. Manual Search and manual
+Operations filters, results, loading, empty, error, Retry, navigation, keyboard access, and role/
+privacy behavior must remain usable. This is not a new tool, transport, telemetry system, or server
+contract, and it does not upgrade static tests or a browser-harness attempt into runtime evidence.
+
+**Disposition:** `F-26` is `OPEN_FINDING`, `P2`, with Tenant ownership registered in pending
+`RIGHTSPOT-051` and Agent ownership recorded as gated `RS-WO-047-03` under open `RIGHTSPOT-047`.
 
 ## 9.10 Agent preparation validation boundary evidence — 2026-09-02
 

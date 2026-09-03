@@ -93,9 +93,11 @@ with healthy health.
   routes returned `200`, bounded `401`/`403`/`404` API boundaries held, health returned `200`, and the
   SQLite hash/mtime stayed unchanged. The run intentionally did not mutate fixtures or perform populated
   browser actions, so it adds no new rendered happy-path claim and registers no follow-on Task.
-- Next gate: Continue the cross-layer audit against the latest Main source after the now-closed
-  `RIGHTSPOT-045` checkpoint. Register another follow-on Task only after reproducing a new bounded gap
-  and recording its owner, scope, and acceptance gate.
+- Next gate: Review and execute the newly registered `RIGHTSPOT-050` and `RIGHTSPOT-051` boundaries,
+  while retaining the 047/048 WebMCP evidence gates. Re-dispatch this audit after a meaningful source,
+  route, data, permission, UI interaction, integration, or evidence increment. Register another
+  follow-on Task only after reproducing a new bounded gap and recording its owner, scope, and
+  acceptance gate.
 - Latest bounded rerun (2026-09-03): Main dispatched read-only Advisor Linnaeus
   (`01a06674-8423-7af1-ae10-b7cf3c23dbac`) against documentation checkpoint `99d38ed` and product/source
   candidate `218935c`. The scope covered post-048 static route/role/flow review, the shared lifecycle
@@ -113,6 +115,17 @@ with healthy health.
   numeric/date value to equal the serialized request (`maxRent: 2500` accepted returned `999`). Main
   confirmed the probe, expanded 049 rather than registering a duplicate Task, and recorded the report
   as advisory evidence. No source or canonical documents were changed by the Advisor.
+- The subsequent multi-angle audit by Meitner, Kuhn, and Ampere reviewed the current Main source and
+  the ordinary Tenant-to-Agent chain across UI/UX, accessibility, fallback, persistence, role/privacy,
+  WebMCP lifecycle, and registration wiring. It confirmed one new P2 Tenant consumer defect (`F-25`):
+  if a stale mutation returns `409` and the recovery read fails, the old request editor remains usable
+  after `finally` clears its pending state. Main registered `RIGHTSPOT-050` for the narrow action gate
+  in the request dashboard and listing detail. It also confirmed `F-26`: the production Tenant and
+  Agent WebMCP components omit the existing registration-error callback, so a synchronous or rejected
+  registration can become a silent no-op. Main registered the Tenant ownership portion as
+  `RIGHTSPOT-051` and added the Agent portion as `RS-WO-047-03` under the open 047 Task. No P0/P1
+  finding, privacy leak, server authority defect, or workflow-state defect was reproduced. No product
+  source changed during the audit.
 - Execution posture: `READ_ONLY_ADVISORY`; the Advisor may inspect the current implementation and run safe, bounded verification, but must not implement findings or write canonical product truth.
 - Dependencies: Current RightSpot source, tests, runtime evidence where safely available, and the accepted documentation/decision hierarchy. `RIGHTSPOT-008` and its `RIGHTSPOT-020` implementation are closed within the bounded ADR-RS-0013 direction; `RIGHTSPOT-009` is closed as `REVIEWED_DEFERRED`; `RIGHTSPOT-010` is closed as a reviewed staged decision; `RIGHTSPOT-044` is `CLOSED_VERIFIED` for the manual Operations surface; and `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its bounded Operations consumer repair boundary. None authorizes unregistered implementation behavior.
 
@@ -761,3 +774,35 @@ tests, static wiring assertions, and pending integrated browser evidence. The li
 recovery-copy observation remains low-severity polish and is not actionable without browser usability
 evidence. Disposition: `NO_ACTION` beyond this documentation correction; no follow-on Task or Work Order
 is registered. `RIGHTSPOT-012` returns to its pending continuous-audit posture.
+
+## Latest multi-angle audit disposition — 2026-09-03
+
+Main reviewed three independent read-only reports against the current RightSpot source projection at
+Main `7650db00cc60d23b262b6c506c81e8913ad4d3ca`. The review covered the Tenant-to-Agent business
+chain, route and role entry, UI/UX/accessibility, fallback and error truthfulness, persistence and
+authority, privacy, WebMCP registration/lifecycle, and the distinction between product defects and
+browser-harness evidence gaps. Existing protected untracked artifacts and unrelated Web-Game changes
+were not modified.
+
+The reports produced two accepted bounded dispositions:
+
+- `F-25` / `RIGHTSPOT-050`: after a stale Tenant mutation returns `409`, a failed recovery read leaves
+  the old request editor mounted and re-enables its mutation controls. The server version guard still
+  protects data integrity; this is a Tenant consumer action-safety defect. The new Task covers only
+  the request dashboard and listing-detail editor, with no automatic retry, local patch, API change,
+  or dynamic-route `F-08` expansion.
+- `F-26` / `RIGHTSPOT-051` plus `RS-WO-047-03`: both page-bound WebMCP adapters catch registration
+  failures but their production components do not wire the existing callback. A supported browser can
+  therefore fail registration without a truthful page-owned signal. The Tenant ownership portion is a
+  new Task because 043 is closed; the Agent ownership portion stays inside open 047. Manual UI,
+  server authorization, persistence, and privacy remain unaffected.
+
+No P0/P1 defect, workflow-state corruption, privacy leak, persistence partial-write, or role-authority
+failure was accepted. The existing 048 browser-harness block and `F-08` dynamic-route evidence gap
+remain evidence limitations, not new product tasks. The compatibility aliases in the Operations domain
+remain low-severity maintenance polish and are not independently actionable.
+
+**Disposition:** The audit increment is complete and `RIGHTSPOT-012` remains `pending` and non-blocking.
+The next Main gate is to review the Red contracts for `RIGHTSPOT-050` and `RIGHTSPOT-051`, keep
+`RS-WO-047-03` gated until the 048 evidence decision permits a new 047 baseline, and re-run the audit
+only after a meaningful source or evidence increment. This report authorized no source change.

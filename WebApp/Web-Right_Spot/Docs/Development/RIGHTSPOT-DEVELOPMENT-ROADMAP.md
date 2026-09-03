@@ -123,6 +123,13 @@ also registered `F-22` / `RIGHTSPOT-045` for a bounded Operations consumer lates
 the repair is now `CLOSED_VERIFIED` at product source `3582ba4` after Main-controlled race evidence
 and an explicit independent-browser harness limitation. The finding was non-blocking and did not
 reopen the 044 API, projection, or WebMCP decisions.
+The latest multi-angle audit registered `F-25` / `RIGHTSPOT-050` for a Tenant stale-action gate after
+failed conflict recovery and `F-26` / `RIGHTSPOT-051` plus `RS-WO-047-03` for page-bound WebMCP
+registration observability. These are bounded pending repairs: 050 remains Main-serial, 051 is
+gated for Tenant adapter work, and 047-03 is gated until the reviewed 048 evidence decision permits a
+new 047 source baseline. No new P0/P1 issue, workflow-state defect, privacy leak, or server-authority
+failure was accepted, and these findings do not expand the WebMCP contract or the roadmap's deferred
+integrations.
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-03, Europe/London
 
@@ -648,6 +655,13 @@ is closed within its declared boundary
 and must not be used to claim that the paused Operations WebMCP candidate or the 048 lifecycle gate is
 closed. The candidate-vs-checkpoint path accounting is now explicit: the two-path product candidate is
 separate from Main-owned process-only documentation writeback.
+
+The current post-audit route is deliberately small: first execute the focused TDD gate for
+`RIGHTSPOT-050`, then prepare the Tenant WebMCP `RIGHTSPOT-051` implementation and the Agent
+`RS-WO-047-03` checkpoint according to their separate ownership and model gates. Keep the 048 browser
+harness issue as an evidence decision, not a reason to retry indefinitely. The Main thread continues
+to own source freeze, integration, canonical documentation, and Git closure; no extra Worktree is
+required for the registered 050 draft.
 
 ### Historical execution chronology
 

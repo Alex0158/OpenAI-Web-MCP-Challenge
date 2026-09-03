@@ -22,11 +22,15 @@ Operations authority/projection, and the verified Tenant adapter pattern in `RIG
   the candidate is now paused for the shared session-lifecycle repair registered as `RIGHTSPOT-048`.
   Its original five-path source snapshot remains historical evidence at candidate commit
   `09d0628e10b9ddb9a59c59eebd1be1ee074a5318`; it must be re-baselined after the overlapping lifecycle
-  repair before independent closure.
-- Next gate: complete `RIGHTSPOT-048`, recapture the exact post-repair source identity, and then resume
-  the missing `RS-WO-047-02` checks against that new frozen candidate. Do not run the old verifier
-  target or infer closure from its partial evidence. Main owns integration, push, and documentation
-  closure only after the re-baselined independent evidence is complete.
+  repair before independent closure. The 2026-09-03 audit also found `F-26` in the production
+  Operations adapter: registration rejection is caught by the helper but no page callback is wired,
+  so failure can remain a silent no-op. This is a bounded repair checkpoint under this Task and does
+  not change the accepted tool contract.
+- Next gate: complete the reviewed `RIGHTSPOT-048` evidence decision, then implement and verify
+  `RS-WO-047-03`, recapture the exact post-repair source identity, and resume the missing
+  `RS-WO-047-02` checks against that new frozen candidate. Do not run the old verifier target or infer
+  closure from partial evidence. Main owns integration, push, and documentation closure only after the
+  re-baselined independent evidence is complete.
 - Dependencies: ADR-RS-0017 remains the tool contract authority. The shared session-lifecycle repair
   in `RIGHTSPOT-048` is now a prerequisite because it owns the overlapping adapter lifecycle paths.
   The existing manual `/agent/operations` page, `GET /api/agent/operations`, Operations projection,
@@ -72,7 +76,9 @@ The implementation must follow ADR-RS-0017 exactly:
 - one page-owned executor/coordinator shared by manual and tool reads;
 - valid empty success, bounded validation/service/authority/malformed/stale outcomes, and no raw
   exception or server diagnostic text; and
-- Agent page/session lifecycle cleanup with a complete manual fallback when WebMCP is unavailable.
+- Agent page/session lifecycle cleanup with a complete manual fallback when WebMCP is unavailable; and
+- registration failure must be deactivated and surfaced through a bounded page-owned signal rather
+  than silently discarded, while the manual Operations page remains usable.
 
 Duplicate JSON object keys are not a tool-input acceptance claim because parsed JavaScript objects do
 not preserve them. Existing HTTP duplicate-parameter validation remains outside this adapter's input
@@ -186,7 +192,8 @@ Close this Task only after all of the following are true:
    cross the tool boundary.
 5. Manual and tool reads have one latest-read identity, exact page parity, truthful empty/error/stale
    states, and no false success or hidden fallback.
-6. WebMCP registration failure or unsupported capability leaves the full manual Operations page usable.
+6. WebMCP registration failure is deactivated and surfaced through a bounded page-owned signal, while
+   unsupported capability leaves the full manual Operations page usable.
 7. Focused Red → Green → Refactor tests pass, then the complete RightSpot suite, non-incremental
    typecheck, production build, repository validators, sensitive scan, and `git diff --check` pass.
 8. Independent `RS-WO-047-02` verifies the frozen source in the declared supported browser: discovery,
@@ -269,6 +276,30 @@ and returns a bounded report to Main.
   reported no product mutation or source change, but its incomplete final readback is not independent
   no-mutation proof.
 
+### RS-WO-047-03 — Surface Agent Operations registration failure without a silent no-op
+
+**Status:** `GATED_PENDING_048_EVIDENCE_DECISION`  
+**Role:** WebMCP/API/UI repair Builder  
+**Parallelization:** `SERIAL_AGENT_WEBMCP_ADAPTER` — the Agent adapter, Operations page wiring, and
+focused tests share the existing 047 source ownership; no parallel writer is admitted  
+**Model gate:** When dispatched, WebMCP-specific implementation must use `gpt-5.6-sol` with `medium`
+reasoning. If the capability is unavailable, keep this Work Order gated and do not substitute another
+model.  
+**Source:** The current post-048 candidate is not yet a dispatch baseline. After the reviewed 048
+evidence decision, Main must recapture a full source identity and freeze the exact 047 candidate before
+dispatch or serial implementation.  
+**Worker write set:** `src/ui/agent/operations/operations-webmcp.ts`,
+`src/ui/agent/operations/operations-page.tsx`, `tests/ui/operations-webmcp.test.ts`, and
+`tests/ui/operations-page.test.ts` only  
+**Main writeback set:** this Task File, current status, validation evidence, business-flow/WebMCP
+roadmap, and Git closure records  
+**Required behavior:** synchronous and rejected registration failures must deactivate the page-bound
+registration/execution lifecycle and reach a stable neutral page-owned signal exactly once; no raw
+exception, fake registration, hidden retry, or manual-page blockage is allowed. Unsupported WebMCP
+continues to preserve the complete manual Operations page.  
+**Stop condition:** If the repair requires a server/API/domain contract, a new capability, shared
+role-frame change, generic telemetry, or a second authority, stop and return to Main's decision gate.
+
 ## Stop and reopen conditions
 
 Stop the implementation and return to Main if:
@@ -303,5 +334,9 @@ closure is paused because the shared lifecycle contract was found incomplete. `R
 separate bounded repair owner for the overlapping shared frame and adapter lifecycle paths; after it
 passes, Main must recapture a post-repair `047` candidate and resume independent evidence. The old
 partial attempts remain historical evidence and are not a closure or push authorization.
+The 2026-09-03 audit confirmed `F-26` in the Agent production wiring. `RS-WO-047-03` now owns that
+bounded registration-observability repair after the 048 evidence decision; it is gated and has not
+changed source. The corresponding Tenant adapter boundary is separately registered as `RIGHTSPOT-051`
+because the 047 write set must remain Agent-only.
 The active `RIGHTSPOT-012` audit may continue on non-overlapping read-only surfaces, but it cannot
 mutate this Task's five-path write set or move a verifier baseline.

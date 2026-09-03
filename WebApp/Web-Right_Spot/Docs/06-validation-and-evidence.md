@@ -5,17 +5,18 @@
 boundary, tenant discovery API, workflow HTTP/DTO transport, shared shell, shared role-page frame,
 accepted ordinary role-page product workflow, and post-MVP shared CSS foundation are independently
 verified or integrated.
-The current frozen Operations WebMCP candidate complete suite passes `201/201` across `45` authored
-test files; the latest bounded
-cross-layer findings `F-17` / `RIGHTSPOT-039` and `F-18` / `RIGHTSPOT-040` are closed within their
-tenant listing-detail and Discovery error-copy truthfulness scopes. The subsequent audit reproduced
-`F-19` / `RIGHTSPOT-041`, a tenant request-editor success-feedback lifecycle defect; its bounded
-parent-owned repair is now `CLOSED_VERIFIED`. A fresh isolated browser replay covered listing-detail
-save, request-dashboard submit, and stale-version conflict recovery. Subsequent isolated audits
-covered Favourite persistence and the tenant-to-Agent listing-interest boundary, tenant route-entry
-and visual surfaces, and the Agent listing-interest failure/retry boundary. The chronological entries
-below record fixture generations per checkpoint; later Operations WebMCP checks did not mutate the fixture, and
-`/api/health` remained healthy.
+The current integrated RightSpot package complete suite passes `226/226` across `47` authored test
+files. The Tenant Discovery Search/WebMCP slice is independently verified within its declared local
+supported-browser capability, while the Agent Operations `read_listing_pipeline` candidate remains
+open behind its independent browser evidence gate. The latest bounded cross-layer findings `F-17` /
+`RIGHTSPOT-039`, `F-18` / `RIGHTSPOT-040`, `F-19` / `RIGHTSPOT-041`, and `F-23/F-24` /
+`RIGHTSPOT-049` are closed within their recorded listing-detail, Discovery, request-editor, and
+Search response-truthfulness boundaries. The latest multi-angle audit also accepted open P2 findings
+`F-25` / `RIGHTSPOT-050` for stale Tenant mutation actions after failed conflict recovery and
+`F-26` / `RIGHTSPOT-051` plus `RS-WO-047-03` for silent page-bound WebMCP registration failure.
+The chronological entries below record fixture generations,
+source identity, and claim limits per checkpoint; later read-only checks did not authorize a production,
+deployment, or universal WebMCP claim, and `/api/health` remained healthy.
 
 ## 1. Current evidence level
 
@@ -1546,3 +1547,52 @@ independent evidence because the verifier supplied no bounded report or final pe
 No further blind `agent-browser` retry is authorized in this Work Order. The 048 source candidate remains
 frozen at `218935c`; `RIGHTSPOT-047` remains paused pending a reviewed 048 evidence decision and a new
 source baseline.
+
+## 7.41 Search response compatibility closure — 2026-09-03
+
+The bounded `RIGHTSPOT-049` repair made filtered Search responses fail closed when they cannot prove
+their normalized applied criteria and page metadata. An actually unfiltered legacy response may retain
+the documented minimal compatibility shape; an effective filtered response must provide the complete
+logical envelope, exact serialized non-Area criteria, an equivalent canonical Area, and no extra
+applied criterion. The client does not refilter locally, look up aliases, retry, silently rewrite
+criteria, or fall back to the unfiltered catalogue.
+
+The repaired product paths are `src/ui/tenant/tenant-api.ts` and
+`tests/ui/tenant-api.test.ts`, with product code integrated at `0ef9b0f` and canonical documentation
+closure at `5c59a21`. Independent deterministic verification used the unchanged RightSpot projection
+at checkpoint `9994f4e` after Main proved that intervening and later repository-tip commits changed
+only the unrelated Web-Game boundary. Focused response-contract checks passed `17/17`; the complete
+package suite passed `226/226` across `47` authored test files; pinned typecheck, production build,
+repository validators, RightSpot-scoped sensitive scanning, `git diff --check`, and controlled
+matching/mismatch probes passed. The build retained the known Operations dynamic filesystem-tracing
+warning. Browser evidence was not required for this parser boundary, and this closure makes no new
+claim about the paused `RIGHTSPOT-047` or blocked-harness `RIGHTSPOT-048` gates.
+
+## 7.42 Multi-angle audit findings — 2026-09-03
+
+Main reviewed the UI/UX, code-quality, persistence/authority, privacy, fallback, and WebMCP
+registration reports against Main `7650db00cc60d23b262b6c506c81e8913ad4d3ca`. The review was
+read-only; the existing validation-ledger edit, protected untracked artifacts, and unrelated
+Web-Game changes were preserved.
+
+The review accepted two P2 findings for bounded follow-up:
+
+- `F-25` / `RIGHTSPOT-050`: a stale Tenant mutation can return `409`, followed by a failed recovery
+  read, while the old request editor remains mounted and becomes editable again after its pending flag
+  clears. This is a UI action-safety defect; the server version guard and privacy boundary remain
+  intact. The required evidence is a focused TDD gate covering both Tenant request surfaces, with no
+  replay, optimistic patch, automatic retry, or dynamic-route `F-08` change.
+- `F-26` / `RIGHTSPOT-051` and `RS-WO-047-03`: the Tenant and Agent page components omit the already
+  available registration-error callback. A supported registration failure can therefore be silently
+  discarded even though manual UI remains usable. The follow-ups must deactivate the failed page-bound
+  lifecycle and expose one neutral page-owned signal without raw exception text, a fake registration,
+  alternate transport, or a manual-page block. Tenant and Agent ownership remain separate.
+
+No browser pass was inferred from static inspection. The known `RIGHTSPOT-048` harness block and
+`F-08` same-document route concern remain evidence limitations. No persistence, workflow-state,
+role/privacy, or server-authority defect was reproduced, and no product source or fixture changed in
+this audit.
+
+**Disposition:** `RIGHTSPOT-050` and `RIGHTSPOT-051` are pending implementation gates; `RS-WO-047-03`
+is gated behind the reviewed 048 evidence decision and a new 047 source baseline. This entry does not
+close or push any WebMCP capability.

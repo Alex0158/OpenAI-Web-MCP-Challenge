@@ -184,6 +184,17 @@ repair and its independent browser evidence pass. This gate does not
 change the server session authority or authorize polling, external authentication, Cloud Receiver,
 WebRTC, Redis, deployment, or production hardening.
 
+**Current audit disposition (2026-09-03):** The active `RIGHTSPOT-012` read-only audit reviewed
+the current Tenant-to-Agent chain, UI/UX/accessibility, fallback/error truthfulness, persistence,
+privacy, and both page-bound WebMCP adapters. It accepted `F-25` / `RIGHTSPOT-050` for the Tenant
+stale-action gate after a failed conflict recovery, and `F-26` / `RIGHTSPOT-051` plus
+`RS-WO-047-03` for silent WebMCP registration failure in the Tenant and Agent production wiring.
+`RS-WO-050-01` is a Main-serial draft; `RS-WO-051-01` is gated pending final pre-dispatch review;
+`RS-WO-047-03` waits for the reviewed 048 evidence decision and a new 047 source baseline. These
+follow-ups do not authorize a new API, domain state, transport, external integration, or deployment
+claim. The 048 browser-harness limitation and the `F-08` dynamic-route concern remain evidence
+limitations, not permission for blind retries.
+
 ## 1. Authority and reading order
 
 RightSpot inherits the repository's engineering and safety rules. Read these in order:
