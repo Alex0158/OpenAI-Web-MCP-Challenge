@@ -221,7 +221,7 @@ test("standing v0.2 crosses Host SDK, HTTP Receiver, Connector, Agent Adapter, r
       return core.decideConsent({ challengeId, decisionToken: DECISION_TOKEN });
     },
 
-    issueEvent({ binding, ordinal, signer = "consented", discriminator = "" }) {
+    issueEvent({ binding, ordinal, signer = "consented", discriminator = "", eventId, stateVersion = ordinal }) {
       const signers = {
         consented: { host, eventId: `event_standing_profile_00${ordinal}` },
         "alternate-trusted": { host: alternateHost, eventId: "event_standing_profile_wrong_key_001" },
@@ -229,18 +229,18 @@ test("standing v0.2 crosses Host SDK, HTTP Receiver, Connector, Agent Adapter, r
       };
       const selected = signers[signer];
       assert.ok(selected, "Unknown standing scenario signer");
-      const eventId = signer === "consented" && discriminator
+      const resolvedEventId = eventId ?? (signer === "consented" && discriminator
         ? `${selected.eventId}_${discriminator}`
-        : selected.eventId;
+        : selected.eventId);
       const issued = selected.host.issueEvent({
         binding,
-        eventId,
+        eventId: resolvedEventId,
         eventSequence: ordinal,
         occurredAt: clockRef.value.toISOString(),
         deliveryTimestamp: String(Math.floor(clockRef.value.getTime() / 1_000)),
         workflow: {
           id: WORKFLOW_ID,
-          stateVersion: ordinal,
+          stateVersion,
           canonicalUrl: CANONICAL_URL,
         },
       });
@@ -352,6 +352,10 @@ test("standing v0.2 crosses Host SDK, HTTP Receiver, Connector, Agent Adapter, r
     duplicate_event_converged: true,
     accepted_responses: 1,
     duplicate_responses: 1,
+  });
+  assert.deepEqual(result.identity_conflict, {
+    rejected: true,
+    no_mutation: true,
   });
   assert.deepEqual(result.accepted_sequences, [1, 2]);
   assert.equal(result.backpressure.retryable, true);

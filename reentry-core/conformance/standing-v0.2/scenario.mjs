@@ -164,6 +164,27 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
   expect(afterDistinct?.last_event_sequence === 1, "profile_distinct_conflict_consumed_sequence");
   expect(afterDistinct?.active_activations === 1, "profile_distinct_conflict_created_multiple_deliveries");
 
+  // Reusing an accepted Event ID with a different canonical body is an identity conflict, not a
+  // replay. The Receiver must reject it without changing the reserved sequence or open Delivery.
+  const conflictingFirst = await driver.issueEvent({
+    binding: approval.binding,
+    ordinal: 1,
+    eventId: first.event.event_id,
+    stateVersion: 99,
+  });
+  expectEvent(conflictingFirst, 1);
+  const identityConflict = await driver.sendEvent({ envelope: envelopeOf(conflictingFirst) });
+  expectError(
+    identityConflict,
+    409,
+    "event_identity_conflict",
+    false,
+    "profile_identity_conflict",
+  );
+  const afterIdentityConflict = await driver.inspect({ bindingId: approval.binding.binding_id });
+  expect(afterIdentityConflict?.last_event_sequence === 1, "profile_identity_conflict_consumed_sequence");
+  expect(afterIdentityConflict?.active_activations === 1, "profile_identity_conflict_created_delivery");
+
   const blockedSecond = await driver.sendEvent({ envelope: envelopeOf(second) });
   expect(blockedSecond?.statusCode === 409, "profile_backpressure_status");
   expectExactFields(blockedSecond?.body, ["error"], "profile_backpressure_body");
@@ -235,6 +256,10 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
       duplicate_event_converged: true,
       accepted_responses: 1,
       duplicate_responses: 1,
+    },
+    identity_conflict: {
+      rejected: true,
+      no_mutation: true,
     },
     accepted_sequences: [1, 2],
     backpressure: {

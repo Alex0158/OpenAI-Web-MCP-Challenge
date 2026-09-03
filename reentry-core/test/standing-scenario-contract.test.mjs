@@ -10,7 +10,7 @@ const CLAIM_TOKENS = ["claim_contract_1", "claim_contract_2", "claim_contract_3"
 // These are oracle self-tests, not a Receiver implementation or conformance result. A deliberately
 // small scripted driver stops immediately after the response under test. The boundary assertion
 // proves that a valid response reaches the next step; malformed responses must fail before it.
-for (const boundary of ["approval", "out-of-order", "distinct-race", "acceptance", "acknowledgement"]) {
+for (const boundary of ["approval", "out-of-order", "distinct-race", "identity-conflict", "acceptance", "acknowledgement"]) {
   test(`scenario accepts the exact ${boundary} response before advancing`, async () => {
     await assert.rejects(run(boundary), { code: BOUNDARY });
   });
@@ -41,6 +41,9 @@ const mutations = [
   ["distinct-race", "missing retryable flag", value => ({
     ...value, error: without(value.error, "retryable"),
   }), "profile_distinct_sequence_conflict_error"],
+  ["identity-conflict", "missing retryable flag", value => ({
+    ...value, error: without(value.error, "retryable"),
+  }), "profile_identity_conflict_error"],
   ["acceptance", "private grant ID", value => ({ ...value, grant_id: "private_grant" }),
     "profile_event_acceptance_fields"],
   ["acceptance", "missing status", value => without(value, "status"),
@@ -97,17 +100,20 @@ function run(boundary, mutate = value => value) {
   let acknowledged = false;
   let outOfOrderRejected = false;
   let distinctRaceComplete = false;
+  let identityConflictComplete = false;
   const acceptedEvents = new Map();
   const driver = {
     async issueManifest() { return manifest; },
     async enroll() { return { duplicate: false, challenge: { status: "pending", challenge_id: approval.challenge_id } }; },
     async approve() { return boundary === "approval" ? mutate(approval) : approval; },
-    async issueEvent({ ordinal, signer = "consented", discriminator = "" }) {
+    async issueEvent({ ordinal, signer = "consented", discriminator = "", eventId, stateVersion = ordinal }) {
       if (boundary === "approval") stop();
       const event = {
         protocol_version: "0.2", event_id: `event_contract_${ordinal}${discriminator ? `_${discriminator}` : ""}`,
         correlation_id: manifest.correlation_id, event_sequence: ordinal,
+        state_version: stateVersion,
       };
+      if (eventId) event.event_id = eventId;
       return { event, body: JSON.stringify({ event, signer }), headers: { [REENTRY_HEADER_NAMES.keyId]: "key_contract" } };
     },
     async setConsentedKeyMaterialForTest() {},
@@ -130,7 +136,15 @@ function run(boundary, mutate = value => value) {
       }
       const replay = acceptedEvents.get(event.event_id);
       if (replay) {
-        return { statusCode: 202, body: { ...replay, duplicate: true } };
+        if (replay.envelopeBody !== envelope.body) {
+          identityConflictComplete = true;
+          const response = {
+            statusCode: 409,
+            body: { error: { code: "event_identity_conflict", retryable: false } },
+          };
+          return boundary === "identity-conflict" ? { ...response, body: mutate(response.body) } : response;
+        }
+        return { statusCode: 202, body: { ...replay.acceptance, duplicate: true } };
       }
       const expectedSequence = lastEventSequence + 1;
       if (event.event_sequence !== expectedSequence) {
@@ -157,7 +171,7 @@ function run(boundary, mutate = value => value) {
         event_id: event.event_id, correlation_id: event.correlation_id, accepted: true, duplicate: false,
         status: "accepted",
       };
-      acceptedEvents.set(event.event_id, body);
+      acceptedEvents.set(event.event_id, { envelopeBody: envelope.body, acceptance: body });
       lastEventSequence = event.event_sequence;
       activeEventId = event.event_id;
       activeDeliveryId = `delivery_contract_${event.event_sequence}`;
@@ -167,6 +181,7 @@ function run(boundary, mutate = value => value) {
     async inspect() {
       if (boundary === "out-of-order" && outOfOrderRejected) stop();
       if ((boundary === "distinct-race" || boundary === "acceptance") && distinctRaceComplete) stop();
+      if (boundary === "identity-conflict" && identityConflictComplete) stop();
       return {
         last_event_sequence: lastEventSequence,
         active_activations: activeEventId ? 1 : 0,
