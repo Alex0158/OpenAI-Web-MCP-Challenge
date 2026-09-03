@@ -10,7 +10,7 @@
 
 ## Exact identity under test
 
-- Source state: Game repository `main`, `HEAD efa401f`; CP-17 implementation remains in the local working tree and has not been used to claim a hosted deployment
+- Source state: Game repository `main`, `HEAD f4ddfe4`; CP-17 implementation is committed locally and has not been used to claim a hosted deployment
 - Contract version: `SK-MVP-0.2`
 - Runtime versions: Railway MCP readback; no Game process or browser runtime was started
 - Fixture world and seed: none; no database was created or opened by the hosted service
@@ -19,7 +19,7 @@
 ## Objective and claim boundary
 
 - Behavior under test: Provision the smallest Railway resource topology accepted by `ADR-GAME-0037`: one Game service, one persistent Volume, one generated HTTPS service domain, and production-safe non-secret configuration.
-- Claim this evidence may support: The named Railway project, production environment, `game` service, `game-data` Volume mounted at `/data`, generated service domain, service start/health/restart/sleep settings, and seven non-secret production variables existed at the readback time.
+- Claim this evidence may support: The named Railway project, production environment, `game` service, `game-data` Volume mounted at `/data`, generated service domain, service start/health/restart/sleep settings, and eight non-secret production variables existed at the readback time.
 - Claims this evidence cannot support: A successful build or deployment, service health, Clerk session issuance, identity mapping, world bootstrap, SQLite persistence, restart catch-up, backup/restore, WebSocket behavior, Re-entry delivery, or judge reproduction.
 
 ## Preconditions and fixture
@@ -51,6 +51,6 @@
 ## Analysis and closure
 
 - Failure classification: `environment` for the missing Clerk Production credentials and fixed subject bindings required by the fail-closed production config; no application failure was observed because no deployment was attempted.
-- Limitations and residual risk: Railway plan, region suitability, deployment source/build identity, Clerk instance and session issuance, secret presence, Volume backup/restore, process restart, HTTP/1.1 WebSocket upgrade, and hosted world continuity remain unknown. The local CP-17 implementation is not yet committed or deployed.
+- Limitations and residual risk: Railway plan, region suitability, deployment source/build identity, Clerk instance and session issuance, secret presence, Volume backup/restore, process restart, HTTP/1.1 WebSocket upgrade, and hosted world continuity remain unknown. The local CP-17 implementation is committed in `14df10a` and `f4ddfe4` but is not deployed.
 - Invalidation triggers: Project/service/Volume replacement, canonical URL change, service configuration change, provider plan/region change, source commit change, or any Clerk identity/contract change.
 - Exact conclusion: The accepted Railway resource topology is provisioned and read back at ladder level 1. The Game remains undeployed and cannot claim hosted continuity until Clerk Production credentials and the two fixed provider subjects are supplied, the CP-17 source is deployed, and the hosted acceptance matrix passes.
