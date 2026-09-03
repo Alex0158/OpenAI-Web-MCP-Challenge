@@ -1,5 +1,5 @@
-import { LiveGameProjection } from "../src/client/live-game-projection";
+import { ClerkGameShell } from "../src/client/clerk-game-shell";
 
 export default function HomePage() {
-  return <LiveGameProjection />;
+  return <ClerkGameShell />;
 }

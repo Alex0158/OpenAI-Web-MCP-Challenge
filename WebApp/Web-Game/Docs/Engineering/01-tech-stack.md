@@ -1,6 +1,6 @@
 # Target Tech Stack
 
-**Status:** TARGET; CP-02 local runtime evidence recorded, CP-04 process foundation, CP-08 local realtime wire boundary, the bounded CP-12 local fixture/session/browser, automatic publication, snapshot-gated hold, and server-owned continuous-intent paths, and the CP-06 explicitly enabled local autonomous driver verified at named local scopes; the CP-17 local production-like identity/bootstrap seam is implemented, while provider configuration, hosted scheduler, WebMCP, and hosted gameplay remain open
+**Status:** TARGET; CP-02 local runtime evidence recorded, CP-04 process foundation, CP-08 local realtime wire boundary, the bounded CP-12 local fixture/session/browser, automatic publication, snapshot-gated hold, and server-owned continuous-intent paths, and the CP-06 explicitly enabled local autonomous driver verified at named local scopes; the CP-17 local production-like identity/bootstrap seam and minimal Clerk client admission gate are implemented, while provider credentials, hosted scheduler, WebMCP, and hosted gameplay remain open
 
 ## CP-02 local result
 
@@ -25,7 +25,7 @@ CP-17 measures an operational need and preserves the same world-authority and re
 
 | Layer | Target | Reason |
 |---|---|---|
-| Web application shell | Next.js App Router, React, TypeScript | Human-facing dashboard, routing, auth boundary, and WebMCP registration |
+| Web application shell | Next.js App Router, React, TypeScript, `@clerk/nextjs@7.9.0` | Human-facing dashboard, invite-only auth presentation, routing, and WebMCP registration |
 | World renderer | HTML Canvas 2D with a small React control layer | Efficient top-down map rendering without putting game authority in the browser |
 | Game server | Node.js 24 and TypeScript authoritative simulation service inside the local entrypoint | Matches the repository's reproducible baseline and supports a long-running worker without a local supervisor |
 | Command API | Typed HTTP commands plus a realtime update channel | HTTP makes state-changing commands explicit; realtime updates keep the view current |
@@ -51,6 +51,15 @@ prepares one task-local SQLite fixture, serves the server-derived session scope,
 the one-browser hydration and Canvas readback is recorded in
 [`../Evidence/SK-EVID-029-cp12-browser-hydration-runtime-verification.md`](../Evidence/SK-EVID-029-cp12-browser-hydration-runtime-verification.md).
 These local records do not establish a hosted identity or always-on deployment.
+
+The CP-17 client admission shell adds `@clerk/nextjs@7.9.0` and wraps the App Router with
+`ClerkProvider` only when `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` is present at build time. The signed-out
+surface exposes one invite-only Sign in control; the signed-in surface exposes `UserButton` and the
+existing Game projection. A missing production publishable key renders an explicit closed state, while
+the non-production fixture path retains its existing page behavior. This UI does not derive Game scope
+or authorize commands; the custom Node entrypoint still verifies the server-side Clerk session for
+bootstrap, HTTP, page tools, and WebSocket admission. The local contract result is recorded in
+[`../Evidence/SK-EVID-064-cp17-clerk-client-admission-contract.md`](../Evidence/SK-EVID-064-cp17-clerk-client-admission-contract.md).
 
 For the accepted two-player MVP, this stack is suitable for the Starve.io-inspired minimal surface:
 Canvas 2D handles the tile and actor projection, React handles controls and readable status, and a

@@ -6,7 +6,7 @@
 - Closure type: `hosted_verified`
 - Checkpoint: `CP-17`
 - Owner: Game owner
-- Current increment: The owner-approved Railway persistent-volume + SQLite + Clerk direction is implemented at the local production-like boundary, and the first Railway project, service, Volume, domain, and non-secret production configuration have been provisioned and read back. No Game deployment or Clerk secret has been applied.
+- Current increment: The owner-approved Railway persistent-volume + SQLite + Clerk direction is implemented at the local production-like boundary, the minimal invite-only Clerk client admission shell is contract-verified, and the first Railway project, service, Volume, domain, and non-secret production configuration have been provisioned and read back. No Game deployment or Clerk secret has been applied.
 - Next gate: Supply the Clerk Production verification material and two fixed provider subjects, deploy
   the exact Game source, then record project/plan, mount, public URL, Clerk session issuance, restart,
   backup, and rollback readback before any hosted claim.
@@ -148,6 +148,9 @@ restore has been configured.
 - Verified: The Railway service is configured for `npm run start`, `/api/health`, `ALWAYS` restart,
   sleep disabled, one replica, and production-safe non-secret variables. Railway reports no latest
   deployment because the Game source has not yet been uploaded.
+- Verified locally: `@clerk/nextjs@7.9.0` provides the App Router `ClerkProvider`, invite-only signed-out
+  Sign in branch, signed-in UserButton/Game branch, and explicit missing-production-key state; the
+  presentation contract passed in [`SK-EVID-064`](../Evidence/SK-EVID-064-cp17-clerk-client-admission-contract.md).
 - Verified locally: `ensureProductionWorld` seeds a named world once, the Clerk resolver accepts only
   the configured two subjects and derives Player/Shelter/binding scope, and the production-like
   entrypoint serves `/api/game/bootstrap`, `/realtime`, and the existing typed move command without
@@ -164,7 +167,7 @@ restore has been configured.
   the smallest coherent two-account demonstration topology because they preserve the existing long-
   running Node/page/worker boundary without a new database adapter.
 - Unknown: The provider plan and final region readback, source/build identity, Clerk production
-  instance configuration, secret values and fixed subject bindings, exact hosted cookie issuance,
+  instance configuration, publishable/secret values and fixed subject bindings, exact hosted cookie issuance,
   exact SDK/version, subject-map persistence shape, Volume backup/restore, runtime health, restart
   catch-up, WebSocket proxy behavior, rate limits, and Eddy's final hosted session/binding handoff.
 - Claim limit: Registering this task proves only that the work is bounded and actionable. It does not

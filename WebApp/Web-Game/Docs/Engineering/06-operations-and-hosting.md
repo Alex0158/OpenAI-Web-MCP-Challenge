@@ -47,9 +47,11 @@ For the first hosted MVP, use one Railway application service, one replica, and 
 Volume containing the SQLite file. Set `GAME_DB_PATH` to that absolute mounted path, bind `HOST` to
 `0.0.0.0`, and use Railway's injected `PORT`. This is a durable single-writer topology; it does not
 support multiple replicas or zero-downtime Volume redeploys. Railway documents that files outside a
-Volume are ephemeral, Volume backups include SQLite, and WebSockets use HTTP/1.1 upgrade. The actual
-project, plan, Volume, restart policy, URL, backup, and Clerk cookie issuance still require hosted
-readback under CP-17.
+Volume are ephemeral, Volume backups include SQLite, and WebSockets use HTTP/1.1 upgrade. The selected
+project, service, Volume, domain, restart policy, and non-secret settings now have a provider readback
+under [`SK-EVID-063`](../Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md); the
+plan, source/build identity, deployment, backup, Clerk cookie issuance, and runtime continuity still
+require hosted readback under CP-17.
 
 The local CP-04 process contract is intentionally smaller: one explicit Node.js entrypoint hosts the
 page and world-worker modules and exposes process health. `live` and `ready` are separate health

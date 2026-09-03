@@ -46,6 +46,7 @@ The CP-12 mission status card presentation result is recorded in [`SK-EVID-060`]
 The CP-12 causal history card presentation result is recorded in [`SK-EVID-061`](SK-EVID-061-cp12-causal-history-card-runtime-verification.md) and [`Validation/87`](../Validation/87-cp12-causal-history-card-runtime-cross-functional-audit.md); the existing projected event history is structured for causal readability without changing event authority, order, delivery, or external boundaries.
 The CP-12 shelter economy summary card presentation result is recorded in [`SK-EVID-062`](SK-EVID-062-cp12-shelter-economy-summary-card-runtime-verification.md) and [`Validation/88`](../Validation/88-cp12-shelter-economy-summary-card-runtime-cross-functional-audit.md); the existing projected Coins and visible Wood/Rock nodes are structured for readable, responsive, fail-closed presentation without changing economy, snapshot, command, or external boundaries.
 The CP-17 Railway resource provisioning preflight is recorded in [`SK-EVID-063`](SK-EVID-063-cp17-railway-resource-provisioning-preflight.md); the project, service, Volume, domain, and non-secret configuration are read back, while deployment, Clerk admission, persistence, restart, backup, and hosted continuity remain gated.
+The CP-17 Clerk client admission gate is recorded in [`SK-EVID-064`](SK-EVID-064-cp17-clerk-client-admission-contract.md); the invite-only page branches are contract-verified, while real Clerk session issuance and hosted browser admission remain gated.
 
 ## 2. Identity
 
