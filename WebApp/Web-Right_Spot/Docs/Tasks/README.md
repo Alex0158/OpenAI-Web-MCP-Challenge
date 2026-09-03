@@ -190,8 +190,8 @@ remain reconciled in the [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](../Development/RIGH
 and `RIGHTSPOT-002` is closed.
 
 **Current post-MVP gates:** `RIGHTSPOT-006` and `RIGHTSPOT-012` remain pending, while
-`RIGHTSPOT-045` is `IN_PROGRESS` (credential, read-only audit, and bounded Operations consumer
-repair gates respectively);
+`RIGHTSPOT-045` is `VERIFICATION_PENDING` (credential, read-only audit, and bounded Operations
+consumer repair gates respectively);
 `RIGHTSPOT-044` is `CLOSED_VERIFIED` for its bounded manual Operations implementation;
 `RIGHTSPOT-010` is closed as a reviewed staged decision through `ADR-RS-0016` and the earlier
 Operations authority/projection Tasks. `RIGHTSPOT-033` is closed within its

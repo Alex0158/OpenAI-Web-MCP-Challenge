@@ -131,14 +131,18 @@ responsive, and accessibility evidence remains valid. It also classified `F-22` 
 guard, so an older success/error/`finally` callback can overwrite or finish a newer logical read after
 report switching or overlapping requests. The audit did not reproduce the race in a controlled browser
 run, so this is a high-confidence static finding, not a new browser claim. `RIGHTSPOT-045` is now
-registered as the bounded consumer-only repair; it does not block `RIGHTSPOT-012`, reopen `RIGHTSPOT-044`,
-or change any API/domain/projection/WebMCP contract. The existing shell `favicon.ico` 404 and expected
-signed-out session `401` remain documented residuals and are unrelated.
+registered as the bounded consumer-only repair. `RS-WO-045-01` is now integrated and pushed at product
+commit `3582ba4` after Main exact-path review, focused `8/8`, complete `186/186`, typecheck, build,
+repository, sensitive-scan, and diff gates. Independent integrated verification is the next gate; no
+browser-controlled race claim is made yet. The repair does not block `RIGHTSPOT-012`, reopen
+`RIGHTSPOT-044`, or change any API/domain/projection/WebMCP contract. The existing shell `favicon.ico`
+404 and expected signed-out session `401` remain documented residuals and are unrelated.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** `RIGHTSPOT-045` is in progress as the bounded P2 Operations consumer
-repair gate, registered from the `F-22` static race finding; UI Builder `Aristotle` owns the exact
-two-path implementation Work Order and Main retains integration authority. Its exact scope is limited
-to the page's latest-read state lifecycle and focused UI contract; it does not reopen `RIGHTSPOT-044` or change the Operations API,
+**Current next product action:** `RIGHTSPOT-045` is awaiting independent verification as the bounded
+P2 Operations consumer repair gate, registered from the `F-22` static race finding. Its two-path
+implementation is integrated at product commit `3582ba4`; Main retains verification, documentation,
+and closure authority. Its exact scope is limited to the page's latest-read state lifecycle and focused
+UI contract; it does not reopen `RIGHTSPOT-044` or change the Operations API,
 domain, projection, fixture, role/privacy, navigation, or WebMCP boundary. The non-blocking
 `RIGHTSPOT-012` post-closure cross-layer audit may continue in parallel. Any later Operations WebMCP
 capability must first receive its own accepted contract, Task, write set, and evidence gate. The
@@ -618,10 +622,10 @@ final response can remain a normal application action.
 | Delegated development | **EXPERIMENTAL PILOT — TASK-OWNED** | `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; corrected `RS-WO-002-02` rerun returned `VERIFIED`; `RS-WO-002-03` bounded repair commit `6e70c9f` passed fresh independent verification; `RS-WO-002-04` candidate `68bbc69` passed dedicated verification against frozen source `28105e4d`; `RS-WO-002-05` candidate is frozen at T2 code commit `de169ce` and passed dedicated independent verification against snapshot `bc3bc42`; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted/revised decomposition is recorded in ADR-RS-0008; `RS-WO-002-07` candidate `d71fe3e` passed dedicated independent verification and is integrated at `f700ba9`; `RS-WO-002-08` is integrated at `006d2fd` after process re-baseline `8b77bdd`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-11` candidate `f1f83c7` passed dedicated independent verification and is integrated at `6a0b4b8`; `RS-WO-002-13` candidate `169cb95d` passed dedicated independent verification and is integrated at `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final independent verification and is integrated at `9348aa5`; `RS-WO-002-14` passed direct read-only cross-role verification; `RS-WO-002-15` passed the isolated browser walkthrough and closure evidence is reconciled in `RIGHTSPOT-MVP-CLOSURE-RECORD.md` |
 | Cloud Receiver | **Not a first-phase dependency** | Future integration boundary only |
 | Agent Operations manual read surface | **CLOSED_VERIFIED; `RIGHTSPOT-044`** | Existing Operations authority/projection is consumed by the strict Agent-only `/agent/operations` page and HTTP route; independent local browser/API verification passed, while later Operations WebMCP remains separately gated |
-| Active product repair | **IN_PROGRESS; `RIGHTSPOT-045` / `F-22`** | Consumer-only latest-read sequencing guard for Operations; UI Builder `Aristotle` is executing the exact two-path Work Order, static defect evidence is high-confidence, browser race reproduction is not yet claimed, and no API/domain/projection/WebMCP change is authorized |
+| Active product repair | **VERIFICATION_PENDING; `RIGHTSPOT-045` / `F-22`** | Consumer-only latest-read sequencing guard for Operations is integrated at `3582ba4`; independent browser/API verification remains, static defect evidence is high-confidence, browser race reproduction is not yet claimed, and no API/domain/projection/WebMCP change is authorized |
 | WebMCP | **TENANT DISCOVERY SLICE VERIFIED; OPERATIONS CAPABILITY DEFERRED** | Page-bound `search_listings` is verified only in the declared local supported-browser capability; later capabilities require separate accepted contracts and evidence |
 | Runtime / deployment | **Not started** | No service, hosting, credentials, or public URL |
-| Evidence | **LOCAL MVP + `RIGHTSPOT-043` AND `RIGHTSPOT-044` CLOSED_VERIFIED; `RIGHTSPOT-045` IN_PROGRESS** | Current pinned `npm test` passes the complete authored suite `184/184`; 044 also passed typecheck, production build, repository validators, sensitive scan, exact-path review, and independent local browser/API verification against frozen source `f884879` with fresh relay generation `88` and Operations generation `2`. The 045 static audit found the latest-read race, and its Builder is now executing the focused repair; no new browser race claim or production/deployment claim is made |
+| Evidence | **LOCAL MVP + `RIGHTSPOT-043` AND `RIGHTSPOT-044` CLOSED_VERIFIED; `RIGHTSPOT-045` VERIFICATION_PENDING** | Current pinned `npm test` passes the complete authored suite `186/186`; 045 product commit `3582ba4` passed focused `8/8`, typecheck, production build, repository validators, sensitive scan, and exact-path review. Independent browser/API race verification remains outstanding; no production/deployment claim is made |
 
 ## 3. Confirmed working inputs
 

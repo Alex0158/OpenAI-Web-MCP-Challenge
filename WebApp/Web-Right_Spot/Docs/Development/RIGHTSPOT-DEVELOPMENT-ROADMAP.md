@@ -296,7 +296,7 @@ its authority and pure projection are already complete through `RIGHTSPOT-013`, 
 `RIGHTSPOT-016`. `RIGHTSPOT-044` is `CLOSED_VERIFIED` for the ordinary manual Operations page,
 strict HTTP consumer, Agent navigation, and independent local browser/API evidence. `RIGHTSPOT-012`
 remains the non-blocking audit lane. `RIGHTSPOT-045` is the current bounded P2 consumer repair gate
-for `F-22`; `RS-WO-045-01` is dispatched and has not yet been integrated into Main. Any Operations WebMCP capability remains
+for `F-22`; `RS-WO-045-01` is integrated at `3582ba4` and awaits independent verification. Any Operations WebMCP capability remains
 separately gated and is not implied by the manual surface closure.
 
 The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.

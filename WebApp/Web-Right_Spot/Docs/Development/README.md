@@ -53,8 +53,8 @@ and `ec7a679`; the bounded supported-browser WebMCP registration/invocation gate
 verified and recorded in `RIGHTSPOT-043`. `RIGHTSPOT-010` is closed as a reviewed staged Agent
 Operations decision through `ADR-RS-0016`; `RIGHTSPOT-044` is `CLOSED_VERIFIED` for the bounded
 manual Operations surface. The post-044 audit registered `F-22` / `RIGHTSPOT-045` as the current
-bounded consumer latest-read repair gate; its UI Builder Work Order is dispatched and awaits Main
-review, while later Operations WebMCP remains separately gated.
+bounded consumer latest-read repair gate; its UI Builder Work Order is integrated at `3582ba4` and
+awaits independent verification, while later Operations WebMCP remains separately gated.
 
 **Current physical workspace:** The canonical Main Worktree remains the only source authority. The stopped,
 short-lived `RS-WO-020-02` and `RS-WO-020-03` candidate Worktrees were adopted into Main and retired after

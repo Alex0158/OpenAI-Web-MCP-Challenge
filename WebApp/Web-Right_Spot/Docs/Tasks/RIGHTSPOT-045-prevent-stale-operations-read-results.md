@@ -1,7 +1,7 @@
 # RIGHTSPOT-045: Prevent stale Operations reads from overwriting the latest query
 
 **Type:** `defect`  
-**Lifecycle:** `in_progress`  
+**Lifecycle:** `verification_pending`  
 **Priority:** `P2` for Agent Operations result truthfulness  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-03  
@@ -11,16 +11,15 @@
 ## Task control
 
 - Type: `defect`
-- Lifecycle: `in_progress`
-- Execution posture: `BUILDER_ACTIVE`
+- Lifecycle: `verification_pending`
+- Execution posture: `VERIFICATION_PENDING`
 - Objective: make the Operations page adopt results, errors, and loading completion only for its latest
   logical read, so the displayed result cannot contradict the current report/query context.
-- Current increment: The consumer-only latest-read sequencing repair is with the bounded UI Builder;
-  focused TDD and independent integrated verification remain required.
-- Next gate: Dispatch one bounded UI Builder, review the exact diff in Main, freeze the source, then
-  dispatch one independent browser/API Verifier.
-- Evidence status: `VERIFIED_DEFECT_BUILDER_ACTIVE` — static control-flow evidence is high confidence;
-  a browser race was not reproduced in the audit harness, so no new runtime reproduction is claimed.
+- Current increment: The consumer-only latest-read sequencing repair is integrated at product commit
+  `3582ba4`; independent integrated browser/API verification remains required.
+- Next gate: Dispatch one independent browser/API Verifier against frozen source `3582ba4`.
+- Evidence status: `READY_FOR_INDEPENDENT_VERIFICATION` — Main and Builder static checks pass; a
+  browser-controlled race has not yet been reproduced, so no new runtime race claim is made.
 - Supporting worker: UI Builder `01a06569-e047-7251-a574-e9c1e077f0a6` (`Aristotle`).
 - Parent role: This is one registered Task File. Builder and Verifier are sequential Work Order
   checkpoints under this file, not additional Tasks.
@@ -96,7 +95,7 @@ responsive layout, and accessibility surface.
 ### RS-WO-045-01 — Operations consumer latest-read repair
 
 **Role:** UI Builder  
-**Status:** `IN_PROGRESS`  
+**Status:** `READY_FOR_VERIFICATION`  
 **Parallelization:** `SERIAL_OPERATIONS_CONSUMER` — no other writer may modify the Operations page or
 its focused test during this Work Order.  
 **Risk profile:** `Bounded P2` — one client async lifecycle boundary; no server or shared contract change.  
@@ -109,6 +108,17 @@ Builder `Aristotle` (`01a06569-e047-7251-a574-e9c1e077f0a6`) from the documented
 `20dbd1a`. The dispatch included the full repository instruction surface, this Task File, the closed
 044 contract, exact read/write/forbidden sets, Red → Green → Refactor requirements, and handoff gates.
 It explicitly excludes WebMCP, API/domain/projection/persistence/fixture changes, and Git operations.
+
+**Handoff result (2026-09-03):** `Aristotle` returned `READY_FOR_VERIFICATION` after changing only
+`src/ui/agent/operations/operations-page.tsx` and `tests/ui/operations-page.test.ts`. Its Red phase
+showed the two new latest-read contracts failing against the baseline; Green then passed focused `8/8`
+and complete `npm test` `186/186`. Node `24.20.0` / npm `11.19.0`, typecheck, production build,
+repository validators, sensitive scans, and `git diff --check` passed. The build retained the known
+Operations SQLite dynamic filesystem-tracing warning. Main independently reviewed the exact diff and
+confirmed the sequence guard covers success, error, `finally`, report switching, clear, and unmount;
+no API, domain, projection, fixture, role/privacy, navigation, or WebMCP behavior changed. Main
+integrated and pushed the reviewed two-path source as product commit `3582ba4`. No browser-controlled
+race or independent verification is claimed at this checkpoint.
 
 #### Read set
 
@@ -185,7 +195,7 @@ The Builder must return:
 ### RS-WO-045-02 — Independent integrated verification
 
 **Role:** Independent browser/API Verifier  
-**Status:** `NOT_YET_DISPATCHED`  
+**Status:** `READY_TO_DISPATCH`  
 **Parallelization:** Must run after Main freezes the reviewed Builder source; no source writer may
 modify the frozen Operations consumer during verification.  
 **Allowed write set:** none in product source or canonical docs; disposable evidence only under the

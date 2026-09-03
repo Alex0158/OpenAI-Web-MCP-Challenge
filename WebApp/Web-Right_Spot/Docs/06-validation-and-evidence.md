@@ -1189,3 +1189,21 @@ projection/role/privacy/WebMCP boundaries, and independent integrated verificati
 ordering can be controlled. The finding is non-blocking to `RIGHTSPOT-012` and does not reopen or widen
 `RIGHTSPOT-044`. Existing shell-level `favicon.ico` `404` and expected signed-out session `401`
 network events remain documented residuals and are unrelated to `F-22`.
+
+## 7.22 F-22 bounded repair handoff and frozen source — 2026-09-03
+
+The Main thread reviewed the `RS-WO-045-01` Builder handoff and the exact two-path diff. The Red
+phase added two focused latest-read contracts that failed against the baseline; the Green phase then
+passed focused `8/8` and the complete RightSpot suite `186/186` under Node `24.20.0` / npm `11.19.0`.
+Typecheck, production build, repository validators, sensitive scans, and RightSpot `git diff --check`
+also passed. The existing Operations SQLite dynamic filesystem-tracing warning remains a deployment
+residual.
+
+Main confirmed that the consumer now advances a monotonic read identity and guards success, error,
+`finally`, report switching, clear, and unmount cleanup. The exact changed paths are
+`src/ui/agent/operations/operations-page.tsx` and `tests/ui/operations-page.test.ts`; no API, domain,
+projection, persistence, fixture, role/privacy, navigation, or WebMCP path changed. The reviewed source
+is frozen and integrated at product commit `3582ba4`, pushed to `origin/main`.
+
+This is a Builder/Main static and source-integrity checkpoint only. No independent browser-controlled
+race reproduction or final `RIGHTSPOT-045` closure claim exists until `RS-WO-045-02` reports back.
