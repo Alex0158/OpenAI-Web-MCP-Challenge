@@ -459,3 +459,28 @@ The full backend aggregate was not rerun for this oracle increment; the prior
 production source, schema, and migration bytes are unchanged. This does not
 close forced rollback, fresh-process recovery, release-enforcement, public-control,
 lifetime, or production gates under TASK-028.
+
+## Shared Event identity-conflict increment: 2026-09-03
+
+The pinned shared standing scenario now resubmits an already accepted Event ID
+with a different canonical body. The Core reference and pinned Receiver return
+the exact non-retryable `409 event_identity_conflict` response. The Grant
+sequence remains at `1` and the existing open Delivery remains unchanged, so a
+changed payload cannot converge as a duplicate or create another activation.
+
+Exact evidence for this increment:
+
+- Core scenario contract and cross-layer tests: `28/28` passed;
+- Core full verification: `159/159` tests passed, with syntax, conformance, and package checks green;
+- source-pin fixtures: `16/16` passed;
+- pinned Express/PostgreSQL standing trace: `1/1` passed;
+- Core commit: `270c8e88a645d2624d29d70b455e64efca177cb7`;
+- selected Core/spec SHA-256: `71dfbf55a32cbca9f3089d672dca808c99116a61fb4c3ff7c7981c30f14eb714`;
+- Receiver commit: `a92f9403e134ca2c3a8e6249f117b24284e3988c`; and
+- runtime: Node `v26.5.0`, `release_conformance_verified: false`.
+
+The full backend aggregate was not rerun for this oracle increment; the prior
+`21/21` suites and `158` tests remain bounded evidence because Receiver
+production source, schema, and migration bytes are unchanged. The mandatory
+forced rollback, fresh-process recovery, release-enforcement, public-control,
+lifetime, and production gates remain open under TASK-028.
