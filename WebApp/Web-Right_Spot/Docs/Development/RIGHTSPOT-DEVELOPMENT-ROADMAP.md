@@ -314,6 +314,10 @@ integrated at `218935c`, but its independent browser gate ended at `BLOCKED_HARN
 retry produced no final report; no further blind retry is authorized. After a reviewed 048 evidence
 decision, 047 must be re-baselined before verification resumes. Other Operations WebMCP capabilities
 remain separately gated.
+`RIGHTSPOT-049` is now the next independent bounded implementation candidate from the continuing
+Search audit. It is a P2 client compatibility repair for F-23, limited to the Search parser and its
+focused tests; it can proceed while 047/048 remain paused or harness-blocked and does not alter the
+server envelope, Search authority, page consumer, or WebMCP registration.
 
 The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.
 The page-entry audit registered `RIGHTSPOT-021` as a bounded implementation route: restore a
@@ -634,6 +638,9 @@ ended at `BLOCKED_HARNESS` after its corrected retry produced no final report; n
 agent-browser retry is authorized. This does not reopen
 the accepted MVP closure or authorize external authentication, Cloud Receiver,
 deployment, or commercial-marketplace scope by itself.
+The pending `RIGHTSPOT-049` Search compatibility repair is the next serial source increment; its
+two-path client/test boundary must be independently verified before closure and must not be used to
+claim that the paused Operations WebMCP candidate or the 048 lifecycle gate is closed.
 
 ### Historical execution chronology
 

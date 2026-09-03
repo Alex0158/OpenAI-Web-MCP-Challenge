@@ -61,6 +61,7 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-046 — Define Agent Operations WebMCP Listing Pipeline contract`](RIGHTSPOT-046-define-agent-operations-webmcp-listing-pipeline-contract.md)
 - [`RIGHTSPOT-047 — Implement Agent Operations WebMCP listing-pipeline capability`](RIGHTSPOT-047-implement-agent-operations-webmcp-listing-pipeline.md)
 - [`RIGHTSPOT-048 — Reconcile role-page session lifecycle for page-bound capabilities`](RIGHTSPOT-048-reconcile-role-page-session-lifecycle.md)
+- [`RIGHTSPOT-049 — Fail closed on filtered legacy Search responses`](RIGHTSPOT-049-reconcile-search-response-compatibility.md)
 
 `RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
 `RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`,
@@ -203,6 +204,10 @@ registered bounded shared role-page session lifecycle repair. Its serial Builder
 after focused `35/35`, complete `215/215`, typecheck, build, repository, sensitive-scan, and diff
 gates. Its independent browser Work Order ended at `BLOCKED_HARNESS` after the corrected retry
 produced no final report; no further blind retry is authorized;
+`RIGHTSPOT-049` is a pending non-blocking P2 client compatibility repair for `F-23`: filtered
+successful responses must not inherit the unfiltered legacy metadata defaults. It owns only
+`src/ui/tenant/tenant-api.ts` and `tests/ui/tenant-api.test.ts`; it does not change the server
+envelope, Search authority, page consumer, WebMCP adapter, or the blocked 047/048 evidence gates.
 `RIGHTSPOT-045` is now `CLOSED_VERIFIED` within its bounded
 Operations consumer repair boundary after Main-controlled race verification and an explicitly recorded
 independent-browser harness limitation;
@@ -358,6 +363,8 @@ the `047` candidate is re-baselined. Its source is frozen at `218935c` pending i
 evidence; its verifier Work Order ended at `BLOCKED_HARNESS` after the bounded corrected retry produced
 no final report, so no further blind agent-browser retry is authorized. `RIGHTSPOT-048` does not authorize changes outside its exact
 eight-path write set or any temporary Worktree.
+`RIGHTSPOT-049` is pending for the separate two-path Search response compatibility boundary and does
+not authorize a WebMCP or server change.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.

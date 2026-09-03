@@ -135,10 +135,15 @@ The tool-facing logical success envelope is:
 
 `fixtureGeneration` is the evaluated source snapshot identity. It is not a time-to-live, freshness
 promise, or write version. `pageState` is `results` when one or more records are returned and
-`empty` when `matchedCount` is zero. The ordinary HTTP response may retain its existing transport
-shape (`fixtureGeneration` plus `listings`) while the shared application result and page adapter
-derive the same normalized filters and page state; the adapter must not invent a second listing
-projection.
+`empty` when `matchedCount` is zero. For an actually unfiltered ordinary HTTP read, the existing
+transport shape (`fixtureGeneration` plus `listings`) may remain a compatibility shape; the shared
+adapter may derive the empty applied-filter set, count, /tenant, and page state from it. Once one
+or more effective Search criteria were sent, a successful response must carry the complete logical
+metadata and must echo every effective criterion under its normalized public name. Missing or partial
+metadata, including an applied-filter set that omits a requested criterion, is `INVALID_RESPONSE`;
+the adapter must fail closed rather than infer filters from caller input or listing contents, fall back
+to the catalogue, or invent a second listing projection. The Area value remains server-normalized and
+may differ from the caller's spelling.
 
 `TenantListing` contains only the existing tenant-safe fields: `id`, `version`, `title`, `address`,
 `area`, `monthlyRentGbp`, `bedrooms`, `sizeSqM`, `availableFrom`, `description`, and `imageKey`.

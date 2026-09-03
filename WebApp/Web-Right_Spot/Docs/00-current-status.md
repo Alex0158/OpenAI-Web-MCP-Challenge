@@ -213,6 +213,10 @@ post-048 review with no new product finding, and Main corrected one documentatio
 claim. `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its manual Operations consumer
 latest-read boundary at product source `3582ba4`; it does not reopen `RIGHTSPOT-044` or change the
 Operations API, domain, projection, fixture, role/privacy, navigation, or WebMCP boundary.
+`RIGHTSPOT-049` is now registered as a pending, non-blocking P2 repair for the Search client
+compatibility boundary: an effective filtered response must not inherit unfiltered legacy metadata
+defaults. Its exact two-path scope is limited to `tenant-api.ts` and its focused test; it does not
+authorize a server, predicate, page, WebMCP, or 047/048 lifecycle change.
 `RIGHTSPOT-006` remains credential-gated. The existing Tenant Discovery/WebMCP slice remains
 `RIGHTSPOT-043` `CLOSED_VERIFIED` in its declared local supported-browser capability. No production,
 universal browser, judge, or probabilistic agent success claim is made.
@@ -821,6 +825,11 @@ accepted Operations authority and pure projection were consumed by the ordinary 
 `/agent/operations` page and strict `GET /api/agent/operations` consumer in `RIGHTSPOT-044`; all three
 044 Work Orders are `CLOSED_VERIFIED`. Any Operations WebMCP capability remains separately gated and
 is not implied by the manual surface closure or the 045 repair.
+
+`RIGHTSPOT-049` is the next independent bounded implementation candidate from the continuing Search
+audit. It is independent of the paused 047 candidate and the 048 harness-blocked evidence gate, and
+may proceed through its two-path client/test boundary without reopening either gate. It must preserve
+the complete current server envelope and the intentionally supported unfiltered legacy response.
 
 The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.
 The cross-layer page-entry audit then verified the narrow `RIGHTSPOT-021` defect: the existing

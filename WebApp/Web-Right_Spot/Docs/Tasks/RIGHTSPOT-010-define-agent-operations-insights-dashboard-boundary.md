@@ -356,11 +356,11 @@ stage and the exact evidence required before any broader claim.
 ## RS-WO-010-01 — Agent Operations Insights and WebMCP dashboard proposal
 
 **Role:** Product strategy, analytics/domain, WebMCP, UX, privacy, and API boundary Advisor  
-**Status:** `READY_FOR_REVIEW` — read-only proposal Advisor returned; main-thread review pending  
+**Status:** `CLOSED` — read-only proposal reviewed by Main; staged decision recorded  
 **Parallelization:** `READ_ONLY_ADVISORY` — may inspect current source while other work exists, but must not edit any repository file  
 **Risk profile:** `High` for later implementation because it crosses reporting semantics, data authority, role privacy, UI state, and WebMCP capability boundaries; `Standard` for this read-only proposal  
 **Supporting task:** `01a05d88-8907-7063-8c93-030e296c9df0` (`Leibniz`, local multi-agent Advisor).  
-**Advisor result:** `READY_FOR_REVIEW`; the proposal recommends a dedicated `/agent/operations` read-only dashboard, manual filters as baseline, bounded page-authored query tools later, and a deterministic Operations profile with an application-owned reporting projection. It keeps interest queries capability-gated on 008/009 and does not authorize implementation or WebMCP registration.  
+**Advisor result:** `REVIEWED_STAGED_CLOSED`; the proposal recommended a dedicated `/agent/operations` read-only dashboard, manual filters as baseline, bounded page-authored query tools later, and a deterministic Operations profile with an application-owned reporting projection. Main accepted the staged direction through ADR-RS-0016 and did not authorize implementation or WebMCP registration from this proposal alone.  
 **Write policy:** Return the proposal in the supporting-task report only. Do not write the proposal into Core, Decisions, Requirements, product status, source, tests, schemas, fixtures, assets, or task records.  
 **Source baseline:** The current RightSpot working tree. Capture the observed commit, dirty paths, and any candidate limitations; do not assume unrelated uncommitted changes are part of the accepted baseline.
 

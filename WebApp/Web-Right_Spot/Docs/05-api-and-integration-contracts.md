@@ -212,10 +212,13 @@ malformed, superseded,
 unauthenticated, and wrong-role outcomes remain bounded and never expose raw server text or stale
 listing data as current. A valid empty result never falls back to an unfiltered catalogue.
 
-The future WebMCP registration is page/session scoped: feature-detect the current supported API,
-register only after a server-resolved Tenant session is present on `/tenant`, and unregister/cancel
-on route, session, role, capability, or component teardown. Registration does not grant auth or
-listing access. A browser without WebMCP continues through the ordinary manual Search path.
+The integrated first Tenant WebMCP registration is page/session scoped: feature-detect the current
+supported API, register only after a server-resolved Tenant session is present on `/tenant`, and
+unregister/cancel on route, session, role, capability, or component teardown. Registration does not
+grant auth or listing access. A browser without WebMCP continues through the ordinary manual Search
+path. The broader external HttpOnly-session revalidation and cross-component teardown repair is
+separately tracked by `RIGHTSPOT-048`; its local candidate is integrated, but integrated supported-
+browser teardown evidence remains unverified at the recorded harness boundary.
 
 ## 9. Open contract decisions
 
