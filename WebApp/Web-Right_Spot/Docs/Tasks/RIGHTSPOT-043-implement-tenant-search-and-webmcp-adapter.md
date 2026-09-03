@@ -14,23 +14,26 @@ page/session-bound read-only WebMCP capability without creating a second listing
 - **Lifecycle:** `in_progress`
 - **Execution posture:** `SERIAL_PRODUCT_SEARCH_WITH_SEQUENTIAL_WEBMCP_GATE`
 - **Owner:** Main RightSpot thread
-- **Current gate:** `RS-WO-043-02` has been redispatched against the amended client seam in the
-  canonical Main Worktree. `RS-WO-043-03` remains gated on the accepted adapter handoff. No source,
-  dependency, WebMCP registration, fixture, or extra Worktree change is authorized outside the
-  amended active Work Order.
-- **Dispatch state:** `RS-WO-043-01 integrated; RS-WO-043-02 redispatched after bounded scope amendment`
+- **Current gate:** `RS-WO-043-02` is integrated in the canonical Main Worktree at `ec7a679` after
+  exact-path review and complete static checks. `RS-WO-043-03` is now ready to dispatch against that
+  frozen source for independent supported-browser verification. No source, dependency, fixture, or
+  extra Worktree change is authorized outside the active verification gate.
+- **Dispatch state:** `RS-WO-043-01 integrated; RS-WO-043-02 integrated pending independent verification; RS-WO-043-03 ready to dispatch`
 - **Supporting workers:** Hubble's first `RS-WO-043-02` attempt returned `BLOCKED` before adapter
-  integration; Hubble is now the reused Builder for the amended redispatch. Main retains source
-  integration, shared-file serialization, verification acceptance, canonical documentation, and Git
-  closure authority.
-- **Source identity:** The ordinary Search implementation is integrated in product code commit
-  `534f5c9d2125fed77decd8f07202a2ea4693ce7e` on branch `main` at repository root
-  `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge`. The reviewed code changed exactly the ten paths in
-  the `RS-WO-043-01` write set. Node `v24.20.0`, npm `11.19.0`, `npm test` `161/161`, typecheck,
-  build, repository validators, sensitive scan, and `/api/health` passed. Five pre-existing
-  untracked RightSpot boundary artifacts remain protected. The current browser bridge could not
-  list WebMCP tools under this model; that compatibility check remains explicitly gated to the
-  adapter/verifier and is not a WebMCP claim.
+  integration; its amended candidate was reviewed by Main and integrated after the exact-path and
+  runtime-seam checks. Main retains source integration, shared-file serialization, verification
+  acceptance, canonical documentation, and Git closure authority.
+- **Source identity:** The ordinary Search and page-bound adapter implementation is integrated in
+  product code commit `ec7a67917c1df5a54b6187e6cf6ac80a7c2acbd7` on branch `main` at repository root
+  `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge`. The adapter checkpoint changed exactly these five
+  paths: `tenant-api.ts`, `tenant-discovery-page.tsx`, `tenant-webmcp.ts`, `tenant-api.test.ts`, and
+  `tenant-webmcp.test.ts`. Node `v24.20.0`, npm `11.19.0`, `npm test` `171/171`, typecheck,
+  production build, repository validators, sensitive scan, staged diff check, and `/api/health`
+  passed. Fresh local browser smoke confirmed the ordinary initial catalogue and canonical
+  `Southwark`/`Haringey` Area results with no console warnings/errors. Five pre-existing untracked
+  RightSpot boundary artifacts remain protected. The current in-app browser bridge could not expose
+  WebMCP documentation/tools under this model; supported-browser registration and invocation remain
+  the independent verifier gate and are not claimed by this checkpoint.
 - **Integration authority:** Main owns source integration, shared-file serialization, verification
   acceptance, canonical documentation, Git commit/push, and candidate Worktree retirement.
 
@@ -119,7 +122,7 @@ it does not claim WebMCP registration or supported-browser capability.
 ### RS-WO-043-02 — Add the thin page-bound read-only WebMCP adapter
 
 **Role:** Builder — WebMCP page capability  
-**Status:** `IN_PROGRESS`  
+**Status:** `READY_FOR_VERIFICATION`  
 **Parallelization:** `SERIAL_AFTER_SEARCH_AUTHORITY` — it may not overlap the shared page/controller
 files in `RS-WO-043-01`.  
 **Allowed write set:**
@@ -137,13 +140,18 @@ The adapter cannot satisfy the accepted cancellation and shared-authority contra
 small client seam. The amendment authorizes only the two exact paths above, with no new public
 criterion, URL/parser, response authority, dependency, or behavior change. It does not reopen
 ADR-RS-0015; it makes its already-accepted cancellation lifecycle implementable. The two untracked
-draft files created during the blocked attempt remain retained for Main review and are not accepted
-source until the amended handoff passes exact-path review.
+draft files created during the blocked attempt were retained for Main review; the amended handoff
+has now superseded them and its accepted source is limited to the five paths recorded below.
 
-**Amended redispatch checkpoint (2026-09-03):** Main committed the scope amendment as
-`e7be681` and redispatched this Work Order against that exact baseline. Hubble must now complete or
-explicitly block the amended five-path scope; the two retained untracked drafts remain subject to
-Main's exact diff review and are not an accepted implementation result.
+**Amended redispatch checkpoint (2026-09-03):** Main committed the bounded client-seam amendment as
+`e7be681` and reviewed the amended five-path candidate against that exact baseline. Main integrated
+the adapter at product code commit `ec7a67917c1df5a54b6187e6cf6ac80a7c2acbd7` after focused
+adapter/API tests, the complete `171/171` suite, typecheck, production build, repository validators,
+sensitive scan, staged diff review, and ordinary browser smoke. The adapter registers only the
+page-bound `search_listings` capability when `document.modelContext` is available, forwards the
+WebMCP execution signal through the existing GET boundary, guards stale results, and leaves the
+manual form as the fallback. This is an accepted source handoff, not independent supported-browser
+proof; `RS-WO-043-03` is the next gate.
 
 **Read set:** the frozen post-WO-01 source, `src/ui/tenant/tenant-api.ts`, ADR-RS-0015, the supported
 official WebMCP documentation, the current browser/runtime configuration, and the existing Tenant
@@ -176,7 +184,7 @@ cancellation API must be revalidated at dispatch and verification. Do not add a 
 ### RS-WO-043-03 — Independent supported-browser verification and Main closure
 
 **Role:** Verifier — independent read-only evidence  
-**Status:** `GATED_ON_RS-WO-043-02`  
+**Status:** `READY_TO_DISPATCH`  
 **Allowed write set:** none in product source or canonical docs; evidence may be written only through
 the Main closure process.  
 **Read set:** frozen post-Builder source, exact runtime/browser capability, fixture reset boundary,
@@ -240,10 +248,11 @@ widening the semantic contract.
 
 ## Closure evidence
 
-This Task remains `in_progress` after `RS-WO-043-01` integration. The closed decision gate is
-recorded in `RIGHTSPOT-042` and ADR-RS-0015. The first `RS-WO-043-02` attempt was blocked before
-integration because the original write set could not provide genuine transport cancellation. Main
-recorded the bounded `tenant-api.ts` amendment in `e7be681` and redispatched against that baseline;
-the retained adapter/test drafts are not accepted source. Main must review the exact handoff before
-opening `RS-WO-043-03`. The current integrated result does not claim WebMCP runtime registration,
-browser support, deployment, or judge reproducibility; those remain later gates.
+This Task remains `in_progress` after the ordinary Search and adapter source checkpoints. The closed
+decision gate is recorded in `RIGHTSPOT-042` and ADR-RS-0015. The first `RS-WO-043-02` attempt was
+blocked before integration because the original write set could not provide genuine transport
+cancellation; Main recorded the bounded `tenant-api.ts` amendment in `e7be681`, reviewed the
+amended five-path handoff, and integrated it at `ec7a679`. `RS-WO-043-03` may now be dispatched
+against the frozen `ec7a679` source. The current integrated result does not claim supported-browser
+WebMCP discovery/invocation, agent success, deployment, or judge reproducibility; those remain the
+independent verification and later gates.

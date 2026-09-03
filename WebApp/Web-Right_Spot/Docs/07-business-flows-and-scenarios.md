@@ -242,7 +242,8 @@ discovery; Apply and the future WebMCP capability use a selected canonical Area 
 case-insensitive normalization. An unselected or unknown value must receive bounded validation, while
 a selected Area with no published matches remains an explicit empty result with no catalogue fallback.
 The ordinary Tenant Search implementation now follows this direction at product code commit
-`534f5c9`; the later page-bound WebMCP capability remains separately gated.
+`534f5c9`; the page-bound adapter source is integrated at `ec7a679`, while supported-browser
+registration and invocation remain separately gated.
 
 **Accepted Search contract:** [ADR-RS-0015](Decisions/ADR-RS-0015-tenant-search-and-webmcp-contract.md)
 freezes the first slice at the four optional criteria `area`, `maxRent`, `minSizeSqM`, and public
@@ -250,9 +251,10 @@ freezes the first slice at the four optional criteria `area`, `maxRent`, `minSiz
 deterministic source order, and the bounded synthetic catalogue is returned without caller-defined
 pagination or silent truncation. The Area control resolves an exact canonical stored label after
 bounded prefix suggestions; unresolved/unknown input is validation, and a known Area with no current
-published match is truthful empty state. The future `search_listings` capability is read-only,
-Tenant-only, page-bound to `/tenant`, and must update the same visible page state as the human form.
-The accepted contract is documented before implementation; no WebMCP registration claim is made here.
+published match is truthful empty state. The `search_listings` capability source is now integrated as
+read-only, Tenant-only, and page-bound to `/tenant`; it must update the same visible page state as the
+human form. Supported-browser registration/invocation evidence remains a separate gate, so this flow
+does not claim runtime WebMCP success.
 
 ### RS-FLOW-03 — Inspect a listing and enter a request
 

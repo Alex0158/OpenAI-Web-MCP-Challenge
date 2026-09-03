@@ -1,7 +1,7 @@
 # RightSpot WebMCP Integration Roadmap
 
 **Role:** Engineering roadmap and gate definition for the later RightSpot WebMCP capability  
-**Status:** `ROADMAP_ESTABLISHED` — Tenant Discovery Search contract accepted; implementation and tool registration remain gated by `RIGHTSPOT-043`  
+**Status:** `IMPLEMENTATION_INTEGRATED_PENDING_W3` — Tenant Discovery Search contract and page-bound adapter source are accepted; supported-browser registration and verification remain open  
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-03, Europe/London  
 **Applies to:** `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge/WebApp/Web-Right_Spot`
@@ -49,10 +49,13 @@ The following sources remain authoritative in their respective areas:
 - [`RIGHTSPOT-042`](../Tasks/RIGHTSPOT-042-define-tenant-search-and-webmcp-search-contract.md)
   for the selected Tenant Discovery/WebMCP Search contract decision and implementation gate.
 
-The current RightSpot source has no WebMCP registration, no page-authored tool adapter, and no
-WebMCP dependency. The accepted ordinary MVP is a normal Next.js application with an authoritative
-server-side workflow and role-scoped human UI. WebMCP, Cloud Receiver, WebRTC, Redis, external
-authentication, deployment, and production readiness remain separate boundaries.
+The current RightSpot source contains one page-authored `search_listings` adapter but no required
+WebMCP dependency. The adapter is feature-detected and only registers against `document.modelContext`
+inside the server-resolved Tenant `/tenant` child boundary; source integration does not by itself
+prove browser registration or invocation. The accepted ordinary MVP remains a normal Next.js
+application with an authoritative server-side workflow and role-scoped human UI. WebMCP runtime
+compatibility, Cloud Receiver, WebRTC, Redis, external authentication, deployment, and production
+readiness remain separate boundaries.
 
 The external specification and browser implementation must be rechecked at every implementation gate:
 
@@ -139,8 +142,9 @@ The accepted contract is one `search_listings` capability on the existing Tenant
 the four bounded structured filters, a visible update of the ordinary listing results, truthful empty/
 error/stale behavior, and no mutation. ADR-RS-0014 accepts the canonical Area facet and bounded
 suggestion direction; ADR-RS-0015 accepts the complete schema, result boundary, page parity, privacy,
-and lifecycle semantics. `RIGHTSPOT-043` now owns implementation and independent browser evidence.
-Selection of the goal and contract does not claim implementation or registration.
+and lifecycle semantics. `RIGHTSPOT-043` now owns the integrated adapter source and independent browser
+evidence. Selection of the goal and contract did not claim implementation; the adapter source is now
+integrated, while supported-browser registration, invocation, and agent evidence remain unverified.
 `RIGHTSPOT-010` remains a separate pending Operations Insights alternative and is not silently replaced
 by this selection.
 
@@ -208,7 +212,7 @@ API.
 
 ### W2 — First read-only WebMCP vertical slice
 
-**State:** `IN_PROGRESS — RIGHTSPOT-043 / RS-WO-043-02 redispatched`  
+**State:** `IMPLEMENTED_PENDING_W3` — `RIGHTSPOT-043` / `RS-WO-043-02` integrated at `ec7a679`  
 **Outcome:** one page-authored read-only tool that performs one bounded goal through existing authority.
 
 The implementation must:
@@ -224,12 +228,13 @@ The implementation must:
 9. add no speculative tools, generic registry, Cloud Receiver adapter, or WebMCP-only business logic.
 
 **Exit gate:** focused contract/component tests and ordinary suite pass; exact diff is within the
-approved paths; no ordinary UI/API behavior changes outside the selected outcome; and a frozen source
-is ready for independent verification.
+approved paths; no ordinary UI/API behavior changes outside the selected outcome; and frozen source
+`ec7a679` is ready for independent verification. This gate does not claim supported-browser WebMCP
+registration or invocation.
 
 ### W3 — Independent browser and agent verification
 
-**State:** `GATED_ON_W2`  
+**State:** `READY_TO_DISPATCH` — `RS-WO-043-03` against frozen `ec7a679`  
 **Outcome:** an independent verifier proves the tool exists and behaves correctly in a supported
 browser capability environment.
 
@@ -429,18 +434,18 @@ or a new cross-origin/external integration is proposed.
 The ordinary Search authority/UI/API phase of [`RIGHTSPOT-043`](../Tasks/RIGHTSPOT-043-implement-tenant-search-and-webmcp-adapter.md)
 is integrated at product code commit `534f5c9`. The first `RS-WO-043-02` adapter attempt was blocked
 before integration because the shared `readListings` client could not forward the execution
-`AbortSignal`. Main recorded the bounded `tenant-api.ts` seam amendment in `e7be681` and
-redispatched the adapter against that baseline; only an accepted handoff may open `RS-WO-043-03`
-independent supported-browser verification. No WebMCP success claim is made until the adapter and
-verification gates pass.
+`AbortSignal`. Main recorded the bounded `tenant-api.ts` seam amendment in `e7be681`, reviewed the
+amended five-path handoff, and integrated the adapter at `ec7a679`. `RS-WO-043-03` is now ready to
+dispatch against that frozen source for independent supported-browser verification. No WebMCP
+success claim is made until supported-browser registration, invocation, and lifecycle evidence pass.
 
 Until the `RIGHTSPOT-043` implementation and verification gate is accepted:
 
 - `RIGHTSPOT-010` remains `pending` and `RS-WO-010-01` remains `READY_FOR_REVIEW`;
-- `RIGHTSPOT-042` is `CLOSED_VERIFIED` as a documentation/decision gate and `RIGHTSPOT-043` is
-  `in_progress` through redispatched `RS-WO-043-02` after ordinary Search integration;
-- the WebMCP adapter Work Order is limited to the amended exact page/client write set; independent
-  verification remains gated on its accepted handoff;
+- `RIGHTSPOT-042` is `CLOSED_VERIFIED` as a documentation/decision gate and `RIGHTSPOT-043` remains
+  `in_progress` with `RS-WO-043-01` and amended `RS-WO-043-02` integrated;
+- `RS-WO-043-03` is the active next gate and is limited to read-only verification of frozen source
+  `ec7a679`; no product edit or semantic expansion is authorized;
 - ordinary RightSpot MVP behavior remains the only runnable product claim; and
 - Cloud Receiver, WebRTC, Redis, external authentication, deployment, and production-readiness remain
   deferred or gated.

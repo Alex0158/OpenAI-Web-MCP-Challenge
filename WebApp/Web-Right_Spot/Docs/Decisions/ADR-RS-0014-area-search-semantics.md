@@ -102,7 +102,8 @@ authority that are not justified by the bounded Tenant Discovery/WebMCP goal.
 - The ordinary UI and WebMCP can share one canonical Area contract rather than maintaining separate
   filter engines.
 - The ordinary Tenant Search implementation now applies this decision at product code commit
-  `534f5c9`; the later page-bound WebMCP adapter remains a separate implementation gate. This ADR
+`534f5c9`; the page-bound WebMCP adapter source is integrated at `ec7a679`, while supported-browser
+registration and invocation remain a separate implementation verification gate. This ADR
   does not by itself claim WebMCP runtime registration or supported-browser capability.
 - The complete Search schema, date naming, result ordering/bound, freshness envelope, page-state
   agreement, and WebMCP lifecycle are accepted in [ADR-RS-0015](ADR-RS-0015-tenant-search-and-webmcp-contract.md).

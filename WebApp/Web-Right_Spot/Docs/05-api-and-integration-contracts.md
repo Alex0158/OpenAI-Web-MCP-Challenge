@@ -158,8 +158,10 @@ WebMCP, if later required for the Hackathon, belongs at the page capability boun
 normal UI and backend workflow are coherent. It must expose the same authorized domain operations
 as the UI, not create a second business logic path.
 
-The first phase will not add WebMCP registration, Agent wake semantics, or Cloud Receiver-specific
-payloads merely to reserve names.
+The contract-design phase did not add WebMCP registration, Agent wake semantics, or Cloud
+Receiver-specific payloads merely to reserve names. The bounded `search_listings` page adapter is now
+integrated as a separate implementation checkpoint; supported-browser registration and invocation
+remain independently gated.
 
 ### 8.1 Tenant Discovery Area contract direction
 
@@ -173,14 +175,15 @@ empty result without fallback.
 
 The ordinary Search implementation applies this direction at product code commit `534f5c9`. The
 complete Search contract is frozen in [ADR-RS-0015](Decisions/ADR-RS-0015-tenant-search-and-webmcp-contract.md);
-the page-bound WebMCP adapter remains a separate gated implementation step.
+the page-bound adapter source is integrated at `ec7a679`, while its supported-browser registration
+and invocation remain a separate verification gate.
 
 ### 8.2 Tenant Discovery Search contract
 
 The first Search capability is one authenticated Tenant read on `/tenant`, exposed to the page-authored
 WebMCP adapter as `search_listings` once its registration gate is accepted. The ordinary form and
-HTTP/API path are integrated at `534f5c9`; the adapter must share the existing listing application
-authority and one semantic predicate.
+HTTP/API path are integrated at `534f5c9`; the adapter source is integrated at `ec7a679` and shares
+the existing listing application authority and one semantic predicate.
 
 The first slice accepts exactly four optional criteria:
 

@@ -269,13 +269,14 @@ authority must remain the only source of role-safe listing truth.
 - The ordinary Search implementation changes the Area interaction from raw free text to bounded
   canonical resolution at product code commit `534f5c9`; this is a product behavior change, not a
   WebMCP-only workaround.
-- A future adapter can remain thin because filtering, authorization, DTO projection, and page-state
-  semantics are already defined once.
+- The integrated page-bound adapter remains thin because filtering, authorization, DTO projection, and
+  page-state semantics are defined once; its source is recorded at product commit `ec7a679`.
 - The first slice deliberately cannot claim fuzzy discovery, live inventory, ranking, pagination,
   broad keyword search, or a production-scale output contract.
-- The ordinary Search portion of `RIGHTSPOT-043` is integrated at `534f5c9`. The page-bound adapter
-  and independent supported-browser verification remain open gates; this ADR does not claim either
-  gate has passed.
+- The ordinary Search portion of `RIGHTSPOT-043` is integrated at `534f5c9`, and the amended
+  page-bound adapter source is integrated at `ec7a679`. Independent supported-browser registration,
+  invocation, and lifecycle verification remain open gates; this ADR does not claim those gates have
+  passed.
 
 ## Validation and reopen triggers
 
