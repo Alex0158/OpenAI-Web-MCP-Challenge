@@ -18,17 +18,18 @@ Operations authority/projection, and the verified Tenant adapter pattern in `RIG
 - Execution posture: `MAIN_THREAD_SINGLE_SOURCE_WEBMCP_IMPLEMENTATION`
 - Priority: `P1` — implement only the accepted Agent Operations `read_listing_pipeline` capability.
 - Owner: Main RightSpot thread
-- Current increment: Builder implementation and Main candidate review are complete; the exact source
-  now awaits independent supported-browser verification.
-- Next gate: freeze the reviewed candidate commit and dispatch the independent supported-browser
-  Verifier `RS-WO-047-02`. Main owns integration and documentation closure.
+- Current increment: Builder implementation and Main candidate review are complete; the exact source is
+  frozen locally at candidate commit `09d0628e10b9ddb9a59c59eebd1be1ee074a5318` and awaits independent
+  supported-browser verification.
+- Next gate: dispatch the independent supported-browser Verifier `RS-WO-047-02` against that exact
+  candidate. Main owns integration, push, and documentation closure after verification.
 - Dependencies: ADR-RS-0017 is the contract authority. The existing manual `/agent/operations` page,
   `GET /api/agent/operations`, Operations projection, Agent role/assignment checks, and Tenant
   `search_listings` adapter remain read-only inputs. `RIGHTSPOT-012` may continue as a non-blocking,
   read-only audit provided it does not modify this Task's write set during a source freeze.
-- Dispatch state: `builder_complete` — `RS-WO-047-01` was completed by supporting agent
-  `01a065ce-ba53-7b71-bb97-7de24e92a60f`; Main independently reviewed the exact diff and checks. No
-  Verifier, fixture mutation, or Worktree is authorized until the reviewed candidate is frozen.
+- Dispatch state: `verifier_ready` — `RS-WO-047-01` was completed by supporting agent
+  `01a065ce-ba53-7b71-bb97-7de24e92a60f`; Main independently reviewed and froze the exact candidate.
+  `RS-WO-047-02` is ready for dispatch. No fixture mutation or Worktree is authorized.
 - Evidence status: `READY_FOR_INDEPENDENT_VERIFICATION` — contract, implementation, static checks, and
   full deterministic suite are verified; supported-browser discovery/invocation remains open.
 
@@ -197,12 +198,19 @@ Close this Task only after all of the following are true:
 `medium` reasoning when dispatched; if the capability is unavailable, report the blocker and do not
 substitute an unsupported model for WebMCP runtime work  
 **Supporting agent:** `01a065ce-ba53-7b71-bb97-7de24e92a60f`  
-**Source baseline:** T0 recaptured immediately before dispatch: Main and `origin/main` at
+**Source baseline:** T0 recaptured immediately before Builder dispatch: Main and `origin/main` at
 `075a868086e962112b550583cb1705478bbdf16b`, divergence `0`; reviewed product source remains the
-`3582ba4` checkpoint. The uncommitted candidate was independently checked by Main and is ready to be
-frozen for verification. Node `24.20.0`, localhost health `200`, `agent-browser 0.25.3`, Chrome
-`152.0.7977.65`, and the `WebMCPTesting` flag were available.  
+`3582ba4` checkpoint. The reviewed candidate is frozen at Main commit
+`09d0628e10b9ddb9a59c59eebd1be1ee074a5318` (source-only delta from `075a8686`; no source/test files
+changed after the candidate commit). Node `24.20.0`, localhost health `200`, `agent-browser 0.25.3`,
+Chrome `152.0.7977.65`, and the `WebMCPTesting` flag were available.  
 **Write set:** exactly the five paths listed above  
+**Frozen candidate hashes:** `operations-webmcp.ts`
+`8f84e89df2d27680873c49ee8ceba9c388e3b23d3b68fd18bbf2639493f6dfc5`; `operations-api.ts`
+`9c22386309e2cb4fe43510a060aba264bcc57e05aae8ef2f8773e9b6ff4f06a3`; `operations-page.tsx`
+`8b7fd1df584e9789187052db96e09c635008739993b4baff95ea9c845b152a3e`; `operations-webmcp.test.ts`
+`8d4a5a22e967a481ec3d46026f3c588093173795977301f7c3fb2949019643bf`; `operations-page.test.ts`
+`4701c237272b370e3790bf39d84fc0d78028eb03fd2371542346688655b0482a`.  
 **Handoff:** Builder returned exactly the five paths, Red/Green/Refactor evidence, focused `23/23`,
 full `201/201`, typecheck/build/validator/sensitive-scan/diff-check results, and no unresolved
 implementation blocker. Main independently reproduced those checks. The candidate must now be frozen
@@ -210,10 +218,13 @@ by Main; Builder did not commit, push, alter canonical docs, or create a Worktre
 
 ### RS-WO-047-02 — Independently verify the integrated capability
 
-**Status:** `NOT_DISPATCHED`  
+**Status:** `READY_TO_DISPATCH`  
 **Role:** Independent WebMCP/browser Verifier  
 **Parallelization:** `AFTER_BUILDER_SOURCE_FREEZE` — Builder source and Main Git ref are frozen during
 the check; no Main docs/status writeback or other worker may move the verified source  
+**Source:** Verify candidate commit `09d0628e10b9ddb9a59c59eebd1be1ee074a5318` and the five hashes
+listed above; `origin/main` remains at `075a868086e962112b550583cb1705478bbdf16b8` until this gate
+passes.  
 **Scope:** Verify the integrated candidate against the exact frozen source and fixture without editing
 source/tests/docs or mutating the durable fixture; use `gpt-5.6-sol` with `medium` reasoning for
 WebMCP-specific evaluation  
