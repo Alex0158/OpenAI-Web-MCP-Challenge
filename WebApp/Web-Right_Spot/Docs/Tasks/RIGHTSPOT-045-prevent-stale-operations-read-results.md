@@ -1,7 +1,7 @@
 # RIGHTSPOT-045: Prevent stale Operations reads from overwriting the latest query
 
 **Type:** `defect`  
-**Lifecycle:** `pending`  
+**Lifecycle:** `in_progress`  
 **Priority:** `P2` for Agent Operations result truthfulness  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-03  
@@ -11,16 +11,17 @@
 ## Task control
 
 - Type: `defect`
-- Lifecycle: `pending`
-- Execution posture: `MAIN_THREAD_SERIAL_UI_REPAIR`
+- Lifecycle: `in_progress`
+- Execution posture: `BUILDER_ACTIVE`
 - Objective: make the Operations page adopt results, errors, and loading completion only for its latest
   logical read, so the displayed result cannot contradict the current report/query context.
-- Current increment: Register and repair the consumer-only latest-read sequencing boundary with focused
-  TDD and independent integrated verification.
+- Current increment: The consumer-only latest-read sequencing repair is with the bounded UI Builder;
+  focused TDD and independent integrated verification remain required.
 - Next gate: Dispatch one bounded UI Builder, review the exact diff in Main, freeze the source, then
   dispatch one independent browser/API Verifier.
-- Evidence status: `VERIFIED_DEFECT_PENDING_REPAIR` — static control-flow evidence is high confidence;
+- Evidence status: `VERIFIED_DEFECT_BUILDER_ACTIVE` — static control-flow evidence is high confidence;
   a browser race was not reproduced in the audit harness, so no new runtime reproduction is claimed.
+- Supporting worker: UI Builder `01a06569-e047-7251-a574-e9c1e077f0a6` (`Aristotle`).
 - Parent role: This is one registered Task File. Builder and Verifier are sequential Work Order
   checkpoints under this file, not additional Tasks.
 - Blocking status: Non-blocking to `RIGHTSPOT-012` and to already-closed Search/Operations claims.
@@ -95,13 +96,19 @@ responsive layout, and accessibility surface.
 ### RS-WO-045-01 — Operations consumer latest-read repair
 
 **Role:** UI Builder  
-**Status:** `PENDING_DISPATCH`  
+**Status:** `IN_PROGRESS`  
 **Parallelization:** `SERIAL_OPERATIONS_CONSUMER` — no other writer may modify the Operations page or
 its focused test during this Work Order.  
 **Risk profile:** `Bounded P2` — one client async lifecycle boundary; no server or shared contract change.  
 **Owner:** Supporting UI Builder under Main review  
 **Main authority:** Main owns scope, source identity, exact-path review, integration, documentation,
 and closure.
+
+**Dispatch record (2026-09-03):** Main dispatched this bounded consumer-only repair to supporting UI
+Builder `Aristotle` (`01a06569-e047-7251-a574-e9c1e077f0a6`) from the documented Main baseline
+`20dbd1a`. The dispatch included the full repository instruction surface, this Task File, the closed
+044 contract, exact read/write/forbidden sets, Red → Green → Refactor requirements, and handoff gates.
+It explicitly excludes WebMCP, API/domain/projection/persistence/fixture changes, and Git operations.
 
 #### Read set
 
