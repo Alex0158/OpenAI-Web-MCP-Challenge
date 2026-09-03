@@ -43,12 +43,19 @@ export default function SessionNav({
           isCurrent: currentPath === "/tenant/requests",
         },
       ]
-    : actor?.role === "agent"
-      ? [{
-          href: "/agent",
-          label: "Request queue",
-          isCurrent: currentPath === "/agent" || currentPath.startsWith("/agent/"),
-        }]
+      : actor?.role === "agent"
+      ? [
+          {
+            href: "/agent",
+            label: "Request queue",
+            isCurrent: currentPath === "/agent" || /^\/agent\/requests\/[^/]+$/.test(currentPath),
+          },
+          {
+            href: "/agent/operations",
+            label: "Operations insights",
+            isCurrent: currentPath === "/agent/operations",
+          },
+        ]
       : [];
 
   return (

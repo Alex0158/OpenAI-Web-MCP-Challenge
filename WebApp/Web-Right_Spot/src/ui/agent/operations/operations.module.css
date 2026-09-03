@@ -1,0 +1,23 @@
+.workspace { display: grid; gap: 1.5rem; min-width: 0; }
+.workspaceHeader, .resultHeader { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; }
+.queryPanel, .result { min-width: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: clamp(1rem, 3vw, 1.5rem); box-shadow: var(--shadow-soft); }
+.formGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1rem; }
+.field { display: grid; gap: .4rem; min-width: 0; color: var(--ink); font-size: .82rem; font-weight: 700; }
+.field input, .field select { width: 100%; min-height: 2.75rem; min-width: 0; border: 1px solid var(--line-strong); border-radius: var(--radius-small); background: var(--surface); color: var(--ink); padding: .6rem .7rem; font: inherit; }
+.field input:focus, .field select:focus, .formActions button:focus, .row a:focus { outline: 3px solid var(--focus); outline-offset: 2px; }
+.formActions, .feedback { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: 1.25rem; }
+.metadata { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: .75rem; margin: 1.25rem 0 0; }
+.metadata div { min-width: 0; padding: .8rem; border-radius: var(--radius-small); background: var(--surface-muted); }
+.metadata dt { color: var(--muted); font-size: .75rem; font-weight: 750; }
+.metadata dd { margin: .25rem 0 0; color: var(--ink); overflow-wrap: anywhere; }
+.metadata code { font-size: .76rem; white-space: pre-wrap; }
+.freshness { flex: 0 0 auto; color: var(--accent-strong); font-size: .75rem; font-weight: 800; letter-spacing: .08em; }
+.rows { display: grid; gap: .75rem; margin-top: 1.25rem; }
+.row { min-width: 0; border: 1px solid var(--line); border-radius: var(--radius-small); padding: 1rem; }
+.row h4 { margin: 0; overflow-wrap: anywhere; }
+.row p { margin: .35rem 0; overflow-wrap: anywhere; }
+.row small { color: var(--muted); overflow-wrap: anywhere; }
+.row a { color: var(--accent-strong); font-weight: 700; }
+.state { border: 1px dashed var(--line-strong); border-radius: var(--radius-small); padding: 1rem; }
+.state h3, .state h4 { margin-top: 0; }
+@media (max-width: 480px) { .workspaceHeader, .resultHeader { display: block; } .freshness { display: inline-block; margin-top: .75rem; } .formActions { align-items: stretch; flex-direction: column; } .formActions .button { width: 100%; } }
