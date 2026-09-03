@@ -297,12 +297,12 @@ not absorbed by this task.
 Search contract. It contains sequential Work Orders for ordinary UI/API semantics, the thin WebMCP
 adapter, and independent supported-browser verification. `RS-WO-043-01` is integrated in the
 canonical Main Worktree at product code commit `534f5c9` after the captured Node 24 checks and exact-
-path review; `RS-WO-043-02` is the next gated adapter Work Order and `RS-WO-043-03` remains gated on
-it. No extra Worktree is open.
+path review; `RS-WO-043-02` is dispatched against the reviewed `2bb65cd` baseline and
+`RS-WO-043-03` remains gated on its handoff. No extra Worktree is open.
 
 **Current route:** `RIGHTSPOT-043` is the current active Main-owned implementation route for the
 accepted Tenant Discovery/WebMCP Search direction; `RS-WO-043-01` is integrated and
-`RS-WO-043-02` is the next gated page-bound adapter phase. `RIGHTSPOT-042` is closed as the decision gate. `RIGHTSPOT-041` and
+`RS-WO-043-02` is the active page-bound adapter phase. `RIGHTSPOT-042` is closed as the decision gate. `RIGHTSPOT-041` and
 `RIGHTSPOT-040` remain closed within their exact tenant consumer boundaries. No extra code Worktree is
 open.
 `RIGHTSPOT-032` through `RIGHTSPOT-040` remain closed within their exact tenant and Agent

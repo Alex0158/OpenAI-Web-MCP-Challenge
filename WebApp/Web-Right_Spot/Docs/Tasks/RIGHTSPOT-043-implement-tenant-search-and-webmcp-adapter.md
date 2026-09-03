@@ -14,14 +14,15 @@ page/session-bound read-only WebMCP capability without creating a second listing
 - **Lifecycle:** `in_progress`
 - **Execution posture:** `SERIAL_PRODUCT_SEARCH_WITH_SEQUENTIAL_WEBMCP_GATE`
 - **Owner:** Main RightSpot thread
-- **Current gate:** `RS-WO-043-01` is integrated in the canonical Main Worktree for the ordinary
-  Search authority/UI/API slice. `RS-WO-043-02` is the next gated adapter work; `RS-WO-043-03`
-  remains gated on that adapter. No source, dependency, WebMCP registration, fixture, or extra
-  Worktree change is authorized outside the active Work Order.
-- **Dispatch state:** `RS-WO-043-01 integrated; RS-WO-043-02 not yet dispatched`
-- **Supporting workers:** Hubble's `RS-WO-043-01` Builder handoff was reviewed and integrated by
-  Main. Main retains source integration, shared-file serialization, verification acceptance,
-  canonical documentation, and Git closure authority.
+- **Current gate:** `RS-WO-043-02` is dispatched in the canonical Main Worktree for the thin
+  page-bound adapter. `RS-WO-043-03` remains gated on its exact handoff and independent review.
+  No source, dependency, WebMCP registration, fixture, or extra Worktree change is authorized
+  outside the active Work Order.
+- **Dispatch state:** `RS-WO-043-01 integrated; RS-WO-043-02 dispatched`
+- **Supporting workers:** Hubble is the reused delegated Builder for `RS-WO-043-02` after its
+  `RS-WO-043-01` handoff was reviewed and integrated by Main. Main retains source integration,
+  shared-file serialization, verification acceptance, canonical documentation, and Git closure
+  authority.
 - **Source identity:** The ordinary Search implementation is integrated in product code commit
   `534f5c9d2125fed77decd8f07202a2ea4693ce7e` on branch `main` at repository root
   `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge`. The reviewed code changed exactly the ten paths in
@@ -118,7 +119,7 @@ it does not claim WebMCP registration or supported-browser capability.
 ### RS-WO-043-02 — Add the thin page-bound read-only WebMCP adapter
 
 **Role:** Builder — WebMCP page capability  
-**Status:** `GATED_ON_RS-WO-043-01`  
+**Status:** `IN_PROGRESS`  
 **Parallelization:** `SERIAL_AFTER_SEARCH_AUTHORITY` — it may not overlap the shared page/controller
 files in `RS-WO-043-01`.  
 **Allowed write set:**
@@ -222,6 +223,7 @@ widening the semantic contract.
 ## Closure evidence
 
 This Task remains `in_progress` after `RS-WO-043-01` integration. The closed decision gate is
-recorded in `RIGHTSPOT-042` and ADR-RS-0015. `RS-WO-043-02` is the next Main-controlled gate and
-has not yet been dispatched. The current integrated result does not claim WebMCP runtime
-registration, browser support, deployment, or judge reproducibility; those remain later gates.
+recorded in `RIGHTSPOT-042` and ADR-RS-0015. `RS-WO-043-02` is dispatched against the reviewed
+baseline `2bb65cd`; Main is awaiting its exact handoff before opening `RS-WO-043-03`. The current
+integrated result does not claim WebMCP runtime registration, browser support, deployment, or judge
+reproducibility; those remain later gates.
