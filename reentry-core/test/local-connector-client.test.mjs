@@ -13,10 +13,18 @@ import {
   canonicalJson,
 } from "../src/protocol.mjs";
 import {
+  STANDING_AUTHORIZATION_MODE,
+  STANDING_MAX_ACTIVE_ACTIVATIONS,
+  STANDING_PROTOCOL_VERSION,
+} from "../src/standing-protocol.mjs";
+import {
   DELIVERY_ACKNOWLEDGEMENT_TYPE,
   DELIVERY_LEASE_TYPE,
 } from "../src/receiver-core.mjs";
-import { RECEIVER_HTTP_LIMITS } from "../src/cloud-receiver-http.mjs";
+import {
+  RECEIVER_HTTP_LIMITS,
+  STANDING_RECEIVER_HTTP_ROUTES,
+} from "../src/cloud-receiver-http.mjs";
 
 const CONNECTOR_TOKEN = "connector_secret";
 const CLAIM_TOKEN = Buffer.alloc(32, 7).toString("base64url");
@@ -105,6 +113,61 @@ function acknowledgement(overrides = {}) {
   };
 }
 
+function standingLeaseResult({ claimToken, deliveryId, eventId, eventSequence }) {
+  const now = Date.now();
+  const expiresAt = new Date(now + 60_000).toISOString();
+  return {
+    duplicate: false,
+    lease: {
+      type: DELIVERY_LEASE_TYPE,
+      protocol_version: STANDING_PROTOCOL_VERSION,
+      delivery_id: deliveryId,
+      event_id: eventId,
+      attempt: 1,
+      lease_token: claimToken,
+      lease_expires_at: new Date(now + 30_000).toISOString(),
+      continuation: {
+        correlation_id: "correlation_standing_1",
+        workflow_id: "workflow_standing_1",
+        event_type: "idle_soldier_available",
+        event_sequence: eventSequence,
+        state_version: eventSequence,
+        occurred_at: new Date(now - 1_000).toISOString(),
+        canonical_url: "https://host.example/workflows/workflow_standing_1",
+        instruction: "Review current idle soldiers and prepare the next safe assignment.",
+      },
+      receipt: {
+        type: RECEIPT_TYPE,
+        protocol_version: STANDING_PROTOCOL_VERSION,
+        grant_id: "grant_standing_1",
+        correlation_id: "correlation_standing_1",
+        issuer_origin: "https://host.example",
+        workflow_id: "workflow_standing_1",
+        event_type: "idle_soldier_available",
+        canonical_url: "https://host.example/workflows/workflow_standing_1",
+        expires_at: expiresAt,
+        human_boundary: "confirm_irreversible_spend",
+        continuation_mode: CONTINUATION_MODE,
+        authorization_mode: STANDING_AUTHORIZATION_MODE,
+        max_active_activations: STANDING_MAX_ACTIVE_ACTIVATIONS,
+      },
+    },
+  };
+}
+
+function standingAcknowledgement({ deliveryId, eventId, effectId }) {
+  return {
+    type: DELIVERY_ACKNOWLEDGEMENT_TYPE,
+    protocol_version: STANDING_PROTOCOL_VERSION,
+    delivery_id: deliveryId,
+    event_id: eventId,
+    effect_id: effectId,
+    acknowledged: true,
+    duplicate: false,
+    status: "acknowledged",
+  };
+}
+
 function client(baseUrl, overrides = {}) {
   return new LocalConnectorClient({
     baseUrl,
@@ -172,6 +235,125 @@ test("Local Connector sends exact outbound claim and acknowledgement requests", 
       }),
     },
   ]);
+});
+
+test("Local Connector preserves two v0.2 claim and acknowledgement cycles", async (t) => {
+  const claimTokens = [
+    Buffer.alloc(32, 11).toString("base64url"),
+    Buffer.alloc(32, 12).toString("base64url"),
+  ];
+  const requests = [];
+  let claimIndex = 0;
+  const { origin } = await startServer(t, async (request, response) => {
+    const body = JSON.parse(await readRequest(request));
+    requests.push({ url: request.url, body });
+    if (request.url === STANDING_RECEIVER_HTTP_ROUTES.claim) {
+      const index = claimIndex;
+      claimIndex += 1;
+      writeJson(response, 200, standingLeaseResult({
+        claimToken: claimTokens[index],
+        deliveryId: `delivery_standing_${index + 1}`,
+        eventId: `event_standing_${index + 1}`,
+        eventSequence: index + 1,
+      }));
+      return;
+    }
+    const cycle = Number(body.delivery_id.at(-1));
+    writeJson(response, 200, standingAcknowledgement({
+      deliveryId: body.delivery_id,
+      eventId: `event_standing_${cycle}`,
+      effectId: `effect_standing_${cycle}`,
+    }));
+  });
+  const connector = client(origin, { protocolVersion: STANDING_PROTOCOL_VERSION });
+
+  for (let index = 0; index < 2; index += 1) {
+    const claim = await connector.claimDelivery({ claimToken: claimTokens[index] });
+    assert.equal(claim.lease.protocol_version, STANDING_PROTOCOL_VERSION);
+    assert.equal(claim.lease.continuation.event_sequence, index + 1);
+    assert.equal(claim.lease.receipt.authorization_mode, STANDING_AUTHORIZATION_MODE);
+    const acknowledged = await connector.acknowledgeDelivery({
+      deliveryId: claim.lease.delivery_id,
+      leaseToken: claimTokens[index],
+      effectToken: `effect_token_${index + 1}`,
+    });
+    assert.equal(acknowledged.protocol_version, STANDING_PROTOCOL_VERSION);
+    assert.equal(acknowledged.event_id, `event_standing_${index + 1}`);
+  }
+
+  assert.deepEqual(requests.map(({ url }) => url), [
+    STANDING_RECEIVER_HTTP_ROUTES.claim,
+    STANDING_RECEIVER_HTTP_ROUTES.acknowledgement,
+    STANDING_RECEIVER_HTTP_ROUTES.claim,
+    STANDING_RECEIVER_HTTP_ROUTES.acknowledgement,
+  ]);
+  assert.deepEqual(requests[0].body, {
+    connector_token: CONNECTOR_TOKEN,
+    claim_token: claimTokens[0],
+  });
+  assert.deepEqual(requests[1].body, {
+    connector_token: CONNECTOR_TOKEN,
+    delivery_id: "delivery_standing_1",
+    lease_token: claimTokens[0],
+    effect_token: "effect_token_1",
+  });
+});
+
+test("Local Connector fails closed on unsupported or mismatched protocol responses", async (t) => {
+  assert.throws(
+    () => client("https://receiver.example", { protocolVersion: null }),
+    { code: "connector_protocol_version_unsupported" },
+  );
+  assert.throws(
+    () => client("https://receiver.example", { protocolVersion: "0.3" }),
+    { code: "connector_protocol_version_unsupported" },
+  );
+  assert.throws(
+    () => client("https://receiver.example", { protocolVersion: "toString" }),
+    { code: "connector_protocol_version_unsupported" },
+  );
+  const responses = [
+    leaseResult(),
+    {
+      error: { code: "activation_in_progress", retryable: true },
+    },
+    {
+      error: { code: "activation_in_progress" },
+    },
+    {
+      error: { code: "grant_revoked", retryable: false },
+    },
+    {
+      error: { code: "activation_in_progress", retryable: true },
+    },
+  ];
+  const { origin } = await startServer(t, async (request, response) => {
+    await readRequest(request);
+    const value = responses.shift();
+    writeJson(response, value.error ? 409 : 200, value);
+  });
+  const standing = client(origin, { protocolVersion: STANDING_PROTOCOL_VERSION });
+  await assert.rejects(
+    standing.claimDelivery({ claimToken: CLAIM_TOKEN }),
+    { code: "connector_response_invalid" },
+  );
+  await assert.rejects(
+    standing.claimDelivery({ claimToken: CLAIM_TOKEN }),
+    { code: "activation_in_progress", statusCode: 409, retryable: true },
+  );
+  await assert.rejects(
+    standing.claimDelivery({ claimToken: CLAIM_TOKEN }),
+    { code: "connector_http_error", statusCode: 409 },
+  );
+  await assert.rejects(
+    standing.claimDelivery({ claimToken: CLAIM_TOKEN }),
+    { code: "grant_revoked", statusCode: 409, retryable: false },
+  );
+  await assert.rejects(
+    client(origin).claimDelivery({ claimToken: CLAIM_TOKEN }),
+    { code: "connector_http_error", statusCode: 409 },
+  );
+  assert.equal(responses.length, 0);
 });
 
 test("Local Connector treats 204 as no work and preserves bounded Receiver errors", async (t) => {

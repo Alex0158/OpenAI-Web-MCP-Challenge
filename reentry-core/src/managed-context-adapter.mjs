@@ -48,6 +48,12 @@ export function createManagedContextAdapter(options) {
   return Object.freeze({
     async activate(value) {
       const activation = validateAgentActivation(value);
+      if (activation.protocol_version !== PROTOCOL_VERSION) {
+        throw bindingError(
+          "managed_context_activation_version_invalid",
+          "Managed-context adapter does not support this activation protocol version",
+        );
+      }
       const now = readClock(clock);
       assertActivationLive(activation, now);
       const lookup = deepFreeze({

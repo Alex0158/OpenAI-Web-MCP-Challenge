@@ -6,6 +6,7 @@ import {
   AGENT_ACTIVATION_RESULT_TYPE,
   validateAgentActivation,
 } from "../../../reentry-core/src/agent-adapter.mjs";
+import { PROTOCOL_VERSION } from "../../../reentry-core/src/protocol.mjs";
 import {
   HOST_EFFECT_ATTESTATION_TYPE,
   HOST_EFFECT_OUTCOME,
@@ -113,10 +114,13 @@ export function createApplicationHost(options) {
     return Object.freeze({
       async activate(rawActivation) {
         const activation = validateAgentActivation(rawActivation);
+        if (activation.protocol_version !== PROTOCOL_VERSION) {
+          throw new TypeError("Application Host adapter supports protocol 0.1 only");
+        }
         await applyContinuation(activation);
         return {
           type: AGENT_ACTIVATION_RESULT_TYPE,
-          protocol_version: "0.1",
+          protocol_version: PROTOCOL_VERSION,
           delivery_id: activation.delivery_id,
           event_id: activation.event_id,
           attempt: activation.attempt,

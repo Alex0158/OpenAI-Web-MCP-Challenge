@@ -209,7 +209,7 @@ function runCodexExec({ executable, workingDirectory, prompt, timeoutMs, spawnCo
 function activationResult(activation, outcome, code, unavailableCapability) {
   return Object.freeze({
     type: AGENT_ACTIVATION_RESULT_TYPE,
-    protocol_version: "0.1",
+    protocol_version: activation.protocol_version,
     delivery_id: activation.delivery_id,
     event_id: activation.event_id,
     attempt: activation.attempt,

@@ -6,6 +6,7 @@ import {
   dispatchAgentActivation,
 } from "@webmcp-challenge/reentry-core/agent-adapter";
 import { createContinuationReceipt } from "@webmcp-challenge/reentry-core/protocol";
+import { createStandingContinuationReceipt } from "@webmcp-challenge/reentry-core/standing-protocol";
 import {
   createCodexQueueAdapter,
 } from "../src/codex-queue-adapter.mjs";
@@ -72,6 +73,29 @@ test("Codex process failure becomes an unknown activation and is not retried", a
   assert.equal(calls, 1);
 });
 
+test("v0.1 Codex queue adapter rejects v0.2 before binding or process effects", async () => {
+  let calls = 0;
+  const adapter = createCodexQueueAdapter({
+    threadId: "thread_preview_001",
+    clock: () => NOW,
+    spawnCommand() {
+      calls += 1;
+      throw new Error("standing activation must not reach the process driver");
+    },
+  });
+
+  const result = await dispatchAgentActivation({
+    adapter,
+    lease: standingDeliveryLease(),
+    now: NOW,
+    timeoutMs: 1_000,
+  });
+
+  assert.equal(result.outcome, "outcome_unknown");
+  assert.equal(result.code, "adapter_invocation_failed");
+  assert.equal(calls, 0);
+});
+
 test("Codex process timeout is killed and becomes an unknown activation", async () => {
   let killed = false;
   const adapter = createCodexQueueAdapter({
@@ -132,6 +156,45 @@ function deliveryLease() {
       occurred_at: "2026-08-31T12:00:00.000Z",
       canonical_url: "https://host.example/workflows/workflow_preview_001",
       instruction: "Review the approved workflow and prepare the next safe step.",
+    },
+    receipt,
+  };
+}
+
+function standingDeliveryLease() {
+  const leaseExpiresAt = "2026-08-31T12:05:00.000Z";
+  const receipt = createStandingContinuationReceipt({
+    type: "webmcp.continuation_receipt",
+    protocol_version: "0.2",
+    grant_id: "grant_standing_preview_001",
+    correlation_id: "correlation_standing_preview_001",
+    issuer_origin: "https://host.example",
+    workflow_id: "workflow_standing_preview_001",
+    event_type: "workflow.ready.standing",
+    canonical_url: "https://host.example/workflows/workflow_standing_preview_001",
+    expires_at: leaseExpiresAt,
+    human_boundary: "explicit_receiver_consent",
+    continuation_mode: "open_canonical_page_read_current_state",
+    authorization_mode: "standing",
+    max_active_activations: 1,
+  });
+  return {
+    type: "webmcp.delivery_lease",
+    protocol_version: "0.2",
+    delivery_id: "delivery_standing_preview_001",
+    event_id: "event_standing_preview_001",
+    attempt: 1,
+    lease_token: Buffer.alloc(32, 2).toString("base64url"),
+    lease_expires_at: leaseExpiresAt,
+    continuation: {
+      correlation_id: "correlation_standing_preview_001",
+      workflow_id: "workflow_standing_preview_001",
+      event_type: "workflow.ready.standing",
+      event_sequence: 2,
+      state_version: 2,
+      occurred_at: "2026-08-31T12:00:00.000Z",
+      canonical_url: "https://host.example/workflows/workflow_standing_preview_001",
+      instruction: "Review the current workflow and prepare the next safe step.",
     },
     receipt,
   };

@@ -4,6 +4,12 @@ export const RECEIVER_HTTP_ROUTES = Object.freeze({
   acknowledgement: "/v0.1/delivery-acknowledgements",
 });
 
+export const STANDING_RECEIVER_HTTP_ROUTES = Object.freeze({
+  event: "/v0.2/events",
+  claim: "/v0.2/delivery-claims",
+  acknowledgement: "/v0.2/delivery-acknowledgements",
+});
+
 export const RECEIVER_HTTP_LIMITS = Object.freeze({
   requestBytes: 16 * 1_024,
   responseBytes: 32 * 1_024,

@@ -6,6 +6,11 @@ import {
   DELIVERY_STATE_SCHEMA_SQL,
   SCHEMA_SQL,
   SCHEMA_VERSION,
+  STANDING_AUTHORIZATION_SCHEMA_SQL,
+  STANDING_DELIVERY_DETAIL_SELECT,
+  STANDING_ISSUER_KEY_SCHEMA_SQL,
+  STANDING_KEY_FINGERPRINT_SCHEMA_SQL,
+  STANDING_KEY_PIN_TRIGGERS_SQL,
 } from "./sqlite-receiver-schema.mjs";
 
 const STORE_OPTION_FIELDS = Object.freeze(["filename"]);
@@ -296,6 +301,193 @@ export class SqliteReceiverStore {
     return result.changes === 1;
   }
 
+  getStandingChallengeByManifestId(manifestId) {
+    this.#assertOpen();
+    return plainRow(this.#statements.standingChallengeByManifestId.get(manifestId));
+  }
+
+  getStandingChallengeById(challengeId) {
+    this.#assertOpen();
+    return plainRow(this.#statements.standingChallengeById.get(challengeId));
+  }
+
+  insertStandingChallenge(challenge) {
+    this.#assertWriteTransaction();
+    const result = this.#statements.insertStandingChallenge.run(
+      challenge.challenge_id,
+      challenge.manifest_id,
+      challenge.manifest_json,
+      challenge.expected_origin,
+      challenge.effective_expires_at,
+      challenge.status,
+      challenge.decision_id,
+      challenge.decision_action,
+      challenge.subject_id,
+      challenge.created_at,
+      challenge.decided_at,
+    );
+    assertSingleChange(result, "insert standing challenge");
+  }
+
+  setStandingChallengeDecision(decision) {
+    this.#assertWriteTransaction();
+    const result = this.#statements.setStandingChallengeDecision.run(
+      decision.status,
+      decision.decision_id,
+      decision.decision_action,
+      decision.subject_id,
+      decision.decided_at,
+      decision.challenge_id,
+    );
+    return result.changes === 1;
+  }
+
+  getStandingGrantByChallengeId(challengeId) {
+    this.#assertOpen();
+    return plainRow(this.#statements.standingGrantByChallengeId.get(challengeId));
+  }
+
+  getStandingGrantByBindingId(bindingId) {
+    this.#assertOpen();
+    return plainRow(this.#statements.standingGrantByBindingId.get(bindingId));
+  }
+
+  insertStandingGrant(grant) {
+    this.#assertWriteTransaction();
+    const result = this.#statements.insertStandingGrant.run(
+      grant.grant_id,
+      grant.challenge_id,
+      grant.manifest_id,
+      grant.binding_id,
+      grant.subject_id,
+      grant.delivery_target_id,
+      grant.correlation_id,
+      grant.issuer_origin,
+      grant.issuer_key_id,
+      grant.issuer_key_fingerprint,
+      grant.workflow_type,
+      grant.workflow_id,
+      grant.event_type,
+      grant.canonical_url,
+      grant.expires_at,
+      grant.human_boundary,
+      grant.instruction,
+      grant.authorization_mode,
+      grant.max_active_activations,
+      grant.last_event_sequence,
+      grant.revoked_at,
+      grant.receipt_json,
+      grant.created_at,
+    );
+    assertSingleChange(result, "insert standing Grant");
+  }
+
+  advanceStandingGrantSequence(grantId, expectedSequence, nextSequence) {
+    this.#assertWriteTransaction();
+    const result = this.#statements.advanceStandingGrantSequence.run(
+      nextSequence,
+      grantId,
+      expectedSequence,
+    );
+    return result.changes === 1;
+  }
+
+  revokeStandingGrant(grantId, revokedAt) {
+    this.#assertWriteTransaction();
+    const result = this.#statements.revokeStandingGrant.run(revokedAt, grantId);
+    return result.changes === 1;
+  }
+
+  getStandingEventById(eventId) {
+    this.#assertOpen();
+    return plainRow(this.#statements.standingEventById.get(eventId));
+  }
+
+  insertStandingEvent(event) {
+    this.#assertWriteTransaction();
+    const result = this.#statements.insertStandingEvent.run(
+      event.event_id,
+      event.grant_id,
+      event.event_sequence,
+      event.canonical_body,
+      event.acceptance_json,
+      event.received_at,
+    );
+    assertSingleChange(result, "insert standing Event");
+  }
+
+  getOpenStandingDeliveryByGrantId(grantId) {
+    this.#assertOpen();
+    return plainRow(this.#statements.openStandingDeliveryByGrantId.get(grantId));
+  }
+
+  getStandingDeliveryByEventId(eventId) {
+    this.#assertOpen();
+    return plainRow(this.#statements.standingDeliveryByEventId.get(eventId));
+  }
+
+  getStandingDeliveryById(deliveryId) {
+    this.#assertOpen();
+    return plainRow(this.#statements.standingDeliveryById.get(deliveryId));
+  }
+
+  getStandingDeliveryByEffectId(effectId) {
+    this.#assertOpen();
+    return plainRow(this.#statements.standingDeliveryByEffectId.get(effectId));
+  }
+
+  getStandingDeliveryByLeaseTokenDigest(leaseTokenDigest) {
+    this.#assertOpen();
+    return plainRow(this.#statements.standingDeliveryByLeaseTokenDigest.get(leaseTokenDigest));
+  }
+
+  getNextStandingDeliveryByTarget(deliveryTargetId, now) {
+    this.#assertOpen();
+    return plainRow(this.#statements.nextStandingDeliveryByTarget.get(deliveryTargetId, now));
+  }
+
+  insertStandingDelivery(delivery) {
+    this.#assertWriteTransaction();
+    const result = this.#statements.insertStandingDelivery.run(
+      delivery.delivery_id,
+      delivery.event_id,
+      delivery.grant_id,
+      delivery.delivery_target_id,
+      delivery.status,
+      delivery.created_at,
+      delivery.updated_at,
+    );
+    assertSingleChange(result, "insert standing Delivery");
+  }
+
+  claimStandingDelivery(claim) {
+    this.#assertWriteTransaction();
+    const result = this.#statements.claimStandingDelivery.run(
+      claim.connector_id,
+      claim.lease_token_digest,
+      claim.leased_at,
+      claim.lease_expires_at,
+      claim.updated_at,
+      claim.delivery_id,
+    );
+    return result.changes === 1;
+  }
+
+  acknowledgeStandingDelivery(acknowledgement) {
+    this.#assertWriteTransaction();
+    const result = this.#statements.acknowledgeStandingDelivery.run(
+      acknowledgement.effect_id,
+      acknowledgement.effect_attestation_json,
+      acknowledgement.acknowledged_at,
+      acknowledgement.updated_at,
+      acknowledgement.delivery_id,
+      acknowledgement.connector_id,
+      acknowledgement.lease_token_digest,
+      acknowledgement.lease_expires_at,
+    );
+    return result.changes === 1;
+  }
+
   close() {
     if (this.#closed) return;
     if (this.#inTransaction) {
@@ -341,14 +533,37 @@ export class SqliteReceiverStore {
           FROM receiver_deliveries
         `);
         this.#database.exec(CONSENTED_INSTRUCTION_SCHEMA_SQL);
+        this.#database.exec(STANDING_AUTHORIZATION_SCHEMA_SQL);
       });
       return;
     }
     if (version === 2) {
+      this.#schemaTransaction("migration", () => {
+        this.#database.exec(CONSENTED_INSTRUCTION_SCHEMA_SQL);
+        this.#database.exec(STANDING_AUTHORIZATION_SCHEMA_SQL);
+      });
+      return;
+    }
+    if (version === 3) {
       this.#schemaTransaction(
         "migration",
-        () => this.#database.exec(CONSENTED_INSTRUCTION_SCHEMA_SQL),
+        () => this.#database.exec(STANDING_AUTHORIZATION_SCHEMA_SQL),
       );
+      return;
+    }
+    if (version === 4) {
+      this.#schemaTransaction("migration", () => {
+        this.#database.exec(STANDING_ISSUER_KEY_SCHEMA_SQL);
+        this.#database.exec(STANDING_KEY_FINGERPRINT_SCHEMA_SQL);
+        this.#database.exec(STANDING_KEY_PIN_TRIGGERS_SQL);
+      });
+      return;
+    }
+    if (version === 5) {
+      this.#schemaTransaction("migration", () => {
+        this.#database.exec(STANDING_KEY_FINGERPRINT_SCHEMA_SQL);
+        this.#database.exec(STANDING_KEY_PIN_TRIGGERS_SQL);
+      });
       return;
     }
     if (version !== 0) {
@@ -524,6 +739,104 @@ export class SqliteReceiverStore {
           AND current_connector_id = ?
           AND current_lease_token_digest = ?
           AND lease_expires_at = ?
+      `),
+      standingChallengeByManifestId: this.#database.prepare(
+        "SELECT * FROM receiver_standing_challenges WHERE manifest_id = ?",
+      ),
+      standingChallengeById: this.#database.prepare(
+        "SELECT * FROM receiver_standing_challenges WHERE challenge_id = ?",
+      ),
+      insertStandingChallenge: this.#database.prepare(`
+        INSERT INTO receiver_standing_challenges (
+          challenge_id, manifest_id, manifest_json, expected_origin, effective_expires_at,
+          status, decision_id, decision_action, subject_id, created_at, decided_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `),
+      setStandingChallengeDecision: this.#database.prepare(`
+        UPDATE receiver_standing_challenges
+        SET status = ?, decision_id = ?, decision_action = ?, subject_id = ?, decided_at = ?
+        WHERE challenge_id = ? AND status = 'pending'
+      `),
+      standingGrantByChallengeId: this.#database.prepare(
+        "SELECT * FROM receiver_standing_grants WHERE challenge_id = ?",
+      ),
+      standingGrantByBindingId: this.#database.prepare(
+        "SELECT * FROM receiver_standing_grants WHERE binding_id = ?",
+      ),
+      insertStandingGrant: this.#database.prepare(`
+        INSERT INTO receiver_standing_grants (
+          grant_id, challenge_id, manifest_id, binding_id, subject_id, delivery_target_id,
+          correlation_id, issuer_origin, issuer_key_id, issuer_key_fingerprint,
+          workflow_type, workflow_id, event_type,
+          canonical_url,
+          expires_at, human_boundary, instruction, authorization_mode, max_active_activations,
+          last_event_sequence, revoked_at, receipt_json, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `),
+      advanceStandingGrantSequence: this.#database.prepare(`
+        UPDATE receiver_standing_grants
+        SET last_event_sequence = ?
+        WHERE grant_id = ? AND last_event_sequence = ? AND revoked_at IS NULL
+      `),
+      revokeStandingGrant: this.#database.prepare(`
+        UPDATE receiver_standing_grants
+        SET revoked_at = ?
+        WHERE grant_id = ? AND revoked_at IS NULL
+      `),
+      standingEventById: this.#database.prepare(
+        "SELECT * FROM receiver_standing_events WHERE event_id = ?",
+      ),
+      insertStandingEvent: this.#database.prepare(`
+        INSERT INTO receiver_standing_events (
+          event_id, grant_id, event_sequence, canonical_body, acceptance_json, received_at
+        ) VALUES (?, ?, ?, ?, ?, ?)
+      `),
+      openStandingDeliveryByGrantId: this.#database.prepare(`
+        ${STANDING_DELIVERY_DETAIL_SELECT}
+        WHERE d.grant_id = ? AND d.status IN ('pending', 'leased')
+        ORDER BY d.created_at, d.delivery_id
+        LIMIT 1
+      `),
+      standingDeliveryByEventId: this.#database.prepare(`
+        ${STANDING_DELIVERY_DETAIL_SELECT}
+        WHERE d.event_id = ?
+      `),
+      standingDeliveryById: this.#database.prepare(`
+        ${STANDING_DELIVERY_DETAIL_SELECT}
+        WHERE d.delivery_id = ?
+      `),
+      standingDeliveryByEffectId: this.#database.prepare(`
+        ${STANDING_DELIVERY_DETAIL_SELECT}
+        WHERE d.effect_id = ?
+      `),
+      standingDeliveryByLeaseTokenDigest: this.#database.prepare(`
+        ${STANDING_DELIVERY_DETAIL_SELECT}
+        WHERE d.lease_token_digest = ?
+      `),
+      nextStandingDeliveryByTarget: this.#database.prepare(`
+        ${STANDING_DELIVERY_DETAIL_SELECT}
+        WHERE d.delivery_target_id = ? AND d.status = 'pending'
+          AND g.revoked_at IS NULL AND g.expires_at > ?
+        ORDER BY d.created_at, d.delivery_id
+        LIMIT 1
+      `),
+      insertStandingDelivery: this.#database.prepare(`
+        INSERT INTO receiver_standing_deliveries (
+          delivery_id, event_id, grant_id, delivery_target_id, status, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+      `),
+      claimStandingDelivery: this.#database.prepare(`
+        UPDATE receiver_standing_deliveries
+        SET status = 'leased', connector_id = ?, lease_token_digest = ?, leased_at = ?,
+            lease_expires_at = ?, updated_at = ?
+        WHERE delivery_id = ? AND status = 'pending'
+      `),
+      acknowledgeStandingDelivery: this.#database.prepare(`
+        UPDATE receiver_standing_deliveries
+        SET status = 'acknowledged', effect_id = ?, effect_attestation_json = ?,
+            acknowledged_at = ?, updated_at = ?
+        WHERE delivery_id = ? AND status = 'leased' AND connector_id = ?
+          AND lease_token_digest = ? AND lease_expires_at = ?
       `),
     };
   }

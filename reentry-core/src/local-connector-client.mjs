@@ -7,6 +7,10 @@ import {
   validateContinuationReceipt,
 } from "./protocol.mjs";
 import {
+  STANDING_PROTOCOL_VERSION,
+  validateStandingContinuationReceipt,
+} from "./standing-protocol.mjs";
+import {
   DELIVERY_ACKNOWLEDGEMENT_TYPE,
   DELIVERY_LEASE_TYPE,
 } from "./receiver-delivery.mjs";
@@ -14,9 +18,16 @@ import {
   RECEIVER_HTTP_CONTENT_TYPE,
   RECEIVER_HTTP_LIMITS,
   RECEIVER_HTTP_ROUTES,
+  STANDING_RECEIVER_HTTP_ROUTES,
 } from "./receiver-http-contract.mjs";
 
 const CLIENT_OPTION_FIELDS = Object.freeze([
+  "baseUrl",
+  "connectorToken",
+  "requestTimeoutMs",
+  "protocolVersion",
+]);
+const REQUIRED_CLIENT_OPTION_FIELDS = Object.freeze([
   "baseUrl",
   "connectorToken",
   "requestTimeoutMs",
@@ -61,6 +72,7 @@ const ACKNOWLEDGEMENT_FIELDS = Object.freeze([
 ]);
 const ERROR_RESPONSE_FIELDS = Object.freeze(["error"]);
 const ERROR_FIELDS = Object.freeze(["code"]);
+const RETRYABLE_ERROR_FIELDS = Object.freeze(["code", "retryable"]);
 const IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$/;
 const ERROR_CODE_PATTERN = /^[a-z][a-z0-9_]{0,95}$/;
 const CLAIM_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
@@ -69,14 +81,40 @@ const CONTENT_TYPE_PATTERN = /^application\/json(?:\s*;\s*charset=utf-8)?$/i;
 const MAX_OPAQUE_TOKEN_BYTES = 4 * 1_024;
 const MIN_REQUEST_TIMEOUT_MS = 100;
 const MAX_REQUEST_TIMEOUT_MS = 60 * 1_000;
+const PROTOCOL_PROFILES = Object.freeze({
+  [PROTOCOL_VERSION]: Object.freeze({
+    protocolVersion: PROTOCOL_VERSION,
+    routes: RECEIVER_HTTP_ROUTES,
+    validateReceipt: validateContinuationReceipt,
+    validateSequence(value) {
+      return value === 1;
+    },
+    supportsRetryableError: false,
+  }),
+  [STANDING_PROTOCOL_VERSION]: Object.freeze({
+    protocolVersion: STANDING_PROTOCOL_VERSION,
+    routes: STANDING_RECEIVER_HTTP_ROUTES,
+    validateReceipt: validateStandingContinuationReceipt,
+    validateSequence(value) {
+      return Number.isSafeInteger(value) && value > 0;
+    },
+    supportsRetryableError: true,
+  }),
+});
 
 export class LocalConnectorClient {
   #baseUrl;
   #connectorToken;
   #requestTimeoutMs;
+  #protocolProfile;
 
   constructor(options) {
-    requireClientInput(options, CLIENT_OPTION_FIELDS, "Local Connector client options");
+    requireClientInput(
+      options,
+      CLIENT_OPTION_FIELDS,
+      "Local Connector client options",
+      REQUIRED_CLIENT_OPTION_FIELDS,
+    );
     this.#baseUrl = requireReceiverOrigin(options.baseUrl);
     this.#connectorToken = requireOpaqueToken(
       options.connectorToken,
@@ -97,12 +135,15 @@ export class LocalConnectorClient {
       throw new TypeError("Local Connector client requires platform fetch");
     }
     this.#requestTimeoutMs = options.requestTimeoutMs;
+    this.#protocolProfile = requireProtocolProfile(
+      options.protocolVersion === undefined ? PROTOCOL_VERSION : options.protocolVersion,
+    );
   }
 
   async claimDelivery(input) {
     requireClientInput(input, CLAIM_INPUT_FIELDS, "Delivery claim input");
     const claimToken = requireClaimToken(input.claimToken, "Delivery claim token");
-    const response = await this.#post(RECEIVER_HTTP_ROUTES.claim, {
+    const response = await this.#post(this.#protocolProfile.routes.claim, {
       connector_token: this.#connectorToken,
       claim_token: claimToken,
     });
@@ -111,10 +152,10 @@ export class LocalConnectorClient {
       return null;
     }
     if (response.status !== 200) {
-      throw await parseHttpFailure(response);
+      throw await parseHttpFailure(response, this.#protocolProfile);
     }
     const value = await parseCanonicalJsonResponse(response);
-    return normalizeClaimResult(value, claimToken, Date.now());
+    return normalizeClaimResult(value, claimToken, Date.now(), this.#protocolProfile);
   }
 
   async acknowledgeDelivery(input) {
@@ -130,17 +171,17 @@ export class LocalConnectorClient {
       "Host-effect token",
       "host_effect_token_invalid",
     );
-    const response = await this.#post(RECEIVER_HTTP_ROUTES.acknowledgement, {
+    const response = await this.#post(this.#protocolProfile.routes.acknowledgement, {
       connector_token: this.#connectorToken,
       delivery_id: deliveryId,
       lease_token: leaseToken,
       effect_token: effectToken,
     });
     if (response.status !== 200) {
-      throw await parseHttpFailure(response);
+      throw await parseHttpFailure(response, this.#protocolProfile);
     }
     const value = await parseCanonicalJsonResponse(response);
-    return normalizeAcknowledgement(value, deliveryId);
+    return normalizeAcknowledgement(value, deliveryId, this.#protocolProfile);
   }
 
   async #post(path, body) {
@@ -192,15 +233,16 @@ export class LocalConnectorClient {
 }
 
 export class ConnectorTransportError extends Error {
-  constructor(code, message, { statusCode, cause } = {}) {
+  constructor(code, message, { statusCode, retryable, cause } = {}) {
     super(message, cause === undefined ? undefined : { cause });
     this.name = "ConnectorTransportError";
     this.code = code;
     this.statusCode = statusCode;
+    if (retryable !== undefined) this.retryable = retryable;
   }
 }
 
-function requireClientInput(value, expectedFields, label) {
+function requireClientInput(value, allowedFields, label, requiredFields = allowedFields) {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw clientFailure("connector_input_invalid", `${label} must be an object`);
   }
@@ -215,13 +257,25 @@ function requireClientInput(value, expectedFields, label) {
     }
   }
   const actual = Object.keys(value).sort();
-  const expected = [...expectedFields].sort();
   if (
-    actual.length !== expected.length ||
-    actual.some((field, index) => field !== expected[index])
+    actual.some((field) => !allowedFields.includes(field)) ||
+    requiredFields.some((field) => !actual.includes(field))
   ) {
     throw clientFailure("connector_input_invalid", `${label} fields are invalid`);
   }
+}
+
+function requireProtocolProfile(value) {
+  const profile = typeof value === "string" && Object.hasOwn(PROTOCOL_PROFILES, value)
+    ? PROTOCOL_PROFILES[value]
+    : undefined;
+  if (!profile) {
+    throw clientFailure(
+      "connector_protocol_version_unsupported",
+      "Local Connector protocol version is unsupported",
+    );
+  }
+  return profile;
 }
 
 function requireReceiverOrigin(value) {
@@ -284,7 +338,7 @@ function requireIdentifier(value, label, code = "connector_response_invalid") {
   return value;
 }
 
-function normalizeClaimResult(value, expectedToken, nowMs) {
+function normalizeClaimResult(value, expectedToken, nowMs, profile) {
   try {
     requireResponseRecord(value, CLAIM_RESULT_FIELDS);
     if (typeof value.duplicate !== "boolean") throw invalidResponse();
@@ -292,7 +346,7 @@ function normalizeClaimResult(value, expectedToken, nowMs) {
     const lease = value.lease;
     if (
       lease.type !== DELIVERY_LEASE_TYPE ||
-      lease.protocol_version !== PROTOCOL_VERSION ||
+      lease.protocol_version !== profile.protocolVersion ||
       lease.lease_token !== expectedToken ||
       !Number.isSafeInteger(lease.attempt) ||
       lease.attempt < 1 ||
@@ -302,9 +356,9 @@ function normalizeClaimResult(value, expectedToken, nowMs) {
     }
     const leaseExpiresAt = requireTimestamp(lease.lease_expires_at);
     if (leaseExpiresAt <= nowMs) throw invalidResponse();
-    const receipt = validateContinuationReceipt(lease.receipt);
+    const receipt = profile.validateReceipt(lease.receipt);
     if (leaseExpiresAt > Date.parse(receipt.expires_at)) throw invalidResponse();
-    const continuation = normalizeContinuation(lease.continuation);
+    const continuation = normalizeContinuation(lease.continuation, profile);
     if (
       continuation.correlation_id !== receipt.correlation_id ||
       continuation.workflow_id !== receipt.workflow_id ||
@@ -317,7 +371,7 @@ function normalizeClaimResult(value, expectedToken, nowMs) {
       duplicate: value.duplicate,
       lease: {
         type: DELIVERY_LEASE_TYPE,
-        protocol_version: PROTOCOL_VERSION,
+        protocol_version: profile.protocolVersion,
         delivery_id: requireIdentifier(lease.delivery_id, "lease delivery_id"),
         event_id: requireIdentifier(lease.event_id, "lease event_id"),
         attempt: lease.attempt,
@@ -333,10 +387,10 @@ function normalizeClaimResult(value, expectedToken, nowMs) {
   }
 }
 
-function normalizeContinuation(value) {
+function normalizeContinuation(value, profile) {
   requireResponseRecord(value, CONTINUATION_FIELDS);
   if (
-    value.event_sequence !== 1 ||
+    !profile.validateSequence(value.event_sequence) ||
     !Number.isSafeInteger(value.state_version) ||
     value.state_version < 0
   ) {
@@ -347,7 +401,7 @@ function normalizeContinuation(value) {
     correlation_id: requireIdentifier(value.correlation_id, "continuation correlation_id"),
     workflow_id: requireIdentifier(value.workflow_id, "continuation workflow_id"),
     event_type: requireIdentifier(value.event_type, "continuation event_type"),
-    event_sequence: 1,
+    event_sequence: value.event_sequence,
     state_version: value.state_version,
     occurred_at: value.occurred_at,
     canonical_url: value.canonical_url,
@@ -368,12 +422,12 @@ function requireInstruction(value) {
   return value;
 }
 
-function normalizeAcknowledgement(value, expectedDeliveryId) {
+function normalizeAcknowledgement(value, expectedDeliveryId, profile) {
   try {
     requireResponseRecord(value, ACKNOWLEDGEMENT_FIELDS);
     if (
       value.type !== DELIVERY_ACKNOWLEDGEMENT_TYPE ||
-      value.protocol_version !== PROTOCOL_VERSION ||
+      value.protocol_version !== profile.protocolVersion ||
       value.delivery_id !== expectedDeliveryId ||
       value.acknowledged !== true ||
       typeof value.duplicate !== "boolean" ||
@@ -383,7 +437,7 @@ function normalizeAcknowledgement(value, expectedDeliveryId) {
     }
     return deepFreeze({
       type: DELIVERY_ACKNOWLEDGEMENT_TYPE,
-      protocol_version: PROTOCOL_VERSION,
+      protocol_version: profile.protocolVersion,
       delivery_id: requireIdentifier(value.delivery_id, "acknowledgement delivery_id"),
       event_id: requireIdentifier(value.event_id, "acknowledgement event_id"),
       effect_id: requireIdentifier(value.effect_id, "acknowledgement effect_id"),
@@ -445,18 +499,30 @@ async function parseCanonicalJsonResponse(response) {
   return value;
 }
 
-async function parseHttpFailure(response) {
+async function parseHttpFailure(response, profile) {
   try {
     const value = await parseCanonicalJsonResponse(response);
     requireResponseRecord(value, ERROR_RESPONSE_FIELDS);
-    requireResponseRecord(value.error, ERROR_FIELDS);
+    const errorFields = profile.supportsRetryableError
+      ? RETRYABLE_ERROR_FIELDS
+      : ERROR_FIELDS;
+    requireResponseRecord(value.error, errorFields);
     if (typeof value.error.code !== "string" || !ERROR_CODE_PATTERN.test(value.error.code)) {
+      throw invalidResponse();
+    }
+    const retryable = profile.supportsRetryableError ? value.error.retryable : undefined;
+    if (
+      retryable !== undefined &&
+      (!profile.supportsRetryableError || typeof retryable !== "boolean")
+    ) {
       throw invalidResponse();
     }
     return clientFailure(
       value.error.code,
       "Cloud Receiver rejected the Local Connector request",
       response.status,
+      undefined,
+      retryable,
     );
   } catch (error) {
     if (error instanceof ConnectorTransportError && error.code !== "connector_response_invalid") {
@@ -534,8 +600,8 @@ function invalidResponse(cause) {
   );
 }
 
-function clientFailure(code, message, statusCode, cause) {
-  return new ConnectorTransportError(code, message, { statusCode, cause });
+function clientFailure(code, message, statusCode, cause, retryable) {
+  return new ConnectorTransportError(code, message, { statusCode, cause, retryable });
 }
 
 function deepFreeze(value) {

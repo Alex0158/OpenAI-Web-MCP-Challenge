@@ -62,6 +62,69 @@ test("Agent boundary derives one immutable credential-free activation", async ()
   assert.equal(Object.isFrozen(result), true);
 });
 
+test("Agent boundary preserves two bounded standing activations", async () => {
+  const activations = [];
+  for (const eventSequence of [1, 2]) {
+    const result = await dispatchAgentActivation({
+      adapter: {
+        activate(activation) {
+          activations.push(activation);
+          return activationResult(activation);
+        },
+      },
+      lease: standingDeliveryLease(eventSequence),
+      now: NOW,
+      timeoutMs: 1_000,
+    });
+    assert.equal(result.protocol_version, "0.2");
+    assert.equal(result.event_id, `event_standing_${eventSequence}`);
+  }
+
+  assert.deepEqual(activations.map((activation) => ({
+    protocol_version: activation.protocol_version,
+    event_sequence: activation.continuation.event_sequence,
+    authorization_mode: activation.receipt.authorization_mode,
+    max_active_activations: activation.receipt.max_active_activations,
+  })), [
+    {
+      protocol_version: "0.2",
+      event_sequence: 1,
+      authorization_mode: "standing",
+      max_active_activations: 1,
+    },
+    {
+      protocol_version: "0.2",
+      event_sequence: 2,
+      authorization_mode: "standing",
+      max_active_activations: 1,
+    },
+  ]);
+  assert.equal("lease_token" in activations[0], false);
+  assert.equal(Object.isFrozen(activations[1].receipt), true);
+
+  assert.throws(
+    () => createAgentActivation({
+      lease: standingDeliveryLease(0),
+      now: NOW,
+    }),
+    { code: "agent_activation_continuation_invalid" },
+  );
+  assert.throws(
+    () => createAgentActivation({
+      lease: deliveryLease({ continuation: { event_sequence: 2 } }),
+      now: NOW,
+    }),
+    { code: "agent_activation_continuation_invalid" },
+  );
+  assert.throws(
+    () => createAgentActivation({
+      lease: deliveryLease({ lease: { protocol_version: "toString" } }),
+      now: NOW,
+    }),
+    { code: "agent_activation_lease_invalid" },
+  );
+});
+
 test("Agent boundary rejects stale, mismatched, extended, and accessor input before dispatch", async () => {
   const invalid = [
     {
@@ -326,13 +389,50 @@ function deliveryLease({ lease = {}, continuation = {}, receipt = {} } = {}) {
   };
 }
 
+function standingDeliveryLease(eventSequence) {
+  return {
+    type: "webmcp.delivery_lease",
+    protocol_version: "0.2",
+    delivery_id: `delivery_standing_${eventSequence}`,
+    event_id: `event_standing_${eventSequence}`,
+    attempt: 1,
+    lease_token: CLAIM_TOKEN,
+    lease_expires_at: "2026-08-31T12:01:00.000Z",
+    continuation: {
+      correlation_id: "correlation_standing_001",
+      workflow_id: "workflow_standing_001",
+      event_type: "idle_soldier_available",
+      event_sequence: eventSequence,
+      state_version: eventSequence,
+      occurred_at: "2026-08-31T11:59:00.000Z",
+      canonical_url: "https://host.example/workflows/workflow_standing_001",
+      instruction: "Review current idle soldiers and prepare the next safe assignment.",
+    },
+    receipt: {
+      type: "webmcp.continuation_receipt",
+      protocol_version: "0.2",
+      grant_id: "grant_standing_001",
+      correlation_id: "correlation_standing_001",
+      issuer_origin: "https://host.example",
+      workflow_id: "workflow_standing_001",
+      event_type: "idle_soldier_available",
+      canonical_url: "https://host.example/workflows/workflow_standing_001",
+      expires_at: "2026-08-31T13:00:00.000Z",
+      human_boundary: "confirm_irreversible_spend",
+      continuation_mode: "open_canonical_page_read_current_state",
+      authorization_mode: "standing",
+      max_active_activations: 1,
+    },
+  };
+}
+
 function activationResult(activation, overrides = {}) {
   const capability = Object.hasOwn(overrides, "capability")
     ? overrides.capability
     : null;
   return {
     type: AGENT_ACTIVATION_RESULT_TYPE,
-    protocol_version: "0.1",
+    protocol_version: activation.protocol_version,
     delivery_id: activation.delivery_id,
     event_id: activation.event_id,
     attempt: activation.attempt,

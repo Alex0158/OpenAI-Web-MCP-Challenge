@@ -993,7 +993,7 @@ const unsupportedAdapter = {
   activate(activation) {
     return {
       type: "webmcp.agent_activation_result",
-      protocol_version: "0.1",
+      protocol_version: activation.protocol_version,
       delivery_id: activation.delivery_id,
       event_id: activation.event_id,
       attempt: activation.attempt,

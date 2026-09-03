@@ -46,6 +46,32 @@ test("factory options and direct activation remain exact before private lookup",
   assert.equal(authorityCalls, 0);
 });
 
+test("v0.1 managed context rejects a standing activation before lookup or driver effects", async () => {
+  let authorityCalls = 0;
+  let driverCalls = 0;
+  const adapter = createManagedContextAdapter({
+    adapterId: ADAPTER_ID,
+    bindingAuthority: {
+      resolveBinding() {
+        authorityCalls += 1;
+        return bindingValue();
+      },
+    },
+    activateBoundContext() {
+      driverCalls += 1;
+    },
+    clock: () => NOW,
+  });
+  const activation = createAgentActivation({ lease: standingDeliveryLease(), now: NOW });
+
+  await assert.rejects(
+    adapter.activate(activation),
+    { code: "managed_context_activation_version_invalid" },
+  );
+  assert.equal(authorityCalls, 0);
+  assert.equal(driverCalls, 0);
+});
+
 test("active private binding resolves only by Grant and reaches one driver without disclosure", async () => {
   const authorityInputs = [];
   const driverInputs = [];
@@ -342,6 +368,34 @@ function deliveryLease() {
       expires_at: "2026-08-31T13:00:00.000Z",
       human_boundary: "explicit_human_commit",
       continuation_mode: "open_canonical_page_read_current_state",
+    },
+  };
+}
+
+function standingDeliveryLease() {
+  return {
+    ...deliveryLease(),
+    protocol_version: "0.2",
+    delivery_id: "delivery_standing_001",
+    event_id: "event_standing_001",
+    continuation: {
+      ...deliveryLease().continuation,
+      correlation_id: "correlation_standing_001",
+      workflow_id: "workflow_standing_001",
+      event_type: "workflow.ready.standing",
+      event_sequence: 2,
+      canonical_url: "https://host.example/workflows/workflow_standing_001",
+    },
+    receipt: {
+      ...deliveryLease().receipt,
+      protocol_version: "0.2",
+      grant_id: "grant_standing_001",
+      correlation_id: "correlation_standing_001",
+      workflow_id: "workflow_standing_001",
+      event_type: "workflow.ready.standing",
+      canonical_url: "https://host.example/workflows/workflow_standing_001",
+      authorization_mode: "standing",
+      max_active_activations: 1,
     },
   };
 }

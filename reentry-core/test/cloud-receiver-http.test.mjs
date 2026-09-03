@@ -5,10 +5,18 @@ import test from "node:test";
 import {
   RECEIVER_HTTP_LIMITS,
   RECEIVER_HTTP_ROUTES,
+  STANDING_RECEIVER_HTTP_ROUTES,
   createCloudReceiverHttpHandler,
+  createStandingCloudReceiverHttpHandler,
 } from "../src/cloud-receiver-http.mjs";
-import { ReceiverAuthorizationError } from "../src/receiver-core.mjs";
-import { canonicalJson } from "../src/protocol.mjs";
+import {
+  ReceiverAuthorizationError,
+  ReceiverConflictError,
+} from "../src/receiver-core.mjs";
+import {
+  ProtocolValidationError,
+  canonicalJson,
+} from "../src/protocol.mjs";
 
 function createReceiver(overrides = {}) {
   const calls = [];
@@ -30,8 +38,8 @@ function createReceiver(overrides = {}) {
   };
 }
 
-async function startAdapter(t, receiver) {
-  const server = createServer(createCloudReceiverHttpHandler({ receiver }));
+async function startAdapter(t, receiver, createHandler = createCloudReceiverHttpHandler) {
+  const server = createServer(createHandler({ receiver }));
   await new Promise((resolve, reject) => {
     server.once("error", reject);
     server.listen(0, "127.0.0.1", resolve);
@@ -185,6 +193,111 @@ test("Cloud Receiver HTTP maps exact event, claim, no-work, and acknowledgement 
       },
     },
   ]);
+});
+
+test("standing HTTP maps exact v0.2 routes without widening v0.1 routing", async (t) => {
+  const receiver = createReceiver();
+  const standingOrigin = await startAdapter(t, receiver, createStandingCloudReceiverHttpHandler);
+  const legacyOrigin = await startAdapter(t, createReceiver());
+
+  const standingClaim = await post(standingOrigin, STANDING_RECEIVER_HTTP_ROUTES.claim, {
+    connector_token: "connector_secret",
+    claim_token: "claim_secret",
+  });
+  assert.equal(standingClaim.status, 200);
+  assert.deepEqual((await readJson(standingClaim)).value, {
+    duplicate: false,
+    lease: { delivery_id: "delivery_1" },
+  });
+
+  const legacyRouteOnStanding = await post(standingOrigin, RECEIVER_HTTP_ROUTES.claim, {
+    connector_token: "connector_secret",
+    claim_token: "claim_secret",
+  });
+  assert.equal(legacyRouteOnStanding.status, 404);
+  assert.deepEqual((await readJson(legacyRouteOnStanding)).value, {
+    error: { code: "http_route_not_found", retryable: false },
+  });
+  const standingRouteOnLegacy = await post(legacyOrigin, STANDING_RECEIVER_HTTP_ROUTES.claim, {
+    connector_token: "connector_secret",
+    claim_token: "claim_secret",
+  });
+  assert.equal(standingRouteOnLegacy.status, 404);
+  assert.deepEqual(receiver.calls, [
+    {
+      method: "claimDelivery",
+      value: { connectorToken: "connector_secret", claimToken: "claim_secret" },
+    },
+  ]);
+});
+
+test("standing HTTP exposes only a bounded retryable marker while v0.1 stays exact", async (t) => {
+  function retryableReceiver() {
+    return createReceiver({
+      acceptEvent() {
+        const error = new ReceiverConflictError(
+          "activation_in_progress",
+          "private standing activation detail",
+        );
+        Object.defineProperty(error, "retryable", { value: true, enumerable: true });
+        throw error;
+      },
+    });
+  }
+  const standingOrigin = await startAdapter(
+    t,
+    retryableReceiver(),
+    createStandingCloudReceiverHttpHandler,
+  );
+  const legacyOrigin = await startAdapter(t, retryableReceiver());
+  const envelope = { body: "event-body", headers: {} };
+
+  const standing = await post(standingOrigin, STANDING_RECEIVER_HTTP_ROUTES.event, envelope);
+  assert.equal(standing.status, 409);
+  const standingBody = await readJson(standing);
+  assert.deepEqual(standingBody.value, {
+    error: { code: "activation_in_progress", retryable: true },
+  });
+  assert.equal(standingBody.text.includes("private standing activation detail"), false);
+
+  const legacy = await post(legacyOrigin, RECEIVER_HTTP_ROUTES.event, envelope);
+  assert.equal(legacy.status, 409);
+  assert.deepEqual((await readJson(legacy)).value, {
+    error: { code: "activation_in_progress" },
+  });
+});
+
+test("standing HTTP preserves typed protocol failures without changing v0.1 mapping", async (t) => {
+  const receiver = createReceiver({
+    acceptEvent() {
+      throw new ProtocolValidationError(
+        "event_body_noncanonical",
+        "private canonicalization detail",
+        422,
+      );
+    },
+  });
+  const standingOrigin = await startAdapter(
+    t,
+    receiver,
+    createStandingCloudReceiverHttpHandler,
+  );
+  const legacyOrigin = await startAdapter(t, receiver);
+  const envelope = { body: "event-body", headers: {} };
+
+  const standing = await post(standingOrigin, STANDING_RECEIVER_HTTP_ROUTES.event, envelope);
+  assert.equal(standing.status, 422);
+  const standingBody = await readJson(standing);
+  assert.deepEqual(standingBody.value, {
+    error: { code: "event_body_noncanonical", retryable: false },
+  });
+  assert.equal(standingBody.text.includes("private canonicalization detail"), false);
+
+  const legacy = await post(legacyOrigin, RECEIVER_HTTP_ROUTES.event, envelope);
+  assert.equal(legacy.status, 500);
+  assert.deepEqual((await readJson(legacy)).value, {
+    error: { code: "receiver_internal_error" },
+  });
 });
 
 test("Cloud Receiver HTTP rejects malformed transport input before Core invocation", async (t) => {

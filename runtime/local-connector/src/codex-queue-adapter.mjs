@@ -5,6 +5,7 @@ import {
   validateAgentActivation,
 } from "@webmcp-challenge/reentry-core/agent-adapter";
 import { createManagedContextAdapter } from "@webmcp-challenge/reentry-core/managed-context-adapter";
+import { PROTOCOL_VERSION } from "@webmcp-challenge/reentry-core/protocol";
 
 export const CODEX_QUEUE_ADAPTER_ID = "codex_queue_local";
 export const DEFAULT_CODEX_EXECUTABLE = "/Applications/ChatGPT.app/Contents/Resources/codex";
@@ -72,6 +73,9 @@ export function createCodexQueueAdapter(options) {
   return Object.freeze({
     async activate(rawActivation) {
       const activation = validateAgentActivation(rawActivation);
+      if (activation.protocol_version !== PROTOCOL_VERSION) {
+        throw new TypeError("Codex queue adapter supports protocol 0.1 only");
+      }
       const now = readClock(clock);
       if (
         Date.parse(activation.lease_expires_at) <= now.getTime() ||
@@ -84,7 +88,7 @@ export function createCodexQueueAdapter(options) {
       if (!bindingsByGrant.has(grantId)) {
         bindingsByGrant.set(grantId, {
           type: "webmcp.managed_context_binding",
-          protocol_version: "0.1",
+          protocol_version: PROTOCOL_VERSION,
           grant_id: grantId,
           adapter_id: CODEX_QUEUE_ADAPTER_ID,
           binding_ref: threadId,
@@ -158,7 +162,7 @@ function queueCodexMessage({ executable, threadId, message, timeoutMs, spawnComm
 function activationResult(activation, outcome, code, unavailableCapability) {
   return Object.freeze({
     type: AGENT_ACTIVATION_RESULT_TYPE,
-    protocol_version: "0.1",
+    protocol_version: PROTOCOL_VERSION,
     delivery_id: activation.delivery_id,
     event_id: activation.event_id,
     attempt: activation.attempt,

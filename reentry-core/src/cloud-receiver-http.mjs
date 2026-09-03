@@ -1,6 +1,10 @@
 import { TextDecoder } from "node:util";
 
-import { canonicalJson } from "./protocol.mjs";
+import {
+  ProtocolAuthenticationError,
+  ProtocolValidationError,
+  canonicalJson,
+} from "./protocol.mjs";
 import {
   ReceiverAuthorizationError,
   ReceiverConflictError,
@@ -15,9 +19,14 @@ import {
   RECEIVER_HTTP_CONTENT_TYPE,
   RECEIVER_HTTP_LIMITS,
   RECEIVER_HTTP_ROUTES,
+  STANDING_RECEIVER_HTTP_ROUTES,
 } from "./receiver-http-contract.mjs";
 
-export { RECEIVER_HTTP_LIMITS, RECEIVER_HTTP_ROUTES } from "./receiver-http-contract.mjs";
+export {
+  RECEIVER_HTTP_LIMITS,
+  RECEIVER_HTTP_ROUTES,
+  STANDING_RECEIVER_HTTP_ROUTES,
+} from "./receiver-http-contract.mjs";
 
 const HANDLER_OPTION_FIELDS = Object.freeze(["receiver"]);
 const RECEIVER_METHODS = Object.freeze([
@@ -25,7 +34,6 @@ const RECEIVER_METHODS = Object.freeze([
   "claimDelivery",
   "acknowledgeDelivery",
 ]);
-const ROUTE_PATHS = new Set(Object.values(RECEIVER_HTTP_ROUTES));
 const CORE_ERROR_TYPES = Object.freeze([
   ReceiverValidationError,
   ReceiverAuthorizationError,
@@ -34,28 +42,55 @@ const CORE_ERROR_TYPES = Object.freeze([
   ReceiverNotFoundError,
   ReceiverInvariantError,
 ]);
+const STANDING_ERROR_TYPES = Object.freeze([
+  ...CORE_ERROR_TYPES,
+  ProtocolValidationError,
+  ProtocolAuthenticationError,
+]);
 const ERROR_CODE_PATTERN = /^[a-z][a-z0-9_]{0,95}$/;
 const CONTENT_TYPE_PATTERN = /^application\/json(?:\s*;\s*charset=utf-8)?$/i;
 
 export function createCloudReceiverHttpHandler(options) {
+  return createVersionedCloudReceiverHttpHandler(options, {
+    routes: RECEIVER_HTTP_ROUTES,
+    exposeRetryable: false,
+    errorTypes: CORE_ERROR_TYPES,
+  });
+}
+
+export function createStandingCloudReceiverHttpHandler(options) {
+  return createVersionedCloudReceiverHttpHandler(options, {
+    routes: STANDING_RECEIVER_HTTP_ROUTES,
+    exposeRetryable: true,
+    errorTypes: STANDING_ERROR_TYPES,
+  });
+}
+
+function createVersionedCloudReceiverHttpHandler(options, profile) {
   requireExactRecord(options, HANDLER_OPTION_FIELDS, "Cloud Receiver HTTP options");
   requireReceiver(options.receiver);
+  const routePaths = new Set(Object.values(profile.routes));
 
   return function cloudReceiverHttpHandler(request, response) {
-    return handleRequest(options.receiver, request, response).catch((error) => {
+    return handleRequest(options.receiver, request, response, profile.routes, routePaths).catch((error) => {
       if (response.destroyed) return;
       if (response.headersSent) {
         response.destroy();
         return;
       }
-      const failure = classifyFailure(error);
-      writeJson(response, failure.statusCode, { error: { code: failure.code } }, failure.headers);
+      const failure = classifyFailure(error, profile.errorTypes);
+      writeJson(response, failure.statusCode, {
+        error: {
+          code: failure.code,
+          ...(profile.exposeRetryable ? { retryable: failure.retryable === true } : {}),
+        },
+      }, failure.headers);
     });
   };
 }
 
-async function handleRequest(receiver, request, response) {
-  const route = parseRoute(request.url);
+async function handleRequest(receiver, request, response, routes, routePaths) {
+  const route = parseRoute(request.url, routePaths);
   if (!route) {
     throw httpFailure("http_route_not_found", 404);
   }
@@ -68,12 +103,12 @@ async function handleRequest(receiver, request, response) {
   }
   const body = await readJsonBody(request);
 
-  if (route === RECEIVER_HTTP_ROUTES.event) {
+  if (route === routes.event) {
     const result = requireSynchronousResult(receiver.acceptEvent(body));
     writeJson(response, 202, result);
     return;
   }
-  if (route === RECEIVER_HTTP_ROUTES.claim) {
+  if (route === routes.claim) {
     requireExactRecord(body, CLAIM_REQUEST_FIELDS, "Delivery claim request");
     const result = requireSynchronousResult(receiver.claimDelivery({
       connectorToken: body.connector_token,
@@ -97,9 +132,9 @@ async function handleRequest(receiver, request, response) {
   writeJson(response, 200, result);
 }
 
-function parseRoute(value) {
+function parseRoute(value, routePaths) {
   if (typeof value !== "string" || value.length > 256) return null;
-  return ROUTE_PATHS.has(value) ? value : null;
+  return routePaths.has(value) ? value : null;
 }
 
 function requireJsonContentType(request) {
@@ -217,12 +252,12 @@ function writeNoContent(response) {
   response.end();
 }
 
-function classifyFailure(error) {
+function classifyFailure(error, errorTypes) {
   if (error instanceof CloudReceiverHttpError) {
     return error;
   }
   if (
-    CORE_ERROR_TYPES.some((ErrorType) => error instanceof ErrorType) &&
+    errorTypes.some((ErrorType) => error instanceof ErrorType) &&
     Number.isInteger(error.statusCode) &&
     error.statusCode >= 400 &&
     error.statusCode <= 599 &&
@@ -233,12 +268,14 @@ function classifyFailure(error) {
       code: error.code,
       statusCode: error.statusCode,
       headers: undefined,
+      retryable: error.retryable === true,
     };
   }
   return {
     code: "receiver_internal_error",
     statusCode: 500,
     headers: undefined,
+    retryable: false,
   };
 }
 

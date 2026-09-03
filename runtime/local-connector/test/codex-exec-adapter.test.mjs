@@ -6,6 +6,7 @@ import {
   dispatchAgentActivation,
 } from "@webmcp-challenge/reentry-core/agent-adapter";
 import { createContinuationReceipt } from "@webmcp-challenge/reentry-core/protocol";
+import { createStandingContinuationReceipt } from "@webmcp-challenge/reentry-core/standing-protocol";
 import {
   createCodexExecAdapter,
   MAX_CODEX_PROMPT_TIMEOUT_MS,
@@ -86,6 +87,31 @@ test("Codex adapter starts one fresh session with a bounded continuation prompt"
   assert.equal(JSON.stringify(calls).includes(CONNECTOR_TOKEN), false);
   assert.equal(JSON.stringify(calls).includes(EFFECT_TOKEN), false);
   assert.deepEqual(calls[0][2], { stdio: ["ignore", "ignore", "ignore"] });
+});
+
+test("Codex adapter preserves standing v0.2 activation identity", async () => {
+  const adapter = createCodexExecAdapter({
+    workingDirectory: process.cwd(),
+    executable: "/private/codex",
+    clock: () => NOW,
+    spawnCommand() {
+      const child = new EventEmitter();
+      queueMicrotask(() => child.emit("close", 0, null));
+      return child;
+    },
+  });
+
+  const result = await dispatchAgentActivation({
+    adapter,
+    lease: standingDeliveryLease(),
+    now: NOW,
+    timeoutMs: 1_000,
+  });
+
+  assert.equal(result.protocol_version, "0.2");
+  assert.equal(result.outcome, "accepted");
+  assert.equal(result.delivery_id, "delivery_standing_preview_002");
+  assert.equal(result.event_id, "event_standing_preview_002");
 });
 
 test("Codex adapter keeps untrusted instruction and canonical URL in one argv prompt", async () => {
@@ -289,5 +315,43 @@ function deliveryLease({ continuation = {} } = {}) {
       ...continuation,
     },
     receipt,
+  };
+}
+
+function standingDeliveryLease() {
+  const leaseExpiresAt = "2026-08-31T12:05:00.000Z";
+  return {
+    type: "webmcp.delivery_lease",
+    protocol_version: "0.2",
+    delivery_id: "delivery_standing_preview_002",
+    event_id: "event_standing_preview_002",
+    attempt: 1,
+    lease_token: LEASE_TOKEN,
+    lease_expires_at: leaseExpiresAt,
+    continuation: {
+      correlation_id: "correlation_standing_preview_001",
+      workflow_id: "workflow_standing_preview_001",
+      event_type: "workflow.ready",
+      event_sequence: 2,
+      state_version: 3,
+      occurred_at: "2026-08-31T12:00:00.000Z",
+      canonical_url: "https://host.example/workflows/workflow_standing_preview_001",
+      instruction: CONTINUATION_INSTRUCTION,
+    },
+    receipt: createStandingContinuationReceipt({
+      type: "webmcp.continuation_receipt",
+      protocol_version: "0.2",
+      grant_id: "grant_standing_preview_001",
+      correlation_id: "correlation_standing_preview_001",
+      issuer_origin: "https://host.example",
+      workflow_id: "workflow_standing_preview_001",
+      event_type: "workflow.ready",
+      canonical_url: "https://host.example/workflows/workflow_standing_preview_001",
+      expires_at: leaseExpiresAt,
+      human_boundary: "explicit_receiver_consent",
+      continuation_mode: "open_canonical_page_read_current_state",
+      authorization_mode: "standing",
+      max_active_activations: 1,
+    }),
   };
 }

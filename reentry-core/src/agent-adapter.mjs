@@ -3,6 +3,10 @@ import {
   PROTOCOL_VERSION,
   validateContinuationReceipt,
 } from "./protocol.mjs";
+import {
+  STANDING_PROTOCOL_VERSION,
+  validateStandingContinuationReceipt,
+} from "./standing-protocol.mjs";
 
 export const AGENT_ACTIVATION_TYPE = "webmcp.agent_activation";
 export const AGENT_ACTIVATION_RESULT_TYPE = "webmcp.agent_activation_result";
@@ -88,6 +92,22 @@ const RESULT_RULES = Object.freeze({
   }),
 });
 const TIMEOUT = Symbol("agent-adapter-timeout");
+const PROTOCOL_PROFILES = Object.freeze({
+  [PROTOCOL_VERSION]: Object.freeze({
+    protocolVersion: PROTOCOL_VERSION,
+    validateReceipt: validateContinuationReceipt,
+    validateSequence(value) {
+      return value === 1;
+    },
+  }),
+  [STANDING_PROTOCOL_VERSION]: Object.freeze({
+    protocolVersion: STANDING_PROTOCOL_VERSION,
+    validateReceipt: validateStandingContinuationReceipt,
+    validateSequence(value) {
+      return Number.isSafeInteger(value) && value > 0;
+    },
+  }),
+});
 
 export class AgentAdapterContractError extends Error {
   constructor(code, message) {
@@ -103,7 +123,7 @@ export function createAgentActivation(input) {
   const lease = normalizeLease(input.lease, now);
   return deepFreeze({
     type: AGENT_ACTIVATION_TYPE,
-    protocol_version: PROTOCOL_VERSION,
+    protocol_version: lease.protocol_version,
     delivery_id: lease.delivery_id,
     event_id: lease.event_id,
     attempt: lease.attempt,
@@ -158,10 +178,8 @@ export async function dispatchAgentActivation(input) {
 
 function normalizeLease(value, now) {
   requireExactRecord(value, LEASE_FIELDS, "Delivery lease");
-  if (
-    value.type !== DELIVERY_LEASE_TYPE ||
-    value.protocol_version !== PROTOCOL_VERSION
-  ) {
+  const profile = getProtocolProfile(value.protocol_version);
+  if (value.type !== DELIVERY_LEASE_TYPE || !profile) {
     throw contractError("agent_activation_lease_invalid", "Delivery lease version is unsupported");
   }
   const leaseExpiresAt = requireTimestamp(
@@ -171,10 +189,10 @@ function normalizeLease(value, now) {
   if (Date.parse(leaseExpiresAt) <= now.getTime()) {
     throw contractError("agent_activation_expired", "Delivery lease has expired");
   }
-  const continuation = normalizeContinuation(value.continuation);
+  const continuation = normalizeContinuation(value.continuation, profile);
   let receipt;
   try {
-    receipt = validateContinuationReceipt(value.receipt);
+    receipt = profile.validateReceipt(value.receipt);
   } catch {
     throw contractError("agent_activation_receipt_invalid", "Continuation receipt is invalid");
   }
@@ -200,6 +218,7 @@ function normalizeLease(value, now) {
   }
   requireClaimToken(value.lease_token);
   return {
+    protocol_version: profile.protocolVersion,
     delivery_id: requireIdentifier(value.delivery_id, "Delivery identifier"),
     event_id: requireIdentifier(value.event_id, "Event identifier"),
     attempt: requireAttempt(value.attempt),
@@ -211,16 +230,14 @@ function normalizeLease(value, now) {
 
 function normalizeActivation(value) {
   requireExactRecord(value, ACTIVATION_FIELDS, "Agent activation");
-  if (
-    value.type !== AGENT_ACTIVATION_TYPE ||
-    value.protocol_version !== PROTOCOL_VERSION
-  ) {
+  const profile = getProtocolProfile(value.protocol_version);
+  if (value.type !== AGENT_ACTIVATION_TYPE || !profile) {
     throw contractError("agent_activation_invalid", "Agent activation version is unsupported");
   }
-  const continuation = normalizeContinuation(value.continuation);
+  const continuation = normalizeContinuation(value.continuation, profile);
   let receipt;
   try {
-    receipt = validateContinuationReceipt(value.receipt);
+    receipt = profile.validateReceipt(value.receipt);
   } catch {
     throw contractError("agent_activation_receipt_invalid", "Continuation receipt is invalid");
   }
@@ -244,7 +261,7 @@ function normalizeActivation(value) {
   }
   return {
     type: AGENT_ACTIVATION_TYPE,
-    protocol_version: PROTOCOL_VERSION,
+    protocol_version: profile.protocolVersion,
     delivery_id: requireIdentifier(value.delivery_id, "Activation delivery identifier"),
     event_id: requireIdentifier(value.event_id, "Activation event identifier"),
     attempt: requireAttempt(value.attempt),
@@ -254,10 +271,10 @@ function normalizeActivation(value) {
   };
 }
 
-function normalizeContinuation(value) {
+function normalizeContinuation(value, profile) {
   requireExactRecord(value, CONTINUATION_FIELDS, "Delivery continuation");
   if (
-    value.event_sequence !== 1 ||
+    !profile.validateSequence(value.event_sequence) ||
     !Number.isSafeInteger(value.state_version) ||
     value.state_version < 0
   ) {
@@ -267,7 +284,7 @@ function normalizeContinuation(value) {
     correlation_id: requireIdentifier(value.correlation_id, "Continuation correlation identifier"),
     workflow_id: requireIdentifier(value.workflow_id, "Continuation workflow identifier"),
     event_type: requireIdentifier(value.event_type, "Continuation event type"),
-    event_sequence: 1,
+    event_sequence: value.event_sequence,
     state_version: value.state_version,
     occurred_at: requireTimestamp(value.occurred_at, "Continuation occurrence time"),
     canonical_url: value.canonical_url,
@@ -295,7 +312,7 @@ function normalizeResult(value, activation) {
   requireExactRecord(value, RESULT_FIELDS, "Agent activation result");
   if (
     value.type !== AGENT_ACTIVATION_RESULT_TYPE ||
-    value.protocol_version !== PROTOCOL_VERSION ||
+    value.protocol_version !== activation.protocol_version ||
     value.delivery_id !== activation.delivery_id ||
     value.event_id !== activation.event_id ||
     value.attempt !== activation.attempt
@@ -315,7 +332,7 @@ function normalizeResult(value, activation) {
   }
   return deepFreeze({
     type: AGENT_ACTIVATION_RESULT_TYPE,
-    protocol_version: PROTOCOL_VERSION,
+    protocol_version: activation.protocol_version,
     delivery_id: activation.delivery_id,
     event_id: activation.event_id,
     attempt: activation.attempt,
@@ -328,7 +345,7 @@ function normalizeResult(value, activation) {
 function unknownResult(activation, code) {
   return deepFreeze({
     type: AGENT_ACTIVATION_RESULT_TYPE,
-    protocol_version: PROTOCOL_VERSION,
+    protocol_version: activation.protocol_version,
     delivery_id: activation.delivery_id,
     event_id: activation.event_id,
     attempt: activation.attempt,
@@ -352,6 +369,12 @@ function requireAdapter(value) {
     throw contractError("agent_adapter_invalid", "Agent adapter must implement activate");
   }
   return { activate: activate.bind(value) };
+}
+
+function getProtocolProfile(value) {
+  return typeof value === "string" && Object.hasOwn(PROTOCOL_PROFILES, value)
+    ? PROTOCOL_PROFILES[value]
+    : undefined;
 }
 
 function requireTimeout(value) {
