@@ -88,6 +88,13 @@ is unmade, a duplicate, or an external action added merely to make the queue loo
 
 ## 6. Current task routing
 
+[`SK-TASK-069`](SK-TASK-069-cp16-local-causal-page-recall-composition.md) is verified for the named
+CP-16 local composition from the real successful worker/combat loss and reissue path through the
+game-side local delivery port, canonical page HTTP fresh reads, and one signal-provenance-bound
+recall under [`SK-EVID-056`](../Evidence/SK-EVID-056-cp16-local-causal-page-recall-composition-runtime-verification.md)
+and [`Validation/82`](../Validation/82-cp16-local-causal-page-recall-composition-runtime-cross-functional-audit.md).
+It remains local process/page evidence and cannot claim live Receiver, Connector, Agent, genuine
+WebMCP dynamic action, independent browser, hosted, or judge behavior.
 [`SK-TASK-068`](SK-TASK-068-cp14-causal-event-to-local-stub-trace.md) is verified for a fresh local
 composition trace from the real worker/combat `CargoLostToMonster` path through the verified game-side
 `ReentryDeliveryPort` under [`SK-EVID-055`](../Evidence/SK-EVID-055-cp14-causal-event-to-local-stub-trace-runtime-verification.md)

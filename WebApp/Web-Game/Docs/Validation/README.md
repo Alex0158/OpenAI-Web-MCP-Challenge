@@ -138,6 +138,9 @@ not claim that the game is built or balanced.
   — CP-14 real worker/combat `CargoLostToMonster` composition through the game-side delivery port,
   envelope fidelity, once-only acknowledgement, no gameplay mutation, and explicit external handoff
   limits.
+- [`82-cp16-local-causal-page-recall-composition-runtime-cross-functional-audit.md`](82-cp16-local-causal-page-recall-composition-runtime-cross-functional-audit.md)
+  — CP-16 real successful loss/reissue composition through local delivery, canonical page HTTP fresh
+  reads, provenance-bound recall, duplicate safety, scope privacy, and explicit external/browser gates.
 
 ## Current concept checks
 

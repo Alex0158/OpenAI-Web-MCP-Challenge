@@ -1,7 +1,7 @@
 # Event and Re-entry Game Hook
 
 **Mechanism:** M19
-**Status:** G2 Re-entry boundary and delivery policy accepted; runtime delivery is unverified
+**Status:** G2 Re-entry boundary and delivery policy accepted; local worker-to-port-to-page-HTTP-to-recall composition is runtime-verified; external delivery remains unverified
 **Authority:** This file owns the game-facing event eligibility and continuation payload. The outer
 Re-entry Core owns consent, Receiver delivery, private Agent context, and adapter behavior;
 Engineering owns implementation contracts.
@@ -12,6 +12,11 @@ The game creates durable causal changes that can make a previous strategy insuff
 dies, cargo is looted, a shelter is attacked, a migration completes, or a breach creates roaming
 monsters. The hook turns those domain events into a bounded continuation opportunity without making
 the Agent the game authority.
+
+The successful local loss/reissue-to-page-recall composition is recorded under
+[`SK-TASK-069`](../Tasks/SK-TASK-069-cp16-local-causal-page-recall-composition.md) and
+[`SK-EVID-056`](../Evidence/SK-EVID-056-cp16-local-causal-page-recall-composition-runtime-verification.md).
+That evidence stops at the local HTTP page and labelled delivery port; external Re-entry remains open.
 
 ## Event eligibility
 

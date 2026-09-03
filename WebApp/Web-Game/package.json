@@ -39,6 +39,7 @@
     "test:cp13-page-tools": "tsx --test tests/cp13-page-tools.test.ts",
     "test:cp13-recall": "tsx --test tests/cp13-recall-transition.test.ts",
     "test:cp14-causal": "tsx --test tests/cp14-causal-event-to-local-stub-trace.test.ts",
+    "test:cp16-page-recall": "tsx --test tests/cp16-local-causal-page-recall.test.ts",
     "test:cp15": "node scripts/run_cp15_matrix.mjs",
     "test:cp16-local": "tsx --test tests/cp16-local-causal-slice.test.ts"
   },

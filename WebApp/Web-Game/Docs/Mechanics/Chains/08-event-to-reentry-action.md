@@ -1,11 +1,18 @@
 # Chain C08: Event to Re-entry Action
 
-**Status:** G2 Re-entry boundary accepted; runtime delivery is unverified
+**Status:** G2 Re-entry boundary accepted; local worker-to-port-to-page-HTTP-to-recall composition is runtime-verified; external delivery remains unverified
 
 ## Trigger and outcome
 
 A meaningful game event changes a player's situation while the page is unattended. The chain ends in
 a fresh canonical-page read and one bounded Agent action or a visible human decision boundary.
+
+The local worker-to-port-to-page-HTTP-to-recall composition is runtime-verified for the successful
+reissue branch under [`SK-TASK-069`](../../Tasks/SK-TASK-069-cp16-local-causal-page-recall-composition.md),
+[`SK-EVID-056`](../../Evidence/SK-EVID-056-cp16-local-causal-page-recall-composition-runtime-verification.md),
+and [`Validation/82`](../../Validation/82-cp16-local-causal-page-recall-composition-runtime-cross-functional-audit.md).
+The external Receiver/Connector, Agent wake, genuine WebMCP dynamic action, and hosted stages remain
+unverified.
 
 ## Ordered flow
 

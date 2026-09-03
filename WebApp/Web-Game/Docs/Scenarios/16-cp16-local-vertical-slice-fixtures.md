@@ -5,14 +5,15 @@
 **Contract:** [MVP contract sheet](../Engineering/09-mvp-contract-sheet.md)  
 **Audit:** [CP-10/18 critical-path audit](../Validation/10-cp10-cp18-preimplementation-audit.md)  
 **Task:** [SK-TASK-016](../Tasks/SK-TASK-016-cp16-local-vertical-slice-preimplementation-pack.md)  
-**Bounded implementation:** [SK-TASK-050](../Tasks/SK-TASK-050-cp16-local-causal-slice-pre-agent-gates.md)  
+**Bounded implementation:** [SK-TASK-050](../Tasks/SK-TASK-050-cp16-local-causal-slice-pre-agent-gates.md) and [SK-TASK-069](../Tasks/SK-TASK-069-cp16-local-causal-page-recall-composition.md)  
 **Browser probe:** [SK-TASK-063](../Tasks/SK-TASK-063-cp16-independent-browser-context-capability-probe.md)  
-**Evidence:** [SK-EVID-039](../Evidence/SK-EVID-039-cp16-local-causal-slice-pre-agent-gates-runtime-verification.md), [Validation/61](../Validation/61-cp16-local-causal-slice-runtime-cross-functional-audit.md), and [SK-EVID-051](../Evidence/SK-EVID-051-cp16-independent-browser-context-capability-probe.md)  
+**Evidence:** [SK-EVID-039](../Evidence/SK-EVID-039-cp16-local-causal-slice-pre-agent-gates-runtime-verification.md), [Validation/61](../Validation/61-cp16-local-causal-slice-runtime-cross-functional-audit.md), [SK-EVID-056](../Evidence/SK-EVID-056-cp16-local-causal-page-recall-composition-runtime-verification.md), [Validation/82](../Validation/82-cp16-local-causal-page-recall-composition-runtime-cross-functional-audit.md), and [SK-EVID-051](../Evidence/SK-EVID-051-cp16-independent-browser-context-capability-probe.md)  
 **Purpose:** Prepare the clean-reset local G2 demonstration and evidence trace from two players through event, Re-entry, page reread, and bounded recall.
 
 These vectors are preparation inputs and observable outcomes. The named pre-Agent implementation slice
-verifies the game-side loss-to-signal boundary, and the current IAB probe verifies a two-tab limitation
-and close-one lifecycle; the complete independent-browser/Agent story remains a later gate.
+verifies the game-side loss-to-signal boundary, the local causal composition verifies delivery through a
+page HTTP reread and bounded recall, and the current IAB probe verifies a two-tab limitation and close-one
+lifecycle; the complete independent-browser/Agent story remains a later gate.
 They do not create a new rule, schema,
 event, command, transport, host, or external service contract. A fake clock, network, browser, or
 external stub is a test instrument only.

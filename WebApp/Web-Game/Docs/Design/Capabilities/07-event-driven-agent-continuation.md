@@ -1,12 +1,17 @@
 # Capability: Event-Driven Agent Continuation
 
-**Status:** G2 boundary accepted; runtime proof is absent
+**Status:** G2 boundary accepted; local worker-to-page composition is runtime-verified; Agent/Re-entry runtime proof remains open
 
 ## Goal
 
 Let a user-authorized Agent return after a meaningful backend event, reread the living game state, and
 execute one bounded next action through the current page. In G2, that action is the accepted
 `force_recall_soldier` command.
+
+The local worker-to-port-to-page-HTTP-to-recall composition is runtime-verified for the successful
+reissue branch under [`SK-TASK-069`](../../Tasks/SK-TASK-069-cp16-local-causal-page-recall-composition.md)
+and [`SK-EVID-056`](../../Evidence/SK-EVID-056-cp16-local-causal-page-recall-composition-runtime-verification.md);
+this does not prove an Agent wake, WebMCP dynamic action, or external Re-entry handoff.
 
 ## Entry and visible state
 

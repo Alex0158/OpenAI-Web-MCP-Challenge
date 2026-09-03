@@ -1,6 +1,6 @@
 # Development Roadmap and Checkpoints
 
-**Status:** TARGET DELIVERY ROADMAP; CP-04/CP-05 foundations, CP-06/CP-07 local boundaries, CP-08 movement/snapshot, cadence, command/read, projection, and local wire increments, the bounded CP-09 dispatch/route-arrival increments, the CP-10 extraction/cadence/return/contested-node/deposit increments, all three CP-11 local increments, and the CP-12 one-browser hydration, reconnect, discrete movement, ordinary-UI GATHERER dispatch, automatic publication, snapshot-gated held-input, server-owned continuous-intent, and Canvas primitive visual boundaries are runtime-verified or integrated at named local scopes; independent two-session behavior, canonical game-page WebMCP, hosted continuity, and full gameplay integration remain open  
+**Status:** TARGET DELIVERY ROADMAP; CP-04/CP-05 foundations, CP-06/CP-07 local boundaries, CP-08 movement/snapshot, cadence, command/read, projection, and local wire increments, the bounded CP-09 dispatch/route-arrival increments, the CP-10 extraction/cadence/return/contested-node/deposit increments, all three CP-11 local increments, and the CP-12 one-browser hydration, reconnect, discrete movement, ordinary-UI GATHERER dispatch, automatic publication, snapshot-gated held-input, server-owned continuous-intent, and Canvas primitive visual boundaries are runtime-verified or integrated at named local scopes; CP-16's local worker-to-port-to-page-HTTP-to-recall composition is now runtime-verified for its named scope; independent two-session behavior, genuine dynamic WebMCP/Agent action, hosted continuity, and full gameplay integration remain open  
 **Date:** 2026-09-03  
 **Scope:** Sleepless Kingdom game child only
 
@@ -431,9 +431,13 @@ The small [`SK-TASK-067`](../Tasks/SK-TASK-067-cp12-canvas-selection-feedback.md
   [`SK-EVID-039`](../Evidence/SK-EVID-039-cp16-local-causal-slice-pre-agent-gates-runtime-verification.md),
   and [`Validation/61`](../Validation/61-cp16-local-causal-slice-runtime-cross-functional-audit.md)
   verify the server-owned terminal loss, same-identity death/respawn/review, one coalesced pending
-  signal/outbox, rollback, replay, no-grant silence, and local scope isolation. Full G2 still requires
-  positive WebMCP, external delivery, fresh page reread/recall, two independent browser contexts,
-  restart/reconnect/burst trace, hosted continuity, and judge reproduction.
+  signal/outbox, rollback, replay, no-grant silence, and local scope isolation. The follow-on local
+  composition [`SK-TASK-069`](../Tasks/SK-TASK-069-cp16-local-causal-page-recall-composition.md),
+  [`SK-EVID-056`](../Evidence/SK-EVID-056-cp16-local-causal-page-recall-composition-runtime-verification.md),
+  and [`Validation/82`](../Validation/82-cp16-local-causal-page-recall-composition-runtime-cross-functional-audit.md)
+  verify the successful reissue-to-local-port-to-page-HTTP-reread-to-provenance-bound-recall path.
+  Full G2 still requires positive genuine WebMCP dynamic action, external delivery, two independent
+  browser contexts, restart/reconnect/burst trace, hosted continuity, and judge reproduction.
   The current IAB probe is recorded under [`SK-TASK-063`](../Tasks/SK-TASK-063-cp16-independent-browser-context-capability-probe.md),
   [`SK-EVID-051`](../Evidence/SK-EVID-051-cp16-independent-browser-context-capability-probe.md), and
   [`Validation/77`](../Validation/77-cp16-independent-browser-context-capability-runtime-cross-functional-audit.md):
