@@ -201,7 +201,8 @@ browser smoke, but its independent browser gate is paused pending the shared lif
 registered bounded shared role-page session lifecycle repair. Its serial Builder Work Order returned
 `READY_FOR_INDEPENDENT_VERIFICATION`, and Main integrated the exact eight-path candidate at `218935c`
 after focused `35/35`, complete `215/215`, typecheck, build, repository, sensitive-scan, and diff
-gates. Its independent browser Work Order is now the active gate;
+gates. Its independent browser Work Order ended at `BLOCKED_HARNESS` after the corrected retry
+produced no final report; no further blind retry is authorized;
 `RIGHTSPOT-045` is now `CLOSED_VERIFIED` within its bounded
 Operations consumer repair boundary after Main-controlled race verification and an explicitly recorded
 independent-browser harness limitation;
@@ -354,7 +355,8 @@ closed through accepted `ADR-RS-0017` as the separate Main-owned contract decisi
 Operations WebMCP `read_listing_pipeline` capability; `RIGHTSPOT-047` remains paused with its original
 candidate retained as historical evidence, and `RIGHTSPOT-048` owns the shared lifecycle repair before
 the `047` candidate is re-baselined. Its source is frozen at `218935c` pending independent browser
-evidence. `RIGHTSPOT-048` does not authorize changes outside its exact
+evidence; its verifier Work Order ended at `BLOCKED_HARNESS` after the bounded corrected retry produced
+no final report, so no further blind agent-browser retry is authorized. `RIGHTSPOT-048` does not authorize changes outside its exact
 eight-path write set or any temporary Worktree.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)

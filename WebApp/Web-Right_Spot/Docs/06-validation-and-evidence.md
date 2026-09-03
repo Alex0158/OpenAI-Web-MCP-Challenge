@@ -1530,3 +1530,19 @@ not a product failure; the active 048 verifier remains the authority for integra
 The low-severity retry-copy observation is retained as non-actionable polish pending browser usability
 evidence. No source, tests, fixtures, SQLite, Git, Worktree, or runtime product behavior changed, and
 no follow-on Task or Work Order was registered.
+
+## 7.40 Shared role-page session lifecycle corrected retry closure — 2026-09-03
+
+The final bounded `RS-WO-048-02` corrected retry used the validated direct binary form and the fresh
+session `rs-wo-048-02-verifier-3-20260903`. Its browser process later disappeared without delivering a
+final verifier report. Main sent one bounded interrupting stop instruction, waited for terminal delivery,
+then closed the handle; the close operation reported the prior handle status as `running`. No accepted
+browser evidence package was produced, so the attempt is recorded as `BLOCKED_HARNESS`, not
+`FAILED_PRODUCT`, `INCOMPLETE_EVIDENCE`, or `VERIFIED`.
+
+Main's post-stop readback found no source/test diff and no staged product change. The session-generated
+`.playwright-cli/` files and screenshots remain untracked and preserved; they are not promoted as
+independent evidence because the verifier supplied no bounded report or final persistent-state readback.
+No further blind `agent-browser` retry is authorized in this Work Order. The 048 source candidate remains
+frozen at `218935c`; `RIGHTSPOT-047` remains paused pending a reviewed 048 evidence decision and a new
+source baseline.

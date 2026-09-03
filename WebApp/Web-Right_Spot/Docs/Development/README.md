@@ -167,13 +167,15 @@ WebMCP remains separately gated.
 read-only audit lane, and `RIGHTSPOT-046` is closed through accepted `ADR-RS-0017` for one bounded
 Agent Operations `read_listing_pipeline` WebMCP capability. `RIGHTSPOT-047` is paused after its T0
 baseline recapture and single Builder dispatch because `RIGHTSPOT-048` now owns the shared role-page
-session lifecycle repair. The reviewed 048 candidate is integrated at `218935c` and awaits its
-independent browser gate; the original 047 five-path candidate passed deterministic checks and Main
-browser smoke, while its independent browser gate must be re-baselined after `048`. The `F-01` queue/privacy defect is closed within `RIGHTSPOT-025`; `RIGHTSPOT-026`
+session lifecycle repair. The reviewed 048 candidate is integrated at `218935c`, but its independent
+browser gate ended at `BLOCKED_HARNESS` after the bounded corrected retry produced no final report; no
+further blind agent-browser retry is authorized. The original 047 five-path candidate passed
+deterministic checks and Main browser smoke, while its independent browser gate must be re-baselined
+after a reviewed 048 evidence decision. The `F-01` queue/privacy defect is closed within `RIGHTSPOT-025`; `RIGHTSPOT-026`
 is also closed within its presentation-only boundary. `RIGHTSPOT-027` is closed after its bounded
 presentation repair and independent verification; no implementation Worktree is active. The next step
-is to complete independent `RS-WO-048-02`, then re-baseline `RS-WO-047-02` after the shared repair,
-while the fresh Main-thread cross-layer audit continues. Source push and Task closure remain gated by
+is to resolve the 048 browser evidence boundary or record a reviewed alternative, then re-baseline
+`RS-WO-047-02` after the shared repair, while the fresh Main-thread cross-layer audit continues. Source push and Task closure remain gated by
 exact-path review, focused/full checks, and complete frozen-source browser verification.
 The authoritative sequence is maintained in the [development roadmap](RIGHTSPOT-DEVELOPMENT-ROADMAP.md#31-current-next-route).
 

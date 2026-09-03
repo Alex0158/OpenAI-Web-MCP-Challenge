@@ -199,16 +199,17 @@ build, repository validation, sensitive scan, and diff checks. No server/API/fix
 the supported-browser lifecycle gate remains open. `RIGHTSPOT-047` is paused and must be re-baselined
 after the `048` gate.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** `RS-WO-048-02` is in its one corrected bounded retry, not product-failed:
-two earlier attempts produced no browser evidence, and Main has validated the installed CLI form
-`--args "--enable-features=WebMCPTesting"`. Monitor fresh session
-`rs-wo-048-02-verifier-3-20260903` against frozen candidate `218935c`; do not modify the frozen eight
-source/test paths. If this retry cannot load and capture the bounded evidence matrix, record the
-external harness limitation and stop blind retries. After a valid 048 evidence decision, re-baseline `RIGHTSPOT-047` and resume only the
-missing independent Operations WebMCP evidence. Do not run the old 047 verifier target or push/claim
-WebMCP closure before both gates are complete. In parallel, `RIGHTSPOT-012`
-remains a non-blocking read-only audit lane; Advisor Linnaeus is reviewing the post-048 checkpoint
-`99d38ed` without source or canonical write access. `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its manual Operations consumer
+**Current next product action:** `RS-WO-048-02` has ended at `BLOCKED_HARNESS`, not product-failed: two
+earlier attempts produced no browser evidence, and the one corrected retry used the validated CLI form
+`--args "--enable-features=WebMCPTesting"` but its browser process disappeared without a final report.
+The 048 source candidate `218935c` remains frozen; no further blind agent-browser retry is authorized
+in this Work Order. Keep the integrated lifecycle claim open until a supported reproducible browser
+path or a reviewed alternative evidence decision exists. After a valid 048 evidence decision,
+re-baseline `RIGHTSPOT-047` and resume only the missing independent Operations WebMCP evidence. Do not
+run the old 047 verifier target or push/claim WebMCP closure before both gates are complete. In
+parallel, `RIGHTSPOT-012` remains a non-blocking read-only audit lane; Advisor Linnaeus completed the
+post-048 review with no new product finding, and Main corrected one documentation evidence-strength
+claim. `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its manual Operations consumer
 latest-read boundary at product source `3582ba4`; it does not reopen `RIGHTSPOT-044` or change the
 Operations API, domain, projection, fixture, role/privacy, navigation, or WebMCP boundary.
 `RIGHTSPOT-006` remains credential-gated. The existing Tenant Discovery/WebMCP slice remains
@@ -687,10 +688,10 @@ final response can remain a normal application action.
 | Delegated development | **EXPERIMENTAL PILOT — TASK-OWNED** | `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; corrected `RS-WO-002-02` rerun returned `VERIFIED`; `RS-WO-002-03` bounded repair commit `6e70c9f` passed fresh independent verification; `RS-WO-002-04` candidate `68bbc69` passed dedicated verification against frozen source `28105e4d`; `RS-WO-002-05` candidate is frozen at T2 code commit `de169ce` and passed dedicated independent verification against snapshot `bc3bc42`; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted/revised decomposition is recorded in ADR-RS-0008; `RS-WO-002-07` candidate `d71fe3e` passed dedicated independent verification and is integrated at `f700ba9`; `RS-WO-002-08` is integrated at `006d2fd` after process re-baseline `8b77bdd`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-11` candidate `f1f83c7` passed dedicated independent verification and is integrated at `6a0b4b8`; `RS-WO-002-13` candidate `169cb95d` passed dedicated independent verification and is integrated at `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final independent verification and is integrated at `9348aa5`; `RS-WO-002-14` passed direct read-only cross-role verification; `RS-WO-002-15` passed the isolated browser walkthrough and closure evidence is reconciled in `RIGHTSPOT-MVP-CLOSURE-RECORD.md` |
 | Cloud Receiver | **Not a first-phase dependency** | Future integration boundary only |
 | Agent Operations manual read surface | **CLOSED_VERIFIED; `RIGHTSPOT-044`** | Existing Operations authority/projection is consumed by the strict Agent-only `/agent/operations` page and HTTP route; independent local browser/API verification passed, while later Operations WebMCP remains separately gated |
-| Active product repair | **`RIGHTSPOT-048` VERIFICATION_PENDING; `RIGHTSPOT-045` CLOSED_VERIFIED** | The shared role-page session lifecycle candidate is integrated at `218935c` and awaits independent supported-browser verification; the earlier Operations latest-read repair remains closed within its manual page boundary |
-| WebMCP | **TENANT DISCOVERY SLICE VERIFIED; `RIGHTSPOT-046` ACCEPTED; `RIGHTSPOT-047` PAUSED; `RIGHTSPOT-048` BROWSER GATE PENDING** | Page-bound `search_listings` is verified only in the declared local supported-browser capability; the Agent `read_listing_pipeline` candidate is frozen but must be re-baselined after the shared lifecycle gate |
+| Active product repair | **`RIGHTSPOT-048` BLOCKED_HARNESS; `RIGHTSPOT-045` CLOSED_VERIFIED** | The shared role-page session lifecycle candidate is integrated at `218935c`; its deterministic gates passed, but the bounded independent browser gate produced no final report and is blocked at the harness boundary. The earlier Operations latest-read repair remains closed within its manual page boundary |
+| WebMCP | **TENANT DISCOVERY SLICE VERIFIED; `RIGHTSPOT-046` ACCEPTED; `RIGHTSPOT-047` PAUSED; `RIGHTSPOT-048` BROWSER GATE BLOCKED_HARNESS** | Page-bound `search_listings` is verified only in the declared local supported-browser capability; the Agent `read_listing_pipeline` candidate is frozen but must be re-baselined after a reviewed 048 evidence decision |
 | Runtime / deployment | **Not started** | No service, hosting, credentials, or public URL |
-| Evidence | **LOCAL MVP + `RIGHTSPOT-043`, `RIGHTSPOT-044`, AND `RIGHTSPOT-045` CLOSED_VERIFIED; `RIGHTSPOT-046` ACCEPTED; `RIGHTSPOT-048` STATIC_GATES_PASSED / CORRECTED BROWSER RETRY ACTIVE; `RIGHTSPOT-047` INDEPENDENT_BROWSER_INCOMPLETE** | The 048 candidate is integrated at `218935c` and passes focused `35/35`, complete `215/215`, typecheck, build, validators, sensitive scan, and diff checks; two earlier browser attempts produced no usable evidence, and the single corrected retry is active with the validated CLI launch form. The 047 gate remains paused. No push, WebMCP closure, or production/deployment claim is made |
+| Evidence | **LOCAL MVP + `RIGHTSPOT-043`, `RIGHTSPOT-044`, AND `RIGHTSPOT-045` CLOSED_VERIFIED; `RIGHTSPOT-046` ACCEPTED; `RIGHTSPOT-048` STATIC_GATES_PASSED / BROWSER BLOCKED_HARNESS; `RIGHTSPOT-047` INDEPENDENT_BROWSER_INCOMPLETE** | The 048 candidate is integrated at `218935c` and passes focused `35/35`, complete `215/215`, typecheck, build, validators, sensitive scan, and diff checks; three verifier attempts produced no accepted browser evidence, including one corrected retry that hung after launch. The 047 gate remains paused. No push, WebMCP closure, or production/deployment claim is made |
 
 ## 3. Confirmed working inputs
 

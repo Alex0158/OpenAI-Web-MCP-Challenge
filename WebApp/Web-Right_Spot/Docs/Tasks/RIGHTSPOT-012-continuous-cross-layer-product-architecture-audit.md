@@ -737,9 +737,10 @@ Main reviewed Advisor Linnaeus's `READY_FOR_REVIEW` report
 (`01a06674-8423-7af1-ae10-b7cf3c23dbac`) against documentation checkpoint `99d38ed`, product/source
 candidate `218935c`, and the unchanged RightSpot source/test paths. The report covered the route and
 role-entry matrix, the Tenant-to-Agent human chain, the 048 lifecycle implementation, privacy/data
-authority, UI/UX/accessibility and fallback boundaries, and WebMCP/Re-entry classification. It found
-no new P0/P1/P2 product defect, broken handoff, privacy bypass, or workflow mismatch; the existing
-048 supported-browser evidence gap remains the gate for integrated teardown claims.
+authority, UI/UX/accessibility and fallback boundaries, WebMCP/Re-entry classification, and
+documentation drift. It found no new P0/P1/P2 product defect, broken handoff, privacy bypass, or
+workflow mismatch; the 048 supported-browser evidence gap remains the gate for integrated teardown
+claims.
 
 One `DOCUMENTATION_DRIFT` / `INCOMPLETE_EVIDENCE` finding was confirmed: current status wording
 overstated actor-id keyed child teardown as covered by tests, although the focused RolePageFrame test

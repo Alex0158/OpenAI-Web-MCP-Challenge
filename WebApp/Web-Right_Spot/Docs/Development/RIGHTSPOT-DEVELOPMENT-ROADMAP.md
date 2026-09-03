@@ -624,8 +624,10 @@ closed historical work rather than the current implementation queue. The current
 shared session-lifecycle repair in `RIGHTSPOT-048`, while the non-blocking `RIGHTSPOT-012` audit
 continues. The original `RIGHTSPOT-047` candidate's deterministic checks and Main-controlled browser
 smoke pass, but its independent gate is paused after one command-level harness block and two bounded
-partial retries; it must be re-baselined after `048`, and no push or closure claim is authorized. This
-does not reopen the accepted MVP closure or authorize external authentication, Cloud Receiver,
+partial retries; it must be re-baselined after a reviewed 048 evidence decision, and no push or closure
+claim is authorized. The 048 independent gate itself ended at `BLOCKED_HARNESS` after its corrected
+retry produced no final report; no further blind agent-browser retry is authorized. This does not reopen
+the accepted MVP closure or authorize external authentication, Cloud Receiver,
 deployment, or commercial-marketplace scope by itself.
 
 ### Historical execution chronology

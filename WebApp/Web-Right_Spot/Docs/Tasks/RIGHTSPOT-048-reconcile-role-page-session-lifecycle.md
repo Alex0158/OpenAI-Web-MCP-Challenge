@@ -22,18 +22,20 @@ frozen but not independently closed `RIGHTSPOT-047` Agent Operations adapter
   Builder completed the exact eight-path implementation and Main integrated the reviewed candidate at
   product commit `218935c`. Two independent verifier attempts produced no usable browser evidence:
   Ohm's corrected retry remained at `about:blank`, and Noether's fresh attempt used an unsupported
-  `--args=...` invocation form before page launch. Main then validated the supported launch form and
-  dispatched the single corrected bounded retry.
-- Execution posture: `CORRECTED_INDEPENDENT_BROWSER_RETRY_ACTIVE` — the post-Builder source/test
-  candidate remains frozen; no supporting Worktree is required or authorized. The retry uses the
-  validated form `--args "--enable-features=WebMCPTesting"` and must stop at the existing bounded
-  evidence/timeout conditions.
-- Evidence status: `DETERMINISTIC_GATES_PASSED_BROWSER_PENDING_AFTER_HARNESS_RETRY`; this is not a
-  browser reproduction, product failure, or claim of data leakage. The server-side role/session checks
-  remain intact.
-- Next gate: Receive the corrected retry report against frozen source `218935c`. If it cannot produce
-  actual page evidence, stop this harness path and record the external verification gap rather than
-  retrying indefinitely. Reopen `RIGHTSPOT-047` only after the 048 evidence decision and a new baseline.
+  `--args=...` invocation form before page launch. Main validated the supported launch form and
+  dispatched one final corrected bounded retry, but its browser process later disappeared without a
+  final verifier report; Main stopped and closed the hung handle.
+- Execution posture: `INDEPENDENT_BROWSER_GATE_BLOCKED_HARNESS_FINAL` — the post-Builder source/test
+  candidate remains frozen; no supporting Worktree is required or authorized. The corrected syntax was
+  proven in a local preflight, but the verifier still did not produce an accepted browser evidence
+  package. No further blind agent-browser retry is authorized in this Work Order.
+- Evidence status: `DETERMINISTIC_GATES_PASSED_BROWSER_BLOCKED_HARNESS`; this is not a browser
+  reproduction, product failure, or claim of data leakage. The server-side role/session checks remain
+  intact, while the integrated lifecycle claim remains unverified.
+- Next gate: Keep this Work Order open at the harness boundary until a supported, reproducible browser
+  execution path or a reviewed alternative evidence decision exists. Do not reopen `RIGHTSPOT-047` or
+  make a WebMCP closure/push claim from the incomplete attempts; any future retry requires a new
+  explicit bounded dispatch and must not reuse this hung path.
 - Dependencies: `ADR-RS-0015` and `ADR-RS-0017` require page/session-scoped capability cleanup;
   `RIGHTSPOT-043` and `RIGHTSPOT-047` provide the existing adapter cleanup contracts. `RIGHTSPOT-012`
   may continue as a read-only, non-blocking audit but cannot modify this Task's write set during a
@@ -228,7 +230,7 @@ claimed yet.
 ### RS-WO-048-02 — Independently verify the repaired lifecycle
 
 **Role:** Independent supported-browser WebMCP Verifier  
-**Status:** `IN_PROGRESS`  
+**Status:** `BLOCKED_HARNESS`  
 **Parallelization:** `AFTER_BUILDER_SOURCE_FREEZE` — freeze the post-Builder source and Git identity;
   no Main source/status movement during the check.  
 **Frozen source identity:** product commit `218935c` on canonical Main; no source/test path may change
@@ -253,6 +255,13 @@ one bounded retry using fresh session `rs-wo-048-02-verifier-3-20260903`. The re
 binary and `--args "--enable-features=WebMCPTesting"`, then report one of `VERIFIED`,
 `FAILED_PRODUCT`, `INCOMPLETE_EVIDENCE`, or `BLOCKED_HARNESS`. No source/test path or fixture may move
 while this gate is active.
+**Corrected retry outcome (2026-09-03):** The browser process for the required fresh session later
+disappeared, but the verifier handle did not deliver a final bounded report. Main sent one interrupting
+stop instruction, waited for terminal delivery, and then closed the handle; close reported its prior
+status as `running`. Main observed no source/test diff, but no final browser, console, network,
+accessibility, fixture, SQLite, or persistent no-mutation evidence package was delivered. The attempt is
+therefore `BLOCKED_HARNESS`; generated untracked `.playwright-cli/` artifacts remain preserved and are
+not promoted as independent evidence.
 **Scope:** Read-only evidence against the exact frozen candidate. No source, docs, Git, Worktree, or
   durable fixture mutation. Use `gpt-5.6-sol` with `medium` reasoning for WebMCP-specific evaluation.  
 **Required evidence:** initial and repeated registration counts, focus/visibility revalidation,
@@ -280,8 +289,8 @@ Stop and return to Main if:
 The finding is accepted as a bounded shared lifecycle repair under ADR-RS-0018. Its reviewed candidate
 is frozen at `218935c`, but the Task remains open until `RS-WO-048-02` supplies the required independent
 supported-browser evidence or Main records a reviewed harness limitation after the one corrected bounded
-retry. The current Work Order is `IN_PROGRESS` for that retry; the earlier harness failures remain
-historical evidence and do not count as product verification. It does not reopen the
+retry. The current Work Order is `BLOCKED_HARNESS`; the earlier harness failures and the hung corrected
+retry remain historical evidence and do not count as product verification. It does not reopen the
 ordinary local MVP, `RIGHTSPOT-043`'s already verified Search semantics, or the Operations authority.
 `RIGHTSPOT-047` remains `verification_pending` and must not be closed until this repair and its
 independent browser evidence are complete. The Task does not authorize external authentication,
