@@ -465,8 +465,10 @@ is integrated at `534f5c9`, the amended page-bound adapter is integrated at `ec7
 
 The manual Agent Operations read surface is now `RIGHTSPOT-044` `CLOSED_VERIFIED` at code commit
 `9ed906b`, with independent browser/API verification against frozen snapshot `f884879`; its closure
-record is in the owning Task File. A post-044 audit registered the bounded P2 consumer repair
-`RIGHTSPOT-045` for the `F-22` latest-read race; this does not admit an Operations WebMCP slice.
+record is in the owning Task File. A post-044 audit registered and Main has now closed the bounded P2
+consumer repair `RIGHTSPOT-045` for the `F-22` latest-read race at product source `3582ba4`; its
+Main-controlled race evidence and explicit independent-browser harness limitation are recorded in
+the Task File. This does not admit an Operations WebMCP slice.
 The non-blocking `RIGHTSPOT-012` audit may continue, followed by an explicit decision on whether an
 Operations WebMCP slice is worth admitting.
 `RIGHTSPOT-010` is closed as a reviewed staged decision; its authority and projection are not being

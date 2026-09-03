@@ -189,9 +189,10 @@ scopes. The fresh Main-thread cross-layer audit,
 remain reconciled in the [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](../Development/RIGHTSPOT-MVP-CLOSURE-RECORD.md),
 and `RIGHTSPOT-002` is closed.
 
-**Current post-MVP gates:** `RIGHTSPOT-006` and `RIGHTSPOT-012` remain pending, while
-`RIGHTSPOT-045` is `VERIFICATION_PENDING` (credential, read-only audit, and bounded Operations
-consumer repair gates respectively);
+**Current post-MVP gates:** `RIGHTSPOT-006` and `RIGHTSPOT-012` remain pending (credential and
+read-only audit gates respectively); `RIGHTSPOT-045` is now `CLOSED_VERIFIED` within its bounded
+Operations consumer repair boundary after Main-controlled race verification and an explicitly recorded
+independent-browser harness limitation;
 `RIGHTSPOT-044` is `CLOSED_VERIFIED` for its bounded manual Operations implementation;
 `RIGHTSPOT-010` is closed as a reviewed staged decision through `ADR-RS-0016` and the earlier
 Operations authority/projection Tasks. `RIGHTSPOT-033` is closed within its
@@ -335,8 +336,8 @@ implementation and fresh-reset browser verification. `RIGHTSPOT-006` stays gated
 credentials and local-origin authorization; `RIGHTSPOT-010` is closed as a reviewed staged Operations
 decision; `RIGHTSPOT-012` is non-blocking read-only audit work; `RIGHTSPOT-042` is closed as the
 selected Tenant Search contract gate; `RIGHTSPOT-043` is `CLOSED_VERIFIED`; `RIGHTSPOT-044` is
-`CLOSED_VERIFIED` for its bounded manual Operations surface; and `RIGHTSPOT-045` is the current
-bounded Operations consumer repair gate. Only an explicitly selected,
+`CLOSED_VERIFIED` for its bounded manual Operations surface; and `RIGHTSPOT-045` is
+`CLOSED_VERIFIED` for its bounded Operations consumer latest-read boundary. Only an explicitly selected,
 implementation-ready Task may open code Work Orders or temporary Worktrees.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)

@@ -1,7 +1,7 @@
 # RIGHTSPOT-045: Prevent stale Operations reads from overwriting the latest query
 
 **Type:** `defect`  
-**Lifecycle:** `verification_pending`  
+**Lifecycle:** `closed`  
 **Priority:** `P2` for Agent Operations result truthfulness  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-03  
@@ -11,15 +11,19 @@
 ## Task control
 
 - Type: `defect`
-- Lifecycle: `verification_pending`
-- Execution posture: `VERIFICATION_PENDING`
+- Lifecycle: `closed`
+- Execution posture: `CLOSED_VERIFIED`
 - Objective: make the Operations page adopt results, errors, and loading completion only for its latest
   logical read, so the displayed result cannot contradict the current report/query context.
 - Current increment: The consumer-only latest-read sequencing repair is integrated at product commit
-  `3582ba4`; independent integrated browser/API verification remains required.
-- Next gate: Dispatch one independent browser/API Verifier against frozen source `3582ba4`.
-- Evidence status: `READY_FOR_INDEPENDENT_VERIFICATION` — Main and Builder static checks pass; a
-  browser-controlled race has not yet been reproduced, so no new runtime race claim is made.
+  `3582ba4` and is closed for its bounded Operations page consumer outcome.
+- Next gate: No active gate for this Task. Reopen only if a later audit reproduces an older
+  Operations read changing the current result, error, empty, or loading context.
+- Evidence status: `CLOSED_VERIFIED` — TDD Red → Green → Refactor, complete static checks, Main's
+  controlled browser race harness, ordinary two-query-family browser checks, and unchanged 044
+  evidence support the bounded outcome. The independent verifier container was procedurally blocked
+  by a non-terminating browser helper and therefore contributes no independent pass claim; that
+  harness limitation is explicitly recorded below.
 - Supporting worker: UI Builder `01a06569-e047-7251-a574-e9c1e077f0a6` (`Aristotle`).
 - Parent role: This is one registered Task File. Builder and Verifier are sequential Work Order
   checkpoints under this file, not additional Tasks.
@@ -95,7 +99,7 @@ responsive layout, and accessibility surface.
 ### RS-WO-045-01 — Operations consumer latest-read repair
 
 **Role:** UI Builder  
-**Status:** `READY_FOR_VERIFICATION`  
+**Status:** `CLOSED_VERIFIED`  
 **Parallelization:** `SERIAL_OPERATIONS_CONSUMER` — no other writer may modify the Operations page or
 its focused test during this Work Order.  
 **Risk profile:** `Bounded P2` — one client async lifecycle boundary; no server or shared contract change.  
@@ -119,6 +123,23 @@ confirmed the sequence guard covers success, error, `finally`, report switching,
 no API, domain, projection, fixture, role/privacy, navigation, or WebMCP behavior changed. Main
 integrated and pushed the reviewed two-path source as product commit `3582ba4`. No browser-controlled
 race or independent verification is claimed at this checkpoint.
+
+**Independent verifier attempt (2026-09-03):** `Laplace` returned procedural `BLOCKED` before
+testing. The verifier was dispatched against `adfa131`, but Main then committed the docs-only
+`RIGHTSPOT-012` writeback as `8c700be` while the T3 source freeze was active. This moved the Git ref
+under verification even though the product source remained unchanged; no product or browser check
+was run and the verifier made no product-defect claim. Main classified this as a process/ownership
+incident, preserved the evidence, and re-gated the same checkpoint against `8c700be`. For the retry,
+the product source is `3582ba4`, the docs-only writeback is part of the reviewed baseline, and no
+further Git-ref movement is permitted during T3. This is not a new Builder or a new registered Task.
+
+**Retry verification outcome (2026-09-03):** The re-dispatched `Laplace` execution did not return a
+report after repeated bounded waits and was shutdown without a product mutation. Main therefore
+does not claim independent verifier evidence for the retry. This is an explicit browser-helper
+harness limitation, not a product failure. Main completed the registered checks directly against the
+frozen `8c700be` checkpoint and recorded the controlled browser evidence below; the pre-existing
+independent `RIGHTSPOT-044` evidence remains valid because the repair changed only this consumer's
+latest-read lifecycle.
 
 #### Read set
 
@@ -195,11 +216,18 @@ The Builder must return:
 ### RS-WO-045-02 — Independent integrated verification
 
 **Role:** Independent browser/API Verifier  
-**Status:** `READY_TO_DISPATCH`  
+**Status:** `CLOSED_VERIFIED`  
 **Parallelization:** Must run after Main freezes the reviewed Builder source; no source writer may
 modify the frozen Operations consumer during verification.  
 **Allowed write set:** none in product source or canonical docs; disposable evidence only under the
 existing local evidence boundary.  
+**Retry baseline:** repository `HEAD` `8c700be` (`origin/main` aligned); product repair source is
+`3582ba4`; the intervening `8c700be` change is the reviewed process-only `RIGHTSPOT-012` writeback.
+The verifier must use this exact checkpoint and must not infer a moving working-tree ref.  
+**Retry dispatch (2026-09-03):** The same independent Verifier `Laplace`
+(`01a06576-543e-76c3-b480-f73c82f949c8`) was re-dispatched from the exact `8c700be` checkpoint
+after the prior procedural block. This lifecycle writeback is Main-owned process state only; no
+product source, contract, or acceptance criterion changed.
 **Read set:** frozen post-Builder source, this Task File, `RIGHTSPOT-044`, ADR-RS-0016, operations
 tests, runtime/browser configuration, and fixture-reset instructions.
 
@@ -215,6 +243,32 @@ Agent-only access, both query families, strict filters, exact counts, valid empt
 errors/retry, request drill-down, keyboard/skip-link access, 320px/768px/desktop no-overflow, no
 mutation, and no uncaught application errors. If the harness cannot control timing, report that as a
 harness limitation and retain the static contract evidence; do not claim a browser race pass.
+
+**Main verification and closure result (2026-09-03):** Main used the frozen product source at
+`3582ba4` with the reviewed checkpoint ref `8c700be` and no product source writer active. A page-local
+fetch harness held an initial `upcomingViewings` response, changed report context, started a newer
+`listingPipeline` read, resolved the newer valid empty result first, and then resolved the older
+response. The page remained on `Listing pipeline`, retained the valid `No matching records` state,
+and did not show the stale upcoming result. A second run resolved a newer `Haringey` listing success
+and rejected an older `Islington` read afterward; the page retained `Northfield Garden Flat`, with no
+stale error and `loading=false`. These runs directly cover late success, late error, and stale
+completion behavior in the rendered consumer.
+
+The ordinary browser/API checks also confirmed the real listing-pipeline and upcoming-viewings reads,
+the authorized request link in the upcoming result, signed-out Operations gating, wrong-role Tenant
+gating, meaningful route content, and no framework overlay or page errors. At viewports `320x800`,
+`768x800`, and `1280x800`, document width equaled viewport width with no horizontal overflow. The
+existing independent 044 evidence remains the authority for the full request drill-down, exact API
+projection/count/privacy, bounded failure/retry, keyboard/skip-link, and no-mutation matrix; this
+repair made no API, projection, persistence, role, navigation, or WebMCP change.
+
+The Main rerun under Node `v24.20.0` / npm `11.19.0` passed complete tests `186/186`, typecheck,
+production build, repository validators, sensitive scan, and `git diff --check`. The known dynamic
+SQLite filesystem-tracing build warning remains a deployment residual. The independent verifier
+helper's non-terminating retry is recorded as a process/harness limitation; it is not converted into
+an independent pass or a product defect. The bounded `RIGHTSPOT-045` outcome is nevertheless accepted
+as `CLOSED_VERIFIED` based on the static TDD proof, direct frozen-source review, Main-controlled race
+evidence, and unchanged 044 independent evidence.
 
 ## Acceptance criteria
 
@@ -245,7 +299,7 @@ lifecycle contract that is not covered by this consumer repair.
 
 ## Closure gate
 
-This Task may be closed only when Main has reviewed the exact diff, frozen the integrated source,
-accepted the focused and complete static checks, and recorded independent verification or an explicit
-harness limitation. Closure must state that the repair is limited to the Operations manual consumer
-latest-read boundary and does not expand the accepted Operations or WebMCP capability.
+This Task is `CLOSED_VERIFIED` after Main reviewed the exact diff, froze the integrated source,
+accepted the focused and complete static checks, and recorded Main-controlled verification together
+with the explicit independent-browser harness limitation. The closure is limited to the Operations
+manual consumer latest-read boundary and does not expand the accepted Operations or WebMCP capability.

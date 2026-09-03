@@ -115,7 +115,9 @@ Operations decision through `ADR-RS-0016`; `RIGHTSPOT-044` is now `CLOSED_VERIFI
 manual Agent Operations surface, and later Operations WebMCP remains separately gated. `RIGHTSPOT-012`
 continues as the non-blocking read-only audit lane against the latest Main source. The post-044 audit
 also registered `F-22` / `RIGHTSPOT-045` for a bounded Operations consumer latest-read race repair;
-the finding is non-blocking and does not reopen the 044 API, projection, or WebMCP decisions.
+the repair is now `CLOSED_VERIFIED` at product source `3582ba4` after Main-controlled race evidence
+and an explicit independent-browser harness limitation. The finding was non-blocking and did not
+reopen the 044 API, projection, or WebMCP decisions.
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-03, Europe/London
 
@@ -295,9 +297,10 @@ integration claim is implied.
 its authority and pure projection are already complete through `RIGHTSPOT-013`, `RIGHTSPOT-015`, and
 `RIGHTSPOT-016`. `RIGHTSPOT-044` is `CLOSED_VERIFIED` for the ordinary manual Operations page,
 strict HTTP consumer, Agent navigation, and independent local browser/API evidence. `RIGHTSPOT-012`
-remains the non-blocking audit lane. `RIGHTSPOT-045` is the current bounded P2 consumer repair gate
-for `F-22`; `RS-WO-045-01` is integrated at `3582ba4` and awaits independent verification. Any Operations WebMCP capability remains
-separately gated and is not implied by the manual surface closure.
+remains the non-blocking audit lane. `RIGHTSPOT-045` is `CLOSED_VERIFIED` for `F-22` within the
+manual Operations consumer boundary; `RS-WO-045-01` is integrated at `3582ba4`, with Main-controlled
+race evidence and the explicit independent-browser harness limitation recorded. Any Operations WebMCP
+capability remains separately gated and is not implied by the manual surface closure.
 
 The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.
 The page-entry audit registered `RIGHTSPOT-021` as a bounded implementation route: restore a
@@ -399,8 +402,9 @@ for its bounded repair and verification. Main selected the existing `320px` floo
 CSS candidate at product commit `f0dbd99`, and independent `RS-WO-022-02` verification returned
 `VERIFIED`. The bounded Task is closed and no implementation Worktree is open. `RIGHTSPOT-006` and
 `RIGHTSPOT-012` remain separate credential and read-only audit gates; `RIGHTSPOT-010` is closed as
-the reviewed staged decision, `RIGHTSPOT-044` is `CLOSED_VERIFIED`, and `RIGHTSPOT-045` is the current
-bounded Operations consumer repair gate. These do not reopen `RIGHTSPOT-020`. Local Git closure for the prior `RIGHTSPOT-021` increment
+the reviewed staged decision, `RIGHTSPOT-044` is `CLOSED_VERIFIED`, and `RIGHTSPOT-045` is
+`CLOSED_VERIFIED` within its bounded Operations consumer repair boundary. These do not reopen
+`RIGHTSPOT-020`. Local Git closure for the prior `RIGHTSPOT-021` increment
 is recorded at `66615d0`.
 
 The post-`RIGHTSPOT-036` fresh Main-thread audit covered reset generations `38` and `39`: the local

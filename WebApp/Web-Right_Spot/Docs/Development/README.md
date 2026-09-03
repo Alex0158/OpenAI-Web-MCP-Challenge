@@ -52,9 +52,10 @@ ordinary Search and amended page-bound adapter source are now integrated at prod
 and `ec7a679`; the bounded supported-browser WebMCP registration/invocation gate is independently
 verified and recorded in `RIGHTSPOT-043`. `RIGHTSPOT-010` is closed as a reviewed staged Agent
 Operations decision through `ADR-RS-0016`; `RIGHTSPOT-044` is `CLOSED_VERIFIED` for the bounded
-manual Operations surface. The post-044 audit registered `F-22` / `RIGHTSPOT-045` as the current
-bounded consumer latest-read repair gate; its UI Builder Work Order is integrated at `3582ba4` and
-awaits independent verification, while later Operations WebMCP remains separately gated.
+manual Operations surface. The post-044 audit registered `F-22` / `RIGHTSPOT-045` as a bounded
+consumer latest-read repair; its UI Builder Work Order is integrated at `3582ba4` and the Task is now
+`CLOSED_VERIFIED` after Main-controlled race evidence, with the independent browser-helper limitation
+explicitly recorded. Later Operations WebMCP remains separately gated.
 
 **Current physical workspace:** The canonical Main Worktree remains the only source authority. The stopped,
 short-lived `RS-WO-020-02` and `RS-WO-020-03` candidate Worktrees were adopted into Main and retired after
@@ -159,8 +160,9 @@ independently verified Main `c977ea4`, and `RS-WO-020-05` passed fresh-reset bro
 Main `f49e1ca`. `RIGHTSPOT-020` is closed within its accepted local boundary.
 `RIGHTSPOT-006` remains credential-gated. `RIGHTSPOT-010` is now closed as a reviewed staged
 Operations decision through `ADR-RS-0016`; its existing authority and pure projection are complete,
-and `RIGHTSPOT-044` is `CLOSED_VERIFIED` for the bounded manual read surface. `RIGHTSPOT-045` is the
-current bounded P2 consumer repair gate, while Operations WebMCP remains separately gated.
+and `RIGHTSPOT-044` is `CLOSED_VERIFIED` for the bounded manual read surface. `RIGHTSPOT-045` is
+`CLOSED_VERIFIED` within its bounded manual Operations consumer latest-read boundary, while Operations
+WebMCP remains separately gated.
 `RIGHTSPOT-012` is a non-blocking
 read-only audit lane. The `F-01` queue/privacy defect is closed within `RIGHTSPOT-025`; `RIGHTSPOT-026`
 is also closed within its presentation-only boundary. `RIGHTSPOT-027` is closed after its bounded

@@ -1207,3 +1207,45 @@ is frozen and integrated at product commit `3582ba4`, pushed to `origin/main`.
 
 This is a Builder/Main static and source-integrity checkpoint only. No independent browser-controlled
 race reproduction or final `RIGHTSPOT-045` closure claim exists until `RS-WO-045-02` reports back.
+
+## 7.23 F-22 verifier re-gate after procedural source-ref drift — 2026-09-03
+
+The first `RS-WO-045-02` verifier attempt returned procedural `BLOCKED` before running any check.
+The dispatch named `adfa131` as the T3 frozen source, but Main subsequently committed the
+docs-only `RIGHTSPOT-012` audit writeback as `8c700be` while verification was active. This moved
+the Git ref under the checkpoint freeze. The verifier correctly stopped; it did not inspect the
+Operations route, create browser evidence, mutate product source, or make a product-defect claim.
+
+The product repair source remained unchanged at `3582ba4`. Main preserved the incident as a
+process/ownership result, re-established `8c700be` as the exact reviewed checkpoint, and re-gated
+the same verification Work Order. The retry must use `8c700be`, with `3582ba4` identified as the
+product source, and no commit, ref movement, or semantic source change may occur until T3 ends.
+No `RIGHTSPOT-045` closure or browser race claim is made by this procedural result.
+
+## 7.24 F-22 bounded consumer verification and closure — 2026-09-03
+
+The independent verifier retry did not return after repeated bounded waits because its browser helper
+did not terminate. Main shutdown that execution without source mutation and records this as an
+explicit independent-browser harness limitation; it is not an independent pass or a product failure.
+
+Main then verified the frozen product source at `3582ba4` / checkpoint `8c700be` with a page-local
+fetch harness. The harness held an initial `upcomingViewings` response, changed to a newer
+`listingPipeline` read, resolved the newer valid empty result first, and resolved the older response
+afterward. The rendered page remained `Listing pipeline` with `No matching records`. A second run
+resolved a newer `Haringey` listing success and rejected an older `Islington` read; the page retained
+`Northfield Garden Flat`, showed no stale error, and ended with loading false. This is direct rendered
+evidence for late success, late error, and stale completion protection.
+
+The ordinary browser pass loaded both real Operations query families, confirmed the authorized request
+link, signed-out and wrong-role gating, meaningful content, no framework overlay, and no page errors.
+At `320x800`, `768x800`, and `1280x800`, document width matched the viewport with no horizontal
+overflow. The existing independent `RIGHTSPOT-044` evidence remains authoritative for the complete
+request drill-down, exact API projection/count/privacy, bounded failure/retry, keyboard/skip-link, and
+no-mutation matrix because this repair changed only the Operations consumer's async state lifecycle.
+
+Under Node `v24.20.0` / npm `11.19.0`, complete tests `186/186`, typecheck, production build,
+repository validators, sensitive scan, and RightSpot `git diff --check` passed. The known dynamic
+SQLite filesystem-tracing warning remains a deployment residual. `RIGHTSPOT-045` is therefore
+`CLOSED_VERIFIED` only for the bounded manual Operations latest-read consumer boundary. It does not
+claim an independent browser-helper pass, Operations WebMCP capability, deployment readiness, or any
+change to API, domain, projection, persistence, role/privacy, navigation, or other product scope.

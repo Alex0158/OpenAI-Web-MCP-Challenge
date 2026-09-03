@@ -82,13 +82,15 @@ with healthy health.
   guard, an older Operations success, error, or `finally` callback could overwrite or finish a newer
   logical read after report switching or overlapping requests. The browser race was not reproduced in
   that audit harness, so no new runtime race claim was made. Main registered `RIGHTSPOT-045` as the
-  bounded consumer-only repair; it does not reopen 044 or block this audit lane. Audit worker Dewey
+  bounded consumer-only repair; it is now `CLOSED_VERIFIED` at product source `3582ba4` from
+  Main-controlled race evidence, with the independent-browser harness limitation explicitly recorded.
+  It does not reopen 044 or block this audit lane. Audit worker Dewey
   (`01a0655c-c292-7cd1-9560-ca612d64ea1e`) made no source or canonical-document changes.
-- Next gate: Continue the cross-layer audit after the `RIGHTSPOT-045` verification checkpoint against
-  the latest Main source. Register another follow-on Task only after reproducing a new bounded gap and
-  recording its owner, scope, and acceptance gate.
+- Next gate: Continue the cross-layer audit against the latest Main source after the now-closed
+  `RIGHTSPOT-045` checkpoint. Register another follow-on Task only after reproducing a new bounded gap
+  and recording its owner, scope, and acceptance gate.
 - Execution posture: `READ_ONLY_ADVISORY`; the Advisor may inspect the current implementation and run safe, bounded verification, but must not implement findings or write canonical product truth.
-- Dependencies: Current RightSpot source, tests, runtime evidence where safely available, and the accepted documentation/decision hierarchy. `RIGHTSPOT-008` and its `RIGHTSPOT-020` implementation are closed within the bounded ADR-RS-0013 direction; `RIGHTSPOT-009` is closed as `REVIEWED_DEFERRED`; `RIGHTSPOT-010` is closed as a reviewed staged decision; `RIGHTSPOT-044` is `CLOSED_VERIFIED` for the manual Operations surface; and `RIGHTSPOT-045` is the separately registered consumer repair currently awaiting independent verification. None authorizes unregistered implementation behavior.
+- Dependencies: Current RightSpot source, tests, runtime evidence where safely available, and the accepted documentation/decision hierarchy. `RIGHTSPOT-008` and its `RIGHTSPOT-020` implementation are closed within the bounded ADR-RS-0013 direction; `RIGHTSPOT-009` is closed as `REVIEWED_DEFERRED`; `RIGHTSPOT-010` is closed as a reviewed staged decision; `RIGHTSPOT-044` is `CLOSED_VERIFIED` for the manual Operations surface; and `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its bounded Operations consumer repair boundary. None authorizes unregistered implementation behavior.
 
 ## Bounded objective
 
