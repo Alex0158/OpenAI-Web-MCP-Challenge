@@ -1,7 +1,7 @@
 # WebMCP Re-entry Workflow — Current Project Status
 
 **Role:** CANONICAL current project and evidence truth  
-**As of:** 2026-09-03, Europe/London  
+**As of:** 2026-09-04, Europe/London  
 **Selected direction:** Re-entry Core with Sleepless Kingdom as the first Host application  
 **Host application:** Sleepless Kingdom, selected by ADR-0042  
 **Agent continuation adapter:** Unselected  
@@ -21,6 +21,12 @@ retained v0.1/v0.2 ACK profiles remain effect-backed. TASK-035, TASK-029, TASK-0
 binding, explicit notification-protocol transition, supported runtime proof, and product adoption.
 The evidence below remains valid only for its named unchanged profiles. The fresh-child Browser
 probe is historical preview evidence, not the prerequisite for the selected existing-task route.
+
+ADR-0047's separate, default-disabled experimental Desktop client is implemented under
+[CLOUD-027](../Development/CLOUD-027-experimental-desktop-bridge-probe.md). The current App rejected
+its local process identity before catalog/task readback; no new wake input was submitted. Frozen
+MVP 1's earlier same-task success remains build-specific. The supported product Adapter and durable
+enrollment remain open, and no Game/deployment change is included.
 
 The project has implemented and locally verified the application-neutral Re-entry Core at the
 scope accepted by ADR-0006 through ADR-0014. RECORE-001 through RECORE-004, RECORE-006, and the
@@ -388,9 +394,10 @@ Experiments, and frozen evidence rather than this status file.
 
 1. Finish [TASK-001](../Tasks/TASK-001-select-host-application.md) exact documentation and remote
    closure without absorbing owner-held Game or RightSpot work.
-2. Specify trusted enrollment and durable private existing-task binding under TASK-035, alongside
-   TASK-029's explicit notification receipt, recovery, and protocol-transition contract. Preserve
-   current v0.1/v0.2 compatibility; do not silently repurpose effect ACKs.
+2. Resolve TASK-035's legitimate external-client admission into the owning Desktop runtime after
+   CLOUD-027's peer rejection, before another live probe. Trusted enrollment/private binding and
+   TASK-029's notification receipt/recovery specification may progress in parallel, but do not
+   unblock runtime admission. Preserve v0.1/v0.2 compatibility; do not repurpose effect ACKs.
 3. Select and verify actual same-task notification/wake and authenticated canonical-Game-page
    access with fresh WebMCP under TASK-034. Do not substitute a fresh session to pass the gate.
 4. Prove signal 1 as queue acceptance, notification handoff, actual task wake, page reads, and

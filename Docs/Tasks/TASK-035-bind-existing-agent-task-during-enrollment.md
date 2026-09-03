@@ -9,12 +9,12 @@
 - Lifecycle: `blocked`
 - Priority: `P0`
 - Owner: Local Connector/Agent Adapter owner, with Receiver and Host SDK owners.
-- Current increment: CLOUD-026 completed the installed-runtime check and one bounded queue
-  diagnostic: input persisted, but no same-task wake was observed at the 142-second readback.
-  A private binding/notification contract is drafted, not accepted or implemented.
-- Next gate: Establish supported access to the owning Desktop runtime, or obtain an explicit owner
-  decision for a separately labelled local experimental bridge. Review that route before another
-  live probe or implementation. The binding contract must then name trusted task selection,
+- Current increment: ADR-0047's isolated experimental client is implemented; CLOUD-027 records
+  current-build native peer rejection before catalog/task readback. No new B1 input was submitted.
+  Preserve CLOUD-026's queue result and retained input; do not weaken App peer authorization.
+- Next gate: Establish a legitimate App-recognized admission route for an external Connector into
+  the owning existing-task runtime before reopening the live probe. No supported production Adapter
+  is selected. The binding contract must then name trusted task selection,
   ownership/Grant verification, private persistence, restart, wrong-task, and unsupported-runtime
   tests; a manually targeted transport probe does not close enrollment.
 - Dependencies: ADR-0014 and ADR-0046 for the first binding/driver specification. TASK-029's receipt
@@ -41,8 +41,9 @@ owns activation, while TASK-029 separately owns notification settlement and prot
 
 This is `Assured`: task ownership, private locator custody, persistence, and cross-layer identity
 are affected. The conservative option is to retain previews while keeping selected-product claims
-blocked. The selected next increment specifies and verifies the narrow binding path; a generic
-multi-Agent registry or cloud-owned raw task database is out of scope.
+blocked. The immediate next gate resolves legitimate owning-runtime admission after CLOUD-027's
+peer rejection. Narrow binding/receipt specification may proceed in parallel, but cannot unblock
+native access. A generic multi-Agent registry or cloud-owned raw task database is out of scope.
 
 The contract must cover trusted selection/capture, enrollment cancellation and partial failure,
 duplicate approval, wrong account/Grant/Adapter, missing or retired task, local-store permissions,
@@ -72,3 +73,8 @@ ADR-0046.
 [CLOUD-026](../Development/CLOUD-026-bound-task-driver-feasibility.md) records installed-version
 differences, queue versus tool-output semantics, and the bounded existing-task diagnostic. It does
 not select a product driver or replace the reviewed enrollment, privacy, and receipt gates above.
+
+The owner subsequently approved [ADR-0047](../Decisions/ADR-0047-authorize-local-desktop-bridge-probe.md).
+[CLOUD-027](../Development/CLOUD-027-experimental-desktop-bridge-probe.md) owns the separate native
+Desktop experiment and the live `missing-code-signing-identity` rejection. Frozen MVP 1 remains
+read-only, build-specific same-task success evidence, not current external-client admission proof.

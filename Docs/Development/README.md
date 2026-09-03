@@ -150,9 +150,14 @@ companion implementation detail for CLOUD-015; it does not own a separate lifecy
 status.
 
 The [CLOUD-026 bound-task driver feasibility record](CLOUD-026-bound-task-driver-feasibility.md)
-records a persisted inert queue input without observed same-task wake at 142 seconds. TASK-035's
-owning-runtime admission gate is blocked; no product Adapter is selected and retained effect-backed
-profiles are unchanged.
+records a persisted inert queue input without observed same-task wake at 142 seconds. That route's
+owning-runtime admission gate remained blocked; no product Adapter was selected and retained
+effect-backed profiles are unchanged.
+
+The [CLOUD-027 experimental Desktop bridge record](CLOUD-027-experimental-desktop-bridge-probe.md)
+owns the separately approved ADR-0047 native-route experiment: isolated client implemented, but
+current-build peer authorization rejected preflight before any new send. CLOUD-026 and frozen MVP
+evidence are preserved; no supported product driver is selected.
 
 ## Verification reports
 

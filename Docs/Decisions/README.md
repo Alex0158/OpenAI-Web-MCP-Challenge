@@ -1,8 +1,8 @@
 # Decision Register
 
 **Role:** DECISION index  
-**Status:** Accepted decisions current through ADR-0046; ADR-0034 remains pending approval
-**Last updated:** 2026-09-03
+**Status:** Accepted decisions current through ADR-0047; ADR-0034 remains pending approval
+**Last updated:** 2026-09-04
 
 This directory records accepted durable choices and their consequences. A decision record owns
 only the surface named in that record. Current implementation and evidence state remain owned by
@@ -63,6 +63,7 @@ ADR-0026 remains a separately labelled preview, not the selected product route.
 | [ADR-0044](ADR-0044-allow-conforming-receiver-implementations.md) | Accepted | Keep one normative Receiver authority model while permitting independently implemented Receivers only behind pinned black-box conformance and exact-source release gates |
 | [ADR-0045](ADR-0045-adopt-standing-transport-profile-v0.2.md) | Accepted | Add explicit v0.2 Host, HTTP, Connector, and Agent Adapter dispatch without changing or downgrading v0.1 |
 | [ADR-0046](ADR-0046-restore-bound-task-notification-continuation.md) | Accepted product target; implementation/transition open | Restore existing-task continuity and notification-only settlement; preserve exact retained effect-backed profiles until explicit transition |
+| [ADR-0047](ADR-0047-authorize-local-desktop-bridge-probe.md) | Accepted bounded experiment only | Authorize one local, disableable native Desktop messaging/wake probe without selecting a production Adapter |
 
 ## Pending approval
 

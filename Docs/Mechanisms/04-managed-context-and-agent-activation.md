@@ -21,6 +21,11 @@ bounded and explicit, without monitoring Game completion or promising unlimited 
 
 ## Responsibility
 
+[ADR-0047](../Decisions/ADR-0047-authorize-local-desktop-bridge-probe.md) separately authorizes a
+default-disabled native Desktop messaging/wake experiment. CLOUD-027 implements the isolated client,
+but current-build peer authorization rejected its real preflight before any new send. It is not a
+product Adapter, Grant binding, notification receipt, or relaxation of the selected contract above.
+
 This module converts one valid delivery lease and private continuation receipt into one bounded,
 credential-free activation attempt against the exact managed Agent context selected by private
 Receiver-issued authority.
