@@ -12,7 +12,7 @@ const DECISION_TOKEN = "standing_fresh_process_decision_token";
 const CONTROL_TOKEN = "standing_fresh_process_control_token";
 const EFFECT_TOKEN = "standing_fresh_process_effect_token";
 
-test("standing pending Delivery survives OS termination and fresh-process recovery", async (t) => {
+test("standing Delivery rolls back a killed transaction and recovers after restart", async (t) => {
   const directory = await mkdtemp(join(tmpdir(), "webmcp-standing-fresh-process-"));
   const databasePath = join(directory, "receiver.sqlite");
   const keys = generateKeyPairSync("ed25519");
@@ -36,11 +36,39 @@ test("standing pending Delivery survives OS termination and fresh-process recove
   assert.notEqual(firstStart.pid, globalThis.process.pid);
   assert.equal(firstStart.sqliteLoaded, true);
 
-  const prepared = await child.request("prepare");
+  const prepared = await child.request("prepare", { acceptEvent: false });
   assert.equal(prepared.approval.status, "approved");
   assert.equal(prepared.approval.binding.last_event_sequence, 0);
-  assert.equal(prepared.acceptance.accepted, true);
-  assert.equal(prepared.acceptance.duplicate, false);
+  assert.equal(prepared.acceptance, undefined);
+
+  assert.deepEqual(await child.request("armCrashAfterDeliveryWrite"), { armed: true });
+  await assert.rejects(
+    child.request("accept", { envelope: prepared.envelope }),
+    { code: "profile_process_exited" },
+  );
+  assert.deepEqual(await child.terminate(), { code: null, signal: "SIGKILL" });
+  child = undefined;
+
+  child = spawnProcess(fixtureUrl);
+  const secondStart = await child.request("start", {
+    databasePath,
+    privateKeyPem,
+    publicKeyPem,
+  });
+  assert.notEqual(secondStart.pid, firstStart.pid);
+  assert.equal(secondStart.sqliteLoaded, true);
+
+  const afterTransactionCrash = await child.request("inspect", {
+    bindingId: prepared.approval.binding.binding_id,
+  });
+  assert.equal(afterTransactionCrash.last_event_sequence, 0);
+  assert.equal(afterTransactionCrash.active_activations, 0);
+  assert.equal(afterTransactionCrash.status, "active");
+  assert.equal(await child.request("inspectEvent", { eventId: prepared.event.event_id }), null);
+
+  const acceptance = await child.request("accept", { envelope: prepared.envelope });
+  assert.equal(acceptance.accepted, true);
+  assert.equal(acceptance.duplicate, false);
 
   const beforeCrash = await child.request("inspect", {
     bindingId: prepared.approval.binding.binding_id,
@@ -61,13 +89,13 @@ test("standing pending Delivery survives OS termination and fresh-process recove
   assert.equal(persisted.includes(Buffer.from(EFFECT_TOKEN)), false);
 
   child = spawnProcess(fixtureUrl);
-  const secondStart = await child.request("start", {
+  const thirdStart = await child.request("start", {
     databasePath,
     privateKeyPem,
     publicKeyPem,
   });
-  assert.notEqual(secondStart.pid, firstStart.pid);
-  assert.equal(secondStart.sqliteLoaded, true);
+  assert.notEqual(thirdStart.pid, secondStart.pid);
+  assert.equal(thirdStart.sqliteLoaded, true);
 
   const afterRestart = await child.request("inspect", {
     bindingId: prepared.approval.binding.binding_id,
@@ -80,6 +108,7 @@ test("standing pending Delivery survives OS termination and fresh-process recove
     },
     { status: "active", last_event_sequence: 1, active_activations: 1 },
   );
+  assert.ok(await child.request("inspectEvent", { eventId: prepared.event.event_id }));
 
   const claim = await child.request("claim", { claimToken: prepared.claimToken });
   assert.equal(claim.duplicate, false);

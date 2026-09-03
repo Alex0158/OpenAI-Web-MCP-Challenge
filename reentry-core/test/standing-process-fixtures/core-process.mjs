@@ -32,6 +32,7 @@ const CANONICAL_URL = `${HOST_ORIGIN}/workflows/${WORKFLOW_ID}`;
 let runtime;
 let identifier = 0;
 const effects = new Map();
+let crashAfterDeliveryWrite = false;
 
 serveProfileProcess({
   start(input) {
@@ -39,7 +40,7 @@ serveProfileProcess({
     requireStartInput(input);
     const privateKey = createPrivateKey(input.privateKeyPem);
     const publicKey = createPublicKey(input.publicKeyPem);
-    const store = new SqliteReceiverStore({ filename: input.databasePath });
+    const store = createFaultInjectableStore(input.databasePath);
     const host = new StandingReentryHostSdk({
       origin: HOST_ORIGIN,
       privateKey,
@@ -117,6 +118,7 @@ serveProfileProcess({
       },
     });
     effects.clear();
+    crashAfterDeliveryWrite = false;
     runtime = { core, host, store, binding: undefined };
     return {
       pid: process.pid,
@@ -124,7 +126,7 @@ serveProfileProcess({
     };
   },
 
-  prepare() {
+  prepare({ acceptEvent = true } = {}) {
     requireRuntime();
     if (runtime.binding) throw profileError("standing_process_already_prepared");
     const now = new Date();
@@ -173,7 +175,7 @@ serveProfileProcess({
       body: event.body,
       headers: event.headers,
     };
-    const acceptance = runtime.core.acceptEvent(envelope);
+    const acceptance = acceptEvent ? runtime.core.acceptEvent(envelope) : undefined;
     runtime.binding = approval.binding;
     return {
       approval,
@@ -184,9 +186,25 @@ serveProfileProcess({
     };
   },
 
+  accept({ envelope }) {
+    requireRuntime();
+    return runtime.core.acceptEvent(envelope);
+  },
+
   inspect({ bindingId }) {
     requireRuntime();
     return runtime.core.inspectGrant({ bindingId, controlToken: CONTROL_TOKEN });
+  },
+
+  inspectEvent({ eventId }) {
+    requireRuntime();
+    return runtime.store.getStandingEventById(eventId) ?? null;
+  },
+
+  armCrashAfterDeliveryWrite() {
+    requireRuntime();
+    crashAfterDeliveryWrite = true;
+    return { armed: true };
   },
 
   claim({ claimToken }) {
@@ -245,6 +263,7 @@ async function closeRuntime() {
   const current = runtime;
   runtime = undefined;
   effects.clear();
+  crashAfterDeliveryWrite = false;
   current.store.close();
 }
 
@@ -261,6 +280,32 @@ function requireStartInput(value) {
       throw profileError("standing_process_start_invalid");
     }
   }
+}
+
+function createFaultInjectableStore(databasePath) {
+  const store = new SqliteReceiverStore({ filename: databasePath });
+  let wrapper;
+  wrapper = new Proxy(store, {
+    get(target, property) {
+      if (property === "transaction") {
+        return (callback) => target.transaction(() => callback(wrapper));
+      }
+      if (property === "insertStandingDelivery") {
+        return (...args) => {
+          const result = target.insertStandingDelivery(...args);
+          if (crashAfterDeliveryWrite) {
+            crashAfterDeliveryWrite = false;
+            process.kill(process.pid, "SIGKILL");
+            throw profileError("standing_process_crash_not_terminated");
+          }
+          return result;
+        };
+      }
+      const value = Reflect.get(target, property, target);
+      return typeof value === "function" ? value.bind(target) : value;
+    },
+  });
+  return wrapper;
 }
 
 function sqliteLoaded() {
