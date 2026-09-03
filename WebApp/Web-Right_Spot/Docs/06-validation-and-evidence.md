@@ -14,7 +14,10 @@ open behind its independent browser evidence gate. The latest bounded cross-laye
 Search response-truthfulness boundaries. The latest multi-angle audit also accepted open P2 findings
 `F-25` / `RIGHTSPOT-050` for stale Tenant mutation actions after failed conflict recovery and
 `F-26` / `RIGHTSPOT-051` plus `RS-WO-047-03` for silent page-bound WebMCP registration failure.
-The chronological entries below record fixture generations,
+`F-25` / `RIGHTSPOT-050` is now closed within its bounded Tenant editor action-safety claim after
+serial Main TDD and supported ordinary conflict-recovery evidence; the injected failed-refetch browser
+branch remains an explicit harness limitation. `F-26` / `RIGHTSPOT-051` and `RS-WO-047-03` remain open
+or gated as stated below. The chronological entries below record fixture generations,
 source identity, and claim limits per checkpoint; later read-only checks did not authorize a production,
 deployment, or universal WebMCP claim, and `/api/health` remained healthy.
 
@@ -1593,6 +1596,40 @@ No browser pass was inferred from static inspection. The known `RIGHTSPOT-048` h
 role/privacy, or server-authority defect was reproduced, and no product source or fixture changed in
 this audit.
 
-**Disposition:** `RIGHTSPOT-050` and `RIGHTSPOT-051` are pending implementation gates; `RS-WO-047-03`
-is gated behind the reviewed 048 evidence decision and a new 047 source baseline. This entry does not
-close or push any WebMCP capability.
+**Disposition at this audit checkpoint:** `RIGHTSPOT-050` and `RIGHTSPOT-051` were pending
+implementation gates; `RS-WO-047-03` was gated behind the reviewed 048 evidence decision and a new
+047 source baseline. This entry did not close or push any WebMCP capability. `RIGHTSPOT-050` was
+subsequently closed in the bounded repair checkpoint below.
+
+## 7.43 Tenant stale-action gate closure — `RIGHTSPOT-050` — 2026-09-03
+
+Main executed the registered `F-25` repair serially in the canonical Main Worktree. The focused
+conflict-recovery test first failed against the pre-repair editor because a failed `409` recovery read
+left no durable action-safety gate. After implementation, the focused contract passed and asserted
+that the editor's failed-recovery state withholds field edits, preferred-time Add/Remove, Save, and
+Submit; the truthful recovery-failure notice remains bounded. The successful recovery branch clears
+the gate only after an accepted `readTenantRequest()` response, while a remount begins with a fresh
+editor state. No server/API/domain/workflow, listing parent, fixture, dependency, or WebMCP path changed.
+
+The exact product/test candidate paths were `src/ui/tenant/tenant-request-page.tsx` and
+`tests/ui/tenant-conflict-recovery.test.ts`. Focused tests passed `1/1`; the complete package suite
+passed `226/226` across `47` authored test files; `npm run test:foundation` passed `6/6`; pinned
+Node `v24.20.0` / npm `11.19.0` typecheck, production build, repository validation, validator tests,
+RightSpot-scoped sensitive scanning, and `git diff --check` passed. The build retained the known
+non-blocking Operations dynamic-filesystem tracing warning at
+`src/server/persistence/operations-store.ts:104`.
+
+A fresh supported local browser replay used two Tenant surfaces over disposable fixture generation
+`88`. The competing surface advanced the request from version 1 to version 2. The stale
+`/tenant/requests` surface then issued a real stale mutation and received `409`; its recovery read
+returned version 2, rendered the bounded conflict notice, and rehydrated the editor with the server
+value `2026-10-10T10:00`. Option 1, Save, and Submit were confirmed enabled after successful recovery.
+The fixture was reset to generation `89`. The in-app browser URL policy blocked the temporary proxy
+needed to force a failed recovery read, so no browser claim is made for that injected branch. Its
+behavior is covered by the focused source/contract assertions, and the limitation is not treated as a
+product pass or failure.
+
+Main reviewed the exact diff and preserved unrelated Web-Game changes and protected RightSpot
+untracked artifacts. This is a bounded consumer closure, not a claim about the separate dynamic-route
+`F-08` evidence gap, the paused `RIGHTSPOT-047` capability, or the `BLOCKED_HARNESS` `RIGHTSPOT-048`
+gate.

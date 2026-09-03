@@ -375,12 +375,15 @@ eight-path write set or any temporary Worktree.
 repair for the separate two-path Search response compatibility boundary; it does not
 authorize a WebMCP or server change.
 
-The 2026-09-03 cross-layer audit then registered `RIGHTSPOT-050` for the Tenant stale-action gate
-after failed conflict recovery and `RIGHTSPOT-051` for the Tenant Search WebMCP
-registration-observability gap. Both are pending and have not changed product source. The Agent-side
-registration-observability portion of the same `F-26` finding is a bounded repair checkpoint under the
-still-open `RIGHTSPOT-047`, not a duplicate parent Task. `RIGHTSPOT-048` remains a harness-blocked
-evidence gate and `RIGHTSPOT-012` remains the non-blocking audit lane.
+The 2026-09-03 cross-layer audit registered `RIGHTSPOT-050` for the Tenant stale-action gate after
+failed conflict recovery and `RIGHTSPOT-051` for the Tenant Search WebMCP registration-observability
+gap. `RIGHTSPOT-050` is now `CLOSED_VERIFIED` within its exact shared-editor consumer boundary after
+serial Main TDD, full/static checks, and a supported ordinary conflict-recovery browser replay; the
+failed-refetch injection branch remains explicitly source-contract evidence because the in-app browser
+URL policy blocked the temporary proxy. `RIGHTSPOT-051` remains pending and has not changed product
+source. The Agent-side registration-observability portion of the same `F-26` finding is a bounded repair
+checkpoint under the still-open `RIGHTSPOT-047`, not a duplicate parent Task. `RIGHTSPOT-048` remains a
+harness-blocked evidence gate and `RIGHTSPOT-012` remains the non-blocking audit lane.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.

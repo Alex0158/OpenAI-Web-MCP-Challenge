@@ -20,6 +20,21 @@ test("tenant conflict recovery is parent-owned and truthful", () => {
   assert.match(requestPage, /latest tenant view could not be refreshed\. Reload this page before trying again\./);
   assert.doesNotMatch(requestPage, /The tenant view was refreshed; review it before trying again\./);
 
+  assert.match(requestPage, /const \[isRecoveryBlocked, setIsRecoveryBlocked\] = useState\(false\);/);
+  assert.match(requestPage, /setIsRecoveryBlocked\(true\);\s*onConflictNotice\(\{/);
+  assert.match(requestPage, /setIsRecoveryBlocked\(false\);\s*onSaved\(refreshed\);/);
+
+  const editorSource = requestPage.match(
+    /export function TenantRequestEditor[\s\S]*?\n\}\n\nfunction TenantResponse/,
+  )?.[0];
+  assert.ok(editorSource, "missing tenant request editor source");
+  assert.match(editorSource, /event\.preventDefault\(\);\s*if \(isRecoveryBlocked\) return;/);
+  assert.match(editorSource, /async function saveDraft[\s\S]*?if \(isRecoveryBlocked\) return;[\s\S]*?updateTenantDraft/);
+  assert.match(editorSource, /async function submitDraft[\s\S]*?if \(isRecoveryBlocked\) return;[\s\S]*?submitTenantRequest/);
+  assert.match(editorSource, /<fieldset className=\{styles\.fieldset\} disabled=\{isPending \|\| isRecoveryBlocked\}>/);
+  assert.match(editorSource, /disabled=\{isPending \|\| isRecoveryBlocked\}/);
+  assert.match(editorSource, /disabled=\{isPending \|\| isRecoveryBlocked \|\| !request/);
+
   assert.match(requestPage, /const \[conflictNotice, setConflictNotice\] = useState/);
   assert.match(requestPage, /onConflictNotice=\{setConflictNotice\}/);
   assert.match(requestPage, /conflictNotice\.tone/);

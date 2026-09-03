@@ -93,7 +93,8 @@ with healthy health.
   routes returned `200`, bounded `401`/`403`/`404` API boundaries held, health returned `200`, and the
   SQLite hash/mtime stayed unchanged. The run intentionally did not mutate fixtures or perform populated
   browser actions, so it adds no new rendered happy-path claim and registers no follow-on Task.
-- Next gate: Review and execute the newly registered `RIGHTSPOT-050` and `RIGHTSPOT-051` boundaries,
+- Next gate: `RIGHTSPOT-050` is now closed within its bounded Tenant consumer action-safety claim.
+  Review and execute the remaining Tenant `RIGHTSPOT-051` registration-observability boundary,
   while retaining the 047/048 WebMCP evidence gates. Re-dispatch this audit after a meaningful source,
   route, data, permission, UI interaction, integration, or evidence increment. Register another
   follow-on Task only after reproducing a new bounded gap and recording its owner, scope, and
@@ -806,3 +807,21 @@ remain low-severity maintenance polish and are not independently actionable.
 The next Main gate is to review the Red contracts for `RIGHTSPOT-050` and `RIGHTSPOT-051`, keep
 `RS-WO-047-03` gated until the 048 evidence decision permits a new 047 baseline, and re-run the audit
 only after a meaningful source or evidence increment. This report authorized no source change.
+
+## Latest bounded repair closure — `RIGHTSPOT-050` — 2026-09-03
+
+Main completed the registered `F-25` repair serially in the canonical Main Worktree. The focused
+conflict-recovery contract first reproduced the missing action-safety gate, then passed after the
+shared Tenant request editor withheld field edits, Add/Remove, Save, and Submit while a failed
+authoritative recovery read remained unresolved. Successful `409` recovery still accepts the fresh
+server response before clearing the gate. The complete suite passed `226/226`; the focused contract
+passed `1/1`; foundation tests passed `6/6`; typecheck, production build, repository validators,
+RightSpot-scoped sensitive scanning, and `git diff --check` passed under Node `24.20.0` / npm `11.19.0`.
+
+A supported browser replay confirmed the ordinary stale `409` → fresh `200` branch and re-enabled
+controls after rendering the latest request version. The in-app browser URL policy prevented
+injection of the failed-refetch branch, so no browser claim is made for that branch; focused source
+and behavior assertions remain its evidence. The disposable fixture was reset to generation `89`.
+`RIGHTSPOT-050` is closed within its exact Tenant consumer boundary. `RIGHTSPOT-051` remains the next
+Tenant WebMCP registration-observability gate; the Agent portion remains gated under `RIGHTSPOT-047`,
+and the 048 browser-harness decision remains unchanged.

@@ -1,7 +1,7 @@
 # RIGHTSPOT-050 — Withhold stale Tenant mutation actions after failed conflict recovery
 
 **Type:** `defect`  
-**Lifecycle:** `pending`  
+**Lifecycle:** `closed`  
 **Priority:** `P2` for tenant action safety and state truthfulness  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-03  
@@ -15,14 +15,16 @@ and the Tenant request rules in [`07-business-flows-and-scenarios.md`](../07-bus
 - **Objective:** When a Tenant request mutation receives a stale-write `409` and the recovery read
   also fails, prevent the still-rendered old request from being edited or submitted as if it were
   current in both Tenant request surfaces.
-- **Execution posture:** `MAIN_THREAD_SERIAL_REPAIR` — bounded UI-consumer repair; no external
-  dispatch or Worktree is required unless Main later determines that an isolated writer is safer.
+- **Execution posture:** `CLOSED_VERIFIED` — bounded UI-consumer repair completed serially in the
+  canonical Main Worktree; no external dispatch or implementation Worktree was required.
 - **Blocking status:** Non-blocking to `RIGHTSPOT-047` and `RIGHTSPOT-048`; it does not change the
   Agent Operations WebMCP candidate or the shared role-page lifecycle gate.
-- **Current increment:** Register and review the failure-gate behavior, then prove it with a focused
-  Red → Green → Refactor regression before any implementation closure claim.
-- **Next gate:** Add the failing focused contract, implement the smallest parent/editor state gate,
-  run the complete bounded verification ladder, and update the current flow/evidence records.
+- **Current increment:** Complete. The focused contract failed against the pre-repair implementation,
+  then passed after the smallest editor-owned failed-recovery gate was added; the full bounded
+  verification ladder and the supported normal conflict-recovery browser branch also passed.
+- **Next gate:** No open 050 implementation or verification gate remains. Main must commit this
+  coherent source/test/documentation checkpoint and return to the separate Tenant WebMCP
+  registration-observability gate in `RIGHTSPOT-051`.
 - **Source baseline at registration:** Main `7650db00cc60d23b262b6c506c81e8913ad4d3ca`; the
   RightSpot source/test paths were clean, while the existing validation-ledger edit and protected
   untracked artifacts were excluded from this Task's product write set.
@@ -166,17 +168,48 @@ Close this Task only when all are true:
 
 ### RS-WO-050-01 — Withhold stale Tenant actions after failed recovery
 
-**Status:** `DRAFT`  
+**Status:** `CLOSED_VERIFIED`  
 **Role:** Main-thread Tenant UI Builder and verifier  
 **Parallelization:** `SERIAL_TENANT_CONFLICT_RECOVERY_GATE` — the request editor and both parent
 surfaces form one small consumer boundary; no parallel writer is admitted  
-**Dispatch:** Not dispatched; Main first completes the Red contract and rechecks the source boundary  
+**Dispatch:** Not dispatched; Main completed the serial repair directly in the canonical Main Worktree  
 **Execution mode:** Canonical Main Worktree; no extra Worktree planned  
 **Worker write set:** the three source/test paths in the Main write set above  
 **Main writeback set:** this Task File, current status, business-flow catalogue, validation ledger,
 roadmap, and exact Git closure records  
 **Stop condition:** If the gate needs a server/API/domain decision, a new user-visible workflow state,
-the dynamic-route `F-08` read sequencing, or a new dependency, stop and return to Main's decision gate.
+  the dynamic-route `F-08` read sequencing, or a new dependency, stop and return to Main's decision gate.
+
+## Closure evidence — 2026-09-03
+
+Main reproduced the focused Red state before implementation: the failed `409` recovery-read branch
+retained the truthful failure notice but had no independent action-safety gate. The focused contract
+then passed Green after `TenantRequestEditor` added `isRecoveryBlocked`, explicit guards for field and
+mutation handlers, and disabled-state exposure for the existing fieldset, Save, and Submit controls.
+The successful conflict branch clears the gate only after `readTenantRequest()` returns an accepted
+authoritative response; a remount also starts with a fresh editor state. No server/API/domain/workflow,
+listing, fixture, dependency, shared-shell, or `tenant-listing-page.tsx` behavior changed.
+
+The exact product/test paths were `src/ui/tenant/tenant-request-page.tsx` and
+`tests/ui/tenant-conflict-recovery.test.ts`. The focused test passed `1/1`; the complete package suite
+passed `226/226` across `47` authored test files; `test:foundation` passed `6/6`; non-incremental
+typecheck, production build, repository validation, validator tests, RightSpot-scoped sensitive scan,
+and `git diff --check` passed under Node `v24.20.0` / npm `11.19.0`. The build retained only the known
+Operations dynamic-filesystem tracing warning at `src/server/persistence/operations-store.ts:104`.
+
+In a fresh supported local browser session, a competing Tenant surface first advanced the disposable
+request from version 1 to version 2. The stale `/tenant/requests` editor then attempted a write and
+received the real `409` response; its recovery read returned version 2, the UI rendered the bounded
+conflict notice, and the editor rehydrated with the server's `2026-10-10T10:00` value. Post-recovery
+Option, Save, and Submit controls were enabled again. The disposable fixture was reset to generation
+`89` after the replay. This proves the successful recovery branch only; the in-app browser URL policy
+blocked a temporary proxy needed to inject a failed recovery read, so no browser claim is made for
+that injected failure branch. The failed branch remains covered by the focused source contract and its
+bounded state/action assertions.
+
+Main reviewed the exact diff and preserved all unrelated Web-Game and RightSpot boundary artifacts.
+No Git index, commit, push, Worktree, cleanup, or generated-artifact change was made by the Builder
+checkpoint; the Main closure commit is the next and final Git action for this Task.
 
 ## Stop and reopen conditions
 
@@ -190,7 +223,9 @@ privacy, or role semantics.
 
 ## Current disposition
 
-`F-25` is a verified P2 Tenant consumer defect registered from the 2026-09-03 cross-layer audit.
+`F-25` was a verified P2 Tenant consumer defect registered from the 2026-09-03 cross-layer audit.
 The existing server conflict/version guard remains authoritative and the current truthful error copy
-is retained. The next action is a focused TDD repair in the canonical Main Worktree; no dispatch has
-occurred and no source behavior has changed by registering this Task.
+is retained. The serial Main repair now withholds stale edits and Save/Submit after a failed recovery
+read in both consumers of the shared editor, while successful recovery remains reviewable and usable.
+`RIGHTSPOT-050` is closed within this bounded Tenant consumer action-safety claim; it does not claim
+browser evidence for an injected failed-refetch branch, change server authority, or reopen `F-08`.

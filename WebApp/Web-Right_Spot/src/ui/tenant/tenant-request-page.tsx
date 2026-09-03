@@ -298,10 +298,12 @@ export function TenantRequestEditor({
   const [tenantNote, setTenantNote] = useState(request?.tenantNote ?? "");
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
+  const [isRecoveryBlocked, setIsRecoveryBlocked] = useState(false);
   const [savedSignature, setSavedSignature] = useState(() => signature(times, tenantNote));
   const dirty = savedSignature !== signature(times, tenantNote);
 
   function updateTime(index: number, value: string) {
+    if (isRecoveryBlocked) return;
     setTimes(times.map((time, currentIndex) => currentIndex === index ? value : time));
     setError(null);
     onFeedbackChange?.(null);
@@ -330,6 +332,7 @@ export function TenantRequestEditor({
 
   async function saveDraft(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isRecoveryBlocked) return;
     onFeedbackChange?.(null);
     const preferredTimes = validateTimes();
     if (!preferredTimes) return;
@@ -365,6 +368,7 @@ export function TenantRequestEditor({
   }
 
   async function submitDraft() {
+    if (isRecoveryBlocked) return;
     if (!request || request.state !== "TENANT_DRAFT" || dirty) return;
     setIsPending(true);
     onPendingChange?.(true);
@@ -390,12 +394,14 @@ export function TenantRequestEditor({
     if (isTenantApiError(errorValue) && errorValue.status === 409) {
       try {
         const refreshed = await readTenantRequest();
+        setIsRecoveryBlocked(false);
         onSaved(refreshed);
         onConflictNotice({
           tone: "status",
           message: "The request changed on the server. The latest tenant view is shown; review it before trying again.",
         });
       } catch {
+        setIsRecoveryBlocked(true);
         onConflictNotice({
           tone: "error",
           message: "The request changed on the server, but the latest tenant view could not be refreshed. Reload this page before trying again.",
@@ -417,7 +423,7 @@ export function TenantRequestEditor({
       </div>
       <p className={styles.editorIntro}>Use Europe/London times. Saving keeps the request as a draft; submission remains a separate, visible action.</p>
       <form onSubmit={saveDraft}>
-        <fieldset className={styles.fieldset} disabled={isPending}>
+        <fieldset className={styles.fieldset} disabled={isPending || isRecoveryBlocked}>
           <legend>Preferred viewing times</legend>
           <p className={styles.fieldHint}>Add one to three options in chronological order so the property agent can compare them quickly.</p>
           {times.map((time, index) => (
@@ -432,6 +438,7 @@ export function TenantRequestEditor({
                   type="button"
                   aria-label={`Remove preferred viewing time option ${index + 1}`}
                   onClick={() => {
+                    if (isRecoveryBlocked) return;
                     setTimes(times.filter((_, currentIndex) => currentIndex !== index));
                     setError(null);
                     onFeedbackChange?.(null);
@@ -442,10 +449,10 @@ export function TenantRequestEditor({
               ) : null}
             </div>
           ))}
-          {times.length < 3 ? <button className="button button-quiet" type="button" onClick={() => { setTimes([...times, ""]); onFeedbackChange?.(null); }}>Add another time</button> : null}
+          {times.length < 3 ? <button className="button button-quiet" type="button" onClick={() => { if (isRecoveryBlocked) return; setTimes([...times, ""]); onFeedbackChange?.(null); }}>Add another time</button> : null}
           <label className={styles.noteField}>
             Note for the property agent (optional)
-            <textarea maxLength={500} rows={4} value={tenantNote} onChange={(event) => { setTenantNote(event.target.value); setError(null); onFeedbackChange?.(null); }} />
+            <textarea maxLength={500} rows={4} value={tenantNote} onChange={(event) => { if (isRecoveryBlocked) return; setTenantNote(event.target.value); setError(null); onFeedbackChange?.(null); }} />
             <span>Keep this to access or scheduling information the agent needs.</span>
           </label>
         </fieldset>
@@ -456,14 +463,14 @@ export function TenantRequestEditor({
               <span aria-hidden="true">01</span>
               <div><strong>Save the draft</strong><p>Keep the times editable and review the server response.</p></div>
             </div>
-            <button className="button button-quiet" type="submit" disabled={isPending}>{isPending ? "Saving…" : "Save draft"}</button>
+            <button className="button button-quiet" type="submit" disabled={isPending || isRecoveryBlocked}>{isPending ? "Saving…" : "Save draft"}</button>
           </div>
           <div className={`${styles.actionStep} ${styles.submitStep}`}>
             <div className={styles.actionStepCopy}>
               <span aria-hidden="true">02</span>
               <div><strong>Submit to the agent</strong><p>This explicit action moves the saved draft into review.</p></div>
             </div>
-            <button className="button button-primary" type="button" disabled={isPending || !request || request.state !== "TENANT_DRAFT" || dirty} onClick={submitDraft}>
+            <button className="button button-primary" type="button" disabled={isPending || isRecoveryBlocked || !request || request.state !== "TENANT_DRAFT" || dirty} onClick={submitDraft}>
               {isPending ? "Working…" : dirty ? "Save before submit" : "Submit Viewing Request"}
             </button>
           </div>
