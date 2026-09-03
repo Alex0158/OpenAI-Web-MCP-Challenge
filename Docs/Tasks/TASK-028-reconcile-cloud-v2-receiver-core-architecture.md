@@ -263,6 +263,26 @@ not rerun for this oracle-only increment; prior `21/21` suites and `158` tests
 remain bounded evidence because Receiver production source, schema, and
 migration bytes are unchanged.
 
+## 4.7 Active-v2 delivery profile increment
+
+**VERIFIED 2026-09-03:** the active Receiver's implementation-specific delivery
+profile was rerun against the task-owned loopback PostgreSQL baseline. The focused
+test reclaims exactly three lease attempts, retires each prior claim token,
+reaches `retry_exhausted` with `attempt_limit_reached`, releases the standing slot,
+and accepts the next Event sequence without a fourth attempt.
+
+The exact command passed one suite and one test:
+`../node_modules/.bin/jest src/modules/standing/test/standing-delivery-profile.test.ts --runInBand --forceExit`.
+The run used Node `v26.5.0`, Receiver checkout
+`96227925fb7c63041fba98910fda0a0f2f17d12f2`, and the task-owned
+`127.0.0.1:55432/reentry_baseline` PostgreSQL database. No production database,
+migration, deployment, or external service was touched.
+
+This closes the active-v2 lease/reclaim profile as a local implementation check;
+it is not shared normative conformance. The distinct-Event race, forced rollback,
+fresh-process recovery, release-enforcement, public-control, lifetime, and
+production gates remain open.
+
 ## 5. Verification and closure
 
 ADR-0044 moves this decision task to `verification_pending`; it does not prove implementation

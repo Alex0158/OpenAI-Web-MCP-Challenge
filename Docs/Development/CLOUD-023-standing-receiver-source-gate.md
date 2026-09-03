@@ -387,6 +387,27 @@ production source, schema, and migration bytes are unchanged. The mandatory
 concurrent race, forced rollback, fresh-process recovery, release-enforcement,
 public-control, lifetime, and production gates remain open under TASK-028.
 
+## Active-v2 delivery profile increment: 2026-09-03
+
+The active Receiver's implementation-specific delivery profile was rerun against
+the task-owned loopback PostgreSQL baseline. One focused test reclaims exactly
+three lease attempts, retires each prior claim token, reaches
+`retry_exhausted` with `attempt_limit_reached`, releases the standing slot, and
+accepts the next Event sequence without a fourth attempt.
+
+Exact evidence for this increment:
+
+- command: `../node_modules/.bin/jest src/modules/standing/test/standing-delivery-profile.test.ts --runInBand --forceExit`;
+- Jest result: `1/1` suite and `1/1` test passed;
+- runtime: Node `v26.5.0` against the task-owned `127.0.0.1:55432/reentry_baseline` database;
+- Receiver checkout: `96227925fb7c63041fba98910fda0a0f2f17d12f2`; production standing source last changed in `9156e68`; and
+- no production database, migration, deployment, or external service was touched.
+
+This closes the active-v2 lease/reclaim profile as a local implementation
+check. It is not shared normative conformance: the full distinct-Event race,
+forced rollback, fresh-process recovery, release-enforcement, public-control,
+lifetime, and production gates remain open under TASK-028.
+
 ## Shared duplicate-vector increment: 2026-09-03
 
 The shared standing-v0.2 scenario now submits the same signed Event envelope
