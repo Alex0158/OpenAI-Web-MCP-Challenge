@@ -7,13 +7,21 @@ import {
   renderDashboardPage,
   renderDeveloperDocsPage,
   renderConnectorAuthPage,
+  renderUserAuthPage,
+  renderUserDashboardPage,
+  renderConsoleErrorPage,
 } from "./console-pages.mjs";
 import { renderLanding } from "./landing-page.mjs";
 
 export const CLOUD_CONSOLE_ROUTES = Object.freeze({
   landing: "/",
+  developerLogin: "/developer-login",
+  developerRegister: "/developer-register",
   login: "/login",
   register: "/register",
+  userLogin: "/user-login",
+  userRegister: "/user-register",
+  userDashboard: "/user-dashboard",
   docs: "/docs",
   dashboard: "/dashboard",
   activityPage: "/dashboard/activity",
@@ -32,6 +40,24 @@ const MAX_BODY_BYTES = 32 * 1_024;
 const SESSION_COOKIE = "reentry_session";
 const COOKIE_MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
 const JSON_CONTENT_TYPE = /^application\/json(?:\s*;\s*charset=utf-8)?$/i;
+const PUBLIC_CONSOLE_ERROR_CODES = new Set([
+  "account_exists",
+  "account_not_found",
+  "api_key_not_found",
+  "credentials_invalid",
+  "email_invalid",
+  "http_body_invalid",
+  "http_body_too_large",
+  "http_content_type_invalid",
+  "http_method_not_allowed",
+  "identity_invalid",
+  "invalid_credentials",
+  "organization_name_invalid",
+  "organization_not_found",
+  "session_required",
+  "console_route_invalid",
+  "console_route_not_found",
+]);
 
 export class CloudConsoleError extends Error {
   constructor(code, statusCode, message) {
@@ -55,58 +81,86 @@ export function createCloudConsoleControlPlane(options) {
   return Object.freeze({ handler, readiness: () => options.store.ready() });
 
   async function handler(request, response) {
-    const route = parseRoute(request.url);
+    let route;
+    try {
+      route = parseRoute(request.url);
+    } catch (error) {
+      writeConsoleApiError(response, error);
+      return true;
+    }
     if (!route) return false;
 
-    if (route.kind === "page") {
-      if (route.path.startsWith("/dashboard") && !readAccount(request)) {
-        redirect(response, "/login?next=" + encodeURIComponent(route.path));
-        return true;
-      }
-      writeHtml(
-        response,
-        route.path === CLOUD_CONSOLE_ROUTES.login
-          ? route.authFlow === "connector"
-            ? renderConnectorAuthPage("login", { next: route.authNext })
-            : renderAuthPageSimple("login")
-          : route.path === CLOUD_CONSOLE_ROUTES.register
-            ? route.authFlow === "connector"
-              ? renderConnectorAuthPage("register", { next: route.authNext })
-              : renderAuthPageSimple("register")
-            : route.path === CLOUD_CONSOLE_ROUTES.docs
-              ? renderDeveloperDocsPage()
-            : route.path === CLOUD_CONSOLE_ROUTES.organizationsPage
-              ? renderOrganizationChooserPage()
-            : route.view === "organization"
-              ? renderOrganizationDashboardPage(route.view, route.organizationId)
-            : route.path.startsWith("/dashboard")
-              ? renderDashboardPage(route.view, route.organizationId)
-              : renderLanding(),
-      );
-      return true;
-    }
-
-    if (route.kind === "organization-page") {
-      if (!readAccount(request)) {
-        redirect(response, "/login?next=" + encodeURIComponent(route.path));
-        return true;
-      }
-      writeHtml(response, renderOrganizationDashboardPage(route.view, route.organizationId));
-      return true;
-    }
-
     try {
+      if (route.kind === "legacy-redirect") {
+        redirect(response, route.location);
+        return true;
+      }
+
+      if (route.kind === "page") {
+        const account = readAccount(request);
+        if (route.path.startsWith("/dashboard") && !account) {
+          redirect(response, CLOUD_CONSOLE_ROUTES.developerLogin + "?next=" + encodeURIComponent(route.path));
+          return true;
+        }
+        if (route.path === CLOUD_CONSOLE_ROUTES.userDashboard && !account) {
+          redirect(response, CLOUD_CONSOLE_ROUTES.userLogin + "?next=" + encodeURIComponent(CLOUD_CONSOLE_ROUTES.userDashboard));
+          return true;
+        }
+        if (account && isDeveloperAuthRoute(route.path)) {
+          redirect(response, route.authNext || CLOUD_CONSOLE_ROUTES.organizationsPage);
+          return true;
+        }
+        if (account && isUserAuthRoute(route.path)) {
+          redirect(response, route.authNext || CLOUD_CONSOLE_ROUTES.userDashboard);
+          return true;
+        }
+        writeHtml(
+          response,
+          route.path === CLOUD_CONSOLE_ROUTES.userDashboard
+            ? renderUserDashboardPage()
+            : route.path === CLOUD_CONSOLE_ROUTES.userLogin
+            ? renderUserAuthPage("login", { next: route.authNext })
+            : route.path === CLOUD_CONSOLE_ROUTES.userRegister
+              ? renderUserAuthPage("register", { next: route.authNext })
+              : route.path === CLOUD_CONSOLE_ROUTES.developerLogin
+                ? route.authFlow === "connector"
+                  ? renderConnectorAuthPage("login", { next: route.authNext })
+                  : renderAuthPageSimple("login", { pairFlow: route.authFlow === "pair", next: route.authNext })
+              : route.path === CLOUD_CONSOLE_ROUTES.developerRegister
+                ? route.authFlow === "connector"
+                  ? renderConnectorAuthPage("register", { next: route.authNext })
+                  : renderAuthPageSimple("register", { pairFlow: route.authFlow === "pair", next: route.authNext })
+                : route.path === CLOUD_CONSOLE_ROUTES.docs
+                  ? renderDeveloperDocsPage()
+                : route.path === CLOUD_CONSOLE_ROUTES.organizationsPage
+                  ? renderOrganizationChooserPage()
+                : route.view === "organization"
+                  ? renderOrganizationDashboardPage(route.view, route.organizationId)
+                : route.path.startsWith("/dashboard")
+                  ? renderDashboardPage(route.view, route.organizationId)
+                  : renderLanding(account),
+        );
+        return true;
+      }
+
+      if (route.kind === "organization-page") {
+        if (!readAccount(request)) {
+          redirect(response, CLOUD_CONSOLE_ROUTES.developerLogin + "?next=" + encodeURIComponent(route.path));
+          return true;
+        }
+        writeHtml(response, renderOrganizationDashboardPage(route.view, route.organizationId));
+        return true;
+      }
+
       await handleApi(route, request, response);
+      return true;
     } catch (error) {
       if (response.headersSent || response.destroyed) return true;
-      writeJson(
-        response,
-        statusFor(error),
-        { error: { code: codeFor(error) } },
-        error instanceof CloudConsoleError && error.code === "session_required"
-          ? { "Set-Cookie": clearSessionCookie() }
-          : undefined,
-      );
+      if (route.kind === "page" || route.kind === "organization-page") {
+        writeHtml(response, renderConsoleErrorPage(), statusFor(error));
+      } else {
+        writeConsoleApiError(response, error);
+      }
     }
     return true;
   }
@@ -267,6 +321,14 @@ function parseRoute(rawUrl) {
   } catch {
     return null;
   }
+  if (url.pathname === CLOUD_CONSOLE_ROUTES.login || url.pathname === CLOUD_CONSOLE_ROUTES.register) {
+    return {
+      kind: "legacy-redirect",
+      location: (url.pathname === CLOUD_CONSOLE_ROUTES.login
+        ? CLOUD_CONSOLE_ROUTES.developerLogin
+        : CLOUD_CONSOLE_ROUTES.developerRegister) + url.search,
+    };
+  }
   let match = url.pathname.match(/^\/([^/]+)\/dashboard(?:\/(activity|pending|contracts))?$/);
   if (match) {
     return {
@@ -287,8 +349,11 @@ function parseRoute(rawUrl) {
   }
   if ([
     CLOUD_CONSOLE_ROUTES.landing,
-    CLOUD_CONSOLE_ROUTES.login,
-    CLOUD_CONSOLE_ROUTES.register,
+    CLOUD_CONSOLE_ROUTES.developerLogin,
+    CLOUD_CONSOLE_ROUTES.developerRegister,
+    CLOUD_CONSOLE_ROUTES.userLogin,
+    CLOUD_CONSOLE_ROUTES.userRegister,
+    CLOUD_CONSOLE_ROUTES.userDashboard,
     CLOUD_CONSOLE_ROUTES.docs,
     CLOUD_CONSOLE_ROUTES.dashboard,
     CLOUD_CONSOLE_ROUTES.activityPage,
@@ -308,6 +373,8 @@ function parseRoute(rawUrl) {
             ? "organizations"
           : url.pathname === CLOUD_CONSOLE_ROUTES.quickConnectPage
               ? "quick-connect"
+              : url.pathname === CLOUD_CONSOLE_ROUTES.userDashboard
+                ? "user-dashboard"
               : "overview",
       ...authContext,
     };
@@ -354,13 +421,45 @@ function parseRoute(rawUrl) {
 }
 
 function readAuthContext(url) {
-  if (![CLOUD_CONSOLE_ROUTES.login, CLOUD_CONSOLE_ROUTES.register].includes(url.pathname)) {
+  if (![CLOUD_CONSOLE_ROUTES.developerLogin, CLOUD_CONSOLE_ROUTES.developerRegister, CLOUD_CONSOLE_ROUTES.userLogin, CLOUD_CONSOLE_ROUTES.userRegister].includes(url.pathname)) {
     return {};
   }
   const flow = url.searchParams.get("flow");
   const next = url.searchParams.get("next");
-  if (flow !== "connector" || !isConnectorReturnPath(next)) return {};
+  if ([CLOUD_CONSOLE_ROUTES.userLogin, CLOUD_CONSOLE_ROUTES.userRegister].includes(url.pathname)) {
+    return { authFlow: "user", authNext: isUserAuthNext(next) ? next : CLOUD_CONSOLE_ROUTES.userDashboard };
+  }
+  if (flow === "pair" && isSafeAuthNext(next)) {
+    return { authFlow: "pair", authNext: next };
+  }
+  if (flow !== "connector" || !isConnectorReturnPath(next)) {
+    return {
+      authNext: isDeveloperAuthNext(next)
+        ? next
+        : CLOUD_CONSOLE_ROUTES.organizationsPage,
+    };
+  }
   return { authFlow: "connector", authNext: next };
+}
+
+function isSafeAuthNext(value) {
+  return typeof value === "string" && value.length <= 256 && value.startsWith("/") && !value.startsWith("//");
+}
+
+function isDeveloperAuthNext(value) {
+  return typeof value === "string"
+    && value.length <= 256
+    && (value === CLOUD_CONSOLE_ROUTES.dashboard || value.startsWith(CLOUD_CONSOLE_ROUTES.dashboard + "/"));
+}
+
+function isDeveloperAuthRoute(path) {
+  return path === CLOUD_CONSOLE_ROUTES.developerLogin
+    || path === CLOUD_CONSOLE_ROUTES.developerRegister;
+}
+
+function isUserAuthRoute(path) {
+  return path === CLOUD_CONSOLE_ROUTES.userLogin
+    || path === CLOUD_CONSOLE_ROUTES.userRegister;
 }
 
 function isConnectorReturnPath(value) {
@@ -377,6 +476,32 @@ function isConnectorReturnPath(value) {
     url.hash ||
     url.searchParams.getAll("token").length !== 1 ||
     [...url.searchParams.keys()].some((key) => key !== "token")
+  ) {
+    return false;
+  }
+  return /^[A-Za-z0-9_-]{43}$/.test(url.searchParams.get("token"));
+}
+
+function isUserAuthNext(value) {
+  return value === CLOUD_CONSOLE_ROUTES.userDashboard
+    || isConnectorReturnPath(value)
+    || isConsentReturnPath(value);
+}
+
+function isConsentReturnPath(value) {
+  if (typeof value !== "string" || value.length > 256) return false;
+  let url;
+  try {
+    url = new URL(value, "http://reentry.local");
+  } catch {
+    return false;
+  }
+  if (
+    url.origin !== "http://reentry.local"
+    || url.pathname !== "/consent"
+    || url.hash
+    || url.searchParams.getAll("token").length !== 1
+    || [...url.searchParams.keys()].some((key) => key !== "token")
   ) {
     return false;
   }
@@ -483,8 +608,20 @@ function writeJson(response, statusCode, body, headers = undefined) {
   response.end(payload);
 }
 
-function writeHtml(response, html) {
-  response.writeHead(200, {
+function writeConsoleApiError(response, error) {
+  if (response.headersSent || response.destroyed) return;
+  writeJson(
+    response,
+    statusFor(error),
+    { error: { code: codeFor(error) } },
+    error instanceof CloudConsoleError && error.code === "session_required"
+      ? { "Set-Cookie": clearSessionCookie() }
+      : undefined,
+  );
+}
+
+function writeHtml(response, html, statusCode = 200) {
+  response.writeHead(statusCode, {
     "Cache-Control": "no-store",
     "Content-Length": Buffer.byteLength(html),
     "Content-Security-Policy": "default-src 'none'; img-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
@@ -525,7 +662,11 @@ function statusFor(error) {
 }
 
 function codeFor(error) {
-  if (typeof error?.code === "string" && /^[a-z][a-z0-9_]{0,95}$/.test(error.code)) {
+  if (
+    typeof error?.code === "string" &&
+    /^[a-z][a-z0-9_]{0,95}$/.test(error.code) &&
+    PUBLIC_CONSOLE_ERROR_CODES.has(error.code)
+  ) {
     return error.code;
   }
   return "console_internal_error";

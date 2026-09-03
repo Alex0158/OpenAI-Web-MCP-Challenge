@@ -1,3 +1,7 @@
+/**
+ * @deprecated Historical Cloud Receiver console presentation layer. The local product preview is
+ * not a supported service or production integration.
+ */
 const CONSOLE_POLISH_STYLE = `
 :root{--fuchsia:#d946ef;--fuchsia-hover:#c026d3;--ink:#171717;--body:#404040;--muted:#737373;--line:#e5e5e5;--canvas:#fafafa;--surface:#fff;--dark:#171717;--cyan:#22d3ee;--yellow:#facc15;--green:#16a34a;--green-soft:#dcfce7;--blue:#2563eb;--blue-soft:#dbeafe;--red:#dc2626;--red-soft:#fee2e2;--focus:rgba(217,70,239,.2)}
 body{background:var(--canvas);color:var(--ink);font-family:"Nunito",sans-serif}[hidden]{display:none!important}a{color:inherit}.container{width:min(1200px,100%);padding-left:36px;padding-right:36px}.primary-nav{height:68px;background:rgba(250,250,250,.94);border-bottom:1px solid var(--line)}.brand{display:inline-flex;align-items:baseline;gap:8px;font:800 21px/1 "Poppins",sans-serif;letter-spacing:-.06em}.brand-word{color:var(--ink)}.brand-name{display:inline-flex;align-items:baseline;gap:8px}.brand-name small,.brand-product{color:var(--muted);font:700 10px/1 "Space Mono",monospace;letter-spacing:.1em;text-transform:uppercase}.nav-right{display:flex;align-items:center;gap:20px;color:var(--body);font-size:14px}.nav-right>a:hover{color:var(--fuchsia)}.console-nav .nav-right{gap:14px}.console-context{color:var(--muted);font:700 10px/1 "Space Mono",monospace;letter-spacing:.08em;text-transform:uppercase}.button{min-height:42px;padding:10px 17px;border:1px solid transparent;border-radius:999px;font:800 14px/1 "Nunito",sans-serif;transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease,box-shadow .18s ease}.button-primary{background:var(--fuchsia);color:#fff;box-shadow:1px 2px 4px rgba(0,0,0,.08)}.button-primary:hover{background:var(--fuchsia-hover);color:#fff;transform:translateY(-1px);box-shadow:4px 8px 14px rgba(217,70,239,.15)}.button-secondary{background:var(--surface);border-color:var(--line);color:var(--body)}.button-secondary:hover{border-color:#d946ef;color:var(--fuchsia);background:#fff}.button-tertiary{background:transparent;color:var(--body);padding-left:10px;padding-right:10px}.button-tertiary:hover{background:#fdf4ff;color:var(--fuchsia)}.button-wide{width:100%}.button:disabled{cursor:wait;opacity:.55}.utility,.eyebrow{color:var(--muted);font:700 10px/1.2 "Space Mono",monospace;letter-spacing:.1em;text-transform:uppercase}.muted{color:var(--muted)}.pill{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;font:700 10px/1.2 "Space Mono",monospace;letter-spacing:.04em}.pill-green{background:var(--green-soft);color:#166534}.pill-blue{background:var(--blue-soft);color:#1d4ed8}
@@ -8,6 +12,7 @@ body{background:var(--canvas);color:var(--ink);font-family:"Nunito",sans-serif}[
 `;
 
 const CONSOLE_EXTENSION_STYLE = `
+.pairing-section{padding:22px;border:1px solid #e9d5ff;border-radius:16px;background:linear-gradient(135deg,#fff 0%,#fdf4ff 100%)}.pairing-section .section-head{align-items:center}.pairing-section h2{margin:9px 0 0;font:700 24px/1.2 "Poppins",sans-serif;letter-spacing:-.035em}.pairing-section p{max-width:620px;margin:7px 0 0;color:var(--body);font-size:13px}.pairing-result{display:flex;align-items:center;gap:18px;margin-top:20px;padding-top:18px;border-top:1px solid #e9d5ff}.pairing-code{color:#a21caf;font:800 28px/1 "Space Mono",monospace;letter-spacing:.08em}.pairing-result-copy{min-width:0;flex:1}.pairing-result-copy p{margin:7px 0 0;color:var(--muted)}
 .dashboard-header-actions{display:flex;align-items:center;gap:18px}.dashboard-header-actions .account-chip{flex:none}.metric-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.metric-card-alert strong{color:var(--primary)}
 .activity-section{padding:22px;border:1px solid var(--hairline);border-radius:6px;background:var(--doc)}.activity-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px}.activity-head h2{margin:11px 0 0;font-size:21px;font-weight:700;line-height:1.4;letter-spacing:-.5px}.activity-head p{max-width:560px;margin:8px 0 0;color:var(--body);font-size:14px}.activity-refresh{display:flex;align-items:center;gap:9px;color:var(--mute);font-size:12px;white-space:nowrap}.activity-live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green-soft)}.activity-refresh button{border:0;background:transparent;color:var(--teal);font-size:12px;font-weight:700}.activity-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:16px;margin-top:20px}.activity-panel{min-width:0;padding:20px;border:1px solid var(--hairline-soft);border-radius:6px;background:var(--surface)}.activity-panel-dark{border-color:var(--dark);background:var(--dark);color:var(--surface)}.activity-panel-header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}.activity-panel-header h3{margin:8px 0 0;font-size:18px;font-weight:700;line-height:1.35}.activity-count{display:grid;place-items:center;min-width:30px;height:30px;padding:0 8px;border-radius:999px;background:var(--soft);color:var(--body);font-size:12px;font-weight:800}.activity-panel-dark .utility{color:var(--stone)}.activity-panel-dark .activity-count{background:#3b3d35;color:var(--surface)}.activity-list{margin-top:18px}.activity-row{padding:13px 0;border-top:1px solid var(--hairline-soft)}.activity-row:first-child{border-top:0;padding-top:0}.activity-row-top,.activity-row-bottom{display:flex;align-items:center;justify-content:space-between;gap:14px}.activity-event{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 12px ui-monospace,SFMono-Regular,Menlo,monospace}.activity-status{flex:none;padding:4px 7px;border-radius:999px;font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase}.activity-status.accepted,.activity-status.acknowledged{background:var(--green-soft);color:var(--green)}.activity-status.pending,.activity-status.leased{background:var(--blue-soft);color:var(--blue)}.activity-status.retry-exhausted{background:var(--red-soft);color:var(--red)}.activity-status.neutral{background:var(--soft);color:var(--body)}.activity-row-bottom{margin-top:7px;color:var(--mute);font-size:12px}.activity-panel-dark .activity-row{border-color:#4d4f46}.activity-panel-dark .activity-row-bottom{color:var(--stone)}.activity-empty{padding:15px 0;color:var(--mute);font-size:13px}.activity-panel-dark .activity-empty{color:var(--stone)}
 .quick-connect-section{scroll-margin-top:24px}.quick-connect-section .section-head{align-items:flex-start}.quick-connect-card{border:1px solid var(--dark);border-radius:6px;background:var(--dark);color:var(--surface);overflow:hidden}.quick-connect-tabs{display:flex;gap:4px;padding:10px;border-bottom:1px solid #4d4f46;background:#2c2e27}.quick-connect-tab{padding:8px 13px;border:1px solid transparent;border-radius:5px;background:transparent;color:var(--stone);font-size:13px;font-weight:700}.quick-connect-tab:hover{color:var(--surface);background:#3b3d35}.quick-connect-tab[aria-selected="true"]{border-color:var(--primary);background:var(--primary);color:var(--ink)}.quick-connect-panel{padding:24px}.quick-connect-panel[hidden]{display:none}.quick-connect-intro{max-width:680px;margin:0;color:var(--stone);font-size:14px}.quick-connect-step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}.quick-connect-step{min-width:0;padding:18px;border:1px solid #4d4f46;border-radius:6px;background:#2c2e27}.quick-connect-step-number{display:grid;place-items:center;width:27px;height:27px;border-radius:6px;background:var(--primary);color:var(--ink);font:700 11px ui-monospace,SFMono-Regular,Menlo,monospace}.quick-connect-step h3{margin:14px 0 6px;color:var(--surface);font-size:16px}.quick-connect-step p{margin:0;color:var(--stone);font-size:12px;line-height:1.55}.quick-connect-code{margin:14px 0 0;padding:12px;border:1px solid #55574d;border-radius:5px;background:#1f211b;color:#f5f5ed;font:12px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow:auto}.quick-connect-code code{font:inherit}.quick-connect-note{margin:18px 0 0;padding:12px 14px;border-left:3px solid var(--primary);background:#33342d;color:var(--stone);font-size:12px;line-height:1.55}.quick-connect-note strong{color:var(--surface)}.quick-connect-footer{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:20px;color:var(--stone);font-size:12px}.quick-connect-footer a{color:var(--primary);font-weight:700}.quick-connect-footer a:hover{text-decoration:underline;text-underline-offset:3px}
@@ -40,6 +45,56 @@ const ACCOUNT_DEVICE_STYLE = `
 const CONNECTOR_AUTH_STYLE = `
 .connector-auth-page{min-height:100vh;background:#11120f;color:#f5f5ed;overflow:hidden;position:relative}.connector-auth-page:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(115deg,rgba(247,165,1,.08),transparent 27%,rgba(44,140,102,.09) 75%,transparent 92%);opacity:.8}.connector-auth-nav,.connector-auth-main,.connector-auth-footer-bar{position:relative;z-index:1}.connector-auth-nav{display:flex;align-items:center;justify-content:space-between;width:min(1160px,calc(100% - 48px));margin:0 auto;padding:28px 0}.connector-auth-brand{color:#f5f5ed;font-size:21px;font-weight:800;letter-spacing:-.6px}.connector-auth-nav-status{color:#a9aca1;font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.connector-auth-main{display:grid;grid-template-columns:minmax(0,1fr) minmax(390px,460px);gap:96px;align-items:center;width:min(1160px,calc(100% - 48px));min-height:calc(100vh - 132px);margin:0 auto;padding:44px 0 86px}.connector-auth-story{max-width:620px}.connector-auth-kicker{color:#f7b52b;font:700 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase}.connector-auth-story h1{max-width:600px;margin:21px 0 17px;color:#fff;font-size:clamp(44px,6vw,76px);font-weight:800;line-height:.98;letter-spacing:-.075em}.connector-auth-story>p{max-width:520px;margin:0;color:#c1c4ba;font-size:18px;line-height:1.55}.connector-auth-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;max-width:560px;margin-top:52px}.connector-auth-step{display:flex;gap:10px;min-height:78px;padding:13px;border:1px solid #30332b;border-radius:10px;background:#191a16}.connector-auth-step.is-active{border-color:rgba(247,181,43,.68);background:#242117}.connector-auth-step>span{display:grid;place-items:center;flex:none;width:26px;height:26px;border-radius:7px;background:#2c3028;color:#b9bdb0;font:700 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace}.connector-auth-step.is-active>span{background:#f7b52b;color:#1b1b16}.connector-auth-step strong,.connector-auth-step small{display:block}.connector-auth-step strong{font-size:13px}.connector-auth-step small{margin-top:4px;color:#92968c;font-size:11px;line-height:1.3}.connector-auth-note{display:flex;gap:11px;max-width:520px;margin-top:25px;padding-top:18px;border-top:1px solid #30332b;color:#aeb2a7;font-size:12px;line-height:1.55}.connector-auth-note>span{flex:none;width:7px;height:7px;margin-top:6px;border-radius:50%;background:#6cc48a;box-shadow:0 0 0 5px rgba(108,196,138,.1)}.connector-auth-note p{margin:0}.connector-auth-note strong{color:#f5f5ed}.connector-auth-card{padding:31px;border:1px solid #3a3d33;border-radius:18px;background:rgba(29,30,25,.92);box-shadow:0 24px 80px rgba(0,0,0,.34)}.connector-auth-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:34px;color:#aeb2a7;font-size:12px;text-decoration:none}.connector-auth-back:hover{color:#f5f5ed}.connector-auth-card-kicker{color:#9aa094;font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase}.connector-auth-card h2{margin:13px 0 9px;color:#fff;font-size:29px;line-height:1.08;letter-spacing:-.055em}.connector-auth-card-intro{margin:0 0 25px;color:#afb3a8;font-size:14px;line-height:1.5}.connector-auth-form{display:flex;flex-direction:column;gap:15px}.connector-auth-form label{display:flex;flex-direction:column;gap:7px;color:#d6d9cf;font-size:12px;font-weight:700}.connector-auth-form input{width:100%;height:43px;padding:9px 12px;border:1px solid #474a40;border-radius:9px;background:#11120f;color:#f5f5ed;font-size:15px;outline:0}.connector-auth-form input::placeholder{color:#6f7369}.connector-auth-form input:focus{border-color:#f7b52b;box-shadow:0 0 0 3px rgba(247,181,43,.16)}.connector-auth-form .form-hint{margin:-2px 0 0;color:#858a7f;font-size:11px;line-height:1.45}.connector-auth-form .form-error{border-color:#b85c55;border-left-color:#e77d73;background:#3a2421;color:#ffd9d4}.connector-auth-form .button{min-height:45px;border:0;border-radius:9px;background:#f7b52b;color:#191a16;font-weight:800}.connector-auth-form .button:hover{background:#ffca52}.connector-auth-switch{margin:20px 0 0;color:#aeb2a7;text-align:center;font-size:13px}.connector-auth-switch a{color:#f7c454;text-decoration:underline;text-underline-offset:3px}.connector-auth-footnote{margin:22px 0 0;padding-top:17px;border-top:1px solid #30332b;color:#80857a;font-size:11px;line-height:1.5}.connector-auth-footer-bar{width:min(1160px,calc(100% - 48px));margin:0 auto;padding:0 0 24px;color:#73786d;font:10px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em;text-transform:uppercase}@media(max-width:900px){.connector-auth-main{grid-template-columns:1fr;gap:45px;min-height:auto;padding-top:40px}.connector-auth-story{max-width:720px}.connector-auth-card{max-width:520px}.connector-auth-steps{margin-top:36px}}@media(max-width:560px){.connector-auth-nav,.connector-auth-main,.connector-auth-footer-bar{width:min(100% - 32px,520px)}.connector-auth-nav{padding-top:22px}.connector-auth-nav-status{font-size:9px}.connector-auth-main{padding-top:34px;padding-bottom:52px}.connector-auth-story h1{font-size:48px}.connector-auth-story>p{font-size:16px}.connector-auth-steps{grid-template-columns:1fr;gap:7px;margin-top:30px}.connector-auth-step{min-height:0}.connector-auth-card{padding:23px 20px;border-radius:15px}.connector-auth-back{margin-bottom:27px}.connector-auth-card h2{font-size:26px}}
 `;
+const CONNECTOR_AUTH_THEME_STYLE = `
+.connector-auth-page{background:#0b0e0c;color:#f5f4ef;color-scheme:dark;font-family:IBM Plex Sans,ui-sans-serif,system-ui,sans-serif}
+.connector-auth-page::before{background-image:linear-gradient(rgba(159,232,112,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(159,232,112,.045) 1px,transparent 1px),radial-gradient(circle at 8% 16%,rgba(159,199,255,.16),transparent 32%),radial-gradient(circle at 90% 82%,rgba(159,232,112,.12),transparent 35%);background-size:40px 40px,40px 40px,auto,auto;opacity:1}
+.connector-auth-page::after{position:fixed;inset:0;pointer-events:none;background:linear-gradient(120deg,transparent 25%,rgba(159,232,112,.045) 48%,transparent 70%);content:"";mix-blend-mode:screen}
+.connector-auth-nav,.connector-auth-main,.connector-auth-footer-bar{width:min(1180px,calc(100% - 56px))}
+.connector-auth-nav{padding:23px 0;border-bottom:1px solid rgba(159,232,112,.14)}
+.connector-auth-brand{display:inline-flex;align-items:center;gap:10px;color:#f5f4ef;font:700 20px/1 Poppins,ui-sans-serif,system-ui,sans-serif;letter-spacing:-.05em}
+.connector-auth-brand::before{width:9px;height:9px;border:3px solid rgba(159,232,112,.2);border-radius:50%;background:#9fe870;box-shadow:0 0 18px rgba(159,232,112,.55);content:""}
+.connector-auth-nav-status{color:#9fc7ff;font-size:9px;letter-spacing:.14em}
+.connector-auth-main{grid-template-columns:minmax(0,1fr) minmax(360px,455px);gap:72px;min-height:calc(100vh - 125px);padding:76px 0 84px}
+.connector-auth-story{position:relative;max-width:640px}
+.connector-auth-story::after{position:absolute;right:5%;bottom:18%;width:170px;height:170px;border:1px solid rgba(159,232,112,.18);border-radius:50%;box-shadow:0 0 0 22px rgba(159,232,112,.025),0 0 0 44px rgba(159,199,255,.025);content:"";pointer-events:none}
+.connector-auth-story>*{position:relative;z-index:1}
+.connector-auth-kicker{color:#9fe870;font-size:10px;letter-spacing:.16em}
+.connector-auth-story h1{max-width:620px;margin:20px 0 18px;color:#f5f4ef;font:700 clamp(45px,6vw,78px)/.96 Poppins,ui-sans-serif,system-ui,sans-serif;letter-spacing:-.075em}
+.connector-auth-story>p{max-width:510px;color:#c2ccc0;font-size:17px;line-height:1.55}
+.connector-auth-steps{gap:8px;max-width:585px;margin-top:47px}
+.connector-auth-step{min-height:74px;padding:12px;border-color:#2b382d;border-radius:12px;background:rgba(18,24,18,.78)}
+.connector-auth-step.is-active{border-color:rgba(159,232,112,.7);background:rgba(159,232,112,.09);box-shadow:0 0 28px rgba(159,232,112,.06)}
+.connector-auth-step>span{width:25px;height:25px;border-radius:50%;background:#213023;color:#9ca99d}
+.connector-auth-step.is-active>span{background:#9fe870;color:#0b100c}
+.connector-auth-step small{color:#849184}
+.connector-auth-note{max-width:520px;margin-top:24px;padding-top:17px;border-top-color:#2b382d;color:#9ca99d}
+.connector-auth-note>span{background:#9fe870;box-shadow:0 0 0 5px rgba(159,232,112,.1)}
+.connector-auth-note strong{color:#f5f4ef}
+.connector-auth-card{position:relative;overflow:hidden;padding:32px;border:1px solid rgba(159,232,112,.34);border-radius:22px;background:linear-gradient(145deg,rgba(159,232,112,.08),transparent 35%),rgba(18,23,18,.94);box-shadow:0 30px 90px rgba(0,0,0,.42),0 0 45px rgba(159,232,112,.06)}
+.connector-auth-card::before{position:absolute;inset:0 26px auto;height:2px;background:linear-gradient(90deg,transparent,#9fe870,#9fc7ff,transparent);content:""}
+.connector-auth-card::after{position:absolute;right:-90px;top:-90px;width:220px;height:220px;border:1px solid rgba(159,199,255,.12);border-radius:50%;content:"";pointer-events:none}
+.connector-auth-card>*{position:relative;z-index:1}
+.connector-auth-back{margin-bottom:34px;color:#9ca99d}
+.connector-auth-back:hover{color:#9fe870}
+.connector-auth-card-kicker{color:#9fc7ff;font-size:9px;letter-spacing:.14em}
+.connector-auth-card h2{margin-top:14px;color:#f5f4ef;font:700 30px/1.04 Poppins,ui-sans-serif,system-ui,sans-serif;letter-spacing:-.06em}
+.connector-auth-card-intro{color:#aeb9ad;font-size:13px;line-height:1.5}
+.connector-auth-form{gap:14px}
+.connector-auth-form label{color:#d8e2d5;font-size:11px;letter-spacing:.02em}
+.connector-auth-form input{height:45px;border-color:#334236;border-radius:11px;background:#0d120e;color:#f5f4ef}
+.connector-auth-form input::placeholder{color:#657367}
+.connector-auth-form input:focus{border-color:#9fe870;box-shadow:0 0 0 3px rgba(159,232,112,.14)}
+.connector-auth-form .form-hint{color:#7e8e80}
+.connector-auth-form .form-error{border-color:#b85c55;background:#3a2421;color:#ffd9d4}
+.connector-auth-form .button{min-height:46px;border:1px solid #9fe870;border-radius:12px;background:#9fe870;color:#0b100c;box-shadow:0 8px 24px rgba(159,232,112,.12)}
+.connector-auth-form .button:hover{background:#b8f398}
+.connector-auth-switch{color:#9ca99d}
+.connector-auth-switch a{color:#9fc7ff}
+.connector-auth-footnote{border-top-color:#2b382d;color:#728073}
+.connector-auth-footer-bar{padding-bottom:22px;color:#667568}
+@media(max-width:900px){.connector-auth-main{gap:48px;min-height:auto;padding-top:58px}.connector-auth-story::after{right:6%;bottom:18%}}
+@media(max-width:560px){.connector-auth-nav,.connector-auth-main,.connector-auth-footer-bar{width:min(100% - 32px,520px)}.connector-auth-nav{padding-top:20px}.connector-auth-main{padding-top:43px}.connector-auth-story h1{font-size:49px}.connector-auth-story>p{font-size:16px}.connector-auth-card{padding:25px 20px;border-radius:17px}}
+`;
 
 const STYLE = [
   '@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&family=Space+Mono:wght@400;700&display=swap");',
@@ -55,7 +110,7 @@ const STYLE = [
   '.sub-nav{height:40px;background:var(--soft);border-bottom:1px solid var(--hairline-soft)}.sub-nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;color:var(--body);font-size:14px}.sub-nav-links{display:flex;gap:22px}.sub-nav a:hover{color:var(--ink)}.dashboard-layout{display:grid;grid-template-columns:240px minmax(0,1fr);max-width:1280px;margin:0 auto;min-height:calc(100vh - 96px)}.doc-sidebar{padding:32px 20px 32px 0;border-right:1px solid var(--hairline-soft)}.sidebar-title{padding:0 12px 12px;color:var(--mute);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.side-link{display:block;padding:9px 12px;border:1px solid transparent;border-radius:6px;color:var(--body);font-size:14px}.side-link:hover{color:var(--ink);background:var(--soft)}.side-link.active{border-color:var(--hairline);background:var(--surface);color:var(--ink);font-weight:600}.sidebar-rule{height:1px;margin:24px 12px;background:var(--hairline-soft)}.sidebar-mascot{display:flex;align-items:flex-end;gap:8px;padding:12px}.sidebar-mascot img{width:64px;height:68px;object-fit:contain;object-position:center bottom}.sidebar-mascot p{margin:0;color:var(--mute);font-size:12px;line-height:1.4}.dashboard-main{min-width:0;padding:48px}.dashboard-header{display:flex;align-items:flex-start;justify-content:space-between;gap:30px}.dashboard-header h1{margin:13px 0 7px;font-size:36px;font-weight:800;line-height:1.25;letter-spacing:-.8px}.dashboard-header p{margin:0;color:var(--body);font-size:16px}.account-chip{display:flex;align-items:center;gap:9px;color:var(--body);font-size:13px}.avatar{width:32px;height:32px;display:grid;place-items:center;border:1px solid var(--hairline);border-radius:50%;background:var(--primary);color:var(--ink);font-weight:800}.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:40px 0 56px}.metric-card{min-height:132px;padding:20px 22px}.metric-card-dark{background:var(--dark);border-color:var(--dark);color:var(--surface)}.metric-card .utility{color:var(--body)}.metric-card-dark .utility{color:var(--stone)}.metric-card strong{display:block;margin:9px 0 4px;font-size:30px;font-weight:800;line-height:1.1;letter-spacing:-.6px}.metric-card>span:last-child{color:var(--mute);font-size:13px}.metric-card-dark>span:last-child{color:var(--stone)}.metric-ready{color:var(--green)!important;font-size:24px!important}.dashboard-section{margin-bottom:56px}.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}.section-head h2{margin:11px 0 0;font-size:21px;font-weight:700;line-height:1.4;letter-spacing:-.5px}.organization-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:20px}.organization-card{min-height:82px;display:flex;align-items:center;gap:12px;padding:15px;text-align:left}.organization-card:hover,.organization-card.selected{border-color:var(--primary-active);background:var(--surface)}.org-index{display:grid;place-items:center;width:34px;height:34px;border:1px solid var(--hairline);border-radius:6px;background:var(--soft);color:var(--body);font-size:12px;font-weight:700}.org-details{flex:1;min-width:0}.org-details strong,.org-details small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.org-details strong{font-size:14px}.org-details small{margin-top:4px;color:var(--mute);font:12px ui-monospace,SFMono-Regular,Menlo,monospace}.org-count{color:var(--mute);font-size:12px}.integration-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:16px;margin-top:20px}.keys-panel,.quickstart-panel{padding:24px}.subpanel-header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}.subpanel-header h3,.quickstart-panel h3{margin:10px 0 0;font-size:20px;font-weight:700;line-height:1.4}.subpanel-copy{max-width:540px;margin:13px 0 0;color:var(--body);font-size:14px}.key-list{margin-top:20px}.key-row{display:flex;align-items:center;gap:11px;padding:13px 0;border-top:1px solid var(--hairline-soft)}.key-dot{width:8px;height:8px;border-radius:50%;background:var(--stone)}.key-dot.active{background:var(--green)}.key-name{flex:1;min-width:0}.key-name strong,.key-name small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.key-name strong{font:600 13px ui-monospace,SFMono-Regular,Menlo,monospace}.key-name small{margin-top:4px;color:var(--mute);font:12px ui-monospace,SFMono-Regular,Menlo,monospace}.key-status{color:var(--green);font-size:12px;font-weight:700;text-transform:uppercase}.quickstart-panel{background:var(--dark);border-color:var(--dark);color:var(--surface)}.quickstart-panel .utility{color:var(--stone)}.quickstart-panel h3{color:var(--surface)}.quickstart-code{margin:22px 0;padding:16px;border:1px solid #4d4f46;border-radius:6px;background:#33342d;color:#f5f5ed;font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow:auto}.quickstart-foot{color:var(--stone);font-size:13px;line-height:1.5}.secret-reveal{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;padding:14px;border:1px solid var(--green);border-radius:6px;background:var(--green-soft)}.secret-reveal strong,.secret-reveal small{display:block}.secret-reveal strong{margin-top:5px;color:var(--ink);font:600 12px ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-all}.secret-reveal small{color:var(--body);font-size:12px}.empty-card,.loading-card,.empty-row{padding:22px;border:1px dashed var(--hairline);border-radius:6px;background:var(--doc);color:var(--mute);font-size:14px}.empty-card,.loading-card{grid-column:1/-1}.console-dialog{width:min(430px,calc(100vw - 32px));padding:0;border:1px solid var(--hairline);border-radius:6px;background:var(--doc);color:var(--ink)}.console-dialog::backdrop{background:rgba(35,37,29,.35)}.console-dialog form{padding:28px}.console-dialog h2{margin:12px 0 8px;font-size:24px;line-height:1.33;letter-spacing:-.6px}.console-dialog p{margin:0 0 24px;color:var(--body);font-size:14px}.dialog-close{float:right;border:1px solid var(--hairline);border-radius:6px;background:var(--surface);color:var(--body);font-size:13px;padding:5px 9px}.console-dialog label{margin-bottom:18px}.toast{position:fixed;right:24px;bottom:24px;padding:11px 15px;border:1px solid var(--hairline);border-radius:6px;background:var(--ink);color:var(--surface);font-size:13px}',
   '@media(max-width:980px){.container{padding-left:32px;padding-right:32px}.landing-hero,.auth-main{grid-template-columns:1fr;gap:46px}.landing-copy{max-width:760px}.hero-board{max-width:680px}.auth-main{padding-top:50px;padding-bottom:50px}.auth-story-figure{margin-top:25px}.dashboard-layout{grid-template-columns:200px minmax(0,1fr)}.dashboard-main{padding:40px 32px}.integration-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1.5fr repeat(2,1fr)}}',
   '@media(max-width:720px){.container{padding-left:20px;padding-right:20px}.primary-nav{height:auto;min-height:56px}.nav-inner{padding-top:10px;padding-bottom:10px}.nav-right{gap:12px}.nav-right>a:not(.button){display:none}.nav-right .button{padding-left:12px;padding-right:12px}.landing-hero{padding-top:52px;padding-bottom:52px}.landing-copy h1{font-size:48px;letter-spacing:-1px}.landing-copy>p{font-size:18px}.hero-actions{align-items:stretch;flex-direction:column}.hero-actions .button{width:100%}.hero-board{grid-template-columns:1fr}.mascot-card{grid-template-columns:1fr;min-height:0}.mascot-card-image{order:-1;justify-content:flex-end}.mascot-card-image img{width:190px;max-height:235px}.signal-grid{grid-template-columns:1fr;gap:17px}.signal-grid .divider{width:100%;height:1px}.section{padding-top:56px;padding-bottom:56px}.section-heading h2{font-size:31px}.feature-grid{grid-template-columns:1fr}.manifest-section{grid-template-columns:1fr;gap:28px}.footer-grid{grid-template-columns:1fr 1fr}.footer-bottom{align-items:flex-start;flex-direction:column;gap:8px}.auth-main{padding-top:40px}.auth-story h1{font-size:46px}.auth-story-figure{align-items:center}.auth-story-figure img{width:150px;height:165px}.input-pair{grid-template-columns:1fr}.dashboard-layout{display:block;min-height:0}.doc-sidebar{display:flex;align-items:center;gap:6px;overflow-x:auto;padding:12px 20px;border-right:0;border-bottom:1px solid var(--hairline-soft)}.sidebar-title,.sidebar-rule,.sidebar-mascot{display:none}.side-link{flex:none;white-space:nowrap}.dashboard-main{padding:32px 20px}.dashboard-header{display:block}.account-chip{margin-top:22px}.metric-grid{grid-template-columns:1fr 1fr;margin:32px 0 46px}.metric-card:last-child{grid-column:1/-1}.section-head{align-items:flex-start;flex-direction:column;gap:14px}.section-head .button{width:100%}.organization-list{grid-template-columns:1fr}.keys-panel,.quickstart-panel{padding:20px}.secret-reveal{align-items:flex-start;flex-direction:column}.sub-nav-links{gap:14px;overflow-x:auto;white-space:nowrap}.sub-nav-inner{overflow:hidden}}',
-].join("") + CONSOLE_POLISH_STYLE + CONSOLE_EXTENSION_STYLE + ORGANIZATION_CHOOSER_STYLE + DASHBOARD_REFINEMENT_STYLE + ORGANIZATION_DASHBOARD_STYLE + ACCOUNT_DEVICE_STYLE + CONNECTOR_AUTH_STYLE;
+].join("") + CONSOLE_POLISH_STYLE + CONSOLE_EXTENSION_STYLE + ORGANIZATION_CHOOSER_STYLE + DASHBOARD_REFINEMENT_STYLE + ORGANIZATION_DASHBOARD_STYLE + ACCOUNT_DEVICE_STYLE + CONNECTOR_AUTH_STYLE + CONNECTOR_AUTH_THEME_STYLE;
 
 export function renderLanding() {
   return pageShell(
@@ -91,10 +146,204 @@ function pageShell(title, body) {
   return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#fafafa"><title>' + title + '</title><style>' + STYLE + '</style></head><body>' + body + '</body></html>';
 }
 
-const AUTH_SCRIPT = "(function(){\nvar form=document.querySelector('#auth-form');var errorBox=document.querySelector('#form-error');\nvar requestedNext=new URLSearchParams(window.location.search).get('next');var safeNext=requestedNext&&requestedNext.startsWith('/')&&!requestedNext.startsWith('//')?requestedNext:'/dashboard/organizations';\nform.addEventListener('submit',async function(event){event.preventDefault();errorBox.hidden=true;var button=form.querySelector('button[type=submit]');button.disabled=true;var body=Object.fromEntries(new FormData(form).entries());var route=form.dataset.mode==='register'?'/api/auth/register':'/api/auth/login';\ntry{var response=await fetch(route,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});var result=await response.json().catch(function(){return {}});if(!response.ok)throw new Error(result.error&&result.error.code||'Unable to continue');window.location.assign(safeNext)}catch(error){errorBox.textContent=error.message.replaceAll('_',' ');errorBox.hidden=false;button.disabled=false}});})();";
+const CONSOLE_CLIENT_ERROR_HELPER = String.raw`
+  var messageForCode = function (code, fallback) {
+    var messages = {
+      account_exists: "This account already exists. Use Log in instead.",
+      invalid_credentials: "The email or password is incorrect.",
+      credentials_invalid: "Enter your email and password.",
+      identity_invalid: "Enter a valid email address.",
+      email_invalid: "Enter a valid email address.",
+      password_invalid: "Use a password with at least 8 characters.",
+      organization_name_invalid: "Enter an organization name.",
+      account_not_found: "We couldn't find that account.",
+      organization_not_found: "That organization is no longer available.",
+      api_key_not_found: "That API key is no longer available.",
+      session_required: "Your session expired. Sign in again.",
+      receiver_busy: "Re-entry is busy. Try again in a moment.",
+      receiver_internal_error: "Re-entry is temporarily unavailable. Try again.",
+      console_internal_error: "Something went wrong in Re-entry. Try again.",
+      account_pairing_not_found: "That pairing code was not found. Create a new one.",
+      account_pairing_expired: "That pairing code expired. Create a new one.",
+      account_pairing_code_invalid: "Enter the 8-character pairing code from the dashboard.",
+      account_pairing_claim_invalid: "That pairing code is no longer available. Create a new one.",
+      connector_not_available: "No connected Mac is available for this request.",
+      device_credentials_unavailable: "The Mac connection could not be completed. Try again.",
+      http_method_not_allowed: "This action is not available here.",
+      http_content_type_invalid: "The request format is invalid. Try again.",
+      http_body_invalid: "The submitted data is invalid. Check the fields and try again.",
+      http_body_too_large: "The submitted data is too large.",
+      host_public_key_invalid: "The Host public key is invalid.",
+      host_origin_invalid: "The Host origin is invalid.",
+      organization_auth_invalid: "The organization key is invalid.",
+      consent_session_expired: "This consent request expired. Start again.",
+      consent_token_invalid: "This consent request is no longer available.",
+      consent_session_not_found: "This consent request is no longer available.",
+      account_connector_internal_error: "The Connector service could not complete the request.",
+      account_consent_internal_error: "The consent service could not complete the request.",
+      host_key_internal_error: "The Host-key service could not complete the request."
+    };
+    if (Object.prototype.hasOwnProperty.call(messages, code)) return messages[code];
+    if (typeof fallback === "string" && /failed to fetch|networkerror|load failed/i.test(fallback)) {
+      return "Could not reach Re-entry. Check your connection and try again.";
+    }
+    return "Something went wrong. Try again.";
+  };
+  var messageForError = function (error) {
+    return messageForCode(error && error.code, error && error.message);
+  };
+  var requestError = function (code, fallback) {
+    var error = new Error(messageForCode(code, fallback));
+    error.code = code;
+    return error;
+  };
+`;
+
+const AUTH_SCRIPT = String.raw`
+(function () {
+${CONSOLE_CLIENT_ERROR_HELPER}
+  var form = document.querySelector("#auth-form");
+  var errorBox = document.querySelector("#form-error");
+  var requestedNext = new URLSearchParams(window.location.search).get("next");
+  var formNext = form.getAttribute("data-success-path");
+  var safeNext = formNext || (requestedNext && requestedNext.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/dashboard/organizations");
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    errorBox.hidden = true;
+    var button = form.querySelector("button[type=submit]");
+    button.disabled = true;
+    var body = Object.fromEntries(new FormData(form).entries());
+    var route = form.dataset.mode === "register" ? "/api/auth/register" : "/api/auth/login";
+    try {
+      var response = await fetch(route, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+      var result = await response.json().catch(function () { return {}; });
+      if (!response.ok) throw requestError(result.error && result.error.code, "Unable to continue");
+      window.location.assign(safeNext);
+    } catch (error) {
+      errorBox.textContent = messageForError(error);
+      errorBox.hidden = false;
+      button.disabled = false;
+    }
+  });
+})();
+`;
+
+const USER_DASHBOARD_SCRIPT = String.raw`
+(function () {
+${CONSOLE_CLIENT_ERROR_HELPER}
+  var $ = function (selector) { return document.querySelector(selector); };
+  var api = async function (path, options) {
+    options = options || {};
+    var response = await fetch(path, Object.assign({}, options, {
+      headers: Object.assign({ "content-type": "application/json" }, options.headers || {}),
+    }));
+    var result = await response.json().catch(function () { return {}; });
+    if (response.status === 401) {
+      window.location.assign("/user-login?next=%2Fuser-dashboard");
+      throw requestError("session_required");
+    }
+    if (!response.ok) throw requestError(result.error && result.error.code, "request failed");
+    return result;
+  };
+  var formatTime = function (value) {
+    if (typeof value !== "string") return "soon";
+    try {
+      return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(value));
+    } catch { return "soon"; }
+  };
+  var formatCode = function (value) {
+    return typeof value === "string" && value.length === 8 ? value.slice(0, 4) + "-" + value.slice(4) : "—";
+  };
+  var showError = function (error) {
+    var node = $("#user-dashboard-error");
+    if (!node) return;
+    node.textContent = messageForError(error);
+    node.hidden = false;
+  };
+  var renderConnectors = function (connectors) {
+    var count = $("#user-connector-count");
+    var list = $("#user-connector-list");
+    if (count) count.textContent = String(connectors.length);
+    if (!list) return;
+    list.textContent = "";
+    if (!connectors.length) {
+      var empty = document.createElement("p");
+      empty.className = "loading-card";
+      empty.textContent = "No Macs connected yet. Create a code above to connect this one.";
+      list.appendChild(empty);
+      return;
+    }
+    connectors.forEach(function (connector) {
+      var card = document.createElement("article");
+      card.className = "organization-card";
+      var marker = document.createElement("span");
+      marker.className = "org-index";
+      marker.textContent = "MAC";
+      var details = document.createElement("span");
+      details.className = "org-details";
+      var name = document.createElement("strong");
+      name.textContent = connector.device_name || "Connected Mac";
+      var date = document.createElement("small");
+      date.textContent = "Connected " + formatTime(connector.connected_at || connector.created_at);
+      details.append(name, date);
+      var status = document.createElement("span");
+      status.className = "org-count";
+      status.textContent = connector.revoked_at ? "Revoked" : "Ready";
+      card.append(marker, details, status);
+      list.appendChild(card);
+    });
+  };
+  var loadConnectors = async function () {
+    var result = await api("/v0.1/account/connectors");
+    renderConnectors(Array.isArray(result.connectors) ? result.connectors : []);
+  };
+  var pairButton = $("#user-pair-button");
+  if (pairButton) pairButton.addEventListener("click", async function () {
+    pairButton.disabled = true;
+    pairButton.textContent = "Creating…";
+    var result = $("#user-pairing-result");
+    try {
+      var pairing = await api("/v0.1/account/pairing-sessions", { method: "POST", body: "{}" });
+      $("#user-pairing-code").textContent = formatCode(pairing.pairing_code);
+      $("#user-pairing-expiry").textContent = "Enter this in the Re-entry CLI before " + formatTime(pairing.expires_at) + ".";
+      if (result) result.hidden = false;
+    } catch (error) {
+      if (error.code !== "session_required") showError(error);
+    } finally {
+      pairButton.disabled = false;
+      pairButton.textContent = "Create a new code";
+    }
+  });
+  var copyButton = $("#user-copy-code");
+  if (copyButton) copyButton.addEventListener("click", async function () {
+    var code = $("#user-pairing-code");
+    if (!code || !navigator.clipboard) return;
+    try {
+      await navigator.clipboard.writeText(code.textContent);
+      copyButton.textContent = "Copied";
+      window.setTimeout(function () { copyButton.textContent = "Copy code"; }, 1600);
+    } catch (error) {
+      showError(error);
+    }
+  });
+  var logoutButton = $("#user-logout-button");
+  if (logoutButton) logoutButton.addEventListener("click", async function () {
+    try {
+      await api("/api/auth/logout", { method: "POST" });
+      window.location.assign("/");
+    } catch (error) {
+      if (error.code !== "session_required") showError(error);
+    }
+  });
+  loadConnectors().catch(function (error) {
+    if (error.code !== "session_required") showError(error);
+  });
+})();
+`;
 
 const DASHBOARD_SCRIPT = String.raw`
 (function () {
+${CONSOLE_CLIENT_ERROR_HELPER}
   var state = {
     organizations: [],
     connectors: [],
@@ -115,11 +364,11 @@ const DASHBOARD_SCRIPT = String.raw`
       return {};
     });
     if (response.status === 401) {
-      window.location.assign("/login");
-      throw new Error("session required");
+      window.location.assign("/developer-login");
+      throw requestError("session_required");
     }
     if (!response.ok) {
-      throw new Error(result.error && result.error.code || "request failed");
+      throw requestError(result.error && result.error.code, "request failed");
     }
     return result;
   };
@@ -283,8 +532,8 @@ const DASHBOARD_SCRIPT = String.raw`
               await refreshOrganizations();
               await selectOrganization(state.selected.organization_id);
             } catch (error) {
-              if (error.message !== "session required") {
-                toast(error.message.replaceAll("_", " "));
+              if (error.code !== "session_required") {
+                toast(messageForError(error));
               }
             }
           });
@@ -500,7 +749,7 @@ const DASHBOARD_SCRIPT = String.raw`
     try {
       renderActivity(await api("/api/activity"));
     } catch (error) {
-      if (error.message === "session required") return;
+      if (error.code === "session_required") return;
       renderActivity(unavailableActivity());
       if (notify) toast("Activity could not be refreshed");
     } finally {
@@ -520,6 +769,30 @@ const DASHBOARD_SCRIPT = String.raw`
     var result = await api("/v0.1/account/connectors");
     state.connectors = Array.isArray(result.connectors) ? result.connectors : [];
     renderConnectors();
+  };
+  var formatPairingCode = function (value) {
+    return typeof value === "string" && value.length === 8
+      ? value.slice(0, 4) + "-" + value.slice(4)
+      : "—";
+  };
+  var createPairing = async function () {
+    var button = $("#pair-mac-button");
+    var result = $("#pairing-result");
+    if (!button || !result) return;
+    button.disabled = true;
+    button.textContent = "Creating…";
+    try {
+      var pairing = await api("/v0.1/account/pairing-sessions", { method: "POST", body: "{}" });
+      $("#pairing-code").textContent = formatPairingCode(pairing.pairing_code);
+      $("#pairing-expiry").textContent = "Enter this code in the Re-entry CLI before " + formatTime(pairing.expires_at) + ".";
+      result.hidden = false;
+      toast("Pairing code ready");
+    } catch (error) {
+      if (error.code !== "session_required") toast(messageForError(error));
+    } finally {
+      button.disabled = false;
+      button.textContent = "Create new code";
+    }
   };
   var selectOrganization = async function (organizationId) {
     state.selected = state.organizations.find(function (org) {
@@ -551,7 +824,7 @@ const DASHBOARD_SCRIPT = String.raw`
       }
       await refreshOrganizations();
     } catch (error) {
-      if (error.message !== "session required") toast(error.message.replaceAll("_", " "));
+      if (error.code !== "session_required") toast(messageForError(error));
     }
   };
   var showSecret = function (secret) {
@@ -568,8 +841,12 @@ const DASHBOARD_SCRIPT = String.raw`
       var copy = make("button", "button button-secondary", "Copy key");
       copy.type = "button";
       copy.addEventListener("click", async function () {
-        if (navigator.clipboard) await navigator.clipboard.writeText(secret);
-        toast("API key copied");
+        try {
+          if (navigator.clipboard) await navigator.clipboard.writeText(secret);
+          toast("API key copied");
+        } catch (error) {
+          toast(messageForError(error));
+        }
       });
       card.appendChild(copy);
       drawerContent.appendChild(card);
@@ -588,8 +865,12 @@ const DASHBOARD_SCRIPT = String.raw`
     );
     box.append(content, copy);
     copy.addEventListener("click", async function () {
-      if (navigator.clipboard) await navigator.clipboard.writeText(secret);
-      toast("API key copied");
+      try {
+        if (navigator.clipboard) await navigator.clipboard.writeText(secret);
+        toast("API key copied");
+      } catch (error) {
+        toast(messageForError(error));
+      }
     });
   };
   var setQuickstartTab = function (selected) {
@@ -637,8 +918,8 @@ const DASHBOARD_SCRIPT = String.raw`
         sessionStorage.removeItem("reentry_pending_api_key");
       }
     } catch (error) {
-      if (error.message !== "session required") {
-        toast(error.message.replaceAll("_", " "));
+      if (error.code !== "session_required") {
+        toast(messageForError(error));
       }
     }
   };
@@ -655,6 +936,8 @@ const DASHBOARD_SCRIPT = String.raw`
       if (tab) tab.focus();
     });
   }
+  var pairMacButton = $("#pair-mac-button");
+  if (pairMacButton) pairMacButton.addEventListener("click", createPairing);
   var secretsButton = $("#secrets-button");
   if (secretsButton) secretsButton.addEventListener("click", function () {
     openDrawer("secrets-drawer");
@@ -666,13 +949,17 @@ const DASHBOARD_SCRIPT = String.raw`
   });
   document.querySelectorAll("[data-copy-target]").forEach(function (button) {
     button.addEventListener("click", async function () {
-      var target = document.getElementById(button.getAttribute("data-copy-target"));
-      if (!target) return;
-      if (navigator.clipboard) await navigator.clipboard.writeText(target.textContent);
-      var original = button.textContent;
-      button.textContent = "Copied";
-      window.setTimeout(function () { button.textContent = original; }, 1500);
-      toast("Copied to clipboard");
+      try {
+        var target = document.getElementById(button.getAttribute("data-copy-target"));
+        if (!target) return;
+        if (navigator.clipboard) await navigator.clipboard.writeText(target.textContent);
+        var original = button.textContent;
+        button.textContent = "Copied";
+        window.setTimeout(function () { button.textContent = original; }, 1500);
+        toast("Copied to clipboard");
+      } catch (error) {
+        toast(messageForError(error));
+      }
     });
   });
   document.querySelectorAll("[data-drawer-tab]").forEach(function (tab) {
@@ -729,8 +1016,8 @@ const DASHBOARD_SCRIPT = String.raw`
       await selectOrganization(result.organization.organization_id);
       toast("Organization created");
     } catch (caught) {
-      if (caught.message !== "session required") {
-        error.textContent = caught.message.replaceAll("_", " ");
+      if (caught.code !== "session_required") {
+        error.textContent = messageForError(caught);
         error.hidden = false;
       }
     }
@@ -752,39 +1039,71 @@ const DASHBOARD_SCRIPT = String.raw`
       await selectOrganization(state.selected.organization_id);
       toast("New API key created");
     } catch (error) {
-      if (error.message !== "session required") {
-        toast(error.message.replaceAll("_", " "));
+      if (error.code !== "session_required") {
+        toast(messageForError(error));
       }
     }
     });
   });
   var logoutButton = $("#logout-button");
   if (logoutButton) logoutButton.addEventListener("click", async function () {
-    await api("/api/auth/logout", { method: "POST" });
-    window.location.assign("/");
+    try {
+      await api("/api/auth/logout", { method: "POST" });
+      window.location.assign("/");
+    } catch (error) {
+      if (error.code !== "session_required") toast(messageForError(error));
+    }
   });
   setQuickstartTab("nextjs");
   load();
 })();
 `;
-export function renderAuthPageSimple(mode) {
+
+export function renderConsoleErrorPage() {
+  return pageShell(
+    "Re-entry Cloud — temporarily unavailable",
+    `<div class="page auth-page">
+  <main class="container auth-main">
+    <section class="auth-story">
+      <div class="eyebrow">RE-ENTRY CLOUD</div>
+      <h1>We couldn’t load this page.</h1>
+      <p>Re-entry is temporarily unavailable. Try again in a moment.</p>
+    </section>
+    <section class="auth-card">
+      <div class="auth-card-header"><div class="utility">TRY AGAIN</div><h2>Your work is still safe.</h2><p>Return home or refresh this page. No action was completed from this error screen.</p></div>
+      <a class="button button-primary button-wide" href="/">Return to Re-entry</a>
+    </section>
+  </main>
+</div>`,
+  );
+}
+
+export function renderAuthPageSimple(mode, { pairFlow = false, next } = {}) {
   const register = mode === "register";
-  const heading = register ? "Create your workspace" : "Welcome back";
-  const helper = register
-    ? "One account for your organizations and Host keys."
-    : "Sign in to manage your organizations and Host keys.";
+  const safeNext = isDeveloperAuthNext(next) ? next : "/dashboard/organizations";
+  const encodedNext = encodeURIComponent(safeNext);
+  const loginHref = pairFlow ? `/developer-login?flow=pair&next=${encodedNext}` : "/developer-login";
+  const registerHref = pairFlow ? `/developer-register?flow=pair&next=${encodedNext}` : "/developer-register";
+  const heading = pairFlow
+    ? register ? "Create your Re-entry account" : "Welcome back to Re-entry"
+    : register ? "Create your developer account" : "Welcome back";
+  const helper = pairFlow
+    ? register ? "Create an account, then pair this Mac from your dashboard." : "Sign in, then pair this Mac from your dashboard."
+    : register
+      ? "One account for your organizations and Host keys."
+      : "Sign in to manage your organizations and Host keys.";
   const formHint = register
     ? "Use an email you can recognize and a password with at least 8 characters."
     : "Use the email and password you created.";
   return pageShell(
-    (register ? "Create workspace" : "Log in") + " — Re-entry Cloud",
+    (register ? "Create account" : "Log in") + " — Re-entry Cloud",
     `<div class="page auth-page">
   <header class="primary-nav">
     <div class="container nav-inner">
       <a class="brand" href="/" aria-label="Re-entry Cloud home"><span class="brand-word">re-entry</span></a>
       <nav class="nav-right">
         <span class="muted">${register ? "Already have an account?" : "New to Re-entry?"}</span>
-        <a class="button button-secondary" href="${register ? "/login" : "/register"}">${register ? "Log in" : "Create workspace"}</a>
+        <a class="button button-secondary" href="${register ? loginHref : registerHref}">${register ? "Log in" : "Create account"}</a>
       </nav>
     </div>
   </header>
@@ -793,21 +1112,73 @@ export function renderAuthPageSimple(mode) {
       <div class="eyebrow">${register ? "A NEW RETURN PATH" : "WELCOME BACK"}</div>
       <h1>${register ? "Make the next step feel close." : "Return to your workspace."}</h1>
       <p>${register ? "Give your Host a clear place to pause, ask, and return." : "Your organizations and Host connections are ready."}</p>
-      <div class="auth-story-note"><strong>${register ? "Small setup. Clear boundaries." : "One place for every Host."}</strong><span>${register ? "Create a workspace, then add the organizations your products need." : "Keep each organization’s credentials separate and easy to find."}</span></div>
+      <div class="auth-story-note"><strong>${register ? "Small setup. Clear boundaries." : "One place for every Host."}</strong><span>${register ? "Create your developer account, then add the organizations your products need." : "Keep each organization’s credentials separate and easy to find."}</span></div>
     </section>
     <section class="auth-card">
-      <div class="auth-card-header"><div class="utility">${register ? "NEW WORKSPACE" : "YOUR WORKSPACE"}</div><h2>${heading}</h2><p>${helper}</p></div>
-      <form id="auth-form" data-mode="${mode}">
+      <div class="auth-card-header"><div class="utility">${pairFlow ? "PAIR THIS MAC" : register ? "NEW ACCOUNT" : "YOUR ACCOUNT"}</div><h2>${heading}</h2><p>${helper}</p></div>
+      <form id="auth-form" data-mode="${mode}" data-success-path="${escapeHtml(safeNext)}">
         <label>Email<input name="identity" type="email" autocomplete="email" placeholder="you@example.com" required maxlength="160"></label>
         <label>Password<input name="password" type="password" autocomplete="${register ? "new-password" : "current-password"}" minlength="8" maxlength="256" placeholder="At least 8 characters" required></label>
         <p class="form-hint">${formHint} Credentials are stored as a hash in this local preview.</p>
         <div id="form-error" class="form-error" role="alert" hidden></div>
-        <button class="button button-primary button-wide" type="submit">${register ? "Create workspace" : "Log in"}</button>
+        <button class="button button-primary button-wide" type="submit">${register ? "Create account" : "Log in"}</button>
       </form>
-      <div class="auth-switch">${register ? "Already have a workspace?" : "Need a workspace?"} <a href="${register ? "/login" : "/register"}">${register ? "Log in" : "Create one"}</a></div>
+      <div class="auth-switch">${register ? "Already have an account?" : "Need an account?"} <a href="${register ? loginHref : registerHref}">${register ? "Log in" : "Create one"}</a></div>
       <div class="auth-footer">Local preview only. Production identity controls are not enabled.</div>
     </section>
   </main>
+</div><script>${AUTH_SCRIPT}</script>`,
+  );
+}
+
+export function renderUserAuthPage(mode, { next } = {}) {
+  const register = mode === "register";
+  const safeNext = isUserAuthNext(next) ? next : "/user-dashboard";
+  const encodedNext = encodeURIComponent(safeNext);
+  const alternatePath = register
+    ? `/user-login?next=${encodedNext}`
+    : `/user-register?next=${encodedNext}`;
+  const title = register ? "Create your Re-entry account" : "Log in to Re-entry";
+  const heading = register ? "Connect your Mac to Re-entry." : "Welcome back. Connect your Mac.";
+  const helper = register
+    ? "Create your user account. Your dashboard will be ready to pair this Mac."
+    : "Sign in to open your dashboard and pair this Mac.";
+  return pageShell(
+    title,
+    `<div class="connector-auth-page user-auth-page">
+  <header class="connector-auth-nav">
+    <a class="connector-auth-brand" href="/" aria-label="Re-entry Cloud home">re-entry</a>
+    <span class="connector-auth-nav-status">USER SETUP / 01 OF 03</span>
+  </header>
+  <main class="connector-auth-main">
+    <section class="connector-auth-story" aria-labelledby="user-auth-title">
+      <div class="connector-auth-kicker">For people using Codex</div>
+      <h1 id="user-auth-title">${heading}</h1>
+      <p>This is your personal Re-entry account. It is separate from developer credentials and Host setup. After you sign in, the dashboard shows one clear action: <strong>Pair this Mac.</strong></p>
+      <div class="connector-auth-steps" aria-label="Mac setup progress">
+        <div class="connector-auth-step is-active"><span>01</span><div><strong>Account</strong><small>Create or sign in</small></div></div>
+        <div class="connector-auth-step"><span>02</span><div><strong>Pairing code</strong><small>Click Pair this Mac</small></div></div>
+        <div class="connector-auth-step"><span>03</span><div><strong>Ready</strong><small>Connector stays running</small></div></div>
+      </div>
+      <div class="connector-auth-note"><span aria-hidden="true"></span><p><strong>Simple boundary.</strong> Your browser session stays here. The CLI receives a device credential only after you enter the one-time code from your dashboard.</p></div>
+    </section>
+    <section class="connector-auth-card" aria-labelledby="user-auth-form-title">
+      <a class="connector-auth-back" href="/">← Back to Re-entry</a>
+      <div class="connector-auth-card-kicker">YOUR RE-ENTRY ACCOUNT</div>
+      <h2 id="user-auth-form-title">${register ? "Create an account" : "Log in"}</h2>
+      <p class="connector-auth-card-intro">${helper}</p>
+      <form id="auth-form" class="connector-auth-form" data-mode="${mode}" data-success-path="${escapeHtml(safeNext)}">
+        <label>Email<input name="identity" type="email" autocomplete="${register ? "email" : "username"}" placeholder="you@example.com" required maxlength="160"></label>
+        <label>Password<input name="password" type="password" autocomplete="${register ? "new-password" : "current-password"}" minlength="8" maxlength="256" placeholder="At least 8 characters" required></label>
+        <p class="form-hint">${register ? "Use an email you can recognize and a password with at least 8 characters." : "Use the email and password you created for Re-entry."}</p>
+        <div id="form-error" class="form-error" role="alert" hidden></div>
+        <button class="button button-primary button-wide" type="submit">${register ? "Create account" : "Log in"}</button>
+      </form>
+      <p class="connector-auth-switch">${register ? "Already have an account?" : "New to Re-entry?"} <a href="${escapeHtml(alternatePath)}">${register ? "Log in" : "Create an account"}</a></p>
+      <p class="connector-auth-footnote">Next, open <strong>Pair this Mac</strong> in your dashboard. Re-entry will show a short-lived code for this CLI.</p>
+    </section>
+  </main>
+  <footer class="connector-auth-footer-bar">Re-entry / user account / pair your Mac once</footer>
 </div><script>${AUTH_SCRIPT}</script>`,
   );
 }
@@ -817,8 +1188,8 @@ export function renderConnectorAuthPage(mode, { next } = {}) {
   const safeNext = isConnectorReturnPath(next) ? next : "/";
   const encodedNext = encodeURIComponent(safeNext);
   const alternatePath = register
-    ? `/login?flow=connector&next=${encodedNext}`
-    : `/register?flow=connector&next=${encodedNext}`;
+    ? `/developer-login?flow=connector&next=${encodedNext}`
+    : `/developer-register?flow=connector&next=${encodedNext}`;
   const title = register ? "Create an account to connect this Mac" : "Log in to connect this Mac";
   const heading = register ? "Create your account. Then connect this Mac." : "Welcome back. Then connect this Mac.";
   const helper = register
@@ -851,7 +1222,7 @@ export function renderConnectorAuthPage(mode, { next } = {}) {
       <div class="connector-auth-card-kicker">RE-ENTRY ACCOUNT</div>
       <h2 id="connector-auth-form-title">${register ? "Create an account" : "Log in"}</h2>
       <p class="connector-auth-card-intro">${helper}</p>
-      <form id="auth-form" class="connector-auth-form" data-mode="${mode}">
+      <form id="auth-form" class="connector-auth-form" data-mode="${mode}" data-success-path="${escapeHtml(safeNext)}">
         <label>Email<input name="identity" type="email" autocomplete="${register ? "email" : "username"}" placeholder="you@example.com" required maxlength="160"></label>
         <label>Password<input name="password" type="password" autocomplete="${register ? "new-password" : "current-password"}" minlength="8" maxlength="256" placeholder="At least 8 characters" required></label>
         <p class="form-hint">${formHint}</p>
@@ -867,6 +1238,53 @@ export function renderConnectorAuthPage(mode, { next } = {}) {
   );
 }
 
+export function renderUserDashboardPage() {
+  return pageShell(
+    "User dashboard — Re-entry",
+    `<div class="page dashboard-page user-dashboard-page" data-dashboard-view="user-dashboard">
+  <header class="primary-nav console-nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/" aria-label="Re-entry home"><span class="brand-word">re-entry</span></a>
+      <nav class="nav-right" aria-label="User portal navigation">
+        <span class="console-context">USER PORTAL</span>
+        <a href="/dashboard">Developer console</a>
+        <button id="user-logout-button" class="button button-secondary" type="button">Log out</button>
+      </nav>
+    </div>
+  </header>
+  <div class="dashboard-layout">
+    <aside class="doc-sidebar">
+      <div class="sidebar-title">Re-entry</div>
+      <div class="sidebar-account">User portal</div>
+      <nav class="sidebar-nav" aria-label="User portal navigation">
+        <a class="side-link active" href="/user-dashboard">Pair this Mac</a>
+      </nav>
+      <div class="sidebar-rule"></div>
+      <div class="sidebar-help"><div class="eyebrow">THE SIMPLE LOOP</div><p>Sign in, create a code, and enter it in the Connector running on your Mac.</p></div>
+    </aside>
+    <main class="dashboard-main">
+      <header class="dashboard-header">
+        <div><div class="eyebrow">RE-ENTRY / USER PORTAL</div><h1>Connect this Mac.</h1><p>Create a one-time code for the Re-entry Connector on this machine.</p></div>
+        <div class="account-chip"><span class="avatar">U</span><span>Personal connection</span></div>
+      </header>
+      <section class="metric-grid">
+        <article class="metric-card metric-card-dark"><span class="utility">CONNECTED MACS</span><strong id="user-connector-count">—</strong><span>devices ready for approved work</span></article>
+        <article class="metric-card"><span class="utility">PAIRING CODE</span><strong>ONE-TIME</strong><span>expires after a short window</span></article>
+        <article class="metric-card"><span class="utility">CODEX</span><strong class="metric-ready">READY</strong><span>the Connector opens Codex locally</span></article>
+      </section>
+      <section class="dashboard-section pairing-section" aria-labelledby="user-pairing-title">
+        <div class="section-head"><div><div class="eyebrow">01 / PAIRING</div><h2 id="user-pairing-title">Pair this Mac.</h2><p>Click once, then type the code into the Connector terminal.</p></div><button id="user-pair-button" class="button button-primary" type="button">Create pairing code</button></div>
+        <div id="user-pairing-result" class="pairing-result" hidden><strong id="user-pairing-code" class="pairing-code">—</strong><div class="pairing-result-copy"><strong>Enter this in the CLI</strong><p id="user-pairing-expiry">The code expires soon.</p></div><button id="user-copy-code" class="button button-secondary" type="button">Copy code</button></div>
+        <div id="user-dashboard-error" class="form-error" role="alert" hidden></div>
+      </section>
+      <section class="dashboard-section" aria-labelledby="user-connectors-title"><div class="section-head"><div><div class="eyebrow">02 / CONNECTED DEVICES</div><h2 id="user-connectors-title">Your Macs.</h2><p class="section-intro">Approved work can be delivered only to a Connector listed here.</p></div></div><div id="user-connector-list" class="organization-list"><div class="loading-card">Loading connected Macs…</div></div></section>
+      <section class="page-summary"><article class="summary-card"><div class="eyebrow">WHAT HAPPENS NEXT</div><h2>Keep the Connector running.</h2><p>When a Host sends approved work, the Connector polls Re-entry and opens a fresh Codex session with the work context.</p></article><article class="summary-card summary-card-dark"><div class="eyebrow">SEPARATE PORTAL</div><h2>Developer setup lives elsewhere.</h2><p>Your developer’s organizations, API keys, and Host integration are managed in the Developer console.</p><a class="summary-link" href="/dashboard">Open Developer console</a></article></section>
+    </main>
+  </div>
+</div><script>${USER_DASHBOARD_SCRIPT}</script>`,
+  );
+}
+
 export function renderDeveloperDocsPage() {
   const body = `
 <div class="page docs-page">
@@ -874,7 +1292,7 @@ export function renderDeveloperDocsPage() {
     <div class="container nav-inner">
       <a class="brand" href="/" aria-label="Re-entry Cloud home"><span class="brand-word">re-entry</span></a>
       <nav class="nav-right" aria-label="Developer documentation navigation">
-        <a href="/">Product</a><a href="/login">Log in</a><a class="button button-primary" href="/register">Start free</a>
+        <a href="/">Product</a><a href="/developer-login">Developer login</a><a class="button button-primary" href="/developer-register">Start free</a>
       </nav>
     </div>
   </header>
@@ -1066,7 +1484,7 @@ function renderDashboardMetricGrid() {
 }
 
 function renderOverviewDetailPage() {
-  return renderDashboardMetricGrid() + '<section class="page-summary" aria-label="Re-entry summary"><article class="summary-card"><div class="eyebrow">START HERE</div><h2>Build one return path.</h2><p>Use this order once for every Host integration.</p><div class="setup-summary"><div class="setup-step"><span class="setup-step-number">1</span><div><strong>Create an organization</strong><span>Keep a product or environment boundary.</span></div></div><div class="setup-step"><span class="setup-step-number">2</span><div><strong>Create a server key</strong><span>Store the secret in your Host environment.</span></div></div><div class="setup-step"><span class="setup-step-number">3</span><div><strong>Connect the Host SDK</strong><span>Send signed manifests and events from your server.</span></div></div></div><a class="summary-link" href="/dashboard/quick-connect">Open the three-step setup</a></article><article class="summary-card summary-card-dark"><div class="eyebrow">LIVE SIGNAL</div><h2>Is the return path moving?</h2><p>Events show what arrived. Pending work shows what still needs a Connector acknowledgement.</p><a class="summary-link" href="/dashboard/activity"><span>Review all events</span><span id="summary-event-count">—</span></a><a class="summary-link" href="/dashboard/pending"><span>Review pending work</span><span id="summary-pending-count">—</span></a></article></section><section class="dashboard-section overview-grid" aria-label="Workspace overview"><article class="summary-card"><div class="section-head"><div><div class="eyebrow">WORKSPACES</div><h2>Your organizations</h2><p class="section-intro">Each organization owns its own Host credentials.</p></div><a class="button button-secondary" href="/dashboard/organizations">Manage</a></div><div id="organization-list" class="organization-list"><div class="loading-card">Loading your organizations…</div></div></article><article class="summary-card"><div class="eyebrow">NEXT STEP</div><h2>Connect the first Host.</h2><p>Choose Next.js or Node.js, copy the server environment values, and keep all credentials out of browser code.</p><a class="button button-primary" href="/dashboard/quick-connect">Open Quick connect</a></article></section><section class="dashboard-section activity-section" aria-labelledby="overview-activity-title"><div class="activity-head"><div><div class="eyebrow">RECEIVER / SNAPSHOT</div><h2 id="overview-activity-title">Current activity</h2><p>A quick pulse of the return paths. Open Activity or Pending work for full details.</p></div><div class="activity-refresh"><span class="activity-live-dot" aria-hidden="true"></span><span id="activity-updated" aria-live="polite">Loading activity…</span><button id="refresh-activity" type="button">Refresh</button></div></div><div class="activity-grid"><article class="activity-panel"><div class="activity-panel-header"><div><div class="utility">RECENT EVENTS</div><h3>What reached Re-entry</h3></div><span id="event-count" class="activity-count">—</span></div><div id="overview-event-list" class="activity-list" aria-live="polite"><div class="activity-empty">Loading events…</div></div><a class="summary-link" href="/dashboard/activity">Open event history</a></article><article class="activity-panel activity-panel-dark"><div class="activity-panel-header"><div><div class="utility">PENDING WORK</div><h3>What still needs attention</h3></div><span id="pending-count" class="activity-count">—</span></div><div id="overview-pending-list" class="activity-list" aria-live="polite"><div class="activity-empty">Loading pending work…</div></div><a class="summary-link" href="/dashboard/pending">Open pending queue</a></article></div></section>';
+  return renderDashboardMetricGrid() + '<section class="dashboard-section pairing-section" aria-labelledby="pairing-title"><div class="section-head"><div><div class="eyebrow">THIS MAC / ONE-TIME SETUP</div><h2 id="pairing-title">Pair this Mac.</h2><p>Click once to create a short code. Enter it in the Re-entry CLI running on that Mac.</p></div><button id="pair-mac-button" class="button button-primary" type="button">Create pairing code</button></div><div id="pairing-result" class="pairing-result" hidden><strong id="pairing-code" class="pairing-code">—</strong><div class="pairing-result-copy"><strong>Enter this in the CLI</strong><p id="pairing-expiry">The code expires soon.</p></div><button class="button button-secondary" type="button" data-copy-target="pairing-code">Copy code</button></div></section><section class="page-summary" aria-label="Re-entry summary"><article class="summary-card"><div class="eyebrow">START HERE</div><h2>Build one return path.</h2><p>Use this order once for every Host integration.</p><div class="setup-summary"><div class="setup-step"><span class="setup-step-number">1</span><div><strong>Create an organization</strong><span>Keep a product or environment boundary.</span></div></div><div class="setup-step"><span class="setup-step-number">2</span><div><strong>Create a server key</strong><span>Store the secret in your Host environment.</span></div></div><div class="setup-step"><span class="setup-step-number">3</span><div><strong>Connect the Host SDK</strong><span>Send signed manifests and events from your server.</span></div></div></div><a class="summary-link" href="/dashboard/quick-connect">Open the three-step setup</a></article><article class="summary-card summary-card-dark"><div class="eyebrow">LIVE SIGNAL</div><h2>Is the return path moving?</h2><p>Events show what arrived. Pending work shows what still needs a Connector acknowledgement.</p><a class="summary-link" href="/dashboard/activity"><span>Review all events</span><span id="summary-event-count">—</span></a><a class="summary-link" href="/dashboard/pending"><span>Review pending work</span><span id="summary-pending-count">—</span></a></article></section><section class="dashboard-section overview-grid" aria-label="Workspace overview"><article class="summary-card"><div class="section-head"><div><div class="eyebrow">WORKSPACES</div><h2>Your organizations</h2><p class="section-intro">Each organization owns its own Host credentials.</p></div><a class="button button-secondary" href="/dashboard/organizations">Manage</a></div><div id="organization-list" class="organization-list"><div class="loading-card">Loading your organizations…</div></div></article><article class="summary-card"><div class="eyebrow">NEXT STEP</div><h2>Connect the first Host.</h2><p>Choose Next.js or Node.js, copy the server environment values, and keep all credentials out of browser code.</p><a class="button button-primary" href="/dashboard/quick-connect">Open Quick connect</a></article></section><section class="dashboard-section activity-section" aria-labelledby="overview-activity-title"><div class="activity-head"><div><div class="eyebrow">RECEIVER / SNAPSHOT</div><h2 id="overview-activity-title">Current activity</h2><p>A quick pulse of the return paths. Open Activity or Pending work for full details.</p></div><div class="activity-refresh"><span class="activity-live-dot" aria-hidden="true"></span><span id="activity-updated" aria-live="polite">Loading activity…</span><button id="refresh-activity" type="button">Refresh</button></div></div><div class="activity-grid"><article class="activity-panel"><div class="activity-panel-header"><div><div class="utility">RECENT EVENTS</div><h3>What reached Re-entry</h3></div><span id="event-count" class="activity-count">—</span></div><div id="overview-event-list" class="activity-list" aria-live="polite"><div class="activity-empty">Loading events…</div></div><a class="summary-link" href="/dashboard/activity">Open event history</a></article><article class="activity-panel activity-panel-dark"><div class="activity-panel-header"><div><div class="utility">PENDING WORK</div><h3>What still needs attention</h3></div><span id="pending-count" class="activity-count">—</span></div><div id="overview-pending-list" class="activity-list" aria-live="polite"><div class="activity-empty">Loading pending work…</div></div><a class="summary-link" href="/dashboard/pending">Open pending queue</a></article></div></section>';
 }
 
 function renderActivityDetailPage(pending) {
@@ -1235,6 +1653,38 @@ function isConnectorReturnPath(value) {
     url.hash ||
     url.searchParams.getAll("token").length !== 1 ||
     [...url.searchParams.keys()].some((key) => key !== "token")
+  ) {
+    return false;
+  }
+  return /^[A-Za-z0-9_-]{43}$/.test(url.searchParams.get("token"));
+}
+
+function isDeveloperAuthNext(value) {
+  return typeof value === "string"
+    && value.length <= 256
+    && (value === "/dashboard" || value.startsWith("/dashboard/"));
+}
+
+function isUserAuthNext(value) {
+  return value === "/user-dashboard"
+    || isConnectorReturnPath(value)
+    || isConsentReturnPath(value);
+}
+
+function isConsentReturnPath(value) {
+  if (typeof value !== "string" || value.length > 256) return false;
+  let url;
+  try {
+    url = new URL(value, "http://reentry.local");
+  } catch {
+    return false;
+  }
+  if (
+    url.origin !== "http://reentry.local"
+    || url.pathname !== "/consent"
+    || url.hash
+    || url.searchParams.getAll("token").length !== 1
+    || [...url.searchParams.keys()].some((key) => key !== "token")
   ) {
     return false;
   }

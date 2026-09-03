@@ -1,3 +1,6 @@
+/**
+ * @deprecated Historical loopback entry point. Do not use for new integrations or production.
+ */
 import { pathToFileURL } from "node:url";
 import process from "node:process";
 

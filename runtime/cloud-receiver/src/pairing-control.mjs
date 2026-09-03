@@ -240,6 +240,7 @@ export function createPairingControlPlane(options) {
       }
       return true;
     } catch (error) {
+      if (response.headersSent || response.destroyed) return true;
       writeJson(
         response,
         error instanceof PairingControlError ? error.statusCode : 500,

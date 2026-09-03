@@ -1,3 +1,7 @@
+/**
+ * @deprecated Historical Cloud Receiver process shell. Do not use for new integrations or
+ * production.
+ */
 import { createServer } from "node:http";
 
 import { createCloudReceiverHttpHandler } from "../../../reentry-core/src/cloud-receiver-http.mjs";
@@ -66,26 +70,24 @@ export function createCloudReceiverService(options) {
           response,
           getState: () => state,
           readiness: options.readiness,
-        }).catch(() => response.destroy());
+        }).catch((error) => writeRequestFailure(response, error));
         return;
       }
       if (options.controlHandler === undefined) {
-        protocolHandler(request, response);
+        void Promise.resolve()
+          .then(() => protocolHandler(request, response))
+          .catch((error) => writeRequestFailure(response, error));
         return;
       }
-      Promise.resolve(options.controlHandler(request, response)).then((handled) => {
-        if (!handled && !response.writableEnded && !response.destroyed) {
-          protocolHandler(request, response);
-        }
-      }).catch(() => {
-        if (response.writableEnded || response.destroyed) return;
-        response.writeHead(500, {
-          "Cache-Control": "no-store",
-          "Content-Length": 0,
-          Connection: "close",
-        });
-        response.end();
-      });
+      void Promise.resolve()
+        .then(() => options.controlHandler(request, response))
+        .then((handled) => {
+          if (!handled && !response.writableEnded && !response.destroyed) {
+            return protocolHandler(request, response);
+          }
+          return undefined;
+        })
+        .catch((error) => writeRequestFailure(response, error));
     },
   );
   server.maxHeadersCount = CLOUD_RECEIVER_SERVER_LIMITS.maxHeaders;
@@ -246,12 +248,35 @@ function writeJson(response, statusCode, body, additionalHeaders = undefined) {
   response.writeHead(statusCode, {
     "Cache-Control": "no-store",
     "Content-Length": Buffer.byteLength(payload),
-    "Content-Type": "application/json",
+    "Content-Type": "application/json; charset=utf-8",
     Pragma: "no-cache",
     "X-Content-Type-Options": "nosniff",
     ...additionalHeaders,
   });
   response.end(payload);
+}
+
+function writeRequestFailure(response, error) {
+  if (response.writableEnded || response.destroyed) return;
+  if (response.headersSent) {
+    response.destroy?.();
+    return;
+  }
+  if (error?.code === "cloud_receiver_persistence_busy") {
+    writeJson(
+      response,
+      503,
+      { error: { code: "receiver_busy" } },
+      { "Retry-After": "1" },
+    );
+    return;
+  }
+  writeJson(
+    response,
+    500,
+    { error: { code: "receiver_internal_error" } },
+    { Connection: "close" },
+  );
 }
 
 function requireLoopbackHost(value) {

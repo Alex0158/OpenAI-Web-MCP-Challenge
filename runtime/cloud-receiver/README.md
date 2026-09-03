@@ -1,40 +1,104 @@
 # Re-entry Cloud Receiver
 
+> **DEPRECATED — 2026-09-02:** This package and its hosted preview are retired. The source,
+> commands, tests, and deployment notes below are preserved as historical evidence only. Do not
+> create new integrations, credentials, traffic, or production data for this receiver. The default
+> Vercel entry point returns `410 receiver_deprecated`; a replacement cloud service must be defined
+> and verified separately.
+
 The product preview combines a browser account, organizations and server keys, Receiver Core,
 account-owned consent, durable delivery, and account-linked Connector devices in one loopback
 service.
 
-> Current boundary: the account-first path and the Supabase/Prisma hosted adapter are MVP previews.
-> This is not a production deployment: it has no production TLS termination, email verification,
-> account recovery, rate limiting, abuse controls, or general multi-instance capacity claim.
+> Historical boundary: the account-first path and the Supabase/Prisma hosted adapter were MVP
+> previews. They were never a production deployment: they had no production TLS termination, email
+> verification, account recovery, rate limiting, abuse controls, or general multi-instance capacity
+> claim.
 
-Hosted smoke-test URL: [https://cloud-receiver-mu.vercel.app](https://cloud-receiver-mu.vercel.app).
-The public deployment is a preview of the same account-first flow; it does not change the local
-preview's production-readiness boundary.
+Former hosted preview URL: [https://re-entry-weld.vercel.app](https://re-entry-weld.vercel.app).
+The former Vercel project was named `re-entry-cloud`; its short automatic hostname
+`re-entry-cloud.vercel.app` is already owned by another Vercel account, so `re-entry-weld.vercel.app`
+was the deployment alias. `/healthz`, `/readyz`, the canonical developer auth routes, and
+the existing-session user dashboard were externally verified. The full hosted auth and pairing
+write path remains historical evidence and is not a current availability or production-readiness
+claim.
 
-## Hosted MVP configuration
+## Historical hosted MVP configuration (deprecated)
 
-The Vercel function uses Supabase PostgreSQL through Prisma. Keep these values in Vercel project
-secrets or an untracked local environment file; never commit them:
+The former Vercel function used Supabase PostgreSQL through Prisma. The configuration below is
+preserved for historical investigation only. Do not create or rotate credentials for this retired
+receiver, and never commit any values:
 
 ```text
 DATABASE_URL  # Supabase transaction-mode pooler, port 6543, with pgbouncer=true
+CLOUD_RECEIVER_RUNTIME_DATABASE_URL  # Supabase session-mode pooler, port 5432, for runtime locks
 DIRECT_URL    # Supabase direct or session-mode URL for Prisma migrations
 CLOUD_RECEIVER_CONNECTOR_TOKEN_SECRET
 ```
 
-Runtime traffic uses `DATABASE_URL`. Schema migration commands use `DIRECT_URL`:
+Historically, mutating runtime traffic used `CLOUD_RECEIVER_RUNTIME_DATABASE_URL` because the preview serialized
+writes with a PostgreSQL advisory transaction lock; acquisition is fail-fast, so contention returns
+a bounded `503 receiver_busy` response instead of hanging or crashing the function. Read-only
+`GET` requests skip the lock and still use the same transaction-mode-compatible persistence path.
+Supabase transaction-mode pooling does not support advisory locks. `DATABASE_URL` remains the
+local/backward-compatible fallback when the runtime-specific variable is not set. Schema migration
+commands use `DIRECT_URL`:
 
 ```sh
 npm run db:generate
 DIRECT_URL='[set privately]' npm run db:migrate
 ```
 
-The Vercel adapter serializes the existing preview stores through a Prisma-managed Postgres
-snapshot table. This preserves the current protocol behavior while keeping the implementation
-small; it is deliberately not a high-throughput production persistence model.
+The former Vercel deployment used `npm run vercel-build`, which ran the additive migration with
+`DIRECT_URL` or the configured session-mode runtime URL before generating the Prisma client. This
+keeps a new function from going live before its native tables exist.
 
-## Start the product preview
+The former Vercel adapter persisted the account, organization, device, consent, event, and delivery
+records in native Prisma/Postgres tables. The old snapshot table is used only once to backfill an
+existing preview database, then remains empty for rollback visibility. The synchronous Core still
+runs against temporary SQLite files during this preview, so requests remain serialized and this is
+not a high-throughput production persistence model.
+
+The durable tables are grouped by business responsibility:
+
+```text
+identity:     reentry_accounts, reentry_organizations, reentry_api_keys, reentry_sessions
+devices:      cloud_connectors, cloud_host_signing_keys, product_account_connectors,
+              product_account_pairing_requests, product_device_authorizations
+continuation: product_account_consent_sessions, receiver_challenges, receiver_grants,
+              receiver_events, receiver_deliveries, receiver_delivery_states,
+              receiver_delivery_attempts
+```
+
+The additive migration created these tables without deleting the old snapshot table. After the
+migration is deployed, the first ordinary request imports any existing snapshots and writes the
+relational rows atomically. Confirm the first request and `/readyz` before removing the old table in
+a later cleanup migration.
+
+## Historical error contract (deprecated)
+
+Browser and API failures use a small public envelope and never expose stack traces, database
+messages, secrets, or connection details:
+
+```json
+{ "error": { "code": "account_exists" } }
+```
+
+Typical responses are `422` for invalid input, `401` for a missing or invalid session, `403` for
+an authorization failure, `404` for a missing record, `409` for a conflict such as a duplicate
+account, `410` for an expired continuation, `503` for an unavailable or busy Receiver, and `500`
+for an unexpected failure. The browser translates known codes into actionable messages. Retry a
+`503 receiver_busy` response only after its `Retry-After` interval; a `receiver_internal_error`
+response means the request was not completed.
+
+`GET /readyz` returns `200 {"status":"ready"}` when the persistence boundary is available and a
+bounded `503` response when it is not. It does not allow a readiness exception to become a
+function crash.
+
+## Historical local preview (deprecated)
+
+The commands in this section reproduce the retired local composition only. They are not an
+installation or deployment path for new work.
 
 Requirements: Node.js 24 or newer.
 
@@ -51,7 +115,8 @@ local process.
 ```text
 create Re-entry account
   -> create organization + reveal its Host API key once
-  -> install the Local Connector on a Mac and approve it in this account
+  -> install the Local Connector on a Mac
+  -> sign in through the user portal, click Pair this Mac, and enter the code in the CLI
   -> add the Host SDK to the website server
   -> Host sends signed Manifest and receives a consent URL
   -> person approves on Re-entry and chooses the connected Mac
@@ -59,23 +124,32 @@ create Re-entry account
   -> Local Connector claims the delivery and opens Codex
 ```
 
-When the Connector opens its verification URL, Re-entry shows a connector-specific account
-choice screen instead of sending the person straight to the generic login page. **Create an
-account** and **Log in** both preserve the pending device request and return to the final
-**Connect this Mac** approval. Signing in alone never authorizes the device.
+The former first-run path started in the Connector: it opened the dedicated user account page, then
+the signed-in user lands on `/user-dashboard` and clicks **Pair this Mac**. That user dashboard creates
+a short-lived code; the CLI redeems it and receives the delivery-only Connector credential. Developer
+credentials remain on the separate `/developer-login`, `/developer-register`, and `/dashboard` path.
+The older verification URL
+and approval page remain below as compatibility evidence.
 
 The Host never receives the Re-entry account id, Connector id, Connector token, or browser session.
 The Connector never receives the organization key or Host signing key.
 
-## Current account-first routes
+## Historical account-first routes (deprecated)
 
 ```text
 POST /api/auth/register                    browser account
 POST /api/auth/login
+GET  /developer-register                   developer registration portal
+GET  /developer-login                      developer login portal
+GET  /user-register                         dedicated user page for first-time Mac pairing
+GET  /user-login                            dedicated user page for returning Mac pairing
+GET  /user-dashboard                        user portal for creating Connector pairing codes
 POST /api/organizations                    organization + one-time API key
-POST /v0.1/device-authorizations           Connector starts browser authorization
-POST /v0.1/device-authorizations/poll      Connector waits for approval
-POST /v0.1/device-authorizations/decision  Re-entry browser approves the Mac
+POST /v0.1/account/pairing-sessions        authenticated dashboard creates a short-lived code
+POST /v0.1/account/pairing-sessions/claim  CLI redeems the code and receives Connector credentials
+POST /v0.1/device-authorizations           legacy Connector-started authorization
+POST /v0.1/device-authorizations/poll      legacy compatibility route
+POST /v0.1/device-authorizations/decision  legacy compatibility route
 GET  /v0.1/account/connectors              account lists connected Macs
 POST /v0.1/host-keys                       Host registers a public signing key
 POST /v0.1/consent-sessions                Host sends a signed Manifest
@@ -85,28 +159,31 @@ POST /v0.1/events                          Host sends the signed business event
 POST /v0.1/delivery-claims                 Connector polls for approved work
 ```
 
-## Verify the complete loop
+`/login` and `/register` remain compatibility redirects to the developer portal. They are not
+canonical entry points, and the Connector never opens them.
+
+## Verify the preserved historical loop
 
 ```sh
 npm run verify
 ```
 
-The suite includes a real HTTP happy path from account registration through Mac approval, Host-key
+The suite includes a preserved real HTTP happy path from user account registration through dashboard Mac
+pairing-code redemption, Host-key
 registration, signed consent, opaque binding, signed Event, and Connector delivery claim.
 
-## Give this to a coding agent
+## Historical coding-agent prompt
 
 ```text
-Run the Re-entry Cloud Receiver local product preview from this repository. Read
-runtime/cloud-receiver/README.md and Docs/Decisions/ADR-0028-adopt-account-first-connector-authorization.md
-first. Use Node.js 24 or newer, run npm install and npm run verify, then start it with `npm start`.
-Do not print, commit, or copy API-key secrets, signing keys, session cookies, Connector credentials,
-SQLite files, or the generated Receiver secret. Treat loopback success as local evidence only and
-report public deployment, TLS, account recovery, and production identity as unverified.
+Do not set up or integrate the deprecated Re-entry Cloud Receiver runtime from this repository.
+Read ADR-0032-retire-current-cloud-receiver-runtime.md and use the reusable Re-entry Core contracts
+for new work. The commands and tests in runtime/cloud-receiver/README.md may be used only to inspect
+or reproduce historical evidence. Do not print, commit, or copy API-key secrets, signing keys,
+session cookies, Connector credentials, SQLite files, or generated Receiver secrets.
 ```
 
 <details>
-<summary>Stage 1 and legacy Host-code preview notes</summary>
+<summary>Retired Stage 1 and legacy Host-code preview notes</summary>
 
 The material below is retained for protocol traceability. It is not the current account-first
 product path.
@@ -217,7 +294,7 @@ npm start
 
 Then inspect `http://127.0.0.1:8080/healthz` and `http://127.0.0.1:8080/readyz`.
 
-## Start the pairing preview
+## Start the pairing preview (historical; deprecated)
 
 From this directory, with Node 24:
 
@@ -293,9 +370,10 @@ npm start -- claim-once \
 that managed-context activation is unsupported and never sends an acknowledgement. A future
 selected Agent adapter and independent Host-effect verifier are separate work.
 
-## Start the Re-entry Cloud product preview
+## Start the Re-entry Cloud product preview (historical; deprecated)
 
-To open the branded landing page and local developer console, use the product composition instead:
+To reproduce the retired branded landing page and local developer console, use the historical
+product composition instead:
 
 ```sh
 PREVIEW_DIR="$(mktemp -d)"
@@ -311,7 +389,7 @@ Open `http://127.0.0.1:43218/`:
 
 1. choose **Create workspace**;
 2. enter an email and password;
-3. use **Overview** for the setup sequence and current signal summary;
+3. use **Overview** for the setup sequence and historical signal summary;
 4. open **Activity** or **Pending work** to inspect selectable lifecycle details;
 5. use **Organizations** to create or delete workspaces before entering one;
 6. open an organization workspace to see only its keys and install steps, then rotate or revoke
@@ -331,7 +409,7 @@ with Local machine and Developer tabs. The shared hand-drawn hedgehog engineer m
 referenced by the active UI. The landing, auth, and dashboard screens use a simple text-only
 `re-entry` wordmark; the mascot asset route remains available for compatibility.
 
-This preview is the first product shell around the Cloud Receiver. The account console is real
+This retired preview was the first product shell around the Cloud Receiver. The account console was real
 file-backed local state, but its three-digit/four-digit credential is intentionally demo-only and
 its organization key is not yet the credential used by the existing fixed local Host-key/event
 preview. The activity panel is a redacted, read-only projection of the configured Receiver

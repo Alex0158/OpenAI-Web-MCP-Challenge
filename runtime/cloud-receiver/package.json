@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Loopback-only Cloud Receiver shell, Re-entry Cloud console, and Connector preview.",
+  "description": "[DEPRECATED] Historical loopback Cloud Receiver shell, Re-entry Cloud console, and Connector preview.",
   "exports": {
     ".": "./src/index.mjs",
     "./service": "./src/cloud-receiver-service.mjs",
@@ -20,6 +20,7 @@
     "start:service": "node src/main.mjs",
     "postinstall": "prisma generate",
     "build": "prisma generate",
+    "vercel-build": "DIRECT_URL=\"${DIRECT_URL:-$CLOUD_RECEIVER_RUNTIME_DATABASE_URL}\" npm run db:migrate && npm run db:generate",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "check:syntax": "node scripts/check-syntax.mjs",

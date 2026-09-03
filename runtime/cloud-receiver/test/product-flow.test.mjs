@@ -59,19 +59,19 @@ test("account-first flow connects one Mac, approves on Re-entry, and yields a cl
 
       const token = new URL(url).searchParams.get("token");
       const returnPath = `/connect?token=${token}`;
-      const login = await fetch(`${address.origin}/login?flow=connector&next=${encodeURIComponent(returnPath)}`);
+      const login = await fetch(`${address.origin}/user-login?next=${encodeURIComponent(returnPath)}`);
       assert.equal(login.status, 200);
       const loginHtml = await login.text();
-      assert.match(loginHtml, /Welcome back\. Then connect this Mac/);
-      assert.match(loginHtml, /Log in and continue/);
-      assert.match(loginHtml, /flow=connector/);
+      assert.match(loginHtml, /Welcome back\. Connect your Mac/);
+      assert.match(loginHtml, /Log in/);
+      assert.match(loginHtml, /data-success-path="\/connect\?token=/);
 
-      const register = await fetch(`${address.origin}/register?flow=connector&next=${encodeURIComponent(returnPath)}`);
+      const register = await fetch(`${address.origin}/user-register?next=${encodeURIComponent(returnPath)}`);
       assert.equal(register.status, 200);
       const registerHtml = await register.text();
-      assert.match(registerHtml, /Create your account\. Then connect this Mac/);
-      assert.match(registerHtml, /Create account and continue/);
-      assert.match(registerHtml, /flow=connector/);
+      assert.match(registerHtml, /Connect your Mac to Re-entry/);
+      assert.match(registerHtml, /Create account/);
+      assert.match(registerHtml, /data-success-path="\/connect\?token=/);
 
       approvalPage = await fetch(url, { headers: { Cookie: cookie } });
       assert.equal(approvalPage.status, 200);
@@ -181,4 +181,47 @@ test("account-first flow connects one Mac, approves on Re-entry, and yields a cl
   });
   assert.equal(claim.lease.event_id, "event_product_flow");
   assert.equal(claim.lease.receipt.canonical_url, canonicalUrl);
+});
+
+test("dashboard-issued pairing code connects a fresh Local Connector", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "reentry-dashboard-pairing-"));
+  const composition = createProductPreviewComposition({
+    receiverDatabasePath: join(directory, "receiver.sqlite"),
+    pairingDatabasePath: join(directory, "host-keys.sqlite"),
+    accountDatabasePath: join(directory, "accounts.sqlite"),
+    productDatabasePath: join(directory, "product.sqlite"),
+    tokenSecret: "dashboard-pairing-test-secret-0001",
+  });
+  const service = createCloudReceiverService(composition);
+  const address = await service.start({ host: "127.0.0.1", port: 0 });
+  t.after(() => service.stop());
+
+  const registration = await fetch(`${address.origin}/api/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ identity: "pairing@example.test", password: "preview-password" }),
+  });
+  assert.equal(registration.status, 201);
+  const cookie = registration.headers.get("set-cookie").split(";", 1)[0];
+  const dashboardPairing = await fetch(`${address.origin}/v0.1/account/pairing-sessions`, {
+    method: "POST",
+    headers: { Cookie: cookie, "Content-Type": "application/json" },
+    body: "{}",
+  });
+  assert.equal(dashboardPairing.status, 201);
+  const pairing = await dashboardPairing.json();
+  assert.match(pairing.pairing_code, /^[A-F0-9]{8}$/);
+  assert.equal(Object.hasOwn(pairing, "connector_token"), false);
+
+  const client = new LocalConnectorPairingClient({ baseUrl: address.origin });
+  const credentials = await client.connectWithPairingCode({
+    pairingCode: pairing.pairing_code,
+    deviceName: "Fresh Test Mac",
+  });
+  assert.equal(credentials.pairing_id, pairing.pairing_id);
+  assert.match(credentials.connector_token, /^[A-Za-z0-9_-]{43}$/);
+
+  const devices = await fetch(`${address.origin}/v0.1/account/connectors`, { headers: { Cookie: cookie } });
+  assert.equal(devices.status, 200);
+  assert.deepEqual((await devices.json()).connectors.map((item) => item.device_name), ["Fresh Test Mac"]);
 });

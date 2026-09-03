@@ -137,6 +137,7 @@ export function createHostKeyControlPlane(options) {
       writeJson(response, result.duplicate ? 200 : 201, result);
       return true;
     } catch (error) {
+      if (response.headersSent || response.destroyed) return true;
       writeJson(
         response,
         hostKeyStatus(error),
@@ -362,7 +363,7 @@ function hostKeyStatus(error) {
 }
 
 function hostKeyCode(error) {
-  if (error instanceof HostKeyControlError) return error.code;
+  if (error instanceof HostKeyControlError && /^[a-z][a-z0-9_]{0,95}$/.test(error.code)) return error.code;
   if (error?.code === "host_key_identity_conflict") return error.code;
   return "host_key_internal_error";
 }

@@ -39,6 +39,32 @@ const MAX_BODY_BYTES = 24 * 1_024;
 const MAX_TOKEN_BYTES = 4 * 1_024;
 const CONTROL_CONTENT_TYPE = /^application\/json(?:\s*;\s*charset=utf-8)?$/i;
 const ERROR_CODE_PATTERN = /^[a-z][a-z0-9_]{0,95}$/;
+const PUBLIC_ERROR_CODES = new Set([
+  "consent_session_not_pending",
+  "consent_session_identity_conflict",
+  "consent_session_expired",
+  "consent_session_not_found",
+  "consent_decision_race",
+  "consent_decision_identity_conflict",
+  "consent_session_status_conflict",
+  "consent_session_status_race",
+  "consent_session_binding_conflict",
+  "consent_challenge_invalid",
+  "organization_auth_invalid",
+  "http_content_type_invalid",
+  "http_method_not_allowed",
+  "http_body_too_large",
+  "http_body_invalid",
+  "consent_token_invalid",
+  "consent_identifier_invalid",
+  "consent_origin_invalid",
+  "host_subject_not_paired",
+  "consent_subject_invalid",
+  "consent_action_invalid",
+  "consent_decision_invalid",
+  "consent_input_invalid",
+  "consent_input_fields_invalid",
+]);
 
 export class ConsentControlError extends Error {
   constructor(code, statusCode, message) {
@@ -249,6 +275,7 @@ export function createConsentControlPlane(options) {
       }
       return true;
     } catch (error) {
+      if (response.headersSent || response.destroyed) return true;
       writeJson(response, statusFor(error), { error: { code: codeFor(error) } });
       return true;
     }
@@ -423,6 +450,7 @@ function statusFor(error) {
       "consent_session_identity_conflict",
       "consent_session_status_conflict",
       "consent_session_status_race",
+      "consent_session_binding_conflict",
     ].includes(error?.code)
   ) {
     return 409;
@@ -431,7 +459,9 @@ function statusFor(error) {
 }
 
 function codeFor(error) {
-  return typeof error?.code === "string" && ERROR_CODE_PATTERN.test(error.code)
+  return typeof error?.code === "string" &&
+    ERROR_CODE_PATTERN.test(error.code) &&
+    PUBLIC_ERROR_CODES.has(error.code)
     ? error.code
     : "consent_internal_error";
 }

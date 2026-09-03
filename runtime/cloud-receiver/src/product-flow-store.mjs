@@ -1,6 +1,6 @@
 import { DatabaseSync } from "node:sqlite";
 
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
 const STORE_FIELDS = Object.freeze(["filename"]);
 const DEVICE_AUTHORIZATION_FIELDS = Object.freeze([
   "authorization_id",
@@ -29,6 +29,19 @@ const CONNECTOR_FIELDS = Object.freeze([
   "expires_at",
   "revoked_at",
 ]);
+const ACCOUNT_PAIRING_FIELDS = Object.freeze([
+  "pairing_id",
+  "account_id",
+  "pairing_code_digest",
+  "connector_id",
+  "connector_token_digest",
+  "subject_id",
+  "delivery_target_id",
+  "device_name",
+  "created_at",
+  "expires_at",
+  "consumed_at",
+]);
 const CONSENT_FIELDS = Object.freeze([
   "consent_session_id",
   "organization_id",
@@ -47,6 +60,26 @@ const CONSENT_FIELDS = Object.freeze([
   "decided_at",
   "binding_json",
 ]);
+
+const ACCOUNT_PAIRING_SCHEMA_SQL = `
+CREATE TABLE product_account_pairing_requests (
+  pairing_id TEXT PRIMARY KEY,
+  account_id TEXT NOT NULL,
+  pairing_code_digest TEXT NOT NULL UNIQUE,
+  connector_id TEXT NOT NULL UNIQUE,
+  connector_token_digest TEXT NOT NULL UNIQUE,
+  subject_id TEXT NOT NULL UNIQUE,
+  delivery_target_id TEXT NOT NULL UNIQUE,
+  device_name TEXT,
+  created_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  consumed_at TEXT,
+  CHECK ((consumed_at IS NULL AND device_name IS NULL) OR (consumed_at IS NOT NULL AND device_name IS NOT NULL))
+) STRICT;
+
+CREATE INDEX product_account_pairing_requests_expiry
+  ON product_account_pairing_requests(expires_at, consumed_at);
+`;
 
 const SCHEMA_SQL = `
 CREATE TABLE product_device_authorizations (
@@ -88,6 +121,8 @@ CREATE TABLE product_account_connectors (
 
 CREATE INDEX product_account_connectors_account
   ON product_account_connectors(account_id, created_at, connector_id);
+
+${ACCOUNT_PAIRING_SCHEMA_SQL}
 
 CREATE TABLE product_account_host_subject_links (
   organization_id TEXT NOT NULL,
@@ -175,6 +210,52 @@ export class ProductFlowStore {
     this.#statements.insertDeviceAuthorization.run(
       ...DEVICE_AUTHORIZATION_FIELDS.map((field) => value[field]),
     );
+  }
+
+  createAccountPairing(value) {
+    this.#assertOpen();
+    requireAccountPairing(value);
+    this.#statements.insertAccountPairing.run(
+      ...ACCOUNT_PAIRING_FIELDS.map((field) => value[field]),
+    );
+    return this.getAccountPairingById(value.pairing_id);
+  }
+
+  getAccountPairingById(pairingId) {
+    this.#assertOpen();
+    return plainRow(this.#statements.accountPairingById.get(pairingId));
+  }
+
+  getAccountPairingByCodeDigest(codeDigest) {
+    this.#assertOpen();
+    return plainRow(this.#statements.accountPairingByCodeDigest.get(codeDigest));
+  }
+
+  claimAccountPairing(codeDigest, deviceName, consumedAt, connector) {
+    this.#assertOpen();
+    requireConnector(connector);
+    return this.transaction((transaction) => {
+      const current = transaction.getAccountPairingByCodeDigest(codeDigest);
+      if (!current) return { status: "missing", duplicate: false };
+      if (current.consumed_at !== null) {
+        if (current.connector_id !== connector.connector_id) {
+          throw storeConflict("account_pairing_identity_conflict");
+        }
+        return { status: "consumed", duplicate: true, pairing: current };
+      }
+      if (current.account_id !== connector.account_id) {
+        throw storeConflict("account_pairing_identity_conflict");
+      }
+      transaction.insertConnector(connector);
+      if (!transaction.setAccountPairingConsumed(current.pairing_id, deviceName, consumedAt)) {
+        throw storeConflict("account_pairing_claim_race");
+      }
+      return {
+        status: "consumed",
+        duplicate: false,
+        pairing: transaction.getAccountPairingById(current.pairing_id),
+      };
+    });
   }
 
   getDeviceAuthorizationByDeviceDigest(value) {
@@ -280,6 +361,15 @@ export class ProductFlowStore {
     return this.#statements.consumeDeviceAuthorization.run(
       consumedAt,
       authorizationId,
+    ).changes === 1;
+  }
+
+  setAccountPairingConsumed(pairingId, deviceName, consumedAt) {
+    this.#assertWriteTransaction();
+    return this.#statements.consumeAccountPairing.run(
+      deviceName,
+      consumedAt,
+      pairingId,
     ).changes === 1;
   }
 
@@ -511,14 +601,18 @@ export class ProductFlowStore {
   #initializeSchema() {
     const version = this.#database.prepare("PRAGMA user_version").get()?.user_version;
     if (version === SCHEMA_VERSION) return;
-    if (version !== 0) throw new Error(`Unsupported Product flow schema version: ${version}`);
-    const existing = this.#database.prepare(
-      "SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%' LIMIT 1",
-    ).get();
-    if (existing) throw new Error("Unversioned Product flow database is not empty");
+    if (version !== 0 && version !== 1) throw new Error(`Unsupported Product flow schema version: ${version}`);
     this.#database.exec("BEGIN IMMEDIATE");
     try {
-      this.#database.exec(SCHEMA_SQL);
+      if (version === 0) {
+        const existing = this.#database.prepare(
+          "SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%' LIMIT 1",
+        ).get();
+        if (existing) throw new Error("Unversioned Product flow database is not empty");
+        this.#database.exec(SCHEMA_SQL);
+      } else {
+        this.#database.exec(ACCOUNT_PAIRING_SCHEMA_SQL);
+      }
       this.#database.exec(`PRAGMA user_version = ${SCHEMA_VERSION}`);
       this.#database.exec("COMMIT");
     } catch (error) {
@@ -571,6 +665,24 @@ export class ProductFlowStore {
           connector_id, account_id, device_name, subject_id, delivery_target_id,
           connector_token_digest, created_at, expires_at, revoked_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `),
+      insertAccountPairing: this.#database.prepare(`
+        INSERT INTO product_account_pairing_requests (
+          pairing_id, account_id, pairing_code_digest, connector_id,
+          connector_token_digest, subject_id, delivery_target_id, device_name,
+          created_at, expires_at, consumed_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `),
+      accountPairingById: this.#database.prepare(
+        "SELECT * FROM product_account_pairing_requests WHERE pairing_id = ?",
+      ),
+      accountPairingByCodeDigest: this.#database.prepare(
+        "SELECT * FROM product_account_pairing_requests WHERE pairing_code_digest = ?",
+      ),
+      consumeAccountPairing: this.#database.prepare(`
+        UPDATE product_account_pairing_requests
+        SET device_name = ?, consumed_at = ?
+        WHERE pairing_id = ? AND consumed_at IS NULL
       `),
       connectorByTokenDigest: this.#database.prepare(
         "SELECT * FROM product_account_connectors WHERE connector_token_digest = ?",
@@ -642,6 +754,18 @@ function requireDeviceAuthorization(value) {
     DEVICE_AUTHORIZATION_FIELDS,
     "Device authorization",
   );
+}
+
+function requireAccountPairing(value) {
+  requireExactRecord(
+    value,
+    ACCOUNT_PAIRING_FIELDS,
+    ACCOUNT_PAIRING_FIELDS,
+    "Account pairing request",
+  );
+  if (value.device_name !== null || value.consumed_at !== null) {
+    throw new TypeError("Account pairing request must be unused");
+  }
 }
 
 function requireConnector(value) {

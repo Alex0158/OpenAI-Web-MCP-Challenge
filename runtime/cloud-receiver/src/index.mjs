@@ -1,3 +1,7 @@
+/**
+ * @deprecated The current Cloud Receiver package is retained for historical evidence only.
+ * Use the reusable Re-entry Core contracts when building its replacement.
+ */
 export * from "./cloud-receiver-service.mjs";
 export * from "./account-store.mjs";
 export * from "./dashboard-control.mjs";

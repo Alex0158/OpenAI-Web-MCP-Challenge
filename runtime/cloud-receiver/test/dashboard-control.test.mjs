@@ -94,22 +94,54 @@ test("Re-entry Cloud console serves the landing page and authenticated dashboard
   assert.match(docsHtml, /getConsentSession/);
   assert.match(docsHtml, /Do not mix credentials/);
 
-  const registerPage = await fetch(address.origin + "/register");
+  const legacyRegisterPage = await fetch(address.origin + "/register", { redirect: "manual" });
+  assert.equal(legacyRegisterPage.status, 302);
+  assert.equal(legacyRegisterPage.headers.get("location"), "/developer-register");
+
+  const registerPage = await fetch(address.origin + "/developer-register");
   assert.equal(registerPage.status, 200);
   const registerHtml = await registerPage.text();
   assert.match(registerHtml, /class="brand-word">re-entry/);
   assert.match(registerHtml, /name="identity" type="email"/);
   assert.match(registerHtml, /name="password" type="password"/);
-  assert.doesNotMatch(registerHtml, /organization_name|account_code|access_pin/);
+  assert.doesNotMatch(registerHtml, /name="(?:organization_name|account_code|access_pin)"/);
   assert.match(registerHtml, /dashboard\/organizations/);
   assert.doesNotMatch(registerHtml, /reentry-hedgehog-engineer/);
+
+  const userRegisterPage = await fetch(address.origin + "/user-register?next=%2Fdashboard");
+  assert.equal(userRegisterPage.status, 200);
+  const userRegisterHtml = await userRegisterPage.text();
+  assert.match(userRegisterHtml, /USER SETUP \/ 01 OF 03/);
+  assert.match(userRegisterHtml, /For people using Codex/);
+  assert.match(userRegisterHtml, /Pair this Mac/);
+  assert.match(userRegisterHtml, /developer credentials/);
+  assert.match(userRegisterHtml, /data-success-path="\/user-dashboard"/);
+  assert.match(userRegisterHtml, /href="\/user-login\?next=%2Fuser-dashboard"/);
+  assert.doesNotMatch(userRegisterHtml, /Create an organization/);
+
+  const userLoginPage = await fetch(address.origin + "/user-login?next=%2Fdashboard");
+  assert.equal(userLoginPage.status, 200);
+  const userLoginHtml = await userLoginPage.text();
+  assert.match(userLoginHtml, /Log in to Re-entry/);
+  assert.match(userLoginHtml, /data-success-path="\/user-dashboard"/);
+  assert.match(userLoginHtml, /href="\/user-register\?next=%2Fuser-dashboard"/);
+
+  const pairRegisterPage = await fetch(address.origin + "/developer-register?flow=pair&next=%2Fdashboard");
+  assert.equal(pairRegisterPage.status, 200);
+  const pairRegisterHtml = await pairRegisterPage.text();
+  assert.match(pairRegisterHtml, /Create your Re-entry account/);
+  assert.match(pairRegisterHtml, /PAIR THIS MAC/);
 
   const mascot = await fetch(address.origin + "/assets/reentry-hedgehog-engineer.png");
   assert.equal(mascot.status, 404);
 
   const protectedPage = await fetch(address.origin + "/dashboard", { redirect: "manual" });
   assert.equal(protectedPage.status, 302);
-  assert.equal(protectedPage.headers.get("location"), "/login?next=%2Fdashboard");
+  assert.equal(protectedPage.headers.get("location"), "/developer-login?next=%2Fdashboard");
+
+  const protectedUserPage = await fetch(address.origin + "/user-dashboard", { redirect: "manual" });
+  assert.equal(protectedUserPage.status, 302);
+  assert.equal(protectedUserPage.headers.get("location"), "/user-login?next=%2Fuser-dashboard");
 
   const unauthorizedActivity = await fetch(address.origin + "/api/activity");
   assert.equal(unauthorizedActivity.status, 401);
@@ -132,6 +164,34 @@ test("Re-entry Cloud console serves the landing page and authenticated dashboard
   assert.equal(Object.hasOwn(registration.body, "api_key"), false);
   const cookie = registration.response.headers.get("set-cookie").split(";", 1)[0];
 
+  const signedInLanding = await fetch(address.origin, {
+    headers: { Cookie: cookie },
+  });
+  assert.equal(signedInLanding.status, 200);
+  const signedInLandingHtml = await signedInLanding.text();
+  assert.match(signedInLandingHtml, /data-session-state="authenticated"/);
+  assert.match(signedInLandingHtml, /Signed in · eyad@example\.com/);
+  assert.match(signedInLandingHtml, /href="\/dashboard">Developer dashboard/);
+  assert.match(signedInLandingHtml, /href="\/user-dashboard">Connect a Mac/);
+  assert.match(signedInLandingHtml, /Open developer dashboard/);
+  assert.doesNotMatch(signedInLandingHtml, /href="\/developer-login"/);
+  assert.doesNotMatch(signedInLandingHtml, /href="\/developer-register"/);
+
+  for (const [path, location] of [
+    ["/developer-login", "/dashboard/organizations"],
+    ["/developer-register", "/dashboard/organizations"],
+    ["/developer-login?next=%2Fdashboard", "/dashboard"],
+    ["/user-login", "/user-dashboard"],
+    ["/user-register", "/user-dashboard"],
+  ]) {
+    const authenticatedAuthPage = await fetch(address.origin + path, {
+      redirect: "manual",
+      headers: { Cookie: cookie },
+    });
+    assert.equal(authenticatedAuthPage.status, 302);
+    assert.equal(authenticatedAuthPage.headers.get("location"), location);
+  }
+
   const dashboard = await fetch(address.origin + "/dashboard", {
     headers: { Cookie: cookie },
   });
@@ -141,6 +201,8 @@ test("Re-entry Cloud console serves the landing page and authenticated dashboard
   assert.match(dashboardHtml, /class="brand-word">re-entry/);
   assert.match(dashboardHtml, /Build one return path/);
   assert.match(dashboardHtml, /Quick connect/);
+  assert.match(dashboardHtml, /Pair this Mac/);
+  assert.match(dashboardHtml, /Create pairing code/);
   assert.match(dashboardHtml, /Current activity/);
   assert.match(dashboardHtml, /PENDING WORK/);
   assert.match(dashboardHtml, /href="\/dashboard\/activity"/);
@@ -148,6 +210,18 @@ test("Re-entry Cloud console serves the landing page and authenticated dashboard
   assert.match(dashboardHtml, /href="\/dashboard\/organizations"/);
   assert.match(dashboardHtml, /href="\/dashboard\/quick-connect"/);
   assert.doesNotMatch(dashboardHtml, /reentry-hedgehog-engineer/);
+
+  const userDashboard = await fetch(address.origin + "/user-dashboard", {
+    headers: { Cookie: cookie },
+  });
+  assert.equal(userDashboard.status, 200);
+  const userDashboardHtml = await userDashboard.text();
+  assert.match(userDashboardHtml, /RE-ENTRY \/ USER PORTAL/);
+  assert.match(userDashboardHtml, /Pair this Mac/);
+  assert.match(userDashboardHtml, /Create pairing code/);
+  assert.match(userDashboardHtml, /user-pairing-result/);
+  assert.match(userDashboardHtml, /Developer console/);
+  assert.doesNotMatch(userDashboardHtml, /Create organization/);
 
   for (const view of ["activity", "pending", "organizations", "quick-connect"]) {
     const page = await fetch(address.origin + "/dashboard/" + view, {

@@ -1,3 +1,7 @@
+/**
+ * @deprecated Historical Cloud Receiver presentation layer. The local product preview is not a
+ * supported service or production integration.
+ */
 const STYLE = `
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&family=Space+Mono:wght@400;700&display=swap");
 
@@ -167,30 +171,47 @@ const SHADER_SCRIPT = String.raw`
 `;
 
 const PRODUCT_STYLE = `
-:root{color-scheme:dark;--paper:#f5f4ed;--muted:#aaa99f;--line:rgba(255,255,255,.16);--cyan:#7ee7f2;--lime:#b8f28d;--ink:#080a0b}*{box-sizing:border-box}html{background:var(--ink);scroll-behavior:smooth}body{margin:0;background:var(--ink);color:var(--paper);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}:focus-visible{outline:3px solid rgba(126,231,242,.45);outline-offset:4px}.page{position:relative;min-height:100svh;overflow:hidden;isolation:isolate}.mesh{position:absolute;inset:0;z-index:-3;width:100%;height:100%;opacity:.96}.page:before{position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,rgba(6,8,9,.97) 0%,rgba(6,8,9,.78) 46%,rgba(6,8,9,.2) 78%,rgba(6,8,9,.55) 100%);content:""}.page:after{position:absolute;inset:0;z-index:-1;background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:74px 74px;mask-image:linear-gradient(90deg,#000,transparent 78%);content:""}.shell{width:min(1380px,100%);margin:0 auto;padding-inline:clamp(22px,5vw,72px)}.nav{display:flex;align-items:center;justify-content:space-between;height:78px;border-bottom:1px solid var(--line)}.wordmark{font-size:21px;font-weight:720;letter-spacing:-.06em}.nav-links{display:flex;align-items:center;gap:26px;color:rgba(245,244,237,.72);font-size:13px;font-weight:650}.nav-links a:hover{color:var(--paper)}.nav-links .nav-cta{padding:10px 16px;border-radius:999px;background:var(--paper);color:#0b0c0c}.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(330px,.75fr);gap:clamp(46px,7vw,110px);align-items:center;min-height:calc(100svh - 78px);padding-block:clamp(56px,8vh,96px)}.kicker{display:flex;align-items:center;gap:10px;color:rgba(245,244,237,.67);font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.13em;text-transform:uppercase}.kicker:before{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 7px rgba(126,231,242,.08),0 0 28px rgba(126,231,242,.55);content:""}.hero h1{max-width:850px;margin:24px 0 26px;font-size:clamp(64px,9vw,134px);font-weight:720;line-height:.88;letter-spacing:-.085em;text-wrap:balance}.hero h1 span{display:block;color:rgba(245,244,237,.49)}.hero-copy>p{max-width:560px;margin:0;color:rgba(245,244,237,.7);font-size:clamp(17px,2vw,21px);line-height:1.5}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}.button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border:1px solid var(--line);border-radius:999px;font-weight:720;transition:transform .18s ease,background .18s ease,border-color .18s ease}.button:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.36);background:rgba(255,255,255,.07)}.button.primary{border-color:var(--cyan);background:var(--cyan);color:#061013}.button.primary:hover{background:#a7f3fa}.signal{position:relative;min-height:440px;padding:28px;border:1px solid rgba(255,255,255,.24);border-radius:26px;background:linear-gradient(145deg,rgba(9,11,12,.22),rgba(9,11,12,.72));box-shadow:0 30px 100px rgba(0,0,0,.28);backdrop-filter:blur(12px)}.signal-head,.signal-foot{display:flex;align-items:center;justify-content:space-between;color:rgba(245,244,237,.55);font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.live{display:flex;align-items:center;gap:7px;color:var(--cyan)}.live:before{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 18px var(--cyan);content:""}.signal-body{display:flex;min-height:330px;flex-direction:column;justify-content:center}.signal-body>span{color:var(--lime);font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em}.signal h2{max-width:320px;margin:15px 0 12px;font-size:clamp(40px,5vw,64px);line-height:.96;letter-spacing:-.06em}.signal p{max-width:270px;margin:0;color:rgba(245,244,237,.62);font-size:14px}.route{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:28px;border:1px solid var(--line);border-radius:16px;background:var(--line);overflow:hidden}.route div{padding:16px;background:rgba(8,10,11,.86)}.route small,.route strong{display:block}.route small{color:rgba(245,244,237,.42);font:700 9px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.11em}.route strong{margin-top:7px;font-size:12px}.signal-foot{padding-top:20px;border-top:1px solid var(--line)}.signal-foot span:last-child{color:var(--lime)}.fineprint{position:absolute;right:clamp(22px,5vw,72px);bottom:22px;color:rgba(245,244,237,.38);font-size:11px}@media(max-width:900px){.hero{grid-template-columns:1fr;min-height:auto}.signal{max-width:680px}.fineprint{position:static;padding-bottom:22px}.page{min-height:100svh}}@media(max-width:620px){.nav{height:68px}.nav-links>a:not(.nav-cta){display:none}.hero{padding-block:46px}.hero h1{font-size:clamp(58px,18vw,84px)}.signal{min-height:370px;padding:21px;border-radius:20px}.signal-body{min-height:270px}.route{grid-template-columns:1fr}.route div{padding:12px 14px}.actions{align-items:stretch;flex-direction:column}.button{width:100%}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button{transition:none}}
+:root{color-scheme:dark;--paper:#f5f4ed;--muted:#aaa99f;--line:rgba(255,255,255,.16);--cyan:#7ee7f2;--lime:#b8f28d;--ink:#080a0b}*{box-sizing:border-box}html{background:var(--ink);scroll-behavior:smooth}body{margin:0;background:var(--ink);color:var(--paper);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}:focus-visible{outline:3px solid rgba(126,231,242,.45);outline-offset:4px}.page{position:relative;min-height:100svh;overflow:hidden;isolation:isolate}.mesh{position:absolute;inset:0;z-index:-3;width:100%;height:100%;opacity:.96}.page:before{position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,rgba(6,8,9,.97) 0%,rgba(6,8,9,.78) 46%,rgba(6,8,9,.2) 78%,rgba(6,8,9,.55) 100%);content:""}.page:after{position:absolute;inset:0;z-index:-1;background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:74px 74px;mask-image:linear-gradient(90deg,#000,transparent 78%);content:""}.shell{width:min(1380px,100%);margin:0 auto;padding-inline:clamp(22px,5vw,72px)}.nav{display:flex;align-items:center;justify-content:space-between;height:78px;border-bottom:1px solid var(--line)}.wordmark{font-size:21px;font-weight:720;letter-spacing:-.06em}.nav-links{display:flex;align-items:center;gap:26px;color:rgba(245,244,237,.72);font-size:13px;font-weight:650}.nav-links a:hover{color:var(--paper)}.session-account{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(245,244,237,.52);font:600 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.nav-links .nav-cta{padding:10px 16px;border-radius:999px;background:var(--paper);color:#0b0c0c}.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(330px,.75fr);gap:clamp(46px,7vw,110px);align-items:center;min-height:calc(100svh - 78px);padding-block:clamp(56px,8vh,96px)}.kicker{display:flex;align-items:center;gap:10px;color:rgba(245,244,237,.67);font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.13em;text-transform:uppercase}.kicker:before{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 7px rgba(126,231,242,.08),0 0 28px rgba(126,231,242,.55);content:""}.hero h1{max-width:850px;margin:24px 0 26px;font-size:clamp(64px,9vw,134px);font-weight:720;line-height:.88;letter-spacing:-.085em;text-wrap:balance}.hero h1 span{display:block;color:rgba(245,244,237,.49)}.hero-copy>p{max-width:560px;margin:0;color:rgba(245,244,237,.7);font-size:clamp(17px,2vw,21px);line-height:1.5}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}.button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border:1px solid var(--line);border-radius:999px;font-weight:720;transition:transform .18s ease,background .18s ease,border-color .18s ease}.button:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.36);background:rgba(255,255,255,.07)}.button.primary{border-color:var(--cyan);background:var(--cyan);color:#061013}.button.primary:hover{background:#a7f3fa}.signal{position:relative;min-height:440px;padding:28px;border:1px solid rgba(255,255,255,.24);border-radius:26px;background:linear-gradient(145deg,rgba(9,11,12,.22),rgba(9,11,12,.72));box-shadow:0 30px 100px rgba(0,0,0,.28);backdrop-filter:blur(12px)}.signal-head,.signal-foot{display:flex;align-items:center;justify-content:space-between;color:rgba(245,244,237,.55);font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.live{display:flex;align-items:center;gap:7px;color:var(--cyan)}.live:before{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 18px var(--cyan);content:""}.signal-body{display:flex;min-height:330px;flex-direction:column;justify-content:center}.signal-body>span{color:var(--lime);font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em}.signal h2{max-width:320px;margin:15px 0 12px;font-size:clamp(40px,5vw,64px);line-height:.96;letter-spacing:-.06em}.signal p{max-width:270px;margin:0;color:rgba(245,244,237,.62);font-size:14px}.route{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:28px;border:1px solid var(--line);border-radius:16px;background:var(--line);overflow:hidden}.route div{padding:16px;background:rgba(8,10,11,.86)}.route small,.route strong{display:block}.route small{color:rgba(245,244,237,.42);font:700 9px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.11em}.route strong{margin-top:7px;font-size:12px}.signal-foot{padding-top:20px;border-top:1px solid var(--line)}.signal-foot span:last-child{color:var(--lime)}.fineprint{position:absolute;right:clamp(22px,5vw,72px);bottom:22px;color:rgba(245,244,237,.38);font-size:11px}@media(max-width:900px){.hero{grid-template-columns:1fr;min-height:auto}.signal{max-width:680px}.fineprint{position:static;padding-bottom:22px}.page{min-height:100svh}}@media(max-width:620px){.nav{height:68px}.nav-links>a:not(.nav-cta),.session-account{display:none}.hero{padding-block:46px}.hero h1{font-size:clamp(58px,18vw,84px)}.signal{min-height:370px;padding:21px;border-radius:20px}.signal-body{min-height:270px}.route{grid-template-columns:1fr}.route div{padding:12px 14px}.actions{align-items:stretch;flex-direction:column}.button{width:100%}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button{transition:none}}
 `;
 
-export function renderLanding() {
+export function renderLanding(account = null) {
+  const signedIn = Boolean(account);
+  const identity = signedIn && typeof account.identity === "string" ? account.identity : "account";
+  const safeIdentity = escapeHtml(identity);
+  const navigation = signedIn
+    ? `<span class="session-account" title="Signed in as ${safeIdentity}">Signed in · ${safeIdentity}</span>
+      <a href="/dashboard">Developer dashboard</a>
+      <a class="nav-cta" href="/user-dashboard">Connect a Mac</a>`
+    : `<a href="/developer-login">Developer login</a>
+      <a class="nav-cta" href="/developer-register">Create account</a>`;
+  const hero = signedIn
+    ? `<div class="kicker">Session active / Re-entry account</div>
+      <h1 id="hero-title">Welcome back. <span>Keep moving.</span></h1>
+      <p>Your session is active. Continue to your developer workspace or connect a Mac.</p>
+      <div class="actions">
+        <a class="button primary" href="/dashboard">Open developer dashboard</a>
+        <a class="button" href="/user-dashboard">Connect a Mac</a>
+      </div>`
+    : `<div class="kicker">Return infrastructure for agentic software</div>
+      <h1 id="hero-title">Work can <span>come back.</span></h1>
+      <p>Pause a workflow. Ask once. Re-entry delivers the approved next step to Codex when it is ready.</p>
+      <div class="actions">
+        <a class="button primary" href="/developer-register">Start with Re-entry</a>
+        <a class="button" href="/docs">See the protocol</a>
+      </div>`;
   const body = `
-<div class="page">
+<div class="page" data-session-state="${signedIn ? "authenticated" : "anonymous"}">
   <canvas class="mesh" data-reentry-mesh aria-hidden="true"></canvas>
   <header class="shell nav">
     <a class="wordmark" href="/" aria-label="Re-entry home">re-entry</a>
     <nav class="nav-links" aria-label="Primary navigation">
       <a href="/docs">Developers</a>
-      <a href="/login">Log in</a>
-      <a class="nav-cta" href="/register">Create account</a>
+      ${navigation}
     </nav>
   </header>
   <main class="shell hero">
     <section class="hero-copy" aria-labelledby="hero-title">
-      <div class="kicker">Return infrastructure for agentic software</div>
-      <h1 id="hero-title">Work can <span>come back.</span></h1>
-      <p>Pause a workflow. Ask once. Re-entry delivers the approved next step to Codex when it is ready.</p>
-      <div class="actions">
-        <a class="button primary" href="/register">Start with Re-entry</a>
-        <a class="button" href="/docs">See the protocol</a>
-      </div>
+      ${hero}
     </section>
     <aside class="signal" aria-label="Re-entry connection flow">
       <div class="signal-head"><span>RE-ENTRY / LIVE PATH</span><span class="live">CONNECTED</span></div>
@@ -210,4 +231,13 @@ export function renderLanding() {
   <div class="fineprint">Independent preview · not an official OpenAI product</div>
 </div>`;
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080a0b"><meta name="description" content="Re-entry routes approved web workflow continuations back to a local Codex agent."><title>Re-entry — work can come back</title><style>${PRODUCT_STYLE}</style></head><body>${body}<script>${SHADER_SCRIPT}</script></body></html>`;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }

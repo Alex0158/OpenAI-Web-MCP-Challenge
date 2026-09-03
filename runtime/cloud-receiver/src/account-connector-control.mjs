@@ -5,6 +5,8 @@ import { CONNECTOR_IDENTITY_TYPE } from "../../../reentry-core/src/receiver-core
 import { PROTOCOL_VERSION } from "../../../reentry-core/src/protocol.mjs";
 
 export const ACCOUNT_CONNECTOR_ROUTES = Object.freeze({
+  accountPairingStart: "/v0.1/account/pairing-sessions",
+  accountPairingClaim: "/v0.1/account/pairing-sessions/claim",
   start: "/v0.1/device-authorizations",
   poll: "/v0.1/device-authorizations/poll",
   decision: "/v0.1/device-authorizations/decision",
@@ -39,6 +41,7 @@ const MAX_BODY_BYTES = 8 * 1_024;
 const DEFAULT_AUTHORIZATION_LIFETIME_MS = 10 * 60_000;
 const DEFAULT_CONNECTOR_LIFETIME_MS = 30 * 24 * 60 * 60_000;
 const POLL_INTERVAL_SECONDS = 2;
+const ACCOUNT_PAIRING_CODE_PATTERN = /^[A-F0-9]{8}$/;
 
 export class AccountConnectorControlError extends Error {
   constructor(code, statusCode, message) {
@@ -120,6 +123,79 @@ export function createAccountConnectorControlPlane(options) {
       verification_uri: `${resolveVerificationOrigin(request)}${ACCOUNT_CONNECTOR_ROUTES.page}?token=${encodeURIComponent(browserToken)}`,
       expires_at: expiresAt,
       poll_interval_seconds: POLL_INTERVAL_SECONDS,
+    };
+  }
+
+  function startAccountPairing(input, request) {
+    requireExactRecord(input, [], [], "Account pairing input");
+    const account = requireAccount(request);
+    const now = readClock(clock);
+    const pairingId = requireIdentifier(createId("account_pairing"), "pairing_id");
+    const connectorId = requireIdentifier(createId("connector"), "connector_id");
+    const subjectId = requireIdentifier(createId("subject"), "subject_id");
+    const deliveryTargetId = requireIdentifier(createId("target"), "delivery_target_id");
+    const pairingCode = derivePairingCode(secret, pairingId);
+    const connectorToken = deriveCode(secret, "connector", pairingId);
+    const expiresAt = new Date(now.getTime() + authorizationLifetimeMs).toISOString();
+    options.store.createAccountPairing({
+      pairing_id: pairingId,
+      account_id: requireIdentifier(account.account_id, "account_id"),
+      pairing_code_digest: digest(pairingCode),
+      connector_id: connectorId,
+      connector_token_digest: digest(connectorToken),
+      subject_id: subjectId,
+      delivery_target_id: deliveryTargetId,
+      device_name: null,
+      created_at: now.toISOString(),
+      expires_at: expiresAt,
+      consumed_at: null,
+    });
+    return {
+      type: "webmcp.connector_account_pairing",
+      protocol_version: PROTOCOL_VERSION,
+      pairing_id: pairingId,
+      pairing_code: pairingCode,
+      expires_at: expiresAt,
+    };
+  }
+
+  function claimAccountPairing(input) {
+    requireExactRecord(input, ["pairing_code", "device_name"], ["pairing_code", "device_name"], "Account pairing claim");
+    const pairingCode = normalizePairingCode(input.pairing_code);
+    const deviceName = requireDeviceName(input.device_name);
+    const pairing = requireLivePairing(
+      options.store.getAccountPairingByCodeDigest(digest(pairingCode)),
+    );
+    const connectorExpiresAt = new Date(readClock(clock).getTime() + connectorLifetimeMs).toISOString();
+    const result = options.store.claimAccountPairing(
+      digest(pairingCode),
+      deviceName,
+      readClock(clock).toISOString(),
+      {
+        connector_id: pairing.connector_id,
+        account_id: pairing.account_id,
+        device_name: deviceName,
+        subject_id: pairing.subject_id,
+        delivery_target_id: pairing.delivery_target_id,
+        connector_token_digest: pairing.connector_token_digest,
+        created_at: pairing.created_at,
+        expires_at: connectorExpiresAt,
+        revoked_at: null,
+      },
+    );
+    if (result.status !== "consumed") {
+      throw controlError("account_pairing_claim_invalid", 409, "Pairing code is not available");
+    }
+    const connector = options.store.getAccountConnector(pairing.account_id, pairing.connector_id);
+    if (!connector) throw controlError("device_credentials_unavailable", 500, "Device credentials are unavailable");
+    return {
+      type: "webmcp.connector_credentials",
+      protocol_version: PROTOCOL_VERSION,
+      pairing_id: pairing.pairing_id,
+      connector_id: connector.connector_id,
+      connector_token: deriveCode(secret, "connector", pairing.pairing_id),
+      connector_expires_at: connector.expires_at,
+      duplicate: result.duplicate,
     };
   }
 
@@ -317,7 +393,11 @@ export function createAccountConnectorControlPlane(options) {
       if (request.method !== "POST") throw controlError("http_method_not_allowed", 405, "Method is not allowed");
       requireJsonContentType(request);
       const body = await readJsonBody(request);
-      if (route === "start") {
+      if (route === "accountPairingStart") {
+        writeJson(response, 201, startAccountPairing(body, request));
+      } else if (route === "accountPairingClaim") {
+        writeJson(response, 200, claimAccountPairing(body));
+      } else if (route === "start") {
         writeJson(response, 201, startAuthorization(body, request));
       } else if (route === "decision") {
         writeJson(response, 200, decideAuthorization(body, request));
@@ -327,6 +407,7 @@ export function createAccountConnectorControlPlane(options) {
       }
       return true;
     } catch (error) {
+      if (response.headersSent || response.destroyed) return true;
       writeJson(response, statusFor(error), { error: { code: codeFor(error) } });
       return true;
     }
@@ -371,6 +452,14 @@ export function createAccountConnectorControlPlane(options) {
     return value;
   }
 
+  function requireLivePairing(value) {
+    if (!value) throw controlError("account_pairing_not_found", 404, "Pairing code was not found");
+    if (Date.parse(value.expires_at) <= readClock(clock).getTime()) {
+      throw controlError("account_pairing_expired", 410, "Pairing code expired");
+    }
+    return value;
+  }
+
   function requireAccount(request) {
     const account = options.accountAuthority.readAccount(request);
     if (!account) throw controlError("session_required", 401, "Sign in is required");
@@ -398,6 +487,8 @@ function parseRoute(rawUrl) {
   if (url.pathname === ACCOUNT_CONNECTOR_ROUTES.page) return "page";
   if (url.search || url.hash) return null;
   if (url.pathname === ACCOUNT_CONNECTOR_ROUTES.start) return "start";
+  if (url.pathname === ACCOUNT_CONNECTOR_ROUTES.accountPairingStart) return "accountPairingStart";
+  if (url.pathname === ACCOUNT_CONNECTOR_ROUTES.accountPairingClaim) return "accountPairingClaim";
   if (url.pathname === ACCOUNT_CONNECTOR_ROUTES.poll) return "poll";
   if (url.pathname === ACCOUNT_CONNECTOR_ROUTES.decision) return "decision";
   if (url.pathname === ACCOUNT_CONNECTOR_ROUTES.devices) return "devices";
@@ -436,8 +527,8 @@ function publicConnector(value) {
 function renderAccountAccessPage({ token, deviceName }) {
   const safeName = escapeHtml(deviceName);
   const returnPath = `${ACCOUNT_CONNECTOR_ROUTES.page}?token=${encodeURIComponent(token)}`;
-  const loginHref = escapeHtml(`/login?flow=connector&next=${encodeURIComponent(returnPath)}`);
-  const registerHref = escapeHtml(`/register?flow=connector&next=${encodeURIComponent(returnPath)}`);
+  const loginHref = escapeHtml(`/user-login?next=${encodeURIComponent(returnPath)}`);
+  const registerHref = escapeHtml(`/user-register?next=${encodeURIComponent(returnPath)}`);
   return pageShell("Connect this Mac", `
     <main class="account-entry-shell">
       <a class="wordmark" href="/">re-entry</a>
@@ -554,6 +645,17 @@ function requireToken(value, label) {
   return value;
 }
 
+function normalizePairingCode(value) {
+  if (typeof value !== "string") {
+    throw controlError("account_pairing_code_invalid", 422, "Pairing code is invalid");
+  }
+  const normalized = value.replaceAll("-", "").trim().toUpperCase();
+  if (!ACCOUNT_PAIRING_CODE_PATTERN.test(normalized)) {
+    throw controlError("account_pairing_code_invalid", 422, "Pairing code is invalid");
+  }
+  return normalized;
+}
+
 function requireSecret(value, label) {
   if (typeof value !== "string" || value.length < 16 || value.length > 4_096 || /[^\x21-\x7e]/.test(value)) {
     throw new TypeError(`${label} is invalid`);
@@ -565,6 +667,14 @@ function deriveCode(secret, purpose, authorizationId) {
   return createHmac("sha256", secret)
     .update(`${purpose}:${authorizationId}`, "utf8")
     .digest("base64url");
+}
+
+function derivePairingCode(secret, pairingId) {
+  return createHmac("sha256", secret)
+    .update(`account-pairing:${pairingId}`, "utf8")
+    .digest("hex")
+    .slice(0, 8)
+    .toUpperCase();
 }
 
 function digest(value) {
@@ -614,6 +724,9 @@ function readClock(clock) {
 function requireStore(store) {
   for (const method of [
     "ready",
+    "createAccountPairing",
+    "getAccountPairingByCodeDigest",
+    "claimAccountPairing",
     "createDeviceAuthorization",
     "getDeviceAuthorizationByDeviceDigest",
     "getDeviceAuthorizationByBrowserDigest",
@@ -702,7 +815,9 @@ function statusFor(error) {
 }
 
 function codeFor(error) {
-  return typeof error?.code === "string" && /^[a-z][a-z0-9_]{0,95}$/.test(error.code)
+  return error instanceof AccountConnectorControlError &&
+    typeof error.code === "string" &&
+    /^[a-z][a-z0-9_]{0,95}$/.test(error.code)
     ? error.code
     : "account_connector_internal_error";
 }

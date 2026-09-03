@@ -1,3 +1,7 @@
+/**
+ * @deprecated Historical Cloud Receiver composition helper. Do not use for new integrations or
+ * production.
+ */
 import { isAbsolute } from "node:path";
 
 import { ReceiverCore } from "../../../reentry-core/src/receiver-core.mjs";

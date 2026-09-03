@@ -56,8 +56,8 @@ test("Receiver activity reader projects event and pending-delivery metadata with
     INSERT INTO receiver_grants (
       grant_id, challenge_id, manifest_id, binding_id, subject_id, delivery_target_id,
       correlation_id, issuer_origin, workflow_type, workflow_id, event_type, canonical_url,
-      expires_at, human_boundary, runs_remaining, revoked_at, receipt_json, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NULL, ?, ?)
+      expires_at, human_boundary, instruction, runs_remaining, revoked_at, receipt_json, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NULL, ?, ?)
   `).run(
     "grant_001",
     "challenge_001",
@@ -73,6 +73,7 @@ test("Receiver activity reader projects event and pending-delivery metadata with
     "https://host.example/workflows/workflow_001",
     "2026-09-02T12:00:00.000Z",
     "explicit_receiver_consent",
+    "Review the approved workflow and prepare the next safe step.",
     '{"private":"not projected"}',
     timestamp,
   );

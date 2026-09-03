@@ -257,6 +257,7 @@ export function createAccountConsentControlPlane(options) {
       }
       return true;
     } catch (error) {
+      if (response.headersSent || response.destroyed) return true;
       writeJson(response, statusFor(error), { error: { code: codeFor(error) } });
       return true;
     }
@@ -270,7 +271,7 @@ export function createAccountConsentControlPlane(options) {
     const account = options.accountAuthority.readAccount(request);
     if (!account) {
       const next = `${ACCOUNT_CONSENT_ROUTES.page}?token=${encodeURIComponent(consentToken)}`;
-      redirect(response, `/login?next=${encodeURIComponent(next)}`);
+      redirect(response, `/user-login?next=${encodeURIComponent(next)}`);
       return;
     }
     const challenge = requireReceiver(getReceiver()).getConsentChallenge(session.challenge_id);
@@ -412,7 +413,7 @@ function readPageToken(rawUrl) {
 function renderConsentPage({ consentToken, session, challenge, connectors, identity }) {
   const connectorCards = connectors.length > 0
     ? connectors.map((connector, index) => `<label class="device-choice"><input type="radio" name="connector" value="${escapeHtml(connector.connector_id)}" ${index === 0 ? "checked" : ""}><span class="radio"></span><span><strong>${escapeHtml(connector.device_name)}</strong><small>Connected ${escapeHtml(shortDate(connector.connected_at))}</small></span><em>Codex</em></label>`).join("")
-    : `<div class="empty-device"><strong>No connected Mac yet.</strong><span>Run <code>reentry connect</code> once on the Mac where Codex is installed, then refresh this page.</span></div>`;
+    : `<div class="empty-device"><strong>No connected Mac yet.</strong><span>Install the Re-entry Connector, sign in to your user portal, click <strong>Pair this Mac</strong>, then refresh this page.</span></div>`;
   const expectedOrigin = challenge.issuer_origin;
   return pageShell(`${challenge.display.title} — Re-entry`, `
     <main class="consent-shell">
@@ -446,16 +447,32 @@ function renderConsentPage({ consentToken, session, challenge, connectors, ident
         status.textContent=action==='approve'?'Creating the return path…':'Declining…';
         const payload={consent_token:consentToken,action};
         if(selected&&action==='approve')payload.connector_id=selected.value;
-        const response=await fetch('${ACCOUNT_CONSENT_ROUTES.browserDecision}',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
-        const body=await response.json().catch(()=>({}));
-        if(!response.ok){status.textContent=(body.error&&body.error.code||'Unable to continue').replaceAll('_',' ');buttons.forEach((button)=>button.disabled=false);return}
-        const finalStatus=body.status;
-        window.opener?.postMessage({type:'reentry.consent.complete',consent_session_id:sessionId,status:finalStatus},expectedOrigin);
-        document.querySelector('.consent-card').classList.add('complete');
-        document.querySelector('h1').textContent=finalStatus==='approved'?'Approved. The return path is ready.':'Request declined.';
-        document.querySelector('.reason').textContent=finalStatus==='approved'?'You can close this window. The Host will receive an opaque binding, not your Re-entry account or device credential.':'No Grant was created.';
-        document.querySelector('.scope').hidden=true;document.querySelector('.device-head').hidden=true;document.querySelector('.devices').hidden=true;document.querySelector('.actions').hidden=true;document.querySelector('.boundary').hidden=true;
-        status.textContent='You can close this window.';
+        try {
+          const response=await fetch('${ACCOUNT_CONSENT_ROUTES.browserDecision}',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
+          const body=await response.json().catch(()=>({}));
+          if(!response.ok){status.textContent=consentErrorMessage(body.error&&body.error.code);buttons.forEach((button)=>button.disabled=false);return}
+          const finalStatus=body.status;
+          window.opener?.postMessage({type:'reentry.consent.complete',consent_session_id:sessionId,status:finalStatus},expectedOrigin);
+          document.querySelector('.consent-card').classList.add('complete');
+          document.querySelector('h1').textContent=finalStatus==='approved'?'Approved. The return path is ready.':'Request declined.';
+          document.querySelector('.reason').textContent=finalStatus==='approved'?'You can close this window. The Host will receive an opaque binding, not your Re-entry account or device credential.':'No Grant was created.';
+          document.querySelector('.scope').hidden=true;document.querySelector('.device-head').hidden=true;document.querySelector('.devices').hidden=true;document.querySelector('.actions').hidden=true;document.querySelector('.boundary').hidden=true;
+          status.textContent='You can close this window.';
+        } catch {
+          status.textContent='Could not reach Re-entry. Check your connection and try again.';
+          buttons.forEach((button)=>button.disabled=false);
+        }
+      }
+      function consentErrorMessage(code){
+        const messages={
+          consent_session_expired:'This consent request expired. Start again.',
+          consent_token_invalid:'This consent request is no longer available.',
+          consent_session_not_found:'This consent request is no longer available.',
+          connector_not_available:'No connected Mac is available for this request.',
+          receiver_busy:'Re-entry is busy. Try again in a moment.',
+          receiver_internal_error:'Re-entry is temporarily unavailable. Try again.'
+        };
+        return messages[code]||'Something went wrong in Re-entry. Try again.';
       }
       document.querySelector('#approve').addEventListener('click',()=>decide('approve'));
       document.querySelector('#decline').addEventListener('click',()=>decide('decline'));
@@ -468,9 +485,13 @@ function renderTerminalPage(session, challenge) {
   return pageShell("Consent complete — Re-entry", `<main class="consent-shell"><header><a class="wordmark" href="/">re-entry</a></header><section class="consent-card complete"><div class="origin"><span></span>${escapeHtml(hostLabel(challenge.issuer_origin))}</div><h1>${approved ? "This return path is approved." : "This request was declined."}</h1><p class="reason">${approved ? "The Host can continue only inside the one-run Grant you approved." : "No Grant was created."}</p><button class="primary close-button" onclick="window.close()">Close window</button></section></main>`);
 }
 
+const CONSENT_THEME_STYLE = `
+:root{color-scheme:dark;--ink:#f5f4ef;--muted:#aaa99f;--line:#353630;--panel:#171815;--green:#9fe870;--blue:#9fc7ff}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 12% 15%,rgba(74,99,129,.18),transparent 35%),#0d0e0c;color:var(--ink);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,sans-serif}.consent-shell{width:min(690px,calc(100% - 32px));margin:0 auto;padding:28px 0 54px}header{display:flex;align-items:center;justify-content:space-between;margin-bottom:54px}.wordmark{color:var(--ink);font-size:22px;font-weight:650;letter-spacing:-1px;text-decoration:none}.account{max-width:55%;overflow:hidden;color:var(--muted);font-size:12px;text-overflow:ellipsis;white-space:nowrap}.consent-card{padding:42px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.035),transparent 52%),var(--panel);box-shadow:0 30px 90px rgba(0,0,0,.38)}.origin{display:flex;align-items:center;gap:9px;color:var(--blue);font:700 11px/1 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em}.origin span{width:8px;height:8px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 5px rgba(159,199,255,.08)}h1{margin:23px 0 12px;font-size:clamp(34px,7vw,56px);line-height:1.03;letter-spacing:-.055em}.reason{max-width:560px;margin:0;color:#c7c6be;font-size:17px}.scope{display:grid;grid-template-columns:1.15fr 1fr .55fr;gap:1px;margin:30px 0;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}.scope div{min-width:0;padding:15px;background:#11120f}.scope small,.device-head small{display:block;margin-bottom:5px;color:#77786f;font:700 10px/1 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em}.scope strong{display:block;overflow:hidden;font-size:12px;text-overflow:ellipsis;white-space:nowrap}.device-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:12px}.device-head h2{margin:3px 0 0;font-size:18px}.device-head button{border:0;background:none;color:var(--muted);cursor:pointer;font:600 12px system-ui}.devices{display:grid;gap:9px}.device-choice{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:15px;border:1px solid var(--line);border-radius:14px;background:#10110f;cursor:pointer}.device-choice:has(input:checked){border-color:rgba(159,232,112,.55);background:rgba(159,232,112,.045)}.device-choice input{position:absolute;opacity:0}.radio{width:18px;height:18px;border:1px solid #61625b;border-radius:50%}.device-choice input:checked+.radio{border:5px solid var(--green)}.device-choice strong,.device-choice small{display:block}.device-choice small{color:var(--muted)}.device-choice em{color:var(--green);font-size:12px;font-style:normal}.empty-device{padding:17px;border:1px dashed #4b4d45;border-radius:14px;color:var(--muted)}.empty-device strong,.empty-device span{display:block}.empty-device strong{color:var(--ink);margin-bottom:4px}.empty-device code{color:var(--green)}.status{min-height:22px;margin:16px 0 4px;color:var(--green);font-size:13px}.actions{display:flex;justify-content:flex-end;gap:10px}.actions button,.close-button{min-height:44px;padding:0 18px;border-radius:999px;font:700 14px system-ui;cursor:pointer}.primary{border:1px solid var(--ink);background:var(--ink);color:#10110f}.secondary{border:1px solid var(--line);background:transparent;color:var(--ink)}button:disabled{cursor:not-allowed;opacity:.4}.boundary{margin:20px 0 0;padding-top:18px;border-top:1px solid var(--line);color:#797a72;font-size:12px}.complete{border-color:rgba(159,232,112,.35)}.close-button{margin-top:24px}@media(max-width:600px){header{margin-bottom:36px}.consent-card{padding:28px 22px}.scope{grid-template-columns:1fr}.actions{flex-direction:column-reverse}.actions button{width:100%}}
+`;
+
 function pageShell(title, body) {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><style>
-  :root{color-scheme:dark;--ink:#f5f4ef;--muted:#aaa99f;--line:#353630;--panel:#171815;--green:#9fe870;--blue:#9fc7ff}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 12% 15%,rgba(74,99,129,.18),transparent 35%),#0d0e0c;color:var(--ink);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,sans-serif}.consent-shell{width:min(690px,calc(100% - 32px));margin:0 auto;padding:28px 0 54px}header{display:flex;align-items:center;justify-content:space-between;margin-bottom:54px}.wordmark{color:var(--ink);font-size:22px;font-weight:650;letter-spacing:-1px;text-decoration:none}.account{max-width:55%;overflow:hidden;color:var(--muted);font-size:12px;text-overflow:ellipsis;white-space:nowrap}.consent-card{padding:42px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.035),transparent 52%),var(--panel);box-shadow:0 30px 90px rgba(0,0,0,.38)}.origin{display:flex;align-items:center;gap:9px;color:var(--blue);font:700 11px/1 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em}.origin span{width:8px;height:8px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 5px rgba(159,199,255,.08)}h1{margin:23px 0 12px;font-size:clamp(34px,7vw,56px);line-height:1.03;letter-spacing:-.055em}.reason{max-width:560px;margin:0;color:#c7c6be;font-size:17px}.scope{display:grid;grid-template-columns:1.15fr 1fr .55fr;gap:1px;margin:30px 0;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}.scope div{min-width:0;padding:15px;background:#11120f}.scope small,.device-head small{display:block;margin-bottom:5px;color:#77786f;font:700 10px/1 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em}.scope strong{display:block;overflow:hidden;font-size:12px;text-overflow:ellipsis;white-space:nowrap}.device-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:12px}.device-head h2{margin:3px 0 0;font-size:18px}.device-head button{border:0;background:none;color:var(--muted);cursor:pointer;font:600 12px system-ui}.devices{display:grid;gap:9px}.device-choice{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:15px;border:1px solid var(--line);border-radius:14px;background:#10110f;cursor:pointer}.device-choice:has(input:checked){border-color:rgba(159,232,112,.55);background:rgba(159,232,112,.045)}.device-choice input{position:absolute;opacity:0}.radio{width:18px;height:18px;border:1px solid #61625b;border-radius:50%}.device-choice input:checked+.radio{border:5px solid var(--green)}.device-choice strong,.device-choice small{display:block}.device-choice small{color:var(--muted)}.device-choice em{color:var(--green);font-size:12px;font-style:normal}.empty-device{padding:17px;border:1px dashed #4b4d45;border-radius:14px;color:var(--muted)}.empty-device strong,.empty-device span{display:block}.empty-device strong{color:var(--ink);margin-bottom:4px}.empty-device code{color:var(--green)}.status{min-height:22px;margin:16px 0 4px;color:var(--green);font-size:13px}.actions{display:flex;justify-content:flex-end;gap:10px}.actions button,.close-button{min-height:44px;padding:0 18px;border-radius:999px;font:700 14px system-ui;cursor:pointer}.primary{border:1px solid var(--ink);background:var(--ink);color:#10110f}.secondary{border:1px solid var(--line);background:transparent;color:var(--ink)}button:disabled{cursor:not-allowed;opacity:.4}.boundary{margin:20px 0 0;padding-top:18px;border-top:1px solid var(--line);color:#797a72;font-size:12px}.complete{border-color:rgba(159,232,112,.35)}.close-button{margin-top:24px}@media(max-width:600px){header{margin-bottom:36px}.consent-card{padding:28px 22px}.scope{grid-template-columns:1fr}.actions{flex-direction:column-reverse}.actions button{width:100%}}
+  ${CONSENT_THEME_STYLE}
   </style></head><body>${body}</body></html>`;
 }
 
@@ -669,7 +690,9 @@ function statusFor(error) {
 }
 
 function codeFor(error) {
-  return typeof error?.code === "string" && /^[a-z][a-z0-9_]{0,95}$/.test(error.code)
+  return error instanceof AccountConsentControlError &&
+    typeof error.code === "string" &&
+    /^[a-z][a-z0-9_]{0,95}$/.test(error.code)
     ? error.code
     : "account_consent_internal_error";
 }

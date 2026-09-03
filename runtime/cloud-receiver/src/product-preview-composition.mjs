@@ -1,3 +1,7 @@
+/**
+ * @deprecated Historical Cloud Receiver product composition. Do not use for new integrations or
+ * production; use the reusable Re-entry Core contracts in a replacement service.
+ */
 import { mkdirSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { dirname, isAbsolute } from "node:path";

@@ -130,7 +130,7 @@ export class CloudAccountStore {
         );
       });
     } catch (error) {
-      if (error?.code === "SQLITE_CONSTRAINT_UNIQUE") {
+      if (isDuplicateAccountIdentityError(error)) {
         throw storeError("account_exists");
       }
       throw error;
@@ -649,6 +649,14 @@ function requirePlainObject(value, label) {
     throw new TypeError(`${label} must be a plain object`);
   }
   return value;
+}
+
+function isDuplicateAccountIdentityError(error) {
+  return error?.code === "SQLITE_CONSTRAINT_UNIQUE"
+    || (
+      error?.code === "ERR_SQLITE_ERROR"
+      && error?.message === "UNIQUE constraint failed: reentry_accounts.identity"
+    );
 }
 
 function requireExactRecord(value, allowedFields, requiredFields, label) {

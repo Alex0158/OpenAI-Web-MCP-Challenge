@@ -1,3 +1,7 @@
+/**
+ * @deprecated Historical local product preview entry point. Do not use for new integrations or
+ * production.
+ */
 import { randomBytes } from "node:crypto";
 import { chmod, mkdir, open, readFile } from "node:fs/promises";
 import { homedir } from "node:os";
