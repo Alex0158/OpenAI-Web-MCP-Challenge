@@ -92,6 +92,22 @@ and does not export `createReentry()`. The developer persona inspected the guide
 the registry package, so its visual pass did not catch the install/import mismatch. AUDIT-V2-011 and
 TASK-031 own the release and clean-consumer gate.
 
+## Release-readiness audit: 2026-09-04
+
+The current `runtime/host-sdk/` checkout is clean at the parent repository's local source state.
+On Node `v26.5.0` with npm `11.17.0`, `npm run verify` passed syntax checks and `25/25` SDK tests.
+`npm pack --dry-run --json` also passed for the unchanged checkout version `0.3.1`; the candidate
+shape contains `24` files, including the `createReentry()` server export and the bundled standing
+Core source. The dry-run is an inspection only and does not create a registry artifact.
+
+Registry readback still returns `@4xeoz/re-entry-sdk@0.3.1` at Git commit
+`9864ba09b79a76641d8662502ccf918cd3fd4b3b`, which predates the facade. The checkout therefore has
+passing release-candidate evidence but is not a releasable immutable version: no version bump,
+commit, publication, portal change, deployment, or clean-consumer registry check was performed.
+TASK-031 remains open for an explicitly approved new version, exact provenance, portal alignment,
+and post-publication verification. The earlier Node 24 dry-run count of `21` selected files remains
+historical evidence for that earlier checkout state.
+
 The Connector package has a separate release boundary. Registry `@4xeoz/re-entry@0.2.20` reports
 root `gitHead` `733d77f`, but that commit records package version `0.2.14`. Its immutable tarball
 bundles a Core client whose strict continuation shape omits `instruction`, while active v2 returns

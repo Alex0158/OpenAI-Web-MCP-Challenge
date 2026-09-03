@@ -70,7 +70,7 @@ TASK-010 and HOST-002 add Host SDK v0.3 composition around that accepted path. O
 JavaScript function now serves the Host button and a top-level WebMCP Site Tool, opens the exact
 Re-entry handoff, and requires Host-server Receiver confirmation before returning a safe
 continuation identifier. The Next.js sample separates this first consent request from the later
-signed Event. Eighteen SDK tests pass on the recorded Node 24 and Node 26 runtimes; a live Codex
+signed Event. Twenty-five SDK tests pass on the recorded Node 24 and Node 26 runtimes; a live Codex
 in-app Browser discovered and invoked the tool against an intentionally unconfigured test server.
 That runtime evidence proves registration and handler execution, not a configured Browser-to-
 Receiver-to-Connector return chain.
