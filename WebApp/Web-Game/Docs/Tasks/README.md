@@ -88,6 +88,12 @@ is unmade, a duplicate, or an external action added merely to make the queue loo
 
 ## 6. Current task routing
 
+[`SK-TASK-073`](SK-TASK-073-cp12-mission-status-card-hierarchy.md) is verified with `integrated`
+closure for the bounded CP-12 mission dashboard hierarchy under [`SK-EVID-060`](../Evidence/SK-EVID-060-cp12-mission-status-card-runtime-verification.md)
+and [`Validation/86`](../Validation/86-cp12-mission-status-card-runtime-cross-functional-audit.md).
+It is presentation-only over the existing validated mission projection and has no dependency on
+Eddy's external Receiver/Connector handoff.
+
 [`SK-TASK-072`](SK-TASK-072-cp14-upstream-main-game-scope-drift-audit.md) is verified with `answered`
 closure for the post-fetch source-topology and Game-preservation audit under [`SK-EVID-059`](../Evidence/SK-EVID-059-cp14-upstream-main-game-scope-drift-source-audit.md)
 and [`Validation/85`](../Validation/85-cp14-upstream-main-game-scope-cross-functional-audit.md). It

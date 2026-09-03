@@ -32,6 +32,7 @@ import {
   buildProjectionViewModel,
   getProjectionViewport,
 } from "./projection-model";
+import { buildMissionStatusCards } from "./mission-presentation";
 import {
   resolveActorVisual,
   resolveResourceVisual,
@@ -411,6 +412,8 @@ export function GameProjection({
   const view = useMemo(() => buildProjectionViewModel({ snapshot, connectionState, capability }), [snapshot, connectionState, capability]);
   const commands = useMemo(() => buildCanvasDrawCommands(view), [view]);
   const rows = useMemo(() => buildAccessibleMissionRows(view), [view]);
+  const missionCards = useMemo(() => buildMissionStatusCards(view.missions), [view.missions]);
+  const rowBySoldier = useMemo(() => new Map(rows.map((row) => [row.soldierId, row.text])), [rows]);
   const selection = useMemo(() => resolveSelectionVisual({
     selectedSoldierId,
     selectedTargetId,
@@ -876,7 +879,58 @@ export function GameProjection({
               <p className={styles.muted}>Mission rows appear after an authoritative snapshot is accepted.</p>
             ) : (
               <ol className={styles.missions}>
-                {rows.map((row) => <li key={row.soldierId}>{row.text}</li>)}
+                {missionCards.map((card, index) => {
+                  const canonicalRow = rowBySoldier.get(card.soldierId);
+                  const canonicalRowId = `mission-row-${index}`;
+                  return (
+                    <li
+                      key={card.soldierId}
+                      className={styles.missionCard}
+                      data-phase={card.phase}
+                      data-cargo-risk={card.cargoRisk}
+                      aria-describedby={canonicalRow ? canonicalRowId : undefined}
+                    >
+                      <div className={styles.missionCardHeader}>
+                        <strong className={styles.missionSoldier}>{card.soldierId}</strong>
+                        <span className={styles.missionPhase}>{card.phaseLabel}</span>
+                      </div>
+                      <div className={styles.missionMeta}>
+                        <span className={styles.missionDatum}>
+                          <span className={styles.missionLabel}>Role</span>
+                          <span className={styles.missionValue}>{card.roleLabel}</span>
+                        </span>
+                        <span className={styles.missionDatum}>
+                          <span className={styles.missionLabel}>Tool</span>
+                          {card.toolIcon ? <VisualIcon name={card.toolIcon} className={styles.missionIcon} /> : null}
+                          <span className={styles.missionValue}>{card.toolLabel}</span>
+                        </span>
+                        <span className={styles.missionDatum}>
+                          <span className={styles.missionLabel}>Target</span>
+                          <span className={styles.missionValue}>{card.targetLabel}</span>
+                        </span>
+                        <span className={styles.missionDatum}>
+                          <VisualIcon name="icon_cargo" className={styles.missionIcon} />
+                          <span className={styles.missionLabel}>Cargo</span>
+                          <span className={styles.missionValue}>{card.cargoLabel}</span>
+                        </span>
+                      </div>
+                      <div className={styles.missionFooter}>
+                        <span className={styles.missionNext}>
+                          <span className={styles.missionLabel}>Next</span>
+                          <span className={styles.missionValue}>{card.nextActionLabel}</span>
+                        </span>
+                        <span className={styles.missionRisk}>
+                          <span className={styles.missionLabel}>Risk</span>
+                          <span className={styles.missionValue}>{card.cargoRiskLabel}</span>
+                        </span>
+                      </div>
+                      {card.context ? <p className={styles.missionContext}>{card.context}</p> : null}
+                      {canonicalRow ? (
+                        <span id={canonicalRowId} className={styles.visuallyHidden}>{canonicalRow}</span>
+                      ) : null}
+                    </li>
+                  );
+                })}
               </ol>
             )}
           </section>

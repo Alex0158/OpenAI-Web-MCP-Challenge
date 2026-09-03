@@ -152,6 +152,9 @@ not claim that the game is built or balanced.
 - [`85-cp14-upstream-main-game-scope-cross-functional-audit.md`](85-cp14-upstream-main-game-scope-cross-functional-audit.md)
   — CP-14 static source-topology audit of the fetched upstream main and Re-entry candidate, Game-tree
   preservation risk, Eddy handoff readiness boundary, and the owner-controlled exact-tip pre-merge gate.
+- [`86-cp12-mission-status-card-runtime-cross-functional-audit.md`](86-cp12-mission-status-card-runtime-cross-functional-audit.md)
+  — CP-12 structured mission card presentation across projection authority, canonical text equivalence,
+  phase/risk readability, accessibility, responsive layout, lifecycle, and unchanged external boundaries.
 
 ## Current concept checks
 
