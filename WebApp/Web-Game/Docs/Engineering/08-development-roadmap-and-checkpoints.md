@@ -443,6 +443,13 @@ The small [`SK-TASK-067`](../Tasks/SK-TASK-067-cp12-canvas-selection-feedback.md
   survive a clean local entrypoint restart with once-only effects. This remains ladder-level 4 local
   evidence and does not claim downtime catch-up, external Re-entry, Agent/WebMCP dynamic action,
   independent browser, hosted continuity, or judge reproduction.
+  The real burst follow-on [`SK-TASK-071`](../Tasks/SK-TASK-071-cp16-real-event-burst-page-context.md),
+  [`SK-EVID-058`](../Evidence/SK-EVID-058-cp16-real-event-burst-page-context-runtime-verification.md),
+  and [`Validation/84`](../Validation/84-cp16-real-event-burst-page-context-runtime-cross-functional-audit.md)
+  verify two real loss/reissue outcomes coalescing into one signal while both causal records remain
+  available through paginated canonical page history and the latest reissued mission remains recallable.
+  This remains ladder-level 4 local evidence and does not claim Connector/Thread backpressure,
+  external delivery, WebMCP dynamic action, browser, hosted continuity, or judge reproduction.
   Full G2 still requires positive genuine WebMCP dynamic action, external delivery, two independent
   browser contexts, restart/reconnect/burst trace, hosted continuity, and judge reproduction.
   The current IAB probe is recorded under [`SK-TASK-063`](../Tasks/SK-TASK-063-cp16-independent-browser-context-capability-probe.md),

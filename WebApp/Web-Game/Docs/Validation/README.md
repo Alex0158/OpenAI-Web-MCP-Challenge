@@ -145,6 +145,10 @@ not claim that the game is built or balanced.
   — CP-16 clean local entrypoint restart continuity across durable loss/reissue, signal recovery,
   once-only delivery, fresh page reread, bounded recall, duplicate safety, scope privacy, and explicit
   downtime/external/browser/hosted/judge gates.
+- [`84-cp16-real-event-burst-page-context-runtime-cross-functional-audit.md`](84-cp16-real-event-burst-page-context-runtime-cross-functional-audit.md)
+  — CP-16 real two-loss/reissue burst coalescing, page cursor-window and paginated history semantics,
+  once-only local delivery, latest-event recall, duplicate safety, scope privacy, and explicit external
+  backpressure/browser/hosted/judge gates.
 
 ## Current concept checks
 

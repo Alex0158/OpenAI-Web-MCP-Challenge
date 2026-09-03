@@ -11,6 +11,14 @@ The local worker-to-port-to-page-HTTP-to-recall composition is runtime-verified 
 reissue branch under [`SK-TASK-069`](../../Tasks/SK-TASK-069-cp16-local-causal-page-recall-composition.md),
 [`SK-EVID-056`](../../Evidence/SK-EVID-056-cp16-local-causal-page-recall-composition-runtime-verification.md),
 and [`Validation/82`](../../Validation/82-cp16-local-causal-page-recall-composition-runtime-cross-functional-audit.md).
+The clean restart continuity and real event-burst compositions extend that local result under
+[`SK-TASK-070`](../../Tasks/SK-TASK-070-cp16-local-causal-restart-recall-continuity.md),
+[`SK-EVID-057`](../../Evidence/SK-EVID-057-cp16-local-causal-restart-recall-continuity-runtime-verification.md),
+[`SK-TASK-071`](../../Tasks/SK-TASK-071-cp16-real-event-burst-page-context.md), and
+[`SK-EVID-058`](../../Evidence/SK-EVID-058-cp16-real-event-burst-page-context-runtime-verification.md):
+the durable signal survives a clean local restart, and two real loss/reissue outcomes coalesce into one
+page-readable signal with one latest-event recall. The external Receiver/Connector, Agent wake, genuine
+WebMCP dynamic action, and hosted stages remain unverified.
 The external Receiver/Connector, Agent wake, genuine WebMCP dynamic action, and hosted stages remain
 unverified.
 
@@ -43,6 +51,8 @@ unverified.
 - A burst of routine events is retained in the Domain Event log but does not create Agent Signals.
 - Multiple actionable events merge into one pending or in-flight signal and never become per-event
   Codex Thread messages.
+- A real local burst preserves both Domain Events for paginated page history while keeping one signal
+  identity and one bounded action context.
 - Events arriving after Receiver handoff accumulate in the delivery slot's deferred cursor and wait for
   the next signal rather than creating a second wake-up.
 - A critical event raises the merged severity without interrupting an active Thread turn.

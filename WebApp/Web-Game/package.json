@@ -41,6 +41,7 @@
     "test:cp14-causal": "tsx --test tests/cp14-causal-event-to-local-stub-trace.test.ts",
     "test:cp16-page-recall": "tsx --test tests/cp16-local-causal-page-recall.test.ts",
     "test:cp16-restart-recall": "tsx --test tests/cp16-local-causal-restart-recall.test.ts",
+    "test:cp16-burst-page-context": "tsx --test tests/cp16-real-event-burst-page-context.test.ts",
     "test:cp15": "node scripts/run_cp15_matrix.mjs",
     "test:cp16-local": "tsx --test tests/cp16-local-causal-slice.test.ts"
   },

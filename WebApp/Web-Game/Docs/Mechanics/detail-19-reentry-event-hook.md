@@ -16,7 +16,12 @@ the Agent the game authority.
 The successful local loss/reissue-to-page-recall composition is recorded under
 [`SK-TASK-069`](../Tasks/SK-TASK-069-cp16-local-causal-page-recall-composition.md) and
 [`SK-EVID-056`](../Evidence/SK-EVID-056-cp16-local-causal-page-recall-composition-runtime-verification.md).
-That evidence stops at the local HTTP page and labelled delivery port; external Re-entry remains open.
+The clean restart continuity and real burst/page-context extensions are recorded under
+[`SK-TASK-070`](../Tasks/SK-TASK-070-cp16-local-causal-restart-recall-continuity.md),
+[`SK-EVID-057`](../Evidence/SK-EVID-057-cp16-local-causal-restart-recall-continuity-runtime-verification.md),
+[`SK-TASK-071`](../Tasks/SK-TASK-071-cp16-real-event-burst-page-context.md), and
+[`SK-EVID-058`](../Evidence/SK-EVID-058-cp16-real-event-burst-page-context-runtime-verification.md).
+These records remain local process/page evidence with a labelled transport; external Re-entry remains open.
 
 ## Event eligibility
 
