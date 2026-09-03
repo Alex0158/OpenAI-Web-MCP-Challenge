@@ -18,9 +18,9 @@ frozen but not independently closed `RIGHTSPOT-047` Agent Operations adapter
   lifecycle is not reconciled.
 - Owner: Main RightSpot thread
 - Current increment: Static audit and Contract Advisor review confirmed the same mount-only lifecycle
-  pattern in the shared role frame, Tenant Search adapter, and Agent Operations candidate. T0 is now
-  recaptured and the serial Builder is being dispatched; no product source has changed for this Task.
-- Execution posture: `MAIN_THREAD_SOURCE_FREEZE_FOR_BUILDER` — one serial shared-boundary Builder,
+  pattern in the shared role frame, Tenant Search adapter, and Agent Operations candidate. T0 was
+  recaptured and the serial Builder is now active; no product source has changed for this Task.
+- Execution posture: `BUILDER_ACTIVE_MAIN_SOURCE_FROZEN` — one serial shared-boundary Builder,
   followed by a frozen independent browser gate; no supporting Worktree is required or authorized.
 - Evidence status: `STATIC_FINDING_CONFIRMED`; this is not a browser reproduction or a claim of data
   leakage. The server-side role/session checks remain intact.
@@ -187,7 +187,7 @@ Close this Task only after all of the following are true:
 ### RS-WO-048-01 — Implement the shared role-page lifecycle repair
 
 **Role:** Senior UI/WebMCP lifecycle Builder  
-**Status:** `DISPATCHING`  
+**Status:** `IN_PROGRESS`  
 **Parallelization:** `SERIAL_SHARED_ROLE_SESSION_BOUNDARY` — one writer across the exact eight-path
   set; no other source writer or verifier may overlap it.  
 **Model gate:** Because this changes WebMCP capability lifetime, dispatch a capable supporting worker
@@ -201,6 +201,10 @@ were `.playwright-cli/`, `:memory:`, `AGENTS.md`, `CLAUDE.md`, and `Docs/Referen
 the Builder write set. Pinned Node is `v24.20.0`, npm `11.19.0`, `agent-browser` is `0.25.3`, Chrome
 is `152.0.7977.65`, the `WebMCPTesting` flag is available, and `GET /api/health` returned `200`
 with `{"ok":true,"service":"rightspot"}`.  
+**Dispatch record (2026-09-03):** Supporting Builder Erdos, agent
+`01a06637-64a1-7580-a47e-4423e2fd5255`, was dispatched with `gpt-5.6-sol` and `medium` reasoning.
+The Builder owns only the eight paths below, must not edit docs/Git/fixture/Worktree, and must return
+the required Red/Green/Refactor and static/build handoff before Main starts verification.  
 **Write set:** exactly the eight paths listed in this Task.  
 **Handoff:** Return `READY_FOR_INDEPENDENT_VERIFICATION` with exact changed paths, Red/Green/Refactor
 results, focused/full/static/build results, no-mutation checks, and any unresolved boundary. The

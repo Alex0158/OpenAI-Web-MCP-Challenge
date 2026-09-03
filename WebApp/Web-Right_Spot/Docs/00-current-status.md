@@ -196,7 +196,7 @@ leak was reproduced, but an external HttpOnly session clear/replacement can leav
 registered in the mounted page. `RIGHTSPOT-048` and ADR-RS-0018 now own the bounded shared repair;
 `RIGHTSPOT-047` is paused and must be re-baselined after it. No product source or fixture changed.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Dispatch and complete `RS-WO-048-01` against a freshly recaptured
+**Current next product action:** Complete the active `RS-WO-048-01` Builder against the recaptured
 Main source identity, using the exact eight-path write set and TDD contract in `RIGHTSPOT-048`. Then
 freeze the repaired source, run its independent lifecycle/browser gate, re-baseline `RIGHTSPOT-047`,
 and resume only the missing independent Operations WebMCP evidence. Do not run the old 047 verifier

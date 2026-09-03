@@ -198,7 +198,8 @@ WebMCP contract decision. `RIGHTSPOT-047` is the source implementation gate afte
 recapture and Builder dispatch; its original five-path candidate passed deterministic checks and Main
 browser smoke, but its independent browser gate is paused pending the shared lifecycle repair in
 `RIGHTSPOT-048` and must be re-baselined before verification resumes. `RIGHTSPOT-048` is the newly
-registered bounded shared role-page session lifecycle repair, ready for its serial Builder Work Order;
+registered bounded shared role-page session lifecycle repair, with its serial Builder Work Order now
+active under the frozen T0 source identity;
 `RIGHTSPOT-045` is now `CLOSED_VERIFIED` within its bounded
 Operations consumer repair boundary after Main-controlled race verification and an explicitly recorded
 independent-browser harness limitation;
