@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 const BASE_SCHEMA_SQL = `
 CREATE TABLE receiver_challenges (
@@ -40,6 +40,7 @@ CREATE TABLE receiver_grants (
   canonical_url TEXT NOT NULL,
   expires_at TEXT NOT NULL,
   human_boundary TEXT NOT NULL,
+  instruction TEXT NOT NULL,
   runs_remaining INTEGER NOT NULL CHECK (runs_remaining IN (0, 1)),
   revoked_at TEXT,
   receipt_json TEXT NOT NULL,
@@ -143,6 +144,18 @@ CREATE INDEX receiver_deliveries_target_order
   ON receiver_deliveries(delivery_target_id, created_at, delivery_id);
 `;
 
+export const CONSENTED_INSTRUCTION_SCHEMA_SQL = `
+ALTER TABLE receiver_grants
+  ADD COLUMN instruction TEXT NOT NULL DEFAULT 'Continue this approved workflow.';
+
+UPDATE receiver_grants
+SET instruction = (
+  SELECT json_extract(c.manifest_json, '$.display.reason')
+  FROM receiver_challenges c
+  WHERE c.challenge_id = receiver_grants.challenge_id
+);
+`;
+
 export const SCHEMA_SQL = `${BASE_SCHEMA_SQL}\n${DELIVERY_STATE_SCHEMA_SQL}`;
 
 export const DELIVERY_DETAIL_SELECT = `
@@ -174,6 +187,7 @@ export const DELIVERY_DETAIL_SELECT = `
     g.expires_at AS grant_expires_at,
     g.revoked_at AS grant_revoked_at,
     g.human_boundary,
+    g.instruction,
     g.receipt_json,
     e.canonical_body,
     e.received_at

@@ -1,9 +1,12 @@
 # Re-entry Core — Validation and Evidence
 
 **Role:** CANONICAL current proof matrix, future evidence gates, and claim limits  
-**Status:** Application-neutral Core complete at locally verified; application, runtime,
-deployment, product, judge, and submission gates open  
-**Authority:** ADR-0003, ADR-0006 through ADR-0015, and executed evidence
+**Status:** Application-neutral Core and bounded active-v2/simple-flow composition locally verified;
+the former `runtime/cloud-receiver/` preview is deprecated historical evidence; active-v2
+reconciliation, final application, production runtime, exact deployment, product, judge, and
+submission gates remain open  
+**Authority:** ADR-0003, ADR-0006 through ADR-0015, historical ADR-0019 through ADR-0032, active v2
+ADR-0033 through ADR-0041, and executed evidence
 
 ## 1. Evidence discipline
 
@@ -38,17 +41,29 @@ handle do not prove page-bound invocation.
 | Grant, event, replay, one-run reservation, pending delivery | **LOCALLY VERIFIED** | Receiver Core and SQLite reference store |
 | Grant inspection and atomic revocation | **LOCALLY VERIFIED** | Core/store behavior; no control HTTP or UI |
 | Delivery lease, stale-worker fence, effect acknowledgement | **LOCALLY VERIFIED** | deterministic identities and effect authority |
-| Receiver HTTP and outbound Connector client | **LOCALLY VERIFIED** | bounded loopback transport; no production TLS or pairing |
+| Receiver HTTP and outbound Connector client | **LOCALLY VERIFIED** | bounded loopback transport; no production TLS or identity |
 | Agent activation contract | **LOCALLY VERIFIED** | deterministic adapter; no real Agent or Browser |
 | Private managed-context resolution | **LOCALLY VERIFIED** | deterministic authority/driver; no capture or custody |
 | Exact process-fault matrix | **SEPARATE-PROCESS VERIFIED** | recorded compositions only, not arbitrary crash safety |
 | Source conformance profile | **LOCALLY VERIFIED, NON-PRODUCTION** | distinct local Host/Receiver/Connector children |
+| Stage 1 Cloud Receiver shell | **DEPRECATED, HISTORICAL LOOPBACK EVIDENCE** | real child lifecycle plus in-process generic protocol flow; retired by ADR-0032; no production identity or TLS |
+| Local pairing and Connector process preview | **CLOUD RECEIVER DEPENDENCY DEPRECATED; LOCAL CONNECTOR PREVIEW RETAINED** | browser-assisted pairing, durable hashed control state, local credential file, one-shot claim/adapter handoff; no production accounts or Agent runtime |
+| Host-key registration and signed event-ingress preview | **CLOUD RECEIVER PREVIEW DEPRECATED; PROTOCOL EVIDENCE RETAINED** | organization-authenticated public-key registration, migration, Host SDK signature verification, pending delivery, and Connector claim; no production identity |
+| Consent-session and Host SDK handoff preview | **CLOUD RECEIVER PREVIEW DEPRECATED; SDK CONTRACT RETAINED AS EVIDENCE** | paired Host subject, signed Manifest submission, public challenge, opaque token, approval/decline replay fencing, public binding, restart, and no raw-token persistence; no production consent identity |
+| Shared Host UI/WebMCP consent action | **LOCALLY VERIFIED WITH BOUNDED BROWSER RUNTIME EVIDENCE** | same JavaScript handler, exact popup handoff, server confirmation gate, no-binding browser result, live Site Tool inventory and invocation to a visible unconfigured state; no newly configured consent-to-Connector Browser chain |
+| Account-first consent and background Connector path | **CLOUD RECEIVER RUNTIME DEPRECATED; SDK/CONNECTOR SEAMS RETAINED AS HISTORICAL PREVIEW EVIDENCE** | dashboard-issued pairing code, credential reuse, organization-key Host control, Re-entry-owned consent and device selection, bounded polling, LaunchAgent profile, and fresh Codex process seam; no production identity, deployment, or supported Browser/WebMCP join |
+| Native hosted relational schema | **HISTORICAL / DEPRECATED** | Prisma schema/migration and one-time legacy snapshot backfill exercised in the retired preview; no current hosted service or production persistence claim |
+| Active Cloud Receiver v2 | **LOCALLY VERIFIED WITH BOUNDED PREVIEW-DEPLOYMENT EVIDENCE; CONTRACT DECISIONS OPEN** | 56/56 backend tests, PostgreSQL migrations, browser personas, and route/database/Connector preview probes; pairing abuse fence, effective expiry, shared-Core architecture, exact deployed Git identity, and full deployed flow remain open |
+| Simple SDK-to-v2-to-Connector composition | **SEPARATE-PROCESS VERIFIED, NON-PRODUCTION** | Core 81/81, SDK 25/25, Connector 47 passed, one separate Connector worker plus separate test effect/ack worker and Receiver restart replay; default product effect authority and supported external Agent/Browser absent |
+| Published SDK and Connector install path | **CONFLICTED / RELEASE OPEN** | SDK `0.3.1` predates `createReentry`; Connector `0.2.20` is not reproducible from its reported `gitHead` and its bundled Core client rejects active v2's instruction-bearing lease; local composition used current checkouts, not clean registry consumers |
+| Active v2 default Connector completion | **OPEN** | `runOnce` proves claim and activation only; no default Host-effect or acknowledgement integration; reclaim/retry exhaustion remains possible |
 | Quality and package-weight baseline | **LOCALLY VERIFIED, NON-SLA** | same-machine regression samples; zero runtime dependencies |
 | Application-neutral Program | **COMPLETE AT LOCALLY VERIFIED BOUNDARY** | RECORE-003 terminal audit |
 | Frozen MVP1 technical composition | **VERIFIED, BOUNDED REFERENCE** | P0/H1/H2 evidence in recorded environments |
+| Application-review sample Host | **LOCALLY VERIFIED, SAMPLE ONLY** | applicant/reviewer UI, real local SDK/Receiver/Connector flow, deterministic Agent, page-bound WebMCP invocation, and human stop; no final app selection or real Connector-to-Browser join |
 | Supported concrete Agent-to-Browser/WebMCP join | **OPEN** | both tested standalone App Server/Desktop joins failed |
-| Selected Host application and vertical slice | **OPEN** | no accepted app-selection ADR or app implementation |
-| Production services, identity, custody, and deployment | **OPEN** | no production runtime evidence |
+| Selected Host application and vertical slice | **OPEN** | ADR-0023 explicitly keeps the verified sample outside final app selection |
+| Production services, identity, custody, and deployment | **OPEN** | The retired v1 service is deprecated at source; active-v2 preview aliases and probes do not establish exact deployed Git identity, production custody, recovery, or a complete deployed flow |
 | Product value and judge reproduction | **UNKNOWN** | selected-app external evidence required |
 | Submission | **NOT SUBMITTED** | live Devpost readback required |
 
@@ -58,7 +73,7 @@ number.
 
 ## 3. Application-selection gate
 
-Before app implementation, the accepted decision must identify:
+Before final product-app implementation, the accepted selection decision must identify:
 
 - a real asynchronous multi-stage workflow;
 - one later event that changes the correct next action;
@@ -73,6 +88,7 @@ Before app implementation, the accepted decision must identify:
 - a judge-reproducible path consistent with current Challenge rules.
 
 Candidate research and scoring recommendations are inputs, not selection evidence.
+The ADR-0023 sample implementation is integration evidence and does not satisfy this selection gate.
 
 ## 4. Concrete-adapter gate
 

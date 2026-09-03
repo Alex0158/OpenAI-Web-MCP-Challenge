@@ -1,0 +1,234 @@
+.hostShell {
+  box-sizing: border-box;
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+  background: #f7f7f8;
+  color: #2d2d2d;
+}
+
+.hostHeader {
+  position: fixed;
+  top: 22px;
+  right: max(24px, 5vw);
+  left: max(24px, 5vw);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #8a8a8a;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.hostEnvironment {
+  padding: 5px 9px;
+  border: 1px solid #e1e1e1;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #8a8a8a;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.hostPanel {
+  width: min(100%, 430px);
+  padding: 32px;
+  border: 1px solid #e2e2e2;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 5%);
+}
+
+.hostEyebrow {
+  color: #8a8a8a;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.eyebrowRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.toolBadge {
+  padding: 5px 8px;
+  border: 1px solid #e1e1e1;
+  border-radius: 999px;
+  background: #f7f7f8;
+  color: #777777;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.toolBadgeReady {
+  border-color: rgb(16 163 127 / 28%);
+  background: rgb(16 163 127 / 7%);
+  color: #087a5d;
+}
+
+.hostPanel h1 {
+  margin: 14px 0 10px;
+  color: #202123;
+  font-size: clamp(28px, 7vw, 36px);
+  font-weight: 700;
+  letter-spacing: -.045em;
+  line-height: 1.05;
+}
+
+.hostPanel > p {
+  margin: 0;
+  color: #6b6b6b;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.hostButton {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 46px;
+  margin-top: 24px;
+  padding: 0 15px;
+  border: 1px solid #202123;
+  border-radius: 10px;
+  background: #202123;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.hostButton span {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.hostButton:hover {
+  transform: translateY(-1px);
+  background: #40414f;
+}
+
+.hostButton:active {
+  transform: translateY(0);
+}
+
+.hostButton:focus-visible {
+  outline: 3px solid rgb(16 163 127 / 35%);
+  outline-offset: 3px;
+}
+
+.flowDivider {
+  display: flex;
+  justify-content: center;
+  height: 24px;
+  margin-top: 2px;
+}
+
+.flowDivider span {
+  width: 1px;
+  height: 100%;
+  background: #dedede;
+}
+
+.eventButton {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid #d9d9d9;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #2d2d2d;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.eventButton:disabled {
+  cursor: not-allowed;
+  opacity: .42;
+}
+
+.eventButton:focus-visible {
+  outline: 3px solid rgb(16 163 127 / 35%);
+  outline-offset: 3px;
+}
+
+.eventStatus {
+  margin: 8px 0 0;
+  color: #8a8a8a;
+  font-size: 10px;
+  text-align: center;
+}
+
+.hostStatus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 24px;
+  margin-top: 10px;
+  color: #8a8a8a;
+  font-size: 11px;
+}
+
+.hostError {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  border: 1px solid #f0d7d4;
+  border-radius: 10px;
+  background: #fff8f7;
+  color: #9d3f36;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.statusIcon {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #eeeeee;
+  color: #6b6b6b;
+  font-size: 12px;
+}
+
+.statusIconWaiting {
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(16 163 127 / 0%); }
+  50% { box-shadow: 0 0 0 5px rgb(16 163 127 / 12%); }
+}
+
+@media (max-width: 520px) {
+  .hostHeader {
+    top: 18px;
+  }
+
+  .hostPanel {
+    padding: 25px 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hostButton,
+  .eventButton,
+  .statusIconWaiting {
+    animation: none;
+    transition: none;
+  }
+}

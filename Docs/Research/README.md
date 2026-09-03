@@ -1,8 +1,8 @@
 # Research Index
 
 **Role:** SUPPORTING research and bounded evidence index  
-**Status:** Current tracked index through Research 23  
-**Last updated:** 2026-08-31
+**Status:** Current tracked index through Research 24  
+**Last updated:** 2026-09-02
 
 Research can change a decision or verification plan, but it does not control current product truth
 or select an application. Accepted durable choices belong in `Docs/Decisions/`; current status and
@@ -39,6 +39,8 @@ proof claims belong in `Docs/Core/00-current-status.md` and
 - [Research 23](23-three-candidate-competition-app-selection-review.md): historical preserved
   comparison of the original three application candidates; its earlier ranking is superseded by
   the current Sleepless Kingdom and Rental Marketplace Relay shortlist.
+- [Research 24](24-cloud-receiver-2-saas-boilerplate-study.md): static review of the cloned SaaS
+  boilerplate and the open Cloud Receiver 2 adaptation boundary.
 
 ## Maintenance rules
 

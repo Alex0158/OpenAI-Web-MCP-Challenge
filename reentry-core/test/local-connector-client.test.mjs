@@ -71,6 +71,7 @@ function leaseResult(overrides = {}) {
         state_version: 2,
         occurred_at: new Date(now - 1_000).toISOString(),
         canonical_url: "https://host.example/workflows/workflow_1",
+        instruction: "Review the approved workflow and prepare the next safe step.",
       },
       receipt: {
         type: RECEIPT_TYPE,
@@ -137,6 +138,10 @@ test("Local Connector sends exact outbound claim and acknowledgement requests", 
   const claimed = await connector.claimDelivery({ claimToken: CLAIM_TOKEN });
   assert.equal(claimed.lease.lease_token, CLAIM_TOKEN);
   assert.equal(claimed.lease.receipt.grant_id, "grant_1");
+  assert.equal(
+    claimed.lease.continuation.instruction,
+    "Review the approved workflow and prepare the next safe step.",
+  );
   assert.equal(Object.isFrozen(claimed), true);
   assert.equal(Object.isFrozen(claimed.lease.receipt), true);
   const acknowledged = await connector.acknowledgeDelivery({
@@ -228,7 +233,13 @@ test("Local Connector rejects insecure origins, redirects, and timeouts without 
 });
 
 test("Local Connector rejects malformed, oversized, stale, and token-mismatched responses", async (t) => {
+  const missingInstruction = leaseResult();
+  delete missingInstruction.lease.continuation.instruction;
+  const oversizedInstruction = leaseResult();
+  oversizedInstruction.lease.continuation.instruction = "a".repeat(501);
   const responses = [
+    { kind: "json", value: missingInstruction },
+    { kind: "json", value: oversizedInstruction },
     { kind: "noncanonical", value: leaseResult() },
     { kind: "bom", value: leaseResult() },
     { kind: "json", value: leaseResult({ lease_token: Buffer.alloc(32, 8).toString("base64url") }) },
@@ -280,6 +291,14 @@ test("Local Connector rejects malformed, oversized, stale, and token-mismatched 
   });
   const connector = client(origin);
 
+  await assert.rejects(
+    connector.claimDelivery({ claimToken: CLAIM_TOKEN }),
+    { code: "connector_response_invalid" },
+  );
+  await assert.rejects(
+    connector.claimDelivery({ claimToken: CLAIM_TOKEN }),
+    { code: "connector_response_invalid" },
+  );
   await assert.rejects(
     connector.claimDelivery({ claimToken: CLAIM_TOKEN }),
     { code: "connector_response_invalid" },
