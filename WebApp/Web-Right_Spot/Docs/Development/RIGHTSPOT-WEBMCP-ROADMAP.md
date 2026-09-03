@@ -1,7 +1,7 @@
 # RightSpot WebMCP Integration Roadmap
 
 **Role:** Engineering roadmap and gate definition for the later RightSpot WebMCP capability  
-**Status:** `IMPLEMENTATION_INTEGRATED_PENDING_W3` — Tenant Discovery Search contract and page-bound adapter source are accepted; supported-browser registration and verification remain open  
+**Status:** `IMPLEMENTATION_INTEGRATED_PENDING_W3` — Tenant Discovery Search contract and page-bound adapter source are accepted; W3 was attempted but remains unverified behind an environment capability gate  
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-03, Europe/London  
 **Applies to:** `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge/WebApp/Web-Right_Spot`
@@ -234,7 +234,7 @@ registration or invocation.
 
 ### W3 — Independent browser and agent verification
 
-**State:** `READY_TO_DISPATCH` — `RS-WO-043-03` against frozen `ec7a679`  
+**State:** `BLOCKED — NOT_VERIFIED` — `RS-WO-043-03` was attempted against frozen source baseline `87884d1`  
 **Outcome:** an independent verifier proves the tool exists and behaves correctly in a supported
 browser capability environment.
 
@@ -257,6 +257,15 @@ The WebMCP DevTools surface or equivalent supported browser inspection may prove
 invocation, but ordinary HTTP tests, static source inspection, or a tool directory listing cannot
 substitute for page runtime evidence. Agent behavior is probabilistic; add goal/parameter/result evals
 for the selected journey and report failures separately from deterministic application tests.
+
+**W3 attempt (2026-09-03):** The independent verifier used frozen source baseline
+`87884d11c2b11b47a42eaabdce66f983575779aa` and confirmed the exact integrated adapter code commit
+`ec7a67917c1df5a54b6187e6cf6ac80a7c2acbd7`. Static checks and ordinary manual Search smoke passed.
+The attempt returned `NOT_VERIFIED`, not `VERIFIED`: Chrome `152.0.7977.65` exposed no
+`document.modelContext`, and the available in-app bridge rejected `webmcp_list_tools` for the current
+model. Registration, discovery, invocation, lifecycle teardown, and agent evidence therefore could
+not be observed. This is an environment capability gate, not a reproduced product defect; do not
+change source or browser flags to manufacture a pass.
 
 **Exit gate:** Main Thread accepts the verifier result as `VERIFIED`, reconciles the evidence and
 residuals, and updates the flow/status/roadmap documents before any expansion.
@@ -435,17 +444,20 @@ The ordinary Search authority/UI/API phase of [`RIGHTSPOT-043`](../Tasks/RIGHTSP
 is integrated at product code commit `534f5c9`. The first `RS-WO-043-02` adapter attempt was blocked
 before integration because the shared `readListings` client could not forward the execution
 `AbortSignal`. Main recorded the bounded `tenant-api.ts` seam amendment in `e7be681`, reviewed the
-amended five-path handoff, and integrated the adapter at `ec7a679`. `RS-WO-043-03` is now ready to
-dispatch against that frozen source for independent supported-browser verification. No WebMCP
-success claim is made until supported-browser registration, invocation, and lifecycle evidence pass.
+amended five-path handoff, and integrated the adapter at `ec7a679`. `RS-WO-043-03` was then dispatched
+against frozen source baseline `87884d1` and returned `NOT_VERIFIED` because the available browser and
+in-app bridge exposed no usable `document.modelContext`/`webmcp_list_tools` capability. No WebMCP
+success claim is made; the next action is to rerun the unchanged source in a compatible supported-
+browser environment.
 
 Until the `RIGHTSPOT-043` implementation and verification gate is accepted:
 
 - `RIGHTSPOT-010` remains `pending` and `RS-WO-010-01` remains `READY_FOR_REVIEW`;
 - `RIGHTSPOT-042` is `CLOSED_VERIFIED` as a documentation/decision gate and `RIGHTSPOT-043` remains
   `in_progress` with `RS-WO-043-01` and amended `RS-WO-043-02` integrated;
-- `RS-WO-043-03` is the active next gate and is limited to read-only verification of frozen source
-  `ec7a679`; no product edit or semantic expansion is authorized;
+- `RS-WO-043-03` remains the active open gate after an environment-blocked `NOT_VERIFIED` attempt; it
+  is limited to read-only verification of frozen source `ec7a679`/baseline `87884d1`; no product edit,
+  browser-flag change, or semantic expansion is authorized;
 - ordinary RightSpot MVP behavior remains the only runnable product claim; and
 - Cloud Receiver, WebRTC, Redis, external authentication, deployment, and production-readiness remain
   deferred or gated.

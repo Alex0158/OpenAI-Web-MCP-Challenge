@@ -301,13 +301,16 @@ integrated at `ec7a679` after exact-path review, Node 24 checks, the complete `1
 production build, repository validators, sensitive scan, and ordinary browser smoke. The first
 adapter attempt was blocked before integration because the shared client could not forward
 `AbortSignal`; Main recorded the bounded `tenant-api.ts` scope amendment in `e7be681` and completed
-the amended handoff. `RS-WO-043-03` is now ready to dispatch against the frozen adapter commit for
-independent supported-browser verification. No extra Worktree is open.
+the amended handoff. `RS-WO-043-03` was dispatched against frozen source baseline `87884d1` for
+independent supported-browser verification, but returned `NOT_VERIFIED` because Chrome
+`152.0.7977.65` and the available in-app bridge exposed no usable WebMCP capability. No extra
+Worktree is open and no product defect was reproduced.
 
 **Current route:** `RIGHTSPOT-043` is the current active Main-owned implementation route for the
 accepted Tenant Discovery/WebMCP Search direction; `RS-WO-043-01` and the amended
-`RS-WO-043-02` are integrated, and `RS-WO-043-03` is ready to dispatch against frozen source
-`ec7a679`. `RIGHTSPOT-042` is closed as the decision gate. `RIGHTSPOT-041` and
+`RS-WO-043-02` are integrated, and `RS-WO-043-03` remains open after its environment-blocked
+`NOT_VERIFIED` attempt against frozen source baseline `87884d1`/adapter commit `ec7a679`.
+`RIGHTSPOT-042` is closed as the decision gate. `RIGHTSPOT-041` and
 `RIGHTSPOT-040` remain closed within their exact tenant consumer boundaries. No extra code Worktree is
 open.
 `RIGHTSPOT-032` through `RIGHTSPOT-040` remain closed within their exact tenant and Agent

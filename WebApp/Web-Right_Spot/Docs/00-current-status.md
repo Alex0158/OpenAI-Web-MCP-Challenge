@@ -110,12 +110,14 @@ documentation/tools under this model, so supported-browser discovery, invocation
 agent evidence remain unverified; no runtime WebMCP success claim is made. Five pre-existing
 untracked RightSpot boundary artifacts remain preserved.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Dispatch `RS-WO-043-03` as an independent read-only verifier against
-the frozen `ec7a679` source. It must prove supported-browser registration and invocation, ordinary page
-parity, lifecycle teardown, privacy/no-mutation, failure/empty/stale boundaries, and unsupported-
-browser manual fallback before `RIGHTSPOT-043` can close. The first adapter attempt was blocked before
-integration because `readListings` could not forward `AbortSignal`; the bounded client seam is now
-integrated and documented.
+**Current next product action:** Obtain a compatible supported-browser WebMCP capability and rerun
+`RS-WO-043-03` against frozen source baseline `87884d11c2b11b47a42eaabdce66f983575779aa`. The first
+independent attempt returned `NOT_VERIFIED`: Chrome `152.0.7977.65` had no `document.modelContext`,
+and the available in-app bridge rejected `webmcp_list_tools`. Ordinary Search smoke and all static
+checks passed, but supported-browser registration/invocation, lifecycle teardown, privacy/no-mutation,
+failure/empty/stale boundaries, and agent evidence remain unobserved. The first adapter attempt was
+blocked before integration because `readListings` could not forward `AbortSignal`; the bounded client
+seam is now integrated and documented. No WebMCP success claim is made.
 `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP decision proposal. The Main-thread
 cross-layer audit Goal is closed
 for the accepted ordinary local MVP; `RIGHTSPOT-039` /

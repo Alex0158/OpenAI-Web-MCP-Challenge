@@ -15,10 +15,12 @@ page/session-bound read-only WebMCP capability without creating a second listing
 - **Execution posture:** `SERIAL_PRODUCT_SEARCH_WITH_SEQUENTIAL_WEBMCP_GATE`
 - **Owner:** Main RightSpot thread
 - **Current gate:** `RS-WO-043-02` is integrated in the canonical Main Worktree at `ec7a679` after
-  exact-path review and complete static checks. `RS-WO-043-03` is now ready to dispatch against that
-  frozen source for independent supported-browser verification. No source, dependency, fixture, or
-  extra Worktree change is authorized outside the active verification gate.
-- **Dispatch state:** `RS-WO-043-01 integrated; RS-WO-043-02 integrated pending independent verification; RS-WO-043-03 ready to dispatch`
+  exact-path review and complete static checks. `RS-WO-043-03` was dispatched against frozen source
+  `87884d11c2b11b47a42eaabdce66f983575779aa` and returned `NOT_VERIFIED` because the available
+  browser/runtime surfaces do not expose `document.modelContext`; no product defect was reproduced,
+  but supported-browser WebMCP evidence is still absent. No source, dependency, fixture, or extra
+  Worktree change is authorized outside the active verification gate.
+- **Dispatch state:** `RS-WO-043-01 integrated; RS-WO-043-02 integrated; RS-WO-043-03 NOT_VERIFIED — environment capability gate`
 - **Supporting workers:** Hubble's first `RS-WO-043-02` attempt returned `BLOCKED` before adapter
   integration; its amended candidate was reviewed by Main and integrated after the exact-path and
   runtime-seam checks. Main retains source integration, shared-file serialization, verification
@@ -184,7 +186,7 @@ cancellation API must be revalidated at dispatch and verification. Do not add a 
 ### RS-WO-043-03 — Independent supported-browser verification and Main closure
 
 **Role:** Verifier — independent read-only evidence  
-**Status:** `READY_TO_DISPATCH`  
+**Status:** `BLOCKED — supported-browser capability unavailable in the current environment`  
 **Allowed write set:** none in product source or canonical docs; evidence may be written only through
 the Main closure process.  
 **Read set:** frozen post-Builder source, exact runtime/browser capability, fixture reset boundary,
@@ -252,7 +254,12 @@ This Task remains `in_progress` after the ordinary Search and adapter source che
 decision gate is recorded in `RIGHTSPOT-042` and ADR-RS-0015. The first `RS-WO-043-02` attempt was
 blocked before integration because the original write set could not provide genuine transport
 cancellation; Main recorded the bounded `tenant-api.ts` amendment in `e7be681`, reviewed the
-amended five-path handoff, and integrated it at `ec7a679`. `RS-WO-043-03` may now be dispatched
-against the frozen `ec7a679` source. The current integrated result does not claim supported-browser
-WebMCP discovery/invocation, agent success, deployment, or judge reproducibility; those remain the
-independent verification and later gates.
+amended five-path handoff, and integrated it at `ec7a679`. Main then dispatched `RS-WO-043-03` against
+the frozen source baseline `87884d11c2b11b47a42eaabdce66f983575779aa`. The independent verifier
+returned `NOT_VERIFIED`: Chrome `152.0.7977.65` reported `document.modelContext === undefined`, and
+the available in-app bridge rejected `fetchTools()` because the current model does not support
+`webmcp_list_tools`. Ordinary manual Search smoke, static checks, and source-boundary checks passed,
+but supported-browser registration, discovery, invocation, lifecycle teardown, and agent evidence
+could not be observed. This is an environment capability gate, not a reproduced product defect; the
+integrated result must not claim WebMCP success, deployment, or judge reproducibility until W3 is
+rerun in a compatible supported-browser environment.

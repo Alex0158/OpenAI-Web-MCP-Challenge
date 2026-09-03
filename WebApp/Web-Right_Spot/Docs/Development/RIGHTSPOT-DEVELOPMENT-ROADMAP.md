@@ -120,9 +120,11 @@ exact-path review. Their historical snapshots remain in the owning Task File rec
 Worktree is an active source or writer.
 
 **Current gate:** No extra implementation Worktree is open; `RS-WO-043-01` and amended
-`RS-WO-043-02` are integrated in the canonical Main Worktree, with `RS-WO-043-03` ready to dispatch
-against frozen source `ec7a679`. The accepted local MVP and the `RIGHTSPOT-039` / `RS-WO-039-01` F-17
-listing-detail partial-read repair are closed within their bounded outcomes. `RIGHTSPOT-043` supported-
+`RS-WO-043-02` are integrated in the canonical Main Worktree. `RS-WO-043-03` was attempted against
+frozen source baseline `87884d1` but returned `NOT_VERIFIED` because Chrome `152.0.7977.65` and the
+available in-app bridge exposed no usable WebMCP capability. The accepted local MVP and the
+`RIGHTSPOT-039` / `RS-WO-039-01` F-17 listing-detail partial-read repair are closed within their
+bounded outcomes. `RIGHTSPOT-043` supported-
 browser WebMCP registration, invocation, and browser evidence remain unverified until the verifier gate.
 `RIGHTSPOT-042` is closed as the preceding contract decision, and the Main-thread cross-layer audit
 remains non-blocking evidence work.
@@ -273,8 +275,9 @@ bounded increment may be delegated; it is not a roadmap or active-task register.
 ### 3.1 Current next route
 
 The current route is the active Main-owned `RIGHTSPOT-043` Tenant Discovery/WebMCP Search implementation
-Task; `RS-WO-043-01` and amended `RS-WO-043-02` are integrated, and `RS-WO-043-03` is the next
-verification gate against frozen source `ec7a679`. The first WebMCP goal is
+Task; `RS-WO-043-01` and amended `RS-WO-043-02` are integrated, and `RS-WO-043-03` remains the open
+verification gate after an environment-blocked `NOT_VERIFIED` attempt against frozen source baseline
+`87884d1`/adapter commit `ec7a679`. The first WebMCP goal is
 selected as read-only Tenant listing discovery on
 `/tenant`; ADR-RS-0014 accepts the canonical Area direction and ADR-RS-0015 accepts the complete
 criteria, result/page-state, error/freshness, privacy, and browser-fallback contract. `RIGHTSPOT-043`
