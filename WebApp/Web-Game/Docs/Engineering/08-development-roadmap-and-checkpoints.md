@@ -405,10 +405,11 @@ Agent/Re-entry delivery, and external Receiver/Connector behavior remain separat
   It treats the Game as a Host publisher and, following outer ADR-0043/RECORE-007, targets repeated
   ordered `CargoLostToMonster` signals under one protocol-v0.2 standing Consent with one-active
   backpressure. Cloud queue acceptance remains separate from Connector claim, fresh activation,
-  page action, effect acknowledgement, and the next signal. The task remains pending until Eddy
-  supplies the exact v0.2 source/package/endpoint/test handoff and the owner accepts the binding,
-  timestamp, canonical URL, session, one-run Grant, and effect-authority mapping; no direct
-  Connector claim or deprecated Receiver fallback is permitted.
+  page action, effect acknowledgement, and the next signal. The outer `CLOUD-023` source-level
+  closure now supplies a locally committed Receiver and exact-commit upgrade result, but the Game
+  task remains pending until an owner-declared installable v0.2 package or endpoint/test handoff is
+  accepted with the binding, timestamp, canonical URL, session, standing Grant, sequence, and
+  effect-authority mapping; no direct Connector claim or deprecated Receiver fallback is permitted.
 
 ## Phase 5 — local verification and demo closure
 

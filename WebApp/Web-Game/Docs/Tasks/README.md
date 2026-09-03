@@ -157,9 +157,11 @@ The task preserves the verified local `ReentryDeliveryPort`, treats Cloud `202` 
 only, and keeps Connector claim, fresh Agent activation, page action, and effect acknowledgement as
 separate boundaries. Outer ADR-0043 and RECORE-007 replace the former one-shot recommendation with
 one standing Consent, ordered repeatable signals, and one-active backpressure at Core reference
-scope. No Game implementation starts until Eddy supplies an owner-declared exact protocol-v0.2
-Receiver/SDK/Core/Connector handoff, endpoint, Consent/binding/session map, test environment, and
-effect-authority boundary.
+scope. The outer [`CLOUD-023`](../../../../Docs/Development/CLOUD-023-standing-receiver-source-gate.md)
+now records a locally committed Receiver source and exact-commit upgrade proof, but that source-level
+result is not an installable or hosted Game handoff. Game implementation remains gated on an
+owner-declared exact protocol-v0.2 Receiver/SDK/Core/Connector package or endpoint/test environment,
+Consent/binding/session/sequence mapping, and effect-authority boundary.
 
 [`SK-TASK-075`](SK-TASK-075-cp12-shelter-economy-summary-cards.md) is `verified` with `integrated`
 closure for the bounded CP-12 shelter economy summary cards under [`SK-EVID-062`](../Evidence/SK-EVID-062-cp12-shelter-economy-summary-card-runtime-verification.md)
