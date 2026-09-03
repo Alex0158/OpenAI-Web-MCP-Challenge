@@ -42,6 +42,7 @@ export default function TenantDiscoveryPage() {
   const [catalogueListings, setCatalogueListings] = useState<TenantListingsResponse["listings"] | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [filterError, setFilterError] = useState<string | null>(null);
+  const [isSearchAssistanceUnavailable, setIsSearchAssistanceUnavailable] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const latestRequestId = useRef(0);
   const activeSearch = useRef<{ requestId: number; controller: AbortController } | null>(null);
@@ -53,6 +54,10 @@ export default function TenantDiscoveryPage() {
     activeSearch.current = null;
     latestRequestId.current += 1;
     if (isMounted.current) setIsLoading(false);
+  }, []);
+
+  const handleSearchRegistrationError = useCallback(() => {
+    setIsSearchAssistanceUnavailable(true);
   }, []);
 
   const executeSearch = useCallback<TenantSearchExecutor>(async (nextFilters, options = {}) => {
@@ -192,8 +197,17 @@ export default function TenantDiscoveryPage() {
       eyebrow="Tenant marketplace"
       description="Browse the seeded rental catalogue, inspect one listing, and keep one viewing request moving with the property agent."
     >
-      <TenantWebMcp executeSearch={executeSearch} cancelSearches={cancelSearches} />
+      <TenantWebMcp
+        executeSearch={executeSearch}
+        cancelSearches={cancelSearches}
+        onRegistrationError={handleSearchRegistrationError}
+      />
       <section className={styles.pageSection} aria-labelledby="listing-search-title">
+        {isSearchAssistanceUnavailable ? (
+          <p role="status" aria-live="polite">
+            Search assistance is unavailable in this session. Use the manual filters below.
+          </p>
+        ) : null}
         <div className={styles.sectionHeading}>
           <div>
             <p className="eyebrow">Discovery</p>

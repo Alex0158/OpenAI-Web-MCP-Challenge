@@ -103,6 +103,121 @@ test("registration is page-local, single-tool, and aborts its registration signa
   assert.equal(registrationSignal?.aborted, true);
 });
 
+test("a synchronous registration failure signals once and deactivates the captured tool", async () => {
+  const registeredTools: TenantSearchTool[] = [];
+  let registrationSignal: AbortSignal | undefined;
+  let executionCalls = 0;
+  let failureSignals = 0;
+  const modelContext: WebMcpModelContext = {
+    registerTool(tool, options) {
+      registeredTools.push(tool);
+      registrationSignal = options?.signal;
+      throw new Error("private registration detail");
+    },
+  };
+
+  const dispose = registerTenantSearchTool({
+    modelContext,
+    executeSearch: async () => {
+      executionCalls += 1;
+      return SEARCH_RESULT;
+    },
+    onRegistrationError: () => {
+      failureSignals += 1;
+    },
+  });
+
+  assert.equal(failureSignals, 1);
+  assert.equal(registrationSignal?.aborted, true);
+  assert.deepEqual(await registeredTools[0]!.execute({}), {
+    error: {
+      code: "STALE_RESULT",
+      message: "The search was cancelled or superseded. Retry the latest search.",
+    },
+  });
+  assert.equal(executionCalls, 0);
+
+  dispose();
+  assert.equal(failureSignals, 1);
+});
+
+test("a rejected registration signals once and deactivates the captured tool", async () => {
+  const registeredTools: TenantSearchTool[] = [];
+  let registrationSignal: AbortSignal | undefined;
+  let rejectRegistration: ((reason?: unknown) => void) | undefined;
+  let executionCalls = 0;
+  let failureSignals = 0;
+  const registration = new Promise<unknown>((_resolve, reject) => {
+    rejectRegistration = reject;
+  });
+  const modelContext: WebMcpModelContext = {
+    registerTool(tool, options) {
+      registeredTools.push(tool);
+      registrationSignal = options?.signal;
+      return registration;
+    },
+  };
+
+  const dispose = registerTenantSearchTool({
+    modelContext,
+    executeSearch: async () => {
+      executionCalls += 1;
+      return SEARCH_RESULT;
+    },
+    onRegistrationError: () => {
+      failureSignals += 1;
+    },
+  });
+
+  rejectRegistration?.(new Error("private async registration detail"));
+  await Promise.resolve();
+  await Promise.resolve();
+
+  assert.equal(failureSignals, 1);
+  assert.equal(registrationSignal?.aborted, true);
+  assert.deepEqual(await registeredTools[0]!.execute({}), {
+    error: {
+      code: "STALE_RESULT",
+      message: "The search was cancelled or superseded. Retry the latest search.",
+    },
+  });
+  assert.equal(executionCalls, 0);
+
+  dispose();
+  assert.equal(failureSignals, 1);
+});
+
+test("a registration rejection arriving after disposal cannot signal a dead page", async () => {
+  let rejectRegistration: ((reason?: unknown) => void) | undefined;
+  let registrationSignal: AbortSignal | undefined;
+  let failureSignals = 0;
+  const registration = new Promise<unknown>((_resolve, reject) => {
+    rejectRegistration = reject;
+  });
+  const modelContext: WebMcpModelContext = {
+    registerTool(_tool, options) {
+      registrationSignal = options?.signal;
+      return registration;
+    },
+  };
+
+  const dispose = registerTenantSearchTool({
+    modelContext,
+    executeSearch: async () => SEARCH_RESULT,
+    onRegistrationError: () => {
+      failureSignals += 1;
+    },
+  });
+
+  dispose();
+  rejectRegistration?.(new Error("late private registration detail"));
+  await Promise.resolve();
+  await Promise.resolve();
+
+  assert.equal(registrationSignal?.aborted, true);
+  assert.equal(failureSignals, 0);
+});
+
 test("registration teardown aborts an in-flight delegated search and cannot return success", async () => {
   const registeredTools: TenantSearchTool[] = [];
   let receivedSignal: AbortSignal | undefined;
@@ -261,6 +376,10 @@ test("the adapter is mounted inside the server-resolved Tenant /tenant child bou
   assert.ok(adapterStart > frameGate);
   assert.match(page, /<TenantWebMcp[\s\S]*executeSearch=\{executeSearch\}/);
   assert.match(page, /cancelSearches=\{cancelSearches\}/);
+  assert.match(page, /onRegistrationError=\{handleSearchRegistrationError\}/);
+  assert.match(page, /const handleSearchRegistrationError = useCallback/);
+  assert.match(page, /Search assistance is unavailable in this session\. Use the manual filters below\./);
+  assert.equal(page.includes("private registration detail"), false);
 });
 
 test("authoritative Tenant authentication failures deactivate the page registration", async () => {

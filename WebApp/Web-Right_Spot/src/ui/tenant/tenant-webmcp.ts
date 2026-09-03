@@ -180,6 +180,11 @@ export function registerTenantSearchTool({
     active = false;
     registrationController.abort();
   };
+  const failRegistration = (error: unknown) => {
+    if (!active) return;
+    deactivate();
+    onRegistrationError?.(error);
+  };
 
   if (!modelContext) {
     return deactivate;
@@ -208,10 +213,10 @@ export function registerTenantSearchTool({
   try {
     const registration = modelContext.registerTool(tool, { signal: registrationController.signal });
     void Promise.resolve(registration).catch((error: unknown) => {
-      if (active) onRegistrationError?.(error);
+      failRegistration(error);
     });
   } catch (error: unknown) {
-    if (active) onRegistrationError?.(error);
+    failRegistration(error);
   }
 
   return deactivate;
@@ -220,9 +225,11 @@ export function registerTenantSearchTool({
 export default function TenantWebMcp({
   executeSearch,
   cancelSearches,
+  onRegistrationError,
 }: {
   executeSearch: TenantSearchExecutor;
   cancelSearches: () => void;
+  onRegistrationError: (error: unknown) => void;
 }) {
   const lifecycleGeneration = useRef(0);
 
@@ -231,6 +238,7 @@ export default function TenantWebMcp({
     const dispose = registerTenantSearchTool({
       modelContext: getRuntimeModelContext(),
       executeSearch,
+      onRegistrationError,
     });
 
     return () => {
@@ -239,7 +247,7 @@ export default function TenantWebMcp({
         if (lifecycleGeneration.current === generation) cancelSearches();
       });
     };
-  }, [cancelSearches, executeSearch]);
+  }, [cancelSearches, executeSearch, onRegistrationError]);
 
   return null;
 }
