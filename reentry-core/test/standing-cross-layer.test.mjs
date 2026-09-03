@@ -338,6 +338,11 @@ test("standing v0.2 crosses Host SDK, HTTP Receiver, Connector, Agent Adapter, r
   assert.equal(result.consent_decisions, 1);
   assert.equal(result.consented_host_key_enforced, true);
   assert.equal(result.consented_host_key_material_enforced, true);
+  assert.deepEqual(result.ordering, {
+    out_of_order_rejected: true,
+    retryable: false,
+    no_mutation: true,
+  });
   assert.deepEqual(result.accepted_sequences, [1, 2]);
   assert.equal(result.backpressure.retryable, true);
   assert.equal(result.revocation.third_event_rejected, true);

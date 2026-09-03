@@ -128,6 +128,21 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
   expectEvent(second, 2);
   expectEvent(third, 3);
 
+  // A future sequence cannot reserve work before its predecessor. The Receiver must reject it
+  // without advancing the Grant or creating an open Delivery; the same signed envelope must be
+  // acceptable later when its sequence becomes current.
+  const outOfOrder = await driver.sendEvent({ envelope: envelopeOf(second) });
+  expectError(
+    outOfOrder,
+    409,
+    "event_sequence_out_of_order",
+    false,
+    "profile_out_of_order",
+  );
+  const afterOutOfOrder = await driver.inspect({ bindingId: approval.binding.binding_id });
+  expect(afterOutOfOrder?.last_event_sequence === 0, "profile_out_of_order_consumed_sequence");
+  expect(afterOutOfOrder?.active_activations === 0, "profile_out_of_order_created_delivery");
+
   const firstAcceptance = await driver.sendEvent({ envelope: envelopeOf(first) });
   expectAcceptance(firstAcceptance, first.event, false);
 
@@ -191,6 +206,11 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
     consent_decisions: 1,
     consented_host_key_enforced: true,
     consented_host_key_material_enforced: true,
+    ordering: {
+      out_of_order_rejected: true,
+      retryable: outOfOrder.body.error.retryable,
+      no_mutation: true,
+    },
     accepted_sequences: [1, 2],
     backpressure: {
       code: blockedSecond.body.error.code,
@@ -282,6 +302,14 @@ function expectAcceptance(response, event, duplicate) {
   expect(response?.body?.accepted === true, "profile_event_not_accepted");
   expect(response?.body?.duplicate === duplicate, "profile_event_duplicate_state");
   expect(response.body.status === "accepted", "profile_event_acceptance_state");
+}
+
+function expectError(response, statusCode, code, retryable, prefix) {
+  expect(response?.statusCode === statusCode, `${prefix}_status`);
+  expectExactFields(response?.body, ["error"], `${prefix}_body`);
+  expectExactFields(response.body.error, ["code", "retryable"], `${prefix}_error`);
+  expect(response.body.error.code === code, `${prefix}_code`);
+  expect(response.body.error.retryable === retryable, `${prefix}_retryable`);
 }
 
 function envelopeOf(issued) {

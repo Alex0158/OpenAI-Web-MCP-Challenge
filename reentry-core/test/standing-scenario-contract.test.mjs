@@ -10,7 +10,7 @@ const CLAIM_TOKENS = ["claim_contract_1", "claim_contract_2", "claim_contract_3"
 // These are oracle self-tests, not a Receiver implementation or conformance result. A deliberately
 // small scripted driver stops immediately after the response under test. The boundary assertion
 // proves that a valid response reaches the next step; malformed responses must fail before it.
-for (const boundary of ["approval", "acceptance", "acknowledgement"]) {
+for (const boundary of ["approval", "out-of-order", "acceptance", "acknowledgement"]) {
   test(`scenario accepts the exact ${boundary} response before advancing`, async () => {
     await assert.rejects(run(boundary), { code: BOUNDARY });
   });
@@ -35,6 +35,9 @@ const mutations = [
   ["approval", "wrong challenge identity", value => ({
     ...value, challenge_id: "another_challenge",
   }), "profile_approval_challenge"],
+  ["out-of-order", "missing retryable flag", value => ({
+    ...value, error: without(value.error, "retryable"),
+  }), "profile_out_of_order_error"],
   ["acceptance", "private grant ID", value => ({ ...value, grant_id: "private_grant" }),
     "profile_event_acceptance_fields"],
   ["acceptance", "missing status", value => without(value, "status"),
@@ -86,6 +89,7 @@ function run(boundary, mutate = value => value) {
     },
   };
   let normalSends = 0;
+  let outOfOrderRejected = false;
   const driver = {
     async issueManifest() { return manifest; },
     async enroll() { return { duplicate: false, challenge: { status: "pending", challenge_id: approval.challenge_id } }; },
@@ -107,6 +111,14 @@ function run(boundary, mutate = value => value) {
           retryable: false,
         } } };
       }
+      if (event.event_sequence === 2 && !outOfOrderRejected) {
+        outOfOrderRejected = true;
+        const response = {
+          statusCode: 409,
+          body: { error: { code: "event_sequence_out_of_order", retryable: false } },
+        };
+        return boundary === "out-of-order" ? { ...response, body: mutate(response.body) } : response;
+      }
       normalSends += 1;
       if (normalSends > (boundary === "acceptance" ? 1 : 3)) stop();
       if (normalSends === 3) {
@@ -119,7 +131,10 @@ function run(boundary, mutate = value => value) {
       };
       return { statusCode: 202, body: boundary === "acceptance" ? mutate(body) : body };
     },
-    async inspect() { return { last_event_sequence: 0, active_activations: 0 }; },
+    async inspect() {
+      if (boundary === "out-of-order" && outOfOrderRejected) stop();
+      return { last_event_sequence: 0, active_activations: 0 };
+    },
     async claim({ claimToken }) {
       return { duplicate: false, lease: {
         protocol_version: "0.2", delivery_id: "delivery_contract_1", event_id: "event_contract_1",
