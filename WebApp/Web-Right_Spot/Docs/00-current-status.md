@@ -198,9 +198,9 @@ build, repository validation, sensitive scan, and diff checks. No server/API/fix
 the supported-browser lifecycle gate remains open. `RIGHTSPOT-047` is paused and must be re-baselined
 after the `048` gate.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Dispatch `RS-WO-048-02` against frozen candidate `218935c`, using the
-exact lifecycle/browser evidence gate in `RIGHTSPOT-048`. Do not modify the frozen eight source/test
-paths during verification. After that gate passes, re-baseline `RIGHTSPOT-047` and resume only the
+**Current next product action:** Monitor the dispatched `RS-WO-048-02` verifier against frozen candidate
+`218935c`, using the exact lifecycle/browser evidence gate in `RIGHTSPOT-048`. Do not modify the frozen
+eight source/test paths during verification. After that gate passes, re-baseline `RIGHTSPOT-047` and resume only the
 missing independent Operations WebMCP evidence. Do not run the old 047 verifier target or push/claim
 WebMCP closure before both gates are complete. In parallel, `RIGHTSPOT-012`
 remains a non-blocking

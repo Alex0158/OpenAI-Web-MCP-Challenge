@@ -1461,3 +1461,12 @@ dynamic filesystem-tracing warning remains recorded and is not a deployment clai
 static/deterministic checkpoint only. `RS-WO-048-02` must still independently verify both role pages,
 external session transitions, registration removal, manual recovery, accessibility/responsive state,
 clean page errors, and persistent no-mutation readback before `RIGHTSPOT-048` can close.
+
+## 7.35 Shared role-page session lifecycle independent verifier dispatch — 2026-09-03
+
+Main froze the reviewed `RIGHTSPOT-048` candidate at product commit `218935c` and dispatched
+`RS-WO-048-02` to independent verifier Ohm (`01a0664b-dac0-7b51-9350-fb93b163a34c`) with
+`gpt-5.6-sol` and `medium` reasoning. The verifier is read-only and must use the declared supported
+browser/WebMCP flag against the exact frozen source; no source, test, canonical-document, fixture,
+SQLite, Git, or Worktree change is authorized during the gate. The final status and evidence are still
+pending, so `RIGHTSPOT-048` is not closed and `RIGHTSPOT-047` remains paused.

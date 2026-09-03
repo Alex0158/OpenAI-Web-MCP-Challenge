@@ -19,15 +19,15 @@ frozen but not independently closed `RIGHTSPOT-047` Agent Operations adapter
 - Owner: Main RightSpot thread
 - Current increment: Static audit and Contract Advisor review confirmed the same mount-only lifecycle
   pattern in the shared role frame, Tenant Search adapter, and Agent Operations candidate. The serial
-  Builder completed the exact eight-path implementation, and Main integrated the reviewed candidate at
-  product commit `218935c`.
+  Builder completed the exact eight-path implementation, Main integrated the reviewed candidate at
+  product commit `218935c`, and the independent browser verifier is now running against that freeze.
 - Execution posture: `BUILDER_HANDOFF_SOURCE_FROZEN` — the post-Builder candidate is frozen for one
   independent browser gate; no supporting Worktree is required or authorized.
 - Evidence status: `DETERMINISTIC_GATES_PASSED_BROWSER_PENDING`; this is not a browser reproduction or
   a claim of data leakage. The server-side role/session checks remain intact.
-- Next gate: Dispatch `RS-WO-048-02` against frozen source `218935c`, independently verify the repaired
-  Tenant and Agent page-capability lifecycle, then reopen `RIGHTSPOT-047` only after its candidate is
-  re-baselined.
+- Next gate: Receive the bounded `RS-WO-048-02` report against frozen source `218935c`, independently
+  verify the repaired Tenant and Agent page-capability lifecycle, then reopen `RIGHTSPOT-047` only
+  after its candidate is re-baselined.
 - Dependencies: `ADR-RS-0015` and `ADR-RS-0017` require page/session-scoped capability cleanup;
   `RIGHTSPOT-043` and `RIGHTSPOT-047` provide the existing adapter cleanup contracts. `RIGHTSPOT-012`
   may continue as a read-only, non-blocking audit but cannot modify this Task's write set during a
@@ -222,11 +222,15 @@ claimed yet.
 ### RS-WO-048-02 — Independently verify the repaired lifecycle
 
 **Role:** Independent supported-browser WebMCP Verifier  
-**Status:** `READY_FOR_DISPATCH`  
+**Status:** `IN_PROGRESS`  
 **Parallelization:** `AFTER_BUILDER_SOURCE_FREEZE` — freeze the post-Builder source and Git identity;
   no Main source/status movement during the check.  
 **Frozen source identity:** product commit `218935c` on canonical Main; no source/test path may change
 during this verification gate.  
+**Dispatch record (2026-09-03):** Independent verifier Ohm, agent
+`01a0664b-dac0-7b51-9350-fb93b163a34c`, was dispatched with `gpt-5.6-sol` and `medium` reasoning.
+The verifier is read-only, uses the installed supported-browser harness with the WebMCP testing flag,
+and must return a bounded status with exact evidence or a precise stop condition.  
 **Scope:** Read-only evidence against the exact frozen candidate. No source, docs, Git, Worktree, or
   durable fixture mutation. Use `gpt-5.6-sol` with `medium` reasoning for WebMCP-specific evaluation.  
 **Required evidence:** initial and repeated registration counts, focus/visibility revalidation,
