@@ -134,6 +134,10 @@ not claim that the game is built or balanced.
 - [`80-cp12-canvas-selection-feedback-runtime-cross-functional-audit.md`](80-cp12-canvas-selection-feedback-runtime-cross-functional-audit.md)
   — CP-12 Canvas selection feedback across local form state, projection-only lookup, invalid/stale
   clearing, draw order, semantic UX, responsive layout, and unchanged external boundaries.
+- [`81-cp14-causal-event-to-local-stub-trace-runtime-cross-functional-audit.md`](81-cp14-causal-event-to-local-stub-trace-runtime-cross-functional-audit.md)
+  — CP-14 real worker/combat `CargoLostToMonster` composition through the game-side delivery port,
+  envelope fidelity, once-only acknowledgement, no gameplay mutation, and explicit external handoff
+  limits.
 
 ## Current concept checks
 

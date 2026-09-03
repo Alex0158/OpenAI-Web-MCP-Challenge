@@ -38,6 +38,7 @@
     "test:cp12-dispatch": "tsx --test tests/cp12-gatherer-dispatch-http.test.ts tests/cp12-gatherer-dispatch-client.test.ts tests/cp12-gatherer-dispatch-ui.test.tsx tests/cp12-gatherer-dispatch-server-hardening.test.ts tests/cp12-gatherer-dispatch-rejection-refresh.test.ts",
     "test:cp13-page-tools": "tsx --test tests/cp13-page-tools.test.ts",
     "test:cp13-recall": "tsx --test tests/cp13-recall-transition.test.ts",
+    "test:cp14-causal": "tsx --test tests/cp14-causal-event-to-local-stub-trace.test.ts",
     "test:cp15": "node scripts/run_cp15_matrix.mjs",
     "test:cp16-local": "tsx --test tests/cp16-local-causal-slice.test.ts"
   },

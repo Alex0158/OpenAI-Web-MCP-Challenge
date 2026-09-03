@@ -383,6 +383,13 @@ The small [`SK-TASK-067`](../Tasks/SK-TASK-067-cp12-canvas-selection-feedback.md
   implementation against a labelled local contract stub may proceed now; it must preserve the
   existing durable slot/lease authority and cannot claim live Receiver, Connector, Agent, hosted,
   or Re-entry delivery. The adapter capability itself is no longer the blocker.
+  The follow-on [`SK-TASK-068`](../Tasks/SK-TASK-068-cp14-causal-event-to-local-stub-trace.md) is
+  runtime-verified under [`SK-EVID-055`](../Evidence/SK-EVID-055-cp14-causal-event-to-local-stub-trace-runtime-verification.md)
+  and [`Validation/81`](../Validation/81-cp14-causal-event-to-local-stub-trace-runtime-cross-functional-audit.md):
+  a fresh real worker/combat `CargoLostToMonster` path now composes with the game-side port and a
+  labelled stub, preserving one signal identity and leaving gameplay unchanged. This remains local
+  ladder-level 3 composition evidence; it does not close the external Receiver/Connector, Agent,
+  page, WebMCP, Re-entry, hosted, or judge gates.
 
 ## Phase 5 — local verification and demo closure
 

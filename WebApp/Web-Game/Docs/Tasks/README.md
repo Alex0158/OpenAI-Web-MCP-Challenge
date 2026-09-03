@@ -88,6 +88,12 @@ is unmade, a duplicate, or an external action added merely to make the queue loo
 
 ## 6. Current task routing
 
+[`SK-TASK-068`](SK-TASK-068-cp14-causal-event-to-local-stub-trace.md) is verified for a fresh local
+composition trace from the real worker/combat `CargoLostToMonster` path through the verified game-side
+`ReentryDeliveryPort` under [`SK-EVID-055`](../Evidence/SK-EVID-055-cp14-causal-event-to-local-stub-trace-runtime-verification.md)
+and [`Validation/81`](../Validation/81-cp14-causal-event-to-local-stub-trace-runtime-cross-functional-audit.md);
+it remains labelled local-stub evidence and cannot claim live Receiver, Connector, Agent, WebMCP,
+Re-entry, hosted, or judge behavior.
 [`SK-TASK-067`](SK-TASK-067-cp12-canvas-selection-feedback.md) is verified for the named CP-12 local
 selection presentation under [`SK-EVID-054`](../Evidence/SK-EVID-054-cp12-canvas-selection-feedback-runtime-verification.md)
 and [`Validation/80`](../Validation/80-cp12-canvas-selection-feedback-runtime-cross-functional-audit.md).
