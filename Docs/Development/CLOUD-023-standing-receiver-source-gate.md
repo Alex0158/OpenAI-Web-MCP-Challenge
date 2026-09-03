@@ -360,3 +360,29 @@ negative/race/forced-rollback/fresh-process matrix, public control or lifetime
 decisions, release enforcement, production effect authority, deployment, or
 hosted readback. The current highest supported state remains local committed
 source and minimum pinned trace verified; TASK-028 remains `verification_pending`.
+
+## Shared ordering-vector increment: 2026-09-03
+
+The shared standing-v0.2 scenario now covers one future-sequence failure slice.
+It submits signed Event sequence `2` while sequence `1` is still expected. The
+Core reference and pinned Receiver both return the exact non-retryable
+`409 event_sequence_out_of_order` error, preserve Grant sequence `0` with no
+active Delivery, and accept that same Event after sequence `1` is acknowledged.
+This is a shared rejection, no-mutation, and eventual-acceptance proof; it does
+not change the accepted protocol or production code.
+
+Exact evidence for this increment:
+
+- Core scenario contract and cross-layer tests: `24/24` passed;
+- source-pin fixtures: `16/16` passed;
+- pinned Express/PostgreSQL Receiver trace: `1/1` passed;
+- Core commit: `4565ccc5773ee70905b8e5f7bf2b65440f83edfc`;
+- selected Core/spec SHA-256: `583e541ff41884449ebc5547e9655b3eb4ef34f9db4120236c6354a4dbfba499`;
+- Receiver commit: `82e2f5712343625225fe4cda603ede7e2d53c4fb`; and
+- runtime: Node `v26.5.0`, `release_conformance_verified: false`.
+
+The full backend aggregate was not rerun for this oracle-only increment; the
+previous `21/21` suites and `158` tests remain prior evidence because Receiver
+production source, schema, and migration bytes are unchanged. The mandatory
+concurrent race, forced rollback, fresh-process recovery, release-enforcement,
+public-control, lifetime, and production gates remain open under TASK-028.

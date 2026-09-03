@@ -108,13 +108,15 @@ each standing Grant to the consented Host key ID and public-key material, reject
 timestamps at their expiry boundaries, and fails closed on inconsistent private Delivery state.
 Mutating reference operations resolve time and live authority after the SQLite writer lock;
 20 deterministic boundary regressions cover stale-authority and backdated-revocation risks.
-The shared scenario checks exact success envelopes and correlation, with 21 oracle self-tests;
-these additions do not establish the full shared race, rollback, or crash matrix.
+The shared scenario checks exact success/error envelopes and correlation, with 24 oracle self-tests;
+it now includes a future-sequence rejection with no mutation, but these additions do not establish
+the full shared race, rollback, or crash matrix.
 Schema 6 preserves but security-disables older preview Grants lacking key-material evidence;
 ordinary new-Grant restarts do not require another Consent. **LOCALLY VERIFIED, NOT RELEASED:** the
 active Receiver `Re-Entry` source now adds separate standing tables and real Express v0.2
-routes. Its 156-test backend aggregate, type-check, build, and shared two-signal trace passed against
-disposable PostgreSQL. Consent/control are internal seams and Host-effect authority is deterministic;
+routes. Its prior 158-test backend aggregate, type-check, build, and shared two-signal trace passed
+against disposable PostgreSQL; the latest pinned trace adds shared future-sequence rejection/no-mutation.
+Consent/control are internal seams and Host-effect authority is deterministic;
 both Core and Receiver sources are committed locally, the minimum pinned trace passes, and the
 exact-commit six-to-seven PostgreSQL upgrade preserves 13 old tables and 10 fixture rows before
 any reseeding. Full release conformance is unproved. The normal Host facade,

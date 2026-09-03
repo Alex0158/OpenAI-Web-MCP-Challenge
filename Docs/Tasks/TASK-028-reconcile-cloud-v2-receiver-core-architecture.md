@@ -222,6 +222,26 @@ historical evidence. It does not close the mandatory shared failure/race,
 forced-rollback, fresh-process recovery, release-enforcement, public-control,
 lifetime, or production gates; `release_conformance_verified` remains false.
 
+## 4.5 Shared ordering-vector increment
+
+**VERIFIED 2026-09-03:** the shared standing-v0.2 scenario now submits Event
+sequence `2` before sequence `1`. The Core reference and pinned Receiver both
+return non-retryable `409 event_sequence_out_of_order`, leave Grant sequence
+`0` with no active Delivery, and later accept the same sequence-`2` envelope
+after sequence `1` completes. Core scenario contract/cross-layer tests passed
+`24/24`; source-pin fixtures passed `16/16`; and the pinned real
+Express/PostgreSQL trace passed `1/1` at Core commit
+`4565ccc5773ee70905b8e5f7bf2b65440f83edfc` (selected-source SHA-256
+`583e541ff41884449ebc5547e9655b3eb4ef34f9db4120236c6354a4dbfba499`) and
+Receiver commit `82e2f5712343625225fe4cda603ede7e2d53c4fb`.
+
+This is one shared failure/no-mutation slice and does not close the remaining
+concurrent race, forced rollback, fresh-process recovery, release-enforcement,
+public-control, lifetime, or production gates. The full backend aggregate was
+not rerun for this oracle-only increment; prior `21/21` suites and `158` tests
+remain bounded evidence because Receiver production source, schema, and
+migration bytes are unchanged.
+
 ## 5. Verification and closure
 
 ADR-0044 moves this decision task to `verification_pending`; it does not prove implementation
