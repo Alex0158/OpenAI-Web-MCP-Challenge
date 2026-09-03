@@ -9,6 +9,15 @@ remain open
 **Authority:** ADR-0006 through ADR-0015, historical ADR-0019 through ADR-0032, and active v2
 ADR-0033 through ADR-0045
 
+## Selected-product target and retained implementation profiles
+
+[ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md) restores the bound-existing-task, notification-only target. Receiver custody
+ends at account/device authority and notification delivery; the local Adapter privately persists
+approved-Grant-to-selected-task binding. Receiver settlement must not wait for Agent work or a
+Host effect. The lifecycle below is the accepted target, not an implemented route. Existing
+v0.1/v0.2 source, HTTP, data, and effect-ACK descriptions remain exact compatibility profiles;
+TASK-029 owns an explicit transition, TASK-035 the missing binding, and TASK-034 runtime proof.
+
 ## 1. Objective
 
 Define one application-neutral architecture that lets a Host website issue bounded future
@@ -83,6 +92,9 @@ flowchart LR
 4. The Receiver creates a challenge with no Grant.
 5. A Receiver-owned authenticated human decision selects an eligible account-linked device and may
    create one private Grant, one public Host binding, and one private receipt.
+6. A trusted local enrollment step associates that approved Grant with the user's explicitly
+   selected existing task and persists the private binding. This missing TASK-035 integration must
+   handle partial enrollment visibly; device pairing alone never proves task binding.
 
 ### Phase B — Waiting
 
@@ -107,25 +119,30 @@ flowchart LR
 2. The Connector derives a credential-free activation.
 3. The selected Adapter resolves the private managed-context binding.
 4. One driver call attempts activation and returns one bounded result.
-5. Adapter acceptance is not Host-effect evidence.
+5. Settle notification delivery only at the specified trusted handoff boundary, independently of
+   Agent business execution. TASK-029 must define and implement this boundary; a generic adapter
+   result or process exit is not sufficient, and existing effect-ACK routes remain unchanged.
 
 ### Phase E — Re-entry and completion
 
 1. The Agent opens the allowlisted canonical Host URL.
 2. The Host revalidates identity, permission, workflow state, state version, and artifact revision.
 3. The page registers only the Site Tools valid for current state.
-4. The Agent continues the same visible artifact or decision.
+4. The same task uses the user's prior strategy and current state to choose a permitted action,
+   no command, or required human clarification. An Event is not a mandatory action instruction.
 5. The Agent stops before the selected human consequence.
-6. A separate trusted authority may prove one correlated Host effect for delivery acknowledgement.
-7. After acknowledgement or explicit terminal state, a v0.2 standing Grant may accept its next
-   ordered signal without another Consent decision.
+6. Any Game mutation has independent Host evidence, but the Receiver neither waits for it nor
+   monitors Agent completion. Interruption or no action is not grounds to resend the notification.
+7. Subsequent eligible notifications reuse the same standing Consent and private task binding.
+   Notification capacity and task busy scheduling are separate; exact settlement and coalescing
+   rules remain TASK-029/TASK-034 gates, not a wait for business completion.
 
 ## 5. Integration contracts
 
 | Contract | Project owner | Integrator obligation | Current status |
 |---|---|---|---|
 | Host backend to Receiver | Re-entry protocol and Host SDK | issuer identity, signed Manifest/event, outbox, canonical workflow | application-neutral kernel locally verified |
-| Receiver to Connector | Receiver Core and transport contract | target identity, outbound claim, lease, effect-backed acknowledgement | bounded local contract locally verified |
+| Receiver to Connector | Receiver Core and transport contract | target identity, outbound claim, lease, trusted notification settlement for selected product | retained effect-backed profiles locally verified; notification transition open under TASK-029 |
 | Connector to Agent runtime | Agent Adapter and binding contract | private binding custody, activation, Browser and WebMCP evidence | deterministic contract verified; concrete runtime open |
 | Agent to Host page | Sleepless Kingdom under `WebApp/Web-Game/` | canonical shelter page, current authority, dynamic reads/recall, persistent mission decision, human boundary | selected; bounded local Game evidence exists, external Agent return remains open |
 
@@ -260,7 +277,7 @@ boundary. Later runtime decisions must still choose or prove:
 - production Receiver identity, storage, key lifecycle, and service ownership;
 - production Connector pairing, credential custody, supervision, and offline behavior;
 - concrete Agent adapter, binding capture, Browser path, and WebMCP runtime;
-- real Host-effect proof and acknowledgement integration; and
+- trusted notification receipt, unknown-outcome recovery, and explicit ACK-profile transition;
 - active-v2 pinned Receiver conformance, committed-source standing migration verification, and
   release enforcement;
 - deployment, observability, retention, recovery, and judge reproduction.

@@ -43,12 +43,17 @@ closure. Neither Decisions nor Development replaces the owning Core truth.
 | [`Core/08-competition-thesis-and-positioning.md`](Core/08-competition-thesis-and-positioning.md) | CANONICAL | Competition-facing thesis, value proposition, differentiation, judging posture, and claim hierarchy; underlying status remains in Core/00 and Core/05 |
 | [`Core/09-business-flows-and-ux.md`](Core/09-business-flows-and-ux.md) | CANONICAL | Cross-layer business-flow sequence, portal redirects, UX handoffs, credential boundaries, and current-flow audit findings |
 | [`Mechanisms/README.md`](Mechanisms/README.md) | CANONICAL MODULE INDEX | Stable Re-entry lifecycle and authority contracts, with code, test, and evidence routing |
-| [`Decisions/README.md`](Decisions/README.md) | DECISION INDEX | Accepted, superseded, pending, and scoped durable choices through ADR-0045 |
+| [`Decisions/README.md`](Decisions/README.md) | DECISION INDEX | Accepted, superseded, pending, and scoped durable choices through ADR-0046 |
 | [`Tasks/README.md`](Tasks/README.md) | CANONICAL TASK INDEX | Unified lifecycle for pending work, problems, defects, investigations, risks, decisions, and verification gaps |
 | [`Development/README.md`](Development/README.md) | CANONICAL | Program, implementation, verification, runbook, and closure records |
 | [`Engineering/README.md`](Engineering/README.md) | CANONICAL ENGINEERING INDEX | Project-wide development, testing, verification, and execution controls |
 | [`Challenge/README.md`](Challenge/README.md) | GOVERNING ROUTER | Current English routing for challenge constraints, volatile facts, and release refresh gates |
 | [`Scenarios/README.md`](Scenarios/README.md) | SUPPORTING | Selected-scenario history, alternatives, and reference domain mappings |
+
+[ADR-0046](Decisions/ADR-0046-restore-bound-task-notification-continuation.md) restores the selected
+existing-task, notification-only product target. It supersedes fresh-session sufficiency and
+effect-gated product completion, not retained executable v0.1/v0.2 semantics. TASK-035 owns trusted
+binding, TASK-029 notification settlement, TASK-034 actual wake/Browser proof, and TASK-033 adoption.
 
 The [decision register](Decisions/README.md) owns the complete decision index. ADR-0001 is
 superseded by ADR-0002; ADR-0004 is partially superseded by ADR-0006 and ADR-0007; ADR-0006 through

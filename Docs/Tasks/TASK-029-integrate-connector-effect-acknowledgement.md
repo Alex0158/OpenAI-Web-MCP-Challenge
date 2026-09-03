@@ -1,4 +1,4 @@
-# TASK-029: Integrate Connector Effect Acknowledgement
+# TASK-029: Settle Connector Notification Delivery
 
 **Role:** CANONICAL task lifecycle record  
 **Registered:** 2026-09-03
@@ -8,14 +8,14 @@
 - Type: `implementation`
 - Lifecycle: `pending`
 - Priority: `P1`
-- Owner: Local Connector, selected Host application, and effect-authority owners.
-- Current increment: Select and integrate the real Host-effect authority needed for the default
-  Connector to reach effect-backed acknowledgement.
-- Next gate: A route-specific accepted decision and executable composition prove one real correlated
-  Host effect, acknowledgement, replay, and safe unknown-outcome behavior without auto-acknowledging
-  adapter success.
-- Dependencies: ADR-0009, ADR-0037, ADR-0038, TASK-001, AUDIT-V2-003 in Core/09, and a selected Host
-  effect contract.
+- Owner: Receiver, Local Connector, and Agent Adapter owners.
+- Current increment: Specify ADR-0046's trusted notification-handoff receipt and explicit protocol
+  transition, replacing this task's former product Host-effect integration objective.
+- Next gate: Accept exact receipt authority/correlation, bounded retry and unknown-outcome recovery,
+  notification slot release, and version/migration compatibility; then prove convergence without
+  waiting for Agent completion or a Game effect.
+- Dependencies: ADR-0046; retained ADR-0009/0037/0038/0045 compatibility contracts; TASK-035 binding;
+  TASK-034 runtime evidence; TASK-033 standing adoption; AUDIT-V2-003 in Core/09.
 
 ## 1. Problem and objective
 
@@ -24,12 +24,15 @@ available acknowledgement client. Separate-process evidence reaches acknowledgem
 test-specific effect authority and worker. An unacknowledged successful dispatch can therefore be
 reclaimed and repeated until the Receiver exhausts its attempt budget.
 
-The objective is to close the product composition without confusing process completion with a Host
-effect.
+ADR-0046 changes the selected solution, not the existence of this defect: settle delivery at a
+trusted notification-handoff boundary, not at a Game effect. The former effect-authority product
+integration is no longer planned; its exact implemented contracts/evidence remain preserved below.
+This task is not closed or fixed merely because its target is corrected.
 
 ## 2. Authority and evidence
 
-- ADR-0009 and ADR-0038 own effect-backed acknowledgement.
+- ADR-0046 owns the selected notification-only target; ADR-0009 and ADR-0038 continue to own
+  effect-backed acknowledgement in retained compatibility profiles.
 - ADR-0037 owns lease expiry and bounded reclaim.
 - Mechanisms 03–05 own the Connector, effect, Host, and human-boundary separation.
 - `CONNECTOR-V2-ACK-001` and `CONNECTOR-V2-E2E-001` prove the current split and test-only completion
@@ -37,24 +40,28 @@ effect.
 
 ## 3. Scope
 
-After Host application selection, specify effect identity, attestation source, correlation,
-authorization, timing, response loss, restart, duplicate effect, stale lease, revocation, and human
-boundary. Integrate the minimum real consumer across Host, Connector, and Receiver.
+Specify trusted handoff identity and attestation, exact target/Grant/Event correlation, authorization,
+response loss, restart, duplicate notification, stale worker, revocation, pending-slot release, and
+unknown outcomes. Keep task busy scheduling separate from Receiver delivery state. Select an
+explicit protocol transition before changing routes, schemas, or stored rows; no effect token may
+be fabricated or renamed to avoid that gate. Integrate one real bound-task consumer.
 
 ## 4. Non-goals
 
-- acknowledging adapter `accepted`, Codex exit, Browser navigation, narration, or HTTP health;
+- treating generic adapter `accepted`, Codex exit, narration, or HTTP health as trusted handoff;
+- waiting for or retrying Agent/Game business work, or imposing a mandatory Game mutation;
 - adding blind retries, an alternate transport, or a synthetic production verifier;
 - selecting a Host application or Agent runtime inside this task; or
 - exposing effect or lease credentials to the Agent prompt or browser.
 
 ## 5. Verification and closure
 
-Close only with a selected-app true-chain run that separates activation, Host effect, and
-acknowledgement; proves exact replay and response-loss recovery; fences stale/wrong effects; and
-records the deployed or explicitly local evidence level without overclaiming.
+Close only with a real composition separating notification handoff, actual wake, and optional
+business work; prove replay, response loss, restart, stale/wrong-target denial, and explicit unknown
+outcomes. After successful handoff, interruption and deliberate no-command behavior must not cause
+redelivery. Preserve retained profile regressions and record the exact local/deployed evidence level.
 
 ## 6. Reopen condition
 
-Reopen for any changed effect authority, acknowledgement payload, lease timing, retry behavior,
-Host correlation, or evidence that the default Connector can dispatch without safe convergence.
+Reopen for changed handoff authority, receipt/protocol profile, lease timing, target binding, retry,
+or evidence that the default Connector can dispatch without safe notification convergence.

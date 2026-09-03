@@ -8,6 +8,14 @@
 This document owns app selection and challenge-MVP shape. Stable application-neutral lifecycle
 contracts remain owned by the [Mechanism index](../Mechanisms/README.md).
 
+## Demo fidelity constraint
+
+[ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md) requires Sleepless Kingdom to demonstrate one existing task retaining the
+user's strategy across authorized notifications. It is not an event-to-new-session command runner.
+The demo must distinguish notification handoff from Agent decisions and Game effects, and include
+legitimate no-command behavior. A technically easier preview must not silently replace this target.
+The selected event/action envelope remains ADR-0042's scope; no idle-soldier feature is added here.
+
 ## 1. Current decision boundary
 
 The challenge entry is centered on the Re-entry Core mechanism. ADR-0042 separately selects
@@ -114,9 +122,10 @@ commercial fit.
 ADR-0043 through ADR-0045 separately accept protocol-v0.2 standing authorization and transport, and
 RECORE-007 locally verifies its application-neutral low-level SDK-to-Adapter reference. A smaller
 protocol-v0.1 one-Consent/one-Event run may test current compatibility, but the final selected Game
-proof requires TASK-033 to reproduce two sequential effect-acknowledged signals under one Consent
-across the Host SDK, active Receiver, Local Connector, Game, and external runtime. No current Game
-result is relabeled as v0.2.
+proof requires TASK-033 and ADR-0046 to reproduce two notifications under one Consent and the same
+existing task across the Host SDK, active Receiver, Local Connector, Game, and external runtime.
+Notification settlement must be independent of Game effects; current v0.2 effect-backed results
+remain compatibility evidence until an explicit protocol transition is implemented.
 
 ## 5. Required app-selection record
 
@@ -326,12 +335,12 @@ The selected Sleepless Kingdom proof rhythm is:
 | Time | Screen and action | Evidence |
 |---:|---|---|
 | 0:00–0:15 | Show the persistent shelter and explain that the world continues while the player is away | Why one live page session is insufficient |
-| 0:15–0:35 | Inspect shelter/mission state and authorize one standing `CargoLostToMonster` relationship | Genuine page state, visible scope/expiry, one-active limit, and human boundary |
+| 0:15–0:35 | Establish the user's strategy in an existing task, inspect shelter/mission state, and authorize its standing `CargoLostToMonster` relationship | Genuine page state, trusted private task binding, visible scope/lifetime, and human boundary |
 | 0:35–0:50 | Dispatch the gatherer through the normal UI and leave the page | Persistent mission decision and real absence |
 | 0:50–1:10 | World worker commits signal 1; show queue acceptance separately from claim/activation | Real authoritative later event and honest status separation |
-| 1:10–1:35 | Agent returns, rereads current state/history, conditionally recalls, and obtains effect-backed ACK | Fresh WebMCP capability, bounded action, and trusted completion |
+| 1:10–1:35 | The same task receives the notification, rereads state/history through WebMCP, and chooses conditional recall or no command under the prior strategy | Separate handoff/wake evidence, fresh tools, and autonomous judgment; no effect-gated delivery |
 | 1:35–2:00 | Cause signal 2; show one-active backpressure where applicable, then accept it without another Consent | Standing authority, ordering, and bounded repeated activation |
-| 2:00–2:25 | Agent rereads changed state and completes or receives a typed refusal | No stale replay and server-owned legality |
+| 2:00–2:25 | The same task rereads changed state and demonstrates the alternate lawful-action/no-command branch; an invalid command still returns typed refusal | Strategy continuity, no resend for no action, and server-owned legality |
 | 2:25–2:45 | Show correlated two-cycle timeline, revoke, and reject the next signal | Replay safety, visibility, and user control |
 | 2:45–2:55 | Show migration/siege/destructive actions remain human-only | Consequence boundary |
 | 2:55–3:00 | Restate the mechanism contribution | Page actionability extended into safe re-entry |

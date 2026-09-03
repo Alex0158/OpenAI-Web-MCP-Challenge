@@ -1,5 +1,12 @@
 # Re-entry Local Connector
 
+> **Selected-product gap:** [ADR-0046](../../Docs/Decisions/ADR-0046-restore-bound-task-notification-continuation.md)
+> requires persistent binding and notification of the user's existing task, without waiting for
+> Game completion. This checkout still uses fresh exec and retained effect-backed delivery contracts.
+> Installation below is preview setup, not implementation of the restored target. TASK-035 owns
+> binding, TASK-029 notification settlement, and TASK-034 actual same-task/Browser proof. Do not
+> turn process acceptance into an old effect ACK or silently fall back to a new session.
+
 > **Cloud Receiver dependency notice — 2026-09-03:** The former
 > `runtime/cloud-receiver/` service is deprecated and must not receive new pairing, credentials, or
 > traffic. The `re-entry-weld.vercel.app` hostname now serves the active frontend and is not the

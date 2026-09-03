@@ -31,6 +31,20 @@ intended page and runtime, correlated state or traffic evidence, and bounded red
 narration, mocks, source scans, generic browser automation, REST, ordinary MCP, or a stale tool
 handle do not prove page-bound invocation.
 
+## Selected-product evidence gate
+
+[ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md) is **accepted target, not implemented**. Final proof requires one Consent,
+trusted enrollment of one existing task, repeat notifications to that task, restart-safe binding,
+and actual authenticated canonical-page/genuine-WebMCP return. Record notification handoff,
+actual Agent turn, page access, decision, and any Game mutation as separate facts. Include both a
+strategy-consistent permitted action and a deliberate no-command case; interruption or no Game
+effect must not cause redelivery. Wrong-task/player and post-revocation cases must fail closed.
+
+The matrix below preserves evidence for its exact retained v0.1/v0.2 profiles. Effect-backed
+fixtures, fake-process queue tests, or fresh CLI execution do not satisfy the restored product
+contract. TASK-029, TASK-033, TASK-034, and TASK-035 own the missing integration; previously stated
+selected-product effect-ACK gates are superseded by ADR-0046, not retroactively verified.
+
 ## 2. Current proof matrix
 
 | Surface | Current result | Evidence boundary |
@@ -62,10 +76,10 @@ handle do not prove page-bound invocation.
 | Application-neutral Program | **COMPLETE AT LOCALLY VERIFIED BOUNDARY** | RECORE-003 terminal audit |
 | Frozen MVP1 technical composition | **VERIFIED, BOUNDED REFERENCE** | P0/H1/H2 evidence in recorded environments |
 | Application-review sample Host | **LOCALLY VERIFIED, SAMPLE ONLY** | applicant/reviewer UI, real local SDK/Receiver/Connector flow, deterministic Agent, page-bound WebMCP invocation, and human stop; not the ADR-0042 Host and no real Connector-to-Browser join |
-| Supported concrete Agent-to-Browser/WebMCP join | **OPEN; FRESH CLI BROWSER CAPABILITY ONLY** | Historical standalone App Server/Desktop joins failed. CLOUD-024 independently verifies current fresh CLI selection of Chrome extension and zero visible tabs; no authenticated Game navigation or Site Tool invocation. TASK-034 requires an owner-approved session-preserving handoff; no production adapter selected |
+| Supported concrete Agent-to-Browser/WebMCP join | **OPEN; SAME-TASK ROUTE UNVERIFIED** | CLOUD-024 preserves fresh CLI Chrome-extension/zero-tabs preview evidence only. TASK-035/TASK-034 now require trusted existing-task binding, actual notification/wake, and owner-approved authenticated Game/WebMCP access; no production driver selected |
 | Selected Host application | **DECIDED** | ADR-0042 selects Sleepless Kingdom under `WebApp/Web-Game/`; selection is not implementation or product proof |
 | Sleepless Kingdom bounded local Host evidence | **PARTIALLY RUNTIME VERIFIED, NON-COMPOSED** | persistent local gameplay and causal signal; four canonical-page WebMCP reads plus one genuine read-only invocation; labelled-port/page-HTTP/provenance-bound recall composition; no external Agent chain |
-| Sleepless Kingdom external vertical slice | **OPEN** | Game Manifest/Consent, signed Event-to-active-v2, compatible published Connector, supported authenticated Browser return, dynamic recall through genuine WebMCP, independent effect/ACK, hosted continuity, and judge reproduction remain unproved |
+| Sleepless Kingdom external vertical slice | **OPEN** | Game Manifest/Consent, signed Event, private existing-task binding, trusted notification settlement, compatible Connector, actual wake and authenticated WebMCP return, strategy-consistent action/no-command decisions, hosted continuity, and judge reproduction remain unproved; any claimed Game effect requires independent evidence, not Receiver completion |
 | Production services, identity, custody, and deployment | **OPEN** | The retired v1 service is deprecated at source; active-v2 preview aliases and probes do not establish exact deployed Git identity, production custody, recovery, or a complete deployed flow |
 | Product value and judge reproduction | **UNKNOWN** | selected-app external evidence required |
 | Submission | **NOT SUBMITTED** | live Devpost readback required |
@@ -136,8 +150,10 @@ The chosen Host app must prove:
 
 Passing the generic Core or frozen MVP1 suite does not pass this gate.
 One successful cycle is compatibility/component evidence only. Selected standing acceptance
-also requires two sequential effect-backed acknowledgements under the same Consent, one-active
-backpressure, restart/replay, and revocation rejecting the next signal under TASK-033.
+also requires two notifications to the same enrolled task under one Consent, bounded busy-task
+handling, restart/replay, and revocation rejecting subsequent delivery under ADR-0046/TASK-033.
+Include lawful action and deliberate no-command branches; notification settlement must not wait
+for Game effects or Agent completion.
 
 ## 6. Functional validation matrix
 

@@ -5,6 +5,15 @@
 **Decision owners:** Eyad and project team  
 **Scope:** One Local Connector process invoking one fresh local Codex session per delivery
 
+## Selected-product amendment
+
+[ADR-0046](ADR-0046-restore-bound-task-notification-continuation.md) controls the selected product:
+notify the bound existing task, with no Receiver dependency on Agent/Game completion. Fresh-session
+sufficiency and effect-gated product completion are superseded for that target. This record's
+exact preview/compatibility implementation, routes, objects, and evidence remain unchanged; no
+generic adapter result may be substituted into an existing effect ACK. TASK-029 owns the explicit
+notification-protocol transition, and TASK-035/TASK-034 own real binding/runtime integration.
+
 ## Context
 
 The previous local preview used `codex queue` and required a private existing-thread reference.

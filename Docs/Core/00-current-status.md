@@ -12,6 +12,16 @@ adoption, production controls, and supported Agent selection remain separately b
 
 ## 1. Executive status
 
+[ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md) restores the
+selected product target: one standing Consent, trusted private binding to an existing Agent task,
+and later notification of that same task. The Agent uses prior user strategy and fresh Host state;
+Receiver delivery does not wait for business completion or Game effects. **ACCEPTED TARGET, NOT
+IMPLEMENTED:** the CLI still selects fresh exec, enrollment does not persist a task binding, and
+retained v0.1/v0.2 ACK profiles remain effect-backed. TASK-035, TASK-029, TASK-034, and TASK-033 own
+binding, explicit notification-protocol transition, supported runtime proof, and product adoption.
+The evidence below remains valid only for its named unchanged profiles. The fresh-child Browser
+probe is historical preview evidence, not the prerequisite for the selected existing-task route.
+
 The project has implemented and locally verified the application-neutral Re-entry Core at the
 scope accepted by ADR-0006 through ADR-0014. RECORE-001 through RECORE-004, RECORE-006, and the
 additive ADR-0043 through ADR-0045 RECORE-007 reference are `locally_verified`; RECORE-005 is
@@ -206,7 +216,7 @@ customer, cross-layer standing-mode adoption, and final market/distribution mode
 | Local Codex fresh-session adapter preview | **LOCALLY VERIFIED, PREVIEW ONLY** | ADR-0026, TASK-007, CLOUD-008, and `runtime/local-connector/` |
 | macOS Local Connector readiness preview | **LOCALLY VERIFIED, PREVIEW ONLY** | ADR-0027, TASK-008, CLOUD-009, and `runtime/local-connector/` |
 | Account-first consent and background Connector path | **CLOUD RECEIVER RUNTIME DEPRECATED; SDK/CONNECTOR SEAMS RETAINED AS PREVIEW EVIDENCE** | ADR-0028, TASK-009, CLOUD-010, and `runtime/{cloud-receiver,host-sdk,local-connector}/` |
-| Concrete supported Agent adapter | **UNSELECTED / UNVERIFIED** | CLOUD-024 verifies one actual fresh CLI default selecting Chrome extension with zero visible tabs; authenticated Game access and genuine WebMCP remain blocked on a session-preserving handoff under TASK-034; route-specific ADR still required |
+| Concrete supported Agent adapter | **UNSELECTED / UNVERIFIED** | ADR-0046 requires existing-task notification. TASK-035/TASK-034 own trusted binding, actual wake, and authenticated Game/WebMCP proof; CLOUD-024's fresh-child zero-tabs observation remains preview evidence, not the selected-route prerequisite |
 | Cloud Receiver deployment | **DEPRECATED SOURCE; HOSTED ALIAS NOT ARCHIVED** | ADR-0032, TASK-013, and `runtime/cloud-receiver/api/index.mjs`; the former alias may remain reachable until a separately authorized Vercel action |
 | Active Cloud Receiver v2 and web deployment | **CONSENT OPENER FIX DEPLOYED; LIVE ROUTE, DATABASE, DASHBOARD, AND CONNECTOR SMOKES GREEN; FULL DEPLOYED POPUP AND EXACT GIT CLOSURE OPEN** | Active `saas-boilerplate/`; `cloud-receiver-delta.vercel.app` resolves to READY preview-target Receiver deployment `dpl_AVGD8hA7bNwhcEykUQ8BMDbEX2sd`, and `re-entry-weld.vercel.app` resolves to frontend `dpl_8Wy1bUScjdps4ZVscbHeH93f5sFq`. `/consent` now emits `Cross-Origin-Opener-Policy: unsafe-none` while unrelated routes retain `same-origin`; health, database readiness, frontend CORS, authenticated paired-device listing, and active Connector polling passed. No exact commit contains the deployed working-tree snapshot, and a complete deployed Host consent/popup/status/Event run remains open. CLOUD-022 records the bounded evidence and residuals. |
 | Product value and judge reproducibility | **UNKNOWN** | selected-app evidence required |
@@ -291,8 +301,9 @@ Host-effect, or acknowledgement evidence.
 CLOUD-024 now separately verifies Browser capability through the actual manual fresh-process seam:
 the child selected Chrome extension and returned zero visible tabs. The desktop control selected
 the in-app Browser. Neither result proves child access to the Game's existing authenticated player;
-TASK-034 is blocked on an owner-approved session-preserving handoff. No Game navigation or Site Tool
-invocation was attempted, and the production adapter remains unselected.
+the fresh-child route was blocked on an owner-approved session-preserving handoff. TASK-034 now
+targets the bound existing task under ADR-0046. No Game navigation or Site Tool invocation was
+attempted by that probe, and the production adapter remains unselected.
 
 TASK-008, CLOUD-009, TASK-009, and CLOUD-010 add macOS Connector readiness and the current install
 path. The CLI resolves Codex from
@@ -377,14 +388,17 @@ Experiments, and frozen evidence rather than this status file.
 
 1. Finish [TASK-001](../Tasks/TASK-001-select-host-application.md) exact documentation and remote
    closure without absorbing owner-held Game or RightSpot work.
-2. Close the Game's exact protocol-v0.2 advanced-SDK, active-Receiver, and compatible-Connector
-   handoff gate; keep a v0.1 one-shot trace labelled as compatibility evidence only.
-3. Select and verify an authenticated Agent-to-Browser-to-canonical-Game-page path with fresh
-   WebMCP reads and conditional recall, or explicitly narrow the demo claim.
-4. Prove signal 1 as queue acceptance, claim, activation, page action, independent Game effect, and
-   ACK without collapsing those facts.
-5. Under the same Consent, prove one-active backpressure, a second sequential signal/effect/ACK, then
-   revocation; this is the minimum standing-mode Game claim under TASK-033.
+2. Specify trusted enrollment and durable private existing-task binding under TASK-035, alongside
+   TASK-029's explicit notification receipt, recovery, and protocol-transition contract. Preserve
+   current v0.1/v0.2 compatibility; do not silently repurpose effect ACKs.
+3. Select and verify actual same-task notification/wake and authenticated canonical-Game-page
+   access with fresh WebMCP under TASK-034. Do not substitute a fresh session to pass the gate.
+4. Prove signal 1 as queue acceptance, notification handoff, actual task wake, page reads, and
+   strategy-consistent action or no command. Any Game effect is independently verified, not an
+   obligation to settle Receiver delivery.
+5. Under the same Consent and task, prove a second notification, restart-safe binding, bounded
+   busy-task handling, no redelivery for interrupted/no-action work, and explicit revocation.
+   TASK-033 and the Game owner reconcile the selected integration before the final demo claim.
 6. Complete hosted identity/reset, product/Agent-value, transport-cost, clean-judge, deployment, and
    submission evidence.
 

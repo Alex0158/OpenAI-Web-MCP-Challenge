@@ -1,7 +1,7 @@
 # Decision Register
 
 **Role:** DECISION index  
-**Status:** Accepted decisions current through ADR-0045; ADR-0034 remains pending approval
+**Status:** Accepted decisions current through ADR-0046; ADR-0034 remains pending approval
 **Last updated:** 2026-09-03
 
 This directory records accepted durable choices and their consequences. A decision record owns
@@ -10,6 +10,11 @@ only the surface named in that record. Current implementation and evidence state
 and runtime evidence.
 
 ## Current decisions
+
+ADR-0046 controls selected-product existing-task notification behavior. The retained effect-backed
+profiles in ADR-0009/0038/0043/0045 remain normative for their unchanged code and compatibility tests;
+their product-completion requirement and ADR-0043's fresh-session sufficiency are superseded.
+ADR-0026 remains a separately labelled preview, not the selected product route.
 
 | ID | Status | Decision surface |
 |---|---|---|
@@ -57,6 +62,7 @@ and runtime evidence.
 | [ADR-0043](ADR-0043-adopt-standing-authorization-v0.2.md) | Accepted | Add a versioned non-consumable standing Grant with ordered repeatable signals, one-active backpressure, and explicit revocation |
 | [ADR-0044](ADR-0044-allow-conforming-receiver-implementations.md) | Accepted | Keep one normative Receiver authority model while permitting independently implemented Receivers only behind pinned black-box conformance and exact-source release gates |
 | [ADR-0045](ADR-0045-adopt-standing-transport-profile-v0.2.md) | Accepted | Add explicit v0.2 Host, HTTP, Connector, and Agent Adapter dispatch without changing or downgrading v0.1 |
+| [ADR-0046](ADR-0046-restore-bound-task-notification-continuation.md) | Accepted product target; implementation/transition open | Restore existing-task continuity and notification-only settlement; preserve exact retained effect-backed profiles until explicit transition |
 
 ## Pending approval
 

@@ -8,6 +8,16 @@ controls remain open
 **Controls:** ADR-0007, ADR-0008, ADR-0013, ADR-0035, ADR-0036, ADR-0041, and ADR-0043 through
 ADR-0045
 
+## Selected-product notification boundary
+
+[ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md) keeps standing Consent, authenticated Event scope, deduplication, and
+revocation, but makes the selected Receiver a notification authority, not an Agent/Game progress
+monitor. Offline status alone does not revoke authorization. Pending notification capacity must
+not wait for Game effects or Agent completion. TASK-029 owns exact settlement/backpressure and
+protocol transition; TASK-027/TASK-033 retain their lifetime/control gates. Existing v0.1/v0.2
+reservation and effect-ACK semantics below remain retained compatibility behavior, not the new
+product acceptance test.
+
 ## Responsibility
 
 This module owns the Receiver trust boundary after enrollment: the effective private Grant,

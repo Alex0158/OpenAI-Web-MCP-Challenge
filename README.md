@@ -1,12 +1,19 @@
 # Re-entry
 
-Re-entry lets a website obtain bounded future-continuation consent, wait for an authoritative later
-signal, and return the approved next step to an Agent on the user’s Mac.
+Re-entry lets a website obtain scoped future-continuation consent, wait for an authoritative later
+signal, and notify the user's bound existing Agent task. The Agent returns to current website
+state and WebMCP tools, then decides what to do under the user's prior strategy.
 
 ```text
-Host website -> Re-entry consent -> signed Host event -> background Connector -> fresh Codex session
+Host website -> standing consent + private task binding -> signed event -> Connector -> same Agent task
 ```
 
+> **Accepted target, not implemented:** [ADR-0046](Docs/Decisions/ADR-0046-restore-bound-task-notification-continuation.md)
+> restores existing-task, notification-only continuation. The current CLI still starts fresh
+> sessions; trusted enrollment binding and notification settlement remain open. Receiver delivery
+> must not depend on Game effects or Agent completion. Retained v0.1/v0.2 effect-backed code and
+> evidence are not relabelled as this product behavior.
+>
 > **Current status:** `saas-boilerplate/` is the active Cloud Receiver v2 bounded preview selected
 > by ADR-0033 and extended through ADR-0041. Its local separate-process chain is verified, but it is
 > not production-ready: pairing abuse-fence, Consent/Grant lifetime, pinned Receiver conformance,
@@ -96,7 +103,8 @@ Host button --------\
                     -> same JavaScript function -> SDK handoff -> Re-entry approval
 WebMCP Site Tool ---/
 
-later Host event -> signed Event -> background Connector -> fresh Codex session
+selected target: later Host event -> signed Event -> Connector -> bound existing task
+current local preview only: Connector -> fresh Codex session
 ```
 
 The Site Tool is only another entrance to the Host's existing JavaScript logic. Browser safety
@@ -119,14 +127,15 @@ player dispatches a gatherer and leaves
 -> migration, siege, destructive upgrades, and irreversible recovery stay human-only
 ```
 
-That is the first visible cycle. The final standing-mode proof must acknowledge its Game effect and
-then repeat a second eligible signal under the same Consent; a v0.1 one-shot run is compatibility
+That is the first visible cycle. The final ADR-0046 proof must deliver a second eligible notification
+under the same Consent and existing task, including strategy-consistent action and no-command
+branches. Receiver settlement does not wait for Game effects; old effect-ACK traces are compatibility
 evidence only.
 
 The Game already has bounded local persistent-world, causal-signal, four-read WebMCP, and local
 page-recall evidence. It does not yet have one proved Game Manifest/Consent -> Cloud Receiver ->
-compatible Connector -> supported Agent -> authenticated Browser -> genuine dynamic recall ->
-effect-ACK chain. Cloud Event `202`, Connector claim, Agent activation, page access, tool invocation,
+compatible Connector -> trusted same-task notification -> authenticated Browser -> genuine WebMCP
+decision chain. Cloud Event `202`, notification handoff, actual Agent wake, page access, tool invocation,
 Game effect, and delivery acknowledgement remain separate facts.
 
 The Game requires the advanced Host SDK because its stable workflow, exact event, causal state,

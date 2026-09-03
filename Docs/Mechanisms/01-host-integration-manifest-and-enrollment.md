@@ -8,6 +8,14 @@ open
 **Controls:** ADR-0007, ADR-0008, historical ADR-0021, ADR-0022 and ADR-0028, plus active ADR-0035
 and ADR-0041 through ADR-0045
 
+## Selected-product enrollment requirement
+
+[ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md) adds a required trusted local enrollment association from approved Grant to
+the user's selected existing task. Account/device selection is not task selection. The Adapter
+owns durable private task custody; Manifest, Host, and Receiver never select or carry a raw task
+locator. TASK-035 must specify capture, ownership, partial enrollment failure, and restart recovery;
+current enrollment code does not perform this step. The v0.1/v0.2 schemas below remain unchanged.
+
 ## Responsibility
 
 This module turns one authoritative Host workflow into a bounded re-entry offer and, after a

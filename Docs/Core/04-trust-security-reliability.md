@@ -9,6 +9,17 @@ production identity, custody, services, and runtime evidence remain open
 **Authority:** ADR-0006 through ADR-0015, historical ADR-0019 through ADR-0032, and active v2
 ADR-0033 through ADR-0045
 
+## Selected-product authority amendment
+
+[ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md) separates trusted notification handoff from business completion. The selected
+Receiver must not infer failed delivery from Agent interruption, no action, or absent Game effects.
+Handoff identity, receipt authority, bounded retry, response loss, and unknown-outcome reconciliation
+remain mandatory design/verification gates under TASK-029; generic adapter acceptance is not proof.
+Private binding ownership and restart-safe custody are TASK-035 gates. Existing effect-token,
+lease, and revocation rules below still govern retained v0.1/v0.2 implementations; no route or
+stored credential is reinterpreted by this target amendment. Revocation cannot retract an already
+handed-over notification or undo work. Current Host authorization and human limits remain decisive.
+
 ## 1. Security objective
 
 Allow user-approved future continuation, including a scoped standing relationship, without letting
@@ -106,7 +117,7 @@ integration.
 | Stale or wrong Connector | target identity, short lease, claim digest, attempt bound, stale-worker fence | local and test-process evidence |
 | Adapter credential leakage | credential-free activation and private adapter-local binding lookup | deterministic contract evidence |
 | Wrong managed context | lookup only by private Grant and configured adapter, exact scope and lifetime checks | deterministic authority/driver |
-| False completion | separate trusted Host-effect verification before acknowledgement | synthetic authority only |
+| False completion | selected product requires trusted notification-handoff proof, distinct from Agent/Game completion; retained v0.1/v0.2 ACKs still require separate Host-effect verification | notification transition open under TASK-029; existing effect evidence uses synthetic authority |
 | Stale Host mutation | canonical-page revalidation, server authorization, revision compare-and-swap | frozen MVP1 fixture evidence |
 | Prompt injection through event/page copy | bounded typed event, untrusted display treatment, no prompt transport | contract and negative tests |
 | Hidden fallback | explicit unsupported/unknown states and no automatic retry or alternate adapter | local tests |

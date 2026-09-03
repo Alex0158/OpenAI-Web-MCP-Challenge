@@ -10,6 +10,19 @@ supported Agent runtime open; former receiver historical
 **Controls:** ADR-0009, ADR-0010, ADR-0013, historical ADR-0019 through ADR-0032, and active
 ADR-0033, ADR-0037 through ADR-0041, and ADR-0043 through ADR-0045
 
+## Selected-product notification settlement
+
+[ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md) changes the selected-product completion boundary to trusted notification
+handoff to the bound task. No Game effect, Agent completion callback, or progress monitor is required.
+Already handed-over work is not resent because the Agent stops or chooses no command. Notification
+backlog is distinct from task execution; busy-task scheduling belongs to the Adapter/runtime.
+
+TASK-029 must define exact authenticated receipt correlation, deduplication, slot release,
+response-loss recovery, and unknown outcomes before implementation. Existing adapter acceptance
+and process exit are insufficient by themselves. The effect-backed lease/ACK rules below still
+apply to unchanged v0.1/v0.2 profiles; do not send a fabricated effect token or silently change an
+existing ACK route. The default CLI remains an implementation gap, not a restored product path.
+
 ## Responsibility
 
 This module owns the boundary between accepted Receiver work and one eligible device or hosted

@@ -10,6 +10,15 @@ evidence status are owned by [Core/00](00-current-status.md) and
 [Core/05](05-validation-and-evidence.md). Stable lifecycle and authority contracts are owned by
 the [Mechanism index](../Mechanisms/README.md).
 
+## Selected-product continuity contract
+
+[ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md) fixes the selected product as repeated notification of an explicitly bound
+existing Agent task. The user's strategy conversation and the website's current state are distinct
+inputs; a fresh session is not an equivalent demonstration. The Receiver delivers event context,
+not mandatory business commands, and does not supervise completion. Agent no-action or interruption
+must not trigger redelivery. This is accepted intent, not current runtime proof; retained
+v0.1/v0.2 effect-backed profiles remain compatibility evidence.
+
 ## 1. Concept in one sentence
 
 Re-entry Core is a consented mechanism for resuming Agent-assisted work after
@@ -236,8 +245,8 @@ TenderRelay and the remaining scenarios stay reference or alternative material.
 - Which Agent platform and browser path can satisfy the adapter contract?
 - Can the Game integrate advanced-SDK Manifest/Consent enrollment and a supported authenticated
   Browser/WebMCP return without moving credentials into prompts or URLs?
-- Can genuine dynamic `force_recall_soldier` use and independent Host-effect acknowledgement be
-  proved in one causal external trace?
+- Can trusted same-task notification, genuine dynamic WebMCP decisions, and separately verified
+  Game effects form one causal external trace without making effects a delivery prerequisite?
 - Does player-authored doctrine create Agent value beyond a transparent deterministic rule builder?
 - What latency, offline, operating-cost, identity, and recovery profile is acceptable?
 - Who pays, operates, supports, and revokes continuation authority beyond the challenge prototype?

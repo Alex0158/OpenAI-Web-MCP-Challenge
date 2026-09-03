@@ -6,6 +6,15 @@
 **Related:** ADR-0007 through ADR-0013, ADR-0035 through ADR-0042, TASK-027 through TASK-029,
 TASK-033
 
+## Selected-product amendment
+
+[ADR-0046](ADR-0046-restore-bound-task-notification-continuation.md) controls the selected product:
+notify the bound existing task, with no Receiver dependency on Agent/Game completion. Fresh-session
+sufficiency and effect-gated product completion are superseded for that target. This record's
+exact preview/compatibility implementation, routes, objects, and evidence remain unchanged; no
+generic adapter result may be substituted into an existing effect ACK. TASK-029 owns the explicit
+notification-protocol transition, and TASK-035/TASK-034 own real binding/runtime integration.
+
 ## Context
 
 Protocol v0.1 intentionally authorizes one bounded future Event and consumes the private Grant when

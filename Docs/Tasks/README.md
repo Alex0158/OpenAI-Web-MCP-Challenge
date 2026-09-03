@@ -141,8 +141,9 @@ or perform a destructive action.
   black-box conformance and exact-source migration gates across the Core reference and independent
   active-v2 Receiver.
 
-- [TASK-029](TASK-029-integrate-connector-effect-acknowledgement.md) — Integrate a real Host-effect
-  authority and acknowledgement path into the default Connector composition.
+- [TASK-029](TASK-029-integrate-connector-effect-acknowledgement.md) — Specify and integrate trusted
+  notification settlement and explicit protocol transition under ADR-0046; the former selected-
+  product Host-effect requirement is superseded, not implemented or closed.
 
 - [TASK-030](TASK-030-protect-browser-session-logout.md) — Bind user and developer logout to the
   intended session and origin boundary.
@@ -158,8 +159,12 @@ or perform a destructive action.
   SDK/HTTP/Connector/Adapter two-signal reference chain while active-v2 and Game adoption remain
   open.
 
-- [TASK-034](TASK-034-verify-connector-browser-webmcp-route.md) — Verify the actual Connector-started
-  Agent's Browser capability and an owner-approved read-only Game WebMCP route.
+- [TASK-034](TASK-034-verify-connector-browser-webmcp-route.md) — Verify actual notification/wake of
+  the bound existing task and its authenticated read-only Game WebMCP route; preserve the previous
+  fresh-child result as preview evidence, not the selected-route prerequisite.
+
+- [TASK-035](TASK-035-bind-existing-agent-task-during-enrollment.md) — Establish trusted private
+  enrollment of the selected existing task and restart-safe binding, with no fresh-session fallback.
 
 Discover all task records with:
 

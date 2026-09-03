@@ -6,6 +6,16 @@ active-v2 simple-flow evidence; Sleepless Kingdom selected with partial local Ho
 supported Connector-to-Browser join open  
 **Controls:** ADR-0002, ADR-0003, ADR-0006, ADR-0041 through ADR-0045, Core/01, and Core/02
 
+## Selected-product action and no-action boundary
+
+[ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md) requires the notified existing task to use prior user strategy together
+with fresh authenticated Host state and genuine WebMCP tools. Event context explains the trigger;
+it is not an order to mutate. The Agent may choose a permitted action, no command, or necessary
+human clarification. A stale/rejected command still returns a typed failure, not fake success.
+Receiver notification completion does not depend on these outcomes and must not retry because
+business work was interrupted. Any claimed Game mutation still needs independent Game evidence.
+Current task memory, Browser access, and Game player identity must each be verified, not assumed.
+
 ## Responsibility
 
 This module owns the product-visible completion of the Re-entry loop: return to the canonical Host

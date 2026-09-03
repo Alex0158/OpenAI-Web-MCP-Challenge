@@ -15,6 +15,14 @@ controls evidence, and [Core/06](06-mvp-and-demo.md) controls app selection and 
 MVP. If this synopsis conflicts with one of those owning documents, the owning document wins
 and this file must be reconciled.
 
+## Product-fidelity guardrail
+
+[ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md) makes the competitive proof specific: one user-approved relationship later
+notifies the same existing Agent task, whose prior strategy and fresh Game/WebMCP state guide its
+own decision. Receiver delivery is not Game-work supervision. Fresh-session demos and effect-backed
+compatibility fixtures remain limited evidence, not substitutes for this selected proof. Any scope
+change that removes continuity or turns Events into mandatory commands needs a new owner decision.
+
 ## 1. Executive thesis
 
 ### One sentence
@@ -59,13 +67,15 @@ the human decision boundary.
 Sleepless Kingdom makes the mechanism visible through a world that continues while the player is
 away. The player dispatches a gatherer and grants one cargo-loss return. A later server-owned monster
 encounter commits `CargoLostToMonster`; the Agent must return to the live shelter page, reread current
-mission and causal history, discover the conditional recall tool, and either commit one bounded
-recall or show a typed live-state refusal. Migration, siege, destructive upgrades, irreversible
+mission and causal history, discover current tools, and choose a bounded recall or no command under
+the prior user strategy; an invalid command still returns a typed refusal. Migration, siege,
+destructive upgrades, irreversible
 recovery, and actions outside that envelope stay with the human.
 
-The final standing-mode proof then repeats a second eligible signal under the same Consent after the
-first effect is acknowledged, while preserving one-active backpressure and revocation. A single
-v0.1 cycle remains useful compatibility evidence but does not prove the selected recurring concept.
+The final standing-mode proof repeats a second eligible notification under the same Consent and
+existing task, with bounded busy-task handling and revocation. Notification settlement is independent
+of Game effects or Agent completion. A single v0.1 cycle and effect-backed v0.2 fixtures remain
+compatibility evidence, not the selected recurring product proof.
 
 The current narrow action demonstrates governed temporal re-entry and fresh WebMCP authority. The
 stronger claim that natural-language doctrine outperforms transparent deterministic rules remains a
@@ -169,7 +179,7 @@ equally. The official criteria, not this interpretation, control.
 |---|---|---|---|
 | Stage One fit | WebMCP is structurally necessary to enrollment and re-entry | The current fixture is not the final web app | A deployed selected-app loop using genuine imperative Site Tool registration |
 | WebMCP Leverage | Two-stage discovery, fresh state, changed tools, and page-native action are non-trivial | Current evidence is local and domain-neutral | Genuine initial and resumed Site Tool use in the public judge path |
-| Execution | The mechanism has a rigorous bounded implementation and Sleepless Kingdom has substantial local Host/gameplay evidence | The external causal chain and hosted judge journey are incomplete | Manifest/Consent, Event, Connector/Agent return, dynamic recall, effect ACK, deployment, and clean-room run |
+| Execution | The mechanism has a rigorous bounded implementation and Sleepless Kingdom has substantial local Host/gameplay evidence | The external causal chain and hosted judge journey are incomplete | Manifest/Consent, private existing-task binding, Event, trusted notification/wake, fresh WebMCP decision, independent Game evidence, deployment, and clean-room run |
 | Potential Impact | A persistent game makes off-page attention cost and later-state change concrete | Player demand, frequency, doctrine value, and outcome remain unmeasured | Observed player problem plus a concrete before/after outcome and deterministic-rule comparison |
 | Creativity & Ambition | The governed event-to-page re-entry composition is distinctive | Architecture novelty alone is hard to see and easy to overclaim | A domain workflow where the value is visible before the architecture is explained |
 
@@ -267,8 +277,10 @@ The final entry must let a judge observe, without first learning the internal ar
 8. a visible human decision plus a correlated safety receipt.
 
 Those per-cycle observations do not alone prove standing authorization. The selected entry must
-also show two sequential effect-acknowledged signals under one Consent, one-active backpressure,
-restart/replay, and revocation refusing the next signal, as required by TASK-033.
+also show two notifications under one Consent and the same existing task, prior-strategy continuity,
+bounded busy-task handling, restart/replay, and revocation refusing subsequent delivery. Include a
+permitted action and deliberate no-command decision; Receiver settlement must not wait for either.
+ADR-0046 and TASK-033 control this target. Older effect-backed traces remain compatibility evidence.
 
 The live app, public repository, short narrated video, testing instructions, and submission
 description must all prove the same version and claim boundary. Volatile requirements are

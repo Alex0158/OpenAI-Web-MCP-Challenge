@@ -6,6 +6,19 @@ active-v2 separate-process dispatch and local Codex fresh-session preview verifi
 test compositions; concrete supported Agent runtime open  
 **Controls:** ADR-0011, ADR-0014, ADR-0025, ADR-0026, ADR-0041, ADR-0043, and ADR-0045
 
+## Selected existing-task product contract
+
+[ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md) requires real trusted capture and durable private binding of the existing
+task during enrollment, then same-task notification on later Events. TASK-035 owns this missing
+integration; current Core lookup and the manual in-memory queue preview do not implement it.
+Fresh exec is non-product preview evidence only, never fallback or same-task continuity proof.
+Bounded event context cannot override prior user strategy or become a system-level command.
+
+TASK-034 owns proof of actual same-task wake and Browser/WebMCP access. Notification handoff
+settlement is separate from business work; TASK-029 must specify it without reinterpreting the
+retained v0.1/v0.2 result or effect-ACK contracts below. Busy-task scheduling/coalescing must be
+bounded and explicit, without monitoring Game completion or promising unlimited model memory.
+
 ## Responsibility
 
 This module converts one valid delivery lease and private continuation receipt into one bounded,

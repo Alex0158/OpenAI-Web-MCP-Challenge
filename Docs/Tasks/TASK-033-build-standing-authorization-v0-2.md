@@ -17,9 +17,25 @@
   contract and TASK-027 lifetime policy before exposing standing enrollment. Preserve the minimum
   Core-pinned trace and local Receiver source/upgrade proof; TASK-028 separately owns full release
   conformance and enforcement.
-- Dependencies: ADR-0042 through ADR-0045; TASK-027 for effective lifetime and display policy;
-  TASK-028 for active-v2 independent-Receiver conformance; TASK-029 for the real Host-effect
-  acknowledgement composition; and the selected Host's own integration contract and tests.
+- Dependencies: ADR-0042 through ADR-0046; TASK-027 for effective lifetime and display policy;
+  TASK-028 for active-v2 independent-Receiver conformance; TASK-029 for notification settlement and
+  explicit protocol transition; TASK-035/TASK-034 for private binding and same-task runtime proof;
+  and the selected Host's own integration contract and tests.
+
+## Selected-product amendment and Game-owner gate
+
+ADR-0046 restores repeated notification of the same enrolled existing task, not fresh-session
+execution or Receiver-supervised Game completion. TASK-035 owns trusted persistent binding;
+TASK-029 must specify delivery receipt/unknown-outcome recovery and explicit compatibility before
+changing existing effect-backed ACKs. The control/lifetime next gate above remains independently
+necessary. The v0.2 implementation plan and historical evidence below do not prove this new target.
+
+Before selected-Game integration, its owner must reconcile scoped CP-14, Chain 08, M19, and task
+backpressure authority with ADR-0046. Preserve `CargoLostToMonster` and the existing command envelope.
+Acceptance requires two notifications under one Consent and the same task, restart-safe binding,
+busy-task handling, revocation, strategy-consistent lawful action and deliberate no-command
+branches, with no resend because work was interrupted or produced no Game effect. No Game-owned
+file or deployment is changed by this root documentation increment.
 
 ## 1. Problem and objective
 
@@ -70,8 +86,8 @@ reservation and one Delivery; persistent authorization must not become persisten
   preserves v0.2 identity for one credential-free activation.
 - The current-checkout Codex exec result echoes the activation version, but pairing/saved credentials
   do not select v0.2 and the CLI default plus published package remain v0.1-shaped.
-- The current Codex adapter starts a fresh local Agent session per activation. Standing
-  authorization therefore proves repeated coordinated re-entry, not same-thread model memory.
+- The current Codex adapter starts a fresh local Agent session per activation. This is a verified
+  preview limitation and an ADR-0046 implementation gap, not proof of the selected same-task target.
 
 ### Host SDK
 
@@ -98,9 +114,10 @@ reservation and one Delivery; persistent authorization must not become persisten
 - The current page integration and signal slot are still one-shot-shaped and require a selected-Host
   contract change before Game implementation.
 
-## 3. Accepted target contract
+## 3. Retained v0.2 compatibility contract
 
-ADR-0043 owns the durable choice. This task implements and verifies these consequences:
+ADR-0043 owns the exact retained protocol profile below. ADR-0046 now controls selected-product
+acceptance; these effect-backed rules and their completed tests are compatibility evidence:
 
 1. **Consent is not an Event budget.** One Receiver-owned human decision creates one standing
    authorization for one visible scope. Event acceptance does not consume that authorization.
@@ -141,11 +158,11 @@ ADR-0043 owns the durable choice. This task implements and verifies these conseq
 | Low-level Host signer | Issue v0.2 Manifest and repeatable signed Events from caller-persisted identity, sequence, time, and workflow snapshots | strict signer tests plus exact canonical retry | enrollment, control routes, and Host persistence |
 | Normal Host facade and Receiver control | Enroll once, persist an opaque standing handle, poll status, and expose same-user inspect/revoke without holding authority in the browser | active-Receiver contract test with one Consent and no second decision | selected-Host storage and renewal UX |
 | Cloud Receiver v2 | Add versioned routes/model migration and account control without weakening v0.1 | external conformance suite against exact reviewed source | deployment and data migration authorization |
-| Local Connector | Accept repeated v0.2 Deliveries using the existing outbound loop and preserve activation identity | two claim/dispatch/ack cycles | same-thread Agent continuation |
+| Local Connector | Retained v0.2 reference accepts repeated Deliveries; selected product additionally requires TASK-035 binding and TASK-029 notification settlement | compatibility claim/dispatch/ACK trace, then separate same-task handoff proof | production/runtime claims until TASK-034 passes; same-task continuity is required, not optional |
 | Agent Adapter | Treat every Delivery as one bounded activation; never infer standing authority | credential-free activation validation | supported external Browser/Agent runtime |
 | Sleepless Kingdom | Map the governed Game outbox into one approved coalesced Agent signal and expose current authoritative state/tools on the canonical page | two real `CargoLostToMonster` signals use one Consent and produce two sequential bounded activations | `idle_soldier_available`, additional signal types, or automatic consequential commands without a Game contract and selected human boundary |
 
-## 3.2 First falsifiable implementation increment
+## 3.2 Historical first v0.2 reference increment
 
 The first increment is deliberately smaller than full product adaptation:
 
@@ -257,7 +274,8 @@ renewal, target transfer, or existing-Grant extension is authorized by the propo
 - sending raw Game domain payloads, prompts, resources, or tool plans through Events;
 - activating once for every high-frequency Game event without coalescing;
 - selecting automatic combat, purchases, irreversible resource spending, or another human boundary;
-- proving same-Agent-session memory or a supported external Agent runtime;
+- claiming same-task runtime success from this reference slice alone; TASK-035/TASK-034 must
+  supply that mandatory selected-product evidence;
 - changing or deploying the active external Cloud Receiver without its own exact-source gate; or
 - committing, pushing, publishing, or deploying merely because this task is registered.
 
@@ -273,8 +291,10 @@ Close only when:
 - Core and durable-store tests prove repeated sequential activation, backpressure, replay,
   revocation ordering, rollback, and restart;
 - Host SDK, active Cloud Receiver v2, and Local Connector pass one exact-source two-signal chain;
-- Sleepless Kingdom passes one real domain-event -> coalesced signal -> canonical-page re-entry ->
-  authorized command/effect -> acknowledgement -> next-signal cycle;
+- Sleepless Kingdom passes real domain-event -> coalesced notification -> same enrolled task ->
+  current canonical-page/WebMCP -> strategy-consistent action or no-command cycles under one
+  Consent, with independent notification settlement, restart-safe binding, and no resend because
+  business work was interrupted or produced no effect;
 - the user can inspect and revoke the standing authorization;
 - the selected human boundary and in-flight revocation limitation are visible; and
 - current-status and evidence records distinguish local, separate-process, deployed, and supported

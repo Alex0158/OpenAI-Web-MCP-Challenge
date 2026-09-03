@@ -15,6 +15,16 @@ Codex continuation, and the selected Sleepless Kingdom Host mapping
 > is locally and separately-process verified only at the boundaries stated below; it is not a
 > production-ready or exact-Git deployment claim.
 
+## Selected flow versus implemented preview
+
+[ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md) now controls the selected-product journey: enrollment must privately bind
+an existing task; later Events notify it; delivery confirmation is independent of Agent/Game work.
+The API tables and effect-ACK audit below describe retained implementation profiles, not the new
+product completion requirement. AUDIT-V2-003 remains a real dispatch/convergence gap, but TASK-029
+now targets trusted notification settlement. TASK-035 owns the absent local registration step;
+TASK-034 must verify the bound task, not require the historical fresh child's Browser handoff.
+No new route, implicit protocol upgrade, or automatic task capture is claimed.
+
 ## 1. Purpose
 
 This document is the single sequence map for the target Re-entry flow, the active v2 preview, and
@@ -47,12 +57,14 @@ evidence remains v0.1 or unadapted until TASK-028 and TASK-033 close adoption.
 ```text
 Sleepless Kingdom page and backend
 -> advanced Host SDK Manifest and Receiver-owned Consent [OPEN in Game]
--> authoritative CargoLostToMonster signals [two sequential cycles for the v0.2 proof]
+-> trusted local binding to the user's selected existing task [OPEN; TASK-035]
+-> authoritative CargoLostToMonster signals [two notifications under the same Consent]
 -> Cloud 202 = durable queue acceptance only
--> Connector claim -> Agent activation -> authenticated canonical page [OPEN as one chain]
+-> Connector claim -> same-task notification handoff [OPEN; TASK-029/TASK-034]
+-> actual task wake -> authenticated canonical page [OPEN as one chain]
 -> fresh shelter, mission, and history reads
--> conditional force_recall_soldier
--> independent Game effect proof -> delivery acknowledgement [OPEN]
+-> prior strategy + current state -> conditional force_recall_soldier OR no command
+-> independent Game evidence if a command is committed [not a Receiver settlement dependency]
 ```
 
 The Game has bounded local evidence on both sides of the external join. Those results are not
@@ -464,9 +476,9 @@ code, migration, deployment, or architecture change.
 | Exact evidence | `runtime/local-connector/src/local-connector.mjs:45-65`; `src/main.mjs:841-876,929-944`; `cloud-receiver-v2-ack.contract.mjs` case `CONNECTOR-V2-ACK-001`; `cloud-receiver-v2-e2e.test.mjs:93-148`; ADR-0037 and ADR-0038. |
 | Risk and impact | The default installed preview can dispatch the same delivery again after lease expiry and cannot reach terminal acknowledgement by itself. Process success must not be presented as completed Re-entry. |
 | Drift class | **D** — the kernel contract exists, but the default product composition is incomplete. |
-| Recommended disposition | Select a real Host-effect authority and explicit reconciliation path, then integrate it without treating adapter success or process exit as proof. Keep retry and unknown-outcome behavior visible. |
+| Recommended disposition | ADR-0046 replaces the selected-product effect-supervision target. TASK-029 must define trusted notification settlement, unknown-outcome recovery, and an explicit protocol transition; TASK-035 supplies private binding. Do not treat generic adapter success as proof or change retained effect ACK semantics silently. |
 | Documentation owner | Core/03–05, Mechanism 03, Connector README, this register, and [TASK-029](../Tasks/TASK-029-integrate-connector-effect-acknowledgement.md). |
-| Change gates | Code: **yes**. ADR/owner decision: **yes** for the concrete effect authority. Migration: no current need identified. Tests: **yes**, including lost response, repeat dispatch, and restart. |
+| Change gates | Code: **yes**, after TASK-029 accepts exact notification receipt and protocol transition. Migration/compatibility: must be assessed without reinterpreting existing rows. Tests: **yes**, including lost response, repeat dispatch, no-command/interrupted work, and restart. |
 
 ### AUDIT-V2-004 — Independent active-v2 Receiver requires executable conformance
 
@@ -693,13 +705,15 @@ capability is unsupported, show the failure and record the next gate.
 
 This document is useful now, but it does not close these gates:
 
-1. integrate the selected Sleepless Kingdom Host through exact advanced-SDK enrollment, signed Event,
-   authenticated page return, dynamic recall, and independent effect acknowledgement;
+1. integrate the selected Sleepless Kingdom Host through trusted existing-task enrollment, signed
+   Event, notification settlement, actual same-task wake, authenticated WebMCP return, and
+   strategy-consistent action/no-command decisions under ADR-0046;
 2. resolve AUDIT-V2-001's pairing abuse-control contract before wider preview or production use;
 3. decide AUDIT-V2-002's separate Consent/Grant lifetime and displayed-expiry policy;
 4. complete AUDIT-V2-004/ADR-0044 pinned conformance, committed-source standing migration
    verification, and release enforcement;
-5. integrate a real effect-to-acknowledgement path for the default Connector under AUDIT-V2-003;
+5. integrate TASK-029's trusted notification settlement and explicit protocol transition for the
+   default Connector; preserve AUDIT-V2-003 as evidence of the current convergence gap;
 6. close exact-Git and full deployed-flow evidence under TASK-022 through TASK-024;
 7. publish the simple SDK facade from exact source and reconcile the active portal under TASK-031;
 8. publish a current instruction-compatible Connector from exact source under TASK-032;

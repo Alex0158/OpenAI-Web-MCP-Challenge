@@ -24,6 +24,16 @@ remain open under TASK-028/TASK-033. The selected Game, normal Host facade, prod
 external chain remain bounded by their v0.1 or unintegrated behavior; neither local result proves
 those consumers.
 
+## Selected-product requirements amendment
+
+[ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md) requires trusted enrollment of the user's selected existing task, persistent
+private binding, and later notifications to that same task without another Consent per signal.
+Event context cannot replace the user's strategy or mandate a Game command. Notification delivery
+settles independently of Game effects; the Agent may take no action, and interrupted work need not
+be recovered by the Receiver. Missing binding fails visibly, never by creating a fresh task.
+The journey and acceptance below use this target; frozen effect-backed protocol requirements
+remain compatibility contracts until TASK-029's explicit transition is accepted and implemented.
+
 ## 2. Abstract end-to-end journey
 
 1. A workflow participant opens a record in the host web application.
@@ -301,6 +311,9 @@ The selected-app mechanism slice is accepted only when one clean run demonstrate
 13. a correlated, judge-reproducible evidence trace.
 
 One cycle is compatibility or component evidence, not selected standing-mode acceptance.
-ADR-0043 through ADR-0045 and TASK-033 additionally require two sequential effect-backed
-acknowledgements under one Consent, one-active backpressure, restart/replay, and revocation
-rejecting the next signal. Each activation must revalidate current page state and human limits.
+ADR-0046 and TASK-033 require two notifications under one Consent and the same trusted existing-task
+binding, bounded busy-task handling, restart/replay safety, and revocation rejecting subsequent
+delivery. Prove both a lawful action and a deliberate no-command branch after fresh page reads.
+Interrupted work or absent Game effects must not cause redelivery. Notification confirmation,
+actual Agent wake, and business effects remain separate evidence. The earlier effect-backed
+two-cycle trace is retained compatibility evidence, not selected-product acceptance.
