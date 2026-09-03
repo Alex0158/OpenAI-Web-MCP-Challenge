@@ -10,18 +10,13 @@ import type {
   WorkflowRequestState,
   WorkflowTimelineEntryDto,
 } from "../../shared/contracts/workflow-api";
+import type {
+  TenantListingHttpFilters,
+  TenantListingFilters,
+  TenantListingsResponse,
+} from "../../shared/contracts/listings-api";
 
-export type TenantListingFilters = {
-  area?: string;
-  maxRent?: number;
-  minSizeSqM?: number;
-  availableFrom?: string;
-};
-
-export type TenantListingsResponse = {
-  fixtureGeneration: number;
-  listings: WorkflowListingDto[];
-};
+export type { TenantListingFilters, TenantListingsResponse } from "../../shared/contracts/listings-api";
 
 export type TenantListingResponse = {
   fixtureGeneration: number;
@@ -102,12 +97,13 @@ export function createCommandId(prefix: string): string {
   return `${prefix}-${globalThis.crypto.randomUUID()}`;
 }
 
-export function buildListingsUrl(filters: TenantListingFilters = {}): string {
+export function buildListingsUrl(filters: TenantListingHttpFilters = {}): string {
   const params = new URLSearchParams();
   if (filters.area !== undefined) params.set("area", filters.area);
   if (filters.maxRent !== undefined) params.set("maxRent", String(filters.maxRent));
   if (filters.minSizeSqM !== undefined) params.set("minSizeSqM", String(filters.minSizeSqM));
-  if (filters.availableFrom !== undefined) params.set("availableFrom", filters.availableFrom);
+  const availableBy = filters.availableBy ?? filters.availableFrom;
+  if (availableBy !== undefined) params.set("availableBy", availableBy);
   const query = params.toString();
   return query ? `/api/listings?${query}` : "/api/listings";
 }
@@ -230,9 +226,27 @@ function parseListingsResponse(value: unknown): TenantListingsResponse {
   if (!isRecord(value) || !isPositiveInteger(value.fixtureGeneration) || !Array.isArray(value.listings)) {
     throw invalidResponse();
   }
+  const listings = value.listings.map(parseListing);
+  const appliedFilters = value.appliedFilters === undefined
+    ? {}
+    : parseAppliedFilters(value.appliedFilters);
+  const matchedCount = value.matchedCount === undefined
+    ? listings.length
+    : parseNonNegativeInteger(value.matchedCount);
+  if (matchedCount !== listings.length) throw invalidResponse();
+  const pagePath = value.pagePath === undefined ? "/tenant" : value.pagePath;
+  if (pagePath !== "/tenant") throw invalidResponse();
+  const pageState = value.pageState === undefined
+    ? (matchedCount === 0 ? "empty" : "results")
+    : parsePageState(value.pageState);
+  if (pageState !== (matchedCount === 0 ? "empty" : "results")) throw invalidResponse();
   return {
     fixtureGeneration: value.fixtureGeneration,
-    listings: value.listings.map(parseListing),
+    appliedFilters,
+    matchedCount,
+    listings,
+    pagePath,
+    pageState,
   };
 }
 
@@ -291,6 +305,59 @@ function parseListing(value: unknown): WorkflowListingDto {
     description: value.description,
     imageKey: value.imageKey,
   };
+}
+
+function parseAppliedFilters(value: unknown): TenantListingsResponse["appliedFilters"] {
+  if (!isRecord(value)) {
+    throw invalidResponse();
+  }
+  const allowedNames = new Set(["area", "maxRent", "minSizeSqM", "availableBy"]);
+  if (Object.keys(value).some((name) => !allowedNames.has(name))) {
+    throw invalidResponse();
+  }
+  const appliedFilters: TenantListingsResponse["appliedFilters"] = {};
+  if (value.area !== undefined && (typeof value.area !== "string" || value.area.trim().length === 0
+    || value.area !== value.area.trim())) {
+    throw invalidResponse();
+  }
+  if (value.area !== undefined) {
+    appliedFilters.area = value.area;
+  }
+  if (value.maxRent !== undefined && !isPositiveInteger(value.maxRent)) {
+    throw invalidResponse();
+  }
+  if (value.maxRent !== undefined) {
+    appliedFilters.maxRent = value.maxRent;
+  }
+  if (value.minSizeSqM !== undefined && !isPositiveInteger(value.minSizeSqM)) {
+    throw invalidResponse();
+  }
+  if (value.minSizeSqM !== undefined) {
+    appliedFilters.minSizeSqM = value.minSizeSqM;
+  }
+  if (value.availableBy !== undefined
+    && (typeof value.availableBy !== "string" || !isIsoDate(value.availableBy))) {
+    throw invalidResponse();
+  }
+  const availableBy = value.availableBy;
+  if (availableBy !== undefined) {
+    appliedFilters.availableBy = availableBy;
+  }
+  return appliedFilters;
+}
+
+function parseNonNegativeInteger(value: unknown): number {
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0) {
+    throw invalidResponse();
+  }
+  return value;
+}
+
+function parsePageState(value: unknown): TenantListingsResponse["pageState"] {
+  if (value === "results" || value === "empty") {
+    return value;
+  }
+  throw invalidResponse();
 }
 
 function parseTenantRequest(value: Record<string, unknown>): TenantRequestResponse["request"] {
@@ -394,6 +461,13 @@ function isNullableRecord(value: unknown): value is Record<string, unknown> | nu
 
 function isPositiveInteger(value: unknown): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value > 0;
+}
+
+function isIsoDate(value: string): boolean {
+  const parsed = Date.parse(`${value}T00:00:00.000Z`);
+  return /^\d{4}-\d{2}-\d{2}$/.test(value)
+    && Number.isFinite(parsed)
+    && new Date(parsed).toISOString().slice(0, 10) === value;
 }
 
 function isStringArray(value: unknown): value is string[] {

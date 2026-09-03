@@ -11,6 +11,10 @@ import {
   type TenantListingsResponse,
 } from "./tenant-api";
 import {
+  resolveCanonicalArea,
+  suggestCanonicalAreas,
+} from "../../shared/contracts/listings-api";
+import {
   FavouriteFeedback,
   FavouriteToggle,
   useTenantFavourites,
@@ -22,15 +26,16 @@ type FilterForm = {
   area: string;
   maxRent: string;
   minSizeSqM: string;
-  availableFrom: string;
+  availableBy: string;
 };
 
-const EMPTY_FILTERS: FilterForm = { area: "", maxRent: "", minSizeSqM: "", availableFrom: "" };
+const EMPTY_FILTERS: FilterForm = { area: "", maxRent: "", minSizeSqM: "", availableBy: "" };
 
 export default function TenantDiscoveryPage() {
   const [filters, setFilters] = useState<FilterForm>(EMPTY_FILTERS);
   const [appliedFilters, setAppliedFilters] = useState<TenantListingFilters>({});
   const [data, setData] = useState<TenantListingsResponse | null>(null);
+  const [catalogueListings, setCatalogueListings] = useState<TenantListingsResponse["listings"] | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [filterError, setFilterError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -46,6 +51,9 @@ export default function TenantDiscoveryPage() {
         if (!active || requestId !== latestRequestId.current) return;
         setData(nextData);
         setError(null);
+        if (Object.keys(appliedFilters).length === 0) {
+          setCatalogueListings(nextData.listings);
+        }
       })
       .catch((nextError: unknown) => {
         if (active && requestId === latestRequestId.current) setError(nextError);
@@ -59,7 +67,26 @@ export default function TenantDiscoveryPage() {
   function applyFilters(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextFilters: TenantListingFilters = {};
-    if (filters.area.trim()) nextFilters.area = filters.area.trim();
+    const trimmedArea = filters.area.trim();
+    if (trimmedArea) {
+      if (!catalogueListings) {
+        setError(null);
+        setFilterError("Area suggestions are still loading. Try again once the catalogue appears.");
+        return;
+      }
+      const canonicalArea = resolveCanonicalArea(catalogueListings, trimmedArea);
+      if (canonicalArea === null) {
+        const suggestions = suggestCanonicalAreas(catalogueListings, trimmedArea);
+        setError(null);
+        setFilterError(
+          suggestions.length > 0
+            ? "Select one of the suggested areas before applying."
+            : "Choose one of the published areas before applying.",
+        );
+        return;
+      }
+      nextFilters.area = canonicalArea;
+    }
     if (filters.maxRent) {
       const value = Number(filters.maxRent);
       if (!Number.isSafeInteger(value) || value < 1) {
@@ -78,9 +105,16 @@ export default function TenantDiscoveryPage() {
       }
       nextFilters.minSizeSqM = value;
     }
-    if (filters.availableFrom) nextFilters.availableFrom = filters.availableFrom;
+    if (filters.availableBy) nextFilters.availableBy = filters.availableBy;
     setError(null);
     setFilterError(null);
+    setFilters((current) => ({
+      ...current,
+      area: nextFilters.area ?? trimmedArea,
+      maxRent: filters.maxRent,
+      minSizeSqM: filters.minSizeSqM,
+      availableBy: filters.availableBy,
+    }));
     setAppliedFilters(nextFilters);
   }
 
@@ -92,6 +126,9 @@ export default function TenantDiscoveryPage() {
   }
 
   const hasAppliedFilters = Object.keys(appliedFilters).length > 0;
+  const areaSuggestions = catalogueListings
+    ? suggestCanonicalAreas(catalogueListings, filters.area)
+    : [];
 
   return (
     <RolePageFrame
@@ -117,17 +154,44 @@ export default function TenantDiscoveryPage() {
               <p className="eyebrow">Search criteria</p>
               <h3>Narrow the shortlist</h3>
             </div>
-            <p>All fields are optional. Apply the combination that matters for this move.</p>
+            <p>All fields are optional. Pick a published area or type an exact canonical value, then apply the combination that matters for this move.</p>
           </div>
           <div className={styles.filterGrid}>
-            <label>
-              Area
+            <div className={styles.areaField}>
+              <label htmlFor="tenant-area-filter">Area</label>
               <input
+                id="tenant-area-filter"
                 value={filters.area}
-                onChange={(event) => setFilters({ ...filters, area: event.target.value })}
-                placeholder="e.g. Shoreditch"
+                onChange={(event) => {
+                  setFilterError(null);
+                  setFilters({ ...filters, area: event.target.value });
+                }}
+                placeholder="Start with a published area"
+                aria-describedby="tenant-area-help"
               />
-            </label>
+              <p id="tenant-area-help" className={styles.areaHint}>
+                {catalogueListings
+                  ? "Published canonical areas from the current tenant-safe catalogue."
+                  : "Loading published areas from the current tenant-safe catalogue."}
+              </p>
+              {catalogueListings && areaSuggestions.length > 0 ? (
+                <div className={styles.areaSuggestions} aria-label="Published area suggestions">
+                  {areaSuggestions.map((area) => (
+                    <button
+                      key={area}
+                      type="button"
+                      className={styles.areaSuggestion}
+                      onClick={() => {
+                        setFilters((current) => ({ ...current, area }));
+                        setFilterError(null);
+                      }}
+                    >
+                      {area}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
             <label>
               Maximum rent (GBP)
               <input
@@ -135,7 +199,10 @@ export default function TenantDiscoveryPage() {
                 type="number"
                 min="1"
                 value={filters.maxRent}
-                onChange={(event) => setFilters({ ...filters, maxRent: event.target.value })}
+                onChange={(event) => {
+                  setFilterError(null);
+                  setFilters({ ...filters, maxRent: event.target.value });
+                }}
               />
             </label>
             <label>
@@ -145,15 +212,21 @@ export default function TenantDiscoveryPage() {
                 type="number"
                 min="1"
                 value={filters.minSizeSqM}
-                onChange={(event) => setFilters({ ...filters, minSizeSqM: event.target.value })}
+                onChange={(event) => {
+                  setFilterError(null);
+                  setFilters({ ...filters, minSizeSqM: event.target.value });
+                }}
               />
             </label>
             <label>
               Available by
               <input
                 type="date"
-                value={filters.availableFrom}
-                onChange={(event) => setFilters({ ...filters, availableFrom: event.target.value })}
+                value={filters.availableBy}
+                onChange={(event) => {
+                  setFilterError(null);
+                  setFilters({ ...filters, availableBy: event.target.value });
+                }}
               />
             </label>
           </div>
@@ -226,7 +299,7 @@ function ListingResults({
     );
   }
   if (!data) return null;
-  if (data.listings.length === 0) {
+  if (data.pageState === "empty") {
     return (
       <section className={styles.feedbackState} aria-labelledby="no-listings-title" aria-live="polite">
         <span className={styles.feedbackMarker} aria-hidden="true" />
@@ -242,10 +315,10 @@ function ListingResults({
     <div className={styles.resultsBlock} aria-live="polite">
       <div className={styles.resultsMeta}>
         <div>
-          <span className={styles.resultCount}>{data.listings.length}</span>
-          <span>available seeded {data.listings.length === 1 ? "home" : "homes"}</span>
+          <span className={styles.resultCount}>{data.matchedCount}</span>
+          <span>available seeded {data.matchedCount === 1 ? "home" : "homes"}</span>
         </div>
-        <span>{hasAppliedFilters ? "Filtered shortlist" : "Full local catalogue"}</span>
+        <span>{hasAppliedFilters ? `Filtered shortlist · ${data.pagePath}` : `Full local catalogue · ${data.pagePath}`}</span>
       </div>
       <div className={styles.listingGrid}>
         {data.listings.map((listing) => (
@@ -278,7 +351,7 @@ function ListingResults({
       </div>
       <details className={styles.technicalDisclosure}>
         <summary>Demo record details</summary>
-        <p>Fixture generation {data.fixtureGeneration}. Listing media remains a local seeded placeholder.</p>
+        <p>Fixture generation {data.fixtureGeneration}. {data.matchedCount} matched results on {data.pagePath}. Listing media remains a local seeded placeholder.</p>
       </details>
     </div>
   );

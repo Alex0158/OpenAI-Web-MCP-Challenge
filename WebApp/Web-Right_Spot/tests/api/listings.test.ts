@@ -83,9 +83,17 @@ test("listing collection route enforces tenant role and bounded filter input", a
   assert.equal(all.status, 200);
   const allBody = await all.json() as {
     fixtureGeneration: number;
+    appliedFilters: Record<string, unknown>;
+    matchedCount: number;
     listings: Array<Record<string, unknown>>;
+    pagePath: string;
+    pageState: string;
   };
   assert.equal(allBody.fixtureGeneration, expectedFixtureGeneration);
+  assert.deepEqual(allBody.appliedFilters, {});
+  assert.equal(allBody.matchedCount, 3);
+  assert.equal(allBody.pagePath, "/tenant");
+  assert.equal(allBody.pageState, "results");
   assert.deepEqual(allBody.listings.map(({ id }) => id), [
     "listing-primary",
     "listing-north",
@@ -96,12 +104,35 @@ test("listing collection route enforces tenant role and bounded filter input", a
   assert.equal(JSON.stringify(allBody).includes("processedCommands"), false);
 
   const filtered = getListings(new Request(
-    "http://localhost/api/listings?maxRent=2000&minSizeSqM=40&availableFrom=2026-09-25",
+    "http://localhost/api/listings?maxRent=2000&minSizeSqM=40&availableBy=2026-09-25",
     { headers: { cookie: tenantCookie } },
   ));
   assert.equal(filtered.status, 200);
-  const filteredBody = await filtered.json() as { listings: Array<{ id: string }> };
+  const filteredBody = await filtered.json() as {
+    appliedFilters: { availableBy?: string; maxRent?: number; minSizeSqM?: number };
+    listings: Array<{ id: string }>;
+    matchedCount: number;
+    pageState: string;
+  };
+  assert.deepEqual(filteredBody.appliedFilters, {
+    availableBy: "2026-09-25",
+    maxRent: 2000,
+    minSizeSqM: 40,
+  });
+  assert.equal(filteredBody.matchedCount, 1);
+  assert.equal(filteredBody.pageState, "results");
   assert.deepEqual(filteredBody.listings.map(({ id }) => id), ["listing-riverside"]);
+
+  const compatibilityFiltered = getListings(new Request(
+    "http://localhost/api/listings?availableFrom=2026-09-25",
+    { headers: { cookie: tenantCookie } },
+  ));
+  assert.equal(compatibilityFiltered.status, 200);
+  const compatibilityBody = await compatibilityFiltered.json() as {
+    appliedFilters: { availableBy?: string };
+    listings: Array<{ id: string }>;
+  };
+  assert.deepEqual(compatibilityBody.appliedFilters, { availableBy: "2026-09-25" });
 
   const unauthenticated = getListings(new Request("http://localhost/api/listings"));
   assert.equal(unauthenticated.status, 401);
@@ -115,7 +146,9 @@ test("listing collection route enforces tenant role and bounded filter input", a
     "maxRent=12.5",
     "minSizeSqM=0",
     "availableFrom=2026-02-31",
+    "availableBy=2026-02-31",
     "area=",
+    "area=Isling",
     "maxRent=2000&maxRent=3000",
     "unknown=value",
   ]) {

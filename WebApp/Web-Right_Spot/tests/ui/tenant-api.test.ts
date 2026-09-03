@@ -24,6 +24,13 @@ test("listing reads encode only the bounded server filter names", async () => {
     requestedUrl = String(input);
     return jsonResponse({
       fixtureGeneration: 4,
+      appliedFilters: {
+        area: "King's Cross",
+        maxRent: 2500,
+        minSizeSqM: 50,
+        availableBy: "2026-09-20",
+      },
+      matchedCount: 1,
       listings: [{
         id: "listing-primary",
         version: 2,
@@ -38,15 +45,64 @@ test("listing reads encode only the bounded server filter names", async () => {
         imageKey: "listing-primary-image",
         assignedAgentId: "must-not-cross-boundary",
       }],
+      pagePath: "/tenant",
+      pageState: "results",
     });
   };
 
-  const response = await readListings({ area: "King's Cross", maxRent: 2500, minSizeSqM: 50, availableFrom: "2026-09-20" });
-  assert.equal(requestedUrl, "/api/listings?area=King%27s+Cross&maxRent=2500&minSizeSqM=50&availableFrom=2026-09-20");
+  const response = await readListings({
+    area: "King's Cross",
+    maxRent: 2500,
+    minSizeSqM: 50,
+    availableBy: "2026-09-20",
+  });
+  assert.equal(requestedUrl, "/api/listings?area=King%27s+Cross&maxRent=2500&minSizeSqM=50&availableBy=2026-09-20");
   assert.equal(response.fixtureGeneration, 4);
+  assert.deepEqual(response.appliedFilters, {
+    area: "King's Cross",
+    maxRent: 2500,
+    minSizeSqM: 50,
+    availableBy: "2026-09-20",
+  });
+  assert.equal(response.matchedCount, 1);
+  assert.equal(response.pagePath, "/tenant");
+  assert.equal(response.pageState, "results");
   assert.equal(response.listings[0]?.id, "listing-primary");
   assert.equal("assignedAgentId" in (response.listings[0] ?? {}), false);
   assert.equal(buildListingsUrl({ area: "A/B" }), "/api/listings?area=A%2FB");
+  assert.equal(buildListingsUrl({ availableFrom: "2026-09-20" }), "/api/listings?availableBy=2026-09-20");
+});
+
+test("listing response parsing fails closed on inconsistent or malformed search envelopes", async () => {
+  const listing = {
+    id: "listing-primary",
+    version: 1,
+    title: "Canal House",
+    address: "1 Example Walk",
+    area: "King's Cross",
+    monthlyRentGbp: 2200,
+    bedrooms: 2,
+    sizeSqM: 61,
+    availableFrom: "2026-09-15",
+    description: "A synthetic listing.",
+    imageKey: "listing-primary-image",
+  };
+  const invalidPayloads: unknown[] = [
+    { fixtureGeneration: 4, listings: [listing], matchedCount: 0 },
+    { fixtureGeneration: 4, listings: [listing], matchedCount: 1, pageState: "empty" },
+    { fixtureGeneration: 4, listings: [listing], appliedFilters: { maxRent: "2200" } },
+    { fixtureGeneration: 4, listings: [listing], appliedFilters: { availableBy: "2026-02-31" } },
+    { fixtureGeneration: 4, listings: [listing], appliedFilters: { availableFrom: "2026-09-15" } },
+    { fixtureGeneration: 4, listings: [listing], appliedFilters: { privateNote: "must not cross" } },
+  ];
+
+  for (const payload of invalidPayloads) {
+    globalThis.fetch = async () => jsonResponse(payload);
+    await assert.rejects(
+      () => readListings(),
+      (error: unknown) => error instanceof TenantApiError && error.code === "INVALID_RESPONSE",
+    );
+  }
 });
 
 test("successful tenant request parsing keeps the tenant-safe response boundary", async () => {

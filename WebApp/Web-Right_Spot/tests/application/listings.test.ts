@@ -9,6 +9,7 @@ import type { Actor } from "../../src/server/domain/types";
 import {
   readTenantListing,
   readTenantListings,
+  type ListingFilters,
 } from "../../src/server/application/listings";
 import { WorkflowApplication } from "../../src/server/application/workflow";
 
@@ -44,10 +45,11 @@ test("bounded filters compose without mutating workflow state", () => {
   const state = createInitialWorkflowState();
   const before = structuredClone(state);
 
-  assert.deepEqual(
-    readTenantListings(state, TENANT, { area: "southwark" }).listings.map(({ id }) => id),
-    ["listing-riverside"],
-  );
+  const areaResult = readTenantListings(state, TENANT, { area: " southwark " });
+  assert.deepEqual(areaResult.listings.map(({ id }) => id), ["listing-riverside"]);
+  assert.equal(areaResult.appliedFilters.area, "Southwark");
+  assert.equal(areaResult.pagePath, "/tenant");
+  assert.equal(areaResult.pageState, "results");
   assert.deepEqual(
     readTenantListings(state, TENANT, { maxRent: 2000 }).listings.map(({ id }) => id),
     ["listing-north", "listing-riverside"],
@@ -57,17 +59,22 @@ test("bounded filters compose without mutating workflow state", () => {
     ["listing-primary"],
   );
   assert.deepEqual(
-    readTenantListings(state, TENANT, { availableFrom: "2026-09-20" }).listings.map(({ id }) => id),
+    readTenantListings(state, TENANT, { availableBy: "2026-09-20" }).listings.map(({ id }) => id),
     ["listing-primary", "listing-riverside"],
   );
   assert.deepEqual(
     readTenantListings(state, TENANT, {
       maxRent: 2000,
       minSizeSqM: 40,
-      availableFrom: "2026-09-25",
+      availableBy: "2026-09-25",
     }).listings.map(({ id }) => id),
     ["listing-riverside"],
   );
+  const empty = readTenantListings(state, TENANT, { area: "Southwark", maxRent: 1000 });
+  assert.deepEqual(empty.listings, []);
+  assert.equal(empty.matchedCount, 0);
+  assert.equal(empty.pageState, "empty");
+  assert.equal(empty.appliedFilters.area, "Southwark");
   assert.deepEqual(state, before);
 });
 
@@ -75,11 +82,31 @@ test("invalid filters and non-seeded actors fail at the application boundary", (
   const state = createInitialWorkflowState();
   expectDomainError(() => readTenantListings(state, TENANT, { maxRent: 0 }), "VALIDATION_FAILED");
   expectDomainError(
+    () => readTenantListings(state, TENANT, { area: "Isling" }),
+    "VALIDATION_FAILED",
+  );
+  expectDomainError(
     () => readTenantListings(state, TENANT, { minSizeSqM: 10_001 }),
     "VALIDATION_FAILED",
   );
   expectDomainError(
-    () => readTenantListings(state, TENANT, { availableFrom: "2026-02-31" }),
+    () => readTenantListings(state, TENANT, { availableBy: "2026-02-31" }),
+    "VALIDATION_FAILED",
+  );
+  expectDomainError(
+    () => readTenantListings(state, TENANT, { availableBy: "2026-02-31", availableFrom: "2026-02-31" }),
+    "VALIDATION_FAILED",
+  );
+  expectDomainError(
+    () => readTenantListings(state, TENANT, { unexpected: true } as ListingFilters),
+    "VALIDATION_FAILED",
+  );
+  expectDomainError(
+    () => readTenantListings(state, TENANT, { availableBy: null } as unknown as ListingFilters),
+    "VALIDATION_FAILED",
+  );
+  expectDomainError(
+    () => readTenantListings(state, TENANT, null as unknown as ListingFilters),
     "VALIDATION_FAILED",
   );
   expectDomainError(() => readTenantListings(state, AGENT), "FORBIDDEN");

@@ -7,21 +7,20 @@ import {
   MAX_MONTHLY_RENT_GBP,
 } from "../domain/workflow";
 import type { Actor, TenantListing, WorkflowState } from "../domain/types";
+import {
+  normalizeSearchText,
+  resolveCanonicalArea,
+  type TenantListingHttpFilters,
+  type TenantListingsResponse,
+} from "../../shared/contracts/listings-api";
 
 const LISTING_ID_PATTERN = /^[A-Za-z0-9._:-]+$/;
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const FILTER_NAMES = new Set(["area", "maxRent", "minSizeSqM", "availableBy", "availableFrom"]);
 
-export type ListingFilters = {
-  area?: string;
-  maxRent?: number;
-  minSizeSqM?: number;
-  availableFrom?: string;
-};
+export type ListingFilters = TenantListingHttpFilters;
 
-export type ListingCollection = {
-  fixtureGeneration: number;
-  listings: TenantListing[];
-};
+export type ListingCollection = TenantListingsResponse;
 
 export type ListingDetail = {
   fixtureGeneration: number;
@@ -34,22 +33,45 @@ export function readTenantListings(
   filters: ListingFilters = {},
 ): ListingCollection {
   assertSeededTenant(state, actor);
+
   validateFilters(filters);
 
-  const area = filters.area?.toLocaleLowerCase("en-GB");
-  const listings = state.listings
-    .filter((listing) => listing.status === "PUBLISHED")
-    .filter((listing) => area === undefined
-      || listing.area.toLocaleLowerCase("en-GB") === area)
+  const publishedListings = state.listings.filter((listing) => listing.status === "PUBLISHED");
+  const areaFilter = filters.area === undefined
+    ? undefined
+    : resolveCanonicalArea(publishedListings, filters.area);
+  if (areaFilter === null) {
+    throw domainError("VALIDATION_FAILED", "Area filter is outside its bounds");
+  }
+
+  const availableBy = getAvailableByFilter(filters);
+  const listings = publishedListings
+    .filter((listing) => areaFilter === undefined
+      || normalizeSearchText(listing.area).toLocaleLowerCase("en-GB")
+        === areaFilter.toLocaleLowerCase("en-GB"))
     .filter((listing) => filters.maxRent === undefined
       || listing.monthlyRentGbp <= filters.maxRent)
     .filter((listing) => filters.minSizeSqM === undefined
       || listing.sizeSqM >= filters.minSizeSqM)
-    .filter((listing) => filters.availableFrom === undefined
-      || listing.availableFrom <= filters.availableFrom)
+    .filter((listing) => availableBy === undefined
+      || listing.availableFrom <= availableBy)
     .map(toTenantListing);
 
-  return { fixtureGeneration: state.fixtureGeneration, listings };
+  return {
+    fixtureGeneration: state.fixtureGeneration,
+    appliedFilters: (() => {
+      const appliedFilters: ListingCollection["appliedFilters"] = {};
+      if (areaFilter !== undefined) appliedFilters.area = areaFilter;
+      if (filters.maxRent !== undefined) appliedFilters.maxRent = filters.maxRent;
+      if (filters.minSizeSqM !== undefined) appliedFilters.minSizeSqM = filters.minSizeSqM;
+      if (availableBy !== undefined) appliedFilters.availableBy = availableBy;
+      return appliedFilters;
+    })(),
+    matchedCount: listings.length,
+    listings,
+    pagePath: "/tenant",
+    pageState: listings.length === 0 ? "empty" : "results",
+  };
 }
 
 export function readTenantListing(
@@ -78,21 +100,38 @@ function assertSeededTenant(state: WorkflowState, actor: Actor): void {
 }
 
 function validateFilters(filters: ListingFilters): void {
+  if (!isRecord(filters) || Object.keys(filters).some((name) => !FILTER_NAMES.has(name))) {
+    throw domainError("VALIDATION_FAILED", "Listing filters are invalid");
+  }
   if (filters.area !== undefined) {
+    const normalizedArea = typeof filters.area === "string" ? filters.area.trim() : "";
     if (
       typeof filters.area !== "string"
-      || filters.area.length > MAX_LISTING_AREA_LENGTH
-      || filters.area.trim().length === 0
-      || filters.area !== filters.area.trim()
+      || normalizedArea.length === 0
+      || normalizedArea.length > MAX_LISTING_AREA_LENGTH
     ) {
       throw domainError("VALIDATION_FAILED", "Area filter is outside its bounds");
     }
   }
   validateBoundedInteger(filters.maxRent, 1, MAX_MONTHLY_RENT_GBP, "Maximum rent filter");
   validateBoundedInteger(filters.minSizeSqM, 1, MAX_LISTING_SIZE_SQ_M, "Minimum size filter");
-  if (filters.availableFrom !== undefined && !isIsoDate(filters.availableFrom)) {
+  if (filters.availableBy !== undefined && typeof filters.availableBy !== "string") {
+    throw domainError("VALIDATION_FAILED", "Available-by filter is invalid");
+  }
+  if (filters.availableFrom !== undefined && typeof filters.availableFrom !== "string") {
     throw domainError("VALIDATION_FAILED", "Available-from filter is invalid");
   }
+  if (filters.availableBy !== undefined && filters.availableFrom !== undefined) {
+    throw domainError("VALIDATION_FAILED", "Available-by filter is outside its bounds");
+  }
+  const availableBy = getAvailableByFilter(filters);
+  if (availableBy !== undefined && !isIsoDate(availableBy)) {
+    throw domainError("VALIDATION_FAILED", "Available-from filter is invalid");
+  }
+}
+
+function getAvailableByFilter(filters: ListingFilters): string | undefined {
+  return filters.availableBy ?? filters.availableFrom;
 }
 
 function validateListingId(listingId: string): void {
@@ -122,4 +161,8 @@ function isIsoDate(value: string): boolean {
   return ISO_DATE_PATTERN.test(value)
     && Number.isFinite(parsed)
     && new Date(parsed).toISOString().slice(0, 10) === value;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }

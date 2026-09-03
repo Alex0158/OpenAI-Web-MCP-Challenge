@@ -37,7 +37,7 @@ const JSON_HEADERS = {
   "Cache-Control": "no-store",
   "Content-Type": "application/json; charset=utf-8",
 };
-const FILTER_NAMES = new Set(["area", "maxRent", "minSizeSqM", "availableFrom"]);
+const FILTER_NAMES = new Set(["area", "maxRent", "minSizeSqM", "availableBy", "availableFrom"]);
 const MAX_SESSION_BODY_LENGTH = 100;
 
 class HttpInputError extends Error {}
@@ -95,7 +95,7 @@ export function handleListingCollection(
   return runListingRead(
     dependencies,
     (application) => application.readTenantListings(actor, filters),
-    (result) => ({ fixtureGeneration: result.fixtureGeneration, listings: result.listings }),
+    (result) => result,
   );
 }
 
@@ -199,11 +199,16 @@ function parseListingFilters(searchParams: URLSearchParams): ListingFilters {
   const area = searchParams.get("area");
   const maxRent = searchParams.get("maxRent");
   const minSizeSqM = searchParams.get("minSizeSqM");
+  const availableBy = searchParams.get("availableBy");
   const availableFrom = searchParams.get("availableFrom");
   if (area !== null) filters.area = area;
   if (maxRent !== null) filters.maxRent = parseInteger(maxRent);
   if (minSizeSqM !== null) filters.minSizeSqM = parseInteger(minSizeSqM);
-  if (availableFrom !== null) filters.availableFrom = availableFrom;
+  if (availableBy !== null && availableFrom !== null) {
+    throw new HttpInputError();
+  }
+  if (availableBy !== null) filters.availableBy = availableBy;
+  if (availableBy === null && availableFrom !== null) filters.availableFrom = availableFrom;
   return filters;
 }
 
