@@ -1,7 +1,7 @@
 # RIGHTSPOT-049 — Fail closed on filtered legacy Search responses
 
 **Type:** defect  
-**Lifecycle:** in_progress  
+**Lifecycle:** verification_pending  
 **Priority:** P2 for Tenant Search result truthfulness and compatibility safety  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-03  
@@ -13,18 +13,21 @@
 - **Objective:** Make the Tenant Search client accept the documented minimal legacy response only for
   an actually unfiltered read, and fail closed when a filtered successful response cannot prove its
   normalized applied filters, exact non-Area criteria, and page metadata.
-- **Execution posture:** REPAIR_REQUIRED — the first two-path Builder candidate passed the original
+- **Execution posture:** VERIFICATION_PENDING — the first two-path Builder candidate passed the original
   deterministic behavior checks, but independent review found one procedural gate ambiguity and one
-  same-contract scalar-correlation gap; no other writer owns either declared source path.
+  same-contract scalar-correlation gap. RS-WO-049-03 has completed the bounded repair; Main reviewed
+  the exact two-path candidate and no source writer remains active.
 - **Blocking status:** Non-blocking to RIGHTSPOT-012, the paused RIGHTSPOT-047 browser gate, and the
   BLOCKED_HARNESS RIGHTSPOT-048 lifecycle evidence gate.
-- **Current next gate:** Correct the candidate-vs-checkpoint path gate and extend the same response
-  contract to exact non-Area scalar correlation, then dispatch RS-WO-049-03 before a fresh
-  RS-WO-049-02 verification against the repaired frozen source.
-- **Source identity:** Builder dispatch started from Main commit 0994e9245f003b68a9f4b301aa27af46b3d0c4d5.
-  Tracked RightSpot source/test paths were clean; protected untracked .playwright-cli/, :memory:,
-  local instruction files, and Docs/Reference/ were excluded from the write set. The required
-  runtime is Node v24.20.0 with npm 11.19.0.
+- **Current next gate:** Commit the reviewed Main checkpoint, freeze the resulting source identity,
+  and run a fresh RS-WO-049-02 verification under the corrected candidate-vs-checkpoint path gate.
+- **Source identity:** The original Builder started from Main commit 0994e9245f003b68a9f4b301aa27af46b3d0c4d5;
+  its reviewed source candidate is retained at 1d041d4. The RS-WO-049-03 Repairer dispatch baseline
+  is Main commit 609ef564af808276de81bb49c330a7b79ebc8790, where the source/test blobs are unchanged
+  and the corrected contract/process writeback is canonical. Tracked RightSpot source/test paths were
+  clean at dispatch; protected untracked .playwright-cli/, :memory:, local instruction files, and
+  Docs/Reference/ were excluded from the write set. The required runtime is Node v24.20.0 with npm
+  11.19.0.
 - **Main authority:** Main owns task admission, source identity, exact-path review, integration,
   independent verification acceptance, documentation, and Git closure. A supporting worker may not
   commit, push, modify the Git index, alter canonical decisions, or claim closure.
@@ -325,7 +328,7 @@ contract or perform an unbounded retry.
 ### RS-WO-049-03 — Correlate filtered Search response values
 
 **Role:** UI/API client Repairer  
-**Status:** GATED  
+**Status:** READY_FOR_VERIFICATION  
 **Parallelization:** SERIAL_TENANT_SEARCH_CLIENT — starts only after the 049-02 procedural result is
 recorded and no verifier is active; one writer only on the two declared paths.  
 **Risk profile:** Bounded P2 extension of the same Search response-truth boundary; no server or domain
@@ -334,6 +337,13 @@ behavior change.
 
 - src/ui/tenant/tenant-api.ts
 - tests/ui/tenant-api.test.ts
+
+**Dispatch record (2026-09-03):** Main resumed the identity-matched Search worker Leibniz (supporting
+task `01a0669f-fe53-7b52-9fbb-79b4fc502fbd`) for this distinct repair checkpoint with model
+`gpt-5.6-sol` and medium reasoning, from baseline `609ef564af808276de81bb49c330a7b79ebc8790`. The
+prompt includes the corrected ADR/Task/Runbook distinction between the two-path worker candidate diff
+and Main-owned documentation writeback, and forbids all other source, contract, documentation, Git,
+Worktree, fixture, persistence, generated, and unrelated paths.
 
 The Repairer must retain the accepted 049-01 behavior and add only the missing semantic correlation:
 for an effective filtered request, the applied-filter key set must equal the serialized public
@@ -349,6 +359,21 @@ complete matching/empty responses and unfiltered legacy compatibility, run the r
 and return `READY_FOR_VERIFICATION`.
 It must not modify the server, shared contract, page, WebMCP adapter, canonical Docs, fixtures,
 persistence, package/dependency files, Git/index, Worktrees, or unrelated paths.
+
+**Repairer handoff (2026-09-03):** The worker returned `READY_FOR_VERIFICATION` and Main reviewed the
+exact candidate diff. Only `src/ui/tenant/tenant-api.ts` and `tests/ui/tenant-api.test.ts` changed in
+the worker ledger. The implementation now requires an exact applied-filter key set for filtered
+responses, exact serialized equality for `maxRent`, `minSizeSqM`, and `availableBy`, and only trim/case
+equivalence for Area while retaining the server-normalized spelling. Filtered minimal, partial, omitted,
+mismatched, extra-key, and non-equivalent-Area responses fail with `INVALID_RESPONSE`; complete matching
+and empty responses plus unfiltered minimal compatibility remain valid. Red evidence covered the new
+correlation failures; focused tests passed `17/17`, the complete suite passed `226/226`, typecheck and
+production build passed, and repository, sensitive-scan, diff, and response-probe checks passed. The
+build emitted only the existing Turbopack dynamic-filesystem tracing warning at
+`src/server/persistence/operations-store.ts:104`. The worker reported the actual dispatch baseline as
+`609ef564af808276de81bb49c330a7b79ebc8790`; the original dispatch note had a manually mistyped full
+SHA, which Main corrected here. No commit, push, Git-index, Worktree, or forbidden-path change was made
+by the worker.
 
 ## Rollback and stop conditions
 

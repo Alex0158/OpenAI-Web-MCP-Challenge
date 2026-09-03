@@ -170,7 +170,7 @@ test("complete filtered responses preserve server-normalized Area values", async
     pageState: "results",
   });
 
-  const response = await readListings({ area: "king's cross" });
+  const response = await readListings({ area: "  king's cross  " });
 
   assert.deepEqual(response.appliedFilters, { area: "King's Cross" });
 });
@@ -190,6 +190,51 @@ test("complete filtered empty responses remain successful empty results", async 
   assert.equal(response.matchedCount, 0);
   assert.deepEqual(response.listings, []);
   assert.equal(response.pageState, "empty");
+});
+
+test("filtered listing reads reject a mismatched maxRent", async () => {
+  globalThis.fetch = async () => jsonResponse(filteredResponse({ maxRent: 999 }));
+
+  await assert.rejects(
+    () => readListings({ maxRent: 2500 }),
+    (error: unknown) => error instanceof TenantApiError && error.code === "INVALID_RESPONSE",
+  );
+});
+
+test("filtered listing reads reject a mismatched minSizeSqM", async () => {
+  globalThis.fetch = async () => jsonResponse(filteredResponse({ minSizeSqM: 49 }));
+
+  await assert.rejects(
+    () => readListings({ minSizeSqM: 50 }),
+    (error: unknown) => error instanceof TenantApiError && error.code === "INVALID_RESPONSE",
+  );
+});
+
+test("filtered listing reads reject a mismatched availableBy", async () => {
+  globalThis.fetch = async () => jsonResponse(filteredResponse({ availableBy: "2026-09-19" }));
+
+  await assert.rejects(
+    () => readListings({ availableBy: "2026-09-20" }),
+    (error: unknown) => error instanceof TenantApiError && error.code === "INVALID_RESPONSE",
+  );
+});
+
+test("filtered listing reads reject an extra allowed applied criterion", async () => {
+  globalThis.fetch = async () => jsonResponse(filteredResponse({ maxRent: 2500, minSizeSqM: 50 }));
+
+  await assert.rejects(
+    () => readListings({ maxRent: 2500 }),
+    (error: unknown) => error instanceof TenantApiError && error.code === "INVALID_RESPONSE",
+  );
+});
+
+test("filtered listing reads reject a non-equivalent applied Area", async () => {
+  globalThis.fetch = async () => jsonResponse(filteredResponse({ area: "Haringey" }));
+
+  await assert.rejects(
+    () => readListings({ area: " southwark " }),
+    (error: unknown) => error instanceof TenantApiError && error.code === "INVALID_RESPONSE",
+  );
 });
 
 test("listing response parsing fails closed on inconsistent or malformed search envelopes", async () => {
@@ -322,4 +367,15 @@ function jsonResponse(body: unknown, status = 200): Response {
     status,
     headers: { "content-type": "application/json" },
   });
+}
+
+function filteredResponse(appliedFilters: Record<string, unknown>): object {
+  return {
+    fixtureGeneration: 4,
+    appliedFilters,
+    matchedCount: 1,
+    listings: [LISTING],
+    pagePath: "/tenant",
+    pageState: "results",
+  };
 }

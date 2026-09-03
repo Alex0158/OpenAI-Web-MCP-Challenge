@@ -630,9 +630,9 @@ evidence is recorded in [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSUR
 The previously admitted post-MVP increments, including `RIGHTSPOT-005` and `RIGHTSPOT-007`, are
 closed historical work rather than the current implementation queue. The current decision boundary is
 the `RIGHTSPOT-048` harness-blocked evidence gap, while the non-blocking `RIGHTSPOT-012` audit
-continues and the bounded `RIGHTSPOT-049` client repair requires its same-contract scalar-correlation
-repair. Its original implementation Work Order completed its Builder handoff: `RS-WO-049-01`; the
-next bounded repair is `RS-WO-049-03`. The original
+continues and the bounded `RIGHTSPOT-049` client repair awaits fresh independent verification after
+its same-contract scalar-correlation repair. Its original implementation Work Order completed its
+Builder handoff: `RS-WO-049-01`; the completed bounded repair is `RS-WO-049-03`. The original
 `RIGHTSPOT-047` candidate's
 deterministic checks and Main-controlled browser smoke pass, but its independent gate is paused after
 one command-level harness block and two bounded partial retries; it must be re-baselined after a
@@ -642,7 +642,7 @@ agent-browser retry is authorized. This does not reopen
 the accepted MVP closure or authorize external authentication, Cloud Receiver,
 deployment, or commercial-marketplace scope by itself.
 The `RIGHTSPOT-049` Search compatibility repair is the current serial source increment after its
-Builder handoff. Its bounded scalar-correlation repair must be independently verified before closure
+Builder handoff. Its completed bounded scalar-correlation repair must be independently verified before closure
 and must not be used to claim that the paused Operations WebMCP candidate or the 048 lifecycle gate is
 closed. The candidate-vs-checkpoint path accounting is now explicit: the two-path product candidate is
 separate from Main-owned process-only documentation writeback.

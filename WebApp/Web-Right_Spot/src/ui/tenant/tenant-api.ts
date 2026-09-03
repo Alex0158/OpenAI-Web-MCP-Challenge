@@ -25,6 +25,8 @@ export type TenantListingResponse = {
 
 const LISTING_FILTER_NAMES = ["area", "maxRent", "minSizeSqM", "availableBy"] as const;
 type ListingFilterName = (typeof LISTING_FILTER_NAMES)[number];
+type SerializedListingFilters = Partial<Record<ListingFilterName, string>>;
+const AREA_LOCALE = "en-GB";
 
 export class TenantApiError extends Error {
   readonly status: number;
@@ -120,7 +122,7 @@ export async function readListings(
     method: "GET",
     ...(options.signal !== undefined ? { signal: options.signal } : {}),
   });
-  return parseListingsResponse(payload, serializedListingFilterNames(path));
+  return parseListingsResponse(payload, serializedListingFilters(path));
 }
 
 export async function readListing(listingId: string): Promise<TenantListingResponse> {
@@ -234,12 +236,13 @@ async function requestJson(path: string, options: RequestInit): Promise<unknown>
 
 function parseListingsResponse(
   value: unknown,
-  effectiveFilterNames: ReadonlySet<ListingFilterName>,
+  serializedFilters: SerializedListingFilters,
 ): TenantListingsResponse {
   if (!isRecord(value) || !isPositiveInteger(value.fixtureGeneration) || !Array.isArray(value.listings)) {
     throw invalidResponse();
   }
-  if (effectiveFilterNames.size > 0 && (
+  const isFiltered = Object.keys(serializedFilters).length > 0;
+  if (isFiltered && (
     value.appliedFilters === undefined
     || value.matchedCount === undefined
     || value.pagePath === undefined
@@ -251,7 +254,10 @@ function parseListingsResponse(
   const appliedFilters = value.appliedFilters === undefined
     ? {}
     : parseAppliedFilters(value.appliedFilters);
-  if ([...effectiveFilterNames].some((name) => !hasOwn(appliedFilters, name))) {
+  if (isFiltered && (
+    !hasExactAppliedFilterKeys(appliedFilters, serializedFilters)
+    || !appliedFiltersMatchSerializedFilters(appliedFilters, serializedFilters)
+  )) {
     throw invalidResponse();
   }
   const matchedCount = value.matchedCount === undefined
@@ -370,10 +376,52 @@ function parseAppliedFilters(value: unknown): TenantListingsResponse["appliedFil
   return appliedFilters;
 }
 
-function serializedListingFilterNames(path: string): ReadonlySet<ListingFilterName> {
+function serializedListingFilters(path: string): SerializedListingFilters {
   const query = path.split("?", 2)[1];
   const params = new URLSearchParams(query);
-  return new Set(LISTING_FILTER_NAMES.filter((name) => params.has(name)));
+  const serializedFilters: SerializedListingFilters = {};
+  for (const name of LISTING_FILTER_NAMES) {
+    const value = params.get(name);
+    if (value !== null) serializedFilters[name] = value;
+  }
+  return serializedFilters;
+}
+
+function hasExactAppliedFilterKeys(
+  appliedFilters: TenantListingsResponse["appliedFilters"],
+  serializedFilters: SerializedListingFilters,
+): boolean {
+  const appliedNames = Object.keys(appliedFilters);
+  const serializedNames = Object.keys(serializedFilters);
+  return appliedNames.length === serializedNames.length
+    && appliedNames.every((name) => hasOwn(serializedFilters, name));
+}
+
+function appliedFiltersMatchSerializedFilters(
+  appliedFilters: TenantListingsResponse["appliedFilters"],
+  serializedFilters: SerializedListingFilters,
+): boolean {
+  for (const name of Object.keys(serializedFilters) as ListingFilterName[]) {
+    const serializedValue = serializedFilters[name];
+    if (serializedValue === undefined) return false;
+    if (name === "area") {
+      if (typeof appliedFilters.area !== "string"
+        || normalizeAreaForComparison(appliedFilters.area) !== normalizeAreaForComparison(serializedValue)) {
+        return false;
+      }
+      continue;
+    }
+    if (name === "maxRent" || name === "minSizeSqM") {
+      if (String(appliedFilters[name]) !== serializedValue) return false;
+      continue;
+    }
+    if (appliedFilters.availableBy !== serializedValue) return false;
+  }
+  return true;
+}
+
+function normalizeAreaForComparison(value: string): string {
+  return value.trim().toLocaleLowerCase(AREA_LOCALE);
 }
 
 function parseNonNegativeInteger(value: unknown): number {
