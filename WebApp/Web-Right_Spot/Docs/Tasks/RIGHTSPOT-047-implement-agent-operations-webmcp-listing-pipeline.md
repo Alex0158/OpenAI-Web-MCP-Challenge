@@ -1,7 +1,7 @@
 # RIGHTSPOT-047 — Implement Agent Operations WebMCP listing-pipeline capability
 
 **Type:** `implementation`  
-**Lifecycle:** `pending`  
+**Lifecycle:** `verification_pending`  
 **Priority:** `P1` for the next selective WebMCP milestone; it does not block the ordinary local MVP,
 the verified Tenant Search capability, or the manual Operations surface  
 **Owner:** Main RightSpot thread  
@@ -14,24 +14,23 @@ Operations authority/projection, and the verified Tenant adapter pattern in `RIG
 ## Task Control
 
 - Type: `implementation`
-- Lifecycle: `pending`
+- Lifecycle: `verification_pending`
 - Execution posture: `MAIN_THREAD_SINGLE_SOURCE_WEBMCP_IMPLEMENTATION`
 - Priority: `P1` — implement only the accepted Agent Operations `read_listing_pipeline` capability.
 - Owner: Main RightSpot thread
-- Current increment: Implement the thin page-bound adapter, strict runtime result boundary, and one
-  page-owned read coordinator required by ADR-RS-0017; prove it with Red → Green → Refactor tests.
-- Next gate: recapture the current Main source/runtime/browser capability, then dispatch the single
-  Builder Work Order `RS-WO-047-01`. After its handoff, freeze the exact source and dispatch the
-  independent supported-browser Verifier `RS-WO-047-02`. Main owns integration and documentation
-  closure.
+- Current increment: Builder implementation and Main candidate review are complete; the exact source
+  now awaits independent supported-browser verification.
+- Next gate: freeze the reviewed candidate commit and dispatch the independent supported-browser
+  Verifier `RS-WO-047-02`. Main owns integration and documentation closure.
 - Dependencies: ADR-RS-0017 is the contract authority. The existing manual `/agent/operations` page,
   `GET /api/agent/operations`, Operations projection, Agent role/assignment checks, and Tenant
   `search_listings` adapter remain read-only inputs. `RIGHTSPOT-012` may continue as a non-blocking,
   read-only audit provided it does not modify this Task's write set during a source freeze.
-- Dispatch state: `not dispatched` — no Builder, Verifier, WebMCP registration, dependency install,
-  fixture mutation, or Worktree is authorized until the baseline and browser gate are recaptured.
-- Evidence status: `READY_FOR_BASELINE_RECAPTURE` — contract accepted; implementation source and
-  supported-browser capability are not yet verified.
+- Dispatch state: `builder_complete` — `RS-WO-047-01` was completed by supporting agent
+  `01a065ce-ba53-7b71-bb97-7de24e92a60f`; Main independently reviewed the exact diff and checks. No
+  Verifier, fixture mutation, or Worktree is authorized until the reviewed candidate is frozen.
+- Evidence status: `READY_FOR_INDEPENDENT_VERIFICATION` — contract, implementation, static checks, and
+  full deterministic suite are verified; supported-browser discovery/invocation remains open.
 
 ## Bounded objective
 
@@ -191,19 +190,23 @@ Close this Task only after all of the following are true:
 
 ### RS-WO-047-01 — Implement the page-bound Agent Operations WebMCP adapter
 
-**Status:** `PENDING_BASELINE_RECAPTURE`  
+**Status:** `READY_FOR_INDEPENDENT_VERIFICATION`  
 **Role:** WebMCP/API/UI implementation Builder  
 **Parallelization:** `SERIAL_SINGLE_WRITER` — no other source writer may touch the five-path write set  
 **Model gate:** WebMCP implementation must use a capable supporting worker with `gpt-5.6-sol` and
 `medium` reasoning when dispatched; if the capability is unavailable, report the blocker and do not
 substitute an unsupported model for WebMCP runtime work  
-**Source baseline:** Must be recaptured immediately before dispatch; the documentation baseline at task
-registration is Main `68adfc41da0e2a31bbac1537351619b186cda7a5`, while product source remains the
-reviewed `3582ba4` checkpoint  
+**Supporting agent:** `01a065ce-ba53-7b71-bb97-7de24e92a60f`  
+**Source baseline:** T0 recaptured immediately before dispatch: Main and `origin/main` at
+`075a868086e962112b550583cb1705478bbdf16b`, divergence `0`; reviewed product source remains the
+`3582ba4` checkpoint. The uncommitted candidate was independently checked by Main and is ready to be
+frozen for verification. Node `24.20.0`, localhost health `200`, `agent-browser 0.25.3`, Chrome
+`152.0.7977.65`, and the `WebMCPTesting` flag were available.  
 **Write set:** exactly the five paths listed above  
-**Handoff:** Return changed paths, Red/Green/Refactor evidence, focused/full/static results, runtime
-assumptions, unresolved risks, and a proposed frozen source identity. Do not commit, push, alter task
-state, modify canonical docs, or create a Worktree.
+**Handoff:** Builder returned exactly the five paths, Red/Green/Refactor evidence, focused `23/23`,
+full `201/201`, typecheck/build/validator/sensitive-scan/diff-check results, and no unresolved
+implementation blocker. Main independently reproduced those checks. The candidate must now be frozen
+by Main; Builder did not commit, push, alter canonical docs, or create a Worktree.
 
 ### RS-WO-047-02 — Independently verify the integrated capability
 

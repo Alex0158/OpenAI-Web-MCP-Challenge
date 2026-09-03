@@ -170,16 +170,16 @@ pure projection, Agent-only manual surface, and manual latest-read repair are co
 review of [`RIGHTSPOT-046`](Tasks/RIGHTSPOT-046-define-agent-operations-webmcp-listing-pipeline-contract.md)
 identified and Main resolved gaps in static metadata/schema, privacy allowlisting, page parity,
 stale/error outcomes, assignment semantics, and source identity. [ADR-RS-0017](Decisions/ADR-RS-0017-agent-operations-webmcp-listing-pipeline-contract.md)
-now accepts one bounded Agent-only, page-bound, read-only `read_listing_pipeline` contract. No product
-source, WebMCP registration, or manual Operations behavior changed; the newly registered
-`RIGHTSPOT-047` implementation Task must recapture browser capability, cleanup semantics, and source
-identity before dispatch.
+now accepts one bounded Agent-only, page-bound, read-only `read_listing_pipeline` contract. No manual
+Operations behavior changed; `RIGHTSPOT-047` recaptured browser capability, cleanup semantics, and
+source identity, then dispatched its single Builder Work Order `RS-WO-047-01`. Implementation and
+browser evidence remain open.
 `upcomingViewings` remains excluded because its `asOf`/fixture-clock behavior needs deterministic
 reproducible non-empty evidence. The active `RIGHTSPOT-012` audit remains non-blocking.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Prepare and dispatch the single Builder Work Order under pending
-`RIGHTSPOT-047` for the accepted `RIGHTSPOT-046` Operations WebMCP contract only after recapturing the
-current browser/source baseline; then freeze and independently verify it while the non-blocking
+**Current next product action:** Receive and review the single Builder Work Order under in-progress
+`RIGHTSPOT-047` for the accepted `RIGHTSPOT-046` Operations WebMCP contract; then freeze and
+independently verify it while the non-blocking
 `RIGHTSPOT-012` cross-layer audit
 continues against the latest canonical Main source. `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its
 manual Operations consumer latest-read boundary at product source `3582ba4`; it does not reopen

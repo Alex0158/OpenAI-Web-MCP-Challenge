@@ -193,7 +193,8 @@ and `RIGHTSPOT-002` is closed.
 
 **Current post-MVP gates:** `RIGHTSPOT-006` and `RIGHTSPOT-012` remain pending (credential and
 read-only audit gates); `RIGHTSPOT-046` is closed through accepted `ADR-RS-0017` as the Operations
-WebMCP contract decision, and `RIGHTSPOT-047` is the pending source implementation gate;
+WebMCP contract decision, and `RIGHTSPOT-047` is the in-progress source implementation gate after
+its T0 baseline recapture and Builder dispatch;
 `RIGHTSPOT-045` is now `CLOSED_VERIFIED` within its bounded
 Operations consumer repair boundary after Main-controlled race verification and an explicitly recorded
 independent-browser harness limitation;

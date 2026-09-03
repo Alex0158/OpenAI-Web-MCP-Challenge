@@ -1339,3 +1339,27 @@ its two bounded report families, and the separate `RIGHTSPOT-046` WebMCP contrac
 No product defect, route orphan, role/privacy gap, broken handoff, or new audit finding was found.
 `RIGHTSPOT-012` remains pending and non-blocking; `RIGHTSPOT-047` owns the accepted Operations tool
 implementation gate. The retained `F-08` evidence gap and existing browser claims are unchanged.
+
+## 7.29 Operations WebMCP Builder implementation and Main candidate review — 2026-09-03
+
+`RS-WO-047-01` was dispatched after T0 recapture at Main/origin `075a868086e962112b550583cb1705478bbdf16b`,
+with one physical Main Worktree, Node `24.20.0`, localhost health `200`, `agent-browser 0.25.3`,
+Chrome `152.0.7977.65`, and the `WebMCPTesting` flag available. The supporting Builder returned
+`READY_FOR_INDEPENDENT_VERIFICATION` and changed exactly the declared five paths:
+`operations-webmcp.ts`, `operations-api.ts`, `operations-page.tsx`, `operations-webmcp.test.ts`, and
+`operations-page.test.ts`. No server, shared contract, fixture, package, Tenant adapter, generated,
+Worktree, Git, or Web-Game path changed as part of the Builder handoff.
+
+Main independently reviewed the candidate's exact metadata/schema, structured input validation,
+case-sensitive Area boundary, safe age bound, result allowlisting/reconstruction, bounded error union,
+page/tool coordinator, abort/stale settlement, registration teardown, unsupported-capability manual
+fallback, and no second authority. Focused tests passed `23/23`; the complete deterministic RightSpot
+suite passed `201/201`; non-incremental typecheck, production build, repository validators, sensitive
+scan, and `git diff --check` passed. The existing SQLite dynamic filesystem-tracing build warning is
+retained and is not a new deployment claim.
+
+This is a frozen-candidate preparation checkpoint, not final WebMCP closure. The candidate has not yet
+been independently tested in the supported browser for discovery, invocation, page parity, role/session
+teardown, privacy, or no-mutation evidence. `RIGHTSPOT-047` therefore remains
+`verification_pending`; Main must freeze this exact candidate and dispatch `RS-WO-047-02` before making
+an implementation closure claim.

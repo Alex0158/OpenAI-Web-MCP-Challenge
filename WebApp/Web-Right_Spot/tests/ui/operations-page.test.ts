@@ -77,6 +77,22 @@ test("operations consumer parses a successful envelope and keeps valid empty res
   }
 });
 
+test("operations consumer forwards cancellation to the existing GET boundary", async () => {
+  const originalFetch = globalThis.fetch;
+  const controller = new AbortController();
+  let receivedSignal: AbortSignal | null | undefined;
+  globalThis.fetch = async (_input, init) => {
+    receivedSignal = init?.signal;
+    return new Response(JSON.stringify(listingResponse), { status: 200 });
+  };
+  try {
+    await readOperations(listingResponse.filters, { signal: controller.signal });
+    assert.equal(receivedSignal, controller.signal);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test("operations consumer accepts the frozen success envelope and rejects malformed shape", async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () => new Response(JSON.stringify(listingResponse), { status: 200 });
@@ -91,6 +107,37 @@ test("operations consumer accepts the frozen success envelope and rejects malfor
     globalThis.fetch = async () => new Response(JSON.stringify({ ...listingResponse, profile: "relay" }), { status: 200 });
     await assert.rejects(() => readOperations(listingResponse.filters), (error: unknown) =>
       error instanceof OperationsApiError && error.code === "INVALID_RESPONSE");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("operations consumer rejects unknown response keys at every privacy boundary", async () => {
+  const originalFetch = globalThis.fetch;
+  const injectedResponses = [
+    { ...listingResponse, tenantId: "tenant-private" },
+    { ...listingResponse, filters: { ...listingResponse.filters, diagnostics: "private" } },
+    {
+      ...listingResponse,
+      counts: {
+        ...listingResponse.counts,
+        publicationState: { ...listingResponse.counts.publicationState, UNKNOWN: 0 },
+      },
+    },
+    {
+      ...listingResponse,
+      items: [{ ...listingResponse.items[0], contact: "private@example.test" }],
+    },
+  ];
+
+  try {
+    for (const payload of injectedResponses) {
+      globalThis.fetch = async () => new Response(JSON.stringify(payload), { status: 200 });
+      await assert.rejects(
+        () => readOperations(listingResponse.filters),
+        (error: unknown) => error instanceof OperationsApiError && error.code === "INVALID_RESPONSE",
+      );
+    }
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -128,30 +175,35 @@ test("Operations page makes late read success, error, and completion settlements
 
   assert.notEqual(readCall, -1, "missing Operations read call");
   assert.match(page, /useRef\(0\)/, "missing monotonic latest-read identity");
-  assert.match(page, /(?:\+\+\s*\w+\.current|\w+\.current\s*\+=\s*1)/, "read identity is not advanced");
-  const effect = page.match(/useEffect\(\(\) => \{[\s\S]*?\}, \[\]\);/)?.[0];
-  assert.ok(effect, "missing initial-read lifecycle");
-  assert.match(effect, /return \(\) => \{\s*\w+\.current \+= 1;\s*\}/, "unmount must invalidate the read");
-  assert.equal(
-    page.match(/if \(\s*\w+\s*!==\s*\w+\.current\s*\) return;/g)?.length,
-    3,
-    "success, error, and finally must all ignore stale reads",
-  );
+  assert.match(page, /latestReadId\.current = readId/, "read identity is not advanced");
+  assert.match(page, /const isCurrentRead = \(\)/, "missing current-read settlement guard");
+  assert.match(page, /isMounted\.current = false;[\s\S]*cancelReads\(\);/, "unmount must invalidate the read");
   assert.match(
     page.slice(readCall),
-    /if \(\s*\w+\s*!==\s*\w+\.current\s*\) return;\s*setResponse/,
+    /if \(!isCurrentRead\(\)\) throw new OperationsReadStaleError\(\);\s*setResponse/,
     "late success must not publish a response",
   );
   assert.match(
     page.slice(readCall),
-    /catch \([\s\S]*?if \(\s*\w+\s*!==\s*\w+\.current\s*\) return;\s*setError/,
+    /catch \([\s\S]*?if \(!isCurrentRead\(\)\) throw new OperationsReadStaleError\(\);[\s\S]*?setError/,
     "late error must not publish an error",
   );
   assert.match(
     page.slice(readCall),
-    /finally \{[\s\S]*?if \(\s*\w+\s*!==\s*\w+\.current\s*\) return;\s*setIsLoading\(false\)/,
+    /finally \{[\s\S]*?activeRead\.current\?\.readId === readId[\s\S]*?readId === latestReadId\.current\) setIsLoading\(false\)/,
     "late completion must not clear newer loading state",
   );
+});
+
+test("Operations manual and WebMCP reads share one abortable page coordinator", () => {
+  const page = readFileSync(PAGE_PATH, "utf8");
+
+  assert.match(page, /const executeRead = useCallback/);
+  assert.match(page, /activeRead/);
+  assert.match(page, /readOperations\(query, \{ signal:/);
+  assert.match(page, /<OperationsWebMcp[\s\S]*executeRead=\{executeRead\}/);
+  assert.match(page, /onSubmit=\{[\s\S]*executeRead\(currentQuery\(\)\)/);
+  assert.equal(page.match(/await readOperations\(/g)?.length, 1);
 });
 
 test("Operations report changes invalidate an in-flight read before changing context", () => {
@@ -161,10 +213,10 @@ test("Operations report changes invalidate an in-flight read before changing con
   assert.ok(reportControl, "missing Operations report control");
   assert.match(
     reportControl,
-    /(?:\+\+\s*\w+\.current|\w+\.current\s*\+=\s*1)[\s\S]*?setKind/,
+    /cancelReads\(\);[\s\S]*?setKind/,
     "changing report context must invalidate the pending read",
   );
-  assert.match(reportControl, /setIsLoading\(false\)/, "changing report context must end the invalidated loading state");
+  assert.match(page, /const cancelReads = useCallback\([\s\S]*?controller\.abort\(\)[\s\S]*?latestReadId\.current \+= 1[\s\S]*?setIsLoading\(false\)/);
   assert.match(reportControl, /setResponse\(null\)/);
   assert.match(reportControl, /setError\(null\)/);
 });

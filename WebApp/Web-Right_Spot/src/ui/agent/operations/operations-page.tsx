@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import RolePageFrame from "../../shared/role-page-frame";
 import StatusBanner from "../../shared/status-banner";
 import {
@@ -9,6 +9,9 @@ import {
   type OperationsQuery,
   type OperationsResponse,
 } from "./operations-api";
+import OperationsWebMcp, {
+  OperationsReadStaleError,
+} from "./operations-webmcp";
 import type { OperationsApiListingItem, OperationsApiViewingItem } from "../../../shared/contracts/operations-api";
 import styles from "./operations.module.css";
 
@@ -37,11 +40,109 @@ function OperationsWorkspace() {
   const [error, setError] = useState<OperationsApiError | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const latestReadId = useRef(0);
+  const activeRead = useRef<{ readId: number; controller: AbortController } | null>(null);
+  const isMounted = useRef(false);
+
+  const cancelReads = useCallback(() => {
+    activeRead.current?.controller.abort();
+    activeRead.current = null;
+    latestReadId.current += 1;
+    if (isMounted.current) setIsLoading(false);
+  }, []);
+
+  const executeRead = useCallback(async (
+    query: OperationsQuery,
+    options: { signal?: AbortSignal } = {},
+  ): Promise<OperationsResponse> => {
+    const callerSignal = options.signal;
+    if (callerSignal?.aborted) throw new OperationsReadStaleError();
+
+    activeRead.current?.controller.abort();
+    const readId = latestReadId.current + 1;
+    latestReadId.current = readId;
+    setError(null);
+    setResponse(null);
+    setIsLoading(false);
+
+    const validation = validateQuery(query);
+    if (validation) {
+      const validationError = new OperationsApiError(400, "VALIDATION_FAILED", validation);
+      setError(validationError);
+      throw validationError;
+    }
+
+    const controller = new AbortController();
+    activeRead.current = { readId, controller };
+    let callerAborted = false;
+    const isCurrentRead = () => isMounted.current
+      && !callerAborted
+      && !callerSignal?.aborted
+      && !controller.signal.aborted
+      && readId === latestReadId.current;
+    const handleCallerAbort = () => {
+      callerAborted = true;
+      controller.abort();
+      if (readId === latestReadId.current) {
+        latestReadId.current += 1;
+        if (isMounted.current) setIsLoading(false);
+      }
+    };
+    callerSignal?.addEventListener("abort", handleCallerAbort, { once: true });
+
+    setKind(query.kind);
+    setArea(query.area ?? "");
+    if (query.kind === "listingPipeline") {
+      setPublicationState(query.publicationState ?? "");
+      setLifecycleState(query.lifecycleState ?? "");
+      setMinPublishedAgeDays(query.minPublishedAgeDays === undefined ? "" : String(query.minPublishedAgeDays));
+      setFrom("");
+      setTo("");
+      setStatus("");
+      setListingId("");
+    } else {
+      setPublicationState("");
+      setLifecycleState("");
+      setMinPublishedAgeDays("");
+      setFrom(query.from);
+      setTo(query.to);
+      setStatus(query.status ?? "");
+      setListingId(query.listingId ?? "");
+    }
+    setIsLoading(true);
+
+    try {
+      const nextResponse = await readOperations(query, { signal: controller.signal });
+      if (!isCurrentRead()) throw new OperationsReadStaleError();
+      setResponse(nextResponse);
+      return nextResponse;
+    } catch (caught: unknown) {
+      if (!isCurrentRead()) throw new OperationsReadStaleError();
+      const nextError = caught instanceof OperationsApiError
+        ? caught
+        : new OperationsApiError(
+          0,
+          "HTTP_ERROR",
+          "The Operations service returned an unexpected response. Try again.",
+        );
+      setError(nextError);
+      throw nextError;
+    } finally {
+      callerSignal?.removeEventListener("abort", handleCallerAbort);
+      if (activeRead.current?.readId === readId) {
+        activeRead.current = null;
+        if (isMounted.current && readId === latestReadId.current) setIsLoading(false);
+      }
+    }
+  }, []);
 
   useEffect(() => {
-    void runQuery(DEFAULT_QUERY);
-    return () => { latestReadId.current += 1; };
-  }, []);
+    isMounted.current = true;
+    void executeRead(DEFAULT_QUERY).catch(() => undefined);
+    return () => {
+      isMounted.current = false;
+      cancelReads();
+    };
+  }, [cancelReads, executeRead]);
 
   function currentQuery(): OperationsQuery {
     if (kind === "listingPipeline") {
@@ -56,42 +157,19 @@ function OperationsWorkspace() {
     return { kind, from, to, ...(status ? { status: status as "PROPOSED" | "CONFIRMED" } : {}), ...(area ? { area } : {}), ...(listingId ? { listingId } : {}) };
   }
 
-  async function runQuery(query: OperationsQuery = currentQuery()) {
-    const readId = ++latestReadId.current;
-    setError(null);
-    setResponse(null);
-    setIsLoading(false);
-    const validation = validateQuery(query);
-    if (validation) {
-      setError(new OperationsApiError(400, "VALIDATION_FAILED", validation));
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const nextResponse = await readOperations(query);
-      if (readId !== latestReadId.current) return;
-      setResponse(nextResponse);
-    } catch (caught) {
-      if (readId !== latestReadId.current) return;
-      setError(caught instanceof OperationsApiError ? caught : new OperationsApiError(0, "HTTP_ERROR", "The Operations service returned an unexpected response. Try again."));
-    } finally {
-      if (readId !== latestReadId.current) return;
-      setIsLoading(false);
-    }
-  }
-
   function clearFilters() {
-    latestReadId.current += 1;
-    setIsLoading(false);
+    cancelReads();
     setKind(DEFAULT_QUERY.kind); setArea(""); setPublicationState(""); setLifecycleState(""); setMinPublishedAgeDays(""); setFrom(""); setTo(""); setStatus(""); setListingId(""); setResponse(null); setError(null);
   }
 
   return (
-    <section className={styles.workspace} aria-labelledby="operations-heading">
+    <>
+      <OperationsWebMcp executeRead={executeRead} cancelReads={cancelReads} />
+      <section className={styles.workspace} aria-labelledby="operations-heading">
       <div className={styles.workspaceHeader}><div><p className="eyebrow">Manual read surface</p><h2 id="operations-heading">See the current work that needs attention</h2><p className="panel-copy">Choose one bounded report. Every row, count, and freshness field below comes from the server-owned Operations projection.</p></div></div>
-      <form className={styles.queryPanel} onSubmit={(event) => { event.preventDefault(); void runQuery(); }} aria-label="Operations filters">
+      <form className={styles.queryPanel} onSubmit={(event) => { event.preventDefault(); void executeRead(currentQuery()).catch(() => undefined); }} aria-label="Operations filters">
         <div className={styles.formGrid}>
-          <label className={styles.field}><span>Operations report</span><select aria-label="Operations report" value={kind} onChange={(event) => { latestReadId.current += 1; setIsLoading(false); setKind(event.target.value as OperationsQuery["kind"]); setResponse(null); setError(null); }}><option value="listingPipeline">Listing pipeline</option><option value="upcomingViewings">Upcoming viewings</option></select></label>
+          <label className={styles.field}><span>Operations report</span><select aria-label="Operations report" value={kind} onChange={(event) => { cancelReads(); setKind(event.target.value as OperationsQuery["kind"]); setResponse(null); setError(null); }}><option value="listingPipeline">Listing pipeline</option><option value="upcomingViewings">Upcoming viewings</option></select></label>
           <label className={styles.field}><span>Area (optional)</span><input value={area} onChange={(event) => setArea(event.target.value)} /></label>
           {kind === "listingPipeline" ? <>
             <label className={styles.field}><span>Publication state</span><select value={publicationState} onChange={(event) => setPublicationState(event.target.value)}><option value="">All publication states</option><option value="PUBLISHED">Published</option><option value="UNPUBLISHED">Unpublished</option></select></label>
@@ -107,9 +185,10 @@ function OperationsWorkspace() {
         <div className={styles.formActions}><button className="button button-primary" type="submit" disabled={isLoading}>{isLoading ? "Reading…" : "Run operations read"}</button><button className="button button-quiet" type="button" onClick={clearFilters} disabled={isLoading}>Clear filters</button></div>
       </form>
       {isLoading ? <div className={styles.state} role="status" aria-live="polite" aria-busy="true"><h3>Loading Operations data</h3><p className="panel-copy">Reading the current authoritative projection.</p></div> : null}
-      {error ? <div className={styles.feedback}><StatusBanner tone="error" message={error.message} /><button className="button button-primary" type="button" onClick={() => void runQuery()} >Retry operations read</button></div> : null}
+      {error ? <div className={styles.feedback}><StatusBanner tone="error" message={error.message} /><button className="button button-primary" type="button" onClick={() => void executeRead(currentQuery()).catch(() => undefined)} >Retry operations read</button></div> : null}
       {!isLoading && !error && response ? <OperationsResult response={response} /> : null}
-    </section>
+      </section>
+    </>
   );
 }
 

@@ -114,8 +114,8 @@ invocation, and browser evidence against frozen source baseline
 Operations decision through `ADR-RS-0016`; `RIGHTSPOT-044` is now `CLOSED_VERIFIED` for the bounded
 manual Agent Operations surface. `RIGHTSPOT-046` is closed through accepted `ADR-RS-0017` for one
 bounded Agent-only `read_listing_pipeline` contract; the separate implementation Task
-`RIGHTSPOT-047` and browser evidence gate are still pending, while other Operations WebMCP capabilities
-remain separately gated.
+`RIGHTSPOT-047` is in progress after T0 baseline recapture and Builder dispatch, with source review
+and browser evidence still open. Other Operations WebMCP capabilities remain separately gated.
 `RIGHTSPOT-012` continues as the non-blocking read-only audit lane against the latest Main source. The post-044 audit
 also registered `F-22` / `RIGHTSPOT-045` for a bounded Operations consumer latest-read race repair;
 the repair is now `CLOSED_VERIFIED` at product source `3582ba4` after Main-controlled race evidence
@@ -304,8 +304,9 @@ remains the non-blocking audit lane. `RIGHTSPOT-045` is `CLOSED_VERIFIED` for `F
 manual Operations consumer boundary; `RS-WO-045-01` is integrated at `3582ba4`, with Main-controlled
 race evidence and the explicit independent-browser harness limitation recorded. `RIGHTSPOT-046` is
 closed through accepted `ADR-RS-0017` for one bounded Agent-only `read_listing_pipeline` contract;
-the separate implementation Task `RIGHTSPOT-047` and browser evidence gate are still pending, while
-other Operations WebMCP capabilities remain separately gated.
+the separate implementation Task `RIGHTSPOT-047` is in progress after T0 baseline recapture and
+Builder dispatch, with source review and browser evidence still open. Other Operations WebMCP
+capabilities remain separately gated.
 
 The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.
 The page-entry audit registered `RIGHTSPOT-021` as a bounded implementation route: restore a
