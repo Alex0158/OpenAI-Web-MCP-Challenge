@@ -64,7 +64,8 @@ after reviewing the integrated 051 source across business flows, role/route entr
 fallback and code quality, privacy/data authority, WebMCP boundaries, and documentation/test evidence.
 Main accepted the report as `NO_ACTION` for new product Tasks: no new P0/P1/P2 defect was reproduced
 or contract-proven. Main is applying only the bounded documentation reconciliation identified by the
-report; the Advisor had no write, Task-registration, Git, Worktree, fixture, or deployment authority.
+report; that reconciliation is complete in docs-only commit `968c050`. The Advisor had no write,
+Task-registration, Git, Worktree, fixture, or deployment authority.
 
 The latest visual-only revalidation used isolated session `rightspot-visual-20260902` against the
 unchanged product source baseline represented by `898fea2` (current repository HEAD was the docs-only
@@ -248,9 +249,8 @@ proxy; its source behavior remains covered by the focused contract. The disposab
 to generation `89`. No server/API/domain/workflow or WebMCP contract changed, and the closure commit
 is recorded at `14cd82c`.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Complete the bounded documentation reconciliation from the reviewed
-post-051 audit, then continue the non-blocking audit lane and register only the next evidence-backed
-bounded Task, while preserving the 048
+**Current next product action:** Continue the non-blocking audit lane and register only the next
+evidence-backed bounded Task, while preserving the 048
 browser-harness decision and the 047 dependency gate. `RS-WO-048-02` has ended at `BLOCKED_HARNESS`, not product-failed: two
 earlier attempts produced no browser evidence, and the one corrected retry used the validated CLI form
 `--args "--enable-features=WebMCPTesting"` but its browser process disappeared without a final report.

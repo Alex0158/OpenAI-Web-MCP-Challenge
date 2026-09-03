@@ -866,7 +866,8 @@ observability, and the existing 047/048 evidence boundaries remain as documented
 accepted `NO_ACTION` for new Task registration and retained 048 as `BLOCKED_HARNESS`, not a product
 failure; `RS-WO-047-03` remains gated until a reviewed 048 evidence decision and a new 047 baseline.
 
-The report did identify bounded documentation drift, which Main is reconciling without a new Task:
+The report did identify bounded documentation drift, which Main reconciled without a new Task in
+docs-only commit `968c050`:
 RightSpot `README.md` reported `226/226`, its broad closure wording omitted the still-open Agent-side
 F-26 and 048 evidence boundaries, the business-flow catalogue still called Tenant 051 open, and the
 current Runbook still described the 048 browser attempt as active. The report also used a non-existent
