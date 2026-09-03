@@ -183,8 +183,11 @@ not claim that the game is built or balanced.
   worker settlement, shared world-clock progression, capability separation, and remaining denial/recovery gates.
 - [`95-cp17-hosted-restart-backup-continuity-runtime-cross-functional-audit.md`](95-cp17-hosted-restart-backup-continuity-runtime-cross-functional-audit.md)
   — hash-verified SQLite backup, in-place Railway restart, health recovery, authenticated reconnect,
-  same-world/cursor/mission readback, and post-restart unauthenticated WebSocket rejection; clean
-  browser absence, authenticated wrong-scope denial, rollback, and final hosted closure remain open.
+  same-world/cursor/mission readback, browser-absent continuity, and post-restart unauthenticated
+  WebSocket rejection; authenticated wrong-scope denial, rollback, and final hosted closure remain open.
+- [`96-cp17-authenticated-cross-scope-denial-runtime-cross-functional-audit.md`](96-cp17-authenticated-cross-scope-denial-runtime-cross-functional-audit.md)
+  — local production-like Clerk-mode HTTP denial in both directions, durable no-mutation and retry
+  readback, and strict client-authority rejection; the real-provider hosted denial and rollback/read-restore remain open.
 
 ## Current concept checks
 

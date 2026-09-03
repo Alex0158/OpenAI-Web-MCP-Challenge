@@ -43,6 +43,7 @@
     "test:cp16-restart-recall": "tsx --test tests/cp16-local-causal-restart-recall.test.ts",
     "test:cp16-burst-page-context": "tsx --test tests/cp16-real-event-burst-page-context.test.ts",
     "test:cp17-admission": "tsx --test tests/cp17-production-admission.test.ts",
+    "test:cp17-cross-scope": "tsx --test tests/cp17-cross-scope-denial.test.ts",
     "test:cp17-clerk": "tsx --test tests/cp17-clerk-presentation.test.ts",
     "test:cp15": "node scripts/run_cp15_matrix.mjs",
     "test:cp16-local": "tsx --test tests/cp16-local-causal-slice.test.ts"

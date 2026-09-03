@@ -104,9 +104,19 @@ independent authenticated contexts now pass the concurrent scoped slice in [`SK-
 and [`Validation/94`](../Validation/94-cp17-independent-contexts-concurrent-hosted-runtime-cross-functional-audit.md);
 the hosted restart/reconnect and hash-verified backup slice now passes in [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md)
 and [`Validation/95`](../Validation/95-cp17-hosted-restart-backup-continuity-runtime-cross-functional-audit.md);
-deliberate authenticated cross-scope denial, a clean browser-absent interval, rollback/read-restore,
-and the full hosted acceptance matrix remain open; the provider facts and topology remain governed by
+deliberate authenticated cross-scope denial, rollback/read-restore, and the full hosted acceptance
+matrix remain open; the local production-like denial rehearsal is tracked separately under
+[`SK-TASK-079`](SK-TASK-079-cp17-authenticated-cross-scope-denial-rehearsal.md); the provider facts and topology remain governed by
 [`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md).
+
+[`SK-TASK-079`](SK-TASK-079-cp17-authenticated-cross-scope-denial-rehearsal.md) is `in_progress` for
+the CP-17 authenticated cross-scope denial rehearsal. Its local production-like Clerk-mode HTTP
+slice is verified under [`SK-EVID-070`](../Evidence/SK-EVID-070-cp17-authenticated-cross-scope-denial-runtime-verification.md)
+and [`Validation/96`](../Validation/96-cp17-authenticated-cross-scope-denial-runtime-cross-functional-audit.md):
+both directions return the privacy-preserving `403`/`NOT_OWNER` result, no gameplay/economy/mission/event
+state changes, rejection retries remain durable, and client-selected identity fields fail closed.
+The hosted denial row remains open because the supported browser surface has no arbitrary authenticated
+request seam; rollback/read-restore is an independent optional rehearsal and no production bypass is allowed.
 
 [`SK-TASK-077`](SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) is `in_progress` for the
 CP-17 host decision and production-like deployment preflight. It records the host-neutral process,

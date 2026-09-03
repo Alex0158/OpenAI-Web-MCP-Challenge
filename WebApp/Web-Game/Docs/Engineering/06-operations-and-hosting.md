@@ -59,8 +59,11 @@ concurrent Chrome/Codex Browser scoped slice is recorded under [`SK-EVID-068`](.
 The hash-verified SQLite backup, in-place Railway restart, health recovery, authenticated reconnect,
 same-world/cursor/mission readback, and post-restart unauthenticated WebSocket rejection are recorded
 under [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md).
-Deliberate authenticated cross-scope denial, rollback/read-restore,
-and the final hosted acceptance matrix still require the remaining CP-17 rehearsal.
+The local production-like authenticated cross-scope denial slice is recorded under
+[`SK-EVID-070`](../Evidence/SK-EVID-070-cp17-authenticated-cross-scope-denial-runtime-verification.md)
+and [`Validation/96`](../Validation/96-cp17-authenticated-cross-scope-denial-runtime-cross-functional-audit.md).
+Deliberate hosted authenticated cross-scope denial, rollback/read-restore, and the final hosted
+acceptance matrix still require the remaining CP-17 rehearsal.
 
 The local CP-04 process contract is intentionally smaller: one explicit Node.js entrypoint hosts the
 page and world-worker modules and exposes process health. `live` and `ready` are separate health
