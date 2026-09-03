@@ -229,6 +229,28 @@ test("production entrypoint runs the happy path through bootstrap, realtime, and
     assert.equal(clientScopeOverride.status, 400);
     assert.deepEqual(await clientScopeOverride.json(), { error_code: "PAGE_TOOL_INPUT_INVALID" });
 
+    const playerBPageToolResponse = await fetch(`${base}${PAGE_TOOLS_EXECUTE_PATH}`, {
+      method: "POST",
+      headers: {
+        cookie: `${CLERK_SESSION_COOKIE_NAME}=subject-b`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ tool: "inspect_shelter_state", input: {} }),
+    });
+    assert.equal(playerBPageToolResponse.status, 200);
+    const playerBPageToolRead = await playerBPageToolResponse.json() as {
+      scope: { world_id: string; player_id: string; shelter_id: string };
+      shelter: { shelter_id: string; player_id: string };
+    };
+    assert.deepEqual(playerBPageToolRead.scope, {
+      world_id: "cp17-world",
+      player_id: "player-b",
+      shelter_id: "shelter-b",
+    });
+    assert.equal(playerBPageToolRead.shelter.shelter_id, "shelter-b");
+    assert.equal(playerBPageToolRead.shelter.player_id, "player-b");
+    assert.equal(JSON.stringify(playerBPageToolRead).includes("shelter-a"), false);
+
     const fixtureRoute = await fetch(`${base}/api/local-fixture/bootstrap`);
     assert.equal(fixtureRoute.status, 503);
     assert.deepEqual(await fixtureRoute.json(), { error_code: "LOCAL_FIXTURE_UNAVAILABLE" });

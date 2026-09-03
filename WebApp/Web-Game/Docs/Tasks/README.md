@@ -126,6 +126,14 @@ isolation, rejects client-selected identity input, and keeps the fixture route u
 an admission/read proof only; hosted page-tool execution, genuine browser WebMCP registration,
 dynamic recall, and Agent/Re-entry delivery remain open.
 
+The CP-17 production-like WebMCP two-identity scope slice is runtime-verified under
+[`SK-EVID-072`](../Evidence/SK-EVID-072-cp17-production-webmcp-two-identity-scope-runtime-verification.md)
+and [`Validation/98`](../Validation/98-cp17-production-webmcp-two-identity-scope-runtime-cross-functional-audit.md):
+both fixed Clerk subjects receive private `inspect_shelter_state` reads through one route, the
+opposite shelter is absent from Player B's response, and client-selected identity remains rejected.
+This is local production-like evidence only; hosted page-tool execution, genuine browser WebMCP
+registration, dynamic recall, and Agent/Re-entry delivery remain open.
+
 [`SK-TASK-077`](SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) is `in_progress` for the
 CP-17 host decision and production-like deployment preflight. It records the host-neutral process,
 store, WebSocket, health, and rollback fields; the owner-accepted Railway/SQLite Volume topology is

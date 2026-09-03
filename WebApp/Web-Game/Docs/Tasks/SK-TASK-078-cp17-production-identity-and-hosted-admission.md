@@ -167,6 +167,10 @@ restore has been configured.
   scope with cache isolation, while a client-selected `player_id` is rejected before worker execution.
   This read/admission slice is recorded in [`SK-EVID-071`](../Evidence/SK-EVID-071-cp17-production-webmcp-page-tool-admission-runtime-verification.md)
   and [`Validation/97`](../Validation/97-cp17-production-webmcp-page-tool-admission-runtime-cross-functional-audit.md).
+- Verified locally: Both fixed Clerk subjects now use the same production-like WebMCP page-tool route
+  with their own server-derived scope; Player B's private read omits Player A's shelter identifier.
+  The two-identity isolation result is recorded in [`SK-EVID-072`](../Evidence/SK-EVID-072-cp17-production-webmcp-two-identity-scope-runtime-verification.md)
+  and [`Validation/98`](../Validation/98-cp17-production-webmcp-two-identity-scope-runtime-cross-functional-audit.md).
 - Verified locally: Production Clerk configuration fails closed when the durable database path,
   autonomous worker flag, verification key, or either fixed subject binding is absent; the world cannot
   be accidentally hosted as a browser-driven or non-progressing process.

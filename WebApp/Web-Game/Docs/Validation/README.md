@@ -192,6 +192,10 @@ not claim that the game is built or balanced.
   — local production-like WebMCP page-tool admission across Clerk-derived scope, private read
   projection, cache isolation, strict client-authority parsing, fixture exclusion, and the remaining
   hosted, browser, and Agent action gates.
+- [`98-cp17-production-webmcp-two-identity-scope-runtime-cross-functional-audit.md`](98-cp17-production-webmcp-two-identity-scope-runtime-cross-functional-audit.md)
+  — local production-like two-identity page-tool isolation across one shared route, server-derived
+  Player A/B scopes, opposite-shelter exclusion, strict client-authority parsing, and the remaining
+  hosted, browser, and Agent action gates.
 
 ## Current concept checks
 
