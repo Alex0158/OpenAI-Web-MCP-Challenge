@@ -202,6 +202,26 @@ rollback, deployed-role access, and mandatory CI/release enforcement remain open
 also records that internal inspection currently uses separate Grant/Delivery reads;
 its public snapshot semantics must be decided and tested before product exposure.
 
+## 4.4 Post-writeback exact-pin refresh
+
+After parent evidence commits changed three files inside the selected Core/spec
+inventory, the old fixed pin correctly failed before database access with
+`conformance_source_commit_mismatch`. The reviewed pin now selects Core commit
+`84f5082c5701c7a2bb4d233b511134898434a249` in Receiver commit `1368741`.
+
+The refreshed local checks pass: source-pin fixtures `16/16`, migration guards
+`5/5`, the pinned real Express/PostgreSQL standing trace `1/1` at Receiver
+commit `7faf527aca7710a26ee03c2c4beec0e2c7edf8c0`, and the full backend
+aggregate `21/21` suites / `158` tests with no skips or failures. The trace's
+selected Core/spec source SHA-256 is
+`6c7688a074c3d99bca6cba1945b79200db4b8f4b0455edef55f2f3659095cb65` on Node
+`v26.5.0`.
+
+This supersedes the earlier pin-only identity snapshot while preserving its
+historical evidence. It does not close the mandatory shared failure/race,
+forced-rollback, fresh-process recovery, release-enforcement, public-control,
+lifetime, or production gates; `release_conformance_verified` remains false.
+
 ## 5. Verification and closure
 
 ADR-0044 moves this decision task to `verification_pending`; it does not prove implementation

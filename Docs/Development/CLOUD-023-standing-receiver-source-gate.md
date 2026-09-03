@@ -333,3 +333,30 @@ outside this increment; no whole-repository security pass is claimed and no
 unrelated file was changed. Parent documentation Git closure uses the separately
 coordinated nine-path window. No push, CI pass, production migration, deployment,
 publication, or full TASK-028/TASK-033 closure is claimed.
+
+## Post-writeback exact-pin refresh: 2026-09-03
+
+The parent evidence commits after the original pin changed three files inside
+the selected Core/spec inventory. A pinned Receiver run with the old
+`28d74e...` pin stopped before database access with the expected
+`conformance_source_commit_mismatch`. After reviewing the exact changes, the
+Receiver pin was advanced to Core commit
+`84f5082c5701c7a2bb4d233b511134898434a249` in nested commit `1368741`.
+
+The refreshed verification is:
+
+- source-pin fixtures: `16/16` passed;
+- migration upgrade guards: `5/5` passed;
+- pinned Express/PostgreSQL standing trace: `1/1` passed at Receiver commit
+  `7faf527aca7710a26ee03c2c4beec0e2c7edf8c0`, Core source SHA-256
+  `6c7688a074c3d99bca6cba1945b79200db4b8f4b0455edef55f2f3659095cb65`, and
+  Node `v26.5.0`; and
+- full backend aggregate: `21/21` suites and `158` tests passed with no skips
+  or failures on the task-owned loopback PostgreSQL baseline.
+
+The pin refresh verifies the current selected Core/spec bytes and the minimum
+shared standing trace after documentation drift. It does not close the full
+negative/race/forced-rollback/fresh-process matrix, public control or lifetime
+decisions, release enforcement, production effect authority, deployment, or
+hosted readback. The current highest supported state remains local committed
+source and minimum pinned trace verified; TASK-028 remains `verification_pending`.
