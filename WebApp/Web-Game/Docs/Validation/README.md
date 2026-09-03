@@ -124,6 +124,9 @@ not claim that the game is built or balanced.
   evidence gate.
 - [`77-cp16-independent-browser-context-capability-runtime-cross-functional-audit.md`](77-cp16-independent-browser-context-capability-runtime-cross-functional-audit.md)
   — CP-16 In-app Browser two-tab limitation, close-one lifecycle, and independent-session gate.
+- [`78-cp12-canvas-actor-world-visual-surface-runtime-cross-functional-audit.md`](78-cp12-canvas-actor-world-visual-surface-runtime-cross-functional-audit.md)
+  — CP-12 Canvas primitive actor/world presentation, projection authority, responsive readback, and
+  final-art boundary.
 
 ## Current concept checks
 

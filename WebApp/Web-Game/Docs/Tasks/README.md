@@ -88,12 +88,15 @@ is unmade, a duplicate, or an external action added merely to make the queue loo
 
 ## 6. Current task routing
 
-All registered tasks are terminal at their named scope; the documentation validator reports no
-non-terminal task. [`SK-TASK-062`](SK-TASK-062-cp14-game-side-local-stub-delivery-port.md) is the
-latest verified CP-14 game-side increment. It proves the local `ReentryDeliveryPort`/`pumpOnce`
+[`SK-TASK-065`](SK-TASK-065-cp12-canvas-actor-world-visual-surface.md) is verified for the named
+deterministic Canvas actor/world presentation under [`SK-EVID-052`](../Evidence/SK-EVID-052-cp12-canvas-actor-world-visual-surface-runtime-verification.md)
+and [`Validation/78`](../Validation/78-cp12-canvas-actor-world-visual-surface-runtime-cross-functional-audit.md).
+It owns only the local visual baseline and does not alter the server, snapshot, session, WebMCP,
+Re-entry, or external handoff boundaries. All registered tasks are now terminal at their named scope.
+[`SK-TASK-062`](SK-TASK-062-cp14-game-side-local-stub-delivery-port.md) remains the latest verified CP-14 game-side increment. It proves the local `ReentryDeliveryPort`/`pumpOnce`
 mapping against a labelled transport stub and must not claim live Receiver, Connector, Agent, hosted,
-or Re-entry delivery. The next actionable task is a separately admitted live-integration increment
-after Eddy's versioned Receiver/Local Connector handoff.
+or Re-entry delivery. The next CP-14 live-integration increment remains separately admitted only after
+Eddy's versioned Receiver/Local Connector handoff.
 
 [`SK-TASK-057`](SK-TASK-057-cp12-server-owned-continuous-intent.md) is terminal at its named local
 server-owned continuous-intent runtime scope under [`SK-EVID-043`](../Evidence/SK-EVID-043-cp12-server-owned-continuous-intent-runtime-verification.md)

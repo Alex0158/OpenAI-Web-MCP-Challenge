@@ -1,6 +1,6 @@
 # UI Visual System
 
-**Status:** Working preparation specification; CP-12 UI icon cues are integrated and the remaining runtime surfaces stay open
+**Status:** Working preparation specification; CP-12 UI icon cues and the Canvas primitive baseline are integrated while the remaining runtime surfaces stay open
 **Parent design:** [`../06-visual-ui-and-asset-spec.md`](../06-visual-ui-and-asset-spec.md)
 
 React/HTML owns readable controls and status. Canvas owns the world projection. The UI must make the

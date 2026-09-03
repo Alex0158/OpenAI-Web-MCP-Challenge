@@ -1,6 +1,6 @@
 # Asset Inventory
 
-**Status:** Preparation ledger; CP-12 inline UI icon slice integrated; actor and world runtime implementation remains open
+**Status:** Preparation ledger; CP-12 inline UI icon slice and Canvas primitive baseline are integrated; source atlas and full actor/world state coverage remain open
 **Parent vocabulary:** [`../06-visual-ui-and-asset-spec.md`](../06-visual-ui-and-asset-spec.md)
 **Direction:** [`01-visual-direction.md`](01-visual-direction.md)
 **References:** [`07-reference-board.md`](07-reference-board.md)
@@ -8,6 +8,12 @@
 This ledger tracks visual preparation and handoff. The parent asset specification owns the stable G2
 renderer IDs. An entry here may be prepared before its runtime integration, but it must not change a
 domain identity, gameplay state, event name, or command contract.
+
+The current CP-12 runtime increment uses deterministic Canvas primitives for the baseline states: fog,
+grass, blocked cells, available/depleted Wood and Rock, player, Shelter, GATHERER, HUNTER, Monster,
+cargo, and defeated cues. The source SVG sheets and the remaining selected, protected-ring, path,
+animation, and VFX states remain replaceable preparation assets until a later measured export is
+accepted.
 
 ## Status values
 

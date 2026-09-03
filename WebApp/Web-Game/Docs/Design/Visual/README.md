@@ -1,7 +1,7 @@
 # Visual Documentation
 
 **Role:** Preparation authority for the Sleepless Kingdom visual lane
-**Status:** Active preparation; the CP-12 React UI icon subset is integrated, while Canvas actors/world assets remain open
+**Status:** Active preparation; the CP-12 React UI icon subset and Canvas primitive baseline are integrated, while source atlas/final actor/world states remain open
 **Governing decision:** [`../../Decisions/ADR-GAME-0007-mvp-visual-assets-and-parallel-delivery.md`](../../Decisions/ADR-GAME-0007-mvp-visual-assets-and-parallel-delivery.md)
 
 This module records the visual direction, art vocabulary, asset specifications, motion limits, UI
@@ -31,5 +31,6 @@ CP-11. CP-12 owns runtime integration into Canvas and React.
 
 Reference files are curated separately from runtime assets. A candidate reference is not a product
 asset, and a generated image is not accepted runtime evidence until an owner-approved entry records
-its source, purpose, license or originality basis, and disposition. The integrated icon subset does
-not make the remaining actor, world, animation, or browser visual gates complete.
+its source, purpose, license or originality basis, and disposition. The integrated icon subset and
+Canvas primitive baseline do not make the remaining source atlas, animation, population-scale, or
+browser visual gates complete.

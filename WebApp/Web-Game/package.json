@@ -29,7 +29,7 @@
     "test:cp11": "tsx --test tests/cp11-combat.test.ts",
     "test:cp11-hunter": "tsx --test tests/cp11-hunter.test.ts",
     "test:cp12-projection": "tsx --test tests/cp12-projection.test.ts",
-    "test:cp12-visual": "tsx --test tests/cp12-visual-assets.test.tsx",
+    "test:cp12-visual": "tsx --test tests/cp12-visual-assets.test.tsx tests/cp12-canvas-visuals.test.ts",
     "test:cp12-fixture": "tsx --test tests/cp12-fixture-session.test.ts",
     "test:cp12-reconnect": "tsx --test tests/cp12-reconnect.test.ts",
     "test:cp12-keyboard": "tsx --test tests/cp12-keyboard-movement.test.ts",
