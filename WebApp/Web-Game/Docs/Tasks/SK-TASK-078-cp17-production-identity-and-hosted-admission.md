@@ -191,6 +191,19 @@ surface after the owner supplies or provisions the two invite-only identities. D
 Game source after the secrets are present; if any hosted fact fails, preserve the first failure and
 return to this verified local seam rather than enabling fixture mode or adding a hidden fallback.
 
+### Required Railway variable handoff
+
+Provision these values in the Railway `game` service's Variables surface; do not paste secret values
+into chat, tracked files, or evidence:
+
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`: the Clerk Production publishable key, available during the
+  Next.js build for the client admission shell.
+- Exactly one server verification key: `CLERK_SECRET_KEY` or `CLERK_JWT_KEY`.
+- `CLERK_PLAYER_A_SUBJECT` and `CLERK_PLAYER_B_SUBJECT`: the stable Clerk `sub` values for the two
+  invite-only demo accounts, mapped server-side to `player-a` and `player-b`.
+- Keep the existing `CLERK_AUTHORIZED_PARTIES` value bound to the generated Railway HTTPS origin;
+  it must match the final canonical origin used for Clerk session issuance.
+
 ## TDD and verification budget
 
 The implementation must use the Game test runbook's Red -> Green -> Refactor loop at each coherent
