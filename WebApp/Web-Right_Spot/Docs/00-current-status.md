@@ -34,11 +34,11 @@ reports healthy at `/api/health`. A fresh rendered route/role sweep covered the 
 catalogue, Favourites, Viewing Requests, listing detail, wrong-role Agent access, and the valid Agent
 queue/listing-interest surface without workflow-fixture mutation or browser errors. No new
 `VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`, `VERIFIED_POLISH`, or `DOCUMENTATION_DRIFT` finding was accepted.
-**Last executable product-source baseline (2026-09-02):** `898fea29eec7db80753819d020b89d19868dfff1`,
-captured while `HEAD` equalled `origin/main`; the subsequent `19bb483` commit contains only this
-source-identity documentation reconciliation and no product-source change. RightSpot tracked source
-remains clean, and the known untracked boundary artifacts remain preserved and are not product source
-changes.
+**Last executable product-source baseline (2026-09-03):** ordinary Tenant Discovery Search is
+integrated at product code commit `534f5c9d2125fed77decd8f07202a2ea4693ce7e`. The exact ten-path
+slice passed `161/161`, typecheck, production build, repository validators, sensitive scan, local
+health, and bounded browser smoke. RightSpot tracked source remains clean; the known untracked
+boundary artifacts remain preserved and are not product source changes.
 
 The latest visual-only revalidation used isolated session `rightspot-visual-20260902` against the
 unchanged product source baseline represented by `898fea2` (current repository HEAD was the docs-only
@@ -87,9 +87,8 @@ now defines Area as a canonical structured facet. Partial input is limited to bo
 suggestion discovery; the applied filter uses a selected canonical `listing.area` value after shared
 trim and case-insensitive normalization. Unknown or unselected values receive bounded validation,
 selected values with no published matches remain explicit empty results, and no fuzzy, alias, or full-
-catalogue fallback is allowed. The current source still reflects the pre-decision free-text/exact-
-equality behavior because the implementation Work Order `RS-WO-043-01` is active but has not yet
-completed its handoff; the implementation gap remains explicitly tracked below.
+catalogue fallback is allowed. The ordinary Search implementation now follows this direction at
+product code commit `534f5c9`; the thin WebMCP adapter remains a separate gated Work Order.
 **Accepted Search contract (2026-09-03):** [ADR-RS-0015](Decisions/ADR-RS-0015-tenant-search-and-webmcp-contract.md)
 freezes the first slice at the four optional criteria `area`, `maxRent`, `minSizeSqM`, and public
 `availableBy` (mapped to the compatibility `availableFrom` field). Criteria are ANDed with inclusive
@@ -99,15 +98,16 @@ includes the evaluated fixture generation, normalized filters, matched count, te
 `/tenant` page identity, and `results`/`empty` state. Invalid, unknown-area, unavailable, malformed,
 superseded, signed-out, and wrong-role outcomes are bounded; empty results never fall back to all
 listings. This is a contract decision, not an implementation or WebMCP registration claim.
-**Active implementation dispatch (2026-09-03):** `RS-WO-043-01` is executing in the canonical Main
-Worktree against source baseline `74737bd` with Node `24.20.0`. The work is limited to the ordinary
-Search authority/UI/API parity slice; the WebMCP adapter and independent browser verification are not
-active yet. The baseline tracked source was clean, while five pre-existing untracked RightSpot boundary
-artifacts remain preserved and outside the Work Order write set. No implementation result is accepted
-until Main reviews the exact diff and handoff evidence.
+**Integrated implementation checkpoint (2026-09-03):** `RS-WO-043-01` is integrated in the canonical
+Main Worktree at product code commit `534f5c9` with Node `24.20.0`. Main reviewed the exact ten-path
+boundary and added bounded contract-hardening coverage for logical-versus-HTTP filter separation,
+strict input/envelope validation, shared Area normalization, and fail-closed malformed response
+handling. The WebMCP adapter and independent browser verification are not active yet; no WebMCP
+runtime claim is made. Five pre-existing untracked RightSpot boundary artifacts remain preserved.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Review the `RS-WO-043-01` handoff, integrate only its approved ordinary
-Search changes, then dispatch the gated WebMCP adapter and independent verification in sequence.
+**Current next product action:** Capture the final post-documentation baseline, dispatch the gated
+`RS-WO-043-02` page-bound adapter, review its exact handoff, and only then dispatch
+`RS-WO-043-03` independent verification.
 `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP decision proposal. The Main-thread
 cross-layer audit Goal is closed
 for the accepted ordinary local MVP; `RIGHTSPOT-039` /

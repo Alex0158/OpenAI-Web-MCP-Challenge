@@ -14,20 +14,22 @@ page/session-bound read-only WebMCP capability without creating a second listing
 - **Lifecycle:** `in_progress`
 - **Execution posture:** `SERIAL_PRODUCT_SEARCH_WITH_SEQUENTIAL_WEBMCP_GATE`
 - **Owner:** Main RightSpot thread
-- **Current gate:** `RS-WO-043-01` is dispatched in the canonical Main Worktree for the ordinary
-  Search authority/UI/API slice. The later adapter and verifier remain gated on this handoff. No
-  source, dependency, WebMCP registration, fixture, or extra Worktree change is authorized outside
-  the active Work Order.
-- **Dispatch state:** `RS-WO-043-01 dispatched`
-- **Supporting workers:** Hubble is the delegated Builder for `RS-WO-043-01`; Main retains source
-  integration, shared-file serialization, verification acceptance, canonical documentation, and Git
-  closure authority.
-- **Source identity:** Dispatch baseline captured at repository root `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge`,
-  branch `main`, commit `74737bda1031b8c84cde63beb61f08a96a4ee5cd` (`origin/main` equal). RightSpot
-  tracked source was clean; five pre-existing untracked boundary artifacts were recorded and remain
-  protected. Node `v24.20.0`, npm `11.19.0`, `npm test` `159/159`, typecheck, build, and `/api/health`
-  passed before dispatch. The current browser bridge could not list WebMCP tools under this model;
-  that compatibility check remains explicitly gated to the adapter/verifier and is not a WebMCP claim.
+- **Current gate:** `RS-WO-043-01` is integrated in the canonical Main Worktree for the ordinary
+  Search authority/UI/API slice. `RS-WO-043-02` is the next gated adapter work; `RS-WO-043-03`
+  remains gated on that adapter. No source, dependency, WebMCP registration, fixture, or extra
+  Worktree change is authorized outside the active Work Order.
+- **Dispatch state:** `RS-WO-043-01 integrated; RS-WO-043-02 not yet dispatched`
+- **Supporting workers:** Hubble's `RS-WO-043-01` Builder handoff was reviewed and integrated by
+  Main. Main retains source integration, shared-file serialization, verification acceptance,
+  canonical documentation, and Git closure authority.
+- **Source identity:** The ordinary Search implementation is integrated in product code commit
+  `534f5c9d2125fed77decd8f07202a2ea4693ce7e` on branch `main` at repository root
+  `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge`. The reviewed code changed exactly the ten paths in
+  the `RS-WO-043-01` write set. Node `v24.20.0`, npm `11.19.0`, `npm test` `161/161`, typecheck,
+  build, repository validators, sensitive scan, and `/api/health` passed. Five pre-existing
+  untracked RightSpot boundary artifacts remain protected. The current browser bridge could not
+  list WebMCP tools under this model; that compatibility check remains explicitly gated to the
+  adapter/verifier and is not a WebMCP claim.
 - **Integration authority:** Main owns source integration, shared-file serialization, verification
   acceptance, canonical documentation, Git commit/push, and candidate Worktree retirement.
 
@@ -55,7 +57,7 @@ unsupported criterion, or fall back from an empty result to the full catalogue.
 ### RS-WO-043-01 — Implement shared Search semantics and ordinary UI/API parity
 
 **Role:** Builder — application/API and Tenant UI  
-**Status:** `IN_PROGRESS`
+**Status:** `INTEGRATED`
 **Parallelization:** `SERIAL_SEARCH_AUTHORITY` — this Work Order owns the shared Search authority and
 must complete before the WebMCP adapter Work Order.  
 **Risk:** `Assured` — crosses server validation, UI interpretation, DTO parity, and stale/error states.  
@@ -99,8 +101,19 @@ browser evidence output are local/generated only and must not be staged.
 - add Red → Green → Refactor coverage for every accepted criterion, boundary, error, empty, stale,
   parity, privacy, and no-mutation rule.
 
-This Work Order must not add WebMCP registration or dependency code. It returns `READY_FOR_VERIFICATION`
-only after exact-path review, focused checks, full checks, typecheck, build, and a clear handoff report.
+This Work Order did not add WebMCP registration or dependency code. Main reviewed the exact-path
+handoff, applied bounded contract-hardening fixes within the same write set, and integrated the
+ordinary Search slice after focused checks, full checks, typecheck, build, and a clear handoff report.
+
+**Main integration result (2026-09-03):** The ordinary Tenant Search path is integrated at product
+code commit `534f5c9`. Main confirmed the ten-path boundary and added tests/validation for strict
+logical-versus-HTTP filter separation, null/array/unknown filter rejection, shared Area
+normalization, response-envelope consistency, and fail-closed handling of malformed or private
+`appliedFilters` data. Focused UI/API/application checks passed `161/161`; typecheck, production
+build, repository validators, sensitive scan, and local health passed. Browser smoke confirmed
+truthful Area suggestions, bounded unselected-input validation, canonical `Southwark` application,
+and a one-listing result without stale replacement. This confirms ordinary Search behavior only;
+it does not claim WebMCP registration or supported-browser capability.
 
 ### RS-WO-043-02 — Add the thin page-bound read-only WebMCP adapter
 
@@ -208,6 +221,7 @@ widening the semantic contract.
 
 ## Closure evidence
 
-This Task is `in_progress` while `RS-WO-043-01` executes. The closed decision gate is recorded in
-`RIGHTSPOT-042` and ADR-RS-0015. The current handoff does not claim WebMCP runtime registration,
-browser support, deployment, or judge reproducibility; those remain later gates.
+This Task remains `in_progress` after `RS-WO-043-01` integration. The closed decision gate is
+recorded in `RIGHTSPOT-042` and ADR-RS-0015. `RS-WO-043-02` is the next Main-controlled gate and
+has not yet been dispatched. The current integrated result does not claim WebMCP runtime
+registration, browser support, deployment, or judge reproducibility; those remain later gates.

@@ -241,8 +241,8 @@ defines Area as a canonical structured facet. Partial input is limited to determ
 discovery; Apply and the future WebMCP capability use a selected canonical Area after shared trim and
 case-insensitive normalization. An unselected or unknown value must receive bounded validation, while
 a selected Area with no published matches remains an explicit empty result with no catalogue fallback.
-This direction is accepted but not yet implemented; the existing closed status above describes the
-current four-filter behavior only.
+The ordinary Tenant Search implementation now follows this direction at product code commit
+`534f5c9`; the later page-bound WebMCP capability remains separately gated.
 
 **Accepted Search contract:** [ADR-RS-0015](Decisions/ADR-RS-0015-tenant-search-and-webmcp-contract.md)
 freezes the first slice at the four optional criteria `area`, `maxRent`, `minSizeSqM`, and public

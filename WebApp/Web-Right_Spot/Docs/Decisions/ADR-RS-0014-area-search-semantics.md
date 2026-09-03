@@ -101,8 +101,9 @@ authority that are not justified by the bounded Tenant Discovery/WebMCP goal.
 - Tenants get discoverable Area input without sacrificing deterministic result semantics.
 - The ordinary UI and WebMCP can share one canonical Area contract rather than maintaining separate
   filter engines.
-- The current implementation remains an as-built legacy behavior until a separate implementation Task
-  applies this accepted direction; this ADR does not claim that suggestions are already implemented.
+- The ordinary Tenant Search implementation now applies this decision at product code commit
+  `534f5c9`; the later page-bound WebMCP adapter remains a separate implementation gate. This ADR
+  does not by itself claim WebMCP runtime registration or supported-browser capability.
 - The complete Search schema, date naming, result ordering/bound, freshness envelope, page-state
   agreement, and WebMCP lifecycle are accepted in [ADR-RS-0015](ADR-RS-0015-tenant-search-and-webmcp-contract.md).
 
