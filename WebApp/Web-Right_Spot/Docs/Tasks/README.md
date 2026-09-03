@@ -388,8 +388,8 @@ integration commit, and shared-index mixed-scope commit hazard in the Task and v
 Agent-side registration-observability portion of the same `F-26` finding
 is a bounded repair checkpoint under the still-open `RIGHTSPOT-047`, not a duplicate parent Task.
 `RIGHTSPOT-048` remains a harness-blocked evidence gate and `RIGHTSPOT-012` remains the non-blocking
-audit lane; its latest post-051 read-only review is currently assigned to Advisor Beauvoir and remains
-subject to Main review.
+audit lane; Advisor Beauvoir completed its latest post-051 read-only review with no new P0/P1/P2
+product finding, and Main accepted only the bounded documentation reconciliation.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.

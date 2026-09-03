@@ -850,3 +850,27 @@ boundaries, and documentation/test evidence drift. The Advisor may report eviden
 for Main review, but may not modify source, tests, documents, fixtures, SQLite, Git, Worktrees, or
 register follow-on Tasks. The lane remains non-blocking; 047-03 remains gated by the separate 048
 evidence decision.
+
+## Latest post-051 audit disposition — 2026-09-03
+
+Advisor Beauvoir returned `READY_FOR_REVIEW` and Main reviewed the report against current Main
+`60c6ea8`, integrated Tenant repair `0489155`, the current route/flow catalogue, and the 047/048
+Task boundaries. The focused cross-layer UI/lifecycle suite passed `55/55`; pinned TypeScript and
+RightSpot `git diff --check` passed. The complete `229/229` result remains accepted closure evidence
+from the 051 verification cycle; the Advisor did not rerun it because this read-only audit forbade
+fixture and generated-state mutation.
+
+The review accepted no new P0, P1, or P2 product finding. Business-state transitions, role-safe
+projections, privacy, manual Search fallback, 050 action safety, Tenant 051 registration-failure
+observability, and the existing 047/048 evidence boundaries remain as documented. Main therefore
+accepted `NO_ACTION` for new Task registration and retained 048 as `BLOCKED_HARNESS`, not a product
+failure; `RS-WO-047-03` remains gated until a reviewed 048 evidence decision and a new 047 baseline.
+
+The report did identify bounded documentation drift, which Main is reconciling without a new Task:
+RightSpot `README.md` reported `226/226`, its broad closure wording omitted the still-open Agent-side
+F-26 and 048 evidence boundaries, the business-flow catalogue still called Tenant 051 open, and the
+current Runbook still described the 048 browser attempt as active. The report also used a non-existent
+047 filename in one link; Main verified the actual authority is
+`Docs/Tasks/RIGHTSPOT-047-implement-agent-operations-webmcp-listing-pipeline.md` and did not copy the
+invalid link. No source, tests, fixtures, SQLite, Git, Worktree, or runtime product behavior changed
+in the audit; the bounded documentation writeback is Main-owned.

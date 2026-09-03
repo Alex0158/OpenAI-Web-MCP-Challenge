@@ -1725,3 +1725,24 @@ authority, WebMCP lifecycle boundaries, and test/evidence/documentation drift. T
 modify source, tests, documents, fixtures, SQLite, Git, Worktrees, or register follow-on Tasks; its
 report requires Main review. The audit is non-blocking, and the separate Agent `RS-WO-047-03` repair
 remains gated by the `RIGHTSPOT-048` evidence decision.
+
+## 7.49 Post-051 cross-layer audit disposition — `RIGHTSPOT-012` — 2026-09-03
+
+Advisor Beauvoir returned `READY_FOR_REVIEW` after a read-only review of the integrated `RIGHTSPOT-051`
+source and the Tenant-to-Agent business, route, UI/UX, accessibility, fallback, code-quality,
+privacy, data-authority, WebMCP, and evidence boundaries. The focused cross-layer UI/lifecycle suite
+passed `55/55`, pinned TypeScript passed, and the RightSpot diff check passed. The complete `229/229`
+result remains the accepted 051 closure evidence; the audit did not rerun the complete suite because
+its no-mutation constraints excluded the SQLite/generated-state writes used by that test path.
+
+Main reviewed the report and accepted no new P0, P1, or P2 product finding. It confirmed that the
+Tenant-to-Agent state machine, role-safe projections, privacy boundaries, manual Search fallback,
+050 action gate, and Tenant 051 deterministic registration-failure repair remain valid. Existing
+`RIGHTSPOT-048` `BLOCKED_HARNESS`, paused 047/`RS-WO-047-03` dependency, and `F-08` evidence gap
+remain limitations or gates rather than new product failures. The report found bounded documentation
+drift only: RightSpot README suite count/closure wording, business-flow Tenant 051 status, and the
+Runbook description of the 048 browser attempt. Main reconciled those records without opening a new
+Task. One Advisor link named a non-existent 047 filename; Main corrected the authority to the actual
+`RIGHTSPOT-047-implement-agent-operations-webmcp-listing-pipeline.md` file rather than propagating
+the invalid reference. No source, test, fixture, SQLite, Git, Worktree, or product runtime behavior
+changed during this audit, and no browser/WebMCP runtime claim was added.

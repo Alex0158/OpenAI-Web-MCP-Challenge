@@ -177,10 +177,11 @@ under the [pilot Runbook](Docs/Development/RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-
 
 **Current WebMCP lifecycle gate (2026-09-03):** `RIGHTSPOT-048` owns the shared focus/visibility
 session revalidation, actor-identity child teardown, and invocation-side authentication deactivation.
-Its reviewed candidate is frozen at `218935c`; `RS-WO-048-02` is the only active source-freeze browser
-gate before the paused `RIGHTSPOT-047` candidate can be re-baselined. Do not run the old 047 verifier
-target, claim external-session teardown, or push the Operations capability as closed until the 048
-repair and its independent browser evidence pass. This gate does not
+Its reviewed candidate is frozen at `218935c`; `RS-WO-048-02` ended at `BLOCKED_HARNESS` after its
+bounded corrected retry produced no final verifier report, and no browser process or active retry
+remains. Do not run the old 047 verifier target, claim external-session teardown, or push the
+Operations capability as closed until a reviewed 048 evidence decision and a new 047 baseline exist.
+This gate does not
 change the server session authority or authorize polling, external authentication, Cloud Receiver,
 WebRTC, Redis, deployment, or production hardening.
 
@@ -195,9 +196,10 @@ verification, and is integrated at product commit `0489155` within the Tenant pa
 `RS-WO-047-03` waits for the
 reviewed 048 evidence decision and a new 047 source baseline. These
 follow-ups do not authorize a new API, domain state, transport, external integration, or deployment
-claim. The Tenant portion is now closed at its deterministic boundary. Main has dispatched the next
-non-blocking read-only audit to Advisor Beauvoir (`01a0674b-3ad8-73a0-8f52-f59bc33a9d80`) under
-`gpt-5.6-sol + medium`; its report is advisory until Main review. The 048 browser-harness limitation
+claim. The Tenant portion is now closed at its deterministic boundary. Advisor Beauvoir
+(`01a0674b-3ad8-73a0-8f52-f59bc33a9d80`) completed the next non-blocking read-only audit under
+`gpt-5.6-sol + medium`; Main accepted `NO_ACTION` for new product Tasks and reconciled only the
+bounded documentation drift. The 048 browser-harness limitation
 and the `F-08` dynamic-route concern remain evidence limitations, not permission for blind retries.
 
 ## 1. Authority and reading order

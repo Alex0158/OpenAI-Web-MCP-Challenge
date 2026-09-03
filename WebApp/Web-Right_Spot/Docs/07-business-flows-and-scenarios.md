@@ -27,9 +27,9 @@ The 2026-09-03 audit also found `F-25`: a failed stale-write recovery could leav
 editor's old mutation controls usable. `RIGHTSPOT-050` now closes that bounded action gate. It found `F-26`
 in both page-bound WebMCP adapters: registration failure can be silently discarded when production
 wiring omits the existing error callback. `RIGHTSPOT-051` owns the Tenant portion and `RS-WO-047-03`
-owns the Agent portion. `F-25` is now closed within the Tenant consumer boundary; `F-26` remains an
-open capability-observability repair. Neither changes the business state machine, server authority,
-or manual UI contract.
+owns the Agent portion. `F-25` and the Tenant portion of `F-26` are now closed within their exact
+consumer boundaries; the Agent portion remains gated. Neither changes the business state machine,
+server authority, or manual UI contract.
 `F-18` was a tenant Discovery error-copy defect tracked by `RIGHTSPOT-040`; the bounded consumer
 repair is now closed and verified.
 The continuing audit then reproduced `F-19`, tracked by `RIGHTSPOT-041`, where successful tenant draft
@@ -165,7 +165,7 @@ Status values used below:
 | ID | Business chain | Main surface | State/effect | Current disposition |
 |---|---|---|---|---|
 | `RS-FLOW-01` | Establish, resolve, and end a role session | `/`, `/api/session` | Session cookie only | `CLOSED_VERIFIED` — signed-out resolution, role mismatch, sign-out recovery, and documented local hosts are verified; fresh browser evidence in `rightspot-audit-082` |
-| `RS-FLOW-02` | Discover and filter published rentals | `/tenant` | Read-only listing projection | `CLOSED_VERIFIED` for ordinary Search behavior; `RIGHTSPOT-040` keeps local validation feedback separate from bounded catalogue-read error copy, while `RIGHTSPOT-051` remains open only for WebMCP registration-failure observability |
+| `RS-FLOW-02` | Discover and filter published rentals | `/tenant` | Read-only listing projection | `CLOSED_VERIFIED` for ordinary Search behavior; `RIGHTSPOT-040` keeps local validation feedback separate from bounded catalogue-read error copy, and `RIGHTSPOT-051` is `CLOSED_VERIFIED` for Tenant registration-failure observability without adding a browser/universal-runtime claim; the Agent counterpart remains under `RS-WO-047-03` |
 | `RS-FLOW-03` | Inspect a listing and enter a request | `/tenant/listings/:listingId` | No implicit write | `CLOSED_VERIFIED` — same-listing notice copy is verified by `RIGHTSPOT-026`; cross-listing draft/active/terminal notice copy is verified by `RIGHTSPOT-034`; supported catalogue anchors were directly rechecked as full-document navigation in `rightspot-audit-081` |
 | `RS-FLOW-04` | Save, remove, reload, and re-save a Favourite | Listing cards/detail, `/tenant/favourites` | Favourite `ACTIVE/REMOVED` | `IMPLEMENTED_WITH_RESIDUAL_EVIDENCE` — fresh save/reload/remove/empty/re-save replay passed at generation `73`; unpublished reactivation remains static/direct evidence because no supported user-facing unpublish action exists |
 | `RS-FLOW-05` | Create and revise a Viewing Request draft | Listing detail, `/tenant/requests` | `TENANT_DRAFT`, version increment; `RIGHTSPOT-031` preserves truthful stale-write recovery feedback; `RIGHTSPOT-041` preserves parent-owned post-save feedback after rehydration; `RIGHTSPOT-050` withholds actions after failed recovery | `CLOSED_VERIFIED` for ordinary state/mutation/completion behavior and the bounded failed-recovery action-safety gate |
@@ -1547,8 +1547,9 @@ Operations filters, results, loading, empty, error, Retry, navigation, keyboard 
 privacy behavior must remain usable. This is not a new tool, transport, telemetry system, or server
 contract, and it does not upgrade static tests or a browser-harness attempt into runtime evidence.
 
-**Disposition:** `F-26` is `OPEN_FINDING`, `P2`, with Tenant ownership registered in pending
-`RIGHTSPOT-051` and Agent ownership recorded as gated `RS-WO-047-03` under open `RIGHTSPOT-047`.
+**Disposition:** Tenant ownership is `CLOSED_VERIFIED`, `P2`, within deterministic `RIGHTSPOT-051`
+adapter/page evidence. Agent ownership remains a gated `RS-WO-047-03` checkpoint under open
+`RIGHTSPOT-047`; the combined `F-26` finding therefore remains partially open only on the Agent side.
 
 ## 9.10 Agent preparation validation boundary evidence — 2026-09-02
 

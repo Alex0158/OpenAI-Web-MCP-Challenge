@@ -3,8 +3,8 @@
 **Role:** Independent child application inside the WebMCP Challenge repository  
 **Working identity:** RightSpot — the rental-workflow candidate previously documented as
 `Rental Marketplace Relay`  
-**Status:** Accepted ordinary local MVP remains implemented and closed within its bounded business-state scope; the continuing cross-layer audit remains active, Tenant Discovery `search_listings` is verified in its declared local supported-browser capability, and the Agent Operations `read_listing_pipeline` candidate remains open pending independent browser evidence
-**Implementation:** Tenant and agent role pages, durable workflow HTTP/DTO transport, Favourites, listing-interest projection, Agent Operations manual read surface, Tenant Discovery/WebMCP Search, local synthetic media, and responsive navigation are integrated; the documented audit findings are closed within their recorded bounded claims except the retained `F-08` evidence gap. The current complete suite passes `226/226` across 47 authored test files.
+**Status:** Accepted ordinary local MVP remains implemented and closed within its bounded business-state scope; the continuing cross-layer audit remains active, Tenant Discovery `search_listings` and Tenant registration-failure observability are verified within their declared boundaries, and the Agent Operations `read_listing_pipeline` candidate remains open pending its separate evidence path
+**Implementation:** Tenant and agent role pages, durable workflow HTTP/DTO transport, Favourites, listing-interest projection, Agent Operations manual read surface, Tenant Discovery/WebMCP Search, local synthetic media, and responsive navigation are integrated; the Tenant `RIGHTSPOT-051` registration-observability repair is `CLOSED_VERIFIED` deterministically, while Agent-side `F-26` and the `RIGHTSPOT-048` integrated-browser evidence gate remain open/gated. The retained `F-08` route evidence gap is not a reproduced user-flow failure. The current complete suite passes `229/229` across 47 authored test files.
 **Formal outer app-selection decision:** Pending
 
 ## Purpose
