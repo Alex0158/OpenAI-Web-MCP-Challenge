@@ -6,10 +6,8 @@
 - Closure type: `hosted_verified`
 - Checkpoint: `CP-17`
 - Owner: Game owner
-- Current increment: The owner-approved Railway persistent-volume + SQLite + Clerk direction is implemented at the local production-like boundary, the minimal invite-only Clerk client admission shell is contract-verified, and the first Railway project, service, Volume, domain, and non-secret production configuration have been provisioned and read back. No Game deployment or Clerk secret has been applied.
-- Next gate: Supply the Clerk Production verification material and two fixed provider subjects, deploy
-  the exact Game source, then record project/plan, mount, public URL, Clerk session issuance, restart,
-  backup, and rollback readback before any hosted claim.
+- Current increment: The owner-approved Railway persistent-volume + SQLite + Clerk direction is implemented at the local production-like boundary, and the Railway service runs the exact Game source with the rotated Clerk Production secret. The custom Game HTTPS endpoint, Clerk DNS/SSL/JWKS surface, signed-out invite-only client gate, sequential identity slices, concurrent Chrome Player A/Codex Browser Player B slice, and hosted restart/reconnect slice are verified at bounded hosted levels 4, 5, and 6: each identity reached its server-derived projection, the two contexts omitted the opposite shelter, both accepted scoped GATHERER commands, both observed extraction/deposit settlement and advancing realtime snapshots, and both reconnected after an in-place Railway restart with the same world, cursor, coins, mission rows, and private scopes. A consistent SQLite backup was hash-verified and the unauthenticated realtime boundary remained `401` after restart. Deliberate authenticated denial, a clean browser-absent interval, rollback/read-restore, and full hosted closure remain open under [`SK-EVID-068`](../Evidence/SK-EVID-068-cp17-independent-contexts-concurrent-hosted-runtime-verification.md), [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md), [`Validation/94`](../Validation/94-cp17-independent-contexts-concurrent-hosted-runtime-cross-functional-audit.md), and [`Validation/95`](../Validation/95-cp17-hosted-restart-backup-continuity-runtime-cross-functional-audit.md).
+- Next gate: Preserve the two clean identities, prove one authenticated wrong-scope command is rejected through an approved test seam, then observe a short interval with both realtime connections absent. Decide whether rollback/read-restore is required; claim `hosted_verified` only after those remaining rows and the complete acceptance matrix pass.
 
 ## Identity
 
@@ -29,7 +27,9 @@ future adapter decision rather than an implementation prerequisite.
 The target is one supervised Node.js 24 service with the existing page/worker authority, one attached
 Railway volume mounted at an explicit database path, and Clerk Production invite-only authentication.
 The provider topology is recorded in [`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md);
-external account, secret, domain, and deploy changes remain a later gate.
+the owner-authorized account, secret, DNS/TLS, and source-deployment changes are recorded in
+[`SK-EVID-065`](../Evidence/SK-EVID-065-cp17-hosted-deployment-and-clerk-domain-runtime-verification.md),
+while authenticated continuity remains a later gate.
 
 ## Success and non-goals
 
@@ -67,11 +67,11 @@ external account, secret, domain, and deploy changes remain a later gate.
   bootstrap/restart tests, deployment manifest and environment contract, and task/evidence/validation
   updates owned by the Game tree.
 - Out of scope: `reentry-core/`, `mvp/`, RightSpot, Eddy-owned Receiver/Local Connector/Host SDK,
-  external provider projects beyond the owner-authorized Railway resource preflight, external
-  credentials, DNS or TLS writes, provider billing, and unrelated dirty files.
+  provider billing, additional provider resources beyond the owner-authorized Railway/Clerk
+  topology, and unrelated dirty files.
 - Allowed actions at registration: read, edit, write, and run local checks in the Game tree. The owner
-  later authorized the selected Railway project/service/Volume/domain preflight; secret creation, source
-  deployment, and external handoff remain separate gates after the host/topology ADR.
+  later authorized the selected Railway project/service/Volume/domain, Clerk identities, secret
+  rotation, DNS/TLS, and exact source deployment; Eddy's external handoff remains a separate gate.
 - Revalidate when: `SK-TASK-077` changes its host decision fields, the selected provider changes
   process/storage/WebSocket semantics, Clerk SDK or session verification semantics change, the Game
   contract or identity vocabulary changes, the canonical URL/session path changes, or Eddy's handoff
@@ -100,10 +100,10 @@ external account, secret, domain, and deploy changes remain a later gate.
 | Store and recovery | SQLite database on one Railway persistent volume preserves schema, snapshot, event log, outbox, clock anchor, and fixed identity map; restart resumes the same world | Ephemeral disk, multiple writers/replicas, silent data reset, or incompatible rollback |
 | Public boundary | Stable HTTPS canonical URL, truthful `live`/`ready`/world-readiness, supported WebSocket upgrade, redacted logs, and explicit degraded rejection | Claiming hosted gameplay from a build log or a page that only polls |
 
-The provider-specific ADR must confirm these fields against current official runtime contracts before
-any provider mutation. Clerk verifies the external session; the Game database remains the authority for
-Game ownership and world scope. The Cloud Receiver binding and Agent session are separate external
-boundaries and are not inferred from the Clerk subject.
+The provider-specific ADR confirmed these fields against current official runtime contracts before the
+owner-authorized provider mutation. Clerk verifies the external session; the Game database remains the
+authority for Game ownership and world scope. The Cloud Receiver binding and Agent session are separate
+external boundaries and are not inferred from the Clerk subject.
 
 ## Railway provider fact readback
 
@@ -134,8 +134,8 @@ restore has been configured.
   composition now provisions a named world before readiness, resolves server-side identity, and uses
   the same scope for HTTP and `/realtime`.
 - Verified: The local `ws` adapter exposes the server-owned session-resolver seam, while the fixture
-  session and its cookie remain explicitly non-production. Local evidence still cannot claim hosted
-  storage, a public endpoint, default-world continuity on Railway, or hosted gameplay.
+  session and its cookie remain explicitly non-production. Hosted evidence now covers the public
+  endpoint and Clerk entry surface; hosted storage continuity and authenticated gameplay remain open.
 - Verified: [`SK-TASK-077`](SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) is the active
   CP-17 host-neutral preflight; it names the process, store, bootstrap, identity, health, realtime,
   URL, secret, backup, and rollback fields and forbids provider-by-assumption deployment.
@@ -146,8 +146,15 @@ restore has been configured.
   `https://game-production-a0f1.up.railway.app`; the readback is recorded in
   [`SK-EVID-063`](../Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md).
 - Verified: The Railway service is configured for `npm run start`, `/api/health`, `ALWAYS` restart,
-  sleep disabled, one replica, and production-safe non-secret variables. Railway reports no latest
-  deployment because the Game source has not yet been uploaded.
+  sleep disabled, one replica, and production-safe non-secret variables. Deployment
+  `218112db-21b0-4c49-8758-50e02dc6352c` reached `SUCCESS`; the custom Game domain is DNS-verified
+  with a valid certificate and both public origins return the ready health contract. The hosted
+  readback is recorded in [`SK-EVID-065`](../Evidence/SK-EVID-065-cp17-hosted-deployment-and-clerk-domain-runtime-verification.md).
+- Verified: Clerk Production has the owner-provisioned invite-only `player1` and `player2` accounts,
+  the server-side subject variables are present, the named Railway secret is installed without
+  exposing its value, the superseded `default` key is revoked, and the custom domain's DNS/SSL/mail
+  provisioning is complete. The JWKS endpoint returns HTTP `200` for the expected production
+  instance, and the hosted page renders the Username/Password sign-in modal.
 - Verified locally: `@clerk/nextjs@7.9.0` provides the App Router `ClerkProvider`, invite-only signed-out
   Sign in branch, signed-in UserButton/Game branch, and explicit missing-production-key state; the
   presentation contract passed in [`SK-EVID-064`](../Evidence/SK-EVID-064-cp17-clerk-client-admission-contract.md).
@@ -166,30 +173,30 @@ restore has been configured.
 - Inferred: Railway plus one persistent SQLite volume and Clerk Production invite-only admission are
   the smallest coherent two-account demonstration topology because they preserve the existing long-
   running Node/page/worker boundary without a new database adapter.
-- Unknown: The provider plan and final region readback, source/build identity, Clerk production
-  instance configuration, publishable/secret values and fixed subject bindings, exact hosted cookie issuance,
-  exact SDK/version, subject-map persistence shape, Volume backup/restore, runtime health, restart
-  catch-up, WebSocket proxy behavior, rate limits, and Eddy's final hosted session/binding handoff.
+- Unknown: Successful password sign-in and hosted cookie issuance, independent two-session scope,
+  authenticated command/WebSocket behavior, no-browser worker progression, durable world/bootstrap
+  readback across restart, Volume backup/restore, rollback receipt, provider plan/region details,
+  rate limits, and Eddy's final hosted session/binding handoff.
 - Claim limit: Registering this task proves only that the work is bounded and actionable. It does not
-  prove authentication, a hosted endpoint, always-on gameplay, Cloud Receiver delivery, or judge
+  prove authenticated hosted gameplay, always-on continuity, Cloud Receiver delivery, or judge
   reproduction.
 
-## Hosted preflight readback
+## Hosted resource preflight readback
 
 The first provider resource setup is intentionally separated from deployment. Railway project
 `sleepless-kingdom` uses the `production` environment with one `game` service and one `game-data`
 Volume mounted at `/data`; the generated endpoint is
 `https://game-production-a0f1.up.railway.app`. The service has a `/api/health` check, `ALWAYS`
 restart policy, sleep disabled, one replica, and the production fail-closed non-secret configuration.
-No source upload, build, deployment, Clerk secret, or database write has occurred. The readback and
-claim boundary are recorded in [`SK-EVID-063`](../Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md).
+That record is a historical pre-deployment snapshot; the subsequent hosted deployment and Clerk
+domain readback are recorded in [`SK-EVID-065`](../Evidence/SK-EVID-065-cp17-hosted-deployment-and-clerk-domain-runtime-verification.md).
 
-## Smallest reversible action
+## Smallest reversible action for the remaining gate
 
-Keep Clerk credentials outside tracked files and add them only through Railway's secret variable
-surface after the owner supplies or provisions the two invite-only identities. Deploy only the exact
-Game source after the secrets are present; if any hosted fact fails, preserve the first failure and
-return to this verified local seam rather than enabling fixture mode or adding a hidden fallback.
+Keep Clerk credentials outside tracked files. Use the verified deployment as the rollback point while
+the two-identity, no-browser, restart, backup, and rollback rehearsal is executed; if any hosted fact
+fails, preserve the first failure and return to this verified local seam rather than enabling fixture
+mode or adding a hidden fallback.
 
 ### Required Railway variable handoff
 
@@ -201,8 +208,8 @@ into chat, tracked files, or evidence:
 - Exactly one server verification key: `CLERK_SECRET_KEY` or `CLERK_JWT_KEY`.
 - `CLERK_PLAYER_A_SUBJECT` and `CLERK_PLAYER_B_SUBJECT`: the stable Clerk `sub` values for the two
   invite-only demo accounts, mapped server-side to `player-a` and `player-b`.
-- Keep the existing `CLERK_AUTHORIZED_PARTIES` value bound to the generated Railway HTTPS origin;
-  it must match the final canonical origin used for Clerk session issuance.
+- `CLERK_AUTHORIZED_PARTIES` is bound to the final canonical origin `https://game.sleepless-kingdom.com`;
+  it must remain aligned with the origin used for Clerk session issuance.
 
 ## TDD and verification budget
 
@@ -242,8 +249,10 @@ do not use a full-suite run as a substitute for hosted evidence.
 | A9 | Fixture route or fixture cookie in production mode | Fixture endpoint remains unavailable and no fixture identity is accepted |
 | A10 | Worker runs with no browser and ordinary restart | Worker lifecycle remains browser-independent; hosted proof still requires Railway readback |
 
-Rows A1-A9 are covered by the focused local Node 24 contract/process test. Row A10 is a hosted
-rehearsal row and remains open until the actual Railway service and volume are exercised.
+Rows A1-A9 are covered by the focused local Node 24 contract/process test. The hosted deployment
+readback proves the public process/health entry point only; authenticated rows, browser-free
+progression, restart, and Volume continuity in A5-A10 remain open until the hosted rehearsal is
+executed.
 
 ## Verification and closure target
 

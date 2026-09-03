@@ -48,10 +48,19 @@ Volume containing the SQLite file. Set `GAME_DB_PATH` to that absolute mounted p
 `0.0.0.0`, and use Railway's injected `PORT`. This is a durable single-writer topology; it does not
 support multiple replicas or zero-downtime Volume redeploys. Railway documents that files outside a
 Volume are ephemeral, Volume backups include SQLite, and WebSockets use HTTP/1.1 upgrade. The selected
-project, service, Volume, domain, restart policy, and non-secret settings now have a provider readback
-under [`SK-EVID-063`](../Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md); the
-plan, source/build identity, deployment, backup, Clerk cookie issuance, and runtime continuity still
-require hosted readback under CP-17.
+project, service, Volume, domain, restart policy, and non-secret settings have a provider readback
+under [`SK-EVID-063`](../Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md), and
+the first hosted deployment, custom Game TLS, Clerk DNS/SSL/JWKS, and signed-out admission readback
+are recorded under [`SK-EVID-065`](../Evidence/SK-EVID-065-cp17-hosted-deployment-and-clerk-domain-runtime-verification.md).
+Sequential authenticated Player A and Player B command/settlement slices are recorded under
+[`SK-EVID-066`](../Evidence/SK-EVID-066-cp17-player-one-hosted-session-command-runtime-verification.md)
+and [`SK-EVID-067`](../Evidence/SK-EVID-067-cp17-player-two-hosted-session-command-runtime-verification.md); the
+concurrent Chrome/Codex Browser scoped slice is recorded under [`SK-EVID-068`](../Evidence/SK-EVID-068-cp17-independent-contexts-concurrent-hosted-runtime-verification.md).
+The hash-verified SQLite backup, in-place Railway restart, health recovery, authenticated reconnect,
+same-world/cursor/mission readback, and post-restart unauthenticated WebSocket rejection are recorded
+under [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md).
+Deliberate authenticated cross-scope denial, a clean browser-absent interval, rollback/read-restore,
+and the final hosted acceptance matrix still require the remaining CP-17 rehearsal.
 
 The local CP-04 process contract is intentionally smaller: one explicit Node.js entrypoint hosts the
 page and world-worker modules and exposes process health. `live` and `ready` are separate health
@@ -77,11 +86,14 @@ services are split, the page health surface must not invent readiness from its o
 The local production-like gap is now closed for the first boundary: an empty store has an idempotent
 named-world bootstrap, the entrypoint has a server-derived Clerk subject resolver for command/page-tool/
 realtime scope, and the default host is public-bind safe in production. The owner-authorized Railway
-resource preflight has provisioned and read back the selected project, one service, one `/data` Volume,
-one HTTPS domain, and non-secret production settings; hosted proof must still verify the mounted Volume
-at runtime, process supervisor, Clerk session issuance, deployment, restart catch-up, and canonical URL
-behavior. It must not enable fixture mode, reseed on every restart, or use a browser heartbeat to keep
-the world alive.
+resource preflight and first hosted deployment have provisioned and read back the selected project,
+one service, one `/data` Volume, one HTTPS Game domain, and the Clerk Production domain/JWKS surface;
+the two sequential hosted identity slices and the concurrent two-context slice now prove authenticated
+command/settlement paths, while the mounted Volume, process supervisor, authenticated reconnect, and
+canonical URL behavior have passed the named restart slice under [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md).
+Hosted proof must still verify independent scope denial, a clean browser-absent interval, and any
+rollback/read-restore claim before closure. It must not enable fixture mode,
+reseed on every restart, or use a browser heartbeat to keep the world alive.
 
 ## Security and abuse boundary
 

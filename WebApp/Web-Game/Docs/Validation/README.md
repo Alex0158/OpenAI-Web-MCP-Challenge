@@ -169,6 +169,22 @@ not claim that the game is built or balanced.
 - [`90-cp17-host-decision-and-deployment-preflight-cross-functional-audit.md`](90-cp17-host-decision-and-deployment-preflight-cross-functional-audit.md)
   — CP-17 current production start/configuration audit, host/store decision fields, bootstrap and
   production identity gaps, and the conservative route from local rehearsal to hosted continuity.
+- [`91-cp17-hosted-deployment-and-clerk-admission-cross-functional-audit.md`](91-cp17-hosted-deployment-and-clerk-admission-cross-functional-audit.md)
+  — bounded hosted Railway/Clerk deployment review: public health, custom-domain TLS, Clerk DNS/SSL/JWKS,
+  invite-only sign-in surface, secret rotation, and the remaining authenticated/restart/recovery gates.
+- [`92-cp17-player-one-hosted-admission-runtime-cross-functional-audit.md`](92-cp17-player-one-hosted-admission-runtime-cross-functional-audit.md)
+  — one authenticated Player A hosted slice across server-derived scope, GATHERER command admission,
+  worker extraction/deposit settlement, realtime progression, and the remaining two-player/continuity gates.
+- [`93-cp17-two-sequential-player-hosted-slices-cross-functional-audit.md`](93-cp17-two-sequential-player-hosted-slices-cross-functional-audit.md)
+  — sequential Player A and Player B hosted slices across server-derived identity, GATHERER command,
+  settlement, and realtime progression, with independent isolation and continuity gates kept open.
+- [`94-cp17-independent-contexts-concurrent-hosted-runtime-cross-functional-audit.md`](94-cp17-independent-contexts-concurrent-hosted-runtime-cross-functional-audit.md)
+  — simultaneous Chrome/Codex Browser contexts across scoped projection, concurrent GATHERER commands,
+  worker settlement, shared world-clock progression, capability separation, and remaining denial/recovery gates.
+- [`95-cp17-hosted-restart-backup-continuity-runtime-cross-functional-audit.md`](95-cp17-hosted-restart-backup-continuity-runtime-cross-functional-audit.md)
+  — hash-verified SQLite backup, in-place Railway restart, health recovery, authenticated reconnect,
+  same-world/cursor/mission readback, and post-restart unauthenticated WebSocket rejection; clean
+  browser absence, authenticated wrong-scope denial, rollback, and final hosted closure remain open.
 
 ## Current concept checks
 

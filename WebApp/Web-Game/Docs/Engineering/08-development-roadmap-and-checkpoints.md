@@ -395,10 +395,11 @@ The bounded [`SK-TASK-075`](../Tasks/SK-TASK-075-cp12-shelter-economy-summary-ca
   page, WebMCP, Re-entry, hosted, or judge gates.
   The next live-integration preparation is [`SK-TASK-076`](../Tasks/SK-TASK-076-cp14-cloud-receiver-v2-game-adaptation.md)
   under [`Validation/89`](../Validation/89-cp14-cloud-receiver-v2-adaptation-cross-functional-audit.md).
-  It treats the Game as a Host publisher, maps one approved `CargoLostToMonster` signal to Eddy's
-  signed v0.1 Event ingress, and keeps Cloud `202` queue acceptance separate from Connector claim,
-  fresh activation, page action, and effect acknowledgement. The task remains pending until Eddy
-  supplies the exact v2 source/package/endpoint/test handoff and the owner accepts the binding,
+  It treats the Game as a Host publisher and, following outer ADR-0043/RECORE-007, targets repeated
+  ordered `CargoLostToMonster` signals under one protocol-v0.2 standing Consent with one-active
+  backpressure. Cloud queue acceptance remains separate from Connector claim, fresh activation,
+  page action, effect acknowledgement, and the next signal. The task remains pending until Eddy
+  supplies the exact v0.2 source/package/endpoint/test handoff and the owner accepts the binding,
   timestamp, canonical URL, session, one-run Grant, and effect-authority mapping; no direct
   Connector claim or deprecated Receiver fallback is permitted.
 
@@ -488,10 +489,22 @@ The bounded [`SK-TASK-075`](../Tasks/SK-TASK-075-cp12-shelter-economy-summary-ca
   host-neutral acceptance matrix, deployment rehearsal, failure branches, evidence packet, and claim
   limits. [`SK-TASK-077`](../Tasks/SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) owns
   the host fact preflight and deployment evidence; the Railway project, Volume, and generated service
-  URL are now provisioned and read back under [`SK-EVID-063`](../Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md);
-  the Clerk instance, source deployment, restart, backup, runtime, and hosted continuity remain open. The
-  [`CP-13–CP-18 seam map`](10-cp13-cp18-implementation-seam-map.md) routes the later implementation
-  to the existing entrypoint, health, runtime, and persistence boundaries.
+  URL are provisioned and read back under [`SK-EVID-063`](../Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md),
+  while the hosted deployment, custom Game TLS, Clerk DNS/SSL/JWKS, signed-out admission surface, sequential authenticated Player A/Player B command-to-settlement slices, and a concurrent two-context scoped slice are now read back under [`SK-EVID-065`](../Evidence/SK-EVID-065-cp17-hosted-deployment-and-clerk-domain-runtime-verification.md),
+  [`SK-EVID-066`](../Evidence/SK-EVID-066-cp17-player-one-hosted-session-command-runtime-verification.md),
+  [`SK-EVID-067`](../Evidence/SK-EVID-067-cp17-player-two-hosted-session-command-runtime-verification.md),
+  [`SK-EVID-068`](../Evidence/SK-EVID-068-cp17-independent-contexts-concurrent-hosted-runtime-verification.md),
+  [`Validation/91`](../Validation/91-cp17-hosted-deployment-and-clerk-admission-cross-functional-audit.md),
+  [`Validation/92`](../Validation/92-cp17-player-one-hosted-admission-runtime-cross-functional-audit.md),
+  [`Validation/93`](../Validation/93-cp17-two-sequential-player-hosted-slices-cross-functional-audit.md), and
+  [`Validation/94`](../Validation/94-cp17-independent-contexts-concurrent-hosted-runtime-cross-functional-audit.md).
+  The hosted restart/reconnect and hash-verified backup slice is now recorded under
+  [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md)
+  and [`Validation/95`](../Validation/95-cp17-hosted-restart-backup-continuity-runtime-cross-functional-audit.md).
+  Deliberate authenticated cross-player denial, a clean browser-absent interval, rollback/read-restore,
+  and final hosted closure remain open. The [`CP-13–CP-18 seam map`](10-cp13-cp18-implementation-seam-map.md)
+  routes the remaining implementation to the existing entrypoint, health, runtime, and persistence
+  boundaries.
 
 ### CP-18 — hosted judge reproduction and submission package (`PLANNED; G3 GATE`)
 

@@ -93,8 +93,20 @@ CP-17 production identity and hosted admission implementation. Its owner-approve
 one Railway application service, one persistent Volume-backed SQLite writer, and Clerk Production
 invite-only admission for the two pre-created demo players. The local production-like resolver,
 idempotent bootstrap, HTTP/WebSocket scope, and focused Node 24 matrix are implemented and verified;
-no provider mutation or hosted claim has been made. Hosted proof still consumes the acceptance matrix
-and provider facts recorded by [`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md).
+the owner-authorized Railway deployment and Clerk Production domain/secret setup now pass a bounded
+hosted level-4 readback under [`SK-EVID-065`](../Evidence/SK-EVID-065-cp17-hosted-deployment-and-clerk-domain-runtime-verification.md)
+ and [`Validation/91`](../Validation/91-cp17-hosted-deployment-and-clerk-admission-cross-functional-audit.md).
+Sequential authenticated Player A and Player B commands and mission settlements now pass in [`SK-EVID-066`](../Evidence/SK-EVID-066-cp17-player-one-hosted-session-command-runtime-verification.md),
+[`SK-EVID-067`](../Evidence/SK-EVID-067-cp17-player-two-hosted-session-command-runtime-verification.md),
+[`Validation/92`](../Validation/92-cp17-player-one-hosted-admission-runtime-cross-functional-audit.md), and
+[`Validation/93`](../Validation/93-cp17-two-sequential-player-hosted-slices-cross-functional-audit.md);
+independent authenticated contexts now pass the concurrent scoped slice in [`SK-EVID-068`](../Evidence/SK-EVID-068-cp17-independent-contexts-concurrent-hosted-runtime-verification.md)
+and [`Validation/94`](../Validation/94-cp17-independent-contexts-concurrent-hosted-runtime-cross-functional-audit.md);
+the hosted restart/reconnect and hash-verified backup slice now passes in [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md)
+and [`Validation/95`](../Validation/95-cp17-hosted-restart-backup-continuity-runtime-cross-functional-audit.md);
+deliberate authenticated cross-scope denial, a clean browser-absent interval, rollback/read-restore,
+and the full hosted acceptance matrix remain open; the provider facts and topology remain governed by
+[`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md).
 
 [`SK-TASK-077`](SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) is `in_progress` for the
 CP-17 host decision and production-like deployment preflight. It records the host-neutral process,
@@ -107,8 +119,10 @@ Game-side adaptation to Eddy's exact Cloud Receiver v2 Host Event ingress. Its c
 is [`Validation/89`](../Validation/89-cp14-cloud-receiver-v2-adaptation-cross-functional-audit.md).
 The task preserves the verified local `ReentryDeliveryPort`, treats Cloud `202` as queue acceptance
 only, and keeps Connector claim, fresh Agent activation, page action, and effect acknowledgement as
-separate boundaries. No implementation starts until Eddy supplies an owner-declared exact v2
-Receiver/SDK/Core/Connector handoff, endpoint, consent/binding/session map, test environment, and
+separate boundaries. Outer ADR-0043 and RECORE-007 replace the former one-shot recommendation with
+one standing Consent, ordered repeatable signals, and one-active backpressure at Core reference
+scope. No Game implementation starts until Eddy supplies an owner-declared exact protocol-v0.2
+Receiver/SDK/Core/Connector handoff, endpoint, Consent/binding/session map, test environment, and
 effect-authority boundary.
 
 [`SK-TASK-075`](SK-TASK-075-cp12-shelter-economy-summary-cards.md) is `verified` with `integrated`
