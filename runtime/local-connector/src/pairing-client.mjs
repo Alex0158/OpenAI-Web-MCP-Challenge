@@ -3,6 +3,7 @@ import { TextDecoder } from "node:util";
 
 export const PAIRING_CLIENT_ROUTES = Object.freeze({
   accountPairingClaim: "/v0.1/account/pairing-sessions/claim",
+  connectorDisconnect: "/v0.1/connectors/disconnect",
   claim: "/v0.1/pairing-sessions/claim",
   poll: "/v0.1/pairing-sessions/poll",
   deviceStart: "/v0.1/device-authorizations",
@@ -17,6 +18,7 @@ const OPTION_FIELDS = Object.freeze(["baseUrl", "requestTimeoutMs", "openBrowser
 const PAIR_INPUT_FIELDS = Object.freeze(["userCode"]);
 const CONNECT_INPUT_FIELDS = Object.freeze(["deviceName"]);
 const ACCOUNT_PAIRING_INPUT_FIELDS = Object.freeze(["pairingCode", "deviceName"]);
+const DISCONNECT_INPUT_FIELDS = Object.freeze(["connectorToken"]);
 const DEVICE_AUTHORIZATION_FIELDS = Object.freeze([
   "type",
   "protocol_version",
@@ -75,6 +77,12 @@ const TOKENLESS_CREDENTIAL_FIELDS = Object.freeze([
   "pairing_id",
   "connector_id",
   "connector_expires_at",
+  "duplicate",
+]);
+const DISCONNECTION_FIELDS = Object.freeze([
+  "type",
+  "protocol_version",
+  "status",
   "duplicate",
 ]);
 const ERROR_FIELDS = Object.freeze(["error"]);
@@ -240,6 +248,23 @@ export class LocalConnectorPairingClient {
     });
   }
 
+  async disconnectConnector(input) {
+    requireExactRecord(
+      input,
+      DISCONNECT_INPUT_FIELDS,
+      DISCONNECT_INPUT_FIELDS,
+      "Connector disconnection input",
+    );
+    if (typeof input.connectorToken !== "string" || !TOKEN_PATTERN.test(input.connectorToken)) {
+      throw pairingFailure("pairing_input_invalid", "Connector token is invalid");
+    }
+    const response = await this.#post(PAIRING_CLIENT_ROUTES.connectorDisconnect, {
+      connector_token: input.connectorToken,
+    });
+    if (response.status !== 200) throw await parseHttpFailure(response);
+    return Object.freeze(normalizeDisconnection(await parseJsonResponse(response)));
+  }
+
   async #post(path, body) {
     let response;
     try {
@@ -399,6 +424,28 @@ function normalizeAccountCredentials(value) {
     normalized.connector_token = requireToken(value.connector_token, "connector_token");
   }
   return normalized;
+}
+
+function normalizeDisconnection(value) {
+  requireExactRecord(
+    value,
+    DISCONNECTION_FIELDS,
+    DISCONNECTION_FIELDS,
+    "Connector disconnection response",
+    "pairing_response_invalid",
+  );
+  if (
+    value.type !== "webmcp.connector_disconnection" ||
+    value.protocol_version !== "0.1" ||
+    value.status !== "disconnected" ||
+    typeof value.duplicate !== "boolean"
+  ) {
+    throw pairingFailure("pairing_response_invalid", "Connector disconnection response is unsupported");
+  }
+  return {
+    status: value.status,
+    duplicate: value.duplicate,
+  };
 }
 
 function normalizeAccountPairingCode(value) {

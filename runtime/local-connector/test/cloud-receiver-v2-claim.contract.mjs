@@ -274,6 +274,7 @@ test(
       assert.equal(result.lease.event_id, fixture.eventId);
       assert.equal(Date.parse(result.lease.lease_expires_at) > Date.now(), true);
       assert.equal(result.lease.receipt.grant_id, fixture.grantId);
+      assert.equal(result.lease.continuation.instruction, fixture.instruction);
       assert.equal("connector_token" in result, false);
       assert.equal(JSON.stringify(result).includes(connector.token), false);
       assert.equal(JSON.stringify(result).includes(fixture.bindingId), false);
@@ -382,8 +383,10 @@ async function seedDelivery(label, connector) {
   const bindingId = randomUUID();
   const correlationId = `correlation-${harness.suffix}-${label}`;
   const workflowId = `workflow-${harness.suffix}-${label}`;
+  const manifestId = `manifest-${harness.suffix}-${label}`;
   const eventType = "workflow.ready";
   const canonicalUrl = `${HOST_BROWSER_ORIGIN}/workflows/${label}`;
+  const instruction = `Review ${label} and prepare the next safe step.`;
   const occurredAt = new Date(Date.now() - 1_000).toISOString();
   const event = {
     type: "webmcp.continuation_event",
@@ -419,8 +422,17 @@ async function seedDelivery(label, connector) {
       organizationId: harness.organizationId,
       hostSubjectRefDigest: harness.digestSecret(`subject-${harness.suffix}-${label}`),
       expectedOrigin: HOST_BROWSER_ORIGIN,
-      manifestId: `manifest-${harness.suffix}-${label}`,
-      manifestJson: { fixture: label },
+      manifestId,
+      manifestJson: storedManifest({
+        manifestId,
+        correlationId,
+        workflowId,
+        eventType,
+        canonicalUrl,
+        instruction,
+        now,
+        expiresAt,
+      }),
       expiresAt,
       status: "approved",
       decisionAction: "approve",
@@ -475,7 +487,46 @@ async function seedDelivery(label, connector) {
     },
   });
 
-  return { deliveryId: delivery.deliveryId, eventId, grantId: grant.id, bindingId };
+  return { deliveryId: delivery.deliveryId, eventId, grantId: grant.id, bindingId, instruction };
+}
+
+function storedManifest({
+  manifestId,
+  correlationId,
+  workflowId,
+  eventType,
+  canonicalUrl,
+  instruction,
+  now,
+  expiresAt,
+}) {
+  return {
+    type: "webmcp.reentry_manifest",
+    protocol_version: "0.1",
+    manifest_id: manifestId,
+    correlation_id: correlationId,
+    issuer_origin: HOST_BROWSER_ORIGIN,
+    issued_at: new Date(now.getTime() - 1_000).toISOString(),
+    offer_expires_at: new Date(now.getTime() + 5 * 60_000).toISOString(),
+    workflow: {
+      id: workflowId,
+      type: "review",
+      state_version: 1,
+      canonical_url: canonicalUrl,
+    },
+    display: { title: `Continuation ${workflowId}`, reason: instruction },
+    grant_request: {
+      event_type: eventType,
+      grant_expires_at: expiresAt.toISOString(),
+      max_runs: 1,
+      human_boundary: "explicit_receiver_consent",
+    },
+    signature: {
+      algorithm: "Ed25519",
+      key_id: "fixture-key",
+      value: "A".repeat(86),
+    },
+  };
 }
 
 async function withReceiverHandler(connectorToken, callback) {

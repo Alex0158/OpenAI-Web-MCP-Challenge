@@ -10,7 +10,12 @@ import process from "node:process";
 
 import { LocalConnectorClient } from "@webmcp-challenge/reentry-core/local-connector-client";
 import { followConnectorActivity } from "./activity-monitor.mjs";
-import { createCodexExecAdapter, runCodexPrompt } from "./codex-exec-adapter.mjs";
+import {
+  createCodexExecAdapter,
+  DEFAULT_CODEX_PROMPT_TIMEOUT_MS,
+  MAX_CODEX_PROMPT_TIMEOUT_MS,
+  runCodexPrompt,
+} from "./codex-exec-adapter.mjs";
 import {
   discoverCodexExecutable,
   requireSupportedNode,
@@ -18,6 +23,7 @@ import {
   verifyCodexExecutable,
 } from "./codex-discovery.mjs";
 import { LocalConnector } from "./local-connector.mjs";
+import { disconnectConnectorLifecycle } from "./disconnect-lifecycle.mjs";
 import {
   LocalConnectorCredentialStore,
   clearConnectorReauthorizationRequired,
@@ -44,7 +50,7 @@ const DEFAULT_MAX_CONSECUTIVE_ERRORS = 5;
 const DEFAULT_PAIRING_REQUEST_TIMEOUT_MS = 20_000;
 const CONNECTOR_VERSION = readConnectorVersion();
 // The npx form is executable even when this CLI was launched from a temporary npx cache.
-const TEMPORARY_CLI_COMMAND = "npx --yes --package=@4xeoz/re-entry re-entry";
+const TEMPORARY_CLI_COMMAND = "npx --yes @4xeoz/re-entry";
 
 async function main() {
   let ui;
@@ -135,11 +141,11 @@ Connect this Mac once, then receive approved work in Codex in the background.
 Usage:
   re-entry install                                      Recommended first run
   re-entry listen                                      Watch live activity
-  re-entry disconnect                                  Sign out this Mac locally
+  re-entry disconnect                                  Sign out this Mac
   re-entry test "Reply with hello"                     Test Codex locally
 
 Invocation:
-  Temporary npx: npx --yes --package=@4xeoz/re-entry re-entry <command>
+  Temporary npx: npx --yes @4xeoz/re-entry <command>
   Global install: npm install --global @4xeoz/re-entry, then re-entry <command>
 
 Commands:
@@ -148,7 +154,7 @@ Commands:
   listen       Watch the background Connector until you press Ctrl+C
   test         Start one fresh local Codex session with the supplied prompt
   stop         Stop the background Connector without removing its credential
-  disconnect   Stop the Connector and clear this Mac's saved connection
+  disconnect   Revoke Cloud access and clear this Mac's saved connection
   uninstall    Stop the Connector and remove its local service data
   connect      Open Re-entry, redeem a dashboard pairing code, and connect this Mac
   start        Poll for approved work until stopped
@@ -160,6 +166,8 @@ Common options:
   --receiver <url>       Accepted Receiver origin (overrides the preview default)
   --codex-cd <path>      Workspace for Codex; interactive mode offers a folder picker if omitted
   --codex-binary <path>  Explicit Codex executable
+  --activation-timeout <ms>
+                         Codex limit; test defaults to 1 hour, background start to 60 seconds
   --json                 Machine-readable output
   --yes                  Confirm uninstall in a non-interactive script
   --help                 Show this help
@@ -176,6 +184,96 @@ The Connector opens no inbound port. Host keys never belong on this Mac.
 
 function cliCommand(command) {
   return `${TEMPORARY_CLI_COMMAND} ${command}`;
+}
+
+function showInstallGuide(ui, workingDirectory) {
+  const workspace = shellQuote(workingDirectory);
+  ui.commands("COPY-PASTE COMMANDS", [
+    {
+      label: "Connect / install",
+      command: cliCommand(`install --codex-cd ${workspace}`),
+      detail: "run after disconnecting to connect one account on this Mac",
+    },
+    {
+      label: "Check status",
+      command: cliCommand("status"),
+      detail: "account, Cloud, background service, Node.js, and Codex",
+    },
+    {
+      label: "Watch activity",
+      command: cliCommand("listen"),
+      detail: "follow live work; Ctrl+C closes this view",
+    },
+    {
+      label: "Test Codex",
+      command: cliCommand(`test "Reply exactly: Re-entry is working." --codex-cd ${workspace}`),
+      detail: "local smoke test; no Cloud work is claimed",
+    },
+    {
+      label: "Check readiness",
+      command: cliCommand(`doctor --codex-cd ${workspace}`),
+      detail: "verify Node.js, Codex, and the workspace",
+    },
+    {
+      label: "Start manually",
+      command: cliCommand(`start --codex-cd ${workspace}`),
+      detail: "foreground delivery loop for development",
+    },
+    {
+      label: "Check once",
+      command: cliCommand(`claim-once --codex-cd ${workspace}`),
+      detail: "one delivery check, then exit",
+    },
+    {
+      label: "Pause",
+      command: cliCommand("stop"),
+      detail: "stop background delivery; keep the account connected",
+    },
+    {
+      label: "Sign out",
+      command: cliCommand("disconnect"),
+      detail: "clear this Mac's saved account connection",
+    },
+    {
+      label: "Remove setup",
+      command: cliCommand("uninstall"),
+      detail: "remove the local service, credential, and logs",
+    },
+    {
+      label: "Show all help",
+      command: cliCommand("--help"),
+      detail: "all commands, options, and the legacy pairing command",
+    },
+  ]);
+  ui.info("Account", "one account connected on this Mac; disconnect before connecting another");
+  ui.info("Test timeout", "one-shot Codex tests wait up to 1 hour by default");
+}
+
+function showTestGuide(ui, workingDirectory, prompt) {
+  const workspace = shellQuote(workingDirectory);
+  ui.commands("COPY-PASTE COMMANDS", [
+    {
+      label: "Test again",
+      command: cliCommand(`test ${shellQuote(prompt)} --codex-cd ${workspace}`),
+      detail: "run another local Codex smoke test",
+    },
+    {
+      label: "Check readiness",
+      command: cliCommand(`doctor --codex-cd ${workspace}`),
+      detail: "verify Node.js, Codex, and the workspace",
+    },
+    {
+      label: "Show all help",
+      command: cliCommand("--help"),
+      detail: "all commands, options, and account lifecycle actions",
+    },
+  ]);
+  ui.info("Scope", "local Codex test only; no account or Cloud work was used");
+  ui.info("Test timeout", "one-shot Codex tests wait up to 1 hour by default");
+}
+
+function shellQuote(value) {
+  return `'${String(value).replaceAll("'", "'\\''")}'`;
 }
 
 function readConnectorVersion() {
@@ -514,21 +612,25 @@ async function testCodex(flags, positionals, ui) {
     ui.info("Prompt", prompt);
     ui.wait("Starting a fresh Codex session…");
   }
+  if (ui.interactive) {
+    ui.stopWait("Codex", "running the local prompt; Codex output follows below", "info");
+  }
   await runCodexPrompt({
     workingDirectory: readiness.workingDirectory,
     executable: readiness.installation.executable,
     prompt,
+    stdio: ui.interactive ? "inherit" : ["ignore", "ignore", "ignore"],
     commandTimeoutMs: readBoundedNumber(
-      flags["activation-timeout"] ?? 60_000,
+      flags["activation-timeout"] ?? DEFAULT_CODEX_PROMPT_TIMEOUT_MS,
       100,
-      60_000,
-      "connector_activation_timeout_invalid",
+      MAX_CODEX_PROMPT_TIMEOUT_MS,
+      "connector_test_timeout_invalid",
     ),
   });
   if (ui.interactive) {
     ui.stopWait("Codex", "completed the local test");
     ui.complete("Test passed", "The same fresh-session process seam is ready for Re-entry work.");
-    ui.next(cliCommand("listen"), "Watch the background Connector for approved work.");
+    showTestGuide(ui, readiness.workingDirectory, prompt);
   } else {
     process.stdout.write('{"event":"connector_codex_test_passed"}\n');
   }
@@ -580,16 +682,32 @@ async function stop(flags, ui) {
 
 async function disconnect(flags, ui) {
   if (ui.interactive) {
-    ui.begin("Disconnect Re-entry", "Stop background delivery and clear this Mac's saved connection");
+    ui.begin("Disconnect Re-entry", "Revoke Cloud access and clear this Mac's saved connection");
   }
-  const result = await disconnectMacConnectorService({
-    credentialFile: flags["credential-file"] ?? defaultCredentialFile(),
+  const credentialFile = flags["credential-file"] ?? defaultCredentialFile();
+  const credentials = await new LocalConnectorCredentialStore({ filename: credentialFile }).load();
+  const lifecycle = await disconnectConnectorLifecycle({
+    credentials,
+    async revokeRemote(saved) {
+      const client = new LocalConnectorPairingClient({
+        baseUrl: saved.receiver_origin,
+        requestTimeoutMs: DEFAULT_PAIRING_REQUEST_TIMEOUT_MS,
+      });
+      return client.disconnectConnector({ connectorToken: saved.connector_token });
+    },
+    async clearLocal() {
+      return disconnectMacConnectorService({ credentialFile });
+    },
   });
+  const result = lifecycle.local;
   if (ui.interactive) {
+    if (lifecycle.remote) {
+      ui.success("Cloud", lifecycle.remote.duplicate ? "already disconnected" : "access revoked");
+    }
     if (!result.supported) {
       ui.warning("Platform", "connection lifecycle control currently supports macOS only");
     } else if (result.disconnected) {
-      ui.complete("This Mac is disconnected", "The LaunchAgent and local Connector credential are cleared.");
+      ui.complete("This Mac is disconnected", "Cloud access, the LaunchAgent, and the local credential are cleared.");
     } else {
       ui.info("Already disconnected", "No saved local connection or background service was found.");
     }
@@ -599,6 +717,8 @@ async function disconnect(flags, ui) {
       event: "connector_disconnected",
       supported: result.supported,
       disconnected: result.disconnected,
+      remote_disconnected: lifecycle.remote?.status === "disconnected",
+      remote_duplicate: lifecycle.remote?.duplicate ?? null,
       removed_paths: result.removedPaths,
     })}\n`);
   }
@@ -649,7 +769,7 @@ async function install(flags, ui) {
   if (ui.interactive) {
     ui.stopWait("Background", "running at login");
     ui.complete("You're all set", "Re-entry is connected and waiting for approved work.");
-    ui.next(cliCommand("listen"), "Watch live activity. Press Ctrl+C when you are done.");
+    showInstallGuide(ui, readiness.workingDirectory);
   } else {
     process.stdout.write(`${JSON.stringify({
       event: "connector_service_installed",
@@ -1114,6 +1234,10 @@ function errorHint(error) {
     pairing_expired: "ask the Host backend for a new pairing code",
     pairing_request_timeout: "the Receiver took too long to answer; check your connection and run the command again",
     pairing_network_error: "check your internet connection and the Receiver address, then try again",
+    connector_codex_exec_timeout: "Codex did not finish in time; run the same codex exec command directly to inspect its output",
+    connector_codex_exec_failed: "run the same codex exec command directly and confirm that Codex is signed in and the workspace is accessible",
+    connector_codex_exec_start_failed: "open Codex, complete login if needed, then run the command again",
+    connector_codex_exec_invalid: "the installed Codex executable returned an invalid process; run doctor and try again",
     workspace_directory_unavailable: "choose a readable folder or pass --codex-cd /absolute/path",
     workspace_selection_cancelled: "run the command again when you are ready to choose a workspace",
     device_authorization_expired: `run \`${cliCommand("connect")}\` again and approve within ten minutes`,
@@ -1125,9 +1249,10 @@ function errorHint(error) {
     connector_service_stop_failed: `check the Connector status and try \`${cliCommand("stop")}\` again`,
     connector_test_prompt_missing: `use \`${cliCommand('test "Reply with: Re-entry is working."')}\``,
     connector_test_prompt_invalid: "use one short, single-line prompt inside quotes",
+    connector_test_timeout_invalid: "use a test timeout between 100 and 3600000 milliseconds",
     connector_activation_timeout_invalid: "use an activation timeout between 100 and 60000 milliseconds",
   };
-  return hints[error?.code] ?? "check the Receiver address and try again";
+  return hints[error?.code] ?? "check the command output and try again";
 }
 
 await main();

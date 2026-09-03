@@ -1,9 +1,10 @@
-import { createPublicKey } from "node:crypto";
+import { createHash, createPublicKey, randomUUID } from "node:crypto";
 
 import { ReentryHostSdk } from "@webmcp-challenge/reentry-core/host-sdk";
 import {
   createContinuationAcceptance,
   canonicalJson,
+  validatePublicBinding,
 } from "@webmcp-challenge/reentry-core/protocol";
 import { RECEIVER_HTTP_ROUTES } from "@webmcp-challenge/reentry-core/receiver-http-contract";
 
@@ -46,6 +47,45 @@ const CONTROL_DECISION_FIELDS = Object.freeze([
 ]);
 const CONTROL_STATUS_FIELDS = Object.freeze(["consentSessionId"]);
 const HOST_KEY_FIELDS = Object.freeze(["hostId"]);
+const REENTRY_FACADE_OPTION_FIELDS = Object.freeze([
+  "origin",
+  "privateKey",
+  "keyId",
+  "receiverOrigin",
+  "organizationApiKey",
+  "requestTimeoutMs",
+  "clock",
+  "createId",
+  "fetchImpl",
+]);
+const REENTRY_FACADE_REQUIRED_OPTION_FIELDS = Object.freeze([
+  "origin",
+  "privateKey",
+  "keyId",
+  "receiverOrigin",
+  "organizationApiKey",
+]);
+const REENTRY_REQUEST_FIELDS = Object.freeze(["subject", "prompt", "url"]);
+const REENTRY_CONFIRM_OPTION_FIELDS = Object.freeze(["onApproved"]);
+const REENTRY_HANDLE_FIELDS = Object.freeze(["consentSessionId", "workflow"]);
+const REENTRY_CONTINUATION_FIELDS = Object.freeze(["binding", "workflow"]);
+const DEFAULT_REENTRY_WORKFLOW_TYPE = "domain-neutral-workflow";
+const DEFAULT_REENTRY_EVENT_TYPE = "workflow.ready";
+const DEFAULT_REENTRY_HUMAN_BOUNDARY = "explicit_receiver_consent";
+const DEFAULT_REENTRY_STATE_VERSION = 0;
+const REENTRY_OFFER_TTL_MS = 5 * 60_000;
+const REENTRY_GRANT_TTL_MS = 30 * 60_000;
+const REENTRY_DISPLAY_REASON_MAX_BYTES = 500;
+const REENTRY_DISPLAY_TITLE_MAX_BYTES = 120;
+const REENTRY_CANONICAL_URL_MAX_BYTES = 2_048;
+const REENTRY_CONSENT_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
+const REENTRY_FACADE_STATUS_VALUES = Object.freeze([
+  "pending",
+  "approved",
+  "declined",
+  "expired",
+  "revoked",
+]);
 
 /**
  * Create the server half of the Host SDK.
@@ -179,6 +219,130 @@ export function createHostSdk(options) {
       });
     },
   });
+}
+
+/**
+ * Create the smallest server-only Re-entry integration for ordinary Host business rules.
+ *
+ * The facade owns the protocol defaults and only accepts an authenticated subject, display
+ * prompt, and Host URL. It returns a public consent URL plus a serializable server handle, then
+ * confirms and triggers through the existing strict Host SDK without adding storage or retries.
+ */
+export function createReentry(options) {
+  requireExactRecord(
+    options,
+    REENTRY_FACADE_OPTION_FIELDS,
+    REENTRY_FACADE_REQUIRED_OPTION_FIELDS,
+    "Re-entry facade options",
+  );
+  const clock = options.clock ?? (() => new Date());
+  if (typeof clock !== "function") {
+    throw new TypeError("Re-entry facade clock must be a function");
+  }
+  const sdk = createHostSdk(options);
+
+  return Object.freeze({ request, confirm, trigger });
+
+  async function request(input) {
+    requireExactRecord(
+      input,
+      REENTRY_REQUEST_FIELDS,
+      REENTRY_REQUEST_FIELDS,
+      "Re-entry request",
+    );
+    const subject = requireFacadeIdentifier(input.subject, "subject");
+    const prompt = requireFacadePrompt(input.prompt);
+    const url = requireFacadeUrl(input.url, options.origin);
+    await sdk.registerHostKey({ hostId: deriveFacadeHostId(options.origin, options.keyId) });
+    const now = readFacadeClock(clock);
+    const workflow = createFacadeWorkflow(options.createId, url);
+    const manifest = sdk.createManifest({
+      issuedAt: now.toISOString(),
+      offerExpiresAt: addFacadeDuration(now, REENTRY_OFFER_TTL_MS),
+      workflow,
+      display: {
+        title: deriveFacadeTitle(prompt),
+        reason: prompt,
+      },
+      grantRequest: {
+        eventType: DEFAULT_REENTRY_EVENT_TYPE,
+        grantExpiresAt: addFacadeDuration(now, REENTRY_GRANT_TTL_MS),
+        humanBoundary: DEFAULT_REENTRY_HUMAN_BOUNDARY,
+      },
+    });
+    const session = await sdk.createConsentSession({
+      manifest,
+      hostSubjectRef: subject,
+    });
+    const consentSessionId = requireFacadeIdentifier(
+      session?.consent_session_id,
+      "consent session id",
+    );
+    const consentUrl = requireFacadeConsentUrl(session?.consent_url, options.receiverOrigin);
+    const handle = Object.freeze({
+      consentSessionId,
+      workflow: toFacadeEventWorkflow(workflow),
+    });
+    return Object.freeze({ consentUrl, consentSessionId, handle });
+  }
+
+  async function confirm(handle, confirmOptions = {}) {
+    const normalizedHandle = requireFacadeHandle(handle, options.origin);
+    requireExactRecord(
+      confirmOptions,
+      REENTRY_CONFIRM_OPTION_FIELDS,
+      [],
+      "Re-entry confirmation options",
+    );
+    if (confirmOptions.onApproved !== undefined && typeof confirmOptions.onApproved !== "function") {
+      throw new TypeError("Re-entry confirmation onApproved must be a function");
+    }
+
+    const status = await sdk.getConsentSession({
+      consentSessionId: normalizedHandle.consentSessionId,
+    });
+    const consentStatus = requireFacadeConsentStatus(status?.status);
+    if (consentStatus !== "approved") {
+      return Object.freeze({ status: consentStatus });
+    }
+
+    const binding = validatePublicBinding(status.binding);
+    if (
+      binding.status !== "active" ||
+      binding.runs_remaining !== 1 ||
+      binding.workflow_id !== normalizedHandle.workflow.id ||
+      binding.event_type !== DEFAULT_REENTRY_EVENT_TYPE
+    ) {
+      throw new ReentryFacadeError(
+        "reentry_continuation_invalid",
+        "Approved Re-entry status did not contain the expected active binding",
+      );
+    }
+    const continuation = Object.freeze({
+      binding,
+      workflow: normalizedHandle.workflow,
+    });
+    if (confirmOptions.onApproved !== undefined) {
+      await confirmOptions.onApproved(continuation);
+    }
+    return continuation;
+  }
+
+  async function trigger(continuation) {
+    const normalizedContinuation = requireFacadeContinuation(continuation, options.origin);
+    return sdk.sendEvent({
+      binding: normalizedContinuation.binding,
+      workflow: normalizedContinuation.workflow,
+    });
+  }
+}
+
+export class ReentryFacadeError extends Error {
+  constructor(code, message) {
+    super(message);
+    this.name = "ReentryFacadeError";
+    this.code = code;
+  }
 }
 
 export class HostSdkTransportError extends Error {
@@ -506,6 +670,215 @@ function requireControlToken(value) {
     throw new TypeError("Host SDK consentToken is invalid");
   }
   return value;
+}
+
+function requireFacadeIdentifier(value, label) {
+  if (
+    typeof value !== "string" ||
+    Buffer.byteLength(value, "utf8") > 160 ||
+    !IDENTIFIER_PATTERN.test(value)
+  ) {
+    throw new TypeError(`Re-entry ${label} is invalid`);
+  }
+  return value;
+}
+
+function requireFacadePrompt(value) {
+  if (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    value.trim() !== value ||
+    /[\u0000-\u001f\u007f]/.test(value) ||
+    Buffer.byteLength(value, "utf8") > REENTRY_DISPLAY_REASON_MAX_BYTES
+  ) {
+    throw new TypeError("Re-entry prompt is invalid");
+  }
+  return value;
+}
+
+function requireFacadeUrl(value, expectedOrigin) {
+  if (
+    typeof value !== "string" ||
+    Buffer.byteLength(value, "utf8") > REENTRY_CANONICAL_URL_MAX_BYTES
+  ) {
+    throw new TypeError("Re-entry URL is invalid");
+  }
+  let parsed;
+  try {
+    parsed = new URL(value);
+  } catch {
+    throw new TypeError("Re-entry URL is invalid");
+  }
+  if (
+    !["http:", "https:"].includes(parsed.protocol) ||
+    parsed.username ||
+    parsed.password ||
+    parsed.hash ||
+    parsed.origin !== expectedOrigin ||
+    parsed.href !== value
+  ) {
+    throw new TypeError("Re-entry URL is invalid");
+  }
+  return value;
+}
+
+function requireFacadeConsentUrl(value, expectedOrigin) {
+  if (
+    typeof value !== "string" ||
+    Buffer.byteLength(value, "utf8") > REENTRY_CANONICAL_URL_MAX_BYTES
+  ) {
+    throw new ReentryFacadeError(
+      "reentry_consent_response_invalid",
+      "Receiver returned an invalid consent URL",
+    );
+  }
+  let parsed;
+  try {
+    parsed = new URL(value);
+  } catch {
+    throw new ReentryFacadeError(
+      "reentry_consent_response_invalid",
+      "Receiver returned an invalid consent URL",
+    );
+  }
+  if (
+    !["http:", "https:"].includes(parsed.protocol) ||
+    parsed.username ||
+    parsed.password ||
+    parsed.origin !== expectedOrigin ||
+    parsed.pathname !== "/consent" ||
+    parsed.hash ||
+    parsed.searchParams.getAll("token").length !== 1 ||
+    [...parsed.searchParams.keys()].some((key) => key !== "token") ||
+    !REENTRY_CONSENT_TOKEN_PATTERN.test(parsed.searchParams.get("token") ?? "") ||
+    parsed.href !== value
+  ) {
+    throw new ReentryFacadeError(
+      "reentry_consent_response_invalid",
+      "Receiver returned an invalid consent URL",
+    );
+  }
+  return value;
+}
+
+function readFacadeClock(clock) {
+  const value = clock();
+  if (!(value instanceof Date) || !Number.isFinite(value.getTime())) {
+    throw new TypeError("Re-entry facade clock must return a valid Date");
+  }
+  return new Date(value.getTime());
+}
+
+function addFacadeDuration(now, durationMs) {
+  const result = new Date(now.getTime() + durationMs);
+  if (!Number.isFinite(result.getTime())) {
+    throw new TypeError("Re-entry facade clock is outside the supported date range");
+  }
+  return result.toISOString();
+}
+
+function deriveFacadeHostId(origin, keyId) {
+  return `host_${createHash("sha256").update(`${origin}\n${keyId}`, "utf8").digest("hex")}`;
+}
+
+function createFacadeWorkflow(createId, canonicalUrl) {
+  const workflowId = createFacadeId(createId, "workflow");
+  return Object.freeze({
+    id: workflowId,
+    type: DEFAULT_REENTRY_WORKFLOW_TYPE,
+    stateVersion: DEFAULT_REENTRY_STATE_VERSION,
+    canonicalUrl,
+  });
+}
+
+function createFacadeId(createId, prefix) {
+  const value = createId === undefined ? `${prefix}_${randomUUID()}` : createId(prefix);
+  if (typeof value !== "string") {
+    throw new TypeError("Re-entry facade createId must return a string");
+  }
+  return requireFacadeIdentifier(value, `${prefix} id`);
+}
+
+function toFacadeEventWorkflow(workflow) {
+  return Object.freeze({
+    id: workflow.id,
+    stateVersion: workflow.stateVersion,
+    canonicalUrl: workflow.canonicalUrl,
+  });
+}
+
+function deriveFacadeTitle(prompt) {
+  const firstSentence = prompt.match(/^[^.!?\n]+/u)?.[0]?.trim() || prompt;
+  return truncateFacadeText(firstSentence, REENTRY_DISPLAY_TITLE_MAX_BYTES);
+}
+
+function truncateFacadeText(value, maximumBytes) {
+  if (Buffer.byteLength(value, "utf8") <= maximumBytes) return value;
+  const suffix = "...";
+  const characters = Array.from(value);
+  while (characters.length > 0) {
+    const candidate = `${characters.join("").trimEnd()}${suffix}`;
+    if (Buffer.byteLength(candidate, "utf8") <= maximumBytes) return candidate;
+    characters.pop();
+  }
+  return suffix;
+}
+
+function requireFacadeHandle(value, expectedOrigin) {
+  requireExactRecord(
+    value,
+    REENTRY_HANDLE_FIELDS,
+    REENTRY_HANDLE_FIELDS,
+    "Re-entry request handle",
+  );
+  const consentSessionId = requireFacadeIdentifier(
+    value.consentSessionId,
+    "consent session id",
+  );
+  const workflow = requireFacadeWorkflow(value.workflow, expectedOrigin);
+  return Object.freeze({ consentSessionId, workflow });
+}
+
+function requireFacadeWorkflow(value, expectedOrigin) {
+  const fields = ["id", "stateVersion", "canonicalUrl"];
+  requireExactRecord(value, fields, fields, "Re-entry workflow");
+  const id = requireFacadeIdentifier(value.id, "workflow id");
+  if (value.stateVersion !== DEFAULT_REENTRY_STATE_VERSION) {
+    throw new ReentryFacadeError(
+      "reentry_continuation_invalid",
+      "Re-entry workflow state version is unsupported",
+    );
+  }
+  const canonicalUrl = requireFacadeUrl(value.canonicalUrl, expectedOrigin);
+  return Object.freeze({ id, stateVersion: value.stateVersion, canonicalUrl });
+}
+
+function requireFacadeConsentStatus(value) {
+  if (!REENTRY_FACADE_STATUS_VALUES.includes(value)) {
+    throw new ReentryFacadeError(
+      "reentry_consent_status_invalid",
+      "Receiver returned an unsupported consent status",
+    );
+  }
+  return value;
+}
+
+function requireFacadeContinuation(value, expectedOrigin) {
+  requireExactRecord(
+    value,
+    REENTRY_CONTINUATION_FIELDS,
+    REENTRY_CONTINUATION_FIELDS,
+    "Re-entry continuation",
+  );
+  const binding = validatePublicBinding(value.binding);
+  const workflow = requireFacadeWorkflow(value.workflow, expectedOrigin);
+  if (binding.workflow_id !== workflow.id || binding.event_type !== DEFAULT_REENTRY_EVENT_TYPE) {
+    throw new ReentryFacadeError(
+      "reentry_continuation_invalid",
+      "Re-entry continuation does not match its binding",
+    );
+  }
+  return Object.freeze({ binding, workflow });
 }
 
 function requireRecordValue(value, label) {

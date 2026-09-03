@@ -1,25 +1,43 @@
 # Re-entry Local Connector
 
-> **Cloud Receiver dependency notice — 2026-09-02:** The former `re-entry-weld.vercel.app` Cloud
-> Receiver is deprecated and must not be used for new pairing, credentials, or production traffic.
-> This Connector package remains a reusable/local preview surface and defaults to the accepted
-> preview origin `https://cloud-receiver-delta.vercel.app`; pass `--receiver` for another accepted
-> Receiver. This preview default is not a production deployment.
+> **Cloud Receiver dependency notice — 2026-09-03:** The former
+> `runtime/cloud-receiver/` service is deprecated and must not receive new pairing, credentials, or
+> traffic. The `re-entry-weld.vercel.app` hostname now serves the active frontend and is not the
+> Receiver API origin. This Connector remains a reusable/local preview surface and defaults to the
+> accepted active-v2 preview Receiver `https://cloud-receiver-delta.vercel.app`; pass `--receiver`
+> for another accepted Receiver. This preview default is not a production deployment.
 
 Install it once on the Mac where Codex should open; after one dashboard pairing code, a macOS
 LaunchAgent keeps the outbound Connector running at login.
 
-> Current boundary: this is a verified macOS Connector preview with a publish-ready npm package.
-> It starts a fresh `codex exec` process with bounded context; it does not prove Browser/WebMCP
-> attachment or final Host effects.
+> Current boundary: this is a verified macOS Connector preview from the current checkout; the npm
+> release path is open. Published `@4xeoz/re-entry@0.2.20` reports Git commit `733d77f`, but that
+> commit records package version `0.2.14`, and the tarball's bundled Core client rejects the active
+> instruction-bearing lease with `connector_response_invalid`. TASK-032 owns a new exact-source
+> compatible release. The current checkout starts a fresh `codex exec` process with bounded context;
+> it does not prove Browser/WebMCP attachment or final Host effects. Its default `start` and
+> `claim-once` paths dispatch an adapter attempt but do not obtain Host-effect proof or acknowledge
+> the delivery; an unacknowledged lease can be reclaimed within the accepted three-attempt delivery
+> contract. Do not read successful local dispatch as completed delivery.
 
 ## One-time install
 
 Requirements: macOS, Node.js 24+, Codex installed and signed in, and an absolute project directory
 Codex may read and write.
 
+For the current instruction-bearing active-v2 path, use this checkout only as local development
+evidence until TASK-032 closes:
+
 ```sh
-npx --yes --package=@4xeoz/re-entry re-entry install
+npm install --global /absolute/path/to/OpenAI-Web-MCP-Challenge/runtime/local-connector
+re-entry install
+```
+
+The registry command remains available for the immutable `0.2.20` artifact, but that version does
+not consume current active-v2 deliveries and must not be used as working simple-flow evidence:
+
+```sh
+npx --yes @4xeoz/re-entry install
 ```
 
 `npx` runs a temporary copy, so it does not leave a permanent shell command behind. Install the
@@ -30,8 +48,8 @@ npm install --global @4xeoz/re-entry
 ```
 
 The package installs both `re-entry` and the older `reentry` spelling; `re-entry` is the documented
-command. If you keep using the temporary `npx` form, run later commands with the same executable
-prefix, for example `npx --yes --package=@4xeoz/re-entry re-entry status`.
+command. If you keep using the temporary `npx` form, run later commands with the same short
+executable prefix, for example `npx --yes @4xeoz/re-entry status`.
 
 The CLI defaults to the current Cloud Receiver v2 preview at
 `https://cloud-receiver-delta.vercel.app`. Override it with `--receiver` or
@@ -42,13 +60,14 @@ The interactive CLI first offers Desktop, the current folder, or a small folder 
 with ↑/↓ and Enter. If you want to skip the picker, pass the workspace directly:
 
 ```sh
-npx --yes --package=@4xeoz/re-entry re-entry install \
+npx --yes @4xeoz/re-entry install \
   --codex-cd /absolute/path/to/your/project
 ```
 
-The guided screen stays intentionally small: **Workspace → System check → Connect Re-entry**. It
-shows one executable next command when setup finishes; internal Connector IDs, credential paths, and
-log paths stay out of the normal success screen.
+The guided screen stays intentionally small: **Workspace → System check → Connect Re-entry**. On
+success it shows a compact copy-paste command catalog for status, activity, testing, account
+lifecycle, and local diagnostics. Internal Connector IDs, credential paths, and log paths stay out
+of the normal success screen.
 
 Run this from the Host project directory, your home directory, or another normal working
 directory—not from a checked-out `runtime/local-connector` package directory. npm can treat that
@@ -66,7 +85,7 @@ re-entry install \
 Use `--receiver` to select an accepted replacement Receiver, such as a local historical preview:
 
 ```sh
-npx --yes --package=@4xeoz/re-entry re-entry install \
+npx --yes @4xeoz/re-entry install \
   --receiver http://127.0.0.1:43224 \
   --codex-cd /absolute/path/to/your/project
 ```
@@ -104,12 +123,12 @@ re-entry uninstall
 If you used the temporary `npx` invocation:
 
 ```sh
-npx --yes --package=@4xeoz/re-entry re-entry status
-npx --yes --package=@4xeoz/re-entry re-entry listen
-npx --yes --package=@4xeoz/re-entry re-entry --help
-npx --yes --package=@4xeoz/re-entry re-entry stop
-npx --yes --package=@4xeoz/re-entry re-entry disconnect
-npx --yes --package=@4xeoz/re-entry re-entry uninstall
+npx --yes @4xeoz/re-entry status
+npx --yes @4xeoz/re-entry listen
+npx --yes @4xeoz/re-entry --help
+npx --yes @4xeoz/re-entry stop
+npx --yes @4xeoz/re-entry disconnect
+npx --yes @4xeoz/re-entry uninstall
 ```
 
 The status view checks the local authorization, background job, Receiver reachability, Node, and
@@ -119,27 +138,39 @@ the already-running background Connector and displays new activity until you pre
 not start a competing second poller. Useful development commands are:
 
 ```sh
-npx --yes --package=@4xeoz/re-entry re-entry doctor --codex-cd /absolute/path/to/project
-npx --yes --package=@4xeoz/re-entry re-entry connect --receiver http://127.0.0.1:43224
-npx --yes --package=@4xeoz/re-entry re-entry claim-once --codex-cd /absolute/path/to/project
-npx --yes --package=@4xeoz/re-entry re-entry start --codex-cd /absolute/path/to/project
+npx --yes @4xeoz/re-entry doctor --codex-cd /absolute/path/to/project
+npx --yes @4xeoz/re-entry connect --receiver http://127.0.0.1:43224
+npx --yes @4xeoz/re-entry claim-once --codex-cd /absolute/path/to/project
+npx --yes @4xeoz/re-entry start --codex-cd /absolute/path/to/project
 ```
+
+`claim-once` and the background `start` loop stop at adapter dispatch. They do not call the active
+v2 acknowledgement endpoint because this package has no default Host-effect authority or proof
+source. The separately verified end-to-end harness uses a distinct test effect/ack worker; that
+harness is evidence for the protocol seam, not behavior supplied by the default Connector CLI.
 
 Test the local Codex handoff without waiting for Cloud work:
 
 ```sh
-npx --yes --package=@4xeoz/re-entry re-entry test "Reply with: Re-entry is working."
+npx --yes @4xeoz/re-entry test "Reply with: Re-entry is working."
 ```
 
 This starts one fresh local Codex process through the same adapter seam used by real deliveries. It
-does not create a Grant, claim Receiver work, or prove the browser/WebMCP return path.
+forwards Codex output when run in an interactive terminal, so the smoke test behaves like the
+underlying direct `codex exec` command. It does not create a Grant, claim Receiver work, or prove a
+Desktop UI thread, browser, or WebMCP return path. If it times out, run the equivalent direct
+`codex exec` command to inspect Codex's own output; the test does not contact the Receiver.
+
+The one-shot test allows up to one hour by default. Override it with
+`--activation-timeout <milliseconds>` when needed. Background delivery keeps its separate
+60-second adapter bound.
 
 To pause or remove the local Connector:
 
 ```sh
-npx --yes --package=@4xeoz/re-entry re-entry stop
-npx --yes --package=@4xeoz/re-entry re-entry disconnect
-npx --yes --package=@4xeoz/re-entry re-entry uninstall
+npx --yes @4xeoz/re-entry stop
+npx --yes @4xeoz/re-entry disconnect
+npx --yes @4xeoz/re-entry uninstall
 ```
 
 `stop` pauses the macOS background service and keeps the account connection. `uninstall` requires
@@ -147,12 +178,15 @@ typing `DELETE`, then removes only the LaunchAgent, saved Connector credential, 
 It does not recursively delete folders or uninstall the npm package. To remove a global npm
 installation separately, run `npm uninstall --global @4xeoz/re-entry`.
 
-`disconnect` is the simple local sign-out: it stops the LaunchAgent, removes the saved Connector
-credential, and leaves the log files in place. It is safe to run again when already disconnected.
-The current CLI does not have a server-side revoke route, so this command does not remove the Mac
-from the account's remote device list; use the account dashboard's revoke/decommission action when
-that Receiver operation is available, or wait for the remote credential to expire. `uninstall` is
-the stronger local cleanup and also removes Connector logs.
+`disconnect` is the account-device sign-out. It uses the saved Connector token to revoke this Mac's
+Cloud access, then stops the LaunchAgent, removes the local credential, and leaves log files in
+place. The dashboard keeps the device row for audit and shows it as **Disconnected**; it is no longer
+eligible for consent or delivery. Exact replay is safe. If the Receiver cannot confirm revocation,
+the command fails visibly and keeps the credential so you can retry without orphaning remote access.
+When no credential exists, it performs only idempotent local cleanup.
+
+`uninstall` is the stronger local-file cleanup and also removes Connector logs; it does not replace
+the remote revocation step. Run `disconnect` first when this Mac is still connected.
 
 Each credential file accepts one connection at a time. Repeating `connect` or `install` with the
 same saved connection returns `already connected`; an expired, rejected, or different-Receiver
@@ -171,17 +205,22 @@ Copy this prompt into a coding-agent task:
 
 ```text
 Install the Re-entry Local Connector on this Mac. First read the package README. Verify Node.js 24
-or newer and locate the Connector executable. Run `npx --yes --package=@4xeoz/re-entry re-entry install` with an absolute
-project directory. Let the human create or sign in to a Re-entry account, click Pair this Mac, and
-enter the code in the CLI; never copy browser cookies, organization keys, Connector tokens, or private keys
-into chat, logs, source files, or git. Finish by running `npx --yes --package=@4xeoz/re-entry re-entry status`
-and report the bounded results without claiming Browser/WebMCP or production deployment.
+or newer and locate the Connector executable. Until TASK-032 closes, use the current checkout for
+instruction-bearing active-v2 verification by installing
+`/absolute/path/to/OpenAI-Web-MCP-Challenge/runtime/local-connector`; do not use registry
+`@4xeoz/re-entry@0.2.20` as simple-flow evidence. Let the human create or sign in to a Re-entry
+account, click Pair this Mac, and enter the code in the CLI; never copy browser cookies, organization
+keys, Connector tokens, or private keys into chat, logs, source files, or git. Finish by running
+`re-entry status` and report the bounded results without claiming Browser/WebMCP or production
+deployment. If only the registry artifact is available, limit the report to setup/status behavior
+and label active-v2 delivery compatibility unverified.
 ```
 
 ## Package map
 
 - `src/main.mjs` — `re-entry` CLI and long-running poll loop.
 - `src/pairing-client.mjs` — account pairing-code redemption and legacy pairing compatibility.
+- `src/disconnect-lifecycle.mjs` — remote-before-local Connector disconnection ordering.
 - `src/credentials.mjs` — atomic local credential storage.
 - `src/macos-service.mjs` — per-user LaunchAgent install, stop, uninstall, and status.
 - `src/workspace-picker.mjs` — interactive Codex workspace selection.
@@ -230,26 +269,29 @@ npm run verify
 The package bundles the reusable `@webmcp-challenge/reentry-core` modules it imports. It can be
 installed from npm without a checked-out repository or a local `file:` dependency at runtime.
 
-## Publish the package
+## Package release gate
 
-The package name is `@4xeoz/re-entry` and the core is included in the tarball. After signing in to
-the npm account that owns the `4xeoz` scope, publish from this directory:
+The package name is `@4xeoz/re-entry` and the Core client is bundled into the tarball. Do not publish
+from the current mixed worktree or reuse immutable `0.2.20`. TASK-032 requires a new version from
+one reviewed commit whose package version and bundled Core match the artifact. Before any separately
+authorized publication, verify at least:
 
 ```sh
-npm login
 npm whoami
 npm view @4xeoz/re-entry version
-npm version patch --no-git-tag-version
 npm run verify
-npm publish --access public
+npm pack --dry-run --json
 ```
 
-NPM versions are immutable: if the target version has already been published, bump it before
-publishing with `npm version patch --no-git-tag-version`.
+Extract the actual tarball into a clean consumer and prove that it accepts and preserves a valid
+active-v2 `continuation.instruction`, rejects malformed instruction, retains the fixed Codex safety
+frame, and passes the intended local Claim/full-chain scope on Node 24. After authorized publication,
+read back `version`, `gitHead`, and integrity and confirm they match the reviewed source. Package
+versions are immutable; never overwrite `0.2.20`.
 
-After publishing, users run `npx --yes --package=@4xeoz/re-entry re-entry install`. The explicit
-`--package` form works across npm versions when the package is scoped; the executable itself is
-still named `re-entry`. The command uses the built-in preview Receiver unless `--receiver` or
+After a compatible release is verified, users run `npx --yes @4xeoz/re-entry install`. The executable itself is still
+named `re-entry`; the short package form works with the scoped package. The command uses the
+built-in preview Receiver unless `--receiver` or
 `REENTRY_RECEIVER_ORIGIN` overrides it.
 
 A temporary `npx` invocation does not add `re-entry` to your shell `PATH`. If you prefer the shorter

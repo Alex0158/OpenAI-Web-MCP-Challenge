@@ -1,18 +1,17 @@
 # Re-entry Host SDK
 
-> **Cloud Receiver dependency notice — 2026-09-02:** The former loopback and hosted Cloud Receiver
-> implementations are deprecated and must not be used for new integrations or production traffic.
-> This SDK documents a reusable Host boundary; connect it only to a separately accepted replacement
-> Receiver service.
+> **Receiver boundary — 2026-09-03:** New integrations target the active Cloud Receiver v2 source
+> under `saas-boilerplate/`. The older `runtime/cloud-receiver/` implementation is deprecated.
+> Local verification does not by itself prove a deployed Receiver or production release.
 
 A small Next.js-compatible library that bundles Host signing and Receiver calls with the browser
 action that joins ordinary page UI, WebMCP, and Re-entry-owned consent.
 
-> Current boundary: this package is verified against the loopback Cloud Receiver and is prepared
-> for npm publication. It does not replace Host authentication, app-specific tool schemas,
-> business state, deployment, or final-effect verification. The sample proves JavaScript
-> registration and composition; genuine Codex discovery and invocation still require a supported
-> built-in Browser runtime.
+> Current boundary: this package is locally verified through Cloud Receiver v2, a separately
+> spawned Local Connector worker, a distinct test-only effect/ack worker, and Receiver restart
+> replay. The default Connector does not acknowledge dispatch. This evidence does not replace Host
+> authentication, durable application storage, current business state, page-specific WebMCP tools,
+> deployment, or a selected product's real effect authority.
 
 ## The complete idea
 
@@ -134,14 +133,13 @@ page that the popup changed; the Host backend must still confirm the status with
 
 For a normal Host application, the smallest useful integration contains:
 
-1. One server-only SDK module that reads the environment variables and creates `reentry`.
-2. One server route that creates the signed Manifest and consent session.
-3. One server route that confirms approval and stores the private binding.
-4. One Client Component that creates `requestReentry` and uses it for both a normal button and a
-   top-level WebMCP Site Tool.
-5. One Host database record that maps the approved continuation to the authenticated Host user
-   and workflow.
-6. One server-side business-event handler that loads that record and calls `reentry.sendEvent`.
+1. One server-only SDK module that reads environment variables and calls `createReentry`.
+2. One authenticated server route that supplies only `subject`, `prompt`, and the canonical Host
+   URL, then stores the returned request handle.
+3. One server route that confirms approval and stores the approved continuation.
+4. One browser action used by both the normal button and the top-level WebMCP Site Tool.
+5. One separate trusted business-event handler that loads the approved continuation and calls
+   `reentry.trigger`.
 
 The agent must use the Host application's existing authentication, workflow database, page routes,
 and business transitions. The SDK does not invent those things. It only provides the Re-entry
@@ -158,16 +156,68 @@ Do not build these as part of the Host integration:
 
 ## Install
 
+The npm registry currently serves `@4xeoz/re-entry-sdk@0.3.1` from Git commit `9864ba0`. That
+published artifact predates the uncommitted `createReentry()` simple facade shown below. The
+published advanced API remains usable, but the normal facade must be exercised from this checkout
+until a new exact-source package release is verified:
+
 ```sh
 npm install @4xeoz/re-entry-sdk
+# For local simple-facade verification instead:
+npm install /absolute/path/to/OpenAI-Web-MCP-Challenge/runtime/host-sdk
 ```
 
-The package name in this checkout is `@4xeoz/re-entry-sdk`. Its manifest is prepared for public
-publication, but this repository state alone does not prove that the package is already available
-from the npm registry. If registry installation is not available yet, use the included sample,
-install the package from this checkout as a local file dependency, or publish it through the normal
-npm release process. Do not copy the SDK source into the Host application or edit the bundled Core
-dependency by hand.
+## Quickstart: normal server path
+
+Use `createReentry` from server code when the Host only needs to request consent, confirm it, and
+trigger the later Event. The facade registers the Host key idempotently, supplies the strict
+Manifest/Event defaults, and keeps the handle and continuation server-only.
+
+```js
+import { createReentry } from "@4xeoz/re-entry-sdk/server";
+
+const reentry = createReentry({
+  origin: process.env.HOST_ORIGIN,
+  receiverOrigin: process.env.RECEIVER_ORIGIN,
+  privateKey: process.env.REENTRY_PRIVATE_KEY,
+  keyId: process.env.REENTRY_KEY_ID,
+  organizationApiKey: process.env.REENTRY_ORGANIZATION_API_KEY,
+});
+
+// Authenticated consent-request handler.
+const request = await reentry.request({
+  subject: authenticatedUser.id,
+  prompt: "Review the completed report and prepare the next safe step.",
+  url: currentReport.canonicalUrl,
+});
+await saveRequestHandle(request.consentSessionId, request.handle);
+// Return only request.consentUrl and request.consentSessionId to the browser.
+
+// Separate callback/status handler, after the Re-entry window completes.
+const handle = await loadRequestHandle(consentSessionId);
+const confirmation = await reentry.confirm(handle, {
+  onApproved: (continuation) => saveApprovedContinuation(consentSessionId, continuation),
+});
+
+// Separate trusted handler, called only after the real Host business event.
+async function handleReportReady(consentSessionId) {
+  const continuation = await loadApprovedContinuation(consentSessionId);
+  return reentry.trigger(continuation);
+}
+```
+
+`confirm` returns `{ status: "pending" | "declined" | "expired" | "revoked" }` until approval;
+it returns the server-only continuation after approval. The callback is optional and runs only for
+an approved continuation. Confirmation persists authority but does not trigger the later Event;
+the trusted business-event handler loads the saved continuation and calls `trigger`. The facade
+fixes `max_runs` to one and treats Event `202` as queued acceptance, not delivery or
+acknowledgement. The consented prompt becomes bounded, untrusted Connector instruction; it never
+replaces the canonical URL, current Host state, available WebMCP tools, or human boundary.
+
+The package name in this checkout is `@4xeoz/re-entry-sdk`. Registry publication of `0.3.1` does
+not publish later working-tree changes under the same version. Use the included sample or an
+explicit local file dependency for the current simple facade; do not copy SDK source into the Host
+application or edit the bundled Core dependency by hand. TASK-031 owns a future versioned release.
 
 The package has three entrypoints:
 
@@ -181,6 +231,7 @@ The package has three entrypoints:
 
 | Method | Where to call it | What goes in | What comes out |
 | --- | --- | --- | --- |
+| `createReentry(config)` | Host server | Server configuration plus `subject`, `prompt`, and Host URL | Request handle, approved continuation, or visible consent status |
 | `sdk.registerHostKey({ hostId })` | Host setup/server | A stable Host ID | Receiver registration result |
 | `sdk.createManifest(fields)` | Host server | Current workflow, display copy, and Grant request | Signed Manifest; no network call |
 | `sdk.createConsentSession({ manifest, hostSubjectRef })` | Host server | Signed Manifest and authenticated Host subject | Consent URL and session ID |
@@ -853,26 +904,24 @@ import `server` from a Client Component.
 The server object exposes these operations:
 
 ```js
-await sdk.registerHostKey({ hostId: "host_001" });
-const manifest = sdk.createManifest(hostOwnedManifestFields);
-const session = await sdk.createConsentSession({
+await reentry.registerHostKey({ hostId: "host_001" });
+const manifest = reentry.createManifest(hostOwnedManifestFields);
+const session = await reentry.createConsentSession({
   manifest,
   hostSubjectRef: authenticatedUser.id,
 });
-const decision = await sdk.decideConsent({
-  challengeId: session.challenge.challenge_id,
-  consentToken: session.consent_token,
-  hostSubjectRef: authenticatedUser.id,
-  action: "approve",
+const status = await reentry.getConsentSession({
+  consentSessionId: session.consent_session_id,
 });
-const signedEvent = sdk.createEvent(hostOwnedEventFields);
-const acceptance = await sdk.sendEvent(hostOwnedEventFields);
+const acceptance = await reentry.sendEvent(hostOwnedEventFields);
 ```
 
 `registerHostKey` sends only the derived public key. `createManifest` produces the signed offer.
-`createConsentSession` sends the signed Manifest to Reentry and returns a public challenge plus one
-opaque consent token. `decideConsent` sends the user's decision to Reentry; approval returns only a
-public binding. `sendEvent` signs an Event and calls `POST /v0.1/events`. None of these calls retry
+`createConsentSession` sends the signed Manifest to Reentry and returns a public challenge plus a
+consent URL containing one opaque token. The human decides on the Receiver-owned consent page; the
+active v2 Host server only confirms the resulting session through `getConsentSession`. `decideConsent` is a
+retained compatibility method for the retired preview and is not an active-v2 browser or Host
+decision route. `sendEvent` signs an Event and calls `POST /v0.1/events`. None of these calls retry
 automatically.
 
 The organization API key is accepted only by the server entrypoint. It is never part of the

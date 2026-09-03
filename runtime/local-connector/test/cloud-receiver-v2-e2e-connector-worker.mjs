@@ -21,6 +21,7 @@ try {
     connectorToken: credentials.connector_token,
     requestTimeoutMs: 5_000,
   });
+  let observedInstruction;
   const connector = new LocalConnector({
     client,
     adapter: {
@@ -28,6 +29,7 @@ try {
         for (const secretField of ["connector_token", "lease_token", "effect_token"]) {
           if (secretField in activation) throw workerFailure("connector_activation_secret_boundary");
         }
+        observedInstruction = activation.continuation.instruction;
         return {
           type: AGENT_ACTIVATION_RESULT_TYPE,
           protocol_version: "0.1",
@@ -59,6 +61,7 @@ try {
       event_id: result.event_id,
       outcome: result.result.outcome,
       code: result.result.code,
+      instruction: observedInstruction,
     })}\n`);
   }
 } catch (error) {

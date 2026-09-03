@@ -534,8 +534,10 @@ async function seedDelivery(label) {
   const bindingId = randomUUID();
   const correlationId = `correlation-${harness.suffix}-${label}`;
   const workflowId = `workflow-${harness.suffix}-${label}`;
+  const manifestId = `manifest-${harness.suffix}-${label}`;
   const eventType = "workflow.ready";
   const canonicalUrl = `${HOST_BROWSER_ORIGIN}/workflows/${label}`;
+  const instruction = `Review ${label} and prepare the next safe step.`;
   const occurredAt = new Date(Date.now() - 1_000).toISOString();
   const event = {
     type: "webmcp.continuation_event",
@@ -572,8 +574,17 @@ async function seedDelivery(label) {
       organizationId: harness.organizationId,
       hostSubjectRefDigest: harness.digestSecret(subject),
       expectedOrigin: HOST_BROWSER_ORIGIN,
-      manifestId: `manifest-${harness.suffix}-${label}`,
-      manifestJson: { fixture: label },
+      manifestId,
+      manifestJson: storedManifest({
+        manifestId,
+        correlationId,
+        workflowId,
+        eventType,
+        canonicalUrl,
+        instruction,
+        now,
+        expiresAt,
+      }),
       expiresAt,
       status: "approved",
       decisionAction: "approve",
@@ -637,7 +648,47 @@ async function seedDelivery(label) {
     bindingId,
     workflowId,
     canonicalUrl,
+    instruction,
     humanBoundary: "explicit_receiver_consent",
+  };
+}
+
+function storedManifest({
+  manifestId,
+  correlationId,
+  workflowId,
+  eventType,
+  canonicalUrl,
+  instruction,
+  now,
+  expiresAt,
+}) {
+  return {
+    type: "webmcp.reentry_manifest",
+    protocol_version: "0.1",
+    manifest_id: manifestId,
+    correlation_id: correlationId,
+    issuer_origin: HOST_BROWSER_ORIGIN,
+    issued_at: new Date(now.getTime() - 1_000).toISOString(),
+    offer_expires_at: new Date(now.getTime() + 5 * 60_000).toISOString(),
+    workflow: {
+      id: workflowId,
+      type: "review",
+      state_version: 1,
+      canonical_url: canonicalUrl,
+    },
+    display: { title: `Continuation ${workflowId}`, reason: instruction },
+    grant_request: {
+      event_type: eventType,
+      grant_expires_at: expiresAt.toISOString(),
+      max_runs: 1,
+      human_boundary: "explicit_receiver_consent",
+    },
+    signature: {
+      algorithm: "Ed25519",
+      key_id: "fixture-key",
+      value: "A".repeat(86),
+    },
   };
 }
 

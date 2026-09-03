@@ -131,6 +131,7 @@ function deliveryLease() {
       state_version: 2,
       occurred_at: "2026-08-31T12:00:00.000Z",
       canonical_url: "https://host.example/workflows/workflow_preview_001",
+      instruction: "Review the approved workflow and prepare the next safe step.",
     },
     receipt,
   };

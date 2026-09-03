@@ -106,6 +106,54 @@ test("account pairing rejects the wrong tokenless-replay shapes", async (t) => {
   }
 });
 
+test("Connector disconnection sends only the saved token and accepts exact replay-safe status", async (t) => {
+  const originalFetch = globalThis.fetch;
+  const requests = [];
+  t.after(() => {
+    globalThis.fetch = originalFetch;
+  });
+  globalThis.fetch = async (url, init) => {
+    requests.push({ url, init });
+    return jsonResponse({
+      type: "webmcp.connector_disconnection",
+      protocol_version: "0.1",
+      status: "disconnected",
+      duplicate: false,
+    });
+  };
+
+  const client = new LocalConnectorPairingClient({ baseUrl: BASE_URL });
+  const result = await client.disconnectConnector({ connectorToken: CONNECTOR_TOKEN });
+
+  assert.deepEqual(result, { status: "disconnected", duplicate: false });
+  assert.equal(requests.length, 1);
+  assert.equal(requests[0].url, `${BASE_URL}/v0.1/connectors/disconnect`);
+  assert.deepEqual(JSON.parse(requests[0].init.body), {
+    connector_token: CONNECTOR_TOKEN,
+  });
+  assert.equal(requests[0].init.headers.Authorization, undefined);
+});
+
+test("Connector disconnection rejects a malformed response", async (t) => {
+  const originalFetch = globalThis.fetch;
+  t.after(() => {
+    globalThis.fetch = originalFetch;
+  });
+  globalThis.fetch = async () => jsonResponse({
+    type: "webmcp.connector_disconnection",
+    protocol_version: "0.1",
+    status: "disconnected",
+    duplicate: false,
+    connector_token: CONNECTOR_TOKEN,
+  });
+
+  const client = new LocalConnectorPairingClient({ baseUrl: BASE_URL });
+  await assert.rejects(
+    client.disconnectConnector({ connectorToken: CONNECTOR_TOKEN }),
+    (error) => error.code === "pairing_response_invalid",
+  );
+});
+
 function jsonResponse(body) {
   return new Response(JSON.stringify(body), {
     status: 200,

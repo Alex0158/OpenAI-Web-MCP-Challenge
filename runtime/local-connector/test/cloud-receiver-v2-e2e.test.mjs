@@ -9,7 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test, { after, before } from "node:test";
 
-import { createHostSdk } from "../../host-sdk/src/server.mjs";
+import { createReentry } from "../../host-sdk/src/server.mjs";
 import { LocalConnectorCredentialStore } from "../src/credentials.mjs";
 
 const enabled = process.env.CLOUD_RECEIVER_V2_E2E === "1";
@@ -39,8 +39,9 @@ test(
     const hostOrigin = `https://e2e-host-${suffix}.example`;
     const keyId = `e2e-key-${suffix}`;
     const canonicalUrl = `${hostOrigin}/workflows/${suffix}`;
+    const instruction = "Review the bounded test workflow and prepare its next safe step.";
     let idSequence = 0;
-    const sdk = createHostSdk({
+    const reentry = createReentry({
       origin: hostOrigin,
       privateKey: keys.privateKey,
       keyId,
@@ -50,42 +51,18 @@ test(
       createId: (prefix) => `${prefix}-${suffix}-${++idSequence}`,
     });
 
-    const registration = await sdk.registerHostKey({ hostId: `host-${suffix}` });
-    assert.equal(registration.status, "active");
-
-    const now = Date.now();
-    const manifest = sdk.createManifest({
-      manifestId: `manifest-${suffix}`,
-      correlationId: `correlation-${suffix}`,
-      issuedAt: new Date(now - 1_000).toISOString(),
-      offerExpiresAt: new Date(now + 5 * 60_000).toISOString(),
-      workflow: {
-        id: `workflow-${suffix}`,
-        type: "review",
-        stateVersion: 1,
-        canonicalUrl,
-      },
-      display: {
-        title: "Local Connector v2 full-chain test",
-        reason: "A bounded test event is ready for continuation.",
-      },
-      grantRequest: {
-        eventType: "workflow.ready",
-        grantExpiresAt: new Date(now + 15 * 60_000).toISOString(),
-        humanBoundary: "explicit_receiver_consent",
-      },
+    const request = await reentry.request({
+      subject: `subject-${suffix}`,
+      prompt: instruction,
+      url: canonicalUrl,
     });
-    const consent = await sdk.createConsentSession({
-      manifest,
-      hostSubjectRef: `subject-${suffix}`,
-    });
-    const consentToken = new URL(consent.consent_url).searchParams.get("token");
+    const consentToken = new URL(request.consentUrl).searchParams.get("token");
     assert.match(consentToken ?? "", /^[A-Za-z0-9_-]{43}$/);
 
     const decision = await sendJson(harness.receiver.origin, "/v0.1/account-consent-decisions", {
       headers: {
         Cookie: harness.userCookie,
-        Origin: HOST_BROWSER_ORIGIN,
+        Origin: harness.receiver.origin,
       },
       body: {
         consent_token: consentToken,
@@ -93,29 +70,21 @@ test(
         connector_id: harness.connectorId,
       },
     });
-    assert.equal(decision.status, 200);
+    assert.equal(decision.status, 200, JSON.stringify(decision.body));
     assert.equal(decision.body.status, "approved");
 
-    const status = await sdk.getConsentSession({ consentSessionId: consent.consent_session_id });
-    assert.equal(status.effective_status, "active");
-    assert.ok(status.binding);
+    const continuation = await reentry.confirm(JSON.parse(JSON.stringify(request.handle)));
+    assert.ok(continuation.binding);
+    assert.equal(continuation.binding.status, "active");
+    assert.equal(continuation.binding.workflow_id, request.handle.workflow.id);
 
-    const eventId = `event-${suffix}`;
-    const acceptance = await sdk.sendEvent({
-      binding: status.binding,
-      eventId,
-      deliveryTimestamp: String(Math.floor(Date.now() / 1_000)),
-      workflow: {
-        id: status.binding.workflow_id,
-        stateVersion: 2,
-        canonicalUrl,
-      },
-    });
+    const acceptance = await reentry.trigger(continuation);
+    const eventId = acceptance.event_id;
     assert.deepEqual(acceptance, {
       type: "webmcp.continuation_acceptance",
       protocol_version: "0.1",
       event_id: eventId,
-      correlation_id: status.binding.correlation_id,
+      correlation_id: continuation.binding.correlation_id,
       accepted: true,
       duplicate: false,
       status: "accepted",
@@ -134,6 +103,7 @@ test(
       event_id: eventId,
       outcome: "accepted",
       code: "activation_dispatch_accepted",
+      instruction,
     });
     assert.equal(typeof activation.events.at(-1)?.delivery_id, "string");
     assertSecretAbsent(activation.stdout, [harness.connectorToken, claimToken]);
@@ -153,8 +123,8 @@ test(
       effect_id: effectId,
       delivery_id: leased.deliveryId,
       event_id: eventId,
-      correlation_id: status.binding.correlation_id,
-      workflow_id: status.binding.workflow_id,
+      correlation_id: continuation.binding.correlation_id,
+      workflow_id: continuation.binding.workflow_id,
       canonical_url: canonicalUrl,
       human_boundary: "explicit_receiver_consent",
       outcome: "effect_applied_awaiting_human",
@@ -183,6 +153,35 @@ test(
     assert.ok(committed.acknowledgedAt);
     assert.ok(committed.effectAttestationJson.includes(effectId));
     assertSecretAbsent(committed.effectAttestationJson, [
+      harness.connectorToken,
+      claimToken,
+      effectToken,
+    ]);
+
+    const eventHistory = await sendJson(
+      harness.receiver.origin,
+      `/api/organizations/${encodeURIComponent(harness.organizationId)}/events`,
+      {
+        method: "GET",
+        headers: { Cookie: harness.developerCookie },
+      },
+    );
+    assert.equal(eventHistory.status, 200, JSON.stringify(eventHistory.body));
+    assert.deepEqual(eventHistory.body.data.events[0], {
+      event_id: eventId,
+      event_type: "workflow.ready",
+      issuer_origin: hostOrigin,
+      workflow_id: continuation.binding.workflow_id,
+      received_at: eventHistory.body.data.events[0].received_at,
+      delivery_state: "acknowledged",
+      delivery_attempt: 1,
+      acknowledged_at: eventHistory.body.data.events[0].acknowledged_at,
+      terminal_reason: null,
+    });
+    assert.match(eventHistory.body.data.events[0].received_at, /^\d{4}-\d{2}-\d{2}T/);
+    assert.match(eventHistory.body.data.events[0].acknowledged_at, /^\d{4}-\d{2}-\d{2}T/);
+    assertSecretAbsent(JSON.stringify(eventHistory.body), [
+      harness.organizationApiKey,
       harness.connectorToken,
       claimToken,
       effectToken,
@@ -276,18 +275,27 @@ async function createHarness() {
       body: { email: state.developerEmail, password },
     });
     assert.equal(developer.status, 201);
-    const organization = await state.prisma.organization.create({
-      data: { developerId: developer.body.data.id, name: `Connector E2E ${state.userEmail}` },
+    state.developerCookie = readSessionCookie(developer.response);
+    const organization = await sendJson(state.receiver.origin, "/api/organizations", {
+      headers: { Cookie: state.developerCookie, Origin: HOST_BROWSER_ORIGIN },
+      body: { name: `Connector E2E ${state.userEmail}` },
     });
-    state.organizationId = organization.id;
-    state.organizationApiKey = randomBytes(32).toString("base64url");
-    await state.prisma.organizationApiKey.create({
-      data: {
-        organizationId: organization.id,
-        keyDigest: state.digestSecret(state.organizationApiKey),
-        keyPrefix: state.organizationApiKey.slice(0, 8),
+    assert.equal(organization.status, 201);
+    state.organizationId = organization.body.data.organization.organization_id;
+    state.organizationApiKey = organization.body.data.api_key.api_key;
+    assert.match(state.organizationApiKey, /^[A-Za-z0-9_-]{43}$/);
+    const listedKeys = await sendJson(
+      state.receiver.origin,
+      `/api/organizations/${encodeURIComponent(state.organizationId)}/api-keys`,
+      {
+        method: "GET",
+        headers: { Cookie: state.developerCookie },
       },
-    });
+    );
+    assert.equal(listedKeys.status, 200, JSON.stringify(listedKeys.body));
+    assert.equal(listedKeys.body.data.api_keys.length, 1);
+    assert.equal(Object.hasOwn(listedKeys.body.data.api_keys[0], "api_key"), false);
+    assert.equal(JSON.stringify(listedKeys.body).includes(state.organizationApiKey), false);
 
     const pairing = await sendJson(state.receiver.origin, "/v0.1/account/pairing-sessions", {
       headers: { Cookie: state.userCookie, Origin: HOST_BROWSER_ORIGIN },
@@ -352,7 +360,6 @@ function loadCloudModules(receiverRoot) {
   require(path.join(receiverRoot, "node_modules/ts-node/register/transpile-only.js"));
   return {
     prisma: require(path.join(backendRoot, "src/db/index.ts")).prisma,
-    digestSecret: require(path.join(backendRoot, "src/middleware/organization-auth.ts")).digestSecret,
     clearTestAccounts: require(path.join(backendRoot, "src/test/helper.ts")).clearTestAccounts,
   };
 }

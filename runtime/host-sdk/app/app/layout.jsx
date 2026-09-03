@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Continuation SDK Preview",
-  description: "A polished browser preview for the WebMCP continuation SDK",
+  title: "Re-entry WebMCP SDK",
+  description: "A runnable WebMCP and Re-entry Host SDK preview",
 };
 
 export default function RootLayout({ children }) {

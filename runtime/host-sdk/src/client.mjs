@@ -286,6 +286,35 @@ const PROMPT_STYLES = `
   }
 `;
 
+const REENTRY_PROMPT_STYLES = `
+  dialog.${PROMPT_CLASS}__dialog{width:min(calc(100vw - 32px),520px);color:#f5f4ef;color-scheme:dark}
+  dialog.${PROMPT_CLASS}__dialog::backdrop{background:rgb(3 6 4 / 72%);backdrop-filter:blur(10px)}
+  .${PROMPT_CLASS}__card{border:1px solid #354335;border-radius:22px;background:radial-gradient(circle at 90% 0%,rgb(159 232 112 / 12%),transparent 32%),linear-gradient(145deg,rgb(255 255 255 / 4%),transparent 45%),#121712;box-shadow:0 30px 100px rgb(0 0 0 / 52%),0 0 0 1px rgb(159 232 112 / 5%);color:#f5f4ef}
+  .${PROMPT_CLASS}__card::before{position:absolute;inset:0 22px auto;height:2px;border-radius:0 0 999px 999px;background:linear-gradient(90deg,transparent,#9fe870 25%,#9fc7ff 75%,transparent);content:"";opacity:.9}
+  .${PROMPT_CLASS}__surface{padding:30px 30px 23px}
+  .${PROMPT_CLASS}__brand{gap:10px}
+  .${PROMPT_CLASS}__brand::before{width:9px;height:9px;border:3px solid rgb(159 232 112 / 18%);border-radius:50%;background:#9fe870;box-shadow:0 0 18px rgb(159 232 112 / 55%);content:""}
+  .${PROMPT_CLASS}__eyebrow{margin-bottom:5px;color:#9fc7ff;font:700 9px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em}
+  .${PROMPT_CLASS}__brand-name{color:#f5f4ef;font:700 14px/1.1 Poppins,ui-sans-serif,system-ui,sans-serif;letter-spacing:-.02em}
+  .${PROMPT_CLASS}__brand-version{border-color:#354335;background:#1b241c;color:#9fe870;font:700 9px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.03em}
+  .${PROMPT_CLASS}__close{height:30px;margin:0;padding:0 9px;border-color:#354335;border-radius:999px;color:#9ca99d;font-size:11px}
+  .${PROMPT_CLASS}__close:hover{border-color:#5d755c;background:#1b241c;color:#f5f4ef}
+  .${PROMPT_CLASS}__title{margin-top:34px;color:#f5f4ef;font:700 clamp(27px,5vw,34px)/1.04 Poppins,ui-sans-serif,system-ui,sans-serif;letter-spacing:-.055em}
+  .${PROMPT_CLASS}__reason{max-width:40ch;color:#c3ccc1;font-size:15px;line-height:1.55}
+  .${PROMPT_CLASS}__notice{align-items:flex-start;gap:12px;margin-top:25px;padding:14px 15px;border:1px solid #354335;border-radius:14px;background:linear-gradient(90deg,rgb(159 232 112 / 9%),rgb(159 199 255 / 4%))}
+  .${PROMPT_CLASS}__notice::before{flex:0 0 auto;width:8px;height:8px;margin-top:4px;border:3px solid rgb(159 232 112 / 20%);border-radius:50%;background:#9fe870;box-shadow:0 0 14px rgb(159 232 112 / 40%);content:""}
+  .${PROMPT_CLASS}__notice-copy{gap:3px}
+  .${PROMPT_CLASS}__notice-copy strong{color:#f5f4ef;font-size:12px}
+  .${PROMPT_CLASS}__notice-copy span{color:#9ca99d;font-size:12px;line-height:1.4}
+  .${PROMPT_CLASS}__actions{gap:10px;margin-top:25px}
+  .${PROMPT_CLASS}__button{min-height:46px;border-color:#354335;border-radius:12px;background:#1a211b;color:#dbe4d8;font-size:13px;font-weight:700}
+  .${PROMPT_CLASS}__button:hover{border-color:#668064;background:#222d23}
+  .${PROMPT_CLASS}__button--primary{border-color:#9fe870;background:#9fe870;color:#0b100c;box-shadow:0 8px 24px rgb(159 232 112 / 15%)}
+  .${PROMPT_CLASS}__button--primary:hover{border-color:#b8f398;background:#b8f398}
+  .${PROMPT_CLASS}__handoff-status{color:#9fe870}
+  .${PROMPT_CLASS}__footer{margin-top:15px;color:#728073;font:10px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.02em}
+  @media(max-width:520px){.${PROMPT_CLASS}__surface{padding:26px 21px 20px}}
+`;
 /**
  * Create the browser half of the SDK.
  *
@@ -343,6 +372,7 @@ export function createContinuationPrompt(options = {}) {
 
     const instanceId = ++promptSequence;
     style.textContent = PROMPT_STYLES;
+
     dialog.className = `${PROMPT_CLASS}__dialog`;
     card.className = `${PROMPT_CLASS}__card`;
     surface.className = `${PROMPT_CLASS}__surface`;
@@ -500,8 +530,8 @@ export function createReentryConsentPrompt(options = {}) {
     const footerText = documentRef.createElement("span");
     const instanceId = ++promptSequence;
 
-    style.textContent = `${PROMPT_STYLES}
-      .${PROMPT_CLASS}__handoff-status{min-height:20px;margin:14px 0 0;color:#0d8a6a;font-size:12px;line-height:1.4}
+    style.textContent = `${PROMPT_STYLES}${REENTRY_PROMPT_STYLES}
+      .${PROMPT_CLASS}__handoff-status{min-height:20px;margin:14px 0 0;color:#9fe870;font-size:12px;line-height:1.4}
       .${PROMPT_CLASS}__button[disabled]{cursor:not-allowed;opacity:.48;transform:none}
     `;
     dialog.className = `${PROMPT_CLASS}__dialog`;

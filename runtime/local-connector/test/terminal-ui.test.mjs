@@ -42,6 +42,10 @@ test("interactive terminal UI renders the guided connector states", () => {
   ui.stopWait("Approval received", "the Receiver approved this Connector");
   ui.complete("You're all set", "Re-entry is waiting for approved work.");
   ui.next("re-entry status", "Check the connection at any time.");
+  ui.commands("COPY-PASTE COMMANDS", [
+    { label: "Status", command: "re-entry status", detail: "check the connection" },
+    { label: "Sign out", command: "re-entry disconnect" },
+  ]);
   ui.error("Connector stopped", "example failure", "try again");
   ui.close();
 
@@ -53,6 +57,9 @@ test("interactive terminal UI renders the guided connector states", () => {
   assert.match(output.text(), /Approval received  the Receiver approved this Connector/);
   assert.match(output.text(), /You're all set/);
   assert.match(output.text(), /\$ re-entry status/);
+  assert.match(output.text(), /COPY-PASTE COMMANDS/);
+  assert.match(output.text(), /Status\s+\$ re-entry status/);
+  assert.match(output.text(), /Sign out\s+\$ re-entry disconnect/);
   assert.match(errors.text(), /✕  Connector stopped/);
   assert.match(errors.text(), /example failure/);
   assert.match(errors.text(), /NEXT/);
@@ -71,6 +78,7 @@ test("non-interactive terminal UI stays silent for JSON callers", () => {
   ui.success("ignored");
   ui.wait("ignored");
   ui.stopWait("ignored");
+  ui.commands("ignored", [{ label: "ignored", command: "ignored" }]);
   ui.error("ignored");
   ui.close();
 

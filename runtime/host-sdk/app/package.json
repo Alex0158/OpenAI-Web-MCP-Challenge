@@ -2,13 +2,15 @@
   "name": "host-sdk-browser-demo",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
   "dependencies": {
-    "@webmcp-challenge/host-sdk": "file:..",
+    "@4xeoz/re-entry-sdk": "file:..",
+    "@webmcp-challenge/reentry-core": "file:../../../reentry-core",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"

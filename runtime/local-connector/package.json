@@ -1,6 +1,6 @@
 {
   "name": "@4xeoz/re-entry",
-  "version": "0.2.14",
+  "version": "0.2.20",
   "type": "module",
   "description": "Outbound Local Connector process for Re-entry Core; uses the Cloud Receiver v2 preview by default with an explicit override for other accepted origins.",
   "publishConfig": {

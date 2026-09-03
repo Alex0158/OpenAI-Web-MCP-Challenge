@@ -156,6 +156,10 @@ test("Local Connector claims one lease and invokes the typed adapter without lea
   assert.equal("lease_token" in adapterInput, false);
   assert.equal("connector_token" in adapterInput, false);
   assert.equal("receipt" in adapterInput, true);
+  assert.equal(
+    adapterInput.continuation.instruction,
+    "Review the approved workflow and prepare the next safe step.",
+  );
 });
 
 function receiverStub() {
@@ -203,6 +207,7 @@ function deliveryLease(leaseToken) {
       state_version: 2,
       occurred_at: "2026-08-31T12:00:00.000Z",
       canonical_url: "https://host.example/workflows/workflow_connector_001",
+      instruction: "Review the approved workflow and prepare the next safe step.",
     },
     receipt,
   };

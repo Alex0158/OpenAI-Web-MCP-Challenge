@@ -128,6 +128,28 @@ export function createTerminalUi(options = {}) {
       write();
     },
 
+    commands(title, entries) {
+      if (!interactive) return;
+      clearSpinnerLine();
+      const validEntries = Array.isArray(entries)
+        ? entries.filter((entry) => (
+          entry &&
+          typeof entry.label === "string" && entry.label.length > 0 &&
+          typeof entry.command === "string" && entry.command.length > 0
+        ))
+        : [];
+      if (validEntries.length === 0) return;
+      const labelWidth = Math.max(...validEntries.map((entry) => entry.label.length));
+      write();
+      if (title) write(`  ${style(title, CYAN)}`);
+      for (const entry of validEntries) {
+        const label = entry.label.padEnd(labelWidth);
+        write(`  ${style(label, BOLD)}  ${style("$", CYAN)} ${style(entry.command, BOLD)}`);
+        if (entry.detail) write(`     ${style(entry.detail, DIM)}`);
+      }
+      write();
+    },
+
     error(label, detail, hint) {
       if (!interactive) return;
       clearSpinnerLine();
