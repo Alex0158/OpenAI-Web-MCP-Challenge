@@ -166,6 +166,9 @@ not claim that the game is built or balanced.
   — CP-14 pre-implementation audit of Eddy's Cloud Receiver/Local Connector v0.1 contracts, the
   Game-side signal/outbox seam, signed Event mapping, queue/lease/activation/ACK separation, source
   readiness, and the exact handoff gates for `SK-TASK-076`.
+- [`90-cp17-host-decision-and-deployment-preflight-cross-functional-audit.md`](90-cp17-host-decision-and-deployment-preflight-cross-functional-audit.md)
+  — CP-17 current production start/configuration audit, host/store decision fields, bootstrap and
+  production identity gaps, and the conservative route from local rehearsal to hosted continuity.
 
 ## Current concept checks
 

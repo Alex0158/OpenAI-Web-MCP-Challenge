@@ -1,6 +1,6 @@
 # Operations and Hosting
 
-**Status:** TARGET operations plan
+**Status:** TARGET operations plan; CP-17 host decision/preflight is tracked under [`SK-TASK-077`](../Tasks/SK-TASK-077-cp17-host-decision-and-deployment-preflight.md)
 
 ## Local CP-12 fixture run
 
@@ -63,6 +63,12 @@ The hosted health check must distinguish process liveness from world readiness. 
 exist, a `ready` worker must have loaded a compatible snapshot and clock; a process that is alive but
 cannot serve authoritative world commands is `degraded` or `not ready`. If hosted page and worker
 services are split, the page health surface must not invent readiness from its own process alone.
+
+The current production-like gap is explicit: an empty store has no default-world bootstrap, and the
+entrypoint's command, page-tool, and realtime scope are currently fixture-gated or resolver-injected.
+The deployment preflight must close those boundaries through an idempotent one-time bootstrap and a
+server-derived production identity before a hosted gameplay claim. It must not enable fixture mode,
+reseed on every restart, or use a browser heartbeat to keep the world alive.
 
 ## Security and abuse boundary
 

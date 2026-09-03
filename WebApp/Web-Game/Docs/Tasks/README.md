@@ -88,6 +88,12 @@ is unmade, a duplicate, or an external action added merely to make the queue loo
 
 ## 6. Current task routing
 
+[`SK-TASK-077`](SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) is `in_progress` for the
+CP-17 host decision and production-like deployment preflight. It reconciles the current production
+start/configuration boundary, the missing production world bootstrap and identity resolver, and the
+host/store/WebSocket/health/rollback decision fields. It does not select a provider by assumption,
+change an external environment, or claim hosted gameplay; its audit is [`Validation/90`](../Validation/90-cp17-host-decision-and-deployment-preflight-cross-functional-audit.md).
+
 [`SK-TASK-076`](SK-TASK-076-cp14-cloud-receiver-v2-game-adaptation.md) is `pending` for the CP-14
 Game-side adaptation to Eddy's exact Cloud Receiver v2 Host Event ingress. Its cross-functional audit
 is [`Validation/89`](../Validation/89-cp14-cloud-receiver-v2-adaptation-cross-functional-audit.md).

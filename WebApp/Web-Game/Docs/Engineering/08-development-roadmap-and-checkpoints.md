@@ -482,8 +482,11 @@ The bounded [`SK-TASK-075`](../Tasks/SK-TASK-075-cp12-shelter-economy-summary-ca
 - **Preparation:** [`SK-TASK-017`](../Tasks/SK-TASK-017-cp17-hosted-continuity-preimplementation-pack.md)
   and [`CP-17 scenario fixtures`](../Scenarios/17-cp17-hosted-continuity-fixtures.md) define the
   host-neutral acceptance matrix, deployment rehearsal, failure branches, evidence packet, and claim
-  limits. The [`CP-13–CP-18 seam map`](10-cp13-cp18-implementation-seam-map.md) routes the later
-  implementation to the existing entrypoint, health, runtime, and persistence boundaries.
+  limits. [`SK-TASK-077`](../Tasks/SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) now
+  owns the earlier host decision and production-like preflight; it identifies the missing bootstrap,
+  production identity, and provider facts without selecting a host by assumption. The
+  [`CP-13–CP-18 seam map`](10-cp13-cp18-implementation-seam-map.md) routes the later implementation
+  to the existing entrypoint, health, runtime, and persistence boundaries.
 
 ### CP-18 — hosted judge reproduction and submission package (`PLANNED; G3 GATE`)
 
