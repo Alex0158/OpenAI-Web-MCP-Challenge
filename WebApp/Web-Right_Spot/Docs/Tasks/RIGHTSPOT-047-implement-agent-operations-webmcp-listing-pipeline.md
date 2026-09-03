@@ -290,6 +290,19 @@ model.
 **Source:** Main accepted the reviewed 048 deterministic/browser split without closing its browser
 gate. The current Main source is not yet the dispatch baseline; Main must recapture a full source
 identity immediately before this dispatch and freeze the exact 047 candidate.  
+**T0 product source baseline (2026-09-03):** Repository root
+`/Users/alex/OpenAI-WebMCP/WebMCP_Challenge`; branch `main`; product snapshot
+`a68b76221db62e8a14207a2f94076a2aae661b31`; `origin/main...HEAD` is `70` behind / `47` ahead;
+one physical Worktree at the canonical Main path. RightSpot tracked source/tests were clean;
+collaborator-owned Web-Game changes and protected RightSpot untracked evidence/config paths remain
+outside this Work Order. Pinned Node is `v24.20.0`, npm `11.19.0`, and `/api/health` returned
+`{"ok":true,"service":"rightspot"}`. The exact worker-write baseline hashes are:
+`operations-webmcp.ts` `b3b83f482bb699b8c99ffaf22291784c58b712aa68979e9c512a3b7697f476c5`,
+`operations-page.tsx` `8b7fd1df584e9789187052db96e09c635008739993b4baff95ea9c845b152a3e`,
+`operations-webmcp.test.ts` `84375e27f76ce47f34cc5a0817d3909a9c536cfc1cae6df021218c16e4f16b1c`,
+and `operations-page.test.ts` `4701c237272b370e3790bf39d84fc0d78028eb03fd2371542346688655b0482a`.
+The task-record writeback may create a later docs-only Main commit, but these four source/test paths
+must remain byte-identical until the Builder handoff.  
 **Worker write set:** `src/ui/agent/operations/operations-webmcp.ts`,
 `src/ui/agent/operations/operations-page.tsx`, `tests/ui/operations-webmcp.test.ts`, and
 `tests/ui/operations-page.test.ts` only  
