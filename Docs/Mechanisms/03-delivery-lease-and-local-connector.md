@@ -3,7 +3,7 @@
 **Role:** CANONICAL mechanism contract  
 **Status:** Protocol-v0.1 Core, active v2, and current-checkout Local Connector contracts locally
 verified at bounded scopes; additive v0.2 two-delivery Connector/Agent-Adapter reference locally
-verified, with an active-v2 standing kernel locally verified in its working tree; pinned release,
+verified, with an active-v2 standing kernel and upgrade locally verified from committed source; pinned release,
 public controls, and product version selection remain open; pairing abuse fence,
 registry compatibility, default effect acknowledgement, production identity/deployment, and
 supported Agent runtime open; former receiver historical  
@@ -58,7 +58,7 @@ Delivery per standing Grant.
 ## Transport contract
 
 The Core HTTP adapter maps exact v0.1 and v0.2 Event, claim, and acknowledgement routes; it never
-infers or downgrades a version. The active-v2 working tree adds the three standing `/v0.2` kernel
+infers or downgrades a version. The locally committed active-v2 kernel adds the three standing `/v0.2` kernel
 routes alongside unchanged v0.1 routes. Its separate pairing and disconnect routes establish
 Connector identity; they are not part of the Core protocol kernel and do not select standing
 capability. The outbound Connector client:

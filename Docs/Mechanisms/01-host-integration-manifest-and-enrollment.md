@@ -78,7 +78,7 @@ boundary does.
 The additive protocol, low-level `StandingReentryHostSdk`, and Core enrollment reference are locally
 verified by RECORE-007 without changing v0.1. Event ID, sequence, occurrence time, and workflow
 snapshot stay explicit Host-outbox inputs. Active Cloud Receiver v2 now implements the internal
-standing enrollment/decision kernel in its locally verified `Re-Entry` working tree. Its public
+standing enrollment/decision kernel in its locally verified and committed `Re-Entry` source. Its public
 standing Consent/control shell is only proposed; the normal Host facade, selected-Host persistence,
 and product controls have not adopted it. TASK-028/TASK-033 own pinned-source and product proofs.
 

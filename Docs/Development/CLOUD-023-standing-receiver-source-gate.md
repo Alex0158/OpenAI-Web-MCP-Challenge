@@ -1,8 +1,8 @@
 # CLOUD-023 — Standing Receiver Kernel and Source Preflight
 
 **Role:** DEVELOPMENT implementation and verification record  
-**Status:** `locally_verified` Core source pin and minimum shared trace;
-Receiver working-tree closure, full release conformance, and public controls remain open  
+**Status:** Core and Receiver sources locally committed; minimum pinned trace and
+exact-commit PostgreSQL upgrade `locally_verified`; full release conformance and public controls remain open  
 **Date:** 2026-09-03  
 **Controls:** ADR-0043 through ADR-0045, TASK-027, TASK-028, TASK-033.
 
@@ -72,6 +72,10 @@ reviewed Core and Receiver commits, mandatory v0.1/v0.2 matrix and production
 profile, exact migration promotion, required CI/release enforcement, accepted
 public controls, production effect authority, Connector selection, and Game
 integration. Same-process app reconstruction is not arbitrary crash recovery.
+
+The earlier source snapshots below retain their original working-tree and
+missing-pin context. The final Receiver closure section owns the newer source
+and migration result; those historical limitations are not current source status.
 
 ## Ownership and next gate
 
@@ -237,3 +241,95 @@ matches; no whole-repository security pass, CI result, push, or release approval
 is claimed. The next gate is reviewed Receiver source/migration closure and the
 complete mandatory matrix/release enforcement under TASK-028, plus the separate
 lifetime and public-control decisions under TASK-027/TASK-033.
+
+## Receiver local source and exact-commit upgrade closure: 2026-09-03
+
+The user approved bounded source review, corrections, disposable migration
+verification, and local Git closure on the existing `Re-Entry` branch. This is an
+`Assured` increment under TASK-028: one falsifiable outcome is an exact Receiver
+commit whose additive upgrade retains pre-existing v0.1 rows and constraints.
+No new branch, remote delivery, deployment, production migration, public control,
+lifetime decision, Game work, or dependency upgrade is included.
+
+Independent runtime/security and migration reviews identified two P2 defects:
+
+1. Absolute-form HTTP request targets bypassed the standing raw-target guard,
+   fatal body decoder, and no-store policy; OPTIONS could exit through CORS.
+   Two regression tests initially failed (16 existing transport tests passed).
+   Express's parsed path now selects rejection policy only; the unchanged raw
+   allowlist still accepts only exact origin-form kernel routes. Both tests now
+   pass across six aliases each; focused transport is 18/18. Independent raw
+   probes confirm retained v0.1 and valid v0.2 behavior. A malformed single-slash
+   URI probe was rejected by Node before Express and was not mislabelled as an
+   application response.
+2. The migration suite upserted the v0.1 sentinel before checking it, which could
+   mask lost rows. Its title now states post-migration compatibility. A new
+   exact-commit rehearsal shares the test-only seeder, applies the six baseline
+   migrations first, seeds once, applies the seventh migration, and compares all
+   v0.1 rows/catalog before any post-upgrade seeding or constraint probes.
+
+The reviewed 28-path Receiver cohort was committed locally as
+`9156e68fe9b988f2ec7423d1c93930da3a105d4e`. It includes the existing standing
+kernel/migration/conformance delta, the HTTP correction, and upgrade verifier;
+only four pre-existing tracked integration files changed. No Game or RightSpot
+path entered the nested repository commit. Subsequent evidence-only writeback
+does not change this executable source identity.
+
+Fresh verification on Node `v24.20.0`, npm `10.9.2`:
+
+| Check | Result | Claim limit |
+| --- | --- | --- |
+| Backend aggregate | 21 suites / 156 tests passed, no skips | Local v0.1/standing regressions; not full shared conformance |
+| Root type-check and build | Passed | Backend and frontend; existing Next.js middleware warning retained |
+| Prisma schema validation | Passed | Static schema only |
+| Source-pin fixture suite | 16/16 passed | Fixed Core source identity, not release conformance |
+| Upgrade guard/record suite | 5/5 passed | Exact endpoint, source/lock inputs, migration-record failures |
+| Pinned real Express/PostgreSQL trace after source commit | 1/1 passed | Internal Consent/control and deterministic effect authority |
+| Exact-commit fresh PostgreSQL upgrade | Passed | Six baseline migrations, old fixture, seventh migration, old-state readback |
+| Post-upgrade constraint probes | 6/6 passed | Same new disposable database; no resets/deletions |
+
+The minimum shared trace records Receiver commit `9156e68...` and unchanged Core
+pin `28d74e589b16e43f167aa82652220b7b182502d1`; selected Core/spec SHA-256 remains
+`5eb4c8c2a94e79b4da68616c921f7d996f53545ce18d559424a908e6b480b73b`.
+An isolated exact-commit Core checkout prevents concurrent Game-only shared-main
+commits from being substituted for the reviewed pin. `source_identity_verified`
+is true; `release_conformance_verified` remains false.
+
+The upgrade used a newly provisioned, verified task-only PostgreSQL 16.14
+container at `127.0.0.1:55433/reentry_closure`, separate from the retained port
+55432 regression database. Storage is tmpfs with no host volume. All seven
+Prisma migration checksums matched the committed SQL and finished successfully.
+Thirteen baseline tables and ten fixture rows matched before and immediately
+after upgrade, and again after the six constraint probes. The snapshot SHA-256 is
+`5b3521a28cd21d395436c7c14a6fc7c3851967ccc98f5f0737f35b5cc0daf292`.
+Migration SQL and dependency-lock hashes remain respectively
+`e707a57e7b7330428ba96d0212bfc75516df26ea583904674996d739f70843c1` and
+`3f4354370ec3fa4a965c8434c6e8dd3c80be238dcb6fa7c42747719ac8275314`.
+Credential values and local fixture snapshots are not tracked. Temporary source,
+migration, and database fixtures remain retained for inspection.
+
+The rehearsal compares old columns, rows, indexes, constraints, user-defined
+triggers, ACL/RLS, and policies. It excludes internal triggers added by the new
+standing foreign keys. New `RESTRICT` references can prevent deletion of
+referenced existing parents; this is not a claim of unchanged parent-deletion
+behavior or verified production-role access.
+
+Reconciliation: ADR-0043 through ADR-0045 and normative mechanism semantics are
+`aligned`; no accepted authority or contract changed. Core/00, Core/05,
+Mechanisms 01-03, TASK-028/TASK-033, and the Development index are `updated` only
+for source/evidence status. Earlier working-tree results are `historical`.
+Public controls/lifetime and the observed separate-read inspection snapshot
+remain `open` in the proposal; no unaccepted public transaction contract was
+implemented. Full shared failure/race/no-mutation and forced rollback vectors,
+fresh-process crash and application rollback proof, deployed-role verification,
+and mandatory CI/release enforcement remain `unverified` under TASK-028.
+
+All 28 staged Receiver source files, the evidence-only Receiver README, and the
+nine coordinated parent documents passed scoped Markdown/link, English,
+sensitive-pattern, byte-identity, and whitespace checks; governance unit tests
+passed 6/6 and scanner tests 3/3. Full parent repository validation passed. The
+full sensitive-pattern scan still reports the same 21 Game artifact-name matches
+outside this increment; no whole-repository security pass is claimed and no
+unrelated file was changed. Parent documentation Git closure uses the separately
+coordinated nine-path window. No push, CI pass, production migration, deployment,
+publication, or full TASK-028/TASK-033 closure is claimed.

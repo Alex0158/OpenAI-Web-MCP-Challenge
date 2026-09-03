@@ -3,7 +3,7 @@
 **Role:** CANONICAL mechanism contract  
 **Status:** Protocol-v0.1 and additive standing-v0.2 Core/SQLite/HTTP references locally verified;
 active v2 adds a locally verified standing kernel alongside unchanged v0.1 under an accepted but
-unproven pinned-conformance architecture; lifetime policy, committed-source migration, and product
+unproven full pinned-conformance architecture; local committed-source upgrade is verified, while lifetime policy and product
 controls remain open  
 **Controls:** ADR-0007, ADR-0008, ADR-0013, ADR-0035, ADR-0036, ADR-0041, and ADR-0043 through
 ADR-0045
@@ -126,10 +126,11 @@ Deterministic and separate-test-process protocol-v0.1 Core evidence covers exact
 durable reopen, inspection, atomic revocation, revocation/event ordering, and one pre-commit forced
 termination case. Active v2 separately covers signed Event acceptance, exact replay, invalid scope,
 expiry/exhaustion/revocation fences, one-run reservation, and pending delivery in PostgreSQL.
-The `Re-Entry` working tree also passes an additive standing migration, real Express two-signal
+The locally committed `Re-Entry` kernel also passes an additive standing migration, real Express two-signal
 trace, and deterministic PostgreSQL authority/expiry/concurrency tests. ADR-0044 permits active v2
 to remain independent only behind pinned black-box conformance, which is still open under TASK-028;
-the uncommitted-source run is development evidence only. Its effective Grant lifetime remains a
+the minimum trace and exact-source PostgreSQL upgrade are locally verified, not full release
+conformance. CLOUD-023 owns the reviewed identities and preserved-row evidence. Its effective Grant lifetime remains a
 decision under TASK-027.
 Neither suite proves arbitrary crash placement, power-loss safety,
 multi-replica serialization, production identity, public Grant control, or a real Host-effect

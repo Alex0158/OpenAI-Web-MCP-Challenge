@@ -86,9 +86,9 @@ the SDK requests separate five-minute offer and thirty-minute Grant windows, whi
 shorter Consent-session expiry into the Grant without displaying it; TASK-027 owns the policy.
 ADR-0044 resolves the implementation-identity decision: active v2 may remain independently
 implemented only behind the pinned normative Receiver conformance suite. **VERIFICATION PENDING:**
-the active-v2 standing kernel and additive migration pass local working-tree checks and the minimum
-shared trace passes against a reviewed Core commit. Full pinned conformance, Receiver source closure,
-and release enforcement remain open under TASK-028. **VERIFIED
+the active-v2 standing kernel is locally committed, its exact-source PostgreSQL upgrade preserves
+the old fixture rows, and the minimum shared trace passes against a reviewed Core commit. Full
+pinned conformance, recovery coverage, and release enforcement remain open under TASK-028. **VERIFIED
 OPEN:** the default Connector dispatch path has no real Host-effect-to-acknowledgement integration
 and can therefore be reclaimed within the accepted attempt bound; TASK-029 owns the selected-app
 completion path. These
@@ -112,11 +112,12 @@ The shared scenario checks exact success envelopes and correlation, with 21 orac
 these additions do not establish the full shared race, rollback, or crash matrix.
 Schema 6 preserves but security-disables older preview Grants lacking key-material evidence;
 ordinary new-Grant restarts do not require another Consent. **LOCALLY VERIFIED, NOT RELEASED:** the
-active Receiver `Re-Entry` working tree now adds separate standing tables and real Express v0.2
-routes. Its 154-test backend aggregate, type-check, build, and shared two-signal trace passed against
+active Receiver `Re-Entry` source now adds separate standing tables and real Express v0.2
+routes. Its 156-test backend aggregate, type-check, build, and shared two-signal trace passed against
 disposable PostgreSQL. Consent/control are internal seams and Host-effect authority is deterministic;
-the Core corpus is committed locally and its minimum pinned trace passes, but the Receiver
-implementation remains uncommitted and full release conformance is unproved. The normal Host facade,
+both Core and Receiver sources are committed locally, the minimum pinned trace passes, and the
+exact-commit six-to-seven PostgreSQL upgrade preserves 13 old tables and 10 fixture rows before
+any reseeding. Full release conformance is unproved. The normal Host facade,
 product/published Connector v0.2 selection, Sleepless Kingdom, and an external Agent/Browser remain
 unintegrated. TASK-028/TASK-033 and the
 [Receiver verification record](../../saas-boilerplate/backend/conformance/standing-v0.2/README.md)
@@ -192,7 +193,7 @@ customer, cross-layer standing-mode adoption, and final market/distribution mode
 | Consent-session and Host SDK handoff preview | **CLOUD RECEIVER PREVIEW DEPRECATED; SDK CONTRACT RETAINED AS EVIDENCE** | ADR-0022, CLOUD-005, paired Host subject, signed Manifest, public challenge, opaque token, approval/decline fencing, public binding, restart, and no raw-token persistence |
 | Shared Host UI/WebMCP consent action | **LOCALLY VERIFIED WITH BOUNDED BROWSER RUNTIME EVIDENCE** | TASK-010, HOST-002, Host SDK v0.3 tests/build, and live `request_codex_reentry` discovery plus bounded invocation |
 | Simple subject/prompt/URL SDK and v2 developer flow | **SEPARATE-PROCESS VERIFIED; REGISTRY PATH OPEN** | ADR-0041, TASK-025, SDK-006, TASK-031, and TASK-032; 81 Core, 25 SDK, 56 Receiver, 47 Connector tests plus separate-process acknowledgement/restart replay and independent browser personas used current checkouts; published SDK `0.3.1` predates the facade and Connector `0.2.20` rejects its instruction-bearing lease |
-| Active v2 contract reconciliation | **CORE SOURCE PIN AND MINIMUM TRACE LOCALLY VERIFIED; RELEASE AND POLICY WORK OPEN** | ADR-0044, CLOUD-023, and TASK-028; the Express standing trace passes against committed Core source while the Receiver remains a `Re-Entry` working-tree implementation. Receiver source/migration closure, full conformance/release enforcement, public controls, pairing abuse fence, lifetime policy, and production effect acknowledgement remain open |
+| Active v2 contract reconciliation | **LOCAL SOURCE, UPGRADE, AND MINIMUM PINNED TRACE VERIFIED; RELEASE AND POLICY WORK OPEN** | ADR-0044, CLOUD-023, and TASK-028; the Express standing trace passes against committed Core and Receiver source, and the exact-commit additive upgrade preserves old rows/catalog on disposable PostgreSQL. Full conformance/recovery/release enforcement, public controls, pairing abuse fence, lifetime policy, and production effect acknowledgement remain open |
 | Re-entry Cloud console preview | **DEPRECATED, HISTORICAL LOOPBACK EVIDENCE** | CLOUD-004 and `runtime/cloud-receiver/`; retired by ADR-0032 |
 | Complete generic reference flow | **LOCALLY VERIFIED, EVIDENCE-ONLY AGENT** | CLOUD-006 and `runtime/reference-system/` |
 | Application-review sample Host | **LOCALLY VERIFIED, SAMPLE ONLY** | ADR-0023, HOST-001, and `runtime/application-demo/` |
@@ -275,8 +276,8 @@ account pairing, Host-key registration, Receiver-owned consent and target bindin
 ingress, delivery lease/acknowledgement, developer self-service, and bounded operations. It does not
 import or compose `reentry-core`. ADR-0044 accepts that independent implementation behind one
 normative Receiver authority model and mandatory pinned black-box conformance. TASK-028 remains
-verification-pending for the pinned shared suite, exact committed-source PostgreSQL migration, and
-release enforcement. The standing kernel is locally verified only; its new account control plane
+verification-pending for the full pinned shared suite, recovery proof, and release enforcement.
+The standing kernel and exact committed-source PostgreSQL upgrade are locally verified only; its new account control plane
 is proposed, not implemented. Its local and preview-deployment evidence is bounded by Core/05,
 CLOUD-022, SDK-006, and the Receiver standing verification record.
 

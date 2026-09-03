@@ -9,9 +9,9 @@
 - Lifecycle: `verification_pending`
 - Priority: `P1`
 - Owner: Principal architecture owner and Cloud Receiver v2 owner.
-- Current increment: Reviewed Core source is committed locally and its minimum pinned standing
-  trace passes against the Re-Entry working-tree Receiver; record that bounded source result.
-- Next gate: Review and commit the exact Receiver implementation/migration, complete the mandatory
+- Current increment: Core and Receiver sources are committed locally; the minimum pinned standing
+  trace and exact-commit PostgreSQL upgrade rehearsal pass. CLOUD-023 owns the bounded evidence.
+- Next gate: Complete the mandatory
   shared v0.1/v0.2 failure/race/recovery matrix, and enforce release checks while retaining the
   separate active-v2 production lease profile. Public controls need their own accepted contract.
 - Dependencies: ADR-0006, ADR-0012, ADR-0033 through ADR-0039, ADR-0043 through ADR-0045,
@@ -134,6 +134,9 @@ Release remains blocked until all of the following are explicit:
 
 ## 4.2 Active kernel and source-pin boundary
 
+The following paragraphs preserve earlier source-closure snapshots; Section 4.3
+owns the subsequent Receiver commit and exact upgrade result.
+
 The active Receiver `Re-Entry` working tree based on
 `6b4826f68bb3634d004c49259d9c5311c660d997` now contains the additive five-table migration,
 isolated standing service, and real `/v0.2` Event/claim/ACK routes. Node 24 verification passed
@@ -174,6 +177,30 @@ migration remain uncommitted; this result clears the missing-Core-source gate, n
 Public Consent/inspect/revoke remain a separate decision boundary. The
 [control-plane proposal](../../saas-boilerplate/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md)
 is non-authoritative under TASK-027/TASK-033; it does not add routes or decide lifetime policy.
+
+## 4.3 Receiver local source and migration closure
+
+Receiver commit `9156e68fe9b988f2ec7423d1c93930da3a105d4e` on `Re-Entry` contains
+the reviewed 28-path standing increment. Review corrected absolute-form HTTP
+targets bypassing the standing route/no-store boundary and replaced an overstated
+migration-preservation test claim with a separate exact-commit upgrade rehearsal.
+The accepted protocol, migration SQL, dependency lock, and Core pin are unchanged.
+
+Node 24 passed 21 backend suites / 156 tests, root type-check/build, Prisma
+validation, 16 source-pin tests, five upgrade-guard tests, and the real pinned
+standing trace after the Receiver commit. A new disposable PostgreSQL 16.14
+instance applied the six baseline migrations, received the v0.1 fixture, then
+applied the seventh standing migration. All seven checksums matched; 13 old
+tables and 10 rows matched before/after before any post-upgrade seeding, and all
+six constraint probes passed. CLOUD-023 and the Receiver record own exact
+identities, command details, and residuals.
+
+This closes the bounded local source/upgrade proof, not TASK-028. Full shared
+negative/race/forced-rollback/fresh-process recovery coverage, tested application
+rollback, deployed-role access, and mandatory CI/release enforcement remain open.
+`release_conformance_verified` remains false. The separate public-control proposal
+also records that internal inspection currently uses separate Grant/Delivery reads;
+its public snapshot semantics must be decided and tested before product exposure.
 
 ## 5. Verification and closure
 

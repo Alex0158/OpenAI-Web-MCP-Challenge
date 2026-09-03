@@ -15,7 +15,8 @@
   same-user Consent/inspection/revocation contract without exposing unaccepted routes.
 - Next gate: Accept the exact same-user Consent/inspection/revocation route, session, and CSRF
   contract and TASK-027 lifetime policy before exposing standing enrollment. Preserve the minimum
-  Core-pinned trace; TASK-028 separately owns Receiver source closure and full release conformance.
+  Core-pinned trace and local Receiver source/upgrade proof; TASK-028 separately owns full release
+  conformance and enforcement.
 - Dependencies: ADR-0042 through ADR-0045; TASK-027 for effective lifetime and display policy;
   TASK-028 for active-v2 independent-Receiver conformance; TASK-029 for the real Host-effect
   acknowledgement composition; and the selected Host's own integration contract and tests.
@@ -50,7 +51,7 @@ reservation and one Delivery; persistent authorization must not become persisten
 ### Active Cloud Receiver v2
 
 - The retained v0.1 Receiver independently implements the one-run shape with
-  `runsRemaining`, one Event per Grant, and one Delivery per Grant. The `Re-Entry` working tree
+  `runsRemaining`, one Event per Grant, and one Delivery per Grant. The locally committed `Re-Entry` kernel
   adds separate standing tables and services without changing those v0.1 constraints.
 - Exact-source preflight resolves active main to `6b4826f68bb3634d004c49259d9c5311c660d997`;
   `0d7bc3c` is its ancestor and the backend is unchanged between them. TASK-028 owns the verified
@@ -204,12 +205,13 @@ weakening, Game-document edit, or whole-repository security-scan pass is claimed
 
 [`RECORE-007`](../Development/RECORE-007-standing-authorization-v0.2-reference.md) owns exact
 reference implementation evidence and its non-claims. The active Receiver now has a locally verified
-`Re-Entry` working-tree kernel, additive PostgreSQL migration, and real Event/claim/ACK transport.
-Its 154-test backend aggregate and shared scenario pass are recorded in the
+`Re-Entry` kernel, additive PostgreSQL migration, and real Event/claim/ACK transport.
+Its 156-test backend aggregate, exact-commit upgrade rehearsal, and shared scenario pass are recorded in the
 [Receiver verification record](../../saas-boilerplate/backend/conformance/standing-v0.2/README.md).
 This is not pinned release conformance: Consent/control remain internal seams, effect authority is
-deterministic. CLOUD-023 now records committed Core source and a passing minimum pinned trace;
-the Receiver implementation remains uncommitted. TASK-028 owns remaining exact-source integration.
+deterministic. CLOUD-023 records locally committed Core and Receiver source, the passing minimum
+pinned trace, and a six-to-seven-migration rehearsal preserving old rows before any reseeding.
+TASK-028 owns the remaining full matrix, recovery, and release-enforcement gates.
 The normal Host facade, product Connector version selection, published Connector, Sleepless Kingdom,
 supported Agent/Browser, and deployment remain open.
 
