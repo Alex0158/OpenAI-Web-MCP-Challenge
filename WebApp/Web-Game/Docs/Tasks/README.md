@@ -118,6 +118,14 @@ state changes, rejection retries remain durable, and client-selected identity fi
 The hosted denial row remains open because the supported browser surface has no arbitrary authenticated
 request seam; rollback/read-restore is an independent optional rehearsal and no production bypass is allowed.
 
+The CP-17 production-like WebMCP page-tool admission slice is runtime-verified under
+[`SK-EVID-071`](../Evidence/SK-EVID-071-cp17-production-webmcp-page-tool-admission-runtime-verification.md)
+and [`Validation/97`](../Validation/97-cp17-production-webmcp-page-tool-admission-runtime-cross-functional-audit.md):
+the Clerk-mode page read uses the server-derived scope, preserves `no-store`/cookie-vary cache
+isolation, rejects client-selected identity input, and keeps the fixture route unavailable. This is
+an admission/read proof only; hosted page-tool execution, genuine browser WebMCP registration,
+dynamic recall, and Agent/Re-entry delivery remain open.
+
 [`SK-TASK-077`](SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) is `in_progress` for the
 CP-17 host decision and production-like deployment preflight. It records the host-neutral process,
 store, WebSocket, health, and rollback fields; the owner-accepted Railway/SQLite Volume topology is

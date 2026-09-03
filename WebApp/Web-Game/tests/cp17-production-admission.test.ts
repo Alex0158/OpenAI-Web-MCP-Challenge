@@ -17,6 +17,7 @@ import { createPersistenceStore } from "../src/server/persistence/store";
 import { ensureProductionWorld } from "../src/server/production-bootstrap";
 import type { RealtimeSnapshotFrame } from "../src/server/realtime-snapshot";
 import { MOVE_PLAYER_COMMAND_PATH } from "../src/shared/move-player-command";
+import { PAGE_TOOLS_EXECUTE_PATH } from "../src/shared/page-tool-contract";
 
 const CONTRACT_VERSION = "SK-MVP-0.2" as const;
 
@@ -192,6 +193,41 @@ test("production entrypoint runs the happy path through bootstrap, realtime, and
       playerId: "player-a",
       shelterId: "shelter-a",
     });
+
+    const pageToolResponse = await fetch(`${base}${PAGE_TOOLS_EXECUTE_PATH}`, {
+      method: "POST",
+      headers: { cookie, "content-type": "application/json" },
+      body: JSON.stringify({ tool: "inspect_shelter_state", input: {} }),
+    });
+    assert.equal(pageToolResponse.status, 200);
+    assert.equal(pageToolResponse.headers.get("cache-control"), "no-store");
+    assert.equal(pageToolResponse.headers.get("vary"), "Cookie");
+    const pageToolRead = await pageToolResponse.json() as {
+      tool: string;
+      scope: { world_id: string; player_id: string; shelter_id: string };
+      shelter: { shelter_id: string; player_id: string };
+      continuation: unknown;
+    };
+    assert.equal(pageToolRead.tool, "inspect_shelter_state");
+    assert.deepEqual(pageToolRead.scope, {
+      world_id: "cp17-world",
+      player_id: "player-a",
+      shelter_id: "shelter-a",
+    });
+    assert.equal(pageToolRead.shelter.shelter_id, "shelter-a");
+    assert.equal(pageToolRead.shelter.player_id, "player-a");
+    assert.equal(pageToolRead.continuation, null);
+
+    const clientScopeOverride = await fetch(`${base}${PAGE_TOOLS_EXECUTE_PATH}`, {
+      method: "POST",
+      headers: { cookie, "content-type": "application/json" },
+      body: JSON.stringify({
+        tool: "inspect_shelter_state",
+        input: { player_id: "player-b" },
+      }),
+    });
+    assert.equal(clientScopeOverride.status, 400);
+    assert.deepEqual(await clientScopeOverride.json(), { error_code: "PAGE_TOOL_INPUT_INVALID" });
 
     const fixtureRoute = await fetch(`${base}/api/local-fixture/bootstrap`);
     assert.equal(fixtureRoute.status, 503);

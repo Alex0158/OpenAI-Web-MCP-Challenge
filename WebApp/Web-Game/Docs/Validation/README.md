@@ -188,6 +188,10 @@ not claim that the game is built or balanced.
 - [`96-cp17-authenticated-cross-scope-denial-runtime-cross-functional-audit.md`](96-cp17-authenticated-cross-scope-denial-runtime-cross-functional-audit.md)
   — local production-like Clerk-mode HTTP denial in both directions, durable no-mutation and retry
   readback, and strict client-authority rejection; the real-provider hosted denial and rollback/read-restore remain open.
+- [`97-cp17-production-webmcp-page-tool-admission-runtime-cross-functional-audit.md`](97-cp17-production-webmcp-page-tool-admission-runtime-cross-functional-audit.md)
+  — local production-like WebMCP page-tool admission across Clerk-derived scope, private read
+  projection, cache isolation, strict client-authority parsing, fixture exclusion, and the remaining
+  hosted, browser, and Agent action gates.
 
 ## Current concept checks
 

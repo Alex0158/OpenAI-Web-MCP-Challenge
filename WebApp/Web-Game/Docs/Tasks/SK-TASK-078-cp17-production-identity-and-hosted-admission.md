@@ -162,6 +162,11 @@ restore has been configured.
   the configured two subjects and derives Player/Shelter/binding scope, and the production-like
   entrypoint serves `/api/game/bootstrap`, `/realtime`, and the existing typed move command without
   fixture cookies.
+- Verified locally: The same production-like Clerk resolver protects the existing WebMCP page-tool
+  execution route; an authenticated `inspect_shelter_state` read returns the server-derived Player A
+  scope with cache isolation, while a client-selected `player_id` is rejected before worker execution.
+  This read/admission slice is recorded in [`SK-EVID-071`](../Evidence/SK-EVID-071-cp17-production-webmcp-page-tool-admission-runtime-verification.md)
+  and [`Validation/97`](../Validation/97-cp17-production-webmcp-page-tool-admission-runtime-cross-functional-audit.md).
 - Verified locally: Production Clerk configuration fails closed when the durable database path,
   autonomous worker flag, verification key, or either fixed subject binding is absent; the world cannot
   be accidentally hosted as a browser-driven or non-progressing process.
