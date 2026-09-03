@@ -9,8 +9,10 @@
 - Lifecycle: `verification_pending`
 - Priority: `P1`
 - Owner: Principal architecture owner and Cloud Receiver v2 owner.
-- Current increment: Core and Receiver sources are committed locally; the minimum pinned standing
-  trace and exact-commit PostgreSQL upgrade rehearsal pass. CLOUD-023 owns the bounded evidence.
+- Current increment: Core and Receiver sources are committed locally; the pinned standing trace now
+  covers out-of-order rejection/no mutation, duplicate convergence, and the distinct-Event
+  same-sequence conflict, while the active-v2 lease/reclaim profile also passes. CLOUD-023 owns the
+  bounded evidence.
 - Next gate: Complete the mandatory
   shared v0.1/v0.2 failure/race/recovery matrix, and enforce release checks while retaining the
   separate active-v2 production lease profile. Public controls need their own accepted contract.
@@ -282,6 +284,31 @@ This closes the active-v2 lease/reclaim profile as a local implementation check;
 it is not shared normative conformance. The distinct-Event race, forced rollback,
 fresh-process recovery, release-enforcement, public-control, lifetime, and
 production gates remain open.
+
+## 4.8 Shared distinct-Event sequence race increment
+
+**VERIFIED 2026-09-03:** the shared standing-v0.2 scenario submits two distinct
+signed Event envelopes for the same next sequence concurrently. The Core
+reference and pinned Receiver converge on one fresh `202` acceptance and one
+exact `409 event_sequence_conflict` response with `retryable: false`; replaying
+the losing envelope remains the same conflict, while the Grant sequence and one
+open Delivery reflect only the winner. Future-sequence rejection/no-mutation and
+same-envelope duplicate convergence remain in the same shared oracle.
+
+Core scenario contract and cross-layer tests passed `26/26`; the full Core
+verification passed `157/157` tests with syntax, conformance, and package checks;
+source-pin fixtures passed `16/16`; and the pinned real Express/PostgreSQL trace
+passed `1/1`. The exact Core commit was
+`8e953b25eb7994ee84deb8517c8d036a7f7c5f58` with selected Core/spec SHA-256
+`caccfd962bfb55040681cde9e13c8bbc15705a3db7e72a3306fc9e3fcd00d9f9`; the
+Receiver commit was `4112d88dc60285f0f7551cecab9c8d99332ec897`; runtime was
+Node `v26.5.0` with `release_conformance_verified: false`.
+
+The full backend aggregate was not rerun for this oracle increment; prior
+`21/21` suites and `158` tests remain bounded evidence because Receiver
+production source, schema, and migration bytes are unchanged. This does not
+close forced rollback, fresh-process recovery, release-enforcement,
+public-control, lifetime, or production gates.
 
 ## 5. Verification and closure
 

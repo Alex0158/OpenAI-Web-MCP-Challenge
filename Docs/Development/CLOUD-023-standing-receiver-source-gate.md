@@ -432,3 +432,30 @@ previous `21/21` suites and `158` tests remain prior evidence because Receiver
 production source, schema, and migration bytes are unchanged. The mandatory
 distinct-Event race, forced rollback, fresh-process recovery, release-enforcement,
 public-control, lifetime, and production gates remain open under TASK-028.
+
+## Shared distinct-Event sequence race increment: 2026-09-03
+
+The pinned shared standing scenario now submits two distinct signed Event
+envelopes for the same next sequence concurrently. The Core reference and pinned
+Receiver converge on one fresh `202` acceptance and one exact `409`
+`event_sequence_conflict` response with `retryable: false`; replaying the losing
+envelope remains the same conflict, while the Grant sequence and one open Delivery
+reflect only the winner. Future-sequence rejection/no-mutation and same-envelope
+duplicate convergence remain in the same shared oracle.
+
+Exact evidence for this increment:
+
+- Core scenario contract and cross-layer tests: `26/26` passed;
+- Core full verification: `157/157` tests passed, with syntax, conformance, and package checks green;
+- source-pin fixtures: `16/16` passed;
+- pinned Express/PostgreSQL Receiver trace: `1/1` passed;
+- Core commit: `8e953b25eb7994ee84deb8517c8d036a7f7c5f58`;
+- selected Core/spec SHA-256: `caccfd962bfb55040681cde9e13c8bbc15705a3db7e72a3306fc9e3fcd00d9f9`;
+- Receiver commit: `4112d88dc60285f0f7551cecab9c8d99332ec897`; and
+- runtime: Node `v26.5.0`, `release_conformance_verified: false`.
+
+The full backend aggregate was not rerun for this oracle increment; the prior
+`21/21` suites and `158` tests remain bounded evidence because Receiver
+production source, schema, and migration bytes are unchanged. This does not
+close forced rollback, fresh-process recovery, release-enforcement, public-control,
+lifetime, or production gates under TASK-028.
