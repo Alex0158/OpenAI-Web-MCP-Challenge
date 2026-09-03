@@ -436,6 +436,13 @@ The small [`SK-TASK-067`](../Tasks/SK-TASK-067-cp12-canvas-selection-feedback.md
   [`SK-EVID-056`](../Evidence/SK-EVID-056-cp16-local-causal-page-recall-composition-runtime-verification.md),
   and [`Validation/82`](../Validation/82-cp16-local-causal-page-recall-composition-runtime-cross-functional-audit.md)
   verify the successful reissue-to-local-port-to-page-HTTP-reread-to-provenance-bound-recall path.
+  The restart-aware follow-on [`SK-TASK-070`](../Tasks/SK-TASK-070-cp16-local-causal-restart-recall-continuity.md),
+  [`SK-EVID-057`](../Evidence/SK-EVID-057-cp16-local-causal-restart-recall-continuity-runtime-verification.md),
+  and [`Validation/83`](../Validation/83-cp16-local-causal-restart-recall-continuity-runtime-cross-functional-audit.md)
+  verify that the same durable loss/reissue signal, mission attempt, page reread, and bounded recall
+  survive a clean local entrypoint restart with once-only effects. This remains ladder-level 4 local
+  evidence and does not claim downtime catch-up, external Re-entry, Agent/WebMCP dynamic action,
+  independent browser, hosted continuity, or judge reproduction.
   Full G2 still requires positive genuine WebMCP dynamic action, external delivery, two independent
   browser contexts, restart/reconnect/burst trace, hosted continuity, and judge reproduction.
   The current IAB probe is recorded under [`SK-TASK-063`](../Tasks/SK-TASK-063-cp16-independent-browser-context-capability-probe.md),

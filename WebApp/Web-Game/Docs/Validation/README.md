@@ -141,6 +141,10 @@ not claim that the game is built or balanced.
 - [`82-cp16-local-causal-page-recall-composition-runtime-cross-functional-audit.md`](82-cp16-local-causal-page-recall-composition-runtime-cross-functional-audit.md)
   — CP-16 real successful loss/reissue composition through local delivery, canonical page HTTP fresh
   reads, provenance-bound recall, duplicate safety, scope privacy, and explicit external/browser gates.
+- [`83-cp16-local-causal-restart-recall-continuity-runtime-cross-functional-audit.md`](83-cp16-local-causal-restart-recall-continuity-runtime-cross-functional-audit.md)
+  — CP-16 clean local entrypoint restart continuity across durable loss/reissue, signal recovery,
+  once-only delivery, fresh page reread, bounded recall, duplicate safety, scope privacy, and explicit
+  downtime/external/browser/hosted/judge gates.
 
 ## Current concept checks
 

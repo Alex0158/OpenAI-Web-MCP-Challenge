@@ -88,6 +88,13 @@ is unmade, a duplicate, or an external action added merely to make the queue loo
 
 ## 6. Current task routing
 
+[`SK-TASK-070`](SK-TASK-070-cp16-local-causal-restart-recall-continuity.md) is verified for the named
+CP-16 local clean-restart continuity composition: the same durable real loss/reissue signal, mission
+attempt, page read state, and bounded recall survive an entrypoint/worker restart, with once-only local
+delivery, duplicate safety, and beta scope isolation under [`SK-EVID-057`](../Evidence/SK-EVID-057-cp16-local-causal-restart-recall-continuity-runtime-verification.md)
+and [`Validation/83`](../Validation/83-cp16-local-causal-restart-recall-continuity-runtime-cross-functional-audit.md).
+It remains local process/page evidence and cannot claim autonomous downtime catch-up, live Receiver,
+Connector, Agent, genuine WebMCP dynamic action, independent browser, hosted, or judge behavior.
 [`SK-TASK-069`](SK-TASK-069-cp16-local-causal-page-recall-composition.md) is verified for the named
 CP-16 local composition from the real successful worker/combat loss and reissue path through the
 game-side local delivery port, canonical page HTTP fresh reads, and one signal-provenance-bound
