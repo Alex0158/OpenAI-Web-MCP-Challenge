@@ -9,12 +9,13 @@
 - Lifecycle: `blocked`
 - Priority: `P0`
 - Owner: Local Connector/Agent Adapter owner, with Receiver and Host SDK owners.
-- Current increment: ADR-0047's isolated experimental client is implemented; CLOUD-027 records
-  current-build native peer rejection before catalog/task readback. No new B1 input was submitted.
-  Preserve CLOUD-026's queue result and retained input; do not weaken App peer authorization.
-- Next gate: Establish a legitimate App-recognized admission route for an external Connector into
-  the owning existing-task runtime before reopening the live probe. No supported production Adapter
-  is selected. The binding contract must then name trusted task selection,
+- Current increment: CLOUD-028 completes a read-only admission-route review after CLOUD-027's peer
+  rejection. The installed normal launcher cannot enable shared-daemon mode with a flag alone.
+  An unsent platform-question draft is ready; no new B1 input or runtime change was attempted.
+- Next gate: Obtain platform-confirmed third-party admission into the owning existing-task runtime
+  before reopening the live probe. External coordination and any materially different runtime
+  experiment need explicit owner direction. No supported production Adapter is selected.
+  The binding contract must then name trusted task selection,
   ownership/Grant verification, private persistence, restart, wrong-task, and unsupported-runtime
   tests; a manually targeted transport probe does not close enrollment.
 - Dependencies: ADR-0014 and ADR-0046 for the first binding/driver specification. TASK-029's receipt
@@ -78,3 +79,9 @@ The owner subsequently approved [ADR-0047](../Decisions/ADR-0047-authorize-local
 [CLOUD-027](../Development/CLOUD-027-experimental-desktop-bridge-probe.md) owns the separate native
 Desktop experiment and the live `missing-code-signing-identity` rejection. Frozen MVP 1 remains
 read-only, build-specific same-task success evidence, not current external-client admission proof.
+
+[CLOUD-028](../Development/CLOUD-028-desktop-admission-route-review.md) preserves the owner-confirmed
+order: legitimate same-task admission/wake, durable binding and notification receipt, then the
+hosted Receiver/Game SDK two-event trace. Its launcher findings and platform questions do not
+authorize restarting the App, stripping App-tool configuration, exposing an endpoint, or replacing
+the selected existing-task topology.

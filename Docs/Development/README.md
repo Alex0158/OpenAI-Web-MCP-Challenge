@@ -159,6 +159,11 @@ owns the separately approved ADR-0047 native-route experiment: isolated client i
 current-build peer authorization rejected preflight before any new send. CLOUD-026 and frozen MVP
 evidence are preserved; no supported product driver is selected.
 
+The [CLOUD-028 Desktop admission route review](CLOUD-028-desktop-admission-route-review.md)
+rules out a flag-only local-daemon restart on the normal installed Desktop launch path and records
+an unsent platform-integration question draft. Existing-task admission remains blocked; no runtime
+configuration or product topology change is authorized by that review.
+
 ## Verification reports
 
 - [`SDK v2 Verification Report`](SDK-V2-Verification-Report.md) — post-push SDK-to-Cloud-Receiver v2
