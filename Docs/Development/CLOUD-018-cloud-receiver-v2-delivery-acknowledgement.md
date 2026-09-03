@@ -104,7 +104,7 @@ verified Host-effect proof can close a delivery.
 
 The five red tests were added at:
 
-[`backend/src/modules/acknowledgements/test/acknowledgement.test.ts`](../../saas-boilerplate/backend/src/modules/acknowledgements/test/acknowledgement.test.ts)
+[`backend/src/modules/acknowledgements/test/acknowledgement.test.ts`](https://github.com/4xeoz/saas-boilerplate/blob/498bd18a92b488b440ccd2e3b00f55362cb4d443/backend/src/modules/acknowledgements/test/acknowledgement.test.ts)
 
 Command against the pre-Feature-5 Receiver:
 

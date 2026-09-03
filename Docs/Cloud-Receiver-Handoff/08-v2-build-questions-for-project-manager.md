@@ -23,7 +23,7 @@ recorded in a new or updated ADR and bounded implementation Task before protocol
 ## 2. Current starting point
 
 - The v1 implementation under `runtime/cloud-receiver/` is retired historical evidence.
-- The current Cloud Receiver 2 clone is [`saas-boilerplate/`](../../saas-boilerplate/). It currently
+- The current Cloud Receiver 2 clone is [`saas-boilerplate/`](https://github.com/4xeoz/saas-boilerplate/tree/498bd18a92b488b440ccd2e3b00f55362cb4d443/). It currently
   provides Prisma/PostgreSQL persistence, separate email/password User and Developer accounts, and
   separate login pages.
 - The clone does not yet provide the v2 `/v0.1` pairing, consent, Host-key, event, delivery, lease,
@@ -55,7 +55,7 @@ recorded in a new or updated ADR and bounded implementation Task before protocol
 
 1. Does this handoff authorize implementation of the complete v2 service, or only the already
    requested account/authentication and console foundation?
-2. Is [`saas-boilerplate/`](../../saas-boilerplate/) the actual replacement repository/base, or is it
+2. Is [`saas-boilerplate/`](https://github.com/4xeoz/saas-boilerplate/tree/498bd18a92b488b440ccd2e3b00f55362cb4d443/) the actual replacement repository/base, or is it
    only a temporary console shell while the Receiver remains elsewhere?
 3. Should the earlier requirement for two simple email/password account flows remain unchanged?
 4. When the handoff and Core/ADR documents differ, should the exact Core/ADR contract always win?
@@ -322,4 +322,4 @@ full protocol implementation would risk encoding an unaccepted authority or comp
 - [`../../Docs/Mechanisms/`](../Mechanisms/README.md)
 - [`../../Docs/Core/00-current-status.md`](../Core/00-current-status.md)
 - [`../../Docs/Tasks/TASK-003-productionize-and-deploy-cloud-receiver.md`](../Tasks/TASK-003-productionize-and-deploy-cloud-receiver.md)
-- [`../../saas-boilerplate/README.md`](../../saas-boilerplate/README.md)
+- [`../../saas-boilerplate/README.md`](https://github.com/4xeoz/saas-boilerplate/blob/498bd18a92b488b440ccd2e3b00f55362cb4d443/README.md)

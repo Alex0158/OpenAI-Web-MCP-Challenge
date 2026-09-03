@@ -64,7 +64,7 @@ PostgreSQL `SELECT 1`; a failed dependency returns `503 {"error":{"code":"receiv
 
 The five black-box tests were added at:
 
-[`backend/src/modules/system-health/test/http.test.ts`](../../saas-boilerplate/backend/src/modules/system-health/test/http.test.ts)
+[`backend/src/modules/system-health/test/http.test.ts`](https://github.com/4xeoz/saas-boilerplate/blob/498bd18a92b488b440ccd2e3b00f55362cb4d443/backend/src/modules/system-health/test/http.test.ts)
 
 Command against the pre-Feature-6 Receiver:
 

@@ -42,7 +42,7 @@ replacement Task, ADR, and implementation/evidence record.
    slice. Implementation is sequential: pairing, consent/targeting, event ingress, delivery claim,
    acknowledgement, and transport/operations.
 2. **Base:** The exact implementation path is
-   [`saas-boilerplate/`](../../saas-boilerplate/). Its `backend/` owns the Express API and Prisma
+   [`saas-boilerplate/`](https://github.com/4xeoz/saas-boilerplate/tree/498bd18a92b488b440ccd2e3b00f55362cb4d443/). Its `backend/` owns the Express API and Prisma
    persistence; its `frontend/` owns the User and Developer pages. Do not revive
    `runtime/cloud-receiver/`.
 3. **Authentication:** Keep the two existing email/password flows unchanged:
@@ -554,7 +554,7 @@ or retry automatically because of the 204.
    an approved Prisma baseline, pre-migration backup, restore test, and recovery owner before changing
    `DIRECT_URL` or running `prisma migrate deploy`.
 4. Keep the public schema and prefix every v2 table with `cr2_`. Prisma's
-   [`backend/prisma/schema.prisma`](../../saas-boilerplate/backend/prisma/schema.prisma) remains the
+   [`backend/prisma/schema.prisma`](https://github.com/4xeoz/saas-boilerplate/blob/498bd18a92b488b440ccd2e3b00f55362cb4d443/backend/prisma/schema.prisma) remains the
    schema source of truth. Existing auth tables stay `cr2_user_accounts` and
    `cr2_developer_accounts`.
 5. Storage policy:
@@ -698,7 +698,7 @@ unique identifiers, target plus eligible delivery state, current lease digest, a
 - [`v2-build/05-delivery-acknowledgement.md`](v2-build/05-delivery-acknowledgement.md)
 - [`v2-build/06-transport-and-operations.md`](v2-build/06-transport-and-operations.md)
 - [`v2-build/07-decision-gates-and-evidence.md`](v2-build/07-decision-gates-and-evidence.md)
-- [`../../saas-boilerplate/README.md`](../../saas-boilerplate/README.md)
+- [`../../saas-boilerplate/README.md`](https://github.com/4xeoz/saas-boilerplate/blob/498bd18a92b488b440ccd2e3b00f55362cb4d443/README.md)
 - [`../../reentry-core/src/protocol.mjs`](../../reentry-core/src/protocol.mjs)
 - [`../../reentry-core/src/receiver-core.mjs`](../../reentry-core/src/receiver-core.mjs)
 - [`../../reentry-core/src/receiver-delivery.mjs`](../../reentry-core/src/receiver-delivery.mjs)

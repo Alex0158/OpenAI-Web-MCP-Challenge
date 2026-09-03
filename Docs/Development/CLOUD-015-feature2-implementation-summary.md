@@ -266,8 +266,8 @@ permission failure, although the webpack build passed.
 
 ## Source files
 
-- [routes](../../saas-boilerplate/backend/src/modules/consent/consent.routes.ts)
-- [schemas](../../saas-boilerplate/backend/src/modules/consent/consent.schemas.ts)
-- [service](../../saas-boilerplate/backend/src/modules/consent/consent.service.ts)
-- [tests](../../saas-boilerplate/backend/src/modules/consent/test/consent.test.ts)
+- [routes](https://github.com/4xeoz/saas-boilerplate/blob/498bd18a92b488b440ccd2e3b00f55362cb4d443/backend/src/modules/consent/consent.routes.ts)
+- [schemas](https://github.com/4xeoz/saas-boilerplate/blob/498bd18a92b488b440ccd2e3b00f55362cb4d443/backend/src/modules/consent/consent.schemas.ts)
+- [service](https://github.com/4xeoz/saas-boilerplate/blob/498bd18a92b488b440ccd2e3b00f55362cb4d443/backend/src/modules/consent/consent.service.ts)
+- [tests](https://github.com/4xeoz/saas-boilerplate/blob/498bd18a92b488b440ccd2e3b00f55362cb4d443/backend/src/modules/consent/test/consent.test.ts)
 - [CLOUD-015 evidence](CLOUD-015-cloud-receiver-v2-consent-targeting.md)

@@ -143,8 +143,8 @@ The local Receiver worktree remained clean. Local `HEAD` is
 
 The Feature 4 tests are:
 
-- [`delivery-claim.test.ts`](../../saas-boilerplate/backend/src/modules/deliveries/test/delivery-claim.test.ts)
-- [`delivery.test.ts`](../../saas-boilerplate/backend/src/modules/delivery/test/delivery.test.ts)
+- [`delivery-claim.test.ts`](https://github.com/4xeoz/saas-boilerplate/blob/498bd18a92b488b440ccd2e3b00f55362cb4d443/backend/src/modules/deliveries/test/delivery-claim.test.ts)
+- [`delivery.test.ts`](https://github.com/4xeoz/saas-boilerplate/blob/498bd18a92b488b440ccd2e3b00f55362cb4d443/backend/src/modules/delivery/test/delivery.test.ts)
 - [`cloud-receiver-v2-claim.contract.mjs`](../../runtime/local-connector/test/cloud-receiver-v2-claim.contract.mjs)
 - [`cloud-receiver-v2-claim.test.mjs`](../../runtime/local-connector/test/cloud-receiver-v2-claim.test.mjs)
 
