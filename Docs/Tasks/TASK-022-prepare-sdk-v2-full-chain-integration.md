@@ -1,6 +1,6 @@
 # TASK-022: Prepare SDK v2 Full-Chain Integration Contract
 
-**Status:** `verification_pending` — SDK, Cloud, Local Connector, and the pinned local full-chain contract pass; release publication and separately spawned real-browser/Connector-process evidence remain open
+**Status:** `verification_pending` — SDK `0.3.1` publication plus SDK, Cloud, Local Connector, and separate-Connector-process local full-chain contracts are verified; deployed full flow and supported external Agent/Browser evidence remain open
 **Owner:** SDK development team
 **Profile:** Assured
 **Scope:** SDK-owned Host integration, contract tests, and evidence documents; no Cloud Receiver or Local Connector production changes
@@ -16,9 +16,9 @@
 - Current increment: Complete the project-manager-authorized Host Consent integration APIs, pin the
   final Cloud/Local counterparts, rerun every exchanged matrix, and record the combined contract
   result without adding polling, fallback routes, or alternate transports.
-- Next gate: restore npm registry authentication and, if release acceptance requires it, run the
-  same contract through a separately spawned Local Connector process and supported real browser
-  against a deployed Receiver. No SDK/Receiver protocol mismatch is open.
+- Next gate: Run the correlated consent/status/Event flow with a supported external Agent/Browser
+  against an exact-source deployed Receiver. The separate Local Connector process and published
+  `0.3.1` gates are green; the later checkout-only simple facade has its own TASK-031 release gate.
 - Dependencies: [SDK-005](../Development/SDK-005-cloud-receiver-v2-full-chain-contract.md), [TASK-019](TASK-019-build-cloud-receiver-v2-delivery-claim.md), [TASK-020](TASK-020-build-cloud-receiver-v2-delivery-acknowledgement.md), [TASK-021](TASK-021-build-cloud-receiver-v2-transport-operations.md), the Local Connector acknowledgement evidence, and the [Primary Development Runbook](../Engineering/03-primary-development-runbook.md).
 
 ## 1. Problem and objective
@@ -110,8 +110,11 @@ Current local evidence on 2026-09-02:
   `1f308cfdcadc09b99aa16741ccc362542bc6f186`.
 - SDK full-chain contract `SDK-V2-E2E-001`: `1/1` passed with durable acknowledgement and exact
   replay.
-- SDK package dry-run: passed with 21 bundled files; `npm whoami` returned `401 Unauthorized` and
-  publication was not attempted.
+- SDK package dry-run: passed with 21 bundled files. At that event-time gate, `npm whoami` returned
+  `401 Unauthorized` and publication was not attempted.
+- Later registry readback on 2026-09-03 verifies `@4xeoz/re-entry-sdk@0.3.1` as `latest`, with
+  `gitHead` `9864ba09b79a76641d8662502ccf918cd3fd4b3b`. This closes publication only for that exact
+  artifact; it does not include the later working-tree `createReentry()` facade.
 - The combined local contract flow passed. The project-manager decision adopts `host_effect_invalid`
   for malformed/far-future normalization and `host_effect_time_invalid` for a normalized effect
   outside the valid lease/Grant/revocation window. No Core, ADR, Cloud, or Local Connector behavior
@@ -122,6 +125,10 @@ Current local evidence on 2026-09-02:
 - The isolated SDK-owned `SDK-V2-E2E-001` test passed with the exact Cloud/Local SHAs and independent
   Host-effect authority. Its browser harness is synthetic and the Local Connector runs in-process;
   separately spawned process and external-browser evidence is not claimed.
+- The later `CONNECTOR-V2-E2E-001` rerun under SDK-006 passed with a separately spawned Connector
+  worker, separate effect/acknowledgement worker, PostgreSQL Receiver, Host SDK, and Receiver restart
+  replay on Node 24. This closes the separate-Connector-process gap only; the effect authority is
+  still a test fixture and external Agent/Browser evidence remains open.
 
 The exact-commit run must record:
 
@@ -132,9 +139,10 @@ The exact-commit run must record:
 5. the configured effect-authority fixture without recording its raw token; and
 6. the combined-flow response sequence and durable final state.
 
-The local contract gate is green. The task remains `verification_pending` until npm authentication
-is restored and any required deployed real-browser/separately spawned Connector evidence is
-available. A missing route, missing authority fixture, response/status/code mismatch, stale lease,
+The published `0.3.1`, local, and separate-Connector-process contract gates are green. The task
+remains `verification_pending` until required exact-source deployed real-browser/Agent evidence is
+available. A missing route, missing authority fixture,
+response/status/code mismatch, stale lease,
 unexpected mutation, secret leak, or failed earlier gate keeps the task open with the exact evidence
 recorded.
 

@@ -1,9 +1,13 @@
 # ADR-0029: Adopt Supabase PostgreSQL and Prisma for the Hosted Runtime Preview
 
-**Status:** Accepted for the hosted MVP preview  
+**Status:** Accepted for the hosted MVP preview; persistence mechanism superseded by ADR-0031  
 **Date:** 2026-09-01  
 **Decision owner:** Project team  
 **Controls:** TASK-003
+
+> **Current disposition:** The hosted runtime implementation described here is superseded by
+> [ADR-0032](ADR-0032-retire-current-cloud-receiver-runtime.md). The schema and migration remain
+> historical evidence only; they are not a current production persistence instruction.
 
 ## Context
 
@@ -14,16 +18,25 @@ external database while preserving the existing Re-entry Core and product-previe
 ## Decision
 
 Use Supabase PostgreSQL as the hosted persistence boundary and Prisma as the database client and
-migration tool.
+migration tool. The initial binary-snapshot mechanism described below was the first hosted preview;
+the current native relational mechanism is defined by ADR-0031.
 
 For this MVP preview, the existing synchronous SQLite store implementations remain the protocol
 execution engine. Each Vercel request acquires a Postgres advisory transaction lock, hydrates the
 four SQLite stores from Prisma-managed binary snapshots, executes the unchanged composition, and
-persists the resulting snapshots before releasing the lock.
+persists the resulting snapshots before releasing the lock. Because Supabase transaction-mode
+pooling does not support advisory locks, hosted runtime traffic uses a session-mode pooler URL
+through `CLOUD_RECEIVER_RUNTIME_DATABASE_URL`; `DATABASE_URL` remains the local and compatibility
+fallback. Prisma migrations continue to use the direct or session-mode URL through `DIRECT_URL`.
 
-Use the Supabase transaction-mode pooler for runtime traffic through `DATABASE_URL` and the direct
-or session-mode URL through `DIRECT_URL` for Prisma migrations. Both values are deployment secrets
-and must never be committed or printed.
+Use the Supabase session-mode pooler for hosted runtime traffic through
+`CLOUD_RECEIVER_RUNTIME_DATABASE_URL`, the transaction-mode pooler through `DATABASE_URL` only as
+the compatibility fallback, and the direct or session-mode URL through `DIRECT_URL` for Prisma
+migrations. All values are deployment secrets and must never be committed or printed.
+
+The remainder of this record describes the initial snapshot bridge. ADR-0031 supersedes that
+mechanism with native relational tables and a one-time snapshot backfill while retaining this
+Supabase and Prisma choice.
 
 ## Consequences
 

@@ -1,21 +1,21 @@
 # WebMCP Re-entry Workflow — Current Project Status
 
 **Role:** CANONICAL current project and evidence truth  
-**As of:** 2026-09-01, Europe/London  
+**As of:** 2026-09-03, Europe/London  
 **Selected direction:** Application-neutral Re-entry Core  
 **Host application:** Unselected  
 **Agent continuation adapter:** Unselected  
-**Phase:** Core, account-first local Receiver/Connector path, macOS background Connector preview,
-generic reference flow, application-review sample Host, and a Vercel-hosted Receiver preview
-verified; production controls, final application, and supported Agent selection remain the next
-product gates
+**Phase:** Application-neutral Core remains current; the former `runtime/cloud-receiver/` account-
+first runtime is deprecated historical evidence; active `saas-boilerplate/` Cloud Receiver v2,
+macOS Connector/Host SDK previews, final application, production controls, and supported Agent
+selection remain separately bounded work
 
 ## 1. Executive status
 
 The project has implemented and locally verified the application-neutral Re-entry Core at the
 scope accepted by ADR-0006 through ADR-0014. RECORE-001 through RECORE-004 and RECORE-006 are
-`locally_verified`; RECORE-005 is `separate_process_verified`. The aggregate Core suite passes 79
-of 79 tests on the recorded Node 24 and Node 26 environments. The package has zero runtime
+`locally_verified`; RECORE-005 is `separate_process_verified`. The current aggregate Core suite
+passes 81 of 81 tests on Node 24; earlier records also cover Node 26. The package has zero runtime
 dependencies and 16 selected package files.
 
 The completed Core covers strict protocol values, Host issuance, Receiver-owned enrollment and
@@ -24,24 +24,29 @@ Grant control and revocation, target-scoped delivery leases, bounded HTTP and ou
 transport, deterministic Agent activation, private managed-context resolution, process-fault
 evidence, and a non-production conformance profile.
 
-ADR-0019 and CLOUD-001 add a loopback-only Cloud Receiver process shell under
-`runtime/cloud-receiver/`. ADR-0020 and CLOUD-002 add a local browser-assisted pairing control
-plane and a separately runnable outbound Local Connector under `runtime/local-connector/`. ADR-0022
-and CLOUD-005 add an organization-authenticated Host-key and consent-session handoff around the
-unchanged Core. The current runtime suites cover the generic Core flow, pairing and controlled
+Historical records for ADR-0019 and CLOUD-001 describe a loopback-only Cloud Receiver process
+shell under `runtime/cloud-receiver/`. ADR-0020 and CLOUD-002 describe a local browser-assisted
+pairing control plane and a separately runnable outbound Local Connector under
+`runtime/local-connector/`. ADR-0022 and CLOUD-005 describe an organization-authenticated Host-key
+and consent-session handoff around the
+unchanged Core. The historical runtime suites cover the generic Core flow, pairing and controlled
 pairing-store reopen, Host-user mapping, local credential custody, Host-key registration and
 migration, signed Manifest and consent-session flow, signed event ingress, Connector claim and
 adapter handoff, exact Core-route delegation, bounded health and readiness, configuration failure,
 and graceful shutdown.
 
-ADR-0028 and CLOUD-010 add the current account-first product path. The Connector initiates one
-browser authorization, the signed-in Re-entry account approves the Mac once, the Host uses a
-dashboard-issued organization key only from its backend, and Re-entry owns consent and target-device
-selection. The local Connector then reuses its restrictive credential through a generated per-user
-macOS LaunchAgent and bounded outbound polling. An unauthenticated verification URL now offers a
-connector-specific account choice and preserves the pending request through contextual login or
-registration before the final Mac approval. The product path is locally verified; public service
-identity, broad Mac compatibility, and a supported Codex Browser/WebMCP join remain open.
+ADR-0028 and CLOUD-010 added the former account-first product path. ADR-0030 and CLOUD-011
+documented its normal enrollment path: the CLI immediately opened the dedicated Re-entry user
+account page, the signed-in user clicked Pair this Mac in the dashboard, and the CLI redeemed the
+short-lived code. The Host used a dashboard-issued organization key only from its backend, and
+Re-entry owned consent and target-device selection. The Local Connector reused its restrictive
+credential through a generated per-user macOS LaunchAgent and bounded outbound polling. That code
+path remains local preview evidence, while its Cloud Receiver runtime is deprecated. CLOUD-012
+replaced the opaque hosted snapshot persistence with native relational
+Supabase/Prisma tables and a one-time backfill in the retired preview. The production variables and
+additive migration remain historical configuration; the former external `/healthz`, `/readyz`,
+canonical developer auth routes, and existing-session user dashboard checks are not current
+availability evidence. No new hosted account-auth or pairing traffic is supported.
 
 TASK-010 and HOST-002 add Host SDK v0.3 composition around that accepted path. One ordinary browser
 JavaScript function now serves the Host button and a top-level WebMCP Site Tool, opens the exact
@@ -51,6 +56,37 @@ signed Event. Eighteen SDK tests pass on the recorded Node 24 and Node 26 runtim
 in-app Browser discovered and invoked the tool against an intentionally unconfigured test server.
 That runtime evidence proves registration and handler execution, not a configured Browser-to-
 Receiver-to-Connector return chain.
+
+ADR-0041, TASK-025, and SDK-006 add an application-neutral simple path over the active Cloud
+Receiver v2 without replacing the strict protocol or advanced SDK. A Host developer supplies only
+an authenticated subject, bounded prompt, and canonical URL; `createReentry()` derives the signed
+Manifest and later Event fields. The v2 developer portal supplies owned organization creation,
+one-time API-key reveal with digest-only storage, an interactive simple SDK guide, and redacted
+Event/delivery history. One Node 24 disposable composition passed through the real Host SDK,
+PostgreSQL Receiver, separately spawned Local Connector worker, independent Host-effect authority,
+acknowledgement, and restart replay. Separate developer and end-user browser personas passed after
+queued-state and plain-language usability corrections. This increment is
+`separate_process_verified`; it was not committed, deployed, published, or exercised with a
+supported external Agent/Browser adapter. The older SDK `0.3.1` is published from exact Git source,
+but it predates the working-tree simple facade; TASK-031 owns that separate package release. The
+published Connector `0.2.20` reports root `gitHead` `733d77f`, whose source still records Connector
+version `0.2.14`, and its bundled client rejects active v2's instruction-bearing lease. TASK-032
+owns the exact-source compatible Connector release; the approved local composition used the current
+checkout, not that registry artifact.
+
+The 2026-09-03 TASK-012 reconciliation found four material active-v2 gaps that the green local
+suites do not close. **CONFLICTED:** ADR-0033's five-failed-claim pairing fence is not enforceable by
+the current anonymous request and is not implemented; TASK-026 owns the decision. **CONFLICTED:**
+the SDK requests separate five-minute offer and thirty-minute Grant windows, while v2 copies the
+shorter Consent-session expiry into the Grant without displaying it; TASK-027 owns the policy.
+**CONFLICTED:** active v2 independently implements Receiver authority despite ADR-0006's one-shared-
+Receiver-Core invariant; TASK-028 owns that architecture decision. **VERIFIED OPEN:** the default
+Connector dispatch path has no real Host-effect-to-acknowledgement integration and can therefore be
+reclaimed within the accepted attempt bound; TASK-029 owns the selected-app completion path. These
+findings limit production and whole-product claims; they do not erase the exact bounded test results.
+Two additional P1 release findings keep the active install path open: TASK-031 owns the unpublished
+simple SDK facade, and TASK-032 owns the non-reproducible, instruction-incompatible Connector
+artifact.
 
 CLOUD-006 adds `runtime/reference-system/`, a one-command generic reference consumer that crosses
 the complete local path through an actual loopback Host page, pairing, Receiver-owned consent,
@@ -101,11 +137,13 @@ Agent runtime, and final product name remain open until accepted decisions selec
 | Application-neutral implementation | **LOCALLY VERIFIED** | `reentry-core/`, RECORE-001 through RECORE-006 |
 | Exact bounded process-fault matrix | **SEPARATE-PROCESS VERIFIED** | RECORE-005 |
 | Source conformance profile | **LOCALLY VERIFIED, NON-PRODUCTION** | ADR-0012 and direct conformance execution |
-| Stage 1 Cloud Receiver shell | **LOCALLY VERIFIED, LOOPBACK ONLY** | ADR-0019, CLOUD-001, and `runtime/cloud-receiver/` |
-| Local pairing and Local Connector preview | **LOCALLY VERIFIED, LOOPBACK ONLY** | ADR-0020, CLOUD-002, and `runtime/{cloud-receiver,local-connector}/` |
-| Consent-session and Host SDK handoff preview | **LOCALLY VERIFIED, LOOPBACK ONLY** | ADR-0022, CLOUD-005, paired Host subject, signed Manifest, public challenge, opaque token, approval/decline fencing, public binding, restart, and no raw-token persistence |
+| Stage 1 Cloud Receiver shell | **DEPRECATED, HISTORICAL LOOPBACK EVIDENCE** | ADR-0019, CLOUD-001, and `runtime/cloud-receiver/`; retired by ADR-0032 |
+| Local pairing and Local Connector preview | **LOCAL CONNECTOR PREVIEW RETAINED; CLOUD RECEIVER DEPENDENCY DEPRECATED** | ADR-0020, CLOUD-002, and `runtime/{cloud-receiver,local-connector}/` |
+| Consent-session and Host SDK handoff preview | **CLOUD RECEIVER PREVIEW DEPRECATED; SDK CONTRACT RETAINED AS EVIDENCE** | ADR-0022, CLOUD-005, paired Host subject, signed Manifest, public challenge, opaque token, approval/decline fencing, public binding, restart, and no raw-token persistence |
 | Shared Host UI/WebMCP consent action | **LOCALLY VERIFIED WITH BOUNDED BROWSER RUNTIME EVIDENCE** | TASK-010, HOST-002, Host SDK v0.3 tests/build, and live `request_codex_reentry` discovery plus bounded invocation |
-| Re-entry Cloud console preview | **LOCALLY VERIFIED, LOOPBACK ONLY** | CLOUD-004 and `runtime/cloud-receiver/` |
+| Simple subject/prompt/URL SDK and v2 developer flow | **SEPARATE-PROCESS VERIFIED; REGISTRY PATH OPEN** | ADR-0041, TASK-025, SDK-006, TASK-031, and TASK-032; 81 Core, 25 SDK, 56 Receiver, 47 Connector tests plus separate-process acknowledgement/restart replay and independent browser personas used current checkouts; published SDK `0.3.1` predates the facade and Connector `0.2.20` rejects its instruction-bearing lease |
+| Active v2 contract reconciliation | **P0/P1 DECISIONS OPEN** | Core/09 AUDIT-V2-001 through AUDIT-V2-004 and TASK-026 through TASK-029; pairing abuse fence, Consent/Grant lifetime, Receiver-Core composition, and default effect acknowledgement remain unresolved |
+| Re-entry Cloud console preview | **DEPRECATED, HISTORICAL LOOPBACK EVIDENCE** | CLOUD-004 and `runtime/cloud-receiver/`; retired by ADR-0032 |
 | Complete generic reference flow | **LOCALLY VERIFIED, EVIDENCE-ONLY AGENT** | CLOUD-006 and `runtime/reference-system/` |
 | Application-review sample Host | **LOCALLY VERIFIED, SAMPLE ONLY** | ADR-0023, HOST-001, and `runtime/application-demo/` |
 | Frozen MVP1 mechanism proof | **VERIFIED, BOUNDED REFERENCE** | `mvp/` and its evidence index |
@@ -114,9 +152,10 @@ Agent runtime, and final product name remain open until accepted decisions selec
 | Final Host application and user | **UNSELECTED** | new app-selection ADR required |
 | Local Codex fresh-session adapter preview | **LOCALLY VERIFIED, PREVIEW ONLY** | ADR-0026, TASK-007, CLOUD-008, and `runtime/local-connector/` |
 | macOS Local Connector readiness preview | **LOCALLY VERIFIED, PREVIEW ONLY** | ADR-0027, TASK-008, CLOUD-009, and `runtime/local-connector/` |
-| Account-first consent and background Connector path | **LOCALLY VERIFIED, LOOPBACK/MACOS PREVIEW** | ADR-0028, TASK-009, CLOUD-010, and `runtime/{cloud-receiver,host-sdk,local-connector}/` |
+| Account-first consent and background Connector path | **CLOUD RECEIVER RUNTIME DEPRECATED; SDK/CONNECTOR SEAMS RETAINED AS PREVIEW EVIDENCE** | ADR-0028, TASK-009, CLOUD-010, and `runtime/{cloud-receiver,host-sdk,local-connector}/` |
 | Concrete supported Agent adapter | **UNSELECTED / UNVERIFIED** | route-specific ADR and Browser/WebMCP runtime evidence required |
-| Cloud Receiver deployment | **DEPLOYED PREVIEW, NOT PRODUCTION-READY** | Vercel `https://cloud-receiver-mu.vercel.app`; `/healthz` and `/readyz` pass; production controls and full account-flow evidence remain open |
+| Cloud Receiver deployment | **DEPRECATED SOURCE; HOSTED ALIAS NOT ARCHIVED** | ADR-0032, TASK-013, and `runtime/cloud-receiver/api/index.mjs`; the former alias may remain reachable until a separately authorized Vercel action |
+| Active Cloud Receiver v2 and web deployment | **CONSENT OPENER FIX DEPLOYED; LIVE ROUTE, DATABASE, DASHBOARD, AND CONNECTOR SMOKES GREEN; FULL DEPLOYED POPUP AND EXACT GIT CLOSURE OPEN** | Active `saas-boilerplate/`; `cloud-receiver-delta.vercel.app` resolves to READY preview-target Receiver deployment `dpl_AVGD8hA7bNwhcEykUQ8BMDbEX2sd`, and `re-entry-weld.vercel.app` resolves to frontend `dpl_8Wy1bUScjdps4ZVscbHeH93f5sFq`. `/consent` now emits `Cross-Origin-Opener-Policy: unsafe-none` while unrelated routes retain `same-origin`; health, database readiness, frontend CORS, authenticated paired-device listing, and active Connector polling passed. No exact commit contains the deployed working-tree snapshot, and a complete deployed Host consent/popup/status/Event run remains open. CLOUD-022 records the bounded evidence and residuals. |
 | Product value and judge reproducibility | **UNKNOWN** | selected-app evidence required |
 | Submission | **NOT SUBMITTED** | live Devpost readback required |
 
@@ -137,10 +176,11 @@ obligation with frozen bounded MVP1 evidence; it is not implemented in `reentry-
 `mvp/` is a frozen MVP1 proof fixture. MVP2 remains a preserved contributor reference. Neither is
 the active source baseline for new application-neutral behavior.
 
-The first runtime consumer is `runtime/cloud-receiver/`. It wraps the existing Receiver Core and
-HTTP adapter without changing their contracts. Its current product-preview composition adds
+The first runtime consumer was `runtime/cloud-receiver/`. It wrapped the existing Receiver Core
+and HTTP adapter without changing their contracts. Its former product-preview composition added
 account-linked Connector authorization, organization-scoped Host-key registration, Re-entry-owned
-consent and device selection, and the same verified Connector identity seam. The earlier
+consent and device selection, and the same verified Connector identity seam. This runtime is now
+deprecated under ADR-0032; its source and tests remain historical evidence only. The earlier
 Host-code-first pairing and Host-forwarded consent routes remain as historical local evidence, not
 the normal product path. `runtime/local-connector/` is one separate outbound-only Node process that
 consumes the existing Local Connector client, can run under a generated per-user macOS LaunchAgent,
@@ -161,10 +201,20 @@ durable applicant record and separate applicant/reviewer pages, uses the Host SD
 server surfaces, and consumes the same local Receiver and Connector contracts. Its automatic Agent
 step remains deterministic evidence; the final application and real Agent bridge remain open.
 
-`runtime/host-sdk/` now packages the initial Host consent action as one function usable by ordinary
-UI and WebMCP. Its Next.js sample keeps organization and signing credentials in server routes,
-retains the approved binding only in a process-local demo server store, and sends the later Event
-through a separate route. Production Host persistence and the selected app remain open.
+`runtime/host-sdk/` packages the Host consent action for ordinary UI and WebMCP and now adds the
+ADR-0041 `createReentry()` server facade for the normal subject/prompt/URL path. Its Next.js sample
+keeps organization and signing credentials in server routes, retains the approved continuation
+only in a process-local demo server store, and sends the later Event through a separate route.
+The advanced protocol API remains available. Production Host persistence and the selected app
+remain open.
+
+`saas-boilerplate/` is the active Cloud Receiver v2 implementation base. Its independently
+deployable Express/Prisma backend and Next.js frontend implement separate user/developer sessions,
+account pairing, Host-key registration, Receiver-owned consent and target binding, signed Event
+ingress, delivery lease/acknowledgement, developer self-service, and bounded operations. It does not
+import or compose `reentry-core`; that is a recorded architecture conflict under TASK-028 rather
+than an accepted replacement for ADR-0006. Its local and preview-deployment evidence is bounded by
+Core/05, CLOUD-022, and SDK-006.
 
 `runtime/local-connector/` now has a terminal-testable Codex fresh-session preview. It can claim one
 delivery and start one new local Codex session with a fixed prompt containing the validated
@@ -199,13 +249,21 @@ Current evidence supports these bounded claims:
   controlled control-store reopen, submits one signed Host Manifest through a paired consent
   session, returns one Receiver-owned public binding after approval, fences decline and replay, and
   exposes the resulting Event delivery to the authorized Connector;
-- the account-first product path creates and approves one account-linked Mac without a Host pairing
-  code, reuses the restrictive local credential, uses a dashboard-issued organization key for
+- the account-first product path creates one dashboard-issued pairing code and approves one
+  account-linked Mac without a Host-generated pairing code, reuses the restrictive local credential, uses a dashboard-issued organization key for
   Host control calls, keeps the approval on the Re-entry origin, targets an eligible device, and
   produces one claimable delivery through bounded background polling;
 - the Host SDK shared action passes the same function to ordinary UI and a top-level Site Tool,
   requires server confirmation after popup approval, rejects browser binding exposure, preserves a
   no-WebMCP UI path, and was discovered and invoked on one live local in-app Browser page;
+- the simple SDK facade derives one signed consent request and later Event from subject, prompt, and
+  canonical URL while keeping credentials and approved continuation server-only; a disposable v2
+  composition crossed a separately spawned Connector worker to effect-backed acknowledgement and
+  exact restart replay, and independent developer/end-user personas passed the browser flow after
+  their findings were corrected;
+- the current checkout's instruction-aware Connector passes its bounded local checks, while the
+  published `@4xeoz/re-entry@0.2.20` artifact is not exact-source reproducible and rejects the active
+  instruction-bearing lease; registry compatibility remains open under TASK-032;
 - the local Re-entry Cloud console serves a branded landing page, protects the dashboard with a
   session cookie, creates a hashed preview account, and supports organization and API-key creation
   and revocation without returning stored secrets;
@@ -219,10 +277,12 @@ Current evidence supports these bounded claims:
 - bounded P0/H1/H2 evidence demonstrates technical composability in the recorded local/current-
   build environments.
 
-The hosted Receiver preview does not establish production authentication or security controls,
-arbitrary-crash or power-loss safety, multi-replica behavior, public Agent activation, cross-user
-or cross-machine portability, deployed performance, market value, or judge reproduction. Detailed current proof and future gates belong
-to [Core/05](05-validation-and-evidence.md); dated history remains in Development, Research,
+The retired v1 hosted Receiver preview is historical. Active v2 has bounded local, browser, database,
+separate-process, and preview-deployment evidence, but neither implementation establishes production
+authentication or security controls, arbitrary-crash or power-loss safety, multi-replica behavior,
+public Agent activation, cross-user or cross-machine portability, deployed full-chain behavior,
+market value, or judge reproduction. Detailed current proof and future gates belong to
+[Core/05](05-validation-and-evidence.md); dated history remains in Development, Research,
 Experiments, and frozen evidence rather than this status file.
 
 ## 6. Binding mechanism invariants

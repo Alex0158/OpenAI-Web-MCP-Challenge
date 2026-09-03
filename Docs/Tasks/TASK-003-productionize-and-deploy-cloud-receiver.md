@@ -1,4 +1,4 @@
-# TASK-003: Productionize and Deploy Cloud Receiver
+# TASK-003: Productionize and Deploy Cloud Receiver (Deprecated)
 
 **Role:** CANONICAL task lifecycle record  
 **Registered:** 2026-08-31
@@ -6,17 +6,31 @@
 ## Task Control
 
 - Type: `implementation`
-- Lifecycle: `in_progress`
+- Lifecycle: `not_planned`
 - Priority: `P1`
 - Owner: Alex and project team
-- Current increment: CLOUD-010 locally verifies the account-first product path across organization
-  credentials, Re-entry-owned consent, one-time Mac authorization, background delivery polling, and
-  the fresh Codex process seam.
-- Next gate: Select and prove the supported real Agent-to-Browser-to-page-bound-WebMCP route and
-  first Host workflow, then replace preview identity and credential assumptions with the
-  production contracts required by that vertical slice.
+- Current increment: Retired by ADR-0032; the prior Cloud Receiver implementation and deployment
+  evidence remain preserved for historical traceability.
+- Next gate: None in this task. Any replacement Cloud Receiver requires a new bounded Task, ADR,
+  implementation record, and verification evidence.
 - Dependencies: Host-integrated runtime verification depends on TASK-001; public hosting, secrets,
   credentials, paid infrastructure, and deployment require their own current authority.
+
+## Current disposition
+
+This productionization task is no longer planned. The current `runtime/cloud-receiver/` package,
+its former hosted preview, and the CLOUD-001 through CLOUD-012 implementation records are retained
+as historical evidence only and are superseded for current runtime/deployment direction by
+[ADR-0032](../Decisions/ADR-0032-retire-current-cloud-receiver-runtime.md) and
+[TASK-013](TASK-013-retire-current-cloud-receiver-runtime.md). This record is not evidence that the
+former Vercel project or its database was deleted or archived; that is a separate authorized
+operational action.
+
+The sections below are historical task context. They describe the former productionization plan and
+the evidence available before retirement; they are not current implementation instructions or
+deployment claims.
+
+## Historical task context
 
 ## 1. Objective
 
@@ -47,15 +61,22 @@ generic Host, one organization, one Connector, and a deterministic or fake Agent
 - The final Host application and Host-specific event, canonical page, WebMCP tools, and end-to-end
   continuation route remain governed by TASK-001.
 
-Current claim ceiling: `deployed_preview` for the hosted smoke-test surface and
-`locally_verified` for the named loopback product and process surfaces. This does not claim a
-production-ready Cloud Receiver service.
+Current claim ceiling: `schema_migration_applied`, `deployment_health_verified`, and hosted portal
+routing verification for the preview, plus `locally_verified` for the named loopback product and
+process surfaces. The retained Vercel project is `re-entry-cloud` at
+`https://re-entry-weld.vercel.app`; `/healthz`, `/readyz`, canonical developer auth routes, and the
+existing-session user dashboard pass. The hosted account-auth and pairing write path was not
+exercised in this increment, so this does not yet claim a production identity or production pairing
+service.
 
-The hosted MVP increment now has an accepted Supabase/Prisma direction in ADR-0029. It is a
-bounded preview persistence bridge around the unchanged synchronous SQLite protocol stores, not a
-production-scale native Prisma data model. The Vercel preview has passed migration, build,
-liveness, and readiness checks; exact committed-source readback and the account-first happy path
-remain open before any production claim.
+The hosted MVP increment uses Supabase/Prisma under ADR-0029 and ADR-0031. Durable state is now
+organized into native relational tables for identity, devices, consent, Receiver state, events, and
+delivery. The unchanged synchronous SQLite stores remain only as a temporary request execution
+layer. The additive migration and production variables are now configured on the retained Vercel
+project. Deployment health and hosted portal routing are externally verified. Full hosted account
+auth and pairing writeback remains an explicit next check. The exact short hostname
+`re-entry-cloud.vercel.app` is unavailable under the current Vercel account, so documentation and
+manual tests must use `https://re-entry-weld.vercel.app`.
 
 ### 2.1 Working planning direction
 

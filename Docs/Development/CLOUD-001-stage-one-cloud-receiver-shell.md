@@ -9,6 +9,9 @@
 **Baseline:** `0ce22ad8e6f3478cd85f5ad22ec3b5c18448f6a3`  
 **Implementation commit:** `e11e71cebdb23782dcb85b9b19a4756a620bb917`
 
+> **Current disposition:** `DEPRECATED` — this implementation record is historical evidence only.
+> The runtime it describes was retired by [ADR-0032](../Decisions/ADR-0032-retire-current-cloud-receiver-runtime.md).
+
 ## Objective
 
 Implement the first real, domain-neutral Cloud Receiver process shell around the existing Receiver

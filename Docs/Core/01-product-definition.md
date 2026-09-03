@@ -107,11 +107,15 @@ Host business authority.
 
 ### Deployment boundary
 
-ADR-0006 selects a hosted Cloud Receiver plus outbound Local Connector as the active reference
-topology. The same Receiver Core may run through a local service shell for development and
-deterministic tests, but that shell is not a second production authority or an automatic
-fallback. The Local Connector owns device-side delivery and Agent-adapter dispatch, not Grants
-or event truth.
+ADR-0006 selects a hosted Cloud Receiver plus outbound Local Connector as the target reference
+topology. The current `runtime/cloud-receiver/` implementation and hosted preview were retired by
+ADR-0032. ADR-0033 selects `saas-boilerplate/` as the active v2 replacement base, and ADR-0035
+through ADR-0041 authorize its bounded current increments. **CONFLICTED:** active v2 independently
+implements Receiver state transitions rather than composing `reentry-core`, while ADR-0006 still
+requires one Receiver implementation. TASK-028 owns that decision; this document does not silently
+amend the invariant. A local service shell may run through the same Receiver Core for development
+and deterministic tests, but it is not a second production authority or an automatic fallback. The
+Local Connector owns device-side delivery and Agent-adapter dispatch, not Grants or event truth.
 
 This distinction creates two separate interoperability questions:
 

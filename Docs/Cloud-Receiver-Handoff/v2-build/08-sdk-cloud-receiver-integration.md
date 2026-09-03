@@ -226,8 +226,17 @@ The SDK does not treat the popup message as proof of approval. It calls the Host
 only after an approved message.
 
 The Receiver HTML emits this completion event only after a successful account decision, using the
-current consent session identifier and `window.location.origin`. Failed decisions emit no message;
-the SDK will not poll, accept an arbitrary message, or fall back to another transport.
+current consent session identifier and the exact validated signed Host issuer origin as
+`targetOrigin`. The event sender remains the exact Receiver consent origin, and the SDK requires
+that sender plus the exact popup window before asking the Host server to confirm status. Failed
+decisions emit no message; wildcard targeting is forbidden; and the SDK will not poll, accept an
+arbitrary message, or fall back to another transport.
+
+Because the Host and Receiver are intentionally cross-origin, the Receiver's `/consent` document
+must preserve `window.opener`; the active v2 implementation returns
+`Cross-Origin-Opener-Policy: unsafe-none` on that document only. Other Receiver routes retain the
+global Helmet policy. This browser-channel requirement does not weaken the exact sender, popup
+source, or Host-server confirmation checks above.
 
 ### 5. Confirm status on the Host server
 
@@ -361,8 +370,8 @@ headers/bodies and the v2 response envelopes:
 - `SDK-V2-002`: signed Manifest consent-session creation and opaque URL/token handling;
 - `SDK-V2-003`: pending and approved consent status, including a public binding without Connector
   or delivery-target identifiers; and
-- `SDK-V2-004`: Receiver HTML completion handoff to the browser SDK, green against the local
-  Receiver.
+- `SDK-V2-004`: Receiver HTML completion handoff to the browser SDK, including the consent-only
+  opener policy, green against the local Receiver.
 
 Run it only with an explicit disposable-database environment:
 
@@ -475,12 +484,15 @@ the v1 implementation.
 2. Run `SDK-V2-001`–`SDK-V2-004` through the actual SDK request builder and v2 handler; do not treat
    those results as deployed integration.
 3. Preserve the exact popup completion message accepted by the browser SDK: emit it only after a
-   successful decision, from the exact consent origin and popup, with no private values.
-4. Preserve the exact SDK routes and JSON envelopes above; do not alias the deferred
+   successful decision, target the exact signed Host origin, keep the Receiver as the sender, and
+   include no private values. The SDK must still require the exact Receiver origin and popup source.
+4. Preserve `window.opener` only on the Receiver consent document; a global `same-origin` opener
+   policy makes the cross-origin completion channel impossible even with the correct target.
+5. Preserve the exact SDK routes and JSON envelopes above; do not alias the deferred
    `/v0.1/consent-decisions` route into the account-first flow.
-5. Add the Event, Connector claim, and acknowledgement matrices before claiming end-to-end
+6. Add the Event, Connector claim, and acknowledgement matrices before claiming end-to-end
    completion.
-6. Record local, committed, deployed, and externally verified states separately.
+7. Record local, committed, deployed, and externally verified states separately.
 
 ## Source map
 

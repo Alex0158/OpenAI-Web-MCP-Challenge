@@ -6,6 +6,10 @@
 **Scope:** First shipping-source process shell around Receiver Core, local operational routes,
 file-backed composition, and lifecycle claim boundary
 
+> **Current disposition:** The runtime and deployment portion of this decision is superseded by
+> [ADR-0032](ADR-0032-retire-current-cloud-receiver-runtime.md). This record remains historical
+> evidence for the preserved process-shell boundary.
+
 ## Context
 
 ADR-0006 selects one hosted Cloud Receiver around the existing Receiver Core. ADR-0010 freezes the

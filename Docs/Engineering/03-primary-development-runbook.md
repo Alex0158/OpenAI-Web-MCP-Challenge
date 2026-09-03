@@ -2,7 +2,7 @@
 
 **Role:** OPERATIONAL project-wide implementation and closure procedure  
 **Status:** Active  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-02
 
 ## 1. Scope and authority
 
@@ -144,6 +144,37 @@ repository-wide routing and non-negotiables in `AGENTS.md`, put repeatable proce
 runbook, keep product and mechanism truth with their owners, and use scripts or CI for stable
 mechanical enforcement. Confirm that a clean clone receives every collaborator-required rule
 without relying on a parent workspace file.
+
+### 7.1 Cross-layer reconciliation gate
+
+For any increment that changes or claims behavior across more than one surface, make a short
+reconciliation pass before closure. Compare the implementation and tests with the current owners;
+do not assume that a passing test or a newly written development note makes an older path current.
+
+At minimum, inspect the affected:
+
+- user journey, route, redirect, and user-facing instruction;
+- API request, response, error, and authentication handoff;
+- state transition, data ownership, credential boundary, and external effect;
+- code, focused tests, package README, and runtime entry point; and
+- Core or Mechanism intent, ADR status, Development evidence, current status, and local index.
+
+For every changed or contradictory surface, record one disposition in the active Task or
+Development record:
+
+| Disposition | Required action |
+|---|---|
+| `aligned` | State why the existing owner remains current. |
+| `updated` | Update the owning Core, Mechanism, ADR, status, or index in the same increment. |
+| `historical` | Mark the old path as compatibility or evidence-only and remove it from the normal guide. |
+| `open` | Keep the proposal or unresolved choice out of accepted truth and link its next decision gate. |
+| `unverified` | Lower the claim and record the exact evidence still required. |
+| `implementation_gap` | Register or update one bounded implementation/defect task with an owner and next gate. |
+
+If accepted documentation contradicts the code, do not silently rewrite the documentation to match
+the code. Classify the code as an implementation gap, or stop at the decision gate if the intended
+behavior itself is changing. A code-bearing increment cannot close while a changed authoritative
+surface has no disposition.
 
 ## 8. Git and remote closure
 

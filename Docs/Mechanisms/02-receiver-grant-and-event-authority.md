@@ -1,8 +1,9 @@
 # Receiver Grant and Event Authority
 
 **Role:** CANONICAL mechanism contract  
-**Status:** Core and SQLite reference behavior locally verified  
-**Controls:** ADR-0007, ADR-0008, and ADR-0013
+**Status:** Core/SQLite reference and active v2 behavior locally verified separately; effective
+Grant expiry and shared-Core conformance decisions open  
+**Controls:** ADR-0007, ADR-0008, ADR-0013, ADR-0035, ADR-0036, and ADR-0041
 
 ## Responsibility
 
@@ -75,13 +76,17 @@ Revocation and event acceptance serialize by commit order:
 | Schema and projections | `reentry-core/src/sqlite-receiver-schema.mjs` | store and migration cases |
 | Event HTTP mapping | `reentry-core/src/cloud-receiver-http.mjs` | `reentry-core/test/cloud-receiver-http.test.mjs` |
 | Cross-process fault boundaries | shared process fixtures | `reentry-core/test/process-fault-matrix.test.mjs` |
+| Active v2 Grant, signed Event, replay, and reservation | `saas-boilerplate/backend/src/modules/consent/`, `modules/events/`, and Prisma `Grant`, `Event`, `Delivery` | `CONSENT-001`–`005`, `EVENT-001`–`004`, SDK Event contract, and SDK-006 |
 
 ## Current evidence and non-claims
 
-Deterministic and separate-test-process evidence covers exact replay, conflicts, rollback, durable
-reopen, inspection, atomic revocation, revocation/event ordering, and one pre-commit forced
-termination case. This does not prove arbitrary crash placement, power-loss safety, multi-replica
-serialization, production HTTP identity, anti-CSRF, a public control route, or a real Host-effect
+Deterministic and separate-test-process Core evidence covers exact replay, conflicts, rollback,
+durable reopen, inspection, atomic revocation, revocation/event ordering, and one pre-commit forced
+termination case. Active v2 separately covers signed Event acceptance, exact replay, invalid scope,
+expiry/exhaustion/revocation fences, one-run reservation, and pending delivery in PostgreSQL.
+**CONFLICTED:** active v2 does not compose Receiver Core (TASK-028), and its effective Grant lifetime
+remains a decision under TASK-027. Neither suite proves arbitrary crash placement, power-loss safety,
+multi-replica serialization, production identity, public Grant control, or a real Host-effect
 authority.
 
 ## Application integration obligations

@@ -1,8 +1,8 @@
 # Research Index
 
 **Role:** SUPPORTING research and bounded evidence index  
-**Status:** Current tracked index through Research 23  
-**Last updated:** 2026-08-31
+**Status:** Current tracked index through Research 24  
+**Last updated:** 2026-09-02
 
 Research can change a decision or verification plan, but it does not control current product truth
 or select an application. Accepted durable choices belong in `Docs/Decisions/`; current status and
@@ -38,6 +38,8 @@ proof claims belong in `Docs/Core/00-current-status.md` and
 - [Research 22](22-mvp2-selective-integration-provenance.md): MVP2 selective-reuse provenance.
 - [Research 23](23-three-candidate-competition-app-selection-review.md): preserved original and
   post-clarification comparison of the three application candidates; recommendation only.
+- [Research 24](24-cloud-receiver-2-saas-boilerplate-study.md): static review of the cloned SaaS
+  boilerplate and the open Cloud Receiver 2 adaptation boundary.
 
 ## Maintenance rules
 
