@@ -380,9 +380,11 @@ failed conflict recovery and `RIGHTSPOT-051` for the Tenant Search WebMCP regist
 gap. `RIGHTSPOT-050` is now `CLOSED_VERIFIED` within its exact shared-editor consumer boundary after
 serial Main TDD, full/static checks, and a supported ordinary conflict-recovery browser replay; the
 failed-refetch injection branch remains explicitly source-contract evidence because the in-app browser
-URL policy blocked the temporary proxy. `RIGHTSPOT-051` is now `DISPATCHED_BUILDER` to supporting
-Builder Socrates under `gpt-5.6-sol + medium`; its three-path candidate is not yet integrated or
-independently verified. The Agent-side registration-observability portion of the same `F-26` finding
+URL policy blocked the temporary proxy. `RIGHTSPOT-051` is now `READY_FOR_INDEPENDENT_VERIFICATION`
+after supporting Builder Socrates returned the exact three-path candidate under
+`gpt-5.6-sol + medium`; it is not yet independently verified, integrated, or closed. Main has
+recorded the candidate hashes and the shared-index mixed-scope commit hazard in the Task and
+validation ledger. The Agent-side registration-observability portion of the same `F-26` finding
 is a bounded repair checkpoint under the still-open `RIGHTSPOT-047`, not a duplicate parent Task.
 `RIGHTSPOT-048` remains a harness-blocked evidence gate and `RIGHTSPOT-012` remains the non-blocking
 audit lane.

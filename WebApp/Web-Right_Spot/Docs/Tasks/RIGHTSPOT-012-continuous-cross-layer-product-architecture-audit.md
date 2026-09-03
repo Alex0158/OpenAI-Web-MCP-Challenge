@@ -805,7 +805,7 @@ remain low-severity maintenance polish and are not independently actionable.
 
 **Disposition at this audit checkpoint:** The audit increment was complete and `RIGHTSPOT-012` remains
 `pending` and non-blocking. `RIGHTSPOT-050` was subsequently closed in its bounded Tenant consumer
-boundary. The next Main gate is to review the dispatched `RIGHTSPOT-051` Builder handoff, keep
+boundary. The next Main gate is to freeze and independently verify the reviewed `RIGHTSPOT-051` Builder handoff, keep
 `RS-WO-047-03` gated until the 048 evidence decision permits a new 047 baseline, and re-run the audit
 only after a meaningful source or evidence increment. This report authorized no source change.
 

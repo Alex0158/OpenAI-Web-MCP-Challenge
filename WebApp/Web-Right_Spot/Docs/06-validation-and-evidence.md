@@ -1651,3 +1651,29 @@ signal, lifecycle deactivation, late-disposal safety, manual Search fallback pre
 Worktree, fixture/SQLite, server/API/domain/DTO, ordinary Search, shared role-frame, Agent/047, and
 unrelated Web-Game changes. The worker has no authority to integrate, independently verify, commit,
 push, or close the Task; its next valid outcome is `READY_FOR_VERIFICATION`.
+
+## 7.45 Tenant WebMCP registration-observability Builder handoff — `RIGHTSPOT-051` — 2026-09-03
+
+The supporting Builder Socrates returned `READY_FOR_VERIFICATION` for `RS-WO-051-01` under
+`gpt-5.6-sol + medium`. The exact write set was limited to
+`src/ui/tenant/tenant-webmcp.ts`, `src/ui/tenant/tenant-discovery-page.tsx`, and
+`tests/ui/tenant-webmcp.test.ts`. The handoff report records TDD Red coverage for synchronous and
+rejected registration failures, Green/Refactor completion, focused coverage `13/13`, full package
+coverage `229/229`, typecheck, production build, repository validators, RightSpot-sensitive scanning,
+documentation validation, and diff checks. The known Operations dynamic filesystem-tracing build
+warning remains. Main reviewed the semantic diff and independently reran the package command under
+Node `24.20.0`, observing `229/229`; no browser registration claim was made.
+
+The candidate is still a dirty, path-scoped Main working-tree projection rather than an accepted
+product commit. Captured candidate hashes are:
+
+- `src/ui/tenant/tenant-webmcp.ts` — `f391a59b2be30c837a6182179bd8992f70b1e9b6d4cc9b9f717fd32672fa2401`
+- `src/ui/tenant/tenant-discovery-page.tsx` — `19a31bba3045a45f1456dba826c7d38a6ff59edd3cf0f1da8ce67134a39fca15`
+- `tests/ui/tenant-webmcp.test.ts` — `105c6a210f1109f9d8e3d5fcb29b2eb029e9fedccc36b8c2b5f3082688d97e1f`
+
+Main also observed alternate same-parent commit object `4768cd2`, whose tree combined the same
+three RightSpot paths with unrelated Web-Game changes. It is not an ancestor of current Main
+`6267a1c`, so it is recorded as a shared-index/process hazard rather than used as source identity.
+The independent verifier must validate the exact three-path projection, not demand a whole-repository
+pure commit and not accept the mixed object as a clean RightSpot baseline. This is a path-ownership
+and source-freeze issue; no history rewrite, push, or product closure is authorized by this record.

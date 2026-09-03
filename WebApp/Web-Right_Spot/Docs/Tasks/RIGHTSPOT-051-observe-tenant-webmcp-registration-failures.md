@@ -20,17 +20,28 @@ accepted [ADR-RS-0015](../Decisions/ADR-RS-0015-tenant-search-and-webmcp-contrac
 - **Blocking status:** Non-blocking to the ordinary local MVP and to the Agent Operations 047/048
   evidence gates. It is related to the Agent-side `F-26` repair, which remains a checkpoint under
   `RIGHTSPOT-047` rather than a second Task here.
-- **Current increment:** The exact three-path Builder checkpoint has been dispatched under the WebMCP
-  model gate. Main is continuing non-overlapping source-identity, documentation, and integration
-  preparation while the worker runs.
-- **Next gate:** Review the Builder's exact diff and Red → Green → Refactor handoff; then freeze the
-  candidate for independent verification before any Main integration or closure claim.
+- **Current increment:** The exact three-path Builder checkpoint returned `READY_FOR_VERIFICATION`
+  under the WebMCP model gate. Main reviewed the declared diff and the handoff evidence; the
+  candidate remains a path-scoped working-tree change and is not yet independently verified,
+  integrated, or closed.
+- **Next gate:** Capture the path-scoped T2 source identity and freeze the three-path candidate for
+  an independent read-only verification. No Main integration or closure claim is permitted before
+  that gate.
 - **Source baseline at registration:** Main `7650db00cc60d23b262b6c506c81e8913ad4d3ca`; RightSpot
   source/test paths were clean. Existing validation-ledger and protected untracked paths are outside
   the worker write set.
 - **Dispatch baseline:** Main `14cd82c7a66e352d9ba0810b14ceaf9bfb5138e0`; the tracked RightSpot
   source/test projection is clean at dispatch preparation. The repository's unrelated remote branch
   movement is not a reason to merge or rebase this bounded local checkpoint; no push is implied.
+- **Builder candidate identity (2026-09-03):** The current RightSpot product-source projection
+  contains changes only in the three declared worker paths. Their captured SHA-256 values are:
+  `src/ui/tenant/tenant-webmcp.ts` =
+  `f391a59b2be30c837a6182179bd8992f70b1e9b6d4cc9b9f717fd32672fa2401`,
+  `src/ui/tenant/tenant-discovery-page.tsx` =
+  `19a31bba3045a45f1456dba826c7d38a6ff59edd3cf0f1da8ce67134a39fca15`, and
+  `tests/ui/tenant-webmcp.test.ts` =
+  `105c6a210f1109f9d8e3d5fcb29b2eb029e9fedccc36b8c2b5f3082688d97e1f`. These hashes identify the
+  dirty candidate for verification; they are not a permanent global lock.
 - **Main authority:** Main owns task admission, exact source identity, contract interpretation,
   integration, browser evidence, canonical documentation, and Git closure.
 
@@ -144,7 +155,7 @@ Close this Task only when all are true:
 
 ### RS-WO-051-01 — Surface Tenant Search registration failure
 
-**Status:** `DISPATCHED_BUILDER`  
+**Status:** `READY_FOR_INDEPENDENT_VERIFICATION`  
 **Role:** WebMCP/API/UI implementation Builder  
 **Parallelization:** `SERIAL_TENANT_WEBMCP_ADAPTER` — no other writer may touch the three-path worker
 write set during the checkpoint  
@@ -169,6 +180,27 @@ full/static verification ladder. It explicitly forbids documentation, Git/index,
 server/API/domain/DTO, ordinary manual Search, shared role-frame, Agent/047, and unrelated Web-Game
 changes. The worker must stop at `READY_FOR_VERIFICATION`; Main owns all documentation, integration,
 independent-verification, and closure decisions.
+
+**Builder handoff (2026-09-03):** The Builder reported Red coverage of the synchronous and rejected
+registration paths, then Green and Refactor completion with the focused Tenant WebMCP suite passing
+`13/13`. The candidate changed exactly the three declared paths: registration failures now deactivate
+the page-bound lifecycle before emitting one page-owned callback; the Tenant page renders only bounded
+neutral status; late rejection after disposal is inert; and unsupported capability plus manual Search
+remain unchanged. Main independently reran the package test command under the pinned Node `24.20.0`
+runtime and observed `229/229` passing, with `git diff --check` passing. The Builder handoff also
+reports typecheck, production build, repository validators, RightSpot-sensitive scan, and documentation
+validation passing; the known Operations dynamic filesystem-tracing build warning remains. No browser
+registration claim was made, no fixture reset was performed, and no Git commit or push was authorized
+for the worker.
+
+**Path-scoped freeze and shared-index incident (2026-09-03):** At T2 preparation, Main observed no
+staged changes and exactly the three declared paths dirty. An alternate same-parent commit object
+`4768cd2` was also observed containing those three RightSpot paths together with unrelated Web-Game
+changes; it is not an ancestor of current Main `6267a1c` and is not accepted as a clean RightSpot
+source identity. This confirms the shared-index hazard: a mixed-scope commit must not be treated as a
+pure candidate or repaired by rewriting history. The current verifier must validate the exact
+three-path projection identified above, while Main protects all unrelated dirty and untracked material.
+Any verifier report must distinguish this path-projected source from whole-repository commit identity.
 
 ## Stop and reopen conditions
 
