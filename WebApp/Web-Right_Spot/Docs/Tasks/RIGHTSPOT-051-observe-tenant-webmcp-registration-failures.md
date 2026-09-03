@@ -22,11 +22,10 @@ accepted [ADR-RS-0015](../Decisions/ADR-RS-0015-tenant-search-and-webmcp-contrac
   `RIGHTSPOT-047` rather than a second Task here.
 - **Current increment:** The exact three-path Builder checkpoint returned `READY_FOR_VERIFICATION`
   under the WebMCP model gate. Main reviewed the declared diff and the handoff evidence; the
-  candidate remains a path-scoped working-tree change and is not yet independently verified,
-  integrated, or closed.
-- **Next gate:** Capture the path-scoped T2 source identity and freeze the three-path candidate for
-  an independent read-only verification. No Main integration or closure claim is permitted before
-  that gate.
+  candidate remains a path-scoped working-tree change. Main captured its T2 identity and dispatched
+  an independent read-only verifier; it is not yet integrated or closed.
+- **Next gate:** Review the independent verifier's exact-path, source-identity, and acceptance report.
+  No Main integration or closure claim is permitted before that gate.
 - **Source baseline at registration:** Main `7650db00cc60d23b262b6c506c81e8913ad4d3ca`; RightSpot
   source/test paths were clean. Existing validation-ledger and protected untracked paths are outside
   the worker write set.
@@ -155,7 +154,7 @@ Close this Task only when all are true:
 
 ### RS-WO-051-01 — Surface Tenant Search registration failure
 
-**Status:** `READY_FOR_INDEPENDENT_VERIFICATION`  
+**Status:** `DISPATCHED_VERIFIER`  
 **Role:** WebMCP/API/UI implementation Builder  
 **Parallelization:** `SERIAL_TENANT_WEBMCP_ADAPTER` — no other writer may touch the three-path worker
 write set during the checkpoint  
@@ -201,6 +200,17 @@ source identity. This confirms the shared-index hazard: a mixed-scope commit mus
 pure candidate or repaired by rewriting history. The current verifier must validate the exact
 three-path projection identified above, while Main protects all unrelated dirty and untracked material.
 Any verifier report must distinguish this path-projected source from whole-repository commit identity.
+
+**Independent verification dispatch (2026-09-03):** Main dispatched read-only Verifier Russell
+(`01a06740-4a9a-72d1-9986-00b741bc9939`) with `gpt-5.6-sol` and `medium` reasoning. The verifier is
+anchored to documentation checkpoint `c1ac196` plus the three captured candidate hashes, and must
+validate the exact path projection rather than the alternate mixed-scope commit object. Its prompt
+requires the pinned Node `24.20.0` runtime, focused and complete tests, typecheck, build, repository
+and sensitive validators, exact diff/status re-capture, and semantic review of the accepted failure,
+deactivation, stale-tool, privacy, and manual-fallback boundaries. The verifier is forbidden to edit
+source, tests, documents, fixtures, SQLite, generated evidence, Git/index, or Worktrees; no browser
+claim is required or implied. Its only valid outcomes are `VERIFIED`, `FAILED_PRODUCT`,
+`INCOMPLETE_EVIDENCE`, or `BLOCKED_HARNESS`.
 
 ## Stop and reopen conditions
 

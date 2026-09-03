@@ -127,7 +127,7 @@ The latest multi-angle audit registered `F-25` / `RIGHTSPOT-050` for a Tenant st
 failed conflict recovery and `F-26` / `RIGHTSPOT-051` plus `RS-WO-047-03` for page-bound WebMCP
 registration observability. `RIGHTSPOT-050` is now `CLOSED_VERIFIED` after its bounded Main-serial
 repair and required checks; `RIGHTSPOT-051` has completed one exact Tenant adapter Builder handoff and
-is awaiting its path-scoped independent verification under `gpt-5.6-sol + medium`, and `047-03` is
+is now under path-scoped independent verification with `gpt-5.6-sol + medium`, and `047-03` is
 gated until the reviewed 048 evidence decision permits a new 047 source baseline. No new P0/P1 issue,
 workflow-state defect, privacy leak, or server-authority failure was accepted, and these findings do
 not expand the WebMCP contract or the roadmap's deferred integrations.
@@ -657,8 +657,8 @@ and must not be used to claim that the paused Operations WebMCP candidate or the
 closed. The candidate-vs-checkpoint path accounting is now explicit: the two-path product candidate is
 separate from Main-owned process-only documentation writeback.
 
-The current post-audit route is deliberately small: freeze and independently verify the reviewed
-Tenant WebMCP `RIGHTSPOT-051` Builder handoff, then consider the Agent `RS-WO-047-03` checkpoint according to its
+The current post-audit route is deliberately small: review the in-progress independent verification
+of the frozen Tenant WebMCP `RIGHTSPOT-051` Builder handoff, then consider the Agent `RS-WO-047-03` checkpoint according to its
 separate ownership and model gates. Keep the 048 browser harness issue as an evidence decision, not a
 reason to retry indefinitely. The Main thread continues to own source freeze, integration, canonical
 documentation, and Git closure; no extra Worktree is required for the closed 050 increment.

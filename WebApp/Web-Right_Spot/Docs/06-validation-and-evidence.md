@@ -1677,3 +1677,18 @@ three RightSpot paths with unrelated Web-Game changes. It is not an ancestor of 
 The independent verifier must validate the exact three-path projection, not demand a whole-repository
 pure commit and not accept the mixed object as a clean RightSpot baseline. This is a path-ownership
 and source-freeze issue; no history rewrite, push, or product closure is authorized by this record.
+
+## 7.46 Tenant WebMCP independent verification dispatch — `RIGHTSPOT-051` — 2026-09-03
+
+Main froze the reviewed three-path candidate by its captured path hashes and dispatched read-only
+Verifier Russell (`01a06740-4a9a-72d1-9986-00b741bc9939`) with `gpt-5.6-sol + medium` reasoning.
+The verifier is anchored to documentation checkpoint `c1ac196` and must validate the exact dirty
+product-source projection, not the alternate mixed-scope commit object `4768cd2`. The dispatch
+forbids source, test, document, fixture, SQLite, generated-output, Git/index, Worktree, and unrelated
+Web-Game changes. It requires pinned Node `24.20.0`, focused and complete tests, typecheck, build,
+repository and sensitive validators, exact path/hash/status re-capture, and semantic review of the
+bounded failure signal, lifecycle deactivation, stale-tool, privacy, and manual-fallback behavior.
+No browser registration claim is required or implied; any browser evidence must use the declared
+supported runtime and must not retry the known 048 harness path. The candidate remains open pending
+one explicit verifier outcome: `VERIFIED`, `FAILED_PRODUCT`, `INCOMPLETE_EVIDENCE`, or
+`BLOCKED_HARNESS`.
