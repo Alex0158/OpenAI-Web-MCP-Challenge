@@ -1,8 +1,9 @@
 # Host Re-entry, WebMCP, and Human Boundary
 
 **Role:** CANONICAL mechanism contract  
-**Status:** Target application contract with frozen bounded MVP1 evidence; selected app open  
-**Controls:** ADR-0002, ADR-0003, ADR-0006, Core/01, and Core/02
+**Status:** Target application contract with frozen MVP1, bounded sample-Host, Host SDK, and
+active-v2 simple-flow evidence; selected app and supported Connector-to-Browser join open  
+**Controls:** ADR-0002, ADR-0003, ADR-0006, ADR-0041, Core/01, and Core/02
 
 ## Responsibility
 
@@ -46,12 +47,16 @@ bounded activation
 ## WebMCP contract
 
 - Tools expose domain actions rather than generic click or DOM wrappers.
+- A consent-request Site Tool may call the same application JavaScript function as normal Host UI;
+  its invocation does not create a Grant or trigger the later business Event.
 - Tool availability derives from current state and permission.
 - Read and mutation effects are explicit and bounded.
 - Inputs include current workflow and revision identifiers where stale writes matter.
 - Tool results are bounded and contain no Receiver, Connector, context, or signing secret.
 - Untrusted page, event, and tool-result content cannot widen Agent authority.
 - Registration lifecycle removes stale tools, but server enforcement remains decisive.
+- Registration uses top-level imperative JavaScript in supported Browsers; iframe or declarative
+  registration is not a hidden fallback.
 - No-WebMCP human UI remains functional.
 
 ## Human boundary
@@ -70,9 +75,14 @@ human control.
 | Canonical re-entry and same artifact | frozen P0 and H1 verdicts | private/current-build adapter paths |
 | Fresh tool lifecycle | bounded lifecycle probe | current tested client only |
 | Human stop | P0 final-state evidence and negative tool inventory | behavioral fixture evidence, not final app |
+| Application-shaped local sample | `runtime/application-demo/` and HOST-001 | deterministic Agent; not final app or real Connector-to-Browser join |
+| Shared UI/WebMCP consent action | `runtime/host-sdk/` and HOST-002 | live tool discovery and bounded handler invocation; configured consent-to-return Browser chain remains open |
+| Simple SDK-to-active-v2 flow | `runtime/host-sdk/`, `saas-boilerplate/`, `runtime/local-connector/`, and SDK-006 | separate process reaches a test effect/ack worker; no supported external Agent, Browser attachment, selected Host page, or default product acknowledgement |
 
 No corresponding application code exists in `reentry-core/`; that package intentionally owns only
-application-neutral contracts and adapters.
+application-neutral contracts and adapters. The application-review code under
+`runtime/application-demo/` is a bounded sample consumer accepted by ADR-0023, not the selected
+Host product.
 
 ## Application integration obligations
 

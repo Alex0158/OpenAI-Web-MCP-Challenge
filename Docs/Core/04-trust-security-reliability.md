@@ -1,9 +1,11 @@
 # Re-entry Core — Trust, Security, and Reliability
 
 **Role:** CANONICAL cross-cutting trust, security, and reliability policy  
-**Status:** Application-neutral controls locally verified at their stated boundary; production
-identity, custody, services, and runtime evidence open  
-**Authority:** ADR-0006 through ADR-0015
+**Status:** Application-neutral controls and bounded active-v2 authorization/consent/delivery paths
+locally verified; pairing abuse control, effective expiry, default effect acknowledgement,
+production identity, custody, services, and runtime evidence remain open  
+**Authority:** ADR-0006 through ADR-0015, historical ADR-0019 through ADR-0032, and active v2
+ADR-0033 through ADR-0041
 
 ## 1. Security objective
 
@@ -18,6 +20,7 @@ belongs to Core/05, Development, Research, and frozen evidence.
 
 - Host issuer private keys;
 - Receiver consent and control-session authority;
+- Re-entry account session and account-to-device pairing state;
 - private Grant, subject, and delivery-target identity;
 - Connector and lease credentials;
 - private managed-context binding and raw platform locator;
@@ -46,7 +49,8 @@ Possession of one opaque identifier is never sufficient to gain the next authori
 1. Authority is resolved from trusted stored state before untrusted caller data is interpreted.
 2. Consent, control, Connector, and adapter tokens are action- and boundary-specific.
 3. Secrets and raw platform identifiers are absent from public bindings, event bodies, activation,
-   result, error, logs, and shareable evidence.
+   result, error, logs, and shareable evidence; the local Connector bearer is held only in its
+   intended restrictive local credential file.
 4. The event contains no prompt, goal, artifact, tool plan, or arbitrary instruction.
 5. Current Host authorization and state are checked again after re-entry.
 6. Replay returns prior truth only for exact canonical identity; conflicting reuse fails.
@@ -86,7 +90,7 @@ integration.
 | Threat | Required control | Current evidence limit |
 |---|---|---|
 | Forged Host offer or event | origin anchoring, allowlisted Ed25519 key, canonical bytes, bounded clock skew | local deterministic keys and vectors |
-| Caller-asserted consent | Receiver-owned decision authority, challenge/action/subject binding, expiry | deterministic authority only |
+| Caller-asserted consent | Receiver-owned decision authority, challenge/action/subject binding, expiry | local preview control only; no production session |
 | Binding enumeration or cross-subject control | authenticate before private resolution, same-subject check, bounded summary | Core/store tests; no production session |
 | Replay or conflicting event reuse | exact event identity, canonical payload comparison, atomic prior-outcome return | local Core/store tests |
 | Double run or partial reservation | one transaction consumes run and creates pending delivery | SQLite reference evidence |
@@ -97,6 +101,12 @@ integration.
 | Stale Host mutation | canonical-page revalidation, server authorization, revision compare-and-swap | frozen MVP1 fixture evidence |
 | Prompt injection through event/page copy | bounded typed event, untrusted display treatment, no prompt transport | contract and negative tests |
 | Hidden fallback | explicit unsupported/unknown states and no automatic retry or alternate adapter | local tests |
+| Accidental Stage 1 public exposure | literal loopback bind, absolute trusted composition, fail-closed startup | local shell and child-process tests; no TLS or public-profile evidence |
+| Device-authorization or Connector-token leakage | short-lived device secret, one-time credential issue, digest-only control state, no token logs or browser display, restrictive local credential file | local preview tests; no production browser session, rotation, or recovery evidence |
+| Pairing-code guessing | bounded entropy plus an enforceable attempt/rate fence and secret-free terminal behavior | **CONFLICTED:** active v2 has an eight-hex-character code, no claim limiter, and an unused failed-attempt field; TASK-026 |
+| Consent/Grant lifetime misunderstanding | distinct windows, explicit Receiver narrowing, and user-visible effective expiry | **CONFLICTED:** active v2 copies the shorter session expiry into the Grant and does not display it; TASK-027 |
+| Cross-site session termination | matching session plus origin/content-type protection on state-changing browser requests | **OPEN:** production cookies are cross-site and logout lacks the guards used by other writes; TASK-030 |
+| Consent replay, wrong-account approval, or Host-selected device | account session, organization authentication, challenge/action binding, eligible-device selection, digest-only storage, exact decision fencing | local preview tests; no production session or CSRF evidence |
 
 ## 7. Reliability semantics
 
@@ -138,7 +148,8 @@ power-loss, distributed-store, or multi-replica evidence.
 - Host events carry identifiers, state version, event type, time, and canonical URL only.
 - Full artifacts and free-form business payloads remain in the Host application.
 - Public bindings exclude private Grant, subject, delivery target, receipt, and Agent identity.
-- Raw consent, control, Connector, and lease tokens are not persisted.
+- The Receiver stores no raw consent, device-authorization, control, Connector, or lease tokens;
+  the Local Connector stores its own bearer only in its restrictive credential file.
 - Managed-context references remain inside the adapter custody boundary.
 - Logs and public evidence use bounded correlation and redacted outcomes.
 - Revocation preserves minimal private history needed for replay, race, and audit semantics.
@@ -161,12 +172,17 @@ instructions.
 - real consent and Grant-control identity, recovery, anti-CSRF, and session security;
 - issuer onboarding, origin ownership, key rotation, revocation, and compromise response;
 - Receiver service identity, TLS, rate limits, admission control, and abuse monitoring;
-- Connector pairing, credential storage, revocation, supervision, upgrade, and device recovery;
+- production Connector authorization, credential storage, revocation, supervision, upgrade, and
+  device recovery;
 - managed-context capture, encryption, retirement, migration, and in-flight revocation behavior;
 - real Host-effect verification;
 - production persistence, backup, restore, corruption handling, and multi-instance ownership;
 - selected-app retention, deletion, privacy, audit, and support obligations; and
 - deployment, incident response, observability, and judge-safe evidence.
+
+The active v2 P0/P1 deviations are indexed in Core/09. In particular, green Pairing tests do not
+prove the ADR-0033 failed-claim fence, green Consent tests do not select the effective Grant lifetime,
+and green acknowledgement tests do not provide the default Connector with a real effect authority.
 
 These controls are gates. Test fixtures must not be renamed or wrapped to imply that they exist.
 

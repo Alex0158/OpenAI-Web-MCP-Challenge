@@ -338,6 +338,7 @@ export class ReceiverCore {
       canonical_url: manifest.workflow.canonical_url,
       expires_at: initial.effective_expires_at,
       human_boundary: manifest.grant_request.human_boundary,
+      instruction: manifest.display.reason,
       runs_remaining: 1,
       revoked_at: null,
       receipt_json: canonicalJson(receipt),

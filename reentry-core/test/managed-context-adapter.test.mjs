@@ -328,6 +328,7 @@ function deliveryLease() {
       state_version: 4,
       occurred_at: "2026-08-31T11:59:00.000Z",
       canonical_url: "https://host.example/workflows/workflow_001",
+      instruction: "Review the approved workflow and prepare the next safe step.",
     },
     receipt: {
       type: "webmcp.continuation_receipt",

@@ -1,0 +1,45 @@
+{
+  "name": "@4xeoz/re-entry",
+  "version": "0.2.20",
+  "type": "module",
+  "description": "Outbound Local Connector process for Re-entry Core; uses the Cloud Receiver v2 preview by default with an explicit override for other accepted origins.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    "src"
+  ],
+  "bin": {
+    "re-entry": "src/main.mjs",
+    "reentry": "src/main.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs",
+    "./connector": "./src/local-connector.mjs",
+    "./codex-discovery": "./src/codex-discovery.mjs",
+    "./codex-exec-adapter": "./src/codex-exec-adapter.mjs",
+    "./pairing": "./src/pairing-client.mjs",
+    "./credentials": "./src/credentials.mjs",
+    "./macos-service": "./src/macos-service.mjs"
+  },
+  "dependencies": {
+    "@webmcp-challenge/reentry-core": "file:../../reentry-core"
+  },
+  "bundleDependencies": [
+    "@webmcp-challenge/reentry-core"
+  ],
+  "scripts": {
+    "start": "node src/main.mjs",
+    "connect": "node src/main.mjs connect",
+    "status": "node src/main.mjs status",
+    "doctor": "node src/main.mjs doctor",
+    "check:syntax": "node scripts/check-syntax.mjs",
+    "test:codex": "node --test test/codex-exec-adapter.test.mjs",
+    "test": "node --test test/*.test.mjs",
+    "verify": "npm run check:syntax && npm test"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

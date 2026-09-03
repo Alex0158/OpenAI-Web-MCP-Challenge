@@ -3,7 +3,7 @@
 **Role:** CANONICAL documentation governance and authority index  
 **Status:** Current index  
 **Project:** Re-entry Core; demo app and final app name TBD  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-03
 
 This directory separates current product truth from challenge governance, evidence, and
 historical ideation. A file's location does not by itself make it authoritative; use the
@@ -40,8 +40,9 @@ closure. Neither Decisions nor Development replaces the owning Core truth.
 | [`Core/06-mvp-and-demo.md`](Core/06-mvp-and-demo.md) | CANONICAL | App-selection and demo target; the scorecard is a supporting heuristic |
 | [`Core/07-p0-technical-validation-mvp.md`](Core/07-p0-technical-validation-mvp.md) | CANONICAL | Frozen P0 implementation contract and dated verdict; not the current production architecture |
 | [`Core/08-competition-thesis-and-positioning.md`](Core/08-competition-thesis-and-positioning.md) | CANONICAL | Competition-facing thesis, value proposition, differentiation, judging posture, and claim hierarchy; underlying status remains in Core/00 and Core/05 |
+| [`Core/09-business-flows-and-ux.md`](Core/09-business-flows-and-ux.md) | CANONICAL | Cross-layer business-flow sequence, portal redirects, UX handoffs, credential boundaries, and current-flow audit findings |
 | [`Mechanisms/README.md`](Mechanisms/README.md) | CANONICAL MODULE INDEX | Stable Re-entry lifecycle and authority contracts, with code, test, and evidence routing |
-| [`Decisions/README.md`](Decisions/README.md) | DECISION INDEX | Accepted, superseded, and partially superseded durable choices through ADR-0018 |
+| [`Decisions/README.md`](Decisions/README.md) | DECISION INDEX | Accepted, superseded, pending, and scoped durable choices through ADR-0041 |
 | [`Tasks/README.md`](Tasks/README.md) | CANONICAL TASK INDEX | Unified lifecycle for pending work, problems, defects, investigations, risks, decisions, and verification gaps |
 | [`Development/README.md`](Development/README.md) | CANONICAL | Program, implementation, verification, runbook, and closure records |
 | [`Engineering/README.md`](Engineering/README.md) | CANONICAL ENGINEERING INDEX | Project-wide development, testing, verification, and execution controls |
@@ -50,11 +51,14 @@ closure. Neither Decisions nor Development replaces the owning Core truth.
 
 The [decision register](Decisions/README.md) owns the complete decision index. ADR-0001 is
 superseded by ADR-0002; ADR-0004 is partially superseded by ADR-0006 and ADR-0007; ADR-0006 through
-ADR-0017 control the current Re-entry Core source, topology, protocol, authority, delivery,
-transport, deterministic Agent boundary, conformance, Grant control, private binding resolution,
-modular documentation ownership, unified task lifecycle, and engineering governance baseline.
-ADR-0018 controls collaborator authority checks, canonical writeback, and Git synchronization gates.
-The index records decision status, not implementation or runtime proof.
+ADR-0032 control the Re-entry Core source, topology, protocol, authority, delivery, transport,
+deterministic Agent boundary, conformance, Grant control, private binding resolution, modular
+documentation ownership, unified task lifecycle, engineering governance baseline, and the retired
+hosted Cloud Receiver preview. ADR-0032 retires `runtime/cloud-receiver/` and its hosted preview
+while preserving reusable Core and integration contracts. ADR-0033 selects `saas-boilerplate/` as
+the active v2 base; ADR-0035 through ADR-0041 control its accepted bounded increments. The index
+records decision status, not implementation or runtime proof, and those v2 decisions do not resolve
+the one-Receiver-Core architecture conflict recorded by TASK-028.
 
 ## 3. Tasks, development, and closure
 
@@ -138,7 +142,8 @@ decision.
 4. Record a new ADR before changing the core mechanism, selecting or changing the host app, changing
    the authority model, moving the MVP boundary, or changing a project-wide engineering or
    collaboration control.
-5. Label statements as **VERIFIED**, **WORKING ASSUMPTION**, **INFERENCE**, **TARGET**, or **UNKNOWN** where status could affect a decision.
+5. Label evidence-sensitive conclusions as **VERIFIED**, **INFERRED**, **MEMORY-ONLY**, **UNKNOWN**,
+   or **CONFLICTED**. Use **TARGET** only for approved intended behavior, not as an evidence level.
 6. Do not duplicate volatile challenge facts across Core docs; link to the governing source.
 7. Keep the dossier snapshots byte-identical. Import a new version as a new file rather than overwriting version 1.1.
 8. Select a host application only through a new ADR that specializes the domain-neutral Core requirements.

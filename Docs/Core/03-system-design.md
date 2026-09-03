@@ -1,9 +1,12 @@
 # Re-entry Core — System Architecture
 
 **Role:** CANONICAL system-wide architecture overview  
-**Status:** Application-neutral Core locally verified at its stated boundary; selected application,
-production shells, and concrete Agent runtime open  
-**Authority:** ADR-0006 through ADR-0015
+**Status:** Application-neutral Core and target topology remain current; `runtime/cloud-receiver/` is
+deprecated historical evidence; active `saas-boilerplate/` v2 is a bounded replacement preview with
+an unresolved Receiver-Core composition conflict; selected application, production profiles, and
+concrete Agent runtime remain open  
+**Authority:** ADR-0006 through ADR-0015, historical ADR-0019 through ADR-0032, and active v2
+ADR-0033 through ADR-0041
 
 ## 1. Objective
 
@@ -31,6 +34,11 @@ choices belong to ADRs; current evidence belongs to Core/00 and Core/05.
 11. Human and Agent interfaces share backend authorization and state rules.
 12. Unsupported capability fails visibly; no hidden fallback exists.
 
+Invariant 7 remains normative. **CONFLICTED:** the active v2 backend has no `reentry-core`
+dependency and implements Receiver authority in separate TypeScript services. TASK-028 must either
+restore composition or amend the architecture through an accepted ADR and mandatory conformance;
+current code existence does not amend this section.
+
 ## 3. Component topology
 
 ```mermaid
@@ -55,7 +63,7 @@ flowchart LR
 | Cloud Receiver shell | Authenticated ingress, service identity, Core lifecycle, durable work availability | A second Receiver algorithm or device control |
 | Receiver Core | Challenge, Grant, event, replay, reservation, delivery, revocation, acknowledgement rules | Host mutation or Agent execution |
 | Durable delivery ledger | Pending, lease, attempt, effect, acknowledgement, expiry, terminal projection | Business-event truth or Agent instruction |
-| Local Connector | Paired-target retrieval, lease handoff, adapter dispatch, acknowledgement request | Grant issuance, event interpretation, public inbound control |
+| Local Connector | Account-linked target retrieval, lease handoff, adapter dispatch, acknowledgement request | Grant issuance, event interpretation, public inbound control |
 | Agent Adapter | Private context resolution and one bounded activation attempt | Event acceptance, Host effect, delivery acknowledgement |
 | Agent runtime | Managed context, Browser capability, navigation, Site Tool invocation | Receiver authority or human consequence |
 
@@ -67,8 +75,8 @@ flowchart LR
 2. The live page exposes the Manifest through genuine WebMCP.
 3. The Receiver verifies the trusted page origin and issuer.
 4. The Receiver creates a challenge with no Grant.
-5. A Receiver-owned authenticated human decision may create one private Grant, one public Host
-   binding, and one private receipt.
+5. A Receiver-owned authenticated human decision selects an eligible account-linked device and may
+   create one private Grant, one public Host binding, and one private receipt.
 
 ### Phase B — Waiting
 
@@ -129,9 +137,25 @@ This is the selected reference topology, not a deployed result.
 
 ### Local development profile
 
-The same Receiver Core may run behind loopback HTTP with deterministic authorities and separate
-test processes. This profile exists for development and evidence. It is not an automatic shipping
-fallback.
+`runtime/cloud-receiver/` historically ran the same Receiver Core behind a loopback-only service
+shell with file-backed SQLite, bounded operational routes, graceful shutdown, account-linked device
+authorization, Host-key registration, and Re-entry-owned consent. It is deprecated under ADR-0032;
+its source is retained for evidence only. `runtime/local-connector/` is one
+separate outbound-only Node process that stores its delivery credential locally, performs bounded
+background polling and explicit claim/adapter handoff, can run under a generated per-user macOS
+LaunchAgent, and can contain the opt-in local Codex fresh-session adapter. A trusted composition must
+supply the authority ports; the local preview leaves production consent identity, Grant control,
+Host-effect verification, and supported Agent activation visibly unsupported.
+Deterministic authorities remain test-only. This profile exists for development and evidence; it is
+not an automatic shipping fallback or public deployment profile.
+
+### Active v2 preview profile
+
+`saas-boilerplate/` contains a separate Next.js frontend and Express/Prisma/PostgreSQL Receiver.
+It implements the ADR-0033 through ADR-0041 pairing, consent, Event, delivery, acknowledgement,
+transport, disconnect, and developer-control increments. Local aggregate, browser-persona, and
+separate-process evidence exists, and bounded preview deployments are recorded. It is not the local
+shared-Core profile above, a production service, or a supported Agent-to-Browser/WebMCP join.
 
 ### Alternative hosted-Agent profile
 
@@ -163,10 +187,32 @@ source conformance profile. Local tests cover protocol, Receiver authority, dura
 state, delivery, HTTP mapping, outbound client, deterministic adapter, private binding resolution,
 and bounded process-fault compositions.
 
-It does not contain the selected Host application, production process ownership, public TLS,
-pairing, production identity, real binding custody, real Host-effect verification, real Agent
-activation, Browser acquisition, or WebMCP runtime access. Those gaps remain visible rather than
-being filled with test authorities or implicit fallback.
+`runtime/cloud-receiver/` implemented the ADR-0019 Stage 1 listener, operational readiness, native relational
+hosted persistence with one-time snapshot backfill under ADR-0031, durable composition, process lifecycle,
+historical ADR-0020 pairing control plane, ADR-0021 Host-key
+registration, historical ADR-0022 consent handoff, ADR-0028 account authorization, and current
+ADR-0030 dashboard-issued pairing around those unchanged contracts. It is now deprecated by ADR-0032;
+its source and tests are historical evidence only. `runtime/local-connector/`
+implements the dashboard pairing-code client, restrictive local credential store, bounded background claim/adapter
+handoff, generated macOS user service, and an opt-in local Codex fresh-session adapter. Tests cover
+account and device approval, credential reuse, Host-key registration, consent approval and decline,
+target selection, controlled store reopen, Connector identity resolution, credential-file
+permissions, credential-free adapter input, bounded polling, graceful stop, the generic Core flow,
+and signal-driven process closure.
+
+`saas-boilerplate/` is the active v2 Receiver implementation. Its backend owns separate user and
+developer accounts, pairing and Connector rows, organizations and API keys, Host keys, Consent
+sessions, subject bindings, Grants, Events, Deliveries, and Delivery Attempts in PostgreSQL. Its
+frontend owns the user and developer portals; the Receiver backend serves the consent document.
+AUDIT-V2-001 through AUDIT-V2-004 in Core/09 record the current pairing-abuse, expiry, default
+acknowledgement, and shared-Core gaps. Those gaps are not resolved by the otherwise green local
+contract suites.
+
+The repository still does not contain the selected Host application, public Receiver profile,
+public TLS, production identity, production pairing/account recovery, real binding custody, real
+Host-effect verification, supported Agent activation, Browser acquisition, or WebMCP runtime access.
+The local Codex fresh-session preview only proves that a new local CLI process can be invoked. Those gaps remain
+visible rather than being filled with test authorities or implicit fallback.
 
 ## 9. Module routing
 
@@ -187,7 +233,8 @@ The application-selection ADR and later runtime decisions must still choose:
 
 - Host domain, user, event, artifact, tools, and human boundary;
 - production Receiver identity, storage, key lifecycle, and service ownership;
-- Connector pairing, credential custody, supervision, and offline behavior;
+- production Connector pairing, credential custody, supervision, and offline behavior;
 - concrete Agent adapter, binding capture, Browser path, and WebMCP runtime;
 - real Host-effect proof and acknowledgement integration; and
+- active v2 Receiver-Core composition or an accepted independent-conformance architecture; and
 - deployment, observability, retention, recovery, and judge reproduction.

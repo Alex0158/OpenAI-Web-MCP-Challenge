@@ -80,6 +80,33 @@ async function readJson(response) {
   return { text, value: JSON.parse(text) };
 }
 
+test("Cloud Receiver HTTP handler returns completion so lifecycle owners can await it", async () => {
+  const receiver = createReceiver();
+  const handler = createCloudReceiverHttpHandler({ receiver });
+  let body;
+  const response = {
+    destroyed: false,
+    headersSent: false,
+    writeHead(status, headers) {
+      this.status = status;
+      this.headers = headers;
+    },
+    end(value) {
+      body = value;
+    },
+  };
+
+  const completion = handler({
+    url: "/not-a-route",
+    method: "GET",
+    headers: {},
+  }, response);
+  assert.equal(typeof completion?.then, "function");
+  await completion;
+  assert.equal(response.status, 404);
+  assert.deepEqual(JSON.parse(body), { error: { code: "http_route_not_found" } });
+});
+
 test("Cloud Receiver HTTP maps exact event, claim, no-work, and acknowledgement operations", async (t) => {
   let noWork = false;
   const receiver = createReceiver({

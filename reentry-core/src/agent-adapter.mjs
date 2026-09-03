@@ -1,4 +1,5 @@
 import {
+  PROTOCOL_LIMITS,
   PROTOCOL_VERSION,
   validateContinuationReceipt,
 } from "./protocol.mjs";
@@ -18,6 +19,7 @@ const MINIMUM_TIMEOUT_MS = 100;
 const MAXIMUM_TIMEOUT_MS = 60_000;
 const IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$/;
 const CLAIM_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
+const CONTROL_CHARACTER_PATTERN = /[\u0000-\u001f\u007f]/;
 const DISPATCH_FIELDS = Object.freeze(["adapter", "lease", "now", "timeoutMs"]);
 const CREATE_FIELDS = Object.freeze(["lease", "now"]);
 const VALIDATE_RESULT_FIELDS = Object.freeze(["activation", "result"]);
@@ -40,6 +42,7 @@ const CONTINUATION_FIELDS = Object.freeze([
   "state_version",
   "occurred_at",
   "canonical_url",
+  "instruction",
 ]);
 const ACTIVATION_FIELDS = Object.freeze([
   "type",
@@ -268,7 +271,24 @@ function normalizeContinuation(value) {
     state_version: value.state_version,
     occurred_at: requireTimestamp(value.occurred_at, "Continuation occurrence time"),
     canonical_url: value.canonical_url,
+    instruction: requireInstruction(value.instruction),
   };
+}
+
+function requireInstruction(value) {
+  if (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    value.trim() !== value ||
+    CONTROL_CHARACTER_PATTERN.test(value) ||
+    Buffer.byteLength(value, "utf8") > PROTOCOL_LIMITS.displayReasonBytes
+  ) {
+    throw contractError(
+      "agent_activation_continuation_invalid",
+      "Continuation instruction is invalid",
+    );
+  }
+  return value;
 }
 
 function normalizeResult(value, activation) {

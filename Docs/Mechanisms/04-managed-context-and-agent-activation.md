@@ -2,8 +2,9 @@
 
 **Role:** CANONICAL mechanism contract  
 **Status:** Deterministic activation and private binding-resolution contracts locally verified;
-concrete Agent runtime open  
-**Controls:** ADR-0011 and ADR-0014
+active-v2 separate-process dispatch and local Codex fresh-session preview verified only in bounded
+test compositions; concrete supported Agent runtime open  
+**Controls:** ADR-0011, ADR-0014, ADR-0025, ADR-0026, and ADR-0041
 
 ## Responsibility
 
@@ -23,6 +24,11 @@ It owns:
 
 It does not own event acceptance, delivery acknowledgement, Host effects, production context
 capture or storage, Browser acquisition, WebMCP access, or the selected Agent platform.
+
+The activation may contain one immutable bounded `instruction` copied from the user-visible,
+signed Manifest reason. It is developer-provided context, not authority. The selected adapter must
+delimit it as untrusted data; it cannot override the exact canonical URL, current Host-page state,
+available WebMCP tools, safety rules, or the human boundary.
 
 ## Authority and custody
 
@@ -54,9 +60,13 @@ The adapter result is not Host-effect evidence and cannot authorize acknowledgem
 - Expired, lease-shorter, late, malformed, or mismatched binding reaches no driver.
 - Authority exception, timeout, accessor-bearing value, malformed result, driver exception, or
   driver timeout becomes visible failure or unknown outcome according to ADR-0011.
-- There is no adapter search, fresh-context substitution, manual reconstruction, polling, retry,
-  or alternate transport.
+- A selected production adapter cannot search, substitute a fresh context, manually reconstruct
+  one, poll, retry, or use an alternate transport. The explicitly local Codex `exec` preview is a
+  separate non-production path: it starts a fresh CLI session and must not be read as managed-context
+  resume evidence.
 - Revocation continues to fence new leases; this module adds no independent activation authority.
+- Missing, blank, control-character-bearing, or oversized instructions are rejected before any
+  adapter call.
 
 ## Code and focused verification
 
@@ -65,14 +75,21 @@ The adapter result is not Host-effect evidence and cannot authorize acknowledgem
 | Activation and result contract | `reentry-core/src/agent-adapter.mjs` | `reentry-core/test/agent-adapter.test.mjs` |
 | Private binding resolution | `reentry-core/src/managed-context-adapter.mjs` | `reentry-core/test/managed-context-adapter.test.mjs` |
 | Connector handoff | `reentry-core/src/local-connector-client.mjs` and process roles | Connector and conformance tests |
+| Local Codex fresh-session preview | `runtime/local-connector/src/codex-exec-adapter.mjs` | `runtime/local-connector/test/codex-exec-adapter.test.mjs` |
+| Active-v2 separate-process composition | Host SDK, `saas-boilerplate/`, and a separately spawned Local Connector worker | `runtime/local-connector/test/cloud-receiver-v2-e2e.test.mjs`; SDK-006 |
 
 ## Current evidence and non-claims
 
 Deterministic tests cover credential omission, expiry and correlation rejection, all bounded
 outcomes, one-call behavior, timeout, exceptions, malformed results, missing and invalid bindings,
-adapter scope, lifetime fencing, late resolution, and raw-reference non-disclosure. They do not
+adapter scope, lifetime fencing, late resolution, raw-reference non-disclosure, and exact bounded
+instruction validation. They do not
 prove context capture, encrypted custody, persistence, retirement, real task resume, dormant wake,
-Browser attachment, WebMCP, Codex support, hosted-agent support, or user-visible continuation.
+Browser attachment, WebMCP, supported Codex activation, hosted-agent support, or user-visible
+continuation. CLOUD-008 adds local fake-process evidence for one opt-in fresh-session CLI dispatch.
+SDK-006 adds a Node 24 separate-process v2 composition, but its effect and acknowledgement authority
+is a distinct test worker rather than the default Connector product path. Neither result changes the
+supported-runtime or Browser/WebMCP claim boundary.
 
 ## Adapter integration obligations
 

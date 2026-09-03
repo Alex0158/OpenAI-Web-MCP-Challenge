@@ -1,6 +1,7 @@
 import { DatabaseSync } from "node:sqlite";
 
 import {
+  CONSENTED_INSTRUCTION_SCHEMA_SQL,
   DELIVERY_DETAIL_SELECT,
   DELIVERY_STATE_SCHEMA_SQL,
   SCHEMA_SQL,
@@ -132,6 +133,7 @@ export class SqliteReceiverStore {
       grant.canonical_url,
       grant.expires_at,
       grant.human_boundary,
+      grant.instruction,
       grant.runs_remaining,
       grant.revoked_at,
       grant.receipt_json,
@@ -338,7 +340,15 @@ export class SqliteReceiverStore {
             NULL, NULL, NULL, created_at
           FROM receiver_deliveries
         `);
+        this.#database.exec(CONSENTED_INSTRUCTION_SCHEMA_SQL);
       });
+      return;
+    }
+    if (version === 2) {
+      this.#schemaTransaction(
+        "migration",
+        () => this.#database.exec(CONSENTED_INSTRUCTION_SCHEMA_SQL),
+      );
       return;
     }
     if (version !== 0) {
@@ -403,8 +413,9 @@ export class SqliteReceiverStore {
         INSERT INTO receiver_grants (
           grant_id, challenge_id, manifest_id, binding_id, subject_id, delivery_target_id,
           correlation_id, issuer_origin, workflow_type, workflow_id, event_type, canonical_url,
-          expires_at, human_boundary, runs_remaining, revoked_at, receipt_json, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          expires_at, human_boundary, instruction, runs_remaining, revoked_at, receipt_json,
+          created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `),
       revokeGrant: this.#database.prepare(`
         UPDATE receiver_grants
