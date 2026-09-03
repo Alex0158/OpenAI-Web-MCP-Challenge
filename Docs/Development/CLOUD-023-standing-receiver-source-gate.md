@@ -504,7 +504,7 @@ Evidence for this increment:
 - pinned Express/PostgreSQL Receiver trace: `1/1` passed, including the expected one-shot injected `500`;
 - Core commit: `1446d73aa3e66533547471728ad8fa5344d51f9e`;
 - selected Core/spec SHA-256: `6210d7724417e0533c77d5989e8ffdd3c404af4063ac9d70d70db9b622f73d45`;
-- Receiver commit: `f4aae34320356c1d6c06fc1c1598d80c08661b62`; and
+- Receiver commit: `3972456e510e5c78c26d7eefa396b761e450e749`; and
 - runtime: Node `v26.5.0`, `release_conformance_verified: false`.
 
 The failure is injected only by disposable test fixtures; no production source,
