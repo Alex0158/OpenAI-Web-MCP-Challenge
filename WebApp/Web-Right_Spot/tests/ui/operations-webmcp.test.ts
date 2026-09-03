@@ -15,6 +15,7 @@ import { OperationsApiError } from "../../src/ui/agent/operations/operations-api
 import type { OperationsApiResponse } from "../../src/shared/contracts/operations-api";
 
 const PAGE_PATH = resolve(process.cwd(), "src/ui/agent/operations/operations-page.tsx");
+const ADAPTER_PATH = resolve(process.cwd(), "src/ui/agent/operations/operations-webmcp.ts");
 
 const LISTING_RESULT = {
   profile: "operations",
@@ -102,40 +103,65 @@ test("Operations capability detection requires document.modelContext.registerToo
   assert.equal(detectOperationsModelContext(null), null);
 });
 
-test("registration is single-tool, bounded on failure, and aborts on teardown", async () => {
+test("a rejected registration signals once and deactivates the captured tool", async () => {
   const tools: OperationsListingPipelineTool[] = [];
-  const registrationErrors: unknown[] = [];
   let registrationSignal: AbortSignal | undefined;
+  let rejectRegistration: ((reason?: unknown) => void) | undefined;
+  let executionCalls = 0;
+  let registrationErrors = 0;
+  let abortEvents = 0;
+  const registration = new Promise<unknown>((_resolve, reject) => {
+    rejectRegistration = reject;
+  });
   const modelContext: OperationsWebMcpModelContext = {
     registerTool(tool, options) {
       tools.push(tool);
       registrationSignal = options?.signal;
-      return Promise.reject(new Error("private registration detail"));
+      registrationSignal?.addEventListener("abort", () => { abortEvents += 1; });
+      return registration;
     },
   };
 
   const dispose = registerOperationsListingPipelineTool({
     modelContext,
-    executeRead: async () => LISTING_RESULT,
-    onRegistrationError: (error) => registrationErrors.push(error),
+    executeRead: async () => {
+      executionCalls += 1;
+      return LISTING_RESULT;
+    },
+    onRegistrationError: () => { registrationErrors += 1; },
   });
 
+  rejectRegistration?.(new Error("private registration detail"));
   await Promise.resolve();
   await Promise.resolve();
   assert.equal(tools.length, 1);
   assert.equal(tools[0]?.name, "read_listing_pipeline");
-  assert.equal(registrationErrors.length, 1);
-  assert.equal(registrationSignal?.aborted, false);
+  assert.equal(registrationErrors, 1);
+  assert.equal(registrationSignal?.aborted, true);
+  assert.equal(abortEvents, 1);
+  const staleResult = await tools[0]!.execute({});
+  assert.equal("error" in staleResult ? staleResult.error.code : undefined, "STALE_RESULT");
+  assert.equal(executionCalls, 0);
 
   dispose();
   assert.equal(registrationSignal?.aborted, true);
+  assert.equal(registrationErrors, 1);
+  assert.equal(abortEvents, 1);
 });
 
-test("synchronous registration failure is contained without invoking the page executor", () => {
+test("a synchronous registration failure signals once and deactivates the captured tool", async () => {
+  const tools: OperationsListingPipelineTool[] = [];
+  let registrationSignal: AbortSignal | undefined;
   let executionCalls = 0;
   let registrationErrors = 0;
+  let abortEvents = 0;
   const modelContext: OperationsWebMcpModelContext = {
-    registerTool() { throw new Error("private registration detail"); },
+    registerTool(tool, options) {
+      tools.push(tool);
+      registrationSignal = options?.signal;
+      registrationSignal?.addEventListener("abort", () => { abortEvents += 1; });
+      throw new Error("private registration detail");
+    },
   };
 
   const dispose = registerOperationsListingPipelineTool({
@@ -148,8 +174,41 @@ test("synchronous registration failure is contained without invoking the page ex
   });
 
   assert.equal(registrationErrors, 1);
+  assert.equal(registrationSignal?.aborted, true);
+  assert.equal(abortEvents, 1);
+  const result = await tools[0]!.execute({});
+  assert.equal("error" in result ? result.error.code : undefined, "STALE_RESULT");
   assert.equal(executionCalls, 0);
   dispose();
+  assert.equal(registrationErrors, 1);
+  assert.equal(abortEvents, 1);
+});
+
+test("a registration rejection arriving after disposal cannot signal a dead page", async () => {
+  let rejectRegistration: ((reason?: unknown) => void) | undefined;
+  let registrationSignal: AbortSignal | undefined;
+  let registrationErrors = 0;
+  const registration = new Promise<unknown>((_resolve, reject) => {
+    rejectRegistration = reject;
+  });
+  const dispose = registerOperationsListingPipelineTool({
+    modelContext: {
+      registerTool(_tool, options) {
+        registrationSignal = options?.signal;
+        return registration;
+      },
+    },
+    executeRead: async () => LISTING_RESULT,
+    onRegistrationError: () => { registrationErrors += 1; },
+  });
+
+  dispose();
+  rejectRegistration?.(new Error("late private registration detail"));
+  await Promise.resolve();
+  await Promise.resolve();
+
+  assert.equal(registrationSignal?.aborted, true);
+  assert.equal(registrationErrors, 0);
 });
 
 test("valid structured input reaches only listingPipeline and returns the adopted result", async () => {
@@ -379,6 +438,12 @@ test("unsupported capability does not register and the adapter stays inside the 
   assert.ok(adapterStart > frameGate);
   assert.match(page, /<OperationsWebMcp[\s\S]*executeRead=\{executeRead\}/);
   assert.match(page, /cancelReads=\{cancelReads\}/);
+  assert.match(page, /onRegistrationError=\{handleOperationsRegistrationError\}/);
+  assert.match(page, /const handleOperationsRegistrationError = useCallback/);
+  assert.match(page, /Operations assistance is unavailable in this session\. Use the manual controls below\./);
+  assert.equal(page.includes("private registration detail"), false);
+  const adapter = readFileSync(ADAPTER_PATH, "utf8");
+  assert.match(adapter, /\}, \[cancelReads, executeRead, onRegistrationError\]\);/);
   assert.match(page, /Run operations read/);
   assert.match(page, /Clear filters/);
   assert.match(page, /Retry operations read/);

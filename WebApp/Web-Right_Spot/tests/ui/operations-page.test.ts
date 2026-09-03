@@ -206,6 +206,21 @@ test("Operations manual and WebMCP reads share one abortable page coordinator", 
   assert.equal(page.match(/await readOperations\(/g)?.length, 1);
 });
 
+test("Operations page owns a stable bounded registration-failure signal without blocking manual reads", () => {
+  const page = readFileSync(PAGE_PATH, "utf8");
+
+  assert.match(page, /const handleOperationsRegistrationError = useCallback\(\(\) => \{/);
+  assert.match(page, /setIsOperationsAssistanceUnavailable\(true\)/);
+  assert.match(page, /onRegistrationError=\{handleOperationsRegistrationError\}/);
+  assert.match(page, /Operations assistance is unavailable in this session\. Use the manual controls below\./);
+  assert.match(page, /role="status"/);
+  assert.match(page, /aria-live="polite"/);
+  assert.match(page, /Run operations read/);
+  assert.match(page, /Clear filters/);
+  assert.match(page, /Retry operations read/);
+  assert.doesNotMatch(page, /registration detail/);
+});
+
 test("Operations report changes invalidate an in-flight read before changing context", () => {
   const page = readFileSync(PAGE_PATH, "utf8");
   const reportControl = page.match(/<select aria-label="Operations report"[\s\S]*?<\/select>/)?.[0];

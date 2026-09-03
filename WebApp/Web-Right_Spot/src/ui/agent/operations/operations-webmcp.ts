@@ -166,6 +166,11 @@ export function registerOperationsListingPipelineTool({
     active = false;
     registrationController.abort();
   };
+  const failRegistration = (error: unknown) => {
+    if (!active) return;
+    deactivate();
+    onRegistrationError?.(error);
+  };
 
   if (!modelContext) {
     return deactivate;
@@ -200,10 +205,10 @@ export function registerOperationsListingPipelineTool({
   try {
     const registration = modelContext.registerTool(tool, { signal: registrationController.signal });
     void Promise.resolve(registration).catch((error: unknown) => {
-      if (active) onRegistrationError?.(error);
+      failRegistration(error);
     });
   } catch (error: unknown) {
-    if (active) onRegistrationError?.(error);
+    failRegistration(error);
   }
 
   return deactivate;
@@ -212,9 +217,11 @@ export function registerOperationsListingPipelineTool({
 export default function OperationsWebMcp({
   executeRead,
   cancelReads,
+  onRegistrationError,
 }: {
   executeRead: OperationsListingPipelineExecutor;
   cancelReads: () => void;
+  onRegistrationError: (error: unknown) => void;
 }) {
   const lifecycleGeneration = useRef(0);
 
@@ -223,6 +230,7 @@ export default function OperationsWebMcp({
     const dispose = registerOperationsListingPipelineTool({
       modelContext: getRuntimeModelContext(),
       executeRead,
+      onRegistrationError,
     });
 
     return () => {
@@ -231,7 +239,7 @@ export default function OperationsWebMcp({
         if (lifecycleGeneration.current === generation) cancelReads();
       });
     };
-  }, [cancelReads, executeRead]);
+  }, [cancelReads, executeRead, onRegistrationError]);
 
   return null;
 }

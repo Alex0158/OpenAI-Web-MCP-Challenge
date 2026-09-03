@@ -39,6 +39,7 @@ function OperationsWorkspace() {
   const [response, setResponse] = useState<OperationsResponse | null>(null);
   const [error, setError] = useState<OperationsApiError | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isOperationsAssistanceUnavailable, setIsOperationsAssistanceUnavailable] = useState(false);
   const latestReadId = useRef(0);
   const activeRead = useRef<{ readId: number; controller: AbortController } | null>(null);
   const isMounted = useRef(false);
@@ -48,6 +49,10 @@ function OperationsWorkspace() {
     activeRead.current = null;
     latestReadId.current += 1;
     if (isMounted.current) setIsLoading(false);
+  }, []);
+
+  const handleOperationsRegistrationError = useCallback(() => {
+    setIsOperationsAssistanceUnavailable(true);
   }, []);
 
   const executeRead = useCallback(async (
@@ -164,9 +169,14 @@ function OperationsWorkspace() {
 
   return (
     <>
-      <OperationsWebMcp executeRead={executeRead} cancelReads={cancelReads} />
+      <OperationsWebMcp
+        executeRead={executeRead}
+        cancelReads={cancelReads}
+        onRegistrationError={handleOperationsRegistrationError}
+      />
       <section className={styles.workspace} aria-labelledby="operations-heading">
       <div className={styles.workspaceHeader}><div><p className="eyebrow">Manual read surface</p><h2 id="operations-heading">See the current work that needs attention</h2><p className="panel-copy">Choose one bounded report. Every row, count, and freshness field below comes from the server-owned Operations projection.</p></div></div>
+      {isOperationsAssistanceUnavailable ? <p role="status" aria-live="polite">Operations assistance is unavailable in this session. Use the manual controls below.</p> : null}
       <form className={styles.queryPanel} onSubmit={(event) => { event.preventDefault(); void executeRead(currentQuery()).catch(() => undefined); }} aria-label="Operations filters">
         <div className={styles.formGrid}>
           <label className={styles.field}><span>Operations report</span><select aria-label="Operations report" value={kind} onChange={(event) => { cancelReads(); setKind(event.target.value as OperationsQuery["kind"]); setResponse(null); setError(null); }}><option value="listingPipeline">Listing pipeline</option><option value="upcomingViewings">Upcoming viewings</option></select></label>
