@@ -31,8 +31,10 @@ enrollment remain open, and no Game/deployment change is included.
 The project has implemented and locally verified the application-neutral Re-entry Core at the
 scope accepted by ADR-0006 through ADR-0014. RECORE-001 through RECORE-004, RECORE-006, and the
 additive ADR-0043 through ADR-0045 RECORE-007 reference are `locally_verified`; RECORE-005 is
-`separate_process_verified`. The current aggregate Core suite passes 153 of 153 tests on Node 24.
-The package has zero runtime dependencies and 19 selected package files.
+`separate_process_verified`. The latest aggregate Core suite passes 162 of 162 tests on Node
+`v26.5.0`, including the bounded standing transaction-interruption fixture. Node 24 remains the
+reproducible closure baseline; the newest fixture increment was executed on Node `v26.5.0`. The
+package has zero runtime dependencies and 19 selected package files.
 
 The completed Core covers strict protocol values, Host issuance, Receiver-owned enrollment and
 Grant authority, signed event acceptance, exact replay, atomic pending delivery, authenticated
@@ -104,7 +106,8 @@ ADR-0044 resolves the implementation-identity decision: active v2 may remain ind
 implemented only behind the pinned normative Receiver conformance suite. **VERIFICATION PENDING:**
 the active-v2 standing kernel is locally committed, its exact-source PostgreSQL upgrade preserves
 the old fixture rows, and the minimum shared trace passes against a reviewed Core commit. Full
-pinned conformance, recovery coverage, and release enforcement remain open under TASK-028. **VERIFIED
+pinned conformance, the remaining recovery vectors, and release enforcement remain open under TASK-028.
+**VERIFIED
 OPEN:** the default Connector dispatch path has no real Host-effect-to-acknowledgement integration
 and can therefore be reclaimed within the accepted attempt bound; TASK-029 owns the selected-app
 completion path. These
@@ -118,21 +121,26 @@ profile: one informed Consent decision may authorize repeated ordered Agent sign
 signal still receives only one bounded activation. RECORE-007 now locally verifies the
 application-neutral chain through a low-level standing Host SDK, exact `/v0.2` HTTP Receiver,
 Core/SQLite, version-selected Connector client, Agent Adapter, two deterministic effect
-acknowledgements, restart, inspection, revocation, and historical replay. The Node 24 aggregate is
-green at 153/153 after the CLOUD-023 source-owner review. The reference now keeps the private receipt out of Host-visible approval, pins
+acknowledgements, restart, inspection, revocation, and historical replay. The earlier Node 24
+aggregate is green at 153/153 after the CLOUD-023 source-owner review; the latest Core aggregate is
+162/162 on Node `v26.5.0` after the bounded transaction-interruption fixture. The reference now keeps
+the private receipt out of Host-visible approval, pins
 each standing Grant to the consented Host key ID and public-key material, rejects approval/Event
 timestamps at their expiry boundaries, and fails closed on inconsistent private Delivery state.
 Mutating reference operations resolve time and live authority after the SQLite writer lock;
 20 deterministic boundary regressions cover stale-authority and backdated-revocation risks.
 The shared scenario checks exact success/error envelopes and correlation, with 24 oracle self-tests;
-it now includes future-sequence rejection with no mutation and concurrent duplicate convergence, but
-these additions do not establish the full shared race, rollback, or crash matrix.
+it now includes future-sequence rejection with no mutation and concurrent duplicate convergence.
+Separate Core/SQLite and active Receiver/PostgreSQL fixtures now prove the named fresh-process and
+transaction-interruption vectors, but these additions do not establish the full shared race,
+rollback, or crash matrix.
 Schema 6 preserves but security-disables older preview Grants lacking key-material evidence;
 ordinary new-Grant restarts do not require another Consent. **LOCALLY VERIFIED, NOT RELEASED:** the
-active Receiver `Re-Entry` source now adds separate standing tables and real Express v0.2
-routes. Its prior 158-test backend aggregate, type-check, build, and shared two-signal trace passed
-against disposable PostgreSQL; the latest pinned trace adds shared future-sequence rejection/no-mutation.
-Consent/control are internal seams and Host-effect authority is deterministic;
+active Receiver `Re-Entry` source now adds separate standing tables and real Express v0.2 routes.
+Its prior 158-test backend aggregate, type-check, build, and shared two-signal trace passed against
+disposable PostgreSQL; the latest pinned trace adds shared future-sequence rejection/no-mutation.
+Separate active Receiver fresh-process and transaction-interruption fixtures also pass against
+disposable PostgreSQL. Consent/control are internal seams and Host-effect authority is deterministic;
 both Core and Receiver sources are committed locally, the minimum pinned trace passes, and the
 exact-commit six-to-seven PostgreSQL upgrade preserves 13 old tables and 10 fixture rows before
 any reseeding. Full release conformance is unproved. The normal Host facade,
@@ -211,7 +219,7 @@ customer, cross-layer standing-mode adoption, and final market/distribution mode
 | Consent-session and Host SDK handoff preview | **CLOUD RECEIVER PREVIEW DEPRECATED; SDK CONTRACT RETAINED AS EVIDENCE** | ADR-0022, CLOUD-005, paired Host subject, signed Manifest, public challenge, opaque token, approval/decline fencing, public binding, restart, and no raw-token persistence |
 | Shared Host UI/WebMCP consent action | **LOCALLY VERIFIED WITH BOUNDED BROWSER RUNTIME EVIDENCE** | TASK-010, HOST-002, Host SDK v0.3 tests/build, and live `request_codex_reentry` discovery plus bounded invocation |
 | Simple subject/prompt/URL SDK and v2 developer flow | **SEPARATE-PROCESS VERIFIED; REGISTRY PATH OPEN** | ADR-0041, TASK-025, SDK-006, TASK-031, and TASK-032; 81 Core, 25 SDK, 56 Receiver, 47 Connector tests plus separate-process acknowledgement/restart replay and independent browser personas used current checkouts; published SDK `0.3.1` predates the facade and Connector `0.2.20` rejects its instruction-bearing lease |
-| Active v2 contract reconciliation | **LOCAL SOURCE, UPGRADE, AND MINIMUM PINNED TRACE VERIFIED; RELEASE AND POLICY WORK OPEN** | ADR-0044, CLOUD-023, and TASK-028; the Express standing trace passes against committed Core and Receiver source, and the exact-commit additive upgrade preserves old rows/catalog on disposable PostgreSQL. Full conformance/recovery/release enforcement, public controls, pairing abuse fence, lifetime policy, and production effect acknowledgement remain open |
+| Active v2 contract reconciliation | **LOCAL SOURCE, UPGRADE, MINIMUM PINNED TRACE, AND BOUNDED RECOVERY VECTORS VERIFIED; RELEASE AND POLICY WORK OPEN** | ADR-0044, CLOUD-023, and TASK-028; the Express standing trace passes against committed Core and Receiver source, the exact-commit additive upgrade preserves old rows/catalog on disposable PostgreSQL, and named Core/Receiver fresh-process and transaction-interruption fixtures pass. Full conformance, remaining recovery, release enforcement, public controls, pairing abuse fence, lifetime policy, and production effect acknowledgement remain open |
 | Re-entry Cloud console preview | **DEPRECATED, HISTORICAL LOOPBACK EVIDENCE** | CLOUD-004 and `runtime/cloud-receiver/`; retired by ADR-0032 |
 | Complete generic reference flow | **LOCALLY VERIFIED, EVIDENCE-ONLY AGENT** | CLOUD-006 and `runtime/reference-system/` |
 | Application-review sample Host | **LOCALLY VERIFIED, SAMPLE ONLY** | ADR-0023, HOST-001, and `runtime/application-demo/` |
