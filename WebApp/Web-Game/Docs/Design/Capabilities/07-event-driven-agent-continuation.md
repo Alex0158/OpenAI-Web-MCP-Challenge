@@ -11,21 +11,27 @@ execute one bounded next action through the current page. In G2, that action is 
 ## Entry and visible state
 
 The user grants eligible future continuation conditions. In G2, only `CargoLostToMonster` can create a
-continuation. The Agent sees an opaque binding, current page state, mission history, threats, and
-current WebMCP tools after re-entry.
+continuation. The Agent receives one coalesced signal for the bound shelter and sees an opaque binding,
+the current `client_snapshot` projection, mission history, threats, and current WebMCP tools after
+re-entry. Routine world
+ticks and high-frequency combat updates remain in the event history without becoming individual Thread
+messages.
 
 ## Actions and outcomes
 
 The Agent can inspect and execute the bounded `force_recall_soldier` action under the accepted grant.
-The backend validates the command and returns the new version, causal result, or typed failure; an
-unsupported capability is reported visibly and leaves the human dashboard usable.
-Migration, siege, destructive upgrades, and irreversible recovery stop at the designed human boundary.
+The backend validates the command against the live revision and returns the new version, causal result,
+or typed failure, including a stale or already-completed transition. An unsupported capability is
+reported visibly and leaves the human dashboard usable. Migration, siege, destructive upgrades, and
+irreversible recovery stop at the designed human boundary.
 
 ## Boundaries
 
-The game backend remains authoritative. Events do not carry prompts or credentials. WebMCP is a page
+The game backend remains authoritative. Domain Events remain durable; Agent Signals are derived delivery
+envelopes and never replace the event log. Events do not carry prompts or credentials. WebMCP is a page
 action surface, not the scheduler, Receiver, private Agent context, or combat authority. The game stays
-playable by humans when the continuation path is unavailable.
+playable by humans when the continuation path is unavailable. The world never waits for the Agent, and
+the Local Connector does not send one message per Domain Event to an active Codex Thread.
 
 ## Dependencies
 

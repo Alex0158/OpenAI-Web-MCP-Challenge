@@ -1,6 +1,6 @@
 # Chain C03: Encounter to Loot
 
-**Status:** Combat framework accepted; numerical resolution is open
+**Status:** G2 deterministic combat accepted; post-G2 numerical resolution is open
 
 ## Trigger and outcome
 
@@ -11,8 +11,9 @@ result, exactly-once PvP cargo transfer, loser death, and ordinary respawn or te
 
 1. `M01` advances both missions and `M12`/`M09` provide current positions.
 2. The soldier-sensor stage of `M13` records an observation when a valid field sensor sees an actor.
-3. Contact inside the engagement radius creates one locked encounter under `M13`.
-4. `M13` resolves bounded rounds using role, tool, level, health, attack, defense, speed, and the
+3. Contact inside the inclusive `engagement_radius_tiles = 1.0` creates one locked encounter under
+   `M13`.
+4. `M13` resolves bounded rounds using role, tool, level, health, attack, defense, `initiative_speed`,
    accepted formula.
 5. `M14` transfers the loser's unbanked PvP cargo to the winner once.
 6. `M06` marks the loser dead and enters ordinary respawn or a mission terminal state.
@@ -28,13 +29,17 @@ result, exactly-once PvP cargo transfer, loser death, and ordinary respawn or te
 
 ## Invariants and events
 
-One participant cannot be in two resolving encounters. Combat cannot mint coins directly. Candidate
-events are `SoldierEncountered`, `BattleResolved`, `CargoLooted`, and `SoldierDied`.
+One participant cannot be in two resolving encounters. Combat cannot mint coins directly. The G2 event
+vocabulary is `ActorObserved`, `EncounterLocked`, `BattleRoundResolved`, `EncounterResolved`, and `SoldierDied`;
+`CargoLooted` is reserved for a post-G2 PvP transfer. `BattleRoundResolved` is emitted once per round,
+while `EncounterResolved` is emitted once for the terminal encounter result. The older
+`SoldierEncountered` and `BattleResolved` names are retired from authoritative handlers.
 
 ## Open decisions
 
-Base stats, round cadence, initiative, randomness, flee behavior, winner capacity overflow, and
-exact role modifiers remain `OPEN`.
+Post-G2 base-stat tuning, randomness, flee behavior, winner capacity overflow, and exact role modifiers
+remain `OPEN`. G2 round cadence, initiative field, formula, and seeded actor values are fixed by the
+contract.
 
 ## Related mechanisms
 

@@ -18,7 +18,7 @@ readability bar without requiring final art before the game backbone is verified
 ## Smooth two-player presentation
 
 The MVP uses a small sprite or tile atlas, a limited palette, and Canvas 2D rather than one DOM node
-per actor. The server publishes authoritative snapshots at about 10 Hz; the client renders at up to
+per actor. The server publishes authoritative `client_snapshot` projections at about 10 Hz; the client renders at up to
 60 FPS with interpolation for remote actors and input prediction followed by reconciliation for the
 local avatar. React owns controls, dashboard panels, and accessible status text while Canvas owns the
 map projection. A dropped connection shows the last confirmed state and reconnect status; it never

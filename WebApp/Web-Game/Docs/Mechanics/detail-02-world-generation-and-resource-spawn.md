@@ -22,7 +22,7 @@ resume the existing world rather than regenerate it.
 Each resource node has:
 
 - immutable `node_id`;
-- resource type (`wood`, `rock`, or `gold_bearing` in the full concept; the accepted MVP exposes
+- resource type (`wood`, `rock`, or `gold_bearing` in the full concept; the accepted G2 exposes
   `wood` and `rock`);
 - required tool tier;
 - position and walkability cell;
@@ -37,7 +37,7 @@ and a depleted node cannot be harvested until its respawn milestone commits.
 
 Monster generation is region-based. Region pressure, local population, world time, and nearby
 activity influence a spawn decision. A spawned monster receives a species policy, level, health,
-attack, defense, speed, detection range, patrol region, and optional value. The first implementation
+attack, defense, `initiative_speed`, movement rates, detection range, patrol region, and optional value. The first implementation
 uses a small set of regions and a small state machine; a full navmesh is not required.
 
 ## Shelter placement
@@ -45,8 +45,13 @@ uses a small set of regions and a small state machine; a full navmesh is not req
 Initial placement and migration destinations must be walkable, non-overlapping, and outside the
 minimum separation radius from another shelter. For the accepted MVP, the generator places two
 symmetrical protected starts at `(16,64)` and `(112,64)` on the 128 × 128 map, with a 12-tile
-protected-start radius that ends at first dispatch or 120 world seconds. Production separation
+protected-start radius active until `start_world_time + 120` world seconds, independent of first
+dispatch. Start-zone Wood and Rock nodes are placed in the inclusive 14–20-tile band so they sit
+outside that shield. Production separation
 tuning, blocked terrain, and whether a destination may be discovered before arrival remain `OPEN`.
+The seeded MVP patrol may visit a designated resource threat cell (Rock A at `(34,64)` and its
+mirror) during its route; this is an intentional route interaction, while initial shelter, node, and
+monster spawn records remain non-overlapping.
 
 ## Invariants
 

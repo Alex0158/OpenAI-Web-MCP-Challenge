@@ -1,15 +1,18 @@
 # Monster State and Targeting
 
 **Mechanism:** M12
-**Status:** MVP seeded-monster contract accepted; full targeting and species policy remain open
+**Status:** MVP seeded-monster contract accepted; the seeded HUNTER victory lifecycle is
+runtime-verified locally; full targeting and species policy remain open
 **Authority:** This file owns monster state, target selection, and monster movement. Combat owns
 resolution; breach owns soldier conversion.
 
 ## Monster kinds
 
-Generated monsters are shared-world actors with a species, level, health, attack, defense, speed,
-detection range, patrol region, target policy, and optional resource value. A corrupted soldier is a
-former field soldier whose shelter magic and command link were removed by a breach.
+Generated monsters are shared-world actors with a species, level, health, attack, defense,
+`initiative_speed`, movement rates, detection range, patrol region, target policy, and optional
+resource value. In G2 the seeded monster uses `monster_patrol_speed_tiles_per_world_second = 2.0`,
+`monster_chase_speed_tiles_per_world_second = 4.0`, and `monster_detection_radius_tiles = 5.0`. A corrupted soldier
+is a former field soldier whose shelter magic and command link were removed by a breach.
 
 ## State machine
 
@@ -24,20 +27,26 @@ should keep transitions observable and small.
 ## Target policy
 
 A species may target a player, soldier, shelter, resource activity, or nearby event. Detection starts
-a pursuit decision; entering the engagement radius starts combat. Speed, patrol radius, attack power,
-and retreat threshold differ by species and level.
+a pursuit decision; entering the G2 `engagement_radius_tiles = 1.0` starts combat. Detection uses
+inclusive Euclidean distance in logical tiles. `initiative_speed` decides combat order; patrol and
+chase movement rates decide travel and pursuit and are separate fields. Patrol radius, attack power,
+and retreat threshold differ by species and level outside G2.
 
 For G2, the seeded monster follows one deterministic patrol lane, can contact a field soldier after
 the protected-start boundary ends, and remains in its normal state machine after killing a soldier.
-Production target switching, last-position memory, shelter interaction, and migration veil behavior
-remain `OPEN` details.
+Its patrol speed is 2.0 tiles per world second and chase speed is 4.0; the route and walkability seed
+must preserve the accepted Rock-route encounter trace. Production target switching, last-position
+memory, shelter interaction, and migration veil behavior remain `OPEN` details.
 
 ## Monster value and death
 
 A hunter can deliberately target the seeded monster. In G2, defeating it clears the active threat and
 emits `MonsterDefeated` without adding a third resource or direct coin reward; future species value or
-world drops are post-G2 rules. Monster death removes the active monster entity after settlement is
-committed.
+world drops are post-G2 rules. The persisted row becomes `DEAD` after the atomic victory settlement,
+retains its stable id for history, and is excluded from active targeting. Only one active HUNTER
+mission may reserve the seeded monster; the reservation remains through `RETURNING` and releases when
+that mission completes. The local result is recorded in
+[`../Evidence/SK-EVID-024-cp11-hunter-victory-runtime-verification.md`](../Evidence/SK-EVID-024-cp11-hunter-victory-runtime-verification.md).
 
 If a monster kills a soldier, the soldier's unbanked cargo is destroyed in that combat transaction;
 it is not transferred to the monster and does not become a world drop in this baseline. Ordinary

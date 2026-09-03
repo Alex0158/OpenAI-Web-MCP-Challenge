@@ -16,6 +16,8 @@ mechanisms and chains that implement them.
 - [`05-hackathon-demo.md`](05-hackathon-demo.md) — the re-entry demonstration narrative;
 - [`06-visual-ui-and-asset-spec.md`](06-visual-ui-and-asset-spec.md) — UI layers, asset vocabulary,
   placeholder rules, and the parallel visual delivery lane.
+- [`Visual/`](Visual/README.md) — visual preparation authority, asset specifications, and curated
+  reference board for the parallel art lane.
 
 ## Capability contracts
 

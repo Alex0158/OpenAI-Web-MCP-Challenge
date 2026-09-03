@@ -32,7 +32,7 @@ unverified implementation assumption is copied.
 
 ### Canvas world layer
 
-Canvas renders the authoritative snapshot as a visual projection in this order:
+Canvas renders the authoritative `client_snapshot` projection in this order:
 
 1. terrain tiles and walkability cues;
 2. explored fog boundary and discovered landmark markers;
@@ -43,7 +43,7 @@ Canvas renders the authoritative snapshot as a visual projection in this order:
 7. optional low-cost VFX and selection outlines.
 
 Canvas never owns coins, cargo, positions, combat results, mission state, or hidden cells. It draws
-the latest accepted snapshot and interpolates between server updates.
+the latest accepted `client_snapshot` and interpolates between server updates.
 
 ### React/HTML layer
 
@@ -73,12 +73,13 @@ The IDs are stable references for the renderer and dashboard. They are not domai
 | `shelter_player` | shelter sprite | stable, selected, protected ring | atlas sprite + Canvas ring | colored block + `SHELTER` label |
 | `shelter_landmark` | landmark | discovered, stale if later needed | Canvas marker/icon | flag marker + `LANDMARK` label |
 | `avatar_player` | player avatar | idle, walking, resting | atlas sprite | colored circle with player letter |
-| `soldier_gatherer` | actor sprite | idle, travelling, working, engaging, returning, dead/respawning | atlas sprite | blue geometric actor + pickaxe icon |
-| `soldier_hunter` | actor sprite | idle, travelling, hunting, engaging, returning, dead/respawning | atlas sprite | red geometric actor + sword icon |
+| `soldier_gatherer` | actor sprite | idle, travelling, working, contact/locked encounter, returning, dead/respawned | atlas sprite | blue geometric actor + pickaxe icon |
+| `soldier_hunter` | actor sprite | idle, travelling, hunting, contact/locked encounter, returning, dead/respawned | atlas sprite | red geometric actor + sword icon |
 | `monster_seeded` | actor sprite | patrol, alert, chase, attack, defeated | atlas sprite | purple geometric actor + `MONSTER` label |
 | `icon_wood` / `icon_rock` | UI icon | normal, cargo, unavailable | SVG or small raster icon | text abbreviation |
 | `icon_pickaxe` / `icon_sword` | UI icon | normal, locked | SVG or small raster icon | Unicode-free CSS shape or text label |
 | `icon_cargo` / `icon_coin` | UI icon | normal, at risk, deposited | SVG or small raster icon | labelled status chip |
+| `icon_landmark` | UI icon | normal, discovered | SVG or small raster icon | visible `Landmark` text cue |
 | `vfx_extract` | effect | short pulse | Canvas animation | one-frame highlight |
 | `vfx_hit` | effect | short flash | Canvas animation | outline change |
 | `vfx_death` / `vfx_respawn` | effect | loss, respawn | Canvas marker | event marker and text |
@@ -98,19 +99,19 @@ Final art may replace a placeholder while preserving the asset ID and state cont
   silhouette is acceptable when an animation frame would delay the causal trace.
 - Keep color and outline changes semantic: selected, hostile/contact, carrying cargo, damaged, stale,
   and protected. Never encode a critical state by color alone; pair it with text or an icon.
-- VFX are optional and short. They cannot delay a snapshot, change a command result, or hide a causal
+- VFX are optional and short. They cannot delay a `client_snapshot`, change a command result, or hide a causal
   event. Reduced-motion mode may replace them with an instant state change.
 
 ## Parallel delivery lane
 
 | Lane step | Timing | Output | Dependency |
 |---|---|---|---|
-| Visual prep | Now, alongside CP-02 | this spec, UI wireframe, asset IDs, palette and placeholder rules | `SK-MVP-0.1` snapshot/read models |
+| Visual prep | Now, alongside CP-02 | this spec, UI wireframe, asset IDs, palette and placeholder rules | `SK-MVP-0.2` client snapshot/read models |
 | Placeholder pack | After CP-03, alongside CP-04–11 | geometric actors, tiles, icons, and one representative atlas | stable IDs and Canvas probe result |
-| Surface integration | CP-12 | Canvas atlas, React HUD, dashboard states, and text equivalents | authoritative snapshot stream |
+| Surface integration | CP-12 | Canvas atlas, React HUD, dashboard states, and text equivalents | authoritative `client_snapshot` stream |
 | Lightweight polish | After CP-16 if time and performance allow | selected sprite replacement and optional VFX | local vertical slice evidence |
 
-Backbone work is allowed to ship with placeholders. Visual work may consume snapshots and read models,
+Backbone work is allowed to ship with placeholders. Visual work may consume `client_snapshot` projections and read models,
 but it cannot add domain authority, mutate event order, or expand the G2 feature boundary.
 
 ## Visual acceptance checks

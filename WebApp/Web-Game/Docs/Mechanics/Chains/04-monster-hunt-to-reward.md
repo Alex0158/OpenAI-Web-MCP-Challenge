@@ -1,6 +1,7 @@
 # Chain C04: Monster Hunt to Reward
 
-**Status:** G2 seeded-hunt chain accepted; future monster value and target policy are open
+**Status:** G2 seeded-hunt chain accepted; the seeded HUNTER victory and zero-cargo return are
+runtime-verified locally; future monster value and target policy are open
 
 ## Trigger and outcome
 
@@ -14,9 +15,11 @@ a changed target state; a future contract may add a monster value path.
 2. `M09` moves the hunter toward the target while `M12` changes the monster through patrol, alert,
    chase, and attack states.
 3. Sensor contact enters `M13` combat with the hunter's monster matchup modifier.
-4. If the hunter wins in G2, `M12` removes the seeded threat and emits `MonsterDefeated`; no third
-   resource or direct coin reward is created. Future species value or world drops remain post-G2.
-5. The hunter returns through C02 and deposits any cargo.
+4. If the hunter wins in G2, `M12` retains the seeded row as `DEAD` history, removes it from active
+   targeting, and emits `MonsterDefeated`; no third resource or direct coin reward is created. Future
+   species value or world drops remain post-G2.
+5. The hunter returns through C02 and completes an empty-cargo settlement marked
+   `HUNTER_VICTORY`; no `CoinsCredited` event is emitted.
 6. If the monster wins, C07 settles cargo loss and same-identity respawn unless breach state applies.
 
 ## Failure branches
@@ -27,9 +30,11 @@ a changed target state; a future contract may add a monster value path.
 
 ## Invariants and events
 
-Monster death and its reward settle once. A monster kill cannot create a duplicate soldier, and the
-killing monster continues under its normal state machine. Candidate events are `MonsterTargeted`,
-`MonsterStateChanged`, `MonsterDefeated`, `CargoLostToMonster`, and `SoldierRespawned`.
+Monster death and its terminal state settle once. The seeded monster has at most one active HUNTER
+reservation, and the reservation remains through return until mission completion. A monster kill cannot
+create a duplicate soldier, and the killing monster continues under its normal state machine. Candidate
+events are `MonsterTargeted`, `MonsterStateChanged`, `MonsterDefeated`, `CargoLostToMonster`, and
+`SoldierRespawned`.
 
 ## Open decisions
 

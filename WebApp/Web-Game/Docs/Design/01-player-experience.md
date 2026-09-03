@@ -4,7 +4,7 @@
 
 ## First session
 
-The player wakes at a small shelter with a turret, a finite sensing radius, five starter soldiers,
+The player wakes at a small shelter with a turret, a 24-tile resource-sensing field, five starter soldiers,
 and a partially hidden world map. Any starting coin balance follows the accepted onboarding rule;
 the first useful action is to assign a simple gathering or hunting mission and watch the world
 continue.

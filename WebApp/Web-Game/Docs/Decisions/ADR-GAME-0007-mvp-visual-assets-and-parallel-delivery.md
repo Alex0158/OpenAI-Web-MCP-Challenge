@@ -31,8 +31,8 @@ needed to keep those two layers coordinated without making artwork an authority 
    domain event, entity identity, or command contract.
 4. **Parallel lane.** Visual specification can proceed immediately. Placeholder geometry and a small
    representative asset pack may be produced alongside CP-04 through CP-11 after the implementation
-   lock. Backbone work may use placeholders, and asset work may consume only snapshots and documented
-   read models. CP-12 integrates the visual pack with the Canvas and dashboard.
+   lock. Backbone work may use placeholders, and asset work may consume only `client_snapshot` projections
+   and documented read models. CP-12 integrates the visual pack with the Canvas and dashboard.
 5. **Effect budget.** G2 effects are limited to short, optional cues such as extraction pulse, hit
    flash, death marker, respawn cue, protected-start ring, and reconnect/stale-state overlays.
    Effects may be disabled for reduced motion or performance without changing gameplay state.
@@ -50,7 +50,7 @@ visual uncertainty block the highest-risk authority and recovery work. It is rej
 ### No visual specification
 
 Letting each implementation surface invent names, states, and colors would create an inconsistent HUD,
-unstable asset references, and rework when the snapshot contract settles. It is rejected.
+unstable asset references, and rework when the `client_snapshot` contract settles. It is rejected.
 
 ### SVG for every world actor
 

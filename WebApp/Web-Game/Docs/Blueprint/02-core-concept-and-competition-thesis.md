@@ -8,7 +8,9 @@
 
 Re-entry Core is demonstrated as a player-governed continuation of a living game world. The player
 sets a mission in a canonical page. The backend commits a typed event when the world changes the
-mission's situation. A continuation adapter can return the bound Agent to that page. The Agent
+mission's situation. A delivery policy can coalesce eligible events into one bounded Agent Signal;
+it never pauses the world or turns the Codex Thread into an event stream consumer. A continuation
+adapter can return the bound Agent to that page. The Agent
 reads the current shelter, soldiers, cargo, threats, and mission history, discovers the page-bound
 WebMCP tools that are valid now, performs one bounded action, and stops where human judgment belongs.
 
@@ -58,6 +60,7 @@ player assigns a gatherer
 -> backend commits a typed event
 -> Agent re-enters the same shelter page
 -> Agent reads the death report and current threats
--> Agent proposes or executes one bounded strategic action
+-> Agent executes one bounded recall action when the live revision permits it
+-> otherwise the page shows a typed stale or already-completed result
 -> player remains responsible for the consequential choice
 ```

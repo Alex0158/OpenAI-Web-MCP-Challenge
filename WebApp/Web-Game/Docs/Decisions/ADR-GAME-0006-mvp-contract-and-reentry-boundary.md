@@ -1,6 +1,6 @@
 # ADR-GAME-0006: MVP Contract and Re-entry Boundary
 
-**Status:** ACCEPTED MVP CONTRACT; runtime implementation remains unverified  
+**Status:** ACCEPTED HISTORICAL `SK-MVP-0.1` BASELINE; Re-entry delivery portion superseded by ADR-GAME-0009 and G2 geometry/state/vocabulary superseded by ADR-GAME-0010; gameplay runtime implementation remains unverified  
 **Date:** 2026-09-01  
 **Decision owner:** Game owner with engineering recommendation
 
@@ -15,9 +15,20 @@ protected. The detailed, versioned field and event contract lives in
 This ADR promotes the first-slice defaults to a durable MVP decision. It does not claim that the
 runtime, browser capability, persistence, or hosted worker already exists.
 
+The Re-entry delivery and notification policy in this ADR is superseded by
+[`ADR-GAME-0009-reentry-delivery-and-thread-backpressure.md`](ADR-GAME-0009-reentry-delivery-and-thread-backpressure.md)
+and contract revision `SK-MVP-0.2`. The G2 movement rates, sensing boundaries, mission-state model,
+anti-loop rule, protected-start boundary, event vocabulary, and snapshot vocabulary in this historical
+baseline are superseded by
+[`ADR-GAME-0010-g2-geometry-state-and-vocabulary-closure.md`](ADR-GAME-0010-g2-geometry-state-and-vocabulary-closure.md).
+The accepted `force_recall_soldier` action, user grant, and human consequence boundary remain
+unchanged.
+
 ## Decision
 
-Adopt contract version `SK-MVP-0.1` for the local two-player vertical slice:
+Adopted contract version `SK-MVP-0.1` for the local two-player vertical slice. This section is
+retained as the historical gameplay baseline; the current coherent G2 contract is `SK-MVP-0.2` in
+`Engineering/09-mvp-contract-sheet.md` and `ADR-GAME-0010`.
 
 - one seeded 128 × 128 logical-tile world, seed `sleepless-mvp-01`;
 - two symmetric shelters at `(16,64)` and `(112,64)`, Euclidean separation 96 tiles, five starter

@@ -16,8 +16,8 @@ The presentation follows a Starve.io-inspired minimal top-down 2D direction with
 assets, code, branding, or unverified backend assumptions. The page uses Canvas 2D for the world and
 React for controls, dashboard, and overlays. The server remains authoritative: movement and sensor
 simulation may step at 100 ms, combat and extraction settle on one-world-second boundaries, the
-server publishes snapshots at about 10 Hz, and the browser renders at up to 60 FPS with interpolation.
-Typed HTTP commands remain the mutation boundary; WebSocket is the preferred snapshot channel after
+server publishes `client_snapshot` projections at about 10 Hz, and the browser renders at up to 60 FPS with interpolation.
+Typed HTTP commands remain the mutation boundary; WebSocket is the preferred `client_snapshot` channel after
 an early capability probe, with polling retained only as a diagnostic fallback. The visual asset
 quality bar and parallel delivery boundary are defined in
 [`ADR-GAME-0007-mvp-visual-assets-and-parallel-delivery.md`](ADR-GAME-0007-mvp-visual-assets-and-parallel-delivery.md).
@@ -25,7 +25,13 @@ quality bar and parallel delivery boundary are defined in
 The target implementation profile is Next.js App Router, React, and TypeScript for the page; a
 Node.js 24 TypeScript worker for the world; SQLite WAL for the local harness; PostgreSQL for hosted
 durability; and a transactional outbox into Re-entry Core. These are accepted MVP boundaries, not a
-claim that the complete production topology or final balance has been selected.
+claim that the complete production topology or final balance has been selected. The words "page" and
+"worker" name logical layers here and do not decide whether local execution uses one or two OS
+processes; the accepted local process relationship is recorded separately in
+[`ADR-GAME-0011-cp04-local-runtime-boundary-and-health-contract.md`](ADR-GAME-0011-cp04-local-runtime-boundary-and-health-contract.md)
+and its local process behavior is verified in
+[`../Evidence/SK-EVID-007-cp04-process-runtime-verification.md`](../Evidence/SK-EVID-007-cp04-process-runtime-verification.md);
+persistence, gameplay, and hosted topology remain subject to later checkpoints.
 
 ## Consequences
 
@@ -40,6 +46,6 @@ density, exact visual assets, and the hosted database/worker arrangement remain 
 
 ## Reopen triggers
 
-Reopen if measured snapshot or pathfinding cost exceeds the two-player MVP budget, if the chosen host
+Reopen if measured `client_snapshot` or pathfinding cost exceeds the two-player MVP budget, if the chosen host
 cannot keep the worker alive, if WebSocket capability is unavailable without an acceptable fallback,
 or if the owner changes the two-player, Wood-plus-Rock, or minimal 2D presentation direction.

@@ -1,7 +1,7 @@
 # MVP Decision Proposals
 
 **Role:** Decision pack for the first playable slice  
-**Status:** OWNER-ACCEPTED MVP DEFAULTS; recorded in `SK-MVP-0.1`  
+**Status:** OWNER-ACCEPTED MVP DEFAULTS; historical gameplay baseline `SK-MVP-0.1`, coherent G2 contract `SK-MVP-0.2`  
 **Date:** 2026-09-01  
 **Scope:** Sleepless Kingdom game child only
 
@@ -40,23 +40,23 @@ Those remain post-G2 work unless the owner explicitly changes the release bounda
 |---|---|---|---|
 | G-MVP-01 Identity and session | Use two deterministic fixture players with opaque `player_id` values. Bind each page session, command, and WebMCP tool to its shelter owner. | The player always sees one shelter and cannot accidentally issue another player's command. | CP-01 / CP-02 |
 | G-MVP-02 Coordinates and distance | Use integer logical tiles. Shelter starts are `(16,64)` and `(112,64)` on a 128 × 128 map; the accepted separation is Euclidean distance; the camera is 32 × 20 tiles. | The world is visibly larger than one screen and two players have meaningful travel space. | CP-01 / CP-07 |
-| G-MVP-03 Protected start | A shelter and its 12-tile radius reject hostile monster contact until the owner's first field dispatch or 120 world seconds, whichever comes first. Show the protection state and expiry trigger. | A new player can read the map and issue a first mission without an invisible spawn kill. | CP-01 / CP-07 |
-| G-MVP-04 Node placement and contention | Give each start zone one 20-unit Wood node and one 20-unit Rock node 12–20 tiles from its shelter. Do not reserve a node; the first committed extraction transaction wins a unit. | The player chooses between nearby lower and higher value work; contention is explainable rather than queue magic. | CP-01 / CP-10 |
+| G-MVP-03 Protected start | A shelter and its inclusive 12-tile radius reject hostile monster contact until `start_world_time + 120` world seconds. First dispatch does not shorten the timer; equality is expired before contact detection. Show the protection state and expiry time. | A new player can read the map and issue a first mission without an invisible spawn kill while the onboarding shield remains legible. | CP-01 / CP-07 |
+| G-MVP-04 Node placement and contention | Give each start zone one 20-unit Wood node and one 20-unit Rock node in the inclusive 14–20-tile band (fixture positions 14 and 18) from its shelter. Do not reserve a node; the first committed extraction transaction wins a unit. | The player chooses between nearby lower and higher value work; contention is explainable rather than queue magic, and no node overlaps the protected circle. | CP-01 / CP-10 |
 | G-MVP-05 Downtime catch-up | Persist `world_time`. On restart, advance to the current server time; replay consequential milestones individually and collapse routine extraction/respawn/projection work into bounded batches. | Closing the page or restarting the worker never pauses the world or causes a burst of duplicate events. | CP-01 / CP-06 |
-| G-MVP-06 Same-time ordering | At a world-second boundary: apply movement and home-boundary deposits; lock new contacts; apply extraction only to soldiers still eligible; resolve one combat round; settle death/respawn/reissue; then apply timers, projections, snapshots, and outbox delivery. | A soldier that has crossed home is banked before danger; every other simultaneous result has one visible order. | CP-01 / CP-06 / CP-15 |
-| G-MVP-07 Monster re-engagement | Ordinary death keeps `soldier_id`, clears field cargo, creates a new `mission_attempt_id`, and reissues the repeatable mission. Try one route around the last danger cell; use `WAITING_REVIEW` if no safe route exists. | The soldier resumes its job without teleporting or being trapped in an invisible death loop. | CP-01 / CP-11 |
-| G-MVP-08 Mission terminal states | Use `TRAVELLING`, `WORKING`, `RETURNING`, `WAITING_REVIEW`, `AT_SHELTER`, and `TERMINAL`. Empty target returns partial cargo; recall queues return; siege is reserved to end on death. | Every mission row has a clear next state and reason instead of disappearing. | CP-01 / CP-09 |
+| G-MVP-06 Same-time ordering | At a world-second boundary: apply movement and home-boundary deposits; lock new contacts; apply extraction only to soldiers still eligible; resolve one combat round; settle death/respawn/reissue; then apply timers, projections, `world_snapshot` persistence, `client_snapshot` delivery, and outbox policy. | A soldier that has crossed home is banked before danger; every other simultaneous result has one visible order. | CP-01 / CP-06 / CP-15 |
+| G-MVP-07 Monster re-engagement | Ordinary death keeps `soldier_id`, clears field cargo, consumes one reissue budget, records the last danger cell, and makes one deterministic route attempt excluding that cell and its one-tile neighbourhood. A missing safe route or second monster death enters typed `WAITING_REVIEW`. | The soldier can resume with real travel cost without teleporting or being trapped in an invisible death loop. | CP-01 / CP-11 |
+| G-MVP-08 Mission terminal states | Keep `soldier.lifecycle`, `mission.phase`, and `encounter.status` separate. Use `TRAVELLING`, `WORKING`, `RETURNING`, `WAITING_REVIEW`, `AT_SHELTER`, and `TERMINAL` for mission phases; empty target returns partial cargo; recall queues return; siege is reserved to end on death. | Every mission row has a clear state, encounter status, and reason instead of disappearing. | CP-01 / CP-09 |
 | G-MVP-09 Cargo boundary | Capacity is five equal-weight slots. Wood and Rock occupy one slot each. Extraction stops at capacity; coins exist only after an atomic shelter deposit. | The dashboard can show exactly what is at risk and why a death removed it. | CP-01 / CP-10 |
-| G-MVP-10 Snapshot and resync | Send a full authoritative snapshot on connect/resync, then sequenced snapshots around 10 Hz with `snapshot_id`, `world_time`, and entity revisions. Mutations use typed HTTP commands. | A dropped connection shows stale status and then cleanly replaces local state; it never invents progress. | CP-01 / CP-08 |
-| G-MVP-11 Persistence versions | Version schema, snapshots, and events. Reject incompatible versions visibly; do not perform an unverified live migration during the judge run. | Recovery failure is explicit and diagnosable instead of silently corrupting a world. | CP-01 / CP-05 |
-| G-MVP-12 Re-entry eligibility | In G2, only `CargoLostToMonster` can create a continuation. Allow one pending continuation per shelter and a 60-world-second cooldown; deduplicate by `event_id`. | One meaningful loss produces one useful return instead of notification spam from repeated deaths. | CP-01 / CP-14 |
+| G-MVP-10 Snapshot and resync | Send a full `client_snapshot` on connect/resync, then sequenced projections around 10 Hz with `client_snapshot_id`, optional `base_client_snapshot_id`, `world_time`, and entity revisions. Keep durable restart state in `world_snapshot`; mutations use typed HTTP commands. | A dropped connection shows stale status and then cleanly replaces local state; it never invents progress or overwrites persistence. | CP-01 / CP-08 |
+| G-MVP-11 Persistence versions | Version schema, `world_snapshot`/`client_snapshot`, and events. Reject incompatible versions visibly; do not perform an unverified live migration during the judge run. | Recovery failure is explicit and diagnosable instead of silently corrupting a world. | CP-01 / CP-05 |
+| G-MVP-12 Re-entry eligibility | In G2, only `CargoLostToMonster` can create a continuation. Retain every Domain Event, derive one coalesced Agent Signal per bound shelter/Thread, enforce one pending or in-flight signal, and keep the 60-world-second product cooldown without pausing the world. | One meaningful loss produces one useful return without notification spam or a gameplay hold. | CP-01 / CP-14 |
 | G-MVP-13 WebMCP fallback | The human dashboard remains complete when WebMCP is unavailable. Show the exact capability result and never simulate a successful tool call. | The game is still playable and the demo can honestly show the capability boundary. | CP-02 / CP-13 |
 | G-MVP-14 Demo reset | Fix the seed, two fixture players, and one deterministic monster route. Provide a server-owned reset that creates a new world; no manual database editing is part of the run. | A judge can reproduce the story and distinguish a real event from a staged screenshot. | CP-02 / CP-16 |
 | G-MVP-15 Command security | Use opaque session tokens, shelter ownership checks, expected entity revisions, idempotency keys, and server-side reward/cargo validation. | Refreshes, duplicate clicks, and malicious client values cannot create coins or hidden information. | CP-01 / CP-15 |
 | G-MVP-16 Presentation boundary | Target desktop WASD first. Use a device-pixel-ratio-aware Canvas, React text equivalents, visible reconnect state, and a mobile-later note. | The map feels fluid while the dashboard remains readable and usable without Canvas or WebMCP. | CP-02 / CP-12 |
 | G-MVP-17 Process topology | Use one modular Node process locally. Hosted mode uses a long-running worker and durable storage; no serverless request owns world time. | A sleeping page does not stop the world and a process restart has a defined recovery path. | CP-02 / CP-17 |
 | G-MVP-18 Evidence and redaction | Capture redacted IDs, revisions, world times, capability results, restart steps, and browser evidence. Exclude secrets, credentials, and raw Agent context. | The player-facing story and the judge proof can be inspected without exposing private state. | CP-03 / CP-16 / CP-18 |
-| G-MVP-19 Combat contract | Resolve one deterministic round per world second. `damage = max(1, attack + weapon_power + matchup_bonus - defense)`; higher speed acts first and ties use ascending entity id. No random rolls, critical hits, or hidden party bonus in G2. | A gatherer is visibly vulnerable while a hunter has a clear reason to be effective; the history can explain every hit. | CP-01 / CP-11 |
+| G-MVP-19 Combat contract | Resolve one deterministic round per world second. `damage = max(1, attack + weapon_power + matchup_bonus - defense)`; higher `initiative_speed` acts first and ties use ascending entity id. Movement rates are separate. No random rolls, critical hits, or hidden party bonus in G2. | A gatherer is visibly vulnerable while a hunter has a clear reason to be effective; the history can explain every hit. | CP-01 / CP-11 |
 | G-MVP-20 Economy calibration | Use Wood = 1 coin and Rock = 3 coins, one unit every 2 seconds, five-slot capacity, 20-unit nodes, and 30-second respawn. Exclude Gold and tier yield multipliers from G2. | Travel time, extraction time, cargo risk, and deposit timing matter without adding crafting complexity. | CP-01 / CP-10 / CP-16 |
 
 The first 18 rows came from the roadmap audit. G-MVP-19 and G-MVP-20 are added here because a
@@ -65,10 +65,13 @@ remain tunable after the first trace.
 
 ## Owner review status
 
-**As of 2026-09-01:** The owner accepted all twenty MVP defaults in this pack, including the
-gatherer-versus-hunter combat contrast, the discovered-landmark presentation, the automatic bounded
-Re-entry recall, and the 12-tile/120-second protected start. CP-01 now records these choices as
-`SK-MVP-0.1`; runtime and browser evidence remain future gates.
+**As of 2026-09-02:** The owner accepted all twenty MVP defaults in this pack, including the
+gatherer-versus-hunter combat contrast, the discovered-landmark presentation, and the bounded
+Re-entry recall. The historical gameplay choices are recorded as `SK-MVP-0.1`; the owner then
+accepted the real-time coalesced Agent Signal delivery policy and the G2 geometry, state, anti-loop,
+protected-start, event, and `world_snapshot`/`client_snapshot` closure in `SK-MVP-0.2` through
+[`ADR-GAME-0010`](../Decisions/ADR-GAME-0010-g2-geometry-state-and-vocabulary-closure.md). Runtime
+and browser evidence remain future gates.
 
 ## Accepted combat and economy profile
 
@@ -76,7 +79,7 @@ Re-entry recall, and the 12-tile/120-second protected start. CP-01 now records t
 
 Use the following deliberately readable values for the first trace:
 
-| Actor | HP | Attack | Defense | Speed | Tool power | Matchup bonus |
+| Actor | HP | Attack | Defense | `initiative_speed` | Tool power | Matchup bonus |
 |---|---:|---:|---:|---:|---:|---:|
 | Gatherer with pickaxe | 100 | 8 | 2 | 3 | 0 | 0 against the seeded monster |
 | Hunter with sword | 100 | 12 | 3 | 5 | 4 | 4 against the seeded monster |
@@ -99,10 +102,12 @@ species.
 
 ### Economy and time cost
 
-For a node 12 tiles from the shelter and speed 3 tiles per world second, a no-interruption trip takes
-about four seconds out, ten seconds to extract five units, and about four seconds home: 18 seconds
-before any server or route overhead. The resulting gross rates are approximately 0.28 coins per
-second for Wood and 0.83 coins per second for Rock. The player should see ETA, capacity, and known risk;
+For the fixed Wood and Rock nodes at 14 and 18 tiles from the shelter, and
+`soldier_move_speed_tiles_per_world_second = 3.0`, a no-interruption Wood trip takes about 4.7 seconds
+out, ten seconds to extract five units, and about 4.7 seconds home: about 19.3 seconds before server
+or route overhead. The Rock route takes about 22 seconds before overhead. The resulting gross rates
+are approximately 0.26 coins per second for Wood and 0.68 coins per second for Rock. The player should
+see ETA, capacity, and known risk;
 the UI should not pretend that gross rate is guaranteed profit.
 
 Use this internal calibration model:
@@ -147,11 +152,13 @@ field soldier observes monster
   -> soldier HP reaches zero
   -> one CargoLostToMonster transaction
        destroy field cargo only
-       append causal event and outbox row
+       append causal Domain Event and create or update one Agent Signal delivery record
        keep soldier_id, clear cargo
-       create new mission_attempt_id
-       respawn at shelter and reissue repeatable mission
-  -> Re-entry delivery after eligibility/cooldown check
+       respawn at shelter
+       consume one monster reissue budget
+       plan one danger-cell-avoiding route
+       create new mission_attempt_id and reissue repeatable mission, or enter typed WAITING_REVIEW
+  -> coalesced Re-entry Signal delivery after eligibility/cooldown check
   -> Agent returns to canonical page
   -> fresh inspect_mission_history
   -> force_recall_soldier result when the current revision permits it
@@ -166,9 +173,9 @@ reads current state again before any action.
 ```text
 page closes or WebSocket drops
   -> world worker continues from authoritative clock
-  -> due event commits to snapshot + event log + outbox in one transaction
+  -> due event commits to world_snapshot + Domain Event log + eligible Agent Signal record in one transaction
   -> page reconnects
-  -> full snapshot replaces local projection
+  -> full client_snapshot replaces local projection
   -> history explains elapsed events and current valid commands
 ```
 
@@ -185,7 +192,7 @@ must be visible:
 - during a mission: phase, route, current cargo, world time, target, ETA, and last server revision;
 - after a node depletes: the partial result and the reason for returning;
 - after death: the monster, world time, cargo destroyed, same soldier identity, respawn location, and
-  reissued mission attempt;
+  either the reissued mission attempt or the typed `WAITING_REVIEW` reason;
 - after reconnect: elapsed world time, event count, current state, and any command that became stale;
 - for a rejected command: a typed reason such as `NOT_OWNER`, `STALE_REVISION`, `ROLE_LOCKED`,
   `MIGRATING`, or `WAITING_REVIEW`;
@@ -220,23 +227,29 @@ page closed
 `force_recall_soldier` is a bounded, server-validated command. It queues the soldier's normal return,
 does not teleport it, does not change its role, and does not create coins. The accepted choice is to
 let the Agent execute this one low-consequence recovery action under the existing user grant when the
-current revision permits it; an unavailable capability or stale command returns a visible typed
-result. Migration, siege, destructive upgrades, and irreversible recovery remain human-confirmed.
+live revision permits it; an unavailable capability, stale command, or already-completed transition
+returns a visible typed result. The world never waits for the Agent. Domain Events remain durable,
+while the Cloud Receiver and Local Connector receive at most one coalesced Agent Signal for a bound
+shelter/Thread at a time. An Agent recall carries the delivered signal and mission context when
+available, so a late command cannot target a later mission attempt. Migration, siege, destructive
+upgrades, and irreversible recovery remain human-confirmed.
 
 ### Protected start
 
 Protected start is an onboarding shield around the initial shelter. Under the accepted contract, hostile
-monster contact is rejected within 12 logical tiles until the player's first field dispatch or 120
-world seconds, whichever comes first. The page shows the active shield and the condition that will end
-it. This is separate from migration's veil: it does not hide the shelter, protect already-dispatched
-soldiers, or make the whole map safe. PvP attack commands are outside G2, so the contract only defines
-the monster-start boundary at this stage.
+monster contact is rejected at an inclusive distance of 12 logical tiles until
+`start_world_time + 120` world seconds. First dispatch does not shorten the timer, and equality at the
+expiry time is treated as unprotected before contact detection. The page shows the active shield and
+expiry time. This is separate from migration's veil: it does not hide the shelter, protect a field
+soldier outside the radius, or make the whole map safe. PvP attack commands are outside G2, so the
+contract only defines the monster-start boundary at this stage.
 
 1. The G2 Re-entry action may auto-execute `force_recall_soldier` under the existing user grant. It
    remains a normal server command; migration, siege, destructive upgrades, and irreversible recovery
    require human confirmation.
-2. The protected-start rule uses 12 tiles and ends at the first dispatch or 120 world seconds. It
-   protects onboarding without protecting field soldiers indefinitely.
+2. The protected-start rule uses 12 tiles and a fixed 120-world-second duration. It protects the
+   shelter and resident soldiers until expiry, while a field soldier is exposed once it leaves the
+   radius; it does not depend on first dispatch.
 3. A gatherer losing and a hunter winning against the seeded monster is the accepted first-trace
    emotional and strategic contrast.
 4. The G2 page may show the other shelter as a discovered world landmark while all active PvP attack
@@ -255,5 +268,6 @@ For CP-01 and every later contract revision, the implementation record must:
 4. add state, event, idempotency, revision, and failure cases to the versioned contract; and
 5. leave the full-game gaps explicitly outside the G2 non-goal boundary.
 
-The defaults are accepted, while the current game remains documentation-only until CP-02 and the
-implementation checkpoints provide runtime evidence.
+The defaults are accepted. `ADR-GAME-0010` promotes the G2 geometry, state, anti-loop, protected-start,
+event, and `world_snapshot`/`client_snapshot` decisions into `SK-MVP-0.2`; the current game remains documentation-only until
+CP-04 and the later implementation checkpoints provide runtime evidence; CP-03 only locks the route.

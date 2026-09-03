@@ -1,28 +1,29 @@
 # Encounter and Combat Resolution
 
 **Mechanism:** M13
-**Status:** G2 deterministic combat contract accepted; full-game balance is open
+**Status:** G2 deterministic combat contract accepted; GATHERER loss and HUNTER victory/return
+boundaries are runtime-verified locally; full-game balance is open
 **Authority:** This file owns detection-to-contact locking and combat resolution. Loot, defense, and
 breach own their settlement consequences.
 
-## Encounter phases
+## Encounter status
 
 ```text
-UNSEEN → OBSERVED → CONTACT → LOCKED → RESOLVING → RESOLVED
+NONE → OBSERVED → CONTACT → LOCKED → RESOLVING → RESOLVED
 ```
 
-Sensor range creates an observation. Physical contact inside the engagement radius creates an
-encounter. The server then locks participants by entity version so two workers cannot resolve the
-same soldier, monster, or shelter twice.
+Sensor range creates an observation. In G2, physical contact at inclusive Euclidean distance
+`engagement_radius_tiles = 1.0` creates an encounter. The server then locks participants by entity
+version so two workers cannot resolve the same soldier, monster, or shelter twice.
 
 ## Soldier sensor stage
 
-Each field soldier has a sensor radius that is checked against nearby soldiers, monsters, and target
-shelters. The radius can differ by soldier level, role, equipment, or accepted sensing upgrade. A
-larger radius creates earlier awareness and can influence pursuit or retreat, but it does not reveal
-hidden shelter positions through a veil and does not determine combat victory. The exact sensor
-payload is owned by the visibility and intelligence rules; this mechanism owns the transition from a
-valid observation to contact.
+Each field soldier has the uniform G2 `soldier_sensor_radius_tiles = 6.0`, checked against nearby
+soldiers, monsters, and target shelters using inclusive Euclidean distance. A larger radius in a
+future level, role, equipment, or sensing upgrade can create earlier awareness and influence pursuit
+or retreat, but it does not reveal hidden shelter positions through a veil and does not determine
+combat victory. The exact sensor payload is owned by the visibility and intelligence rules; this
+mechanism owns the transition from a valid observation to contact.
 
 ## Shared combat inputs
 
@@ -43,8 +44,9 @@ The accepted G2 contract is:
 damage = max(1, attack + weapon_power + matchup_bonus - defense)
 ```
 
-G2 resolves one round per world second, uses speed for initiative with ascending entity-id tie-breaks,
-and has no random rolls, critical hits, or hidden party modifier. The accepted actor values are in
+G2 resolves one round per world second, uses `initiative_speed` for initiative with ascending
+entity-id tie-breaks, and has no random rolls, critical hits, or hidden party modifier. The accepted
+actor values are in
 [`../Engineering/09-mvp-contract-sheet.md`](../Engineering/09-mvp-contract-sheet.md). Full-game
 matchups, party aggregation, retreat, and siege modifiers remain open.
 
@@ -52,8 +54,13 @@ matchups, party aggregation, retreat, and siege modifiers remain open.
 
 The server creates one encounter record, claims the participants, resolves bounded rounds or a short
 combat window, commits winner and loser states, invokes the appropriate cargo/reward settlement, and
-emits a typed event. The event seed, participant versions, and formula inputs must be recorded so the
-dashboard can explain the result.
+emits `EncounterResolved` after the terminal round. Each round emits `BattleRoundResolved`. The event
+seed, participant versions, and formula inputs must be recorded so the dashboard can explain the
+result. The G2 HUNTER vector uses the typed HUNTER actor fields, resolves five rounds against the
+seeded monster, emits `MonsterDefeated` after `EncounterResolved`, and hands the mission to normal
+route-preserving return without creating cargo or coins. The local boundary is evidenced in
+[`../Evidence/SK-EVID-024-cp11-hunter-victory-runtime-verification.md`](../Evidence/SK-EVID-024-cp11-hunter-victory-runtime-verification.md)
+and reviewed in [`../Validation/38-cp11-hunter-victory-runtime-cross-functional-audit.md`](../Validation/38-cp11-hunter-victory-runtime-cross-functional-audit.md).
 
 ## Role posture
 
@@ -62,8 +69,8 @@ dashboard can explain the result.
 - Siege soldier: sword plus structure damage; party-capable.
 - Guard: resident defense contribution with shelter and turret support.
 
-Detection and speed affect who meets whom and whether a soldier can escape or return. They do not
-silently replace attack and defense.
+Detection and movement rates affect who meets whom and whether a soldier can escape or return;
+`initiative_speed` affects combat order only. Neither silently replaces attack and defense.
 
 ## Party resolution
 
@@ -80,7 +87,7 @@ soldiers remain independent; they do not form a hidden collaboration group when 
 
 ## Open decisions
 
-- production base HP, attack, defense, speed, and tool values;
+- production base HP, attack, defense, movement, initiative, and tool values;
 - future round randomness and critical effects;
 - full-game role matchups and monster bonuses;
 - party aggregation and retreat threshold; and

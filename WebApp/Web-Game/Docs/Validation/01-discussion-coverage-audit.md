@@ -58,7 +58,7 @@ state machine.
 
 The later owner decision fixes the first-slice map and presentation profile: two shelters at least
 80 logical tiles apart on a 128 × 128 map, Wood and Rock as the visible resources, and a minimal 2D
-surface whose smoothness comes from server snapshots plus client interpolation. Production scale and
+surface whose smoothness comes from a server `client_snapshot` stream plus client interpolation. Production scale and
 final visual assets remain open.
 
 ## Owner requirement coverage
@@ -76,7 +76,7 @@ final visual assets remain open.
 | Travel time and extraction time affect income and risk | [`Blueprint/00-game-blueprint.md`](../Blueprint/00-game-blueprint.md), [`Mechanics/04-resources-tools-and-economy.md`](../Mechanics/04-resources-tools-and-economy.md) | Captured |
 | Tool tiers unlock higher resources and increase lower-tier yield | [`Mechanics/04-resources-tools-and-economy.md`](../Mechanics/04-resources-tools-and-economy.md) | Captured with illustrative progression; balance is open |
 | Full cargo auto-returns; forced recall queues a return | [`Mechanics/03-soldier-roles-and-missions.md`](../Mechanics/03-soldier-roles-and-missions.md) | Captured |
-| Ordinary death is immediate same-identity shelter respawn; the repeatable gathering/hunting assignment resumes and siege ends | [`Mechanics/detail-06-soldier-identity-and-lifecycle.md`](../Mechanics/detail-06-soldier-identity-and-lifecycle.md), [`Mechanics/detail-08-mission-dispatch-return-and-recall.md`](../Mechanics/detail-08-mission-dispatch-return-and-recall.md) | Captured; no respawn cooldown or replacement fee, with travel time and exposed cargo as the cost |
+| Ordinary death is immediate same-identity shelter respawn; the repeatable gathering/hunting assignment resumes and siege ends | [`Mechanics/detail-06-soldier-identity-and-lifecycle.md`](../Mechanics/detail-06-soldier-identity-and-lifecycle.md), [`Mechanics/detail-08-mission-dispatch-return-and-recall.md`](../Mechanics/detail-08-mission-dispatch-return-and-recall.md) | Captured; no respawn cooldown or replacement fee, with travel time, one bounded reissue, and exposed cargo as the cost |
 | Field soldiers meet, fight automatically, and the winner takes unbanked PvP cargo | [`Mechanics/05-detection-pathfinding-and-encounters.md`](../Mechanics/05-detection-pathfinding-and-encounters.md), [`Mechanics/06-combat-and-loot.md`](../Mechanics/06-combat-and-loot.md) | Captured; final combat numbers are open |
 | Monsters move, seek, attack, differ by speed/attack, and can be hunted for value | [`Mechanics/07-monsters-and-state-machine.md`](../Mechanics/07-monsters-and-state-machine.md), [`Characters/03-monsters.md`](../Characters/03-monsters.md) | Captured; species values and target transitions remain open |
 | Clarification: a monster-caused soldier death destroys only unbanked cargo; the killer remains in its normal lifecycle | [`Blueprint/01-raw-discussion-reference.md`](../Blueprint/01-raw-discussion-reference.md), [`Mechanics/detail-12-monster-state-and-targeting.md`](../Mechanics/detail-12-monster-state-and-targeting.md), [`Mechanics/detail-14-loot-reward-and-atomic-transfer.md`](../Mechanics/detail-14-loot-reward-and-atomic-transfer.md) | Captured as the clarified baseline rule |
@@ -93,7 +93,7 @@ final visual assets remain open.
 | Both game concepts are intended to receive an MVP before final selection | [`00-current-status.md`](../00-current-status.md), [`Blueprint/01-raw-discussion-reference.md`](../Blueprint/01-raw-discussion-reference.md) | Captured as project intent; no task decomposition or implementation claim |
 | Starve.io is a gameplay and client-surface reference, not a copied backend stack | [`Research/01-starve-io-reference.md`](../Research/01-starve-io-reference.md) | Captured with verified/unknown boundary |
 | MVP uses a larger map with at least two separated players, Wood plus Rock, and a smooth minimal 2D presentation | [`Decisions/ADR-GAME-0005-mvp-world-and-rendering-profile.md`](../Decisions/ADR-GAME-0005-mvp-world-and-rendering-profile.md), [`Engineering/07-hackathon-mvp-build-gate.md`](../Engineering/07-hackathon-mvp-build-gate.md) | Captured as an accepted MVP profile; production scale remains open |
-| Documentation is modular, source-of-truth-first, and task decomposition waits | [`Docs/README.md`](../README.md), [`Decisions/ADR-GAME-0001-documentation-authority-and-initial-baseline.md`](../Decisions/ADR-GAME-0001-documentation-authority-and-initial-baseline.md) | Captured; no implementation tasks created |
+| Documentation is modular and source-of-truth-first; the initial task decomposition waits for the runtime gate | [`Docs/README.md`](../README.md), [`Decisions/ADR-GAME-0001-documentation-authority-and-initial-baseline.md`](../Decisions/ADR-GAME-0001-documentation-authority-and-initial-baseline.md) | Captured as the historical initial-pass decision; bounded implementation tasks were later admitted after CP-02 and CP-03 |
 | “Codeas Mirror” means “Codex Memory” | [`Research/02-documentation-pattern-research.md`](../Research/02-documentation-pattern-research.md), [`Blueprint/01-raw-discussion-reference.md`](../Blueprint/01-raw-discussion-reference.md) | Captured and controlling reference corrected |
 
 ## Assistant suggestions: accepted, overridden, or still open
@@ -111,7 +111,8 @@ final visual assets remain open.
   movement, moving `home_anchor`, a damaged breach core, and a human consequence boundary were
   promoted into the owning documents.
 - Immediate same-identity respawn without a cooldown or replacement fee was retained; repeatable
-  gathering and hunting assignments are reissued from the shelter, while siege remains one-shot.
+  gathering and hunting assignments receive one danger-cell-avoiding reissue from the shelter, while
+  siege remains one-shot.
 - The owner's clarification was promoted: a monster-caused soldier death destroys only unbanked
   cargo, does not reward the killer, and leaves the killer in the normal monster state machine.
 - A deterministic breach baseline was promoted: 50% defender-held value reduction and one-level
@@ -136,15 +137,16 @@ final visual assets remain open.
 These were useful design proposals but were not promoted to owner-confirmed facts: active-region time
 compression, a four-times migration cooldown or fixed thirty-minute minimum, a two-charge cap, a
 population beyond the accepted two-player MVP and its exact demo choreography, a season-score formula,
-exact state-specific tool names, a full Agent authority matrix, a siege loot cap, anti-farming rules,
-and the exact event-name vocabulary. They remain targets or open questions in the relevant modules.
+exact state-specific tool names, a full Agent authority matrix, a siege loot cap, and anti-farming
+rules. They remain targets or open questions in the relevant modules.
 
 ## Remaining gates
 
-The audit finds no unrecorded explicit owner rule. The next decisions still required for a playable
-MVP are:
+The audit finds no unrecorded explicit owner rule. The next decisions still required for the broader
+playable game are:
 
-1. Final combat numbers, round cadence, party aggregation, and representative PvP/PvE/siege cases.
+1. Post-G2 combat tuning, party aggregation, and representative PvP/PvE/siege cases; G2 cadence,
+   formula, and seeded actor values are fixed.
 2. Production world dimensions, world-time scaling, active population, and resource/monster spawn
    rates beyond the accepted two-player MVP profile.
 3. Full economy values beyond the accepted Wood/Rock slice, tool-tier values, upgrade prices, caps,

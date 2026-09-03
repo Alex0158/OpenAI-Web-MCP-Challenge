@@ -4,8 +4,9 @@
 
 ## Soldier identity
 
-A soldier has a stable identity, owner, level, health, role loadout, tool tier, detection range,
-movement speed, cargo, current location, mission reference, and lifecycle state. Death normally
+A soldier has a stable identity, owner, level, health, role loadout, tool tier,
+`soldier_sensor_radius_tiles`, `soldier_move_speed_tiles_per_world_second`, cargo, current location,
+mission reference, and lifecycle state. Death normally
 creates an immediate shelter respawn for the same identity. A breach can transition an outside soldier
 into a world monster and mark its controllable identity as lost or corrupted.
 

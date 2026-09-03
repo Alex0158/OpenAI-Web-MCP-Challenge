@@ -1,6 +1,6 @@
 # Soldier Roles and Missions
 
-**Status:** Working decision from owner discussion
+**Status:** G2 mission and role contract accepted; full-game roles remain open
 
 This is a family overview for M06–M08. The atomic authorities are
 [`detail-06-soldier-identity-and-lifecycle.md`](detail-06-soldier-identity-and-lifecycle.md),
@@ -31,23 +31,24 @@ and route.
 
 ## Mission phases
 
+G2 stores the mission phase, soldier lifecycle, and passive encounter status as separate fields:
+
 ```text
-AT_SHELTER
-→ DEPLOYING
-→ WORKING
-→ RETURNING
-→ DEPOSITING
-→ AT_SHELTER
+mission.phase: AT_SHELTER → TRAVELLING → WORKING → RETURNING → DEPOSITING → AT_SHELTER
+                           ↘ WAITING_REVIEW or TERMINAL
+soldier.lifecycle: AT_SHELTER | FIELD | DEAD | CORRUPTED_MONSTER
+encounter.status: NONE | OBSERVED | CONTACT | LOCKED | RESOLVING | RESOLVED
 ```
 
-A contact inserts `ENGAGING` between `WORKING` and `RETURNING`. A death inserts
-`RESPAWNING_AT_SHELTER`. A siege party can use `MARCHING`, `ASSAULTING`, `RETREATING`, and
-`RETURNING`.
+Dispatch moves the soldier directly to `FIELD` and the mission to `TRAVELLING`. An encounter attaches
+an `encounter_id` and status; it is not a second mission or an `ENGAGING` phase. Death and respawn are
+lifecycle states/events, while the failed attempt is `TERMINAL`. A siege party may add
+`MARCHING`, `ASSAULTING`, `RETREATING`, and a siege terminal state only in a later contract version.
 
 ## Return rules
 
 - `WHEN_FULL` starts a return when cargo reaches capacity.
-- `ON_SUCCESS` returns after the target objective completes.
+- `ON_TARGET_DEPLETED` returns after an empty resource target completes, carrying any partial cargo.
 - `ON_RECALL` queues a return from the current phase.
 - A forced recall never teleports, changes role, or bypasses an active combat resolution.
 - A repeatable gathering or hunting mission can restart after deposit.

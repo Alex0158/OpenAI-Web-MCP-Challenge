@@ -34,7 +34,7 @@ or WebMCP delivery.
 | M01 | [`detail-01-world-clock-and-continuity.md`](../Mechanics/detail-01-world-clock-and-continuity.md) | one world clock, milestones, replay, event order | world-time rate and downtime catch-up |
 | M02 | [`detail-02-world-generation-and-resource-spawn.md`](../Mechanics/detail-02-world-generation-and-resource-spawn.md) | seed, nodes, regions, placement, depletion | production map scale, spawn density, protected start beyond the accepted MVP profile |
 | M03 | [`detail-03-shelter-state-and-command.md`](../Mechanics/detail-03-shelter-state-and-command.md) | shelter state, residents, command preconditions | recovery command set and level effects |
-| M04 | [`detail-04-shelter-sensing.md`](../Mechanics/detail-04-shelter-sensing.md) | bounded resource sensing and snapshot freshness | exact payload and refresh policy |
+| M04 | [`detail-04-shelter-sensing.md`](../Mechanics/detail-04-shelter-sensing.md) | bounded resource sensing and `client_snapshot` freshness | exact payload and refresh policy |
 | M05 | [`detail-05-shelter-upgrades-and-progression.md`](../Mechanics/detail-05-shelter-upgrades-and-progression.md) | branch purchase transaction and projections | prices, prerequisites, caps, breach target |
 | M06 | [`detail-06-soldier-identity-and-lifecycle.md`](../Mechanics/detail-06-soldier-identity-and-lifecycle.md) | stable identity, death, respawn, corruption | boundary race and resident deaths |
 | M07 | [`detail-07-role-and-loadout-lock.md`](../Mechanics/detail-07-role-and-loadout-lock.md) | role/tool lock and fallback combat | tool stats, weight, durability |
@@ -77,7 +77,7 @@ or WebMCP delivery.
 | C07 | death → cargo settlement → respawn, terminal, or corruption | no respawn/corruption duplicate |
 | C08 | event → eligibility → delivery → fresh page read → bounded action | no prompt injection or stale command |
 | C09 | upgrade request → atomic payment → capability projection | no partial wallet or active-loadout mutation |
-| C10 | world clock → due milestone → snapshot/outbox → restart recovery | no lost or duplicated world progress |
+| C10 | world clock → due milestone → `world_snapshot`/outbox → restart recovery | no lost or duplicated world progress |
 | C11 | committed event → projection → explainable rank change | no leaderboard authority or duplicate score |
 
 ## Cross-boundary findings

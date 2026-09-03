@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sleepless Kingdom CP-02 Probe</title>
+    <style>
+      :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+      body { margin: 2rem; background: #111827; color: #e5e7eb; }
+      main { max-width: 52rem; margin: auto; }
+      canvas { display: block; width: 640px; max-width: 100%; image-rendering: pixelated; border: 1px solid #4b5563; background: #0f172a; }
+      code { color: #a7f3d0; }
+      .status { padding: .75rem 1rem; border-radius: .5rem; background: #1f2937; }
+      .pass { color: #86efac; }
+      .warn { color: #fde68a; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Sleepless Kingdom CP-02 Probe</h1>
+      <p id="canvas-status" class="status">Canvas: waiting</p>
+      <canvas id="probe-canvas" width="640" height="400" aria-label="CP-02 Canvas probe"></canvas>
+      <p id="realtime-status" class="status">Realtime: connecting</p>
+      <p id="webmcp-status" class="status">WebMCP: checking page capability</p>
+      <p id="snapshot-status" class="status">Snapshot: waiting</p>
+      <button id="send-command" type="button">Send typed command</button>
+      <pre id="details"></pre>
+    </main>
+    <script>
+      (() => {
+        const canvas = document.getElementById("probe-canvas");
+        const ctx = canvas.getContext("2d");
+        const canvasStatus = document.getElementById("canvas-status");
+        const realtimeStatus = document.getElementById("realtime-status");
+        const webmcpStatus = document.getElementById("webmcp-status");
+        const snapshotStatus = document.getElementById("snapshot-status");
+        const details = document.getElementById("details");
+        const commandButton = document.getElementById("send-command");
+        const state = {
+          canvas: { rendered: false, pixel: null },
+          realtime: { connected: false, command_sent: false, command_result: null, snapshot: null },
+          webmcp: { status: "checking", registered: false, tool_name: null, reason: null },
+        };
+        window.__cp02 = state;
+
+        ctx.fillStyle = "#0f172a";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#34d399";
+        ctx.fillRect(48, 48, 180, 120);
+        ctx.fillStyle = "#fbbf24";
+        ctx.beginPath();
+        ctx.arc(360, 200, 64, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#e5e7eb";
+        ctx.font = "24px system-ui";
+        ctx.fillText("CP-02 Canvas frame", 48, 250);
+        const pixel = Array.from(ctx.getImageData(60, 60, 1, 1).data);
+        state.canvas = { rendered: true, pixel };
+        canvas.dataset.rendered = "true";
+        canvasStatus.textContent = `Canvas: rendered (pixel ${pixel.join(",")})`;
+        canvasStatus.className = "status pass";
+
+        function showDetails() {
+          details.textContent = JSON.stringify(window.__cp02, null, 2);
+        }
+
+        async function registerPageTool() {
+          const modelContext = document.modelContext;
+          if (!modelContext || typeof modelContext.registerTool !== "function") {
+            state.webmcp = { status: "unsupported", registered: false, tool_name: null, reason: "document.modelContext.registerTool is unavailable" };
+            webmcpStatus.textContent = "WebMCP: unsupported (visible diagnostic; human UI remains usable)";
+            webmcpStatus.className = "status warn";
+            showDetails();
+            return;
+          }
+          try {
+            await modelContext.registerTool({
+              name: "cp02_inspect_probe",
+              title: "Inspect CP-02 probe",
+              description: "Read the current disposable probe status.",
+              inputSchema: { type: "object", properties: {}, additionalProperties: false },
+              annotations: { readOnlyHint: true },
+              execute: async () => ({ probe: window.__cp02 }),
+            });
+            state.webmcp = { status: "supported", registered: true, tool_name: "cp02_inspect_probe", reason: null };
+            webmcpStatus.textContent = "WebMCP: supported (cp02_inspect_probe registered)";
+            webmcpStatus.className = "status pass";
+          } catch (error) {
+            state.webmcp = { status: "error", registered: false, tool_name: null, reason: String(error && error.message ? error.message : error) };
+            webmcpStatus.textContent = `WebMCP: registration error (${state.webmcp.reason})`;
+            webmcpStatus.className = "status warn";
+          }
+          showDetails();
+        }
+
+        function sendCommand() {
+          if (!window.__cp02.socket || window.__cp02.socket.readyState !== WebSocket.OPEN) return;
+          const command = {
+            command_id: "cp02-browser-command-001",
+            command_type: "probe_canvas_command",
+            contract_version: "SK-MVP-0.1",
+            idempotency_key: "cp02-browser-command-001",
+            typed_arguments: { observed: "canvas" },
+          };
+          window.__cp02.socket.send(JSON.stringify(command));
+          state.realtime.command_sent = true;
+          showDetails();
+        }
+
+        const socket = new WebSocket(`ws://${location.host}/realtime`);
+        state.socket = socket;
+        socket.addEventListener("open", () => {
+          state.realtime.connected = true;
+          realtimeStatus.textContent = "Realtime: connected";
+          realtimeStatus.className = "status pass";
+          sendCommand();
+          showDetails();
+        });
+        socket.addEventListener("message", (event) => {
+          const message = JSON.parse(event.data);
+          if (message.type === "snapshot") {
+            state.realtime.snapshot = message;
+            snapshotStatus.textContent = `Snapshot: ${message.snapshot_id} at world time ${message.world_time}`;
+            snapshotStatus.className = "status pass";
+          }
+          if (message.type === "command_result") {
+            state.realtime.command_result = message;
+          }
+          showDetails();
+        });
+        socket.addEventListener("error", () => {
+          state.realtime.error = "WebSocket error";
+          realtimeStatus.textContent = "Realtime: unavailable (visible diagnostic)";
+          realtimeStatus.className = "status warn";
+          showDetails();
+        });
+        socket.addEventListener("close", () => {
+          state.realtime.connected = false;
+          state.realtime.closed = true;
+          realtimeStatus.textContent = "Realtime: unavailable (visible diagnostic)";
+          realtimeStatus.className = "status warn";
+          showDetails();
+        });
+        async function checkWorkerHealth() {
+          try {
+            const response = await fetch("/health", { cache: "no-store" });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            state.realtime.health = "ok";
+          } catch (error) {
+            state.realtime.connected = false;
+            state.realtime.health = "unavailable";
+            state.realtime.error = `Worker unavailable: ${String(error && error.message ? error.message : error)}`;
+            realtimeStatus.textContent = "Realtime: unavailable (worker health check failed)";
+            realtimeStatus.className = "status warn";
+            showDetails();
+          }
+        }
+        checkWorkerHealth();
+        window.setInterval(checkWorkerHealth, 500);
+        commandButton.addEventListener("click", sendCommand);
+        registerPageTool();
+        showDetails();
+      })();
+    </script>
+  </body>
+</html>

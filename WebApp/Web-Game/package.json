@@ -1,0 +1,58 @@
+{
+  "name": "sleepless-kingdom",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "NODE_ENV=production PORT=${PORT:-3000} tsx src/server/entrypoint.ts",
+    "typecheck": "tsc --noEmit",
+    "test:cp04": "tsx --test tests/cp04-process-skeleton.test.ts",
+    "test:cp05": "tsx --test tests/cp05-persistence.test.ts",
+    "test:cp06": "tsx --test tests/cp06-clock-recovery.test.ts tests/cp06-gameplay-phase-coordinator.test.ts tests/cp06-autonomous-scheduler.test.ts",
+    "test:cp06-autonomous": "tsx --test tests/cp06-autonomous-scheduler.test.ts",
+    "test:cp06-autonomous-runtime": "tsx --test tests/cp06-autonomous-runtime.test.ts",
+    "test:cp07": "tsx --test tests/cp07-world-fixture.test.ts",
+    "test:cp08": "tsx --test tests/cp08-movement-snapshot.test.ts",
+    "test:cp08-cadence": "tsx --test tests/cp08-worker-movement.test.ts",
+    "test:cp08-gateway": "tsx --test tests/cp08-worker-gateway.test.ts",
+    "test:cp08-realtime": "tsx --test tests/cp08-realtime-snapshot.test.ts",
+    "test:cp08-wire": "tsx --test tests/cp08-realtime-wire.test.ts",
+    "test:cp09": "tsx --test tests/cp09-mission-dispatch.test.ts tests/cp09-route-milestone.test.ts",
+    "test:cp09-route": "tsx --test tests/cp09-route-milestone.test.ts",
+    "test:cp10": "tsx --test tests/cp09-mission-dispatch.test.ts tests/cp09-route-milestone.test.ts tests/cp10-first-extraction.test.ts tests/cp10-extraction-cadence.test.ts",
+    "test:cp10-deposit": "tsx --test tests/cp10-deposit-settlement.test.ts",
+    "test:cp11": "tsx --test tests/cp11-combat.test.ts",
+    "test:cp11-hunter": "tsx --test tests/cp11-hunter.test.ts",
+    "test:cp12-projection": "tsx --test tests/cp12-projection.test.ts",
+    "test:cp12-visual": "tsx --test tests/cp12-visual-assets.test.tsx",
+    "test:cp12-fixture": "tsx --test tests/cp12-fixture-session.test.ts",
+    "test:cp12-reconnect": "tsx --test tests/cp12-reconnect.test.ts",
+    "test:cp12-keyboard": "tsx --test tests/cp12-keyboard-movement.test.ts",
+    "test:cp12-publication": "tsx --test tests/cp12-realtime-publication.test.ts tests/cp12-realtime-publication-wire.test.ts",
+    "test:cp12-intent": "tsx --test tests/cp12-server-movement-intent.test.ts",
+    "test:cp12-dispatch": "tsx --test tests/cp12-gatherer-dispatch-http.test.ts tests/cp12-gatherer-dispatch-client.test.ts tests/cp12-gatherer-dispatch-ui.test.tsx tests/cp12-gatherer-dispatch-server-hardening.test.ts tests/cp12-gatherer-dispatch-rejection-refresh.test.ts",
+    "test:cp13-page-tools": "tsx --test tests/cp13-page-tools.test.ts",
+    "test:cp13-recall": "tsx --test tests/cp13-recall-transition.test.ts",
+    "test:cp15": "node scripts/run_cp15_matrix.mjs",
+    "test:cp16-local": "tsx --test tests/cp16-local-causal-slice.test.ts"
+  },
+  "dependencies": {
+    "next": "16.3.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "tsx": "4.23.13",
+    "ws": "8.21.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.5",
+    "@types/ws": "8.18.1",
+    "typescript": "7.0.2"
+  }
+}

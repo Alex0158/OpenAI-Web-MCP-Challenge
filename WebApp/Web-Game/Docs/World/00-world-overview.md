@@ -31,7 +31,7 @@ smaller operational view and do not automatically reveal the whole map to the pl
 
 ## Shelters
 
-A shelter has a location, level, detection radius, resource sensing, a turret, a roster, upgrades,
+A shelter has a location, level, a `shelter_resource_sensing_radius_tiles` field, resource sensing, a turret, a roster, upgrades,
 coin reserves, a damaged/breached state, and a migration state. Its magic protects soldiers that are
 inside and gives the player a command surface. It also acts as the home anchor used by returning
 soldiers.

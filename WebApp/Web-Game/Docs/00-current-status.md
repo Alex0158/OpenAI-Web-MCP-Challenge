@@ -1,34 +1,57 @@
 # Sleepless Kingdom — Current Status
 
 **Role:** Canonical current status for the game child application  
-**As of:** 2026-09-01, Europe/London  
-**Stage:** CP-01 MVP contract closed; implementation not started  
+**As of:** 2026-09-03, Europe/London  
+**Stage:** CP-08 movement/snapshot, worker cadence, command/read gateway, transport-neutral projection, authenticated local wire seam, the bounded CP-09 dispatch/route-arrival increments, the CP-10 extraction/cadence/`RETURNING`/same-worker contest/return-navigation/deposit boundaries, all three CP-11 local increments, and the CP-12 additive client projection/renderer, local fixture session/first-frame, one-browser-context hydration, explicit same-scope manual reconnect/stale-fallback, discrete keyboard/button movement, ordinary-UI GATHERER dispatch, automatic realtime snapshot publication, snapshot-gated held-input, and server-owned continuous-intent boundaries are runtime-verified locally; the CP-13 canonical page's four WebMCP reads and one supported read-only invocation are runtime-verified for one local `gpt-5.6-sol` plus `medium` session; CP-06 boundary-safe gameplay phase composition and the owner-accepted B trusted-elapsed/autonomous scheduler are runtime-verified for one explicitly enabled local world; the CP-14 game-side ReentryDeliveryPort/pumpOnce and labelled local transport stub are runtime-verified at ladder level 2; the CP-16 IAB two-tab limitation and close-one lifecycle are runtime-verified at ladder level 4; dynamic recall, Agent/Re-entry delivery, independent two-browser delivery, production identity, and hosted gameplay remain open  
 **Working title:** Sleepless Kingdom (provisional)  
-**Implementation:** Not started  
+**Implementation:** CP-04 local runtime boundary, CP-05 file-backed persistence foundation, CP-06 worker-owned clock/recovery boundary, CP-07 deterministic fixture boundary, CP-08's movement/snapshot, cadence, command/read gateway, transport-neutral projection, and authenticated local wire seam, CP-09's schema-v3 GATHERER dispatch/role-lock and derived route-arrival boundaries, CP-10's schema-v4 cargo provenance, recurring cadence, bounded `RETURNING` handoff, same-worker contested-node outcome, return-navigation/home crossing, and Wood/Rock deposit settlement, and CP-11's schema-v5 encounter/combat/cargo-loss/respawn, HUNTER victory/return, and schema-v6 automatic reissue/review boundaries are verified locally; CP-12's additive client projection and first Canvas/accessible mission-row slice are verified under [`Tasks/SK-TASK-037-cp12-client-projection-and-mission-row.md`](Tasks/SK-TASK-037-cp12-client-projection-and-mission-row.md), with evidence [`Evidence/SK-EVID-026-cp12-client-projection-runtime-verification.md`](Evidence/SK-EVID-026-cp12-client-projection-runtime-verification.md) and audit [`Validation/42-cp12-client-projection-runtime-cross-functional-audit.md`](Validation/42-cp12-client-projection-runtime-cross-functional-audit.md); [`Tasks/SK-TASK-038-cp12-local-fixture-session-and-initial-frame.md`](Tasks/SK-TASK-038-cp12-local-fixture-session-and-initial-frame.md) is runtime-verified at the named local level-4 scope with [`Evidence/SK-EVID-028-cp12-local-fixture-session-runtime-verification.md`](Evidence/SK-EVID-028-cp12-local-fixture-session-runtime-verification.md) and [`Validation/45-cp12-local-fixture-session-runtime-cross-functional-audit.md`](Validation/45-cp12-local-fixture-session-runtime-cross-functional-audit.md); CP-12's original inline SVG UI icon registry and dashboard consumer are integrated and locally runtime-verified under [`Tasks/SK-TASK-039-cp12-original-svg-ui-icon-pack.md`](Tasks/SK-TASK-039-cp12-original-svg-ui-icon-pack.md), with [`Evidence/SK-EVID-027-cp12-original-svg-ui-icon-runtime-verification.md`](Evidence/SK-EVID-027-cp12-original-svg-ui-icon-runtime-verification.md) and [`Validation/44-cp12-original-svg-ui-icon-runtime-cross-functional-audit.md`](Validation/44-cp12-original-svg-ui-icon-runtime-cross-functional-audit.md); [`Tasks/SK-TASK-040-cp12-browser-hydration-and-two-session-smoke.md`](Tasks/SK-TASK-040-cp12-browser-hydration-and-two-session-smoke.md) is runtime-verified for one Node 24 browser context with [`Evidence/SK-EVID-029-cp12-browser-hydration-runtime-verification.md`](Evidence/SK-EVID-029-cp12-browser-hydration-runtime-verification.md) and [`Validation/47-cp12-browser-hydration-runtime-cross-functional-audit.md`](Validation/47-cp12-browser-hydration-runtime-cross-functional-audit.md); independent two-browser delivery, production identity, and hosted gameplay remain unimplemented; the explicit autonomous driver, schema-v8 anchor, and startup recovery are verified under [`Tasks/SK-TASK-047-cp06-trusted-elapsed-time-and-autonomous-scheduler.md`](Tasks/SK-TASK-047-cp06-trusted-elapsed-time-and-autonomous-scheduler.md), [`Evidence/SK-EVID-036-cp06-autonomous-scheduler-runtime-verification.md`](Evidence/SK-EVID-036-cp06-autonomous-scheduler-runtime-verification.md), and [`Validation/59-cp06-autonomous-scheduler-runtime-cross-functional-audit.md`](Validation/59-cp06-autonomous-scheduler-runtime-cross-functional-audit.md); CP-12 automatic realtime snapshot publication is runtime-verified for the named local worker-to-page scope under [`Tasks/SK-TASK-051-cp12-autonomous-realtime-snapshot-publication.md`](Tasks/SK-TASK-051-cp12-autonomous-realtime-snapshot-publication.md), [`Evidence/SK-EVID-040`](Evidence/SK-EVID-040-cp12-autonomous-realtime-snapshot-publication-runtime-verification.md), and [`Validation/63`](Validation/63-cp12-autonomous-realtime-snapshot-publication-runtime-cross-functional-audit.md)  
+**WebMCP:** CP-13's canonical page read surface is runtime-verified at ladder level 6 for one local Codex In-app Browser session using `gpt-5.6-sol` with `medium` reasoning: the native adapter returned the four accepted reads and one read-only `inspect_client_snapshot` invocation succeeded under [`Evidence/SK-EVID-049`](Evidence/SK-EVID-049-cp13-canonical-page-webmcp-runtime-verification.md) and [`Validation/75`](Validation/75-cp13-page-tools-runtime-cross-functional-audit.md); dynamic recall grants, Re-entry delivery, hosted continuity, independent browser isolation, and judge reproduction remain open  
+**Re-entry adapter:** [`SK-TASK-062`](Tasks/SK-TASK-062-cp14-game-side-local-stub-delivery-port.md) is runtime-verified for the game-side `ReentryDeliveryPort`/`pumpOnce` and labelled local transport stub under [`SK-EVID-050`](Evidence/SK-EVID-050-cp14-game-side-local-stub-delivery-port-runtime-verification.md) and [`Validation/76`](Validation/76-cp14-game-side-local-stub-delivery-port-runtime-cross-functional-audit.md); the external Receiver/Local Connector handoff, Agent grant delivery, dynamic recall, hosted continuity, and judge reproduction remain open  
+**Reconnect:** [`Tasks/SK-TASK-043-cp12-browser-reconnect-and-stale-fallback.md`](Tasks/SK-TASK-043-cp12-browser-reconnect-and-stale-fallback.md) is runtime-verified for one local same-scope manual stop/fail/restart/retry path with [`Evidence/SK-EVID-032-cp12-browser-reconnect-runtime-verification.md`](Evidence/SK-EVID-032-cp12-browser-reconnect-runtime-verification.md) and [`Validation/50-cp12-browser-reconnect-runtime-cross-functional-audit.md`](Validation/50-cp12-browser-reconnect-runtime-cross-functional-audit.md); a silent no-settle acceptance deadline remains an explicit ADR reopen boundary  
+**Human movement:** [`Tasks/SK-TASK-044-cp12-keyboard-movement-and-authoritative-reconciliation.md`](Tasks/SK-TASK-044-cp12-keyboard-movement-and-authoritative-reconciliation.md) is runtime-verified for one local discrete focused keyboard/button path with [`Evidence/SK-EVID-033-cp12-keyboard-movement-runtime-verification.md`](Evidence/SK-EVID-033-cp12-keyboard-movement-runtime-verification.md) and [`Validation/53-cp12-keyboard-movement-runtime-cross-functional-audit.md`](Validation/53-cp12-keyboard-movement-runtime-cross-functional-audit.md); snapshot-gated held input is runtime-verified for the named local client presentation scope under [`Tasks/SK-TASK-054-cp12-held-movement-and-touch-input.md`](Tasks/SK-TASK-054-cp12-held-movement-and-touch-input.md), [`Evidence/SK-EVID-042-cp12-held-movement-runtime-verification.md`](Evidence/SK-EVID-042-cp12-held-movement-runtime-verification.md), and [`Validation/66-cp12-held-movement-runtime-cross-functional-audit.md`](Validation/66-cp12-held-movement-runtime-cross-functional-audit.md); the server-owned continuous-intent implementation is runtime-verified for the named local scope under [`SK-TASK-057`](Tasks/SK-TASK-057-cp12-server-owned-continuous-intent.md), [`Evidence/SK-EVID-043`](Evidence/SK-EVID-043-cp12-server-owned-continuous-intent-runtime-verification.md), and [`Validation/71`](Validation/71-cp12-server-owned-continuous-intent-runtime-cross-functional-audit.md); independent sessions and final mobile quality remain open  
+**Human dispatch:** [`Tasks/SK-TASK-045-cp12-human-gatherer-dispatch-and-authoritative-reconciliation.md`](Tasks/SK-TASK-045-cp12-human-gatherer-dispatch-and-authoritative-reconciliation.md) is runtime-verified for one local strict-session Rock GATHERER dispatch and authoritative reconciliation path with [`Evidence/SK-EVID-034-cp12-human-gatherer-dispatch-runtime-verification.md`](Evidence/SK-EVID-034-cp12-human-gatherer-dispatch-runtime-verification.md) and [`Validation/55-cp12-human-gatherer-dispatch-runtime-cross-functional-audit.md`](Validation/55-cp12-human-gatherer-dispatch-runtime-cross-functional-audit.md); travel progression, extraction, combat, and deposit remain governed by the shared CP-06 coordinator and autonomous driver  
+**Gameplay composition:** [`Tasks/SK-TASK-046-cp06-boundary-safe-gameplay-phase-coordinator.md`](Tasks/SK-TASK-046-cp06-boundary-safe-gameplay-phase-coordinator.md) is runtime-verified for one local explicitly advanced world with durable boundary journaling, whole-boundary replay, shared service identity, fixed phase order, and pre-empty target liveness. The B authority extension is runtime-verified under [`Decisions/ADR-GAME-0012-cp06-world-time-precision-and-recovery-budget.md`](Decisions/ADR-GAME-0012-cp06-world-time-precision-and-recovery-budget.md) and [`Decisions/ADR-GAME-0033-cp06-trusted-elapsed-time-and-autonomous-scheduler.md`](Decisions/ADR-GAME-0033-cp06-trusted-elapsed-time-and-autonomous-scheduler.md), with implementation, runtime evidence, and audit under [`Tasks/SK-TASK-047-cp06-trusted-elapsed-time-and-autonomous-scheduler.md`](Tasks/SK-TASK-047-cp06-trusted-elapsed-time-and-autonomous-scheduler.md), [`Evidence/SK-EVID-036-cp06-autonomous-scheduler-runtime-verification.md`](Evidence/SK-EVID-036-cp06-autonomous-scheduler-runtime-verification.md), and [`Validation/59-cp06-autonomous-scheduler-runtime-cross-functional-audit.md`](Validation/59-cp06-autonomous-scheduler-runtime-cross-functional-audit.md)  
+**Causal signal:** [`Tasks/SK-TASK-050-cp16-local-causal-slice-pre-agent-gates.md`](Tasks/SK-TASK-050-cp16-local-causal-slice-pre-agent-gates.md) is slice-verified for the server-owned terminal gatherer loss-to-signal handoff, atomic rollback, replay safety, no-grant silence, and local shelter scope isolation under [`Evidence/SK-EVID-039-cp16-local-causal-slice-pre-agent-gates-runtime-verification.md`](Evidence/SK-EVID-039-cp16-local-causal-slice-pre-agent-gates-runtime-verification.md) and [`Validation/61`](Validation/61-cp16-local-causal-slice-runtime-cross-functional-audit.md); the game-side CP-14 local-stub port is verified under [`SK-EVID-050`](Evidence/SK-EVID-050-cp14-game-side-local-stub-delivery-port-runtime-verification.md), and the CP-16 IAB two-tab limitation is recorded under [`SK-EVID-051`](Evidence/SK-EVID-051-cp16-independent-browser-context-capability-probe.md); dynamic recall, live delivery, fresh reread/recall, independent browsers, hosted continuity, and judge reproduction remain open  
+**Gate disposition:** [`SK-TASK-063`](Tasks/SK-TASK-063-cp16-independent-browser-context-capability-probe.md) is verified for the named ladder-level 4 IAB two-tab limitation and close-one lifecycle under [`Evidence/SK-EVID-051`](Evidence/SK-EVID-051-cp16-independent-browser-context-capability-probe.md) and [`Validation/77`](Validation/77-cp16-independent-browser-context-capability-runtime-cross-functional-audit.md). The primary actionable gate remains Eddy's versioned Cloud Receiver/Local Connector handoff (transport, binding, idempotency, acknowledgement, lease/retry, active-Thread behavior, and test environment), followed by one fresh event-to-page dynamic recall trace; independent browser contexts, hosted continuity, and judge reproduction remain open.
+**Latest CP-13 run:** [`SK-EVID-049`](Evidence/SK-EVID-049-cp13-canonical-page-webmcp-runtime-verification.md) records a new `gpt-5.6-sol` plus `medium` Codex task using the genuine In-app Browser adapter: the canonical page returned all four accepted reads and `inspect_client_snapshot` succeeded read-only. The earlier Luna-gated observation remains preserved in [`SK-EVID-048`](Evidence/SK-EVID-048-cp13-canonical-page-browser-attempt.md); it does not override the positive supported-session result.
 **Outer host selection:** Unselected
 
 The owner intends to produce MVPs for this game and the separate RightSpot candidate before making
-the final concept selection. This child currently records the game concept and target delivery roadmap;
-implementation task creation has not started.
+the final concept selection. This application records the game concept, the accepted delivery roadmap,
+and its own development governance. CP-02 is locally verified, the G2 contract is coherent, and the
+CP-03 implementation task lock is now verified. The bounded CP-04 child task is released and locally
+verified; durable implementation remains restricted to its accepted runtime boundary. The
+completed CP-02 probe task is recorded as [`Tasks/SK-TASK-001-cp02-capability-and-runtime-probe.md`](Tasks/SK-TASK-001-cp02-capability-and-runtime-probe.md),
+and the verified CP-04 task is [`Tasks/SK-TASK-004-cp04-process-skeleton-and-health.md`](Tasks/SK-TASK-004-cp04-process-skeleton-and-health.md).
+The CP-05 persistence child task is verified in [`Tasks/SK-TASK-005-cp05-persistence-event-log-and-outbox.md`](Tasks/SK-TASK-005-cp05-persistence-event-log-and-outbox.md), with fresh local evidence in [`Evidence/SK-EVID-008-cp05-persistence-runtime-verification.md`](Evidence/SK-EVID-008-cp05-persistence-runtime-verification.md). The CP-06 preparation pack is verified at `specified` scope, and its registered implementation task [`Tasks/SK-TASK-020-cp06-clock-and-recovery-implementation.md`](Tasks/SK-TASK-020-cp06-clock-and-recovery-implementation.md) is now locally runtime-verified with [`Evidence/SK-EVID-009-cp06-clock-runtime-verification.md`](Evidence/SK-EVID-009-cp06-clock-runtime-verification.md); the cross-functional disposition is in [`Validation/13-cp06-clock-runtime-cross-functional-audit.md`](Validation/13-cp06-clock-runtime-cross-functional-audit.md). The CP-08 entrypoint wire task [`Tasks/SK-TASK-026-cp08-entrypoint-realtime-wire-adapter.md`](Tasks/SK-TASK-026-cp08-entrypoint-realtime-wire-adapter.md) is runtime-verified with [`Evidence/SK-EVID-015-cp08-realtime-wire-runtime-verification.md`](Evidence/SK-EVID-015-cp08-realtime-wire-runtime-verification.md) and [`Validation/20-cp08-realtime-wire-runtime-cross-functional-audit.md`](Validation/20-cp08-realtime-wire-runtime-cross-functional-audit.md). The bounded CP-09 dispatch task [`Tasks/SK-TASK-027-cp09-gatherer-dispatch-and-role-lock.md`](Tasks/SK-TASK-027-cp09-gatherer-dispatch-and-role-lock.md) is runtime-verified with [`Evidence/SK-EVID-016-cp09-gatherer-dispatch-runtime-verification.md`](Evidence/SK-EVID-016-cp09-gatherer-dispatch-runtime-verification.md) and [`Validation/22-cp09-gatherer-dispatch-runtime-cross-functional-audit.md`](Validation/22-cp09-gatherer-dispatch-runtime-cross-functional-audit.md). The route-transit task [`Tasks/SK-TASK-028-cp09-route-milestone-and-derived-transit.md`](Tasks/SK-TASK-028-cp09-route-milestone-and-derived-transit.md) is runtime-verified with [`Evidence/SK-EVID-017-cp09-route-milestone-runtime-verification.md`](Evidence/SK-EVID-017-cp09-route-milestone-runtime-verification.md) and [`Validation/24-cp09-route-milestone-runtime-cross-functional-audit.md`](Validation/24-cp09-route-milestone-runtime-cross-functional-audit.md). It proves due-marker persistence, deterministic transit, one atomic arrival event, migration compatibility, clock-boundary protection, duplicate safety, and restart recovery. The CP-10 first extraction task [`Tasks/SK-TASK-029-cp10-first-extraction-and-cargo.md`](Tasks/SK-TASK-029-cp10-first-extraction-and-cargo.md) is runtime-verified with [`Evidence/SK-EVID-018-cp10-first-extraction-runtime-verification.md`](Evidence/SK-EVID-018-cp10-first-extraction-runtime-verification.md) and [`Validation/26-cp10-first-extraction-runtime-cross-functional-audit.md`](Validation/26-cp10-first-extraction-runtime-cross-functional-audit.md); the cadence/return task [`Tasks/SK-TASK-030-cp10-extraction-cadence-and-return-handoff.md`](Tasks/SK-TASK-030-cp10-extraction-cadence-and-return-handoff.md) is now runtime-verified with [`Evidence/SK-EVID-019-cp10-extraction-cadence-runtime-verification.md`](Evidence/SK-EVID-019-cp10-extraction-cadence-runtime-verification.md) and [`Validation/28-cp10-extraction-cadence-runtime-cross-functional-audit.md`](Validation/28-cp10-extraction-cadence-runtime-cross-functional-audit.md). The selected contest policy [`Tasks/SK-TASK-031-cp10-contested-node-outcome.md`](Tasks/SK-TASK-031-cp10-contested-node-outcome.md) is runtime-verified with [`Evidence/SK-EVID-020-cp10-contested-node-runtime-verification.md`](Evidence/SK-EVID-020-cp10-contested-node-runtime-verification.md) and [`Validation/30-cp10-contested-node-runtime-cross-functional-audit.md`](Validation/30-cp10-contested-node-runtime-cross-functional-audit.md). Return navigation and exact home crossing are now runtime-verified under [`Tasks/SK-TASK-032-cp10-return-navigation-and-home-crossing.md`](Tasks/SK-TASK-032-cp10-return-navigation-and-home-crossing.md), [`Evidence/SK-EVID-021-cp10-return-navigation-runtime-verification.md`](Evidence/SK-EVID-021-cp10-return-navigation-runtime-verification.md), and [`Validation/32-cp10-return-navigation-runtime-cross-functional-audit.md`](Validation/32-cp10-return-navigation-runtime-cross-functional-audit.md); the CP-13 server recall transition is now verified separately, while the four canonical page reads are verified at ladder level 6; dynamic recall exposure remains open. The CP-10 settlement boundary [`Tasks/SK-TASK-033-cp10-deposit-and-coin-settlement.md`](Tasks/SK-TASK-033-cp10-deposit-and-coin-settlement.md) is now runtime-verified under [`Evidence/SK-EVID-022-cp10-deposit-and-coin-settlement-runtime-verification.md`](Evidence/SK-EVID-022-cp10-deposit-and-coin-settlement-runtime-verification.md) and [`Validation/34-cp10-deposit-settlement-runtime-cross-functional-audit.md`](Validation/34-cp10-deposit-settlement-runtime-cross-functional-audit.md), with its accepted design and challenge retained in [`Decisions/ADR-GAME-0024-cp10-deposit-and-coin-settlement.md`](Decisions/ADR-GAME-0024-cp10-deposit-and-coin-settlement.md) and [`Validation/33-cp10-deposit-and-coin-settlement-preimplementation-challenge.md`](Validation/33-cp10-deposit-and-coin-settlement-preimplementation-challenge.md). The first CP-11 gatherer-loss path remains runtime-verified under [`Tasks/SK-TASK-034-cp11-gatherer-combat-and-cargo-loss.md`](Tasks/SK-TASK-034-cp11-gatherer-combat-and-cargo-loss.md), [`Evidence/SK-EVID-023-cp11-gatherer-combat-runtime-verification.md`](Evidence/SK-EVID-023-cp11-gatherer-combat-runtime-verification.md), and [`Validation/36-cp11-gatherer-combat-runtime-cross-functional-audit.md`](Validation/36-cp11-gatherer-combat-runtime-cross-functional-audit.md). The seeded Hunter victory/return path is runtime-verified under [`Tasks/SK-TASK-035-cp11-hunter-victory-and-return.md`](Tasks/SK-TASK-035-cp11-hunter-victory-and-return.md), [`Evidence/SK-EVID-024-cp11-hunter-victory-runtime-verification.md`](Evidence/SK-EVID-024-cp11-hunter-victory-runtime-verification.md), and [`Validation/38-cp11-hunter-victory-runtime-cross-functional-audit.md`](Validation/38-cp11-hunter-victory-runtime-cross-functional-audit.md). The schema-v6 danger-cell reissue/review path is runtime-verified under [`Tasks/SK-TASK-036-cp11-danger-cell-reissue-and-anti-loop.md`](Tasks/SK-TASK-036-cp11-danger-cell-reissue-and-anti-loop.md), [`Evidence/SK-EVID-025-cp11-danger-cell-reissue-runtime-verification.md`](Evidence/SK-EVID-025-cp11-danger-cell-reissue-runtime-verification.md), and [`Validation/40-cp11-danger-cell-reissue-runtime-cross-functional-audit.md`](Validation/40-cp11-danger-cell-reissue-runtime-cross-functional-audit.md); dynamic recall exposure, independent browser two-session UX, default-world scheduler, and hosted gameplay remain open. The named local reconnect path is separately verified under `SK-TASK-043`. The server-owned continuous-intent path is runtime-verified for the named local worker-to-page scope under [`SK-TASK-057`](Tasks/SK-TASK-057-cp12-server-owned-continuous-intent.md), [`SK-EVID-043`](Evidence/SK-EVID-043-cp12-server-owned-continuous-intent-runtime-verification.md), and [`Validation/71`](Validation/71-cp12-server-owned-continuous-intent-runtime-cross-functional-audit.md).
 
 ## Current outcome
 
 The blank `WebApp/Web-Game/` folder now has a modular documentation architecture, a preserved
 owner-source reference, an accepted two-player MVP profile, a sequenced delivery roadmap, and the
-owner-accepted `SK-MVP-0.1` contract. The decomposition currently tracks 19 atomic mechanisms, 8
-player-facing capabilities, and 11 cross-mechanism logic chains. CP-01 is closed at the design level;
-CP-02 must still prove the selected runtime and page capability before a bounded implementation task
-is created. Production balance, hosted topology, and runtime evidence remain open. No implementation,
-deployment, runtime, or judge claim follows from this documentation work.
+owner-accepted coherent `SK-MVP-0.2` contract. The `SK-MVP-0.1` record remains the historical gameplay
+baseline. The decomposition currently tracks 19 atomic mechanisms, 8
+player-facing capabilities, and 11 cross-mechanism logic chains. CP-01, the CP-03 planning closure,
+and the CP-03 implementation task lock are verified at the documentation level, and CP-02 is locally
+verified for the disposable runtime/page probe. Production balance, hosted topology, the independent
+two-browser slice, gameplay, dynamic Agent actions, Re-entry delivery, and hosted continuity remain
+open. No gameplay, deployment, or judge claim follows from this capability evidence.
 
-The owner accepted all twenty MVP defaults, including automatic bounded Re-entry recall, the
-12-tile/120-second protected start, the deterministic combat contrast, and the discovered-landmark
+The owner accepted all twenty MVP defaults, including automatic bounded Re-entry recall, the fixed
+12-tile/120-world-second protected start, the deterministic combat contrast, and the discovered-landmark
 presentation. The owner also accepted a reasonable, consistent visual bar with simple optional
 effects and a parallel asset lane that cannot block the backbone. Their durable contract and
 authority boundaries are recorded in
 [`Decisions/ADR-GAME-0006-mvp-contract-and-reentry-boundary.md`](Decisions/ADR-GAME-0006-mvp-contract-and-reentry-boundary.md),
 [`Decisions/ADR-GAME-0007-mvp-visual-assets-and-parallel-delivery.md`](Decisions/ADR-GAME-0007-mvp-visual-assets-and-parallel-delivery.md),
-and [`Engineering/09-mvp-contract-sheet.md`](Engineering/09-mvp-contract-sheet.md).
+and [`Engineering/09-mvp-contract-sheet.md`](Engineering/09-mvp-contract-sheet.md). The G2 closure is
+also recorded in
+[`Decisions/ADR-GAME-0010-g2-geometry-state-and-vocabulary-closure.md`](Decisions/ADR-GAME-0010-g2-geometry-state-and-vocabulary-closure.md).
+The owner also
+accepted the real-time Re-entry delivery policy: Domain Events remain durable, derived Agent Signals
+are coalesced, and a bound Codex Thread receives at most one pending or in-flight wake without the
+world waiting for an Agent. This decision is recorded in
+[`Decisions/ADR-GAME-0009-reentry-delivery-and-thread-backpressure.md`](Decisions/ADR-GAME-0009-reentry-delivery-and-thread-backpressure.md).
 
 The structural coverage result and cross-boundary gaps are recorded in
 [`Validation/02-mechanism-boundary-and-chain-audit.md`](Validation/02-mechanism-boundary-and-chain-audit.md).
@@ -36,6 +59,73 @@ The roadmap-driven decisions and edge cases are recorded in
 [`Validation/03-roadmap-gap-audit.md`](Validation/03-roadmap-gap-audit.md).
 Recommended defaults and chain-level UX contracts for closing those decisions are recorded in
 [`Validation/04-mvp-decision-proposals.md`](Validation/04-mvp-decision-proposals.md).
+A later cross-document logic and chain review found four blocking gaps, one protected-start ambiguity,
+and two consistency defects. The Re-entry timing tension is resolved by the real-time delivery policy,
+and all remaining findings are now closed for `SK-MVP-0.2`; the audit and its dispositions are recorded in
+[`Validation/05-pre-implementation-coherence-audit.md`](Validation/05-pre-implementation-coherence-audit.md).
+CP-02 was unaffected by those findings and is recorded in
+[`Evidence/SK-EVID-001-cp02-capability-and-runtime-probe.md`](Evidence/SK-EVID-001-cp02-capability-and-runtime-probe.md).
+The former Agent adapter limitation is resolved in
+[`Issues/resolved/SK-ISSUE-001-webmcp-agent-adapter-unavailable.md`](Issues/resolved/SK-ISSUE-001-webmcp-agent-adapter-unavailable.md);
+the cause was model eligibility, and the positive capability result is
+[`Evidence/SK-EVID-045-cp13-site-tools-capability-experiment.md`](Evidence/SK-EVID-045-cp13-site-tools-capability-experiment.md).
+The CP-04 process topology and lifecycle contract conflict is resolved for planning in
+[`Issues/resolved/SK-ISSUE-003-cp04-process-topology-and-lifecycle-contract.md`](Issues/resolved/SK-ISSUE-003-cp04-process-topology-and-lifecycle-contract.md).
+The owner-accepted one-process entrypoint, liveness/readiness contract, shutdown boundary, and future
+WebSocket ownership seam are recorded in
+[`Decisions/ADR-GAME-0011-cp04-local-runtime-boundary-and-health-contract.md`](Decisions/ADR-GAME-0011-cp04-local-runtime-boundary-and-health-contract.md)
+and reviewed in
+[`Validation/06-cp04-topology-and-cross-functional-audit.md`](Validation/06-cp04-topology-and-cross-functional-audit.md).
+The static acceptance and release are recorded in
+[`Evidence/SK-EVID-006-cp04-topology-acceptance-and-release.md`](Evidence/SK-EVID-006-cp04-topology-acceptance-and-release.md);
+the local process-runtime result is recorded in
+[`Evidence/SK-EVID-007-cp04-process-runtime-verification.md`](Evidence/SK-EVID-007-cp04-process-runtime-verification.md).
+An independent reviewer reproduced the CP-02 Node-side result and narrowed the page-capability claim
+to "page-side registration accepted"; external Agent discovery and invocation remain unproven, and a
+proven configuration already exists in the frozen MVP1 P0 evidence. That review is recorded in
+[`Evidence/SK-EVID-004-cp02-independent-reproduction-and-claim-review.md`](Evidence/SK-EVID-004-cp02-independent-reproduction-and-claim-review.md).
+The static contract and documentation verification for the accepted delivery policy is recorded in
+[`Evidence/SK-EVID-002-reentry-delivery-policy-contract-verification.md`](Evidence/SK-EVID-002-reentry-delivery-policy-contract-verification.md).
+The registered CP-05 task was then reviewed across persistence, event ordering, snapshot recovery,
+idempotency, outbox backpressure, lifecycle, and later checkpoint boundaries; the static disposition
+is recorded in [`Validation/07-cp05-persistence-cross-functional-audit.md`](Validation/07-cp05-persistence-cross-functional-audit.md).
+The implementation and local runtime result are recorded in
+[`Evidence/SK-EVID-008-cp05-persistence-runtime-verification.md`](Evidence/SK-EVID-008-cp05-persistence-runtime-verification.md).
+The listener-first shutdown and typed close-failure issue discovered by that review is resolved in
+[`Issues/resolved/SK-ISSUE-004-cp04-shutdown-order-and-store-close.md`](Issues/resolved/SK-ISSUE-004-cp04-shutdown-order-and-store-close.md).
+The pre-implementation contract closure is registered as
+[`Tasks/SK-TASK-002-pre-implementation-coherence-closure.md`](Tasks/SK-TASK-002-pre-implementation-coherence-closure.md)
+and closed by
+[`Issues/resolved/SK-ISSUE-002-preimplementation-coherence-and-reentry-window.md`](Issues/resolved/SK-ISSUE-002-preimplementation-coherence-and-reentry-window.md).
+The static closure evidence is recorded in
+[`Evidence/SK-EVID-003-g2-coherence-closure-contract-verification.md`](Evidence/SK-EVID-003-g2-coherence-closure-contract-verification.md).
+The CP-03 implementation task and release lock are recorded in
+[`Tasks/SK-TASK-003-g1-g2-critical-path-implementation-lock.md`](Tasks/SK-TASK-003-g1-g2-critical-path-implementation-lock.md)
+and verified by
+[`Evidence/SK-EVID-005-cp03-implementation-task-lock-verification.md`](Evidence/SK-EVID-005-cp03-implementation-task-lock-verification.md).
+The CP-04 child task is locally verified in
+[`Tasks/SK-TASK-004-cp04-process-skeleton-and-health.md`](Tasks/SK-TASK-004-cp04-process-skeleton-and-health.md).
+
+## Development governance
+
+This application governs its own development. The operating loop, risk profiles, Challenge gate,
+verification ladder, and closure labels are owned by
+[`00-Workflow/README.md`](00-Workflow/README.md); session execution discipline is owned by
+[`00-Workflow/01-session-runbook.md`](00-Workflow/01-session-runbook.md). Bounded work is registered
+in [`Tasks/`](Tasks/README.md), verified problems in [`Issues/`](Issues/README.md), and executed
+results in [`Evidence/`](Evidence/README.md). The boundary, the inherited physical constraints, the CP-02-gated implementation authority, and the
+CP-03 task lock are accepted in
+[`Decisions/ADR-GAME-0008-development-governance-and-implementation-authority.md`](Decisions/ADR-GAME-0008-development-governance-and-implementation-authority.md).
+
+Mechanical documentation closure runs from this application root:
+
+```sh
+python3 scripts/test_validate_game_docs.py
+python3 scripts/validate_game_docs.py --root . --report
+```
+
+The documentation self-tests and full repository validator pass. These checks cover document structure,
+links, language, and record shape only; they are not runtime, capability, or gameplay evidence.
 
 ## Working concept baseline
 
@@ -50,7 +140,8 @@ Recommended defaults and chain-level UX contracts for closing those decisions ar
   soldier.
 - Soldiers respawn instantly at the shelter after ordinary death, keep their identity, and have no
   respawn cooldown or replacement fee in this baseline. Their repeatable gathering or hunting
-  assignment is reissued under its restart policy, so the cost is travelling back; siege ends on
+  assignment consumes one reissue budget and takes one danger-cell-avoiding route attempt; no safe
+  route or a second monster death enters `WAITING_REVIEW`. The cost is travelling back; siege ends on
   death.
 - A shelter migration costs currency, cannot be cancelled, consumes a stealth charge, hides the
   shelter from new discovery, stops turrets, and allows existing field missions to continue.
@@ -66,14 +157,16 @@ Recommended defaults and chain-level UX contracts for closing those decisions ar
   machine.
 - A global world leaderboard records player progress; the ranking metric (coins, score, or both) is
   still open.
-- Re-entry Core receives typed backend events, returns an Agent to the canonical page, and lets the
-  Agent read current state and perform one bounded WebMCP action.
+- Re-entry Core receives eligible coalesced Agent Signals, each carrying a per-world monotonic event
+  cursor read window and eligible-event digest, returns an Agent to the canonical page, and lets the
+  Agent read current state and perform one bounded WebMCP action. The world never waits for delivery,
+  and high-frequency Domain Events never become one Codex Thread message each.
 - The accepted MVP profile uses one seeded 128 × 128 map with two protected player shelters at least
-  80 tiles apart, five starter soldiers per shelter, and symmetric Wood and Rock nodes near each
-  start. The full production map and population can grow later.
+  80 tiles apart, five starter soldiers per shelter, and symmetric Wood and Rock nodes 14–20 tiles
+  from each start. The full production map and population can grow later.
 - The accepted MVP presentation is a minimal top-down Canvas 2D surface with React controls and
-  overlays. A server snapshot stream targets about 10 Hz while the browser renders up to 60 FPS with
-  interpolation; the server remains authoritative for all outcomes.
+  overlays. A `client_snapshot` stream targets about 10 Hz while the browser renders up to 60 FPS with
+  interpolation; the durable `world_snapshot` supports restart and the server remains authoritative.
 
 ## Open design gates
 
@@ -83,35 +176,115 @@ Recommended defaults and chain-level UX contracts for closing those decisions ar
    rates remain open.
 3. Shelter repair timing, last-known-position expiry, siege failure after migration, siege reward
    share/cap, and the leaderboard metric remain post-G2 decisions.
-4. CP-02 must prove the local runtime, page-bound WebMCP capability, persistence probe, and visible
-   degraded behavior; hosted topology and its proof remain open.
+4. CP-02 local runtime, page registration, CP-04 process health, CP-05 file-backed persistence, the
+   CP-06 local clock/recovery boundary, the explicitly enabled local trusted server-time anchor and
+   autonomous driver, and the CP-07 deterministic fixture boundary are verified; dynamic Agent action/grant
+   delivery, hosted topology and trusted-time continuity, default-world bootstrap, and the default or
+   complete hosted all-phase scheduler remain open.
 5. Final visual asset selection and decorative polish remain open quality work, but placeholders and
    the accepted visual vocabulary cannot block the backbone or the G2 trace.
+6. CP-04 local runtime verification, CP-05 persistence verification, CP-06 clock/recovery
+   verification, CP-07 fixture verification, the CP-08 movement/snapshot, cadence, command/read,
+   transport-neutral projection, and authenticated local wire boundaries, and the bounded CP-09
+   dispatch/role-lock boundary and the CP-10 extraction/cadence/return/contest/deposit handoffs are complete for their accepted scopes. The accepted same-worker contest outcome is verified under [`Tasks/SK-TASK-031-cp10-contested-node-outcome.md`](Tasks/SK-TASK-031-cp10-contested-node-outcome.md), [`Evidence/SK-EVID-020-cp10-contested-node-runtime-verification.md`](Evidence/SK-EVID-020-cp10-contested-node-runtime-verification.md), and [`Validation/30-cp10-contested-node-runtime-cross-functional-audit.md`](Validation/30-cp10-contested-node-runtime-cross-functional-audit.md). Return navigation and exact home crossing are verified under [`Tasks/SK-TASK-032-cp10-return-navigation-and-home-crossing.md`](Tasks/SK-TASK-032-cp10-return-navigation-and-home-crossing.md), [`Evidence/SK-EVID-021-cp10-return-navigation-runtime-verification.md`](Evidence/SK-EVID-021-cp10-return-navigation-runtime-verification.md), and [`Validation/32-cp10-return-navigation-runtime-cross-functional-audit.md`](Validation/32-cp10-return-navigation-runtime-cross-functional-audit.md). Deposit and settlement are runtime-verified under [`Tasks/SK-TASK-033-cp10-deposit-and-coin-settlement.md`](Tasks/SK-TASK-033-cp10-deposit-and-coin-settlement.md), [`Evidence/SK-EVID-022-cp10-deposit-and-coin-settlement-runtime-verification.md`](Evidence/SK-EVID-022-cp10-deposit-and-coin-settlement-runtime-verification.md), and [`Validation/34-cp10-deposit-settlement-runtime-cross-functional-audit.md`](Validation/34-cp10-deposit-settlement-runtime-cross-functional-audit.md); the accepted design and challenge remain linked above. Worker-serialized 100 ms
+   cadence, command/read ordering, full connect/resync projection semantics, the local `ws` adapter,
+   schema-v3 mission dispatch, deterministic route handoff, field role lock, and route arrival are verified under
+   `Tasks/SK-TASK-023-cp08-worker-movement-cadence.md`,
+   `Tasks/SK-TASK-024-cp08-worker-command-read-gateway.md`,
+   `Tasks/SK-TASK-025-cp08-realtime-snapshot-transport.md`, and
+   `Tasks/SK-TASK-026-cp08-entrypoint-realtime-wire-adapter.md`; the bounded CP-09 results are recorded under
+   [`Tasks/SK-TASK-027-cp09-gatherer-dispatch-and-role-lock.md`](Tasks/SK-TASK-027-cp09-gatherer-dispatch-and-role-lock.md) and [`Tasks/SK-TASK-028-cp09-route-milestone-and-derived-transit.md`](Tasks/SK-TASK-028-cp09-route-milestone-and-derived-transit.md). The CP-10 first extraction/cargo task [`Tasks/SK-TASK-029-cp10-first-extraction-and-cargo.md`](Tasks/SK-TASK-029-cp10-first-extraction-and-cargo.md) and recurring cadence/return task [`SK-TASK-030`](Tasks/SK-TASK-030-cp10-extraction-cadence-and-return-handoff.md) are verified with their recorded evidence; return navigation/home crossing is verified under [`SK-TASK-032`](Tasks/SK-TASK-032-cp10-return-navigation-and-home-crossing.md); the explicit local autonomous driver is verified under [`SK-TASK-047`](Tasks/SK-TASK-047-cp06-trusted-elapsed-time-and-autonomous-scheduler.md), while production identity, browser UX, hosted topology, default-world bootstrap, hosted/default scheduler composition, and the remaining gameplay scope remain open.
 
 ## Recommended next step
 
-The next action is CP-02, a short capability and runtime probe for the selected Node worker, Canvas
-page, realtime transport, durable store, and genuine page-bound WebMCP surface. Visual preparation can
-run alongside that probe, while only after CP-02 passes should CP-03 create a bounded implementation
-task. Keep production combat tuning, spawn rates, prices, and final visual polish outside the contract
-until measured evidence requires a change.
+The bounded CP-12 fixture/session, one-browser hydration, explicit manual reconnect, and discrete
+movement increments are
+runtime-verified under [`SK-TASK-038`](Tasks/SK-TASK-038-cp12-local-fixture-session-and-initial-frame.md),
+[`SK-TASK-040`](Tasks/SK-TASK-040-cp12-browser-hydration-and-two-session-smoke.md), and
+[`SK-TASK-043`](Tasks/SK-TASK-043-cp12-browser-reconnect-and-stale-fallback.md), and
+[`SK-TASK-044`](Tasks/SK-TASK-044-cp12-keyboard-movement-and-authoritative-reconciliation.md), with the
+latest movement result in [`SK-EVID-033`](Evidence/SK-EVID-033-cp12-keyboard-movement-runtime-verification.md)
+and [`Validation/53`](Validation/53-cp12-keyboard-movement-runtime-cross-functional-audit.md).
+[`SK-TASK-041`](Tasks/SK-TASK-041-cp13-webmcp-capability-probe.md) remains terminal for its named negative
+adapter result. [`SK-TASK-053`](Tasks/SK-TASK-053-cp13-page-tool-contract-preparation.md) now owns the verified
+contract-only CP-13 preparation, and the bounded page implementation task
+[`SK-TASK-061`](Tasks/SK-TASK-061-cp13-page-read-tools-and-recall-action-implementation.md) is now
+verified for the four canonical page reads and one supported read-only invocation under
+[`SK-EVID-049`](Evidence/SK-EVID-049-cp13-canonical-page-webmcp-runtime-verification.md); the server
+recall transition remains runtime-verified separately, while dynamic recall, Agent grants, and the
+external delivery path remain open. The adapter prerequisite is recorded under
+[`SK-TASK-059`](Tasks/SK-TASK-059-cp13-site-tools-capability-experiment.md) and
+[`SK-EVID-045`](Evidence/SK-EVID-045-cp13-site-tools-capability-experiment.md). Independent two-browser
+isolation, production identity, hosted/default scheduler composition, Re-entry, and hosted claims
+remain separate. Task046, the B extension Task047, the isolated Task048 trace-support increment,
+the named local CP-15 aggregate Task049, and the bounded CP-16 pre-Agent local slice Task050 are
+closed at their recorded scopes; full CP-16/G2 must retain explicit capability, external, browser,
+hosted, and judge limits.
+
+The earlier CP-08 through CP-12 predecessor evidence remains below for traceability.
+
+The CP-08 entrypoint wire increment is runtime-verified in
+[`Tasks/SK-TASK-026-cp08-entrypoint-realtime-wire-adapter.md`](Tasks/SK-TASK-026-cp08-entrypoint-realtime-wire-adapter.md), with evidence in
+[`Evidence/SK-EVID-015-cp08-realtime-wire-runtime-verification.md`](Evidence/SK-EVID-015-cp08-realtime-wire-runtime-verification.md) and cross-functional review in
+[`Validation/20-cp08-realtime-wire-runtime-cross-functional-audit.md`](Validation/20-cp08-realtime-wire-runtime-cross-functional-audit.md). The bounded CP-09 dispatch/role-lock increment is also runtime-verified in
+[`Tasks/SK-TASK-027-cp09-gatherer-dispatch-and-role-lock.md`](Tasks/SK-TASK-027-cp09-gatherer-dispatch-and-role-lock.md), with evidence in
+[`Evidence/SK-EVID-016-cp09-gatherer-dispatch-runtime-verification.md`](Evidence/SK-EVID-016-cp09-gatherer-dispatch-runtime-verification.md) and cross-functional review in
+[`Validation/22-cp09-gatherer-dispatch-runtime-cross-functional-audit.md`](Validation/22-cp09-gatherer-dispatch-runtime-cross-functional-audit.md). The completed CP-10 first-extraction task is [`Tasks/SK-TASK-029-cp10-first-extraction-and-cargo.md`](Tasks/SK-TASK-029-cp10-first-extraction-and-cargo.md), with evidence in [`Evidence/SK-EVID-018-cp10-first-extraction-runtime-verification.md`](Evidence/SK-EVID-018-cp10-first-extraction-runtime-verification.md) and review in [`Validation/26-cp10-first-extraction-runtime-cross-functional-audit.md`](Validation/26-cp10-first-extraction-runtime-cross-functional-audit.md). The completed cadence/return task is [`Tasks/SK-TASK-030-cp10-extraction-cadence-and-return-handoff.md`](Tasks/SK-TASK-030-cp10-extraction-cadence-and-return-handoff.md), with evidence in [`Evidence/SK-EVID-019-cp10-extraction-cadence-runtime-verification.md`](Evidence/SK-EVID-019-cp10-extraction-cadence-runtime-verification.md) and cross-functional review in [`Validation/28-cp10-extraction-cadence-runtime-cross-functional-audit.md`](Validation/28-cp10-extraction-cadence-runtime-cross-functional-audit.md). The bounded contest task is now verified with [`Tasks/SK-TASK-031-cp10-contested-node-outcome.md`](Tasks/SK-TASK-031-cp10-contested-node-outcome.md), [`Evidence/SK-EVID-020-cp10-contested-node-runtime-verification.md`](Evidence/SK-EVID-020-cp10-contested-node-runtime-verification.md), and [`Validation/30-cp10-contested-node-runtime-cross-functional-audit.md`](Validation/30-cp10-contested-node-runtime-cross-functional-audit.md). Return navigation/home crossing is verified under [`Tasks/SK-TASK-032-cp10-return-navigation-and-home-crossing.md`](Tasks/SK-TASK-032-cp10-return-navigation-and-home-crossing.md), [`Evidence/SK-EVID-021-cp10-return-navigation-runtime-verification.md`](Evidence/SK-EVID-021-cp10-return-navigation-runtime-verification.md), and [`Validation/32-cp10-return-navigation-runtime-cross-functional-audit.md`](Validation/32-cp10-return-navigation-runtime-cross-functional-audit.md). The CP-10 deposit/coin settlement task is now closed with [`Evidence/SK-EVID-022-cp10-deposit-and-coin-settlement-runtime-verification.md`](Evidence/SK-EVID-022-cp10-deposit-and-coin-settlement-runtime-verification.md) and [`Validation/34-cp10-deposit-settlement-runtime-cross-functional-audit.md`](Validation/34-cp10-deposit-settlement-runtime-cross-functional-audit.md). The CP-11 danger-cell reissue task [`Tasks/SK-TASK-036-cp11-danger-cell-reissue-and-anti-loop.md`](Tasks/SK-TASK-036-cp11-danger-cell-reissue-and-anti-loop.md) is runtime-verified with [`Evidence/SK-EVID-025-cp11-danger-cell-reissue-runtime-verification.md`](Evidence/SK-EVID-025-cp11-danger-cell-reissue-runtime-verification.md) and reviewed in [`Validation/40-cp11-danger-cell-reissue-runtime-cross-functional-audit.md`](Validation/40-cp11-danger-cell-reissue-runtime-cross-functional-audit.md). CP-12 preparation is complete under [`Tasks/SK-TASK-012-cp12-canvas-dashboard-preimplementation-pack.md`](Tasks/SK-TASK-012-cp12-canvas-dashboard-preimplementation-pack.md), and the local projection/renderer increment is runtime-verified under [`Tasks/SK-TASK-037-cp12-client-projection-and-mission-row.md`](Tasks/SK-TASK-037-cp12-client-projection-and-mission-row.md), with its accepted projection boundary in [`Decisions/ADR-GAME-0028-cp12-client-projection-read-model.md`](Decisions/ADR-GAME-0028-cp12-client-projection-read-model.md) and pre-implementation challenge in [`Validation/41-cp12-client-projection-preimplementation-challenge.md`](Validation/41-cp12-client-projection-preimplementation-challenge.md), evidence in [`Evidence/SK-EVID-026-cp12-client-projection-runtime-verification.md`](Evidence/SK-EVID-026-cp12-client-projection-runtime-verification.md), and audit in [`Validation/42-cp12-client-projection-runtime-cross-functional-audit.md`](Validation/42-cp12-client-projection-runtime-cross-functional-audit.md). The verified CP-08 transport predecessor
+[`Tasks/SK-TASK-025-cp08-realtime-snapshot-transport.md`](Tasks/SK-TASK-025-cp08-realtime-snapshot-transport.md)
+proved server-bound full snapshot and resync frames through the worker gateway. Earlier verified predecessors
+[`Tasks/SK-TASK-022-cp08-movement-visibility-realtime-implementation.md`](Tasks/SK-TASK-022-cp08-movement-visibility-realtime-implementation.md), [`Tasks/SK-TASK-023-cp08-worker-movement-cadence.md`](Tasks/SK-TASK-023-cp08-worker-movement-cadence.md)
+and [`Tasks/SK-TASK-024-cp08-worker-command-read-gateway.md`](Tasks/SK-TASK-024-cp08-worker-command-read-gateway.md)
+proved the discrete, fixed-step, and ordering seams; dispatch now persists a planned route but does
+not advance it. Server projection and deterministic local rendering are now covered by CP-12; one-browser
+rendering and hydration are runtime-verified, while independent two-session behavior, pathfinding
+beyond the seeded worker routes, and hosted behavior remain open. The automatic realtime publication
+increment is runtime-verified at its named local scope under
+[`SK-TASK-051`](Tasks/SK-TASK-051-cp12-autonomous-realtime-snapshot-publication.md),
+[`SK-EVID-040`](Evidence/SK-EVID-040-cp12-autonomous-realtime-snapshot-publication-runtime-verification.md),
+and [`Validation/63`](Validation/63-cp12-autonomous-realtime-snapshot-publication-runtime-cross-functional-audit.md).
+The snapshot-gated held-input increment is runtime-verified for the named local client presentation
+scope under [`SK-TASK-054`](Tasks/SK-TASK-054-cp12-held-movement-and-touch-input.md),
+[`SK-EVID-042`](Evidence/SK-EVID-042-cp12-held-movement-runtime-verification.md), and
+[`Validation/66`](Validation/66-cp12-held-movement-runtime-cross-functional-audit.md). The
+server-owned continuous-intent path is runtime-verified for the named local worker-to-page scope
+under [`SK-TASK-057`](Tasks/SK-TASK-057-cp12-server-owned-continuous-intent.md),
+[`SK-EVID-043`](Evidence/SK-EVID-043-cp12-server-owned-continuous-intent-runtime-verification.md),
+and [`Validation/71`](Validation/71-cp12-server-owned-continuous-intent-runtime-cross-functional-audit.md);
+independent sessions, hosted continuity, dynamic recall, and Re-entry remain open.
+The CP-14 signal-policy preparation suite is contract-verified at its named level-2 scope under
+[`SK-TASK-052`](Tasks/SK-TASK-052-cp14-signal-policy-conformance-tests.md) and
+[`SK-EVID-041`](Evidence/SK-EVID-041-cp14-signal-policy-conformance-contract-verification.md);
+[`SK-ISSUE-007`](Issues/resolved/SK-ISSUE-007-cooldown-period-events-absent-from-next-signal.md) is resolved as a specification clarification. The accepted
+documentation-only CP-13 contract package is [`SK-TASK-053`](Tasks/SK-TASK-053-cp13-page-tool-contract-preparation.md) with its accepted Challenge in [`Validation/64`](Validation/64-cp13-page-tool-contract-preimplementation-challenge.md); it defines the four bounded reads and the page-gated recall seam. [`SK-TASK-060`](Tasks/SK-TASK-060-cp13-recall-transition-implementation.md) is runtime-verified for the named local server transition under [`SK-EVID-046`](Evidence/SK-EVID-046-cp13-recall-transition-runtime-verification.md) and [`Validation/73`](Validation/73-cp13-recall-transition-runtime-cross-functional-audit.md). [`SK-TASK-061`](Tasks/SK-TASK-061-cp13-page-read-tools-and-recall-action-implementation.md) is locally implementation-verified under [`SK-EVID-047`](Evidence/SK-EVID-047-cp13-page-tools-local-runtime-verification.md) and [`Validation/75`](Validation/75-cp13-page-tools-runtime-cross-functional-audit.md); the adapter capability is proven for one disposable page under `SK-EVID-045`, and the four canonical page reads plus one supported read-only invocation are verified under `SK-EVID-049`; dynamic recall, Agent grants, and Re-entry remain unproven.
+CP-04 through CP-09 are bounded to their accepted local seams; CP-09 dispatch and route arrival and
+CP-10 first extraction/cadence/return/contest handoffs are verified. CP-02's
+local result is recorded in [`Evidence/SK-EVID-001-cp02-capability-and-runtime-probe.md`](Evidence/SK-EVID-001-cp02-capability-and-runtime-probe.md);
+the external Re-entry Receiver and Local Connector handoff remains a separate gate before CP-14. Keep production combat
+tuning, spawn rates, prices, and final visual polish outside the contract until measured evidence
+requires a change.
 
 The accepted first slice is: one seeded 128 × 128 map, two protected shelters at least 80 tiles
 apart, five soldiers per player, symmetric Wood and Rock nodes, one seeded monster, one gather
 mission, one monster encounter, cargo loss on a monster-caused death, same-identity respawn and
-mission reissue, a causal dashboard history, and one event-to-page WebMCP read plus bounded recall action. It
+mission reissue, a causal dashboard history, one coalesced event-to-page Agent Signal, and one
+WebMCP read plus bounded recall action. It
 must survive a browser disconnect and a local process restart by replaying durable world time. The
 build boundary and implementation profile are recorded in
 [`Engineering/07-hackathon-mvp-build-gate.md`](Engineering/07-hackathon-mvp-build-gate.md).
 
-The normative identities, states, events, commands, settlement, snapshots, and causal acceptance
-stories are in [`Engineering/09-mvp-contract-sheet.md`](Engineering/09-mvp-contract-sheet.md).
+The normative identities, states, events, commands, settlement, `world_snapshot`/`client_snapshot`
+terms, and causal acceptance stories are in
+[`Engineering/09-mvp-contract-sheet.md`](Engineering/09-mvp-contract-sheet.md).
 
 The complete sequence, dependencies, release gates, and checkpoint closure packet are recorded in
 [`Engineering/08-development-roadmap-and-checkpoints.md`](Engineering/08-development-roadmap-and-checkpoints.md).
 
 ## Current non-claims
 
-This folder does not yet prove a running server, persistent database, pathfinding implementation,
-Canvas renderer, WebSocket transport, WebMCP registration, Agent wake path, public hosting,
-performance, balance, anti-cheat, or Hackathon submission readiness.
+This folder does not yet prove a default continuously advancing world, hosted trusted server-time
+continuity, default-world bootstrap, a complete hosted all-phase gameplay scheduler, independent browser two-session UX,
+hosted/default-world server-owned continuous movement intent, a silent no-settle reconnect deadline, production identity, Agent wake path, public hosting, performance at population scale,
+balance, anti-cheat, or Hackathon submission readiness. The CP-09 through CP-11 worker-owned movement,
+route, extraction, combat, cargo, settlement, and reissue boundaries are proven only within their
+recorded local fixture scopes. CP-02 remains disposable probe evidence; CP-05 and CP-06 prove only their named
+local persistence and clock/recovery seams plus synthetic fixtures.

@@ -32,10 +32,11 @@ Long-running work is represented as scheduled milestones instead of frame-by-fra
 - monster state timeout.
 
 A small simulation tick reconciles due events, while the client interpolates movement between
-authoritative snapshots. The accepted MVP uses a 100 ms movement and visibility step, about 10 Hz
-snapshots, and up to 60 FPS client rendering; combat, extraction, and respawn still settle on
-one-world-second boundaries. A server restart rehydrates the latest snapshot and replays any durable
-outbox events that were not acknowledged.
+authoritative `client_snapshot` projections. The accepted MVP uses a 100 ms movement and visibility
+step, about 10 Hz `client_snapshot` delivery, and up to 60 FPS client rendering; combat, extraction, and respawn still settle on
+one-world-second boundaries. A server restart rehydrates the latest `world_snapshot` and replays any durable
+Domain Events and Agent Signals that were not acknowledged. High-frequency Domain Events remain
+authoritative even when their Agent delivery is coalesced.
 
 ## Event ordering
 

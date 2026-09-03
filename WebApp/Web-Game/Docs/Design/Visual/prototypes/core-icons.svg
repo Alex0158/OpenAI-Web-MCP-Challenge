@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="24" viewBox="0 0 192 24" shape-rendering="crispEdges" role="img" aria-labelledby="title desc">
+  <title id="title">Sleepless Kingdom core UI icon source prototypes</title>
+  <desc id="desc">Transparent 24 by 24 cells for resource, tool, cargo, coin, warning, and landmark icons.</desc>
+
+  <g id="icon_wood_normal" data-asset-id="icon_wood" data-state="normal" transform="translate(0 0)" stroke="#1a2c31" stroke-width="1.25" stroke-linejoin="round">
+    <path fill="#8a5a44" d="M4 18h16l-2-4H6z"/>
+    <path fill="#a56e33" d="M6 14l2-8 4 3 4-4 2 9z"/>
+    <path fill="#6e4739" d="M9 7l2 2v5H9zm6 0l2-2v9h-2z"/>
+  </g>
+  <g id="icon_rock_normal" data-asset-id="icon_rock" data-state="normal" transform="translate(24 0)" stroke="#1a2c31" stroke-width="1.25" stroke-linejoin="round">
+    <path fill="#b8c4c2" d="M4 18l3-8 5-3 6 3 2 8-5 2H7z"/>
+    <path fill="#d8dfd8" stroke="none" d="M8 10l4-2 4 3-4 2z"/>
+    <path fill="#8f9c9a" stroke="none" d="M6 13l5-1v6H6z"/>
+  </g>
+  <g id="icon_pickaxe_normal" data-asset-id="icon_pickaxe" data-state="normal" transform="translate(48 0)" stroke="#1a2c31" stroke-width="1.25" stroke-linecap="round">
+    <path stroke="#8a5a44" stroke-width="2.5" d="M7 18L18 7"/>
+    <path stroke="#b8c4c2" stroke-width="3" d="M8 7c4-4 8-4 11-1"/>
+    <path stroke="#d8dfd8" stroke-width="1.5" d="M8 7c4-3 8-3 11-1"/>
+  </g>
+  <g id="icon_sword_normal" data-asset-id="icon_sword" data-state="normal" transform="translate(72 0)" stroke="#1a2c31" stroke-width="1.25" stroke-linejoin="round">
+    <path fill="#b8c4c2" d="M6 17L17 5l2 2L8 19z"/>
+    <path fill="#d8dfd8" stroke="none" d="M9 15l8-8 1 1-8 8z"/>
+    <path fill="#8a5a44" d="M5 18l3-3 2 2-3 3z"/>
+    <path fill="#f4b942" d="M7 15l3 3"/>
+  </g>
+  <g id="icon_cargo_normal" data-asset-id="icon_cargo" data-state="normal" transform="translate(96 0)" stroke="#1a2c31" stroke-width="1.25" stroke-linejoin="round">
+    <path fill="#8a5a44" d="M4 8h16v11H4z"/>
+    <path fill="#a56e33" d="M4 8l3-3h10l3 3z"/>
+    <path fill="#f8e48b" d="M11 5h2v14h-2z"/>
+  </g>
+  <g id="icon_coin_normal" data-asset-id="icon_coin" data-state="normal" transform="translate(120 0)" stroke="#1a2c31" stroke-width="1.25">
+    <circle fill="#f4b942" cx="12" cy="12" r="8"/>
+    <circle fill="none" stroke="#f8e48b" cx="12" cy="12" r="5"/>
+    <path fill="#8a5a44" stroke="none" d="M11 8h2v8h-2zM9 10h6v2H9zM9 14h6v2H9z"/>
+  </g>
+  <g id="icon_warning_normal" data-asset-id="icon_warning" data-state="normal" transform="translate(144 0)" stroke="#1a2c31" stroke-width="1.25" stroke-linejoin="round">
+    <path fill="#f4b942" d="M12 3l10 17H2z"/>
+    <path fill="#1a2c31" stroke="none" d="M11 8h2v6h-2zm0 8h2v2h-2z"/>
+  </g>
+  <g id="icon_landmark_normal" data-asset-id="icon_landmark" data-state="normal" transform="translate(168 0)" stroke="#1a2c31" stroke-width="1.25" stroke-linejoin="round">
+    <path fill="#f4b942" d="M5 5h12l-6 5 6 5H5z"/>
+    <path fill="#8a5a44" d="M5 4h2v16H5z"/>
+    <path fill="#b8c4c2" d="M3 20h7v2H3z"/>
+  </g>
+</svg>

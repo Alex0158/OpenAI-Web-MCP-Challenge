@@ -4,8 +4,9 @@
 
 ## Generated monsters
 
-Generated monsters are shared-world actors with a species, level, health, attack, defense, speed,
-detection range, patrol region, target policy, state, and optional resource value. They can move,
+Generated monsters are shared-world actors with a species, level, health, attack, defense,
+`initiative_speed`, patrol/chase movement rates, `monster_detection_radius_tiles`, patrol region,
+target policy, state, and optional resource value. They can move,
 search for players or soldiers, attack, retreat, die, and yield value when hunted.
 
 ## Corrupted soldiers

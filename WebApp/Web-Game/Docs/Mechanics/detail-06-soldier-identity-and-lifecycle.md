@@ -1,7 +1,7 @@
 # Soldier Identity and Lifecycle
 
 **Mechanism:** M06
-**Status:** Working decision; breach edge cases are open
+**Status:** G2 identity/lifecycle contract accepted; breach edge cases are open
 **Authority:** This file owns soldier identity and lifecycle. Mission and role files own assignment
 semantics.
 
@@ -15,14 +15,18 @@ the soldier or silently creates a second roster entry.
 
 ```text
 AT_SHELTER → FIELD
-FIELD → RETURNING → AT_SHELTER
-FIELD → DEAD → RESPAWNING_AT_SHELTER → AT_SHELTER
+FIELD → AT_SHELTER
+FIELD → DEAD → AT_SHELTER
 FIELD → CORRUPTED_MONSTER
 AT_SHELTER → RETIRED (future, if needed)
 ```
 
-The role and mission phase are separate from lifecycle state. A soldier can be `FIELD` and
-`ENGAGING`, or `AT_SHELTER` and `GUARD`.
+`TRAVELLING`, `WORKING`, `RETURNING`, and `DEPOSITING` are mission phases, not lifecycle states. The
+role, mission phase, and encounter status are separate from lifecycle state. A soldier can be
+`FIELD` while its mission is `TRAVELLING`, `WORKING`, or `RETURNING`, and while an encounter is
+`OBSERVED`, `CONTACT`, `LOCKED`, or `RESOLVING`. `DEAD` is a transient lifecycle state recorded with
+`SoldierDied`; the same identity returns to `AT_SHELTER` with `SoldierRespawned`. It is not a persisted
+`RESPAWNING_AT_SHELTER` phase. A resident soldier may hold a guard role in a later contract.
 
 ## Ordinary death
 
@@ -31,7 +35,8 @@ rule, marks the mission attempt's failure, and respawns the same `soldier_id` at
 respawn is immediate in world time, with no respawn cooldown or replacement fee in this baseline.
 The cost is lost time, the travel required to reach the next objective, and any exposed cargo settled
 by the combat rule. The existing repeatable gathering or hunting assignment is reissued from the
-shelter under its recorded restart policy; a one-shot siege attempt ends.
+shelter under the one-budget, danger-cell avoidance policy in the G2 contract; a blocked reissue or
+second monster death leaves the soldier at home in `WAITING_REVIEW`. A one-shot siege attempt ends.
 
 ## Breach conversion
 

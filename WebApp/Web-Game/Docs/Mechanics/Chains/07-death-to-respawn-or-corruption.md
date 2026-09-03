@@ -13,9 +13,20 @@ then produces ordinary same-identity respawn, a terminal siege attempt, or one u
 2. `M14` transfers PvP cargo to the winner or destroys only the unbanked cargo on a monster kill; the
    respawned soldier has no recovered field cargo.
 3. `M06` marks the current `mission_attempt_id` failed and respawns the same `soldier_id` at home.
-4. `M08` reissues the repeatable gathering or hunting assignment from the shelter; a siege remains
+4. `M08` consumes the one G2 monster reissue budget, records the integer danger cell, and makes one
+   deterministic route replan that excludes that cell and its one-tile neighbourhood. A missing safe
+   route leaves the soldier at home in `WAITING_REVIEW` with `NO_SAFE_REISSUE_ROUTE`.
+5. If the reissued attempt dies to a monster before a successful deposit, the budget is exhausted and
+   the soldier remains at home in `WAITING_REVIEW` with `REPEATED_MONSTER_DEATH`; no further automatic
+   reissue occurs. A successful deposit or new manual dispatch resets the budget. A siege remains
    terminal.
-5. The dashboard records location, cause, cargo outcome, and next valid action.
+6. The dashboard records location, cause, cargo outcome, reissue budget, danger cell, and next valid
+   action.
+
+The bounded CP-11 reissue and review outcomes are runtime-verified for the local file-backed worker
+scope in [`SK-EVID-025`](../../Evidence/SK-EVID-025-cp11-danger-cell-reissue-runtime-verification.md)
+and [`Validation/40`](../../Validation/40-cp11-danger-cell-reissue-runtime-cross-functional-audit.md).
+Browser, scheduler, WebMCP/Re-entry, hosted, and broader breach claims remain separate gates.
 
 ## Failure branches
 
@@ -35,8 +46,9 @@ then produces ordinary same-identity respawn, a terminal siege attempt, or one u
 ## Invariants and events
 
 The same soldier cannot both respawn and corrupt in one serialized event order. Stable identity is
-preserved through ordinary death but not through a converted monster entity. Candidate events are
-`SoldierDied`, `SoldierRespawned`, `CargoLostToMonster`, and `SoldierCorrupted`.
+preserved through ordinary death but not through a converted monster entity. G2 events are
+`SoldierDied`, `SoldierRespawned`, `CargoLostToMonster`, and `MissionReissued`; `SoldierCorrupted` is
+reserved for the post-G2 breach path.
 
 ## Open decisions
 

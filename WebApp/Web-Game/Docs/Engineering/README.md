@@ -17,4 +17,10 @@ proposed services, runtime, transport, or WebMCP tools exist.
 - [`08-development-roadmap-and-checkpoints.md`](08-development-roadmap-and-checkpoints.md) — sequenced
   delivery checkpoints, dependencies, release gates, and closure evidence.
 - [`09-mvp-contract-sheet.md`](09-mvp-contract-sheet.md) — normative G2 identities, states, events,
-  commands, settlement, snapshots, and causal acceptance stories.
+  commands, settlement, `world_snapshot`/`client_snapshot` projections, and causal acceptance stories.
+- [`10-cp13-cp18-implementation-seam-map.md`](10-cp13-cp18-implementation-seam-map.md) — file-level
+  implementation routing, predecessor gates, focused proofs, hosted handoff, and claim boundaries
+  for CP-13 through CP-18.
+- The CP-04 process boundary is accepted in
+  [`../Decisions/ADR-GAME-0011-cp04-local-runtime-boundary-and-health-contract.md`](../Decisions/ADR-GAME-0011-cp04-local-runtime-boundary-and-health-contract.md);
+  its local process behavior is recorded in `SK-EVID-007`; hosted/world behavior remains unverified.

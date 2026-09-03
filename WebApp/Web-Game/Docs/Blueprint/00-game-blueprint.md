@@ -60,7 +60,7 @@ explore the fogged map
 
 ## Starting state
 
-The current baseline is a starter shelter with a bounded detection radius, a turret, a basic
+The current baseline is a starter shelter with a bounded resource-sensing radius, a turret, a basic
 upgrade path, and five soldiers. The player can keep soldiers at home for defense, send them to
 collect resources, send them to hunt monsters, or form a siege party after discovering a target
 shelter. A global leaderboard records each player's progress; whether it ranks coins, score, or a
@@ -80,8 +80,9 @@ combined measure remains open.
 - A successful shelter breach creates a separate siege reward transfer from the defender's
   shelter-held value; the exact share and cap remain open.
 - Ordinary soldier death is an instant respawn at the shelter with the same soldier identity and no
-  respawn cooldown or replacement fee in this baseline. The repeatable gathering or hunting
-  assignment is reissued under its recorded restart policy; siege ends.
+  respawn cooldown or replacement fee in this baseline. A repeatable gathering or hunting assignment
+  receives one danger-cell-avoiding reissue; no safe route or a second monster death enters
+  `WAITING_REVIEW`; siege ends.
 - A migration is paid, committed, un-cancellable, stealthy, and turret-disabled. New field
   deployments wait until the shelter arrives; existing field soldiers continue and follow a moving
   home anchor when returning.

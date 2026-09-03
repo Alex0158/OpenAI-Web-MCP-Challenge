@@ -32,21 +32,22 @@ configuration object so later tuning does not change the domain contracts or eve
 | Decision | Recommended first-slice default | Reason |
 |---|---|---|
 | World clock and tick | One world second equals one real second. The worker advances movement and visibility on a 100 ms simulation step, while combat, extraction, and respawn settle on integer world-second boundaries. A restart advances from durable `last_world_time` to current wall time and processes due milestones once. | Smooth movement does not require frame-rate authority; discrete game outcomes remain easy to explain and replay |
-| Map and seed | One 128 × 128 logical-tile map, fixed seed `sleepless-mvp-01`, two symmetric protected starting shelters at least 80 tiles apart, five starter soldiers per shelter, one Wood node and one Rock node in each start zone, and one seeded monster. | Gives two players meaningful shared-world presence and travel space without procedural or population complexity |
-| Combat cadence | One round per world second. Higher `speed` acts first; ties use ascending entity id. No miss, critical hit, random roll, or party formula in this slice. | Deterministic outcomes are easy to inspect in the dashboard and test after restart |
-| Combat formula | `damage = max(1, attacker_attack + weapon_power + matchup_bonus - defender_defense)`. Gatherer: 100 HP, 8 attack, 2 defense, speed 3, pickaxe power 0. Hunter: 100 HP, 12 attack, 3 defense, speed 5, sword power 4, monster matchup bonus 4. Monster: 80 HP, 12 attack, 2 defense, speed 4. | Shows the role and tool difference with one readable formula |
+| Map and seed | One 128 × 128 logical-tile map, fixed seed `sleepless-mvp-01`, two symmetric protected starting shelters at least 80 tiles apart, five starter soldiers per shelter, one Wood node and one Rock node in each start zone (14–20 tiles from its shelter), and one seeded monster. | Gives two players meaningful shared-world presence and travel space without procedural or population complexity |
+| Combat cadence | One round per world second. Higher `initiative_speed` acts first; ties use ascending entity id. No miss, critical hit, random roll, or party formula in this slice. | Deterministic outcomes are easy to inspect in the dashboard and test after restart |
+| Combat formula | `damage = max(1, attacker_attack + weapon_power + matchup_bonus - defender_defense)`. Gatherer: 100 HP, 8 attack, 2 defense, `initiative_speed` 3, pickaxe power 0. Hunter: 100 HP, 12 attack, 3 defense, `initiative_speed` 5, sword power 4, monster matchup bonus 4. Monster: 80 HP, 12 attack, 2 defense, `initiative_speed` 4. | Shows the role and tool difference with one readable formula |
 | Cargo and extraction | First slice uses Wood and Rock: total capacity 5 equal-weight units, one unit extracted every 2 world seconds, Wood converts to one coin and Rock to three coins at shelter deposit. Each local node starts with 20 units and respawns after 30 world seconds. | Shows the owner's simple coin economy with two readable choices while preserving cargo risk without weights or crafting |
 | Full resource progression | Gold remains a later tier at 8 coins per unit; tool tiers T1/T2/T3 yield 1×/2×/3× on lower-tier nodes. Keep first-slice cargo as equal-weight unit slots. | Retains the owner's simple coin economy and Starve.io-inspired yield progression without adding a crafting tree |
-| Continuation event | `CargoLostToMonster` is the one continuation-eligible event. Deduplicate by `event_id`, allow at most one pending continuation per shelter, and require the existing user grant. | One meaningful event demonstrates re-entry without notification spam |
+| Continuation event | `CargoLostToMonster` is the one continuation-eligible event. Retain every Domain Event, deduplicate by `event_id`, coalesce derived Agent Signals, allow at most one pending or in-flight signal per shelter and bound Thread, and require the existing user grant. | One meaningful event demonstrates re-entry without notification spam or a gameplay hold |
 | Page tools | The Agent first calls `inspect_mission_history`, then may execute `force_recall_soldier` against the current revision with an idempotency key. Migration, siege, and destructive upgrades remain human-confirmed. | Gives the Agent a bounded recovery action while preserving consequence control |
-| Local persistence and transport | One Node.js 24 world worker, SQLite in WAL mode, one durable snapshot plus event log and outbox transaction. Use typed HTTP commands and a WebSocket snapshot/event channel at about 10 Hz after an early capability probe; retain polling only as a visible diagnostic fallback. | Supports a fluid two-player view while keeping mutations explicit and proving restart recovery and current-state reads |
+| Local persistence and transport | One explicit Node.js 24 entrypoint hosts the page and world-worker modules, with SQLite in WAL mode, one durable `world_snapshot` plus event log and outbox transaction. Use typed HTTP commands and a WebSocket `client_snapshot`/event channel at about 10 Hz after an early capability probe; retain polling only as a visible diagnostic fallback. | Supports a fluid two-player view while keeping mutations explicit and proving restart recovery and current-state reads |
 
-For a short demo, place each Wood or Rock node about 12 tiles from its shelter and use a soldier
-travel speed of 3 tiles per world second. The gatherer reaches a node in about four seconds, extracts
-visible cargo, and can meet the seeded monster before returning. A hunter with the recommended sword
-values defeats that monster in a few rounds; a gatherer with a pickaxe is expected to lose, which makes
-the cargo-loss and Agent-continuation path reliably observable while the second shelter remains a
-visible, non-immediate PvP participant.
+For a short demo, use the fixed Wood/Rock positions in the contract (14 and 18 tiles from each
+shelter) and `soldier_move_speed_tiles_per_world_second = 3.0`. A gatherer reaches the Wood node in
+about 4.7 seconds, extracts visible cargo, and can meet the seeded monster on the Rock lane before
+returning. A hunter with the recommended sword values defeats that monster in a few rounds; a gatherer
+with a pickaxe is expected to lose, which makes the cargo-loss and Agent-continuation path reliably
+observable while the second shelter remains a visible, non-immediate PvP participant. `initiative_speed`
+controls combat order and is separate from travel speed.
 
 ## Proposed implementation profile
 
@@ -54,11 +55,11 @@ visible, non-immediate PvP participant.
 |---|---|---|
 | Page | Next.js App Router, React, and TypeScript | Human UI remains the ordinary fallback |
 | Simulation | Node.js 24 and TypeScript authoritative world worker | No browser timer or client state decides outcomes |
-| Local persistence | SQLite with a durable snapshot, event log, and outbox | Use PostgreSQL when hosted proof needs concurrent durable service behavior |
-| Commands and updates | Typed HTTP commands plus a WebSocket snapshot/event stream at about 10 Hz | Probe capability early; polling is a visible diagnostic fallback and never becomes game authority |
-| Rendering | Canvas 2D with a small sprite/tile atlas at up to 60 FPS, interpolating authoritative snapshots | React owns controls and accessible overlays; Canvas renders projections and never owns state |
-| Re-entry | One outbox adapter seam plus one genuine page-bound WebMCP read or bounded action | Unsupported WebMCP must be reported visibly and leave the UI usable |
-| Operations | One always-on worker process with health output and restart catch-up | Do not use a serverless-only timer for world authority |
+| Local persistence | SQLite with a durable `world_snapshot`, event log, and outbox | Use PostgreSQL when hosted proof needs concurrent durable service behavior |
+| Commands and updates | Typed HTTP commands plus a WebSocket `client_snapshot`/event stream at about 10 Hz | Probe capability early; polling is a visible diagnostic fallback and never becomes game authority |
+| Rendering | Canvas 2D with a small sprite/tile atlas at up to 60 FPS, interpolating authoritative `client_snapshot` projections | React owns controls and accessible overlays; Canvas renders projections and never owns state |
+| Re-entry | One outbox adapter seam, coalesced Agent Signal dispatcher, and one genuine page-bound WebMCP read or bounded action | Unsupported WebMCP must be reported visibly and leave the UI usable; signal delivery must not flood a Codex Thread |
+| Operations | One explicit local entrypoint with process health; hosted mode keeps the world worker always on and restarts from durable state | Do not use a serverless-only timer for world authority |
 
 Redis, a separate pathfinding service, a game engine, and a microservice split are deferred until a
 measured performance or authority requirement makes one necessary.
@@ -72,12 +73,15 @@ The first slice should prove one complete causal loop with deliberately small co
 2. Assign one gatherer a locked tool and route. The server advances travel and extraction while the
    page is closed.
 3. Let the monster encounter and defeat the gatherer. Commit `CargoLostToMonster`, destroy only the
-   unbanked cargo, respawn the same soldier identity, and reissue its repeatable assignment.
+   unbanked cargo, respawn the same soldier identity, consume its one reissue budget, and reissue the
+   repeatable assignment on one danger-cell-avoiding route. A missing safe route or second monster
+   death must enter typed `WAITING_REVIEW` instead of looping.
 4. Show the route, cargo, combat result, loss cause, respawn, and next valid action in dashboard
    history.
-5. Deliver that causal event through the outbox, return to the canonical page, reread current state,
-   and execute the bounded `force_recall_soldier` WebMCP action under the accepted grant when the
-   current revision permits it. A missing capability or stale command must be visible; migration,
+5. Create one coalesced Agent Signal for that causal event without pausing the world, deliver it
+   through the outbox, return to the canonical page, reread current state, and execute the bounded
+   `force_recall_soldier` WebMCP action under the accepted grant when the live revision permits it. A
+   missing capability, stale command, or already-completed transition must be visible; migration,
    siege, and destructive upgrades stay behind the human boundary.
 6. Disconnect the browser and restart the local worker. The recovered state must follow durable
    world time without duplicating the encounter, cargo loss, respawn, or event delivery.

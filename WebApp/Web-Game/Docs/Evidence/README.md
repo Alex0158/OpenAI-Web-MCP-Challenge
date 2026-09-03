@@ -1,0 +1,83 @@
+# Sleepless Kingdom Evidence
+
+**Role:** Active evidence and claim-binding authority
+**Status:** Active
+**Last updated:** 2026-09-03
+
+## 1. Responsibility
+
+This directory stores fresh verification results, their exact source identity, and their claim
+limits. It supports claims made elsewhere; it never defines game behavior, and evidence context does
+not automatically become product policy.
+
+[`../Validation/`](../Validation/README.md) owns concept coherence audits and the plan for future
+proof. This directory owns executed results.
+
+The CP-12 dashboard icon increment is recorded in [`SK-EVID-027`](SK-EVID-027-cp12-original-svg-ui-icon-runtime-verification.md).
+The CP-12 local fixture session and first-frame process runtime is recorded in [`SK-EVID-028`](SK-EVID-028-cp12-local-fixture-session-runtime-verification.md).
+The CP-12 one-browser-context hydration and Canvas readback is recorded in [`SK-EVID-029`](SK-EVID-029-cp12-browser-hydration-runtime-verification.md).
+The CP-13 negative WebMCP capability probe is recorded in [`SK-EVID-030`](SK-EVID-030-cp13-webmcp-capability-probe.md).
+The CP-12 two-tab browser isolation limitation is recorded in [`SK-EVID-031`](SK-EVID-031-cp12-two-session-browser-isolation-probe.md).
+The CP-12 local browser reconnect and stale-fallback runtime is recorded in [`SK-EVID-032`](SK-EVID-032-cp12-browser-reconnect-runtime-verification.md).
+The CP-12 discrete keyboard/button movement and authoritative reconciliation runtime is recorded in [`SK-EVID-033`](SK-EVID-033-cp12-keyboard-movement-runtime-verification.md).
+The CP-12 ordinary-UI GATHERER dispatch and authoritative reconciliation runtime is recorded in [`SK-EVID-034`](SK-EVID-034-cp12-human-gatherer-dispatch-runtime-verification.md).
+The CP-06 boundary-safe gameplay phase coordinator runtime is recorded in [`SK-EVID-035`](SK-EVID-035-cp06-gameplay-phase-coordinator-runtime-verification.md).
+The CP-06 explicitly enabled autonomous scheduler runtime is recorded in [`SK-EVID-036`](SK-EVID-036-cp06-autonomous-scheduler-runtime-verification.md).
+The CP-15 deterministic trace support contract verification is recorded in [`SK-EVID-037`](SK-EVID-037-cp15-deterministic-trace-support-runtime-verification.md).
+The CP-15 contract/race/failure matrix aggregate is recorded in [`SK-EVID-038`](SK-EVID-038-cp15-contract-race-failure-matrix-runtime-verification.md).
+The CP-16 pre-Agent local causal slice is recorded in [`SK-EVID-039`](SK-EVID-039-cp16-local-causal-slice-pre-agent-gates-runtime-verification.md).
+The CP-12 automatic realtime snapshot publication runtime is recorded in [`SK-EVID-040`](SK-EVID-040-cp12-autonomous-realtime-snapshot-publication-runtime-verification.md).
+The CP-14 Agent Signal policy conformance result is recorded in [`SK-EVID-041`](SK-EVID-041-cp14-signal-policy-conformance-contract-verification.md) as a level-2 local contract result; `SK-ISSUE-007` is resolved as a specification clarification.
+The CP-12 snapshot-gated held movement and touch-input runtime is recorded in [`SK-EVID-042`](SK-EVID-042-cp12-held-movement-runtime-verification.md) for its named local client presentation scope; the server-owned continuous-intent runtime is recorded in [`SK-EVID-043`](SK-EVID-043-cp12-server-owned-continuous-intent-runtime-verification.md) for its named local worker-to-page scope, while hosted/default-world continuous movement remains open.
+The CP-12 server-owned continuous-intent runtime and close/fault/drain cross-functional review are recorded in [`SK-EVID-043`](SK-EVID-043-cp12-server-owned-continuous-intent-runtime-verification.md) and [`Validation/71`](../Validation/71-cp12-server-owned-continuous-intent-runtime-cross-functional-audit.md).
+The CP-13 site tools eligibility research is recorded in [`SK-EVID-044`](SK-EVID-044-cp13-site-tools-eligibility-research.md), and the positive page-bound discovery and read-only invocation on one local disposable page is recorded in [`SK-EVID-045`](SK-EVID-045-cp13-site-tools-capability-experiment.md); `SK-ISSUE-001` is resolved. The local game-page implementation is recorded in [`SK-EVID-047`](SK-EVID-047-cp13-page-tools-local-runtime-verification.md), the earlier gated canonical-page attempt is preserved in [`SK-EVID-048`](SK-EVID-048-cp13-canonical-page-browser-attempt.md), and the later positive canonical-page read capability is recorded in [`SK-EVID-049`](SK-EVID-049-cp13-canonical-page-webmcp-runtime-verification.md). Genuine Agent grant delivery, Re-entry delivery, and hosted continuity remain unproven.
+The CP-13 page-tools local implementation and cross-functional runtime result is recorded in [`SK-EVID-047`](SK-EVID-047-cp13-page-tools-local-runtime-verification.md) and [`Validation/75`](../Validation/75-cp13-page-tools-runtime-cross-functional-audit.md); `SK-EVID-049` adds ladder-level 6 evidence for the four canonical read tools and one supported read-only invocation, while dynamic recall, Agent grants, Re-entry, and hosted delivery remain open.
+The CP-14 game-side `ReentryDeliveryPort` and labelled local transport-stub result is recorded in [`SK-EVID-050`](SK-EVID-050-cp14-game-side-local-stub-delivery-port-runtime-verification.md) and [`Validation/76`](../Validation/76-cp14-game-side-local-stub-delivery-port-runtime-cross-functional-audit.md); live Receiver/Connector, Agent, hosted, and judge delivery remain open.
+The CP-16 In-app Browser two-tab limitation and close-one lifecycle result is recorded in [`SK-EVID-051`](SK-EVID-051-cp16-independent-browser-context-capability-probe.md) and [`Validation/77`](../Validation/77-cp16-independent-browser-context-capability-runtime-cross-functional-audit.md); independent browser contexts and the level-5 two-player claim remain open.
+
+## 2. Identity
+
+Evidence IDs use `SK-EVID-NNN`, beginning at `001` and increasing monotonically. Never renumber or
+reuse an ID. Files are named `SK-EVID-NNN-short-kebab-title.md`.
+
+## 3. Required content
+
+Every record binds a result to an exact identity and an exact claim limit. Start from
+[`../Templates/evidence-record.md`](../Templates/evidence-record.md) and record:
+
+- the evidence class: `static`, `contract`, `aggregate`, `process-runtime`, `slice-chain`,
+  `capability`, or `hosted`;
+- the exact source state, environment, runtime versions, fixture seed, and time;
+- the behavior under test and the owning contract section;
+- the claim this evidence may support, and the claims it cannot support;
+- the executed commands and their pass, fail, skip, gated, or flaky outcome;
+- what was not run and the resulting unknown; and
+- the freshness and invalidation triggers.
+
+## 4. Claim discipline
+
+1. Map every result to a level on the
+   [verification ladder](../00-Workflow/README.md#11-stage-8-verification-ladder) and never claim
+   above it.
+2. Skipped, gated, disabled, expected-fail, stub-only, and manual-only results are never counted as
+   passing evidence.
+3. A local pass does not prove a hosted configuration, and a hosted health pass does not prove a
+   reviewer journey.
+4. A capability result names the exact browser and session; a synthetic or fallback path may never be
+   reported as genuine page-bound WebMCP.
+5. A fixture world result is bounded by its seed. State the seed.
+
+## 5. Invalidation
+
+An evidence record is invalidated by a change to the source it names, the `SK-MVP-*` contract
+version, the persistence schema or `world_snapshot`/`client_snapshot` shape, the world-clock or due-work order, the event or
+idempotency contract, the runtime or browser version, or the fixture seed. Record the invalidation
+rather than silently reusing the result.
+
+## 6. Maintenance rules
+
+1. Keep this README bounded. Never add a result table or a second status register.
+2. Link large or sensitive output; do not paste raw traces, credentials, or private identifiers.
+3. Preserve superseded records with their original scope; do not edit a past result to match a new
+   claim.
+4. Keep every record English-only.

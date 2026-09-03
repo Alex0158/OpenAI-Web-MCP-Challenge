@@ -1,7 +1,7 @@
 # Resource Extraction, Cargo, and Deposit
 
 **Mechanism:** M11
-**Status:** MVP economy contract accepted; production balance is open
+**Status:** MVP economy contract accepted; the local Wood/Rock extraction/cadence/`RETURNING`/same-worker contest/return-navigation/deposit boundaries are runtime-verified under [`SK-TASK-029`](../Tasks/SK-TASK-029-cp10-first-extraction-and-cargo.md) through [`SK-TASK-033`](../Tasks/SK-TASK-033-cp10-deposit-and-coin-settlement.md); production balance remains open
 **Authority:** This file owns the resource-to-cargo-to-coin lifecycle. World generation owns nodes;
 loot owns hostile transfer; upgrades own tool progression.
 
@@ -42,14 +42,30 @@ owner, source node, typed quantity, acquisition time, capacity usage, and curren
 The accepted MVP uses five equal-weight slots, one unit every two world seconds, Wood at one coin,
 and Rock at three coins. A full typed-weight model remains `OPEN` for later progression.
 
-When capacity is reached, the mission enters `RETURNING`. A forced recall queues the same return.
-Cargo remains exposed during travel and can be transferred or destroyed by combat.
+The first CP-10 runtime boundary creates one exposed, provenance-linked cargo unit after its due
+marker. The recurring cadence boundary extends that same equal-weight stack by one unit per due marker;
+the stack's acquisition time is its first unit time and each later milestone remains in the event
+history. When capacity reaches five or the node is depleted, the mission enters `RETURNING` in the
+same transaction with a causal `MissionAutoReturned`; a final node unit also records the 30-second
+depletion marker. A forced recall queues the same return. When same-worker due attempts target one
+depleted node, the deterministic attempt-order winner owns the final unit and the loser receives an
+atomic `MissionAutoReturned(reason = TARGET_DEPLETED)` with its existing cargo. A node that was empty
+before the boundary and has no exposed cargo remains `TARGET_UNAVAILABLE`; the selected contest
+behavior is runtime-verified under [`../Tasks/SK-TASK-031-cp10-contested-node-outcome.md`](../Tasks/SK-TASK-031-cp10-contested-node-outcome.md), with evidence in [`../Evidence/SK-EVID-020-cp10-contested-node-runtime-verification.md`](../Evidence/SK-EVID-020-cp10-contested-node-runtime-verification.md). A full or depleted attempt then uses the verified CP-10 return boundary to reach the persisted home anchor, enter `DEPOSITING`, and emit `MissionHomeReached` while cargo remains exposed and unchanged; the boundary is evidenced in [`../Evidence/SK-EVID-021-cp10-return-navigation-runtime-verification.md`](../Evidence/SK-EVID-021-cp10-return-navigation-runtime-verification.md) and reviewed in [`../Validation/32-cp10-return-navigation-runtime-cross-functional-audit.md`](../Validation/32-cp10-return-navigation-runtime-cross-functional-audit.md). Cargo remains exposed during travel and can be transferred or destroyed by combat.
 
 ## Deposit and coin conversion
 
-At the shelter boundary, the server verifies the soldier, mission, shelter, and cargo versions,
-writes the deposit once, removes the exposed cargo, and credits the shelter wallet using the accepted
-conversion table. A soldier cannot spend or bank cargo in the field.
+At the shelter boundary, the worker accepts only an active G2 GATHERER in `DEPOSITING`, derives the
+shelter from the soldier's durable ownership, validates every active-attempt cargo row, and computes
+the coin delta from the fixed table. One transaction removes the validated cargo, credits the shelter
+wallet, returns the soldier to `AT_SHELTER`, closes the attempt as terminal history, and records the
+ordered `CargoDeposited` and (when the delta is positive) `CoinsCredited` events. A zero-cargo return
+still completes with a zero-value `CargoDeposited` event and no positive coin event. Duplicate work
+replays the stored result; malformed or cross-attempt cargo is a typed recovery fault and is never
+silently discarded. The registered implementation boundary and resident mission-row reuse rule are
+defined by [`SK-TASK-033`](../Tasks/SK-TASK-033-cp10-deposit-and-coin-settlement.md) and
+[`ADR-GAME-0024`](../Decisions/ADR-GAME-0024-cp10-deposit-and-coin-settlement.md), and are
+runtime-verified in [`../Evidence/SK-EVID-022-cp10-deposit-and-coin-settlement-runtime-verification.md`](../Evidence/SK-EVID-022-cp10-deposit-and-coin-settlement-runtime-verification.md) with review in [`../Validation/34-cp10-deposit-settlement-runtime-cross-functional-audit.md`](../Validation/34-cp10-deposit-settlement-runtime-cross-functional-audit.md). A soldier cannot spend or bank cargo in the field.
 
 ## Time and node interaction
 
@@ -68,7 +84,7 @@ return travel, capacity, and expected loss risk.
 
 - production capacity and typed-resource weights;
 - production conversion values and extraction durations;
-- later node reservation or competition policy; and
+- multi-worker reservation/fairness policy beyond the selected single-worker contest outcome; and
 - whether future monster species create cargo, direct coin, or world-drop value.
 
 ## Related documents

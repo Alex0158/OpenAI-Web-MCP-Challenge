@@ -1,6 +1,6 @@
 # Detection, Pathfinding, and Encounters
 
-**Status:** Working decision; implementation target
+**Status:** G2 geometry and detection contract accepted; implementation target
 
 This is a family overview for M04, M09, M10, and M13. The detailed authorities are
 [`detail-04-shelter-sensing.md`](detail-04-shelter-sensing.md),
@@ -10,12 +10,16 @@ and [`detail-13-encounter-and-combat-resolution.md`](detail-13-encounter-and-com
 
 ## Three visibility systems
 
-1. Shelter detection reveals resources inside a shelter sensing radius.
-2. Soldier detection uses each soldier's sensor radius and can reveal actors in the field.
-3. Player exploration reveals map cells only where the player avatar has travelled.
+1. Shelter detection reveals Wood and Rock inside the inclusive
+   `shelter_resource_sensing_radius_tiles = 24.0`.
+2. Soldier detection uses the inclusive `soldier_sensor_radius_tiles = 6.0` and can reveal actors in
+   the field.
+3. Player exploration reveals map cells within the inclusive
+   `player_fog_reveal_radius_tiles = 4.0` of the travelled avatar position.
 
-A larger sensor radius gives earlier awareness and can create the first pursuit decision. It does not
-determine combat victory.
+A larger sensor radius gives earlier awareness and can create the first pursuit decision. The seeded
+monster has a separate inclusive `monster_detection_radius_tiles = 5.0`. None of these ranges
+determines combat victory.
 
 ## Route model
 
@@ -26,8 +30,8 @@ target moves, the shelter home anchor moves, terrain changes, or the cached rout
 ## Contact
 
 A server spatial index checks only nearby entities. When a soldier's sensor finds an enemy, monster,
-or target shelter, the server records an observation. A battle begins when the actors enter the
-engagement radius and the server can atomically lock the encounter.
+or target shelter, the server records an observation. A battle begins when actors enter the inclusive
+`engagement_radius_tiles = 1.0` and the server can atomically lock the encounter.
 
 Two actors with overlapping positions but no valid detection do not automatically gain perfect
 knowledge. Terrain line-of-sight can remain a later modifier; the first implementation can use radius

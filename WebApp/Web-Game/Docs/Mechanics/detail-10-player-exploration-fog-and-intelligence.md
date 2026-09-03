@@ -13,9 +13,15 @@ avatar from the exposed field view; it does not pause world time or field missio
 
 ## Fog of map
 
-The map begins fogged. Walking reveals only cells the player has actually traversed. Exploration
-knowledge belongs to that player and is not the same as real-time visibility of another shelter,
-soldier, resource, or monster.
+The map begins fogged. Walking reveals cells whose centers are within the inclusive
+`player_fog_reveal_radius_tiles = 4.0` of the avatar's travelled position. Exploration knowledge
+belongs to that player and is not the same as real-time visibility of another shelter, soldier,
+resource, or monster.
+
+The CP-08 player aggregate persists the avatar's integer tile and a canonical player-owned set of
+explored cells. The fixture seeds the shelter-centered four-tile reveal; a valid movement command
+unions the destination reveal before committing the next player revision. This persistence is not an
+intelligence record and does not share fog with another player.
 
 ## Discovery
 
@@ -57,4 +63,3 @@ become a current coordinate; the final expiry and nearby search policy are `OPEN
 - [`detail-04-shelter-sensing.md`](detail-04-shelter-sensing.md);
 - [`detail-13-encounter-and-combat-resolution.md`](detail-13-encounter-and-combat-resolution.md); and
 - [`../Design/Capabilities/01-player-exploration-and-discovery.md`](../Design/Capabilities/01-player-exploration-and-discovery.md).
-

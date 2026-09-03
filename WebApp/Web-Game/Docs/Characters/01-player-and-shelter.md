@@ -15,7 +15,7 @@ A shelter is both a fictional magical settlement and an authoritative game entit
 
 - location and movement state;
 - level and upgrade branches;
-- resource sensing radius;
+  - `shelter_resource_sensing_radius_tiles` (24.0 in G2);
 - turret state and defense power;
 - resident and field soldier references;
 - coin wallet and deposited resources;
