@@ -84,16 +84,30 @@ and migration result; those historical limitations are not current source status
 ## Ownership and next gate
 
 No Core implementation, Game, RightSpot, Git index, branch, source commit,
-remote branch, production database, or deployment was changed by this
-initial source-preflight increment. Existing owner-held changes remain intact. Parent
-and Receiver fetch readback showed respectively 65/0 and 0/0 ahead/behind
-`origin/main`; neither is a source pin or remote delivery claim.
+remote branch, production database, or deployment was changed by the initial
+source-preflight increment. Existing owner-held changes remain intact.
 
-TASK-028's next gate is source-owner review and exact local Git closure of the
-standing corpus and active implementation, followed by a reviewed pin and
-conformance rerun. Stop before staging uncertain owner-held files or publishing
-unreviewed source. TASK-033 proceeds to public controls only after its exact
-contract and TASK-027 lifetime boundary are accepted. No new branch is required.
+**VERIFIED 2026-09-04 — release-gate source availability audit:** the parent
+repository is locally at `main` commit `29d5de4`, ahead `41/0` of
+`origin/main` commit `084748f`. The selected Core pin
+`1446d73aa3e66533547471728ad8fa5344d51f9e` is present in the local parent
+history but is not reachable from `origin/main`; the standing-v0.2 source paths
+are likewise absent from that clean remote tree. The nested Receiver is locally
+at `Re-Entry` commit `5a2117b`, with no upstream `Re-Entry` remote ref; its
+`origin/main` remains `6b4826f`. The nested working tree retains unrelated,
+owner-held pairing-rate-limit changes. This means a clean public checkout cannot
+yet execute the exact pinned cross-repository standing gate. No CI workflow was
+added because it would either fail for source unavailability or require a
+floating/local-only fallback, both of which would misstate release evidence.
+
+TASK-028's next gate is to make the reviewed exact Core and Receiver commits
+available through deliberate remote integration, then add and run a clean
+cross-repository conformance gate against those immutable refs and the recorded
+lock/source fingerprints. Until that prerequisite is met,
+`release_conformance_verified` remains `false`. Stop before staging uncertain
+owner-held files or publishing unreviewed source. TASK-033 proceeds to public
+controls only after its exact contract and TASK-027 lifetime boundary are
+accepted. No new branch is required.
 
 ## Source-owner review and corrections: 2026-09-03
 
