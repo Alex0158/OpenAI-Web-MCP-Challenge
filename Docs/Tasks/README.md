@@ -158,6 +158,9 @@ or perform a destructive action.
   SDK/HTTP/Connector/Adapter two-signal reference chain while active-v2 and Game adoption remain
   open.
 
+- [TASK-034](TASK-034-verify-connector-browser-webmcp-route.md) — Verify the actual Connector-started
+  Agent's Browser capability and an owner-approved read-only Game WebMCP route.
+
 Discover all task records with:
 
 ```sh

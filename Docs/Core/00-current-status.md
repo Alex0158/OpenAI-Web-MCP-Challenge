@@ -204,7 +204,7 @@ customer, cross-layer standing-mode adoption, and final market/distribution mode
 | Local Codex fresh-session adapter preview | **LOCALLY VERIFIED, PREVIEW ONLY** | ADR-0026, TASK-007, CLOUD-008, and `runtime/local-connector/` |
 | macOS Local Connector readiness preview | **LOCALLY VERIFIED, PREVIEW ONLY** | ADR-0027, TASK-008, CLOUD-009, and `runtime/local-connector/` |
 | Account-first consent and background Connector path | **CLOUD RECEIVER RUNTIME DEPRECATED; SDK/CONNECTOR SEAMS RETAINED AS PREVIEW EVIDENCE** | ADR-0028, TASK-009, CLOUD-010, and `runtime/{cloud-receiver,host-sdk,local-connector}/` |
-| Concrete supported Agent adapter | **UNSELECTED / UNVERIFIED** | route-specific ADR and Browser/WebMCP runtime evidence required |
+| Concrete supported Agent adapter | **UNSELECTED / UNVERIFIED** | CLOUD-024 verifies one actual fresh CLI default selecting Chrome extension with zero visible tabs; authenticated Game access and genuine WebMCP remain blocked on a session-preserving handoff under TASK-034; route-specific ADR still required |
 | Cloud Receiver deployment | **DEPRECATED SOURCE; HOSTED ALIAS NOT ARCHIVED** | ADR-0032, TASK-013, and `runtime/cloud-receiver/api/index.mjs`; the former alias may remain reachable until a separately authorized Vercel action |
 | Active Cloud Receiver v2 and web deployment | **CONSENT OPENER FIX DEPLOYED; LIVE ROUTE, DATABASE, DASHBOARD, AND CONNECTOR SMOKES GREEN; FULL DEPLOYED POPUP AND EXACT GIT CLOSURE OPEN** | Active `saas-boilerplate/`; `cloud-receiver-delta.vercel.app` resolves to READY preview-target Receiver deployment `dpl_AVGD8hA7bNwhcEykUQ8BMDbEX2sd`, and `re-entry-weld.vercel.app` resolves to frontend `dpl_8Wy1bUScjdps4ZVscbHeH93f5sFq`. `/consent` now emits `Cross-Origin-Opener-Policy: unsafe-none` while unrelated routes retain `same-origin`; health, database readiness, frontend CORS, authenticated paired-device listing, and active Connector polling passed. No exact commit contains the deployed working-tree snapshot, and a complete deployed Host consent/popup/status/Event run remains open. CLOUD-022 records the bounded evidence and residuals. |
 | Product value and judge reproducibility | **UNKNOWN** | selected-app evidence required |
@@ -285,6 +285,12 @@ CLOUD-022, SDK-006, and the Receiver standing verification record.
 delivery and start one new local Codex session with a fixed prompt containing the validated
 canonical page and continuation instructions; process completion is not Agent, Browser, WebMCP,
 Host-effect, or acknowledgement evidence.
+
+CLOUD-024 now separately verifies Browser capability through the actual manual fresh-process seam:
+the child selected Chrome extension and returned zero visible tabs. The desktop control selected
+the in-app Browser. Neither result proves child access to the Game's existing authenticated player;
+TASK-034 is blocked on an owner-approved session-preserving handoff. No Game navigation or Site Tool
+invocation was attempted, and the production adapter remains unselected.
 
 TASK-008, CLOUD-009, TASK-009, and CLOUD-010 add macOS Connector readiness and the current install
 path. The CLI resolves Codex from

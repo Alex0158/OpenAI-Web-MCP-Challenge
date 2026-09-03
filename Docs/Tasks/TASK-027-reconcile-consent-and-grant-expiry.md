@@ -10,7 +10,8 @@
 - Priority: `P1`
 - Owner: Project team, Re-entry Core, Host SDK, and Cloud Receiver v2 owners.
 - Current increment: Decide separate Consent-session and effective-Grant lifetime semantics for the
-  simple facade and define what expiry the user must see.
+  simple facade and define what expiry the user must see; assess the user's until-revoked standing
+  direction through an explicit version/storage/invalidation decision, not an implicit extension.
 - Next gate: An accepted decision fixes the intended windows, existing-row policy, public projection,
   and boundary tests without silently widening authority.
 - Dependencies: ADR-0007, ADR-0035, ADR-0041, AUDIT-V2-002 in Core/09, and TASK-012.
@@ -31,6 +32,14 @@ does not yet mean no-expiry authorization. Neither a distant expiry nor silent a
 may substitute for an accepted lifetime decision. The
 [standing control-plane proposal](../../saas-boilerplate/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md)
 records the public-shell implications without choosing a duration or changing existing v0.1 rows.
+
+[Research 25](../Research/25-until-revoked-standing-lifetime-proposal.md) now records a source-backed
+implementation proposal for no scheduled expiry. It separates short Consent/page clocks from
+Grant authority and bounded execution, retains all existing finite Grants, and compares an explicit
+unreleased-v0.2 revision against a new protocol profile. Complete consumer inventory and target/key
+invalidation semantics are decision prerequisites. The user endorsed the direction, not an exact
+wire version, migration topology, public route contract, or automatic credential renewal. This
+proposal does not close the older simple-facade expiry discrepancy or authorize schema changes.
 
 ## 2. Authority and evidence
 

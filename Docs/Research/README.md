@@ -1,8 +1,8 @@
 # Research Index
 
 **Role:** SUPPORTING research and bounded evidence index  
-**Status:** Current tracked index through Research 24  
-**Last updated:** 2026-09-02
+**Status:** Current tracked index through Research 25  
+**Last updated:** 2026-09-03
 
 Research can change a decision or verification plan, but it does not control current product truth
 or select an application. Accepted durable choices belong in `Docs/Decisions/`; current status and
@@ -41,6 +41,9 @@ proof claims belong in `Docs/Core/00-current-status.md` and
   the current Sleepless Kingdom and Rental Marketplace Relay shortlist.
 - [Research 24](24-cloud-receiver-2-saas-boilerplate-study.md): static review of the cloned SaaS
   boilerplate and the open Cloud Receiver 2 adaptation boundary.
+- [Research 25](25-until-revoked-standing-lifetime-proposal.md): proposed explicit no-scheduled-expiry
+  authority, clock separation, version/storage alternatives, invalidation and implementation gates;
+  not an accepted contract.
 
 ## Maintenance rules
 
