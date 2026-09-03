@@ -88,6 +88,12 @@ is unmade, a duplicate, or an external action added merely to make the queue loo
 
 ## 6. Current task routing
 
+[`SK-TASK-072`](SK-TASK-072-cp14-upstream-main-game-scope-drift-audit.md) is verified with `answered`
+closure for the post-fetch source-topology and Game-preservation audit under [`SK-EVID-059`](../Evidence/SK-EVID-059-cp14-upstream-main-game-scope-drift-source-audit.md)
+and [`Validation/85`](../Validation/85-cp14-upstream-main-game-scope-cross-functional-audit.md). It
+confirms that the fetched upstream Re-entry merge is not a drop-in Game base and leaves integration
+gated on an owner-selected exact tip and Eddy handoff; it does not authorize merge, rebase, cherry-pick,
+fast-forward, or external delivery claims.
 [`SK-TASK-071`](SK-TASK-071-cp16-real-event-burst-page-context.md) is verified for the named CP-16
 local real-worker burst composition: two actionable loss/reissue outcomes remain one coalesced signal
 while both causal records stay page-readable and the latest reissued mission remains recallable under

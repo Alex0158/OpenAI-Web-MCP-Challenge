@@ -149,6 +149,9 @@ not claim that the game is built or balanced.
   — CP-16 real two-loss/reissue burst coalescing, page cursor-window and paginated history semantics,
   once-only local delivery, latest-event recall, duplicate safety, scope privacy, and explicit external
   backpressure/browser/hosted/judge gates.
+- [`85-cp14-upstream-main-game-scope-cross-functional-audit.md`](85-cp14-upstream-main-game-scope-cross-functional-audit.md)
+  — CP-14 static source-topology audit of the fetched upstream main and Re-entry candidate, Game-tree
+  preservation risk, Eddy handoff readiness boundary, and the owner-controlled exact-tip pre-merge gate.
 
 ## Current concept checks
 
