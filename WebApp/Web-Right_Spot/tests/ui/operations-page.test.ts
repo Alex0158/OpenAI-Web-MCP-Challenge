@@ -111,11 +111,62 @@ test("Operations page exposes explicit recovery, labels, and both query families
   assert.match(page, /RolePageFrame[\s\S]*requiredRole="agent"[\s\S]*currentPath="\/agent\/operations"/);
   assert.match(page, /listingPipeline/);
   assert.match(page, /upcomingViewings/);
+  assert.match(page, /Loading Operations data/);
+  assert.match(page, /Authoritative result/);
+  assert.match(page, /No matching records/);
+  assert.match(page, /Enter both dates in YYYY-MM-DD format\./);
   assert.match(page, /Retry operations read/);
   assert.match(page, /Clear filters/);
   assert.match(page, /aria-label="Operations report"/);
   assert.match(page, /aria-live="polite"/);
   assert.doesNotMatch(page, /startsWith\("\/agent/);
+});
+
+test("Operations page makes late read success, error, and completion settlements inert", () => {
+  const page = readFileSync(PAGE_PATH, "utf8");
+  const readCall = page.indexOf("await readOperations(");
+
+  assert.notEqual(readCall, -1, "missing Operations read call");
+  assert.match(page, /useRef\(0\)/, "missing monotonic latest-read identity");
+  assert.match(page, /(?:\+\+\s*\w+\.current|\w+\.current\s*\+=\s*1)/, "read identity is not advanced");
+  const effect = page.match(/useEffect\(\(\) => \{[\s\S]*?\}, \[\]\);/)?.[0];
+  assert.ok(effect, "missing initial-read lifecycle");
+  assert.match(effect, /return \(\) => \{\s*\w+\.current \+= 1;\s*\}/, "unmount must invalidate the read");
+  assert.equal(
+    page.match(/if \(\s*\w+\s*!==\s*\w+\.current\s*\) return;/g)?.length,
+    3,
+    "success, error, and finally must all ignore stale reads",
+  );
+  assert.match(
+    page.slice(readCall),
+    /if \(\s*\w+\s*!==\s*\w+\.current\s*\) return;\s*setResponse/,
+    "late success must not publish a response",
+  );
+  assert.match(
+    page.slice(readCall),
+    /catch \([\s\S]*?if \(\s*\w+\s*!==\s*\w+\.current\s*\) return;\s*setError/,
+    "late error must not publish an error",
+  );
+  assert.match(
+    page.slice(readCall),
+    /finally \{[\s\S]*?if \(\s*\w+\s*!==\s*\w+\.current\s*\) return;\s*setIsLoading\(false\)/,
+    "late completion must not clear newer loading state",
+  );
+});
+
+test("Operations report changes invalidate an in-flight read before changing context", () => {
+  const page = readFileSync(PAGE_PATH, "utf8");
+  const reportControl = page.match(/<select aria-label="Operations report"[\s\S]*?<\/select>/)?.[0];
+
+  assert.ok(reportControl, "missing Operations report control");
+  assert.match(
+    reportControl,
+    /(?:\+\+\s*\w+\.current|\w+\.current\s*\+=\s*1)[\s\S]*?setKind/,
+    "changing report context must invalidate the pending read",
+  );
+  assert.match(reportControl, /setIsLoading\(false\)/, "changing report context must end the invalidated loading state");
+  assert.match(reportControl, /setResponse\(null\)/);
+  assert.match(reportControl, /setError\(null\)/);
 });
 
 test("Agent navigation isolates queue and Operations active boundaries", () => {

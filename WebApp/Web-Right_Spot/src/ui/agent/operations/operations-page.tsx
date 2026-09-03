@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import RolePageFrame from "../../shared/role-page-frame";
 import StatusBanner from "../../shared/status-banner";
 import {
@@ -36,8 +36,12 @@ function OperationsWorkspace() {
   const [response, setResponse] = useState<OperationsResponse | null>(null);
   const [error, setError] = useState<OperationsApiError | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const latestReadId = useRef(0);
 
-  useEffect(() => { void runQuery(DEFAULT_QUERY); }, []);
+  useEffect(() => {
+    void runQuery(DEFAULT_QUERY);
+    return () => { latestReadId.current += 1; };
+  }, []);
 
   function currentQuery(): OperationsQuery {
     if (kind === "listingPipeline") {
@@ -53,20 +57,32 @@ function OperationsWorkspace() {
   }
 
   async function runQuery(query: OperationsQuery = currentQuery()) {
+    const readId = ++latestReadId.current;
     setError(null);
     setResponse(null);
+    setIsLoading(false);
     const validation = validateQuery(query);
     if (validation) {
       setError(new OperationsApiError(400, "VALIDATION_FAILED", validation));
       return;
     }
     setIsLoading(true);
-    try { setResponse(await readOperations(query)); }
-    catch (caught) { setError(caught instanceof OperationsApiError ? caught : new OperationsApiError(0, "HTTP_ERROR", "The Operations service returned an unexpected response. Try again.")); }
-    finally { setIsLoading(false); }
+    try {
+      const nextResponse = await readOperations(query);
+      if (readId !== latestReadId.current) return;
+      setResponse(nextResponse);
+    } catch (caught) {
+      if (readId !== latestReadId.current) return;
+      setError(caught instanceof OperationsApiError ? caught : new OperationsApiError(0, "HTTP_ERROR", "The Operations service returned an unexpected response. Try again."));
+    } finally {
+      if (readId !== latestReadId.current) return;
+      setIsLoading(false);
+    }
   }
 
   function clearFilters() {
+    latestReadId.current += 1;
+    setIsLoading(false);
     setKind(DEFAULT_QUERY.kind); setArea(""); setPublicationState(""); setLifecycleState(""); setMinPublishedAgeDays(""); setFrom(""); setTo(""); setStatus(""); setListingId(""); setResponse(null); setError(null);
   }
 
@@ -75,7 +91,7 @@ function OperationsWorkspace() {
       <div className={styles.workspaceHeader}><div><p className="eyebrow">Manual read surface</p><h2 id="operations-heading">See the current work that needs attention</h2><p className="panel-copy">Choose one bounded report. Every row, count, and freshness field below comes from the server-owned Operations projection.</p></div></div>
       <form className={styles.queryPanel} onSubmit={(event) => { event.preventDefault(); void runQuery(); }} aria-label="Operations filters">
         <div className={styles.formGrid}>
-          <label className={styles.field}><span>Operations report</span><select aria-label="Operations report" value={kind} onChange={(event) => { setKind(event.target.value as OperationsQuery["kind"]); setResponse(null); setError(null); }}><option value="listingPipeline">Listing pipeline</option><option value="upcomingViewings">Upcoming viewings</option></select></label>
+          <label className={styles.field}><span>Operations report</span><select aria-label="Operations report" value={kind} onChange={(event) => { latestReadId.current += 1; setIsLoading(false); setKind(event.target.value as OperationsQuery["kind"]); setResponse(null); setError(null); }}><option value="listingPipeline">Listing pipeline</option><option value="upcomingViewings">Upcoming viewings</option></select></label>
           <label className={styles.field}><span>Area (optional)</span><input value={area} onChange={(event) => setArea(event.target.value)} /></label>
           {kind === "listingPipeline" ? <>
             <label className={styles.field}><span>Publication state</span><select value={publicationState} onChange={(event) => setPublicationState(event.target.value)}><option value="">All publication states</option><option value="PUBLISHED">Published</option><option value="UNPUBLISHED">Unpublished</option></select></label>
