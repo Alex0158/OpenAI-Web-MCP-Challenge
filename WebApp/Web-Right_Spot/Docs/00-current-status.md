@@ -172,21 +172,24 @@ identified and Main resolved gaps in static metadata/schema, privacy allowlistin
 stale/error outcomes, assignment semantics, and source identity. [ADR-RS-0017](Decisions/ADR-RS-0017-agent-operations-webmcp-listing-pipeline-contract.md)
 now accepts one bounded Agent-only, page-bound, read-only `read_listing_pipeline` contract. No manual
 Operations behavior changed; `RIGHTSPOT-047` recaptured browser capability, cleanup semantics, and
-source identity, then dispatched its single Builder Work Order `RS-WO-047-01`. Implementation and
-browser evidence remain open.
+source identity, then dispatched its single Builder Work Order `RS-WO-047-01`. The five-path candidate
+is implemented and frozen at local candidate commit `09d0628`; Main's docs-only gate commit is
+`b8324f1`. Deterministic checks and Main-controlled browser smoke pass, but the independent browser
+gate has one command-level harness block and two bounded partial retries, so `RIGHTSPOT-047` remains
+open at `INDEPENDENT_BROWSER_INCOMPLETE`.
 `upcomingViewings` remains excluded because its `asOf`/fixture-clock behavior needs deterministic
 reproducible non-empty evidence. The active `RIGHTSPOT-012` audit remains non-blocking.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Receive and review the single Builder Work Order under in-progress
-`RIGHTSPOT-047` for the accepted `RIGHTSPOT-046` Operations WebMCP contract; then freeze and
-independently verify it while the non-blocking
-`RIGHTSPOT-012` cross-layer audit
-continues against the latest canonical Main source. `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its
-manual Operations consumer latest-read boundary at product source `3582ba4`; it does not reopen
-`RIGHTSPOT-044` or change the Operations API, domain, projection, fixture, role/privacy, navigation,
-or WebMCP boundary. `RIGHTSPOT-006` remains credential-gated. No Operations WebMCP source implementation
-or registration may begin until the separate implementation Task has recaptured its baseline, write set,
-browser gate, and evidence plan. The existing Tenant Discovery/WebMCP slice remains
+**Current next product action:** Resolve the supporting browser completion path with preflighted
+commands and an outer bounded wait, then complete the missing independent evidence for `RS-WO-047-02`
+against the frozen `09d0628` candidate, without moving the source ref or modifying the five-path write
+set. Do not keep retrying the current unreliable harness path; if the gate still cannot complete,
+record the exact limitation and keep the Task open. Do not push or claim WebMCP closure. In parallel,
+`RIGHTSPOT-012` remains a non-blocking
+read-only audit lane. `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its manual Operations consumer
+latest-read boundary at product source `3582ba4`; it does not reopen `RIGHTSPOT-044` or change the
+Operations API, domain, projection, fixture, role/privacy, navigation, or WebMCP boundary.
+`RIGHTSPOT-006` remains credential-gated. The existing Tenant Discovery/WebMCP slice remains
 `RIGHTSPOT-043` `CLOSED_VERIFIED` in its declared local supported-browser capability. No production,
 universal browser, judge, or probabilistic agent success claim is made.
 `RIGHTSPOT-010` is closed as a reviewed staged Agent Operations decision through `ADR-RS-0016`.

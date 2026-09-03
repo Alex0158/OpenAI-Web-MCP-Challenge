@@ -166,13 +166,14 @@ WebMCP remains separately gated.
 `RIGHTSPOT-012` is a non-blocking
 read-only audit lane, and `RIGHTSPOT-046` is closed through accepted `ADR-RS-0017` for one bounded
 Agent Operations `read_listing_pipeline` WebMCP capability. `RIGHTSPOT-047` is in progress after
-its T0 baseline recapture and single Builder dispatch; implementation and browser evidence remain
-pending. The `F-01` queue/privacy defect is closed within `RIGHTSPOT-025`; `RIGHTSPOT-026`
+its T0 baseline recapture and single Builder dispatch; the five-path candidate is frozen locally,
+deterministic checks and Main browser smoke pass, while the independent browser gate remains
+incomplete after one command-level harness block and two bounded partial retries. The `F-01` queue/privacy defect is closed within `RIGHTSPOT-025`; `RIGHTSPOT-026`
 is also closed within its presentation-only boundary. `RIGHTSPOT-027` is closed after its bounded
 presentation repair and independent verification; no implementation Worktree is active. The next step
-is to receive and review the single Builder Work Order under `RIGHTSPOT-047` while the fresh
-Main-thread cross-layer audit continues; source integration remains gated by exact-path review,
-focused/full checks, and the subsequent frozen-source browser verification.
+is to complete the missing bounded independent browser evidence for `RS-WO-047-02` while the fresh
+Main-thread cross-layer audit continues; source push and Task closure remain gated by exact-path
+review, focused/full checks, and complete frozen-source browser verification.
 The authoritative sequence is maintained in the [development roadmap](RIGHTSPOT-DEVELOPMENT-ROADMAP.md#31-current-next-route).
 
 ## Closure record requirements

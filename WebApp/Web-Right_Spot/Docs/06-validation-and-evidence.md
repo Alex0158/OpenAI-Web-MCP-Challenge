@@ -5,7 +5,8 @@
 boundary, tenant discovery API, workflow HTTP/DTO transport, shared shell, shared role-page frame,
 accepted ordinary role-page product workflow, and post-MVP shared CSS foundation are independently
 verified or integrated.
-The current complete suite passes `159/159` across `39` authored test files; the latest bounded
+The current frozen Operations WebMCP candidate complete suite passes `201/201` across the current
+authored test files; the latest bounded
 cross-layer findings `F-17` / `RIGHTSPOT-039` and `F-18` / `RIGHTSPOT-040` are closed within their
 tenant listing-detail and Discovery error-copy truthfulness scopes. The subsequent audit reproduced
 `F-19` / `RIGHTSPOT-041`, a tenant request-editor success-feedback lifecycle defect; its bounded
@@ -1363,3 +1364,29 @@ been independently tested in the supported browser for discovery, invocation, pa
 teardown, privacy, or no-mutation evidence. `RIGHTSPOT-047` therefore remains
 `verification_pending`; Main must freeze this exact candidate and dispatch `RS-WO-047-02` before making
 an implementation closure claim.
+
+## 7.30 Operations WebMCP independent verifier attempts — 2026-09-03
+
+The first `RS-WO-047-02` attempt stopped before page navigation because the supporting Verifier used
+the unavailable shell command `timeout`. It matched the frozen candidate source identity and five
+path hashes and observed no source, fixture, SQLite, Git, or Worktree mutation, but it produced no
+browser evidence and is recorded as `BLOCKED_HARNESS`, not a product result.
+
+A corrected retry used the installed `agent-browser` binary directly with `--enable-features=WebMCPTesting`.
+It independently reached the local app, started the normal Property agent session, discovered exactly
+`read_listing_pipeline`, confirmed the frozen metadata/schema, exercised a valid Southwark read with
+page parity, a case-sensitive empty result, malformed-input preservation, GET-only invocation, and a
+`320x720` labelled/no-overflow surface. It was then stopped at the bounded execution limit before
+tenant/wrong-role lifecycle, sign-out/route teardown, final console/page-error collection, final mobile
+non-empty capture, and final persistent-state readback. It is recorded as `INCOMPLETE_EVIDENCE` rather
+than `VERIFIED`; no product failure was observed. A later narrower follow-up
+(`01a065f6-f14c-7131-9c17-a472503bf5d8`) reached only source preflight and the Tenant/wrong-role
+zero-tool check before the bounded stop; it added no complete independent closure evidence.
+
+Main separately reproduced the missing local checks in isolated session `rs-goal-diag-20260903`:
+Agent discovery/invocation and valid/invalid page parity, signed-out and Tenant zero-tool boundaries,
+sign-out route recovery, GET-only network traffic, mobile accessibility snapshot, and no page errors
+beyond normal React DevTools/HMR informational logs. This supplements but does not replace the
+independent gate. `RIGHTSPOT-047` remains open at `INDEPENDENT_BROWSER_INCOMPLETE`; the candidate must
+not be pushed or closed as verified until the same Work Order completes its bounded independent
+evidence or Main records an explicit evidence decision.

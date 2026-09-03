@@ -305,8 +305,9 @@ manual Operations consumer boundary; `RS-WO-045-01` is integrated at `3582ba4`, 
 race evidence and the explicit independent-browser harness limitation recorded. `RIGHTSPOT-046` is
 closed through accepted `ADR-RS-0017` for one bounded Agent-only `read_listing_pipeline` contract;
 the separate implementation Task `RIGHTSPOT-047` is in progress after T0 baseline recapture and
-Builder dispatch, with source review and browser evidence still open. Other Operations WebMCP
-capabilities remain separately gated.
+Builder dispatch. Its five-path candidate is frozen locally; deterministic checks and Main browser
+smoke pass, while the independent browser gate remains incomplete after one command-level harness
+block and two bounded partial retries. Other Operations WebMCP capabilities remain separately gated.
 
 The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.
 The page-entry audit registered `RIGHTSPOT-021` as a bounded implementation route: restore a

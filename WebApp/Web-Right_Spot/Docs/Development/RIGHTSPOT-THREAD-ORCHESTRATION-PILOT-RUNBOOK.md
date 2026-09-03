@@ -1363,6 +1363,23 @@ continuing; for a deterministic cross-document route check, direct URL navigatio
 still be followed by the same URL/DOM verification. A stale reference, `Done` acknowledgement, or
 session state alone must never be recorded as product/browser evidence.
 
+### 12.1.4 Browser harness command and completion budget
+
+A Verifier prompt may use only shell wrappers and browser binaries that were resolved in the declared
+execution environment. Do not assume that GNU utilities such as `timeout` exist on macOS or on a
+supporting task host. The main thread should either preflight every non-portable wrapper or omit it and
+use the supporting-task wait/interrupt budget as the outer bound. A missing wrapper before browser
+navigation is an `ENVIRONMENT_FAILURE`/`BLOCKED_HARNESS`, not a product failure.
+
+Every browser attempt must have one explicit wall-clock budget and one bounded initialization path. If
+the worker does not return a final report within that budget, the main thread stops the execution and
+records the exact completed and missing checks. It must not keep polling indefinitely, infer success
+from partial output, or turn an interrupted run into a code repair. A corrected retry is allowed only
+when the first failure is a demonstrated command or harness defect, the same source and fixture remain
+frozen, and the retry has a new bounded budget. Repeated non-completion is evidence that the harness
+lane is unreliable; preserve the partial evidence and continue safe Main-thread work without weakening
+the product gate.
+
 ### 12.2 Verification selection
 
 Choose the narrowest checks that can prove the Work Order, then expand for affected contracts:

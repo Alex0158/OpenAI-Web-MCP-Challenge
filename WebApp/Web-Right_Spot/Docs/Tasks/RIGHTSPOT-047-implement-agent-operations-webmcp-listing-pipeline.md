@@ -19,19 +19,25 @@ Operations authority/projection, and the verified Tenant adapter pattern in `RIG
 - Priority: `P1` — implement only the accepted Agent Operations `read_listing_pipeline` capability.
 - Owner: Main RightSpot thread
 - Current increment: Builder implementation and Main candidate review are complete; the exact source is
-  frozen locally at candidate commit `09d0628e10b9ddb9a59c59eebd1be1ee074a5318` and awaits independent
-  supported-browser verification.
-- Next gate: dispatch the independent supported-browser Verifier `RS-WO-047-02` against that exact
-  candidate. Main owns integration, push, and documentation closure after verification.
+  frozen locally at candidate commit `09d0628e10b9ddb9a59c59eebd1be1ee074a5318`. The independent
+  browser gate has one harness-blocked attempt and two bounded partial evidence attempts; it is not a
+  product pass or failure.
+- Next gate: resolve the supporting browser completion path (with preflighted commands and an outer
+  bounded wait), then complete the missing checks in `RS-WO-047-02` against that exact candidate. Do
+  not start another retry in the current unreliable path. Main owns integration, push, and
+  documentation closure only after the independent evidence is complete.
 - Dependencies: ADR-RS-0017 is the contract authority. The existing manual `/agent/operations` page,
   `GET /api/agent/operations`, Operations projection, Agent role/assignment checks, and Tenant
   `search_listings` adapter remain read-only inputs. `RIGHTSPOT-012` may continue as a non-blocking,
   read-only audit provided it does not modify this Task's write set during a source freeze.
-- Dispatch state: `verifier_ready` — `RS-WO-047-01` was completed by supporting agent
+- Dispatch state: `verifier_attempt_incomplete` — `RS-WO-047-01` was completed by supporting agent
   `01a065ce-ba53-7b71-bb97-7de24e92a60f`; Main independently reviewed and froze the exact candidate.
-  `RS-WO-047-02` is ready for dispatch. No fixture mutation or Worktree is authorized.
-- Evidence status: `READY_FOR_INDEPENDENT_VERIFICATION` — contract, implementation, static checks, and
-  full deterministic suite are verified; supported-browser discovery/invocation remains open.
+  `RS-WO-047-02` first stopped before navigation because the worker used unavailable `timeout`, then
+  a corrected retry reached the page and produced partial browser evidence before its bounded stop.
+  No fixture mutation, source drift, or Worktree is authorized.
+- Evidence status: `INDEPENDENT_BROWSER_INCOMPLETE` — contract, implementation, static checks, full
+  deterministic suite, and Main-controlled browser smoke are verified; independent wrong-role/session
+  teardown, final console/page-error, and final persistent-state readback remain open.
 
 ## Bounded objective
 
@@ -218,7 +224,7 @@ by Main; Builder did not commit, push, alter canonical docs, or create a Worktre
 
 ### RS-WO-047-02 — Independently verify the integrated capability
 
-**Status:** `READY_TO_DISPATCH`  
+**Status:** `INCOMPLETE_EVIDENCE`  
 **Role:** Independent WebMCP/browser Verifier  
 **Parallelization:** `AFTER_BUILDER_SOURCE_FREEZE` — Builder source and Main Git ref are frozen during
 the check; no Main docs/status writeback or other worker may move the verified source  
@@ -235,6 +241,30 @@ behavior, console/page errors, focused/full/static checks, and exact source iden
 **Stop condition:** Any source drift, ownership conflict, unsupported browser/API assumption, privacy
 leak, page/tool disagreement, false success, hidden fallback, or fixture mutation stops verification
 and returns a bounded report to Main.
+
+#### Verification attempts recorded by Main
+
+- Attempt 1 (`01a065eb-d249-74d0-b4d7-61e60e44608d`, `2026-09-03`): `BLOCKED_HARNESS` before page
+  navigation because the worker invoked unavailable shell command `timeout`. Source identity and the
+  frozen five-path hashes matched; no product or persistent-state mutation was observed. This is not
+  product verification.
+- Attempt 2, same Verifier context after a corrected direct browser command: `INCOMPLETE_EVIDENCE`.
+  The worker independently observed root/session setup, exact tool discovery/schema, valid Southwark
+  parity, case-sensitive empty result, malformed-input preservation, GET-only invocation, mobile
+  labelled controls/no-overflow, and bounded manual failure. It was stopped before tenant/wrong-role
+  lifecycle, sign-out/route teardown, final console/page-error collection, final mobile non-empty
+  capture, and final SQLite/source/Git readback. No source/docs/fixture/Git/Worktree mutation was
+  observed or commanded, but the missing post-state readback prevents a complete independent claim.
+- Main separately reproduced the missing role/session teardown and completed the supported-browser
+  smoke matrix in isolated session `rs-goal-diag-20260903`: Agent discovery/invocation, valid and
+  invalid page parity, signed-out and Tenant zero-tool boundaries, sign-out route recovery, GET-only
+  network traffic, mobile accessibility snapshot, and no page errors beyond normal React DevTools/HMR
+  informational logs. Main evidence supplements but does not replace the independent gate.
+- Attempt 3, a narrower follow-up Verifier (`01a065f6-f14c-7131-9c17-a472503bf5d8`, `2026-09-03`),
+  completed source preflight and the Tenant/wrong-role zero-tool check, then was stopped at the
+  bounded limit before Agent registration, teardown, mobile, error, and final-state readback. It
+  reported no product mutation or source change, but its incomplete final readback is not independent
+  no-mutation proof.
 
 ## Stop and reopen conditions
 
@@ -264,8 +294,12 @@ ordinary manual Operations page.
 
 ## Current disposition
 
-This is the only source-bearing Task admitted by the accepted ADR-RS-0017 contract. It is intentionally
-pending until Main recaptures the exact current baseline and WebMCP browser capability. The first
-implementation dispatch is one single-writer Builder Work Order; verification is a separate frozen-
-source gate. The active `RIGHTSPOT-012` audit may continue on non-overlapping read-only surfaces, but
-it cannot mutate this Task's five-path write set or move a verifier baseline.
+This is the only source-bearing Task admitted by the accepted ADR-RS-0017 contract. Its five-path
+implementation candidate is frozen and all deterministic checks plus Main browser smoke are complete,
+but the separate frozen-source independent browser gate remains incomplete after one command-level
+harness block and two bounded partial retries. The implementation must not be pushed or closed as
+verified until `RS-WO-047-02` completes its missing checks or a new explicit evidence decision is made;
+the repeated non-completion is now a harness reliability condition, not a reason to widen product
+scope or keep retrying indefinitely.
+The active `RIGHTSPOT-012` audit may continue on non-overlapping read-only surfaces, but it cannot
+mutate this Task's five-path write set or move a verifier baseline.

@@ -194,7 +194,9 @@ and `RIGHTSPOT-002` is closed.
 **Current post-MVP gates:** `RIGHTSPOT-006` and `RIGHTSPOT-012` remain pending (credential and
 read-only audit gates); `RIGHTSPOT-046` is closed through accepted `ADR-RS-0017` as the Operations
 WebMCP contract decision, and `RIGHTSPOT-047` is the in-progress source implementation gate after
-its T0 baseline recapture and Builder dispatch;
+its T0 baseline recapture and Builder dispatch. Its five-path candidate is frozen locally, deterministic
+checks and Main browser smoke pass, and the independent browser gate remains incomplete after one
+command-level harness block and two bounded partial retries;
 `RIGHTSPOT-045` is now `CLOSED_VERIFIED` within its bounded
 Operations consumer repair boundary after Main-controlled race verification and an explicitly recorded
 independent-browser harness limitation;
@@ -344,9 +346,10 @@ selected Tenant Search contract gate; `RIGHTSPOT-043` is `CLOSED_VERIFIED`; `RIG
 `CLOSED_VERIFIED` for its bounded manual Operations surface; and `RIGHTSPOT-045` is
 `CLOSED_VERIFIED` for its bounded Operations consumer latest-read boundary. `RIGHTSPOT-046` is
 closed through accepted `ADR-RS-0017` as the separate Main-owned contract decision for one Agent
-Operations WebMCP `read_listing_pipeline` capability; it admits the separate pending implementation Task
-`RIGHTSPOT-047` but does not authorize source change or registration. Only that implementation Task,
-after recaptured baseline and explicit paths, may open code Work Orders or a temporary Worktree.
+Operations WebMCP `read_listing_pipeline` capability; `RIGHTSPOT-047` is the separate in-progress
+implementation Task with a frozen local candidate and incomplete independent browser evidence. It does
+not authorize further source change or registration beyond its declared five-path write set. Only that
+implementation Task may open its bounded code Work Orders; no temporary Worktree is required.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.
