@@ -136,9 +136,9 @@ restore has been configured.
 - Verified: The local `ws` adapter exposes the server-owned session-resolver seam, while the fixture
   session and its cookie remain explicitly non-production. Hosted evidence now covers the public
   endpoint and Clerk entry surface; hosted storage continuity and authenticated gameplay remain open.
-- Verified: [`SK-TASK-077`](SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) is the active
-  CP-17 host-neutral preflight; it names the process, store, bootstrap, identity, health, realtime,
-  URL, secret, backup, and rollback fields and forbids provider-by-assumption deployment.
+- Verified: [`SK-TASK-077`](SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) is verified at
+  its `decided` host/preflight scope; it names the process, store, bootstrap, identity, health,
+  realtime, URL, secret, backup, and rollback fields and forbids provider-by-assumption deployment.
 - Verified: The accepted Railway resources now exist in one production environment: project
   `sleepless-kingdom` (`1665d76d-5b6b-45cc-a555-161cdd2c1e01`), service `game`
   (`a6ba17a4-7e9e-4878-9028-477673cb4ed1`), Volume `game-data`
