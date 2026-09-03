@@ -34,7 +34,7 @@ reports healthy at `/api/health`. A fresh rendered route/role sweep covered the 
 catalogue, Favourites, Viewing Requests, listing detail, wrong-role Agent access, and the valid Agent
 queue/listing-interest surface without workflow-fixture mutation or browser errors. No new
 `VERIFIED_INCOMPLETE`, `VERIFIED_DEFECT`, `VERIFIED_POLISH`, or `DOCUMENTATION_DRIFT` finding was accepted.
-**Last executable product-source baseline (2026-09-03):** ordinary Tenant Discovery Search and its
+**Last independently verified executable product-source baseline (2026-09-03):** ordinary Tenant Discovery Search and its
 thin page-bound WebMCP adapter are integrated at product code commit
 `ec7a67917c1df5a54b6187e6cf6ac80a7c2acbd7`. The exact five-path adapter checkpoint passed `171/171`,
 typecheck, production build, repository validators, sensitive scan, local health, staged diff check,
@@ -677,7 +677,7 @@ final response can remain a normal application action.
 | Active product repair | **NONE; `RIGHTSPOT-045` CLOSED_VERIFIED** | The consumer-only latest-read sequencing guard for Operations is closed at product source `3582ba4` within the manual page boundary; Main-controlled race evidence passed, the independent browser-helper limitation is recorded, and no API/domain/projection/WebMCP change was authorized |
 | WebMCP | **TENANT DISCOVERY SLICE VERIFIED; `RIGHTSPOT-046` ACCEPTED; `RIGHTSPOT-047` PENDING** | Page-bound `search_listings` is verified only in the declared local supported-browser capability; ADR-RS-0017 accepts one Agent Operations `read_listing_pipeline` contract, and `RIGHTSPOT-047` owns its separate implementation and supported-browser evidence |
 | Runtime / deployment | **Not started** | No service, hosting, credentials, or public URL |
-| Evidence | **LOCAL MVP + `RIGHTSPOT-043`, `RIGHTSPOT-044`, AND `RIGHTSPOT-045` CLOSED_VERIFIED** | Current pinned `npm test` passes the complete authored suite `186/186`; 045 product commit `3582ba4` passed focused `8/8`, typecheck, production build, repository validators, sensitive scan, exact-path review, and Main-controlled browser race checks. The independent browser-helper limitation is recorded; no production/deployment claim is made |
+| Evidence | **LOCAL MVP + `RIGHTSPOT-043`, `RIGHTSPOT-044`, AND `RIGHTSPOT-045` CLOSED_VERIFIED; `RIGHTSPOT-046` ACCEPTED; `RIGHTSPOT-047` INDEPENDENT_BROWSER_INCOMPLETE** | The frozen `RIGHTSPOT-047` candidate passes the complete authored suite `201/201` across `45` test files; 045 product commit `3582ba4` passed focused `8/8`, typecheck, production build, repository validators, sensitive scan, exact-path review, and Main-controlled browser race checks. The 047 independent-browser limitation is recorded; no push, WebMCP closure, or production/deployment claim is made |
 
 ## 3. Confirmed working inputs
 

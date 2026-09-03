@@ -5,16 +5,17 @@
 boundary, tenant discovery API, workflow HTTP/DTO transport, shared shell, shared role-page frame,
 accepted ordinary role-page product workflow, and post-MVP shared CSS foundation are independently
 verified or integrated.
-The current frozen Operations WebMCP candidate complete suite passes `201/201` across the current
-authored test files; the latest bounded
+The current frozen Operations WebMCP candidate complete suite passes `201/201` across `45` authored
+test files; the latest bounded
 cross-layer findings `F-17` / `RIGHTSPOT-039` and `F-18` / `RIGHTSPOT-040` are closed within their
 tenant listing-detail and Discovery error-copy truthfulness scopes. The subsequent audit reproduced
 `F-19` / `RIGHTSPOT-041`, a tenant request-editor success-feedback lifecycle defect; its bounded
 parent-owned repair is now `CLOSED_VERIFIED`. A fresh isolated browser replay covered listing-detail
 save, request-dashboard submit, and stale-version conflict recovery. Subsequent isolated audits
 covered Favourite persistence and the tenant-to-Agent listing-interest boundary, tenant route-entry
-and visual surfaces, and the Agent listing-interest failure/retry boundary. The latest disposable
-fixture reset was generation `77`; `/api/health` remained healthy after the latest verification.
+and visual surfaces, and the Agent listing-interest failure/retry boundary. The chronological entries
+below record fixture generations per checkpoint; later Operations WebMCP checks did not mutate the fixture, and
+`/api/health` remained healthy.
 
 ## 1. Current evidence level
 

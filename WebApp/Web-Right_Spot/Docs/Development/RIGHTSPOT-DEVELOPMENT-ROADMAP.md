@@ -599,9 +599,11 @@ runtime behavior changed, and no new Task was registered.
 
 ## 5. Current closure
 
-There is no active Green implementation Worktree for the accepted local MVP, the confirmed F-08 dashboard race,
+There is no extra implementation Worktree for the accepted local MVP, the confirmed F-08 dashboard race,
 or the closed F-09, F-10, F-11, F-12, F-13, F-14, F-15, F-16, F-17, F-18, and F-19 presentation/accessibility
-repairs. `RIGHTSPOT-041` is `CLOSED_VERIFIED` with no implementation Worktree open.
+repairs. `RIGHTSPOT-041` is `CLOSED_VERIFIED` with no implementation Worktree open. The frozen
+`RIGHTSPOT-047` candidate is present in the canonical Main Worktree, but its independent browser gate
+remains incomplete; it is not a verified closure or a push-ready source checkpoint.
 `RIGHTSPOT-040` is closed within its bounded Discovery error-copy consumer scope; `RIGHTSPOT-030` is closed within its
 bounded tenant request-dashboard scope, and `RIGHTSPOT-031` is closed within its bounded tenant
 presentation scope. `RIGHTSPOT-032`, `RIGHTSPOT-033`, `RIGHTSPOT-034`, `RIGHTSPOT-035`, `RIGHTSPOT-036`,
@@ -616,16 +618,12 @@ evidence is recorded in [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSUR
 `RIGHTSPOT-002` is closed. Future work requires a new explicit scope decision.
 
 The previously admitted post-MVP increments, including `RIGHTSPOT-005` and `RIGHTSPOT-007`, are
-closed historical work rather than the current implementation queue. The current next route is the
-continuing Main-thread cross-layer audit as described in [Section 3.1](#31-current-next-route), after
-the `RIGHTSPOT-041` tenant feedback repair closed through focused TDD and browser evidence. The
-latest continuation closed the local browser evidence gaps for `RS-FLOW-11` and `RS-FLOW-13`,
-reproduced and repaired `F-18` at the Discovery error boundary, reconciled its evidence, completed
-a clean generation-66 tenant-to-Agent confirmation replay, and then closed `F-19` after the generation-
-68/69 save, submit, and conflict browser checks. The fixture was reset to generation `70`; `F-08`
-remains an evidence gap. The latest Favourite persistence and cross-role replay completed the
-save/remove/reload/re-save contract at generations `73`/`74` without a new defect. This does not reopen the accepted
-MVP closure or authorize external authentication, WebMCP, Cloud Receiver, deployment, or
+closed historical work rather than the current implementation queue. The current route is the
+bounded completion of `RIGHTSPOT-047`'s independent browser evidence against its frozen five-path
+candidate, while the non-blocking `RIGHTSPOT-012` audit continues. The candidate's deterministic checks
+and Main-controlled browser smoke pass, but the independent gate stopped after one command-level
+harness block and two bounded partial retries; no push or closure claim is authorized. This does not
+reopen the accepted MVP closure or authorize external authentication, Cloud Receiver, deployment, or
 commercial-marketplace scope by itself.
 
 ### Historical execution chronology

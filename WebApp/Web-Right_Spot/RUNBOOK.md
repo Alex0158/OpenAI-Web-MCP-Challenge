@@ -49,8 +49,8 @@ now `CLOSED_VERIFIED` after two local render guards, focused TDD Red→Green, fu
 isolated queue/detail failure-and-retry browser evidence. At the `RIGHTSPOT-037` closure checkpoint,
 the pinned `npm test` passed `151/151` across `36` authored test files. The subsequent `RIGHTSPOT-038` / `RS-WO-038-01` stale
 Agent-action recovery repair is now `CLOSED_VERIFIED` after focused TDD, full checks, and fresh
-isolated browser success/failure evidence; the current pinned `npm test` passes `153/153` across `37`
-authored test files. The next route is a fresh cross-layer audit; register
+isolated browser success/failure evidence; the `RIGHTSPOT-038` checkpoint's pinned `npm test` passes
+`153/153` across `37` authored test files. The next route is a fresh cross-layer audit; register
 another bounded Task only after reproducing a new gap;
 do not infer external authentication, deployment, WebMCP, Cloud Receiver, WebRTC, Redis, or
 production readiness from this closure.
@@ -94,8 +94,8 @@ Apartment`, returned to the explicit no-saved-homes state, and the disposable fi
 generation `65` with healthy `/api/health`. A clean post-`040` generation-66 browser replay then
 completed tenant draft → submit → Agent review → prepare → send → tenant confirm, and verified the
 Agent terminal/read-only and wrong-role/signed-out boundaries without a new finding. The fixture was
-reset to generation `67`. The current pinned `npm test` passes `159/159` across `39` authored test
-files; `F-08` remains an evidence gap. The continuing audit then reproduced `F-19`: a successful
+reset to generation `67`. At that generation-`67` checkpoint, the pinned `npm test` passes `159/159`
+across `39` authored test files; `F-08` remains an evidence gap. The continuing audit then reproduced `F-19`: a successful
 tenant draft save returned `200` and updated authoritative state, but the version-keyed request editor
 lost its local completion message during rehydration. `RIGHTSPOT-041` / `RS-WO-041-01` is now
 `CLOSED_VERIFIED` as one Main-owned serial UI Work Order covering parent-owned draft-save and
@@ -296,7 +296,7 @@ The latest Agent preparation and code-quality review used isolated session `righ
 fixture generation `83`. The rendered required available-slot control blocked an empty preparation
 before the application handler, no new defect or task was reproduced, and the fixture was reset to
 generation `84` with empty browser errors and healthy `/api/health`. The complete pinned suite passed
-`159/159`; typecheck, build, repository validators, sensitive scans, documentation validation, and
+that checkpoint's `159/159`; typecheck, build, repository validators, sensitive scans, documentation validation, and
 RightSpot diff checks also passed. `F-08` remains an evidence gap, and no deferred integration or
 production claim is changed by this evidence.
 
@@ -311,6 +311,6 @@ projection, persistence, and Operations error/fallback boundaries against HEAD
 `4224f3ae53f6d4be87a7be17e74532f5785357b0`. Treat existing collaborator-owned dirty files as preserved
 input; do not stage, commit, or repair them from an audit pass. The inspected paths showed bounded
 neutral errors, authoritative conflict re-reads, rollback on persistence failure, and no false-success
-or fabricated business-state fallback. Pinned tests (`159/159`), typecheck, build, validators,
+or fabricated business-state fallback. That checkpoint's pinned tests (`159/159`), typecheck, build, validators,
 sensitive scan, diff check, and health passed. No follow-on Task was registered. Because the package
 has no lint/dead-code scripts, those categories remain unclaimed rather than inferred as clean.

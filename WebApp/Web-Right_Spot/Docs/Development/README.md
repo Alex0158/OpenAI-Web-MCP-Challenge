@@ -37,7 +37,7 @@ suite, foundation, typecheck, build, repository validation, and fresh browser fa
 verification. The continuation then reproduced `F-18`: a controlled catalogue-read failure exposed
 raw server-controlled text in the tenant Discovery page beside the bounded error copy.
 `RIGHTSPOT-040` / `RS-WO-040-01` is now `CLOSED_VERIFIED` within the Main-owned serial Discovery
-consumer boundary after focused TDD, the complete `158/158` suite across 39 test files, full static
+consumer boundary after focused TDD, the then-current complete `158/158` suite across 39 test files, full static
 checks, and fresh browser failure/recovery evidence. A clean generation-66 tenant-to-Agent replay
 completed the primary confirmation chain and role/terminal boundaries without a new finding; `F-08`
 remains an evidence gap and the disposable fixture was reset to generation `67` with healthy local
