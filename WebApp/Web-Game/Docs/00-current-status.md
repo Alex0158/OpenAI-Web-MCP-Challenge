@@ -237,8 +237,9 @@ hosted, and judge limits. The local CP-16 composition task [`SK-TASK-069`](Tasks
 
 The earlier CP-08 through CP-12 predecessor evidence remains below for traceability.
 
-The hosted path is now an intentional parallel preparation stream: the owner-authorized Railway
-resource provisioning preflight is recorded under [`SK-EVID-063`](Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md);
+The hosted path is now an intentional parallel preparation stream: the CP-17 host decision and
+production-like preflight are verified at the `decided` scope under [`SK-TASK-077`](Tasks/SK-TASK-077-cp17-host-decision-and-deployment-preflight.md),
+with the owner-authorized Railway resource provisioning readback recorded under [`SK-EVID-063`](Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md);
 the hosted deployment, two-player admission, restart/reconnect, backup, and browser-absent continuity
 rows are verified under [`SK-TASK-078`](Tasks/SK-TASK-078-cp17-production-identity-and-hosted-admission.md),
 while [`SK-TASK-079`](Tasks/SK-TASK-079-cp17-authenticated-cross-scope-denial-rehearsal.md) records

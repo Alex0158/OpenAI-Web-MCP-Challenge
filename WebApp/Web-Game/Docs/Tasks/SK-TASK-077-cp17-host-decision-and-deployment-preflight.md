@@ -2,12 +2,12 @@
 
 ## Task Control
 
-- Lifecycle state: `in_progress`
+- Lifecycle state: `verified`
 - Closure type: `decided`
 - Checkpoint: `CP-17`
 - Owner: Game owner
-- Current increment: The production start/build/configuration boundary is reconciled and the accepted Railway resource topology has been provisioned and read back; the hosted runtime and identity gates remain open.
-- Next gate: Supply Clerk Production credentials and two fixed subject bindings, upload the exact Game source, and record the actual project/plan, URL, restart, backup, secret, and rollback readback; hosted proof remains open.
+- Current increment: The CP-17 host decision and production-like deployment preflight are verified: the host-neutral fields are reconciled, and the owner-accepted Railway single-service/Volume-backed SQLite topology and non-secret configuration are provisioned and read back; downstream hosted implementation gates remain explicitly open.
+- Next gate: None for this task. Continue [`SK-TASK-078`](SK-TASK-078-cp17-production-identity-and-hosted-admission.md) for hosted deployment and admission, and [`SK-TASK-079`](SK-TASK-079-cp17-authenticated-cross-scope-denial-rehearsal.md) for hosted cross-scope denial; reopen this task only if provider or topology facts change.
 
 ## Identity
 
@@ -127,8 +127,8 @@ rollback cannot be verified.
   and the rehearsal in [`SK-TASK-017`](SK-TASK-017-cp17-hosted-continuity-preimplementation-pack.md),
   including endpoint, health, same-world scope, command rejection, browser absence, restart catch-up,
   reconnect, rollback, and redacted evidence.
-- Closure target: `decided` after an explicit host/topology ADR; hosted closure remains `hosted_verified`
-  only when ladder-level 7 evidence exists.
+- Closure target: `verified` after an explicit host/topology ADR and owner-authorized resource preflight
+  readback; hosted closure remains `hosted_verified` only when downstream ladder-level 7 evidence exists.
 - Recovery: preserve the last local contract, disposable store, and first hosted failure; do not reseed,
   fork, or silently downgrade the world to fixture mode.
 - Reopen when: the provider changes process/storage semantics, production identity or bootstrap is added,
@@ -140,5 +140,5 @@ rollback cannot be verified.
 The initial audit found no external deployment configuration or selected host. The local production build
 passed under Node 24.20.0; the generated `next-env.d.ts` reference was restored to its tracked form after
 the build. On 2026-09-03 the owner-authorized Railway project, service, Volume, domain, and non-secret
-configuration were provisioned and read back; no Game source deployment, credential, or runtime authority
-has been changed. See [`SK-EVID-063`](../Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md).
+configuration were provisioned and read back, closing this task's decision/preflight scope; no Game source
+deployment, credential, or runtime authority has been changed. See [`SK-EVID-063`](../Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md).

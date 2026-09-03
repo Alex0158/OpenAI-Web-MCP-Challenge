@@ -1,6 +1,6 @@
 # Operations and Hosting
 
-**Status:** TARGET operations plan; CP-17 host decision/preflight is tracked under [`SK-TASK-077`](../Tasks/SK-TASK-077-cp17-host-decision-and-deployment-preflight.md), the owner-accepted first topology is [`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md), and production identity/admission implementation is under [`SK-TASK-078`](../Tasks/SK-TASK-078-cp17-production-identity-and-hosted-admission.md)
+**Status:** TARGET operations plan; CP-17 host decision/preflight is verified at decision scope under [`SK-TASK-077`](../Tasks/SK-TASK-077-cp17-host-decision-and-deployment-preflight.md), the owner-accepted first topology is [`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md), and production identity/admission implementation is under [`SK-TASK-078`](../Tasks/SK-TASK-078-cp17-production-identity-and-hosted-admission.md)
 
 ## Local CP-12 fixture run
 

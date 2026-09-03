@@ -488,7 +488,7 @@ The bounded [`SK-TASK-075`](../Tasks/SK-TASK-075-cp12-shelter-economy-summary-ca
   and [`CP-17 scenario fixtures`](../Scenarios/17-cp17-hosted-continuity-fixtures.md) define the
   host-neutral acceptance matrix, deployment rehearsal, failure branches, evidence packet, and claim
   limits. [`SK-TASK-077`](../Tasks/SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) owns
-  the host fact preflight and deployment evidence; the Railway project, Volume, and generated service
+  the host fact preflight and decision evidence; the Railway project, Volume, and generated service
   URL are provisioned and read back under [`SK-EVID-063`](../Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md),
   while the hosted deployment, custom Game TLS, Clerk DNS/SSL/JWKS, signed-out admission surface, sequential authenticated Player A/Player B command-to-settlement slices, and a concurrent two-context scoped slice are now read back under [`SK-EVID-065`](../Evidence/SK-EVID-065-cp17-hosted-deployment-and-clerk-domain-runtime-verification.md),
   [`SK-EVID-066`](../Evidence/SK-EVID-066-cp17-player-one-hosted-session-command-runtime-verification.md),

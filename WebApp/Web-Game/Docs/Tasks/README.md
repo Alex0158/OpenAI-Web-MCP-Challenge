@@ -134,11 +134,14 @@ opposite shelter is absent from Player B's response, and client-selected identit
 This is local production-like evidence only; hosted page-tool execution, genuine browser WebMCP
 registration, dynamic recall, and Agent/Re-entry delivery remain open.
 
-[`SK-TASK-077`](SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) is `in_progress` for the
-CP-17 host decision and production-like deployment preflight. It records the host-neutral process,
-store, WebSocket, health, and rollback fields; the owner-accepted Railway/SQLite Volume topology is
-now durable in [`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md).
-It does not change an external environment or claim hosted gameplay; its audit is [`Validation/90`](../Validation/90-cp17-host-decision-and-deployment-preflight-cross-functional-audit.md).
+[`SK-TASK-077`](SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) is `verified` at its
+`decided` scope for the CP-17 host decision and production-like deployment preflight. It records the
+host-neutral process, store, WebSocket, health, and rollback fields; the owner-accepted Railway/SQLite
+Volume topology is durable in [`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md)
+and the provisioned resource readback is [`SK-EVID-063`](../Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md).
+Hosted implementation/admission remains under [`SK-TASK-078`](SK-TASK-078-cp17-production-identity-and-hosted-admission.md),
+hosted cross-scope denial remains under [`SK-TASK-079`](SK-TASK-079-cp17-authenticated-cross-scope-denial-rehearsal.md),
+and no hosted gameplay or continuity claim follows from this task; its audit is [`Validation/90`](../Validation/90-cp17-host-decision-and-deployment-preflight-cross-functional-audit.md).
 
 [`SK-TASK-076`](SK-TASK-076-cp14-cloud-receiver-v2-game-adaptation.md) is `pending` for the CP-14
 Game-side adaptation to Eddy's exact Cloud Receiver v2 Host Event ingress. Its cross-functional audit
