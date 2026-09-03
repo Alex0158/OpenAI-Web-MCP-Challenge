@@ -61,6 +61,7 @@ selected-product effect-ACK gates are superseded by ADR-0046, not retroactively 
 | Private managed-context resolution | **LOCALLY VERIFIED** | deterministic authority/driver; no capture or custody |
 | Exact process-fault matrix | **SEPARATE-PROCESS VERIFIED** | recorded compositions only, not arbitrary crash safety |
 | Standing Core fresh-process recovery | **LOCALLY VERIFIED, CORE/SQLITE ONLY** | one committed pending Delivery survives SIGKILL, a new process claims and acknowledges it, and exact Event replay converges; active Receiver/PostgreSQL and transaction-interruption recovery remain open |
+| Active Receiver fresh-process recovery | **LOCALLY VERIFIED, ACTIVE RECEIVER/POSTGRESQL ONLY** | one committed pending Delivery survives SIGKILL across active Express/Prisma processes and exact Event replay converges; production authority, transaction-interruption, supervision, and release recovery remain open |
 | Source conformance profile | **LOCALLY VERIFIED, NON-PRODUCTION** | distinct local Host/Receiver/Connector children |
 | Stage 1 Cloud Receiver shell | **DEPRECATED, HISTORICAL LOOPBACK EVIDENCE** | real child lifecycle plus in-process generic protocol flow; retired by ADR-0032; no production identity or TLS |
 | Local pairing and Connector process preview | **CLOUD RECEIVER DEPENDENCY DEPRECATED; LOCAL CONNECTOR PREVIEW RETAINED** | browser-assisted pairing, durable hashed control state, local credential file, one-shot claim/adapter handoff; no production accounts or Agent runtime |

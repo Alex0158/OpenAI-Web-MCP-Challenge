@@ -2,9 +2,10 @@
 
 **Role:** DEVELOPMENT implementation and verification record  
 **Status:** Core and Receiver sources locally committed; minimum pinned trace,
-exact-commit PostgreSQL upgrade, one-shot Event rollback/retry vector, and Core
-standing fresh-process recovery are `locally_verified`; full release conformance
-and public controls remain open  
+exact-commit PostgreSQL upgrade, one-shot Event rollback/retry vector, Core
+standing fresh-process recovery, and active Receiver/PostgreSQL fresh-process
+recovery are `locally_verified`; full release conformance and public controls
+remain open  
 **Date:** 2026-09-04  
 **Controls:** ADR-0043 through ADR-0045, TASK-027, TASK-028, TASK-033.
 
@@ -538,4 +539,36 @@ RPC. No production source, protocol, schema, package, route, or deployment behav
 changed. This closes only the committed standing Core/SQLite fresh-process boundary;
 the active Receiver/PostgreSQL equivalent, forced termination during a transaction,
 supervision, distributed ownership, release conformance, deployment, and production
-durability remain open. The next increment is the equivalent active Receiver trace.
+durability remain open. The active Receiver/PostgreSQL increment below records the
+corresponding local process-boundary evidence.
+
+## Active Receiver/PostgreSQL fresh-process recovery increment: 2026-09-04
+
+An independent test-only child process loaded the active Express/Prisma Receiver
+against the task-owned disposable PostgreSQL instance, accepted one signed Event,
+and was terminated with `SIGKILL` while its Delivery remained pending. A fresh OS
+process opened the same database, observed the retained Grant sequence and pending
+Delivery, claimed it, verified one Host-effect attestation through the explicit
+test authority seam, acknowledged the Delivery, and replayed the original Event as
+an exact duplicate. Grant and Delivery state remained durable across the process
+boundary, and the verified state projection contained no raw Connector, claim, or
+effect token.
+
+Exact evidence:
+
+- focused `node --test backend/conformance/standing-v0.2/fresh-process.test.mjs`: `1/1` passed;
+- two additional focused stability reruns: `2/2` passed;
+- existing pinned active Receiver standing trace after the fixture: `1/1` passed;
+- Core commit: `1446d73aa3e66533547471728ad8fa5344d51f9e`;
+- selected Core/spec SHA-256: `6210d7724417e0533c77d5989e8ffdd3c404af4063ac9d70d70db9b622f73d45`;
+- Receiver commits: `98934c27b19f2423f6a18d2fc0210206477d421d` (test) and
+  `d52d14ee03402daa63708b500a332c35fcc18517` (record); and
+- runtime: Node `v26.5.0`, `release_conformance_verified: false`.
+
+This is local evidence against a task-owned disposable loopback PostgreSQL
+database. The child process uses the active Receiver app and Prisma client; its
+effect authority is an in-memory test seam rather than production Game authority.
+The increment does not prove transaction interruption at an arbitrary database
+boundary, supervision, distributed ownership, public controls, lifetime,
+deployment, release enforcement, or hosted recovery. Those gates remain open
+under TASK-027/TASK-028/TASK-033.

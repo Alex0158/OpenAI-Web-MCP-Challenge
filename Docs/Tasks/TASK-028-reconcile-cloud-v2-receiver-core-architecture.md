@@ -13,12 +13,13 @@
   covers out-of-order rejection/no mutation, duplicate convergence, the distinct-Event same-sequence
   conflict, same-ID/different-body identity conflict, and one-shot post-write transaction rollback
   with exact-envelope retry, while a standing Core/SQLite pending-Delivery recovery trace now
-  survives SIGKILL and fresh-process claim/ack/replay. The active-v2 lease/reclaim profile also
-  passes. CLOUD-023 owns the bounded evidence.
-- Next gate: Run the equivalent fresh-process recovery against the active Receiver/PostgreSQL
-  implementation, then complete the mandatory shared v0.1/v0.2 failure/race/recovery matrix,
-  including forced termination, and enforce release checks while retaining the separate active-v2
-  production lease profile. Public controls need their own accepted contract.
+  survives SIGKILL and fresh-process claim/ack/replay, and the active Receiver/PostgreSQL
+  implementation now passes the equivalent fresh-process recovery trace. The active-v2 lease/reclaim
+  profile also passes. CLOUD-023 owns the bounded evidence.
+- Next gate: Complete the mandatory shared v0.1/v0.2 failure/race/recovery matrix, including forced
+  termination and transaction-interruption paths across retained implementations, then enforce
+  release checks while retaining the separate active-v2 production lease profile. Public controls
+  need their own accepted contract.
 - Dependencies: ADR-0006, ADR-0012, ADR-0033 through ADR-0039, ADR-0043 through ADR-0045,
   AUDIT-V2-004 in Core/09, TASK-012, and TASK-033.
 
@@ -389,7 +390,37 @@ deployment behavior. This proves committed standing state recovery at the Core/
 SQLite process boundary; it does not prove the active Receiver/PostgreSQL process
 boundary, forced termination during a transaction, supervision, distributed
 ownership, release conformance, deployment, or production durability. The next
-bounded increment is the equivalent active Receiver trace.
+increment is recorded below for the active Receiver/PostgreSQL boundary.
+
+## 4.12 Active Receiver/PostgreSQL fresh-process recovery increment
+
+**VERIFIED 2026-09-04:** an independent test-only child process loaded the active
+Express/Prisma Receiver against disposable PostgreSQL, accepted one signed Event,
+and was terminated with `SIGKILL` while the Delivery remained pending. A new OS
+process opened the same database, observed the retained Grant sequence and pending
+Delivery, claimed it, verified one Host-effect attestation through the explicit
+test authority seam, acknowledged the Delivery, and replayed the original Event as
+an exact duplicate. Persisted state retained only the expected Grant/Delivery
+identity and status; raw Connector, claim, and effect tokens were not present in
+the verified projection.
+
+Evidence for this active Receiver increment:
+
+- focused `node --test backend/conformance/standing-v0.2/fresh-process.test.mjs`: `1/1` passed;
+- two additional focused stability reruns: `2/2` passed;
+- existing pinned active Receiver standing trace after the new fixture: `1/1` passed;
+- Core commit: `1446d73aa3e66533547471728ad8fa5344d51f9e`;
+- selected Core/spec SHA-256: `6210d7724417e0533c77d5989e8ffdd3c404af4063ac9d70d70db9b622f73d45`;
+- Receiver test/docs commit: `98934c27b19f2423f6a18d2fc0210206477d421d` plus `d52d14ee03402daa63708b500a332c35fcc18517`;
+- runtime: Node `v26.5.0`, `release_conformance_verified: false`.
+
+The process fixture loads the active Receiver app and Prisma client but uses an
+in-memory effect authority only to make the Host-effect boundary explicit. This
+proves the committed pending-Delivery process boundary against the disposable
+PostgreSQL store; it does not prove transaction interruption at an arbitrary
+database boundary, supervision, distributed ownership, production effect
+authority, deployment, public controls, lifetime, or release conformance. The
+remaining shared matrix and release gates stay open.
 
 ## 5. Verification and closure
 
