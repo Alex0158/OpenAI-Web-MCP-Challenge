@@ -805,8 +805,8 @@ remain low-severity maintenance polish and are not independently actionable.
 
 **Disposition at this audit checkpoint:** The audit increment was complete and `RIGHTSPOT-012` remains
 `pending` and non-blocking. `RIGHTSPOT-050` was subsequently closed in its bounded Tenant consumer
-boundary. The next Main gate is to review the in-progress independent verification of the frozen
-`RIGHTSPOT-051` Builder handoff, keep
+boundary. The next Main gate is to re-run the non-blocking cross-layer audit against the integrated
+`RIGHTSPOT-051` increment, keep
 `RS-WO-047-03` gated until the 048 evidence decision permits a new 047 baseline, and re-run the audit
 only after a meaningful source or evidence increment. This report authorized no source change.
 
@@ -827,3 +827,14 @@ and behavior assertions remain its evidence. The disposable fixture was reset to
 `RIGHTSPOT-050` is closed within its exact Tenant consumer boundary. `RIGHTSPOT-051` remains the next
 Tenant WebMCP registration-observability gate; the Agent portion remains gated under `RIGHTSPOT-047`,
 and the 048 browser-harness decision remains unchanged.
+
+## Latest Tenant WebMCP registration-observability closure — 2026-09-03
+
+`RIGHTSPOT-051` / `RS-WO-051-01` completed its Builder, path-scoped independent deterministic
+verification, and Main integration sequence. The exact three-path candidate passed focused `13/13`,
+complete `229/229`, typecheck, build, repository/docs validation, sensitive scans, and diff checks
+under Node `24.20.0`; it is integrated at product commit `0489155`. The repair is closed within the
+Tenant adapter/page boundary and makes registration failure observable without weakening the manual
+Search path. No browser runtime claim was added. The Agent-side counterpart remains `RS-WO-047-03`,
+gated by the separate 048 evidence decision. The next audit increment should inspect the integrated
+source and evidence, not reopen 051 without a new concrete failure.

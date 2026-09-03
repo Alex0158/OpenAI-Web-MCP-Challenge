@@ -5,19 +5,20 @@
 boundary, tenant discovery API, workflow HTTP/DTO transport, shared shell, shared role-page frame,
 accepted ordinary role-page product workflow, and post-MVP shared CSS foundation are independently
 verified or integrated.
-The current integrated RightSpot package complete suite passes `226/226` across `47` authored test
+The current integrated RightSpot package complete suite passes `229/229` across `47` authored test
 files. The Tenant Discovery Search/WebMCP slice is independently verified within its declared local
 supported-browser capability, while the Agent Operations `read_listing_pipeline` candidate remains
 open behind its independent browser evidence gate. The latest bounded cross-layer findings `F-17` /
 `RIGHTSPOT-039`, `F-18` / `RIGHTSPOT-040`, `F-19` / `RIGHTSPOT-041`, `F-23/F-24` /
 `RIGHTSPOT-049`, and `F-25` / `RIGHTSPOT-050` are closed within their recorded listing-detail,
 Discovery, request-editor, Search response-truthfulness, and Tenant action-safety boundaries. The
-latest multi-angle audit also accepted open P2 finding `F-26` / `RIGHTSPOT-051` plus `RS-WO-047-03` for
-silent page-bound WebMCP registration failure.
+latest multi-angle audit accepted P2 finding `F-26` / `RIGHTSPOT-051` plus `RS-WO-047-03` for
+silent page-bound WebMCP registration failure. The Tenant portion is now closed within its
+deterministic adapter/page boundary; the Agent portion remains gated under `RS-WO-047-03`.
 `F-25` / `RIGHTSPOT-050` is now closed within its bounded Tenant editor action-safety claim after
 serial Main TDD and supported ordinary conflict-recovery evidence; the injected failed-refetch browser
-branch remains an explicit harness limitation. `F-26` / `RIGHTSPOT-051` and `RS-WO-047-03` remain open
-or gated as stated below. The chronological entries below record fixture generations,
+branch remains an explicit harness limitation. `RS-WO-047-03` remains gated as stated below. The
+chronological entries below record fixture generations,
 source identity, and claim limits per checkpoint; later read-only checks did not authorize a production,
 deployment, or universal WebMCP claim, and `/api/health` remained healthy.
 
@@ -1692,3 +1693,24 @@ No browser registration claim is required or implied; any browser evidence must 
 supported runtime and must not retry the known 048 harness path. The candidate remains open pending
 one explicit verifier outcome: `VERIFIED`, `FAILED_PRODUCT`, `INCOMPLETE_EVIDENCE`, or
 `BLOCKED_HARNESS`.
+
+## 7.47 Tenant WebMCP registration-observability closure — `RIGHTSPOT-051` — 2026-09-03
+
+Verifier Russell (`01a06740-4a9a-72d1-9986-00b741bc9939`) returned `VERIFIED` for the frozen
+`RS-WO-051-01` candidate under `gpt-5.6-sol + medium`. T0/T3 hashes for all three declared paths
+matched, and the only Main movement during verification was the documentation-only dispatch commit
+`f6d3ae7`; no RightSpot product/test/package path drift or verifier mutation occurred. The focused
+registration-failure suite passed `13/13`; the complete package suite passed `229/229`; typecheck,
+production build, repository validation, validator tests `6/6`, sensitive-scan tests `3/3`, direct
+RightSpot-sensitive scanning, documentation validation, and exact diff checks passed under Node
+`24.20.0` / npm `11.19.0`.
+
+The verifier confirmed sync and rejected registration failures emit one bounded page-owned signal,
+deactivate before callback, make captured stale tools inert, suppress late teardown settlements,
+preserve unsupported-capability manual fallback, and keep raw/private diagnostics out of the page.
+The exact candidate was integrated at product commit
+`0489155b9b2f391282e74d42b373ab30b101626a`, containing only the three declared Tenant WebMCP source
+and test paths. No browser/WebMCP runtime claim was made; the known Operations dynamic
+filesystem-tracing warning is non-gating and outside this Task. `RIGHTSPOT-051` is
+`CLOSED_VERIFIED` within its deterministic adapter/page contract. The Agent-side portion remains
+separately gated under `RS-WO-047-03`, and the 048 harness boundary is unchanged.

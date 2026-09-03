@@ -1,7 +1,7 @@
 # RIGHTSPOT-051 — Observe Tenant Search WebMCP registration failures
 
 **Type:** `defect`  
-**Lifecycle:** `pending`  
+**Lifecycle:** `closed`  
 **Priority:** `P2` for WebMCP capability truthfulness and diagnosability  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-03  
@@ -20,12 +20,12 @@ accepted [ADR-RS-0015](../Decisions/ADR-RS-0015-tenant-search-and-webmcp-contrac
 - **Blocking status:** Non-blocking to the ordinary local MVP and to the Agent Operations 047/048
   evidence gates. It is related to the Agent-side `F-26` repair, which remains a checkpoint under
   `RIGHTSPOT-047` rather than a second Task here.
-- **Current increment:** The exact three-path Builder checkpoint returned `READY_FOR_VERIFICATION`
-  under the WebMCP model gate. Main reviewed the declared diff and the handoff evidence; the
-  candidate remains a path-scoped working-tree change. Main captured its T2 identity and dispatched
-  an independent read-only verifier; it is not yet integrated or closed.
-- **Next gate:** Review the independent verifier's exact-path, source-identity, and acceptance report.
-  No Main integration or closure claim is permitted before that gate.
+- **Current increment:** The exact three-path Builder checkpoint passed independent deterministic
+  verification under the WebMCP model gate and was integrated at product commit `0489155`.
+  Candidate hashes matched before and after verification; the bounded repair is closed within this
+  Tenant adapter/page ownership boundary.
+- **Next gate:** No open 051 gate remains. Any future expansion requires a new bounded Task or an
+  explicit reopen condition; the separate Agent-side portion remains owned by `RS-WO-047-03`.
 - **Source baseline at registration:** Main `7650db00cc60d23b262b6c506c81e8913ad4d3ca`; RightSpot
   source/test paths were clean. Existing validation-ledger and protected untracked paths are outside
   the worker write set.
@@ -41,6 +41,11 @@ accepted [ADR-RS-0015](../Decisions/ADR-RS-0015-tenant-search-and-webmcp-contrac
   `tests/ui/tenant-webmcp.test.ts` =
   `105c6a210f1109f9d8e3d5fcb29b2eb029e9fedccc36b8c2b5f3082688d97e1f`. These hashes identify the
   dirty candidate for verification; they are not a permanent global lock.
+- **Integrated product identity (2026-09-03):** Main committed the independently verified exact
+  three-path projection at `0489155b9b2f391282e74d42b373ab30b101626a`. The three post-integration
+  file hashes remain identical to the captured candidate hashes above. The product commit contains
+  only the declared Tenant WebMCP source and test paths; unrelated Web-Game changes and protected
+  untracked material remain outside the commit.
 - **Main authority:** Main owns task admission, exact source identity, contract interpretation,
   integration, browser evidence, canonical documentation, and Git closure.
 
@@ -154,7 +159,7 @@ Close this Task only when all are true:
 
 ### RS-WO-051-01 — Surface Tenant Search registration failure
 
-**Status:** `DISPATCHED_VERIFIER`  
+**Status:** `CLOSED_VERIFIED`  
 **Role:** WebMCP/API/UI implementation Builder  
 **Parallelization:** `SERIAL_TENANT_WEBMCP_ADAPTER` — no other writer may touch the three-path worker
 write set during the checkpoint  
@@ -212,6 +217,23 @@ source, tests, documents, fixtures, SQLite, generated evidence, Git/index, or Wo
 claim is required or implied. Its only valid outcomes are `VERIFIED`, `FAILED_PRODUCT`,
 `INCOMPLETE_EVIDENCE`, or `BLOCKED_HARNESS`.
 
+**Independent verification outcome (2026-09-03):** Verifier Russell returned `VERIFIED`. The exact
+three candidate hashes matched at T0 and T3; the only Main movement during the check was the
+documentation-only dispatch commit `f6d3ae7`, with no RightSpot product/test/package path drift.
+The verifier passed the focused suite `13/13`, complete suite `229/229`, typecheck, production build,
+repository validation, validator tests `6/6`, sensitive-scan tests `3/3`, direct RightSpot-sensitive
+scan, documentation validation, and exact diff checks under Node `24.20.0` / npm `11.19.0`. It
+confirmed sync/rejected failure signalling, deactivation-before-callback ordering, stale-tool
+inertness, late-teardown safety, neutral copy, unsupported-capability manual fallback, and all
+declared API/domain/fixture/privacy/non-mutation boundaries. No browser/WebMCP runtime claim was
+made; the known Operations dynamic filesystem-tracing warning is non-gating and outside this Task.
+
+**Main closure (2026-09-03):** Main committed the exact verified three-path projection at product
+commit `0489155b9b2f391282e74d42b373ab30b101626a`. The commit contains only the Tenant WebMCP source
+and test paths. `RS-WO-051-01` and `RIGHTSPOT-051` are therefore `CLOSED_VERIFIED` within the
+deterministic adapter/page contract; the Agent-side portion remains separately gated under
+`RS-WO-047-03`, and the 048 browser-harness evidence decision is unchanged.
+
 ## Stop and reopen conditions
 
 Stop and report `BLOCKED` if the installed browser registration API differs from the accepted adapter
@@ -224,8 +246,8 @@ runtime registration evidence.
 
 ## Current disposition
 
-`F-26` is a verified P2 capability-truthfulness defect from the 2026-09-03 multi-angle audit. The
-Tenant portion is registered here because `RIGHTSPOT-043` is already closed and its adapter has a
-separate ownership boundary. The Agent Operations portion is recorded as `RS-WO-047-03` inside the
-open 047 Task. Neither repair authorizes a new WebMCP capability, a server change, or a deployment
-claim.
+`F-26` was a verified P2 capability-truthfulness defect from the 2026-09-03 multi-angle audit. The
+Tenant portion is now `CLOSED_VERIFIED` here because `RIGHTSPOT-043` is already closed and its
+adapter has a separate ownership boundary. The Agent Operations portion remains recorded as
+`RS-WO-047-03` inside the open 047 Task. Neither repair authorizes a new WebMCP capability, a server
+change, or a deployment claim.
