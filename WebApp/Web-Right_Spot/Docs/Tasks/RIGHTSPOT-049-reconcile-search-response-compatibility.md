@@ -5,7 +5,7 @@
 **Priority:** P2 for Tenant Search result truthfulness and compatibility safety  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-03  
-**Finding:** F-23 — filtered Search response metadata can be silently defaulted  
+**Finding:** F-23/F-24 — filtered Search response metadata can be silently defaulted or mismatched
 **Depends on:** closed RIGHTSPOT-042 and RIGHTSPOT-043, ADR-RS-0014, and ADR-RS-0015
 
 ## Task control
@@ -87,6 +87,10 @@ The compatibility rule is narrowed as follows:
   must equal the actual serialized request values; the client must not accept a complete-looking
   response that relabels those values. Area may be returned as the server-resolved canonical label;
   the client must not require raw input spelling or implement Area resolution itself.
+- The applied-filter key set must match the effective serialized public criteria exactly: a response
+  must not add an allowed criterion that was not requested. For Area, the response must remain
+  equivalent after the accepted trim/case normalization; this comparison is not client-side Area
+  resolution and must not introduce aliases or a second catalogue lookup.
 - A missing or partial logical envelope, including an appliedFilters object that omits an effective
   criterion, is INVALID_RESPONSE. It must not be converted into an unfiltered success.
 - The parser must not derive appliedFilters from caller input, infer a filtered result from listing
@@ -97,6 +101,8 @@ The compatibility rule is narrowed as follows:
 - A filtered envelope whose non-Area applied value differs from the serialized request is
   `INVALID_RESPONSE`, even when its metadata is otherwise complete. If the server later introduces
   a legitimate numeric/date transformation, reopen ADR-RS-0015 before changing this client rule.
+- An extra allowed filter key, or a server Area value that is not equivalent to the serialized Area
+  after the accepted normalization, is also `INVALID_RESPONSE`.
 - Effective-filter detection must reflect the actual serialized request, not merely the presence of
   object keys whose values are undefined. Existing date compatibility mapping remains unchanged.
 
@@ -108,8 +114,9 @@ ranking rule, source, pagination scheme, or WebMCP capability.
 1. Pass enough request context from readListings to the parser to distinguish an effective filtered
    read from an unfiltered read.
 2. Preserve the current full response behavior and existing unfiltered legacy compatibility.
-3. Reject filtered minimal and partial success envelopes, and semantically mismatched non-Area
-   applied-filter values, with TenantApiError code INVALID_RESPONSE.
+3. Reject filtered minimal and partial success envelopes, extra applied-filter keys, semantically
+   mismatched applied-filter values, and non-equivalent Area values with TenantApiError code
+   INVALID_RESPONSE.
 4. Prevent the Tenant page and the existing search_listings executor from presenting an incomplete or
    mismatched filtered response as a successful unfiltered result.
 5. Prove the boundary with focused TDD Red → Green → Refactor tests and the required complete
@@ -127,6 +134,8 @@ ranking rule, source, pagination scheme, or WebMCP capability.
   serialized request.
 - A filtered response with a complete envelope but a mismatched `maxRent`, `minSizeSqM`, or
   `availableBy` value is rejected as `INVALID_RESPONSE`.
+- A filtered response with an extra allowed applied-filter key or a non-equivalent Area value is
+  rejected as `INVALID_RESPONSE`.
 - The existing complete server response remains accepted with the same normalized values, counts,
   page path, page state, and tenant-safe listing fields.
 - An object containing filter keys with undefined values is treated according to the serialized
@@ -162,8 +171,9 @@ Before implementation, add focused failing tests that demonstrate:
 3. a filtered response with a partial logical envelope is rejected;
 4. a filtered response whose appliedFilters omits an effective requested criterion is rejected;
 5. a complete filtered response with a mismatched non-Area applied value is rejected;
-6. the existing unfiltered minimal response remains accepted; and
-7. a complete filtered response, including server-normalized Area, remains accepted.
+6. a complete filtered response with an extra criterion or non-equivalent Area is rejected;
+7. the existing unfiltered minimal response remains accepted; and
+8. a complete filtered response, including server-normalized Area, remains accepted.
 
 The tests must assert the public INVALID_RESPONSE outcome, not a private helper name.
 
@@ -176,7 +186,9 @@ Implement the smallest client-only change that:
 - preserves legacy inference only when no effective filter was sent; and
 - requires and validates the complete logical fields and effective filter keys for filtered success;
 - compares non-Area applied values with the serialized request while allowing the accepted server
-  canonicalization for Area.
+  canonicalization for Area;
+- requires an exact effective key set and compares Area after only the accepted shared trim/case
+  normalization.
 
 Do not change the server route, application service, shared domain contract, WebMCP adapter, or page
 consumer to compensate for the parser defect.
@@ -324,14 +336,17 @@ behavior change.
 - tests/ui/tenant-api.test.ts
 
 The Repairer must retain the accepted 049-01 behavior and add only the missing semantic correlation:
-for an effective filtered request, `maxRent`, `minSizeSqM`, and `availableBy` in `appliedFilters` must
-equal the serialized request values exactly. The server-normalized Area value remains authoritative and
-may differ from caller spelling according to ADR-RS-0014/0015. A mismatch must return the existing
-`INVALID_RESPONSE` error without client-side re-filtering, retry, cache, fallback, or response rewriting.
+for an effective filtered request, the applied-filter key set must equal the serialized public
+criteria; `maxRent`, `minSizeSqM`, and `availableBy` must equal the serialized request values exactly;
+and Area must be equivalent after only the accepted shared trim/case normalization. The server remains
+the authority for canonical Area spelling. A mismatch must return the existing `INVALID_RESPONSE`
+error without client-side re-filtering, catalogue lookup, aliasing, retry, cache, fallback, or response
+rewriting.
 
-The Repairer must add public-behavior TDD Red coverage for mismatched numeric and date values, retain
-the filtered minimal/partial/omitted-key failures, preserve complete matching/empty responses and
-unfiltered legacy compatibility, run the required static checks, and return `READY_FOR_VERIFICATION`.
+The Repairer must add public-behavior TDD Red coverage for mismatched numeric/date values, extra
+criteria, and non-equivalent Area, retain the filtered minimal/partial/omitted-key failures, preserve
+complete matching/empty responses and unfiltered legacy compatibility, run the required static checks,
+and return `READY_FOR_VERIFICATION`.
 It must not modify the server, shared contract, page, WebMCP adapter, canonical Docs, fixtures,
 persistence, package/dependency files, Git/index, Worktrees, or unrelated paths.
 

@@ -150,8 +150,11 @@ For this response contract, echoing a criterion means that the non-Area scalar v
 server does not transform those numeric or date criteria; accepting a different returned value would
 allow a complete-looking intermediary response to relabel the query while still being reported as a
 successful result. Area is the deliberate exception: its value may be the server-resolved canonical
-label after the accepted trim/case normalization. If a future server legitimately transforms a
-numeric/date criterion, this ADR must be reopened before the client comparison changes.
+label after the accepted trim/case normalization, but it must still be equivalent to the serialized
+Area. The response applied-filter key set must equal the effective serialized public criteria; extra
+allowed filter keys are not metadata and are invalid. If a future server legitimately transforms a
+numeric/date criterion or introduces an Area alias, this ADR must be reopened before the client
+comparison changes.
 
 `TenantListing` contains only the existing tenant-safe fields: `id`, `version`, `title`, `address`,
 `area`, `monthlyRentGbp`, `bedrooms`, `sizeSqM`, `availableFrom`, `description`, and `imageKey`.
