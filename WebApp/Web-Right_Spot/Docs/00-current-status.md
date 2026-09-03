@@ -206,8 +206,8 @@ source/test paths. If this retry cannot load and capture the bounded evidence ma
 external harness limitation and stop blind retries. After a valid 048 evidence decision, re-baseline `RIGHTSPOT-047` and resume only the
 missing independent Operations WebMCP evidence. Do not run the old 047 verifier target or push/claim
 WebMCP closure before both gates are complete. In parallel, `RIGHTSPOT-012`
-remains a non-blocking
-read-only audit lane. `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its manual Operations consumer
+remains a non-blocking read-only audit lane; Advisor Linnaeus is reviewing the post-048 checkpoint
+`99d38ed` without source or canonical write access. `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its manual Operations consumer
 latest-read boundary at product source `3582ba4`; it does not reopen `RIGHTSPOT-044` or change the
 Operations API, domain, projection, fixture, role/privacy, navigation, or WebMCP boundary.
 `RIGHTSPOT-006` remains credential-gated. The existing Tenant Discovery/WebMCP slice remains

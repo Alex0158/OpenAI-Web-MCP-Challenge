@@ -1502,3 +1502,14 @@ This dispatch does not upgrade the earlier `BLOCKED_HARNESS` attempts into evide
 return one explicit outcome (`VERIFIED`, `FAILED_PRODUCT`, `INCOMPLETE_EVIDENCE`, or `BLOCKED_HARNESS`)
 with actual command/session/time evidence, and must stop if the session cannot load or the bounded final
 readback cannot be captured. No push or WebMCP closure claim is allowed until the outcome is reviewed.
+
+## 7.38 Post-048 continuous audit dispatch — 2026-09-03
+
+While the corrected `RS-WO-048-02` browser retry remained bounded and source-frozen, Main dispatched
+the next non-blocking `RIGHTSPOT-012` read-only audit to Advisor Linnaeus
+(`01a06674-8423-7af1-ae10-b7cf3c23dbac`). Its baseline is documentation checkpoint `99d38ed`; the
+product/source candidate remains `218935c`. The audit is limited to static route/role/flow review,
+the shared 048 lifecycle contract, UI/UX/accessibility/fallback boundaries, privacy/data authority,
+WebMCP/Re-entry classification, and documentation drift. It must not edit source, tests, Docs, fixtures,
+SQLite, Git, Worktrees, or register follow-on work. The report is advisory evidence only and remains
+subject to Main-thread review before any Task or canonical writeback is accepted.
