@@ -15,11 +15,12 @@
 - Owner: Main RightSpot thread
 - Current increment: The read-only proposal was reviewed and closed as a staged product decision. The
   Operations authority and pure projection were accepted and implemented separately through
-  `RIGHTSPOT-013`, `RIGHTSPOT-015`, and `RIGHTSPOT-016`; the manual read surface remains a separate
-  implementation outcome.
-- Next gate: `RIGHTSPOT-044` owns the bounded `/agent/operations` and `GET /api/agent/operations`
-  manual read surface. WebMCP remains deferred until that ordinary surface is implemented and
-  independently verified.
+  `RIGHTSPOT-013`, `RIGHTSPOT-015`, and `RIGHTSPOT-016`; the bounded manual read surface is now
+  `RIGHTSPOT-044` `CLOSED_VERIFIED`, with the bounded consumer latest-read repair in `RIGHTSPOT-045`
+  also `CLOSED_VERIFIED`.
+- Next gate: None within this proposal Task. Any future Operations WebMCP capability requires a new
+  accepted decision/contract, implementation Task, explicit write set, and independent evidence gate;
+  the closed `RIGHTSPOT-044` manual surface and `RIGHTSPOT-045` consumer repair do not silently admit it.
 - Execution posture: `REVIEWED_STAGED_CLOSED`; `RS-WO-010-01` returned `READY_FOR_REVIEW` and the
   main-thread disposition is recorded below. This task does not itself authorize WebMCP registration,
   implementation, or changes outside the separately registered `RIGHTSPOT-044` boundary.
