@@ -1513,3 +1513,20 @@ the shared 048 lifecycle contract, UI/UX/accessibility/fallback boundaries, priv
 WebMCP/Re-entry classification, and documentation drift. It must not edit source, tests, Docs, fixtures,
 SQLite, Git, Worktrees, or register follow-on work. The report is advisory evidence only and remains
 subject to Main-thread review before any Task or canonical writeback is accepted.
+
+## 7.39 Post-048 static audit disposition — 2026-09-03
+
+Advisor Linnaeus (`01a06674-8423-7af1-ae10-b7cf3c23dbac`) returned `READY_FOR_REVIEW` against docs
+checkpoint `99d38ed` and product/source candidate `218935c`. The bounded read-only review covered the
+route/role matrix, human Tenant-to-Agent journey, 048 lifecycle source/tests and ADR, UI/UX/accessibility
+and fallback boundaries, privacy/data authority, WebMCP/Re-entry claims, and documentation drift. It
+found no new P0/P1/P2 product defect, broken handoff, privacy bypass, or workflow mismatch.
+
+The review confirmed one documentation evidence-strength issue: `role-page-frame.test.ts` asserts the
+presence of lifecycle monitor wiring and the actor-id/role key in source, but does not render the frame
+to prove integrated child unmount, in-flight abort, or registration removal. Main corrected the current
+status and 012 lifecycle wording accordingly. This remains an `INCOMPLETE_EVIDENCE` browser-gate issue,
+not a product failure; the active 048 verifier remains the authority for integrated runtime evidence.
+The low-severity retry-copy observation is retained as non-actionable polish pending browser usability
+evidence. No source, tests, fixtures, SQLite, Git, Worktree, or runtime product behavior changed, and
+no follow-on Task or Work Order was registered.

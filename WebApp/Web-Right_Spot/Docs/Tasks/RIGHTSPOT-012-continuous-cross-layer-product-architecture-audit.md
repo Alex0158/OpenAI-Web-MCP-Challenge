@@ -726,5 +726,26 @@ Main verified the shared one-time session read and mount-only adapter effects in
 finding is therefore accepted as a cross-cutting session-lifecycle defect, not as an Operations-only
 repair and not as a browser data-leak claim. `RIGHTSPOT-048` and ADR-RS-0018 now own the bounded
 focus/visibility revalidation, actor-id/role child teardown, and adapter-side auth-failure deactivation
-contract. `RIGHTSPOT-047` is paused and must be re-baselined after this repair; `RIGHTSPOT-012` remains
-pending and non-blocking. No product source, fixture, API, or Git state changed during this audit.
+contract. Direct lifecycle-helper and adapter tests cover their respective behavior; the integrated
+cross-component keyed teardown remains a supported-browser evidence gate. `RIGHTSPOT-047` is paused and
+must be re-baselined after this repair; `RIGHTSPOT-012` remains pending and non-blocking. No product
+source, fixture, API, or Git state changed during this audit.
+
+## Latest post-048 static audit disposition — 2026-09-03
+
+Main reviewed Advisor Linnaeus's `READY_FOR_REVIEW` report
+(`01a06674-8423-7af1-ae10-b7cf3c23dbac`) against documentation checkpoint `99d38ed`, product/source
+candidate `218935c`, and the unchanged RightSpot source/test paths. The report covered the route and
+role-entry matrix, the Tenant-to-Agent human chain, the 048 lifecycle implementation, privacy/data
+authority, UI/UX/accessibility and fallback boundaries, and WebMCP/Re-entry classification. It found
+no new P0/P1/P2 product defect, broken handoff, privacy bypass, or workflow mismatch; the existing
+048 supported-browser evidence gap remains the gate for integrated teardown claims.
+
+One `DOCUMENTATION_DRIFT` / `INCOMPLETE_EVIDENCE` finding was confirmed: current status wording
+overstated actor-id keyed child teardown as covered by tests, although the focused RolePageFrame test
+uses source assertions for the key and monitor wiring rather than rendering the frame and proving
+unmount, abort, and registration removal. Main corrected the wording to distinguish direct behavioral
+tests, static wiring assertions, and pending integrated browser evidence. The lifecycle read-error
+recovery-copy observation remains low-severity polish and is not actionable without browser usability
+evidence. Disposition: `NO_ACTION` beyond this documentation correction; no follow-on Task or Work Order
+is registered. `RIGHTSPOT-012` returns to its pending continuous-audit posture.

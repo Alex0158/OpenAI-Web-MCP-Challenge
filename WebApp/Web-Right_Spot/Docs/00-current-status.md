@@ -192,8 +192,9 @@ incomplete, so no push or WebMCP closure claim is made.
 **Latest shared session-lifecycle checkpoint (2026-09-03):** The Contract Advisor and Main source
 review confirmed the mount-only lifecycle gap described in ADR-RS-0018. `RIGHTSPOT-048` now has a
 reviewed eight-path candidate integrated at product commit `218935c`: focus/visible-session
-revalidation, actor-id keyed child teardown, and adapter-side authentication deactivation are covered
-by the new tests. Main independently reran focused `35/35`, complete `215/215`, typecheck, production
+revalidation and adapter-side authentication deactivation have direct behavioral tests; actor-id keyed
+child teardown is covered by static wiring/source assertions, while integrated cross-component teardown
+remains pending supported-browser evidence. Main independently reran focused `35/35`, complete `215/215`, typecheck, production
 build, repository validation, sensitive scan, and diff checks. No server/API/fixture behavior changed;
 the supported-browser lifecycle gate remains open. `RIGHTSPOT-047` is paused and must be re-baselined
 after the `048` gate.
