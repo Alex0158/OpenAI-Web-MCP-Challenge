@@ -1487,3 +1487,18 @@ Worktrees were not changed by either verifier. `RS-WO-048-02` is therefore recor
 `BLOCKED_HARNESS`, not `VERIFIED` or `FAILED_PRODUCT`. One bounded fresh retry may use the validated
 syntax and a unique session; if that retry cannot produce actual page evidence, Main must stop the
 harness path and retain the external verification gap rather than retry indefinitely.
+
+## 7.37 Shared role-page session lifecycle corrected verifier dispatch — 2026-09-03
+
+Main completed a read-only CLI syntax preflight and verified that the installed `agent-browser 0.25.3`
+accepts the WebMCP launch argument as the separate-value form
+`--args "--enable-features=WebMCPTesting"`. Main then resumed the same independent verifier identity
+Noether (`01a0666b-0da5-70c1-b0fe-a367af0ba766`) and dispatched one bounded retry with fresh isolated
+session `rs-wo-048-02-verifier-3-20260903`. The retry is restricted to the frozen product/source
+candidate `218935c`, the existing Tenant/Agent evidence matrix, and read-only browser/session actions;
+no source, test, Docs, Git, Worktree, fixture, or SQLite mutation is authorized.
+
+This dispatch does not upgrade the earlier `BLOCKED_HARNESS` attempts into evidence. The retry must
+return one explicit outcome (`VERIFIED`, `FAILED_PRODUCT`, `INCOMPLETE_EVIDENCE`, or `BLOCKED_HARNESS`)
+with actual command/session/time evidence, and must stop if the session cannot load or the bounded final
+readback cannot be captured. No push or WebMCP closure claim is allowed until the outcome is reviewed.
