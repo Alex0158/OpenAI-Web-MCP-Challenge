@@ -122,37 +122,21 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
   expect(afterRejectedKeys?.last_event_sequence === 0, "profile_rejected_key_consumed_sequence");
   expect(afterRejectedKeys?.active_activations === 0, "profile_rejected_key_created_delivery");
 
-  // A failure after the Event and sequence writes but before Delivery creation must roll back
-  // the complete transaction. The same signed envelope is accepted after the one-shot fault is
-  // removed, proving the failed attempt did not consume sequence or create work.
-  const rollbackEvent = await driver.issueEvent({
-    binding: approval.binding,
-    ordinal: 1,
-    discriminator: "rollback",
-  });
-  expectEvent(rollbackEvent, 1);
-  await driver.armEventCommitFailure({ bindingId: approval.binding.binding_id });
-  const failedAcceptance = await driver.sendEvent({ envelope: envelopeOf(rollbackEvent) });
-  expectError(
-    failedAcceptance,
-    500,
-    "receiver_internal_error",
-    false,
-    "profile_event_rollback",
-  );
-  const afterRollback = await driver.inspect({ bindingId: approval.binding.binding_id });
-  expect(afterRollback?.last_event_sequence === 0, "profile_rollback_consumed_sequence");
-  expect(afterRollback?.active_activations === 0, "profile_rollback_created_delivery");
-
   const firstCandidates = await Promise.all([
     driver.issueEvent({ binding: approval.binding, ordinal: 1, discriminator: "left" }),
     driver.issueEvent({ binding: approval.binding, ordinal: 1, discriminator: "right" }),
   ]);
   const second = await driver.issueEvent({ binding: approval.binding, ordinal: 2 });
-  const third = await driver.issueEvent({ binding: approval.binding, ordinal: 3 });
+  const third = await driver.issueEvent({
+    binding: approval.binding,
+    ordinal: 3,
+    discriminator: "rollback",
+  });
+  const fourth = await driver.issueEvent({ binding: approval.binding, ordinal: 4 });
   firstCandidates.forEach(candidate => expectEvent(candidate, 1));
   expectEvent(second, 2);
   expectEvent(third, 3);
+  expectEvent(fourth, 4);
 
   // A future sequence cannot reserve work before its predecessor. The Receiver must reject it
   // without advancing the Grant or creating an open Delivery; the same signed envelope must be
@@ -228,12 +212,31 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
   expectConcurrentAcceptance(concurrentSecond, second.event);
   const secondCycle = await completeDeliveryCycle(driver, claimTokens[1], second.event);
 
+  // A failure after the Event and sequence writes but before Delivery creation must roll back
+  // the complete transaction. Retrying the exact signed envelope after the one-shot fault is
+  // removed must then succeed, proving the failed attempt did not consume sequence or create work.
+  await driver.armEventCommitFailure({ bindingId: approval.binding.binding_id });
+  const failedAcceptance = await driver.sendEvent({ envelope: envelopeOf(third) });
+  expectError(
+    failedAcceptance,
+    500,
+    "receiver_internal_error",
+    false,
+    "profile_event_rollback",
+  );
+  const afterRollback = await driver.inspect({ bindingId: approval.binding.binding_id });
+  expect(afterRollback?.last_event_sequence === 2, "profile_rollback_consumed_sequence");
+  expect(afterRollback?.active_activations === 0, "profile_rollback_created_delivery");
+  const retriedRollback = await driver.sendEvent({ envelope: envelopeOf(third) });
+  expectAcceptance(retriedRollback, third.event, false);
+  const rollbackCycle = await completeDeliveryCycle(driver, claimTokens[2], third.event);
+
   await driver.restart();
 
   const inspection = await driver.inspect({ bindingId: approval.binding.binding_id });
   expect(inspection?.protocol_version === STANDING_PROTOCOL_VERSION, "profile_inspection_version");
   expect(inspection?.status === "active", "profile_grant_not_active_after_restart");
-  expect(inspection?.last_event_sequence === 2, "profile_grant_sequence_not_two");
+  expect(inspection?.last_event_sequence === 3, "profile_grant_sequence_not_three");
   expect(inspection?.active_activations === 0, "profile_activation_not_released");
 
   const restartReplay = await driver.sendEvent({ envelope: envelopeOf(first) });
@@ -244,18 +247,18 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
   expect(revocation?.status === "revoked", "profile_revocation_failed");
   expect(revocation?.duplicate === false, "profile_revocation_duplicate");
 
-  const rejectedThird = await driver.sendEvent({ envelope: envelopeOf(third) });
-  expect(rejectedThird?.statusCode === 410, "profile_revoked_event_status");
-  expectExactFields(rejectedThird?.body, ["error"], "profile_revoked_event_body");
+  const rejectedFourth = await driver.sendEvent({ envelope: envelopeOf(fourth) });
+  expect(rejectedFourth?.statusCode === 410, "profile_revoked_event_status");
+  expectExactFields(rejectedFourth?.body, ["error"], "profile_revoked_event_body");
   expectExactFields(
-    rejectedThird.body.error,
+    rejectedFourth.body.error,
     ["code", "retryable"],
     "profile_revoked_event_error",
   );
-  expect(rejectedThird.body.error.code === "grant_revoked", "profile_revoked_event_code");
-  expect(rejectedThird.body.error.retryable === false, "profile_revoked_event_retryable");
+  expect(rejectedFourth.body.error.code === "grant_revoked", "profile_revoked_event_code");
+  expect(rejectedFourth.body.error.retryable === false, "profile_revoked_event_retryable");
 
-  const postRevocationClaim = await driver.claim({ claimToken: claimTokens[2] });
+  const postRevocationClaim = await driver.claim({ claimToken: claimTokens[3] });
   expect(postRevocationClaim === null, "profile_work_available_after_revocation");
 
   const historicalReplay = await driver.sendEvent({ envelope: envelopeOf(first) });
@@ -271,6 +274,7 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
     rollback: {
       rejected: true,
       no_mutation: true,
+      retried: true,
     },
     ordering: {
       out_of_order_rejected: true,
@@ -288,12 +292,12 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
       rejected: true,
       no_mutation: true,
     },
-    accepted_sequences: [1, 2],
+    accepted_sequences: [1, 2, 3],
     backpressure: {
       code: blockedSecond.body.error.code,
       retryable: blockedSecond.body.error.retryable,
     },
-    deliveries: [firstCycle, secondCycle],
+    deliveries: [firstCycle, secondCycle, rollbackCycle],
     restart: {
       last_event_sequence: inspection.last_event_sequence,
       active_activations: inspection.active_activations,
@@ -432,7 +436,7 @@ function requireDriver(driver) {
 function requireClaimTokens(value) {
   if (
     !Array.isArray(value) ||
-    value.length !== 3 ||
+    value.length !== 4 ||
     value.some((token) => typeof token !== "string" || token.length === 0) ||
     new Set(value).size !== value.length
   ) {

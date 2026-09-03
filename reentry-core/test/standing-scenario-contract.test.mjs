@@ -5,7 +5,7 @@ import { runStandingAuthorizationV02Scenario } from "../conformance/standing-v0.
 import { REENTRY_HEADER_NAMES } from "../src/protocol.mjs";
 
 const BOUNDARY = "scenario_contract_boundary_reached";
-const CLAIM_TOKENS = ["claim_contract_1", "claim_contract_2", "claim_contract_3"];
+const CLAIM_TOKENS = ["claim_contract_1", "claim_contract_2", "claim_contract_3", "claim_contract_4"];
 
 // These are oracle self-tests, not a Receiver implementation or conformance result. A deliberately
 // small scripted driver stops immediately after the response under test. The boundary assertion
@@ -216,15 +216,15 @@ function run(boundary, mutate = value => value) {
     async dispatch() { return { protocol_version: "0.2", outcome: "accepted" }; },
     async authorizeEffect() { return "effect_token_contract"; },
     async acknowledge() {
-      const response = mutate({
+      const response = {
         type: "webmcp.delivery_acknowledgement", protocol_version: "0.2",
         delivery_id: activeDeliveryId, event_id: activeEventId, effect_id: `effect_contract_${lastEventSequence}`,
         acknowledged: true, duplicate: false, status: "acknowledged",
-      });
+      };
       acknowledged = true;
       activeEventId = undefined;
       activeDeliveryId = undefined;
-      return response;
+      return boundary === "acknowledgement" ? mutate(response) : response;
     },
     async restart() { stop(); },
     async revoke() { stop(); },

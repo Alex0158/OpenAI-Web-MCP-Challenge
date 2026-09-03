@@ -347,7 +347,7 @@ test("standing v0.2 crosses Host SDK, HTTP Receiver, Connector, Agent Adapter, r
     },
   };
 
-  const claimTokens = [1, 2, 3].map((value) => Buffer.alloc(32, value).toString("base64url"));
+  const claimTokens = [1, 2, 3, 4].map((value) => Buffer.alloc(32, value).toString("base64url"));
   const result = await runStandingAuthorizationV02Scenario({ driver, claimTokens });
 
   assert.equal(result.status, "passed");
@@ -357,6 +357,7 @@ test("standing v0.2 crosses Host SDK, HTTP Receiver, Connector, Agent Adapter, r
   assert.deepEqual(result.rollback, {
     rejected: true,
     no_mutation: true,
+    retried: true,
   });
   assert.deepEqual(result.ordering, {
     out_of_order_rejected: true,
@@ -374,11 +375,11 @@ test("standing v0.2 crosses Host SDK, HTTP Receiver, Connector, Agent Adapter, r
     rejected: true,
     no_mutation: true,
   });
-  assert.deepEqual(result.accepted_sequences, [1, 2]);
+  assert.deepEqual(result.accepted_sequences, [1, 2, 3]);
   assert.equal(result.backpressure.retryable, true);
   assert.equal(result.revocation.third_event_rejected, true);
   assert.equal(decisionVerificationCount, 1);
-  assert.equal(activationCalls, 2);
+  assert.equal(activationCalls, 3);
   assert.deepEqual(keyMaterialOverrides, ["replacement", "consented"]);
   assert.equal(consentedKeyMaterial, keys.publicKey);
   assert.equal(reboundKeyEvent.headers[REENTRY_HEADER_NAMES.keyId], HOST_KEY_ID);
