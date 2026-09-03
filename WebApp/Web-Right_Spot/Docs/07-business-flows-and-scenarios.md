@@ -28,7 +28,8 @@ editor's old mutation controls usable. `RIGHTSPOT-050` now closes that bounded a
 in both page-bound WebMCP adapters: registration failure can be silently discarded when production
 wiring omits the existing error callback. `RIGHTSPOT-051` owns the Tenant portion and `RS-WO-047-03`
 owns the Agent portion. `F-25` and the Tenant portion of `F-26` are now closed within their exact
-consumer boundaries; the Agent portion remains gated. Neither changes the business state machine,
+consumer boundaries; the Agent portion is now implementation-admissible through the bounded
+`RS-WO-047-03` checkpoint, while its final evidence remains open. Neither changes the business state machine,
 server authority, or manual UI contract.
 `F-18` was a tenant Discovery error-copy defect tracked by `RIGHTSPOT-040`; the bounded consumer
 repair is now closed and verified.
@@ -1548,8 +1549,9 @@ privacy behavior must remain usable. This is not a new tool, transport, telemetr
 contract, and it does not upgrade static tests or a browser-harness attempt into runtime evidence.
 
 **Disposition:** Tenant ownership is `CLOSED_VERIFIED`, `P2`, within deterministic `RIGHTSPOT-051`
-adapter/page evidence. Agent ownership remains a gated `RS-WO-047-03` checkpoint under open
-`RIGHTSPOT-047`; the combined `F-26` finding therefore remains partially open only on the Agent side.
+adapter/page evidence. Agent ownership is an implementation-admissible `RS-WO-047-03` checkpoint
+under open `RIGHTSPOT-047`; its final independent browser evidence remains open, so the combined
+`F-26` finding remains partially open only on the Agent side.
 
 ## 9.10 Agent preparation validation boundary evidence — 2026-09-02
 

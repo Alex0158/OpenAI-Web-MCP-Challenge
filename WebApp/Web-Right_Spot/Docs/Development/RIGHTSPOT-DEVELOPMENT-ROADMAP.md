@@ -659,11 +659,12 @@ closed. The candidate-vs-checkpoint path accounting is now explicit: the two-pat
 separate from Main-owned process-only documentation writeback.
 
 The bounded documentation reconciliation from the reviewed post-051 audit is complete in docs-only
-commit `968c050`. The current post-audit route is deliberately small: continue the non-blocking audit
-lane and consider the Agent `RS-WO-047-03` checkpoint according to its
-separate ownership and model gates. Keep the 048 browser harness issue as an evidence decision, not a
-reason to retry indefinitely. The Main thread continues to own source freeze, integration, canonical
-documentation, and Git closure; no extra Worktree is required for the closed 050 increment.
+commit `968c050`, and Main has accepted the subsequent 048 deterministic/browser split as a bounded
+evidence decision. The current post-audit route is deliberately small: recapture a fresh 047 source
+baseline and dispatch `RS-WO-047-03` under its separate ownership and model gates, while continuing
+the non-blocking audit lane. Keep the 048 browser harness issue as an evidence limitation, not a reason
+to retry indefinitely. The Main thread continues to own source freeze, integration, canonical
+documentation, and Git closure; no extra Worktree is required for this increment.
 
 ### Historical execution chronology
 

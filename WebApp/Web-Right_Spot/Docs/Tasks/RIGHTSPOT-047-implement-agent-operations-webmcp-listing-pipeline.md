@@ -18,29 +18,31 @@ Operations authority/projection, and the verified Tenant adapter pattern in `RIG
 - Execution posture: `MAIN_THREAD_SINGLE_SOURCE_WEBMCP_IMPLEMENTATION`
 - Priority: `P1` — implement only the accepted Agent Operations `read_listing_pipeline` capability.
 - Owner: Main RightSpot thread
-- Current increment: The original Builder implementation and Main candidate review are complete, but
-  the candidate is now paused for the shared session-lifecycle repair registered as `RIGHTSPOT-048`.
-  Its original five-path source snapshot remains historical evidence at candidate commit
-  `09d0628e10b9ddb9a59c59eebd1be1ee074a5318`; it must be re-baselined after the overlapping lifecycle
-  repair before independent closure. The 2026-09-03 audit also found `F-26` in the production
-  Operations adapter: registration rejection is caught by the helper but no page callback is wired,
-  so failure can remain a silent no-op. This is a bounded repair checkpoint under this Task and does
-  not change the accepted tool contract.
-- Next gate: complete the reviewed `RIGHTSPOT-048` evidence decision, then implement and verify
-  `RS-WO-047-03`, recapture the exact post-repair source identity, and resume the missing
-  `RS-WO-047-02` checks against that new frozen candidate. Do not run the old verifier target or infer
-  closure from partial evidence. Main owns integration, push, and documentation closure only after the
-  re-baselined independent evidence is complete.
-- Dependencies: ADR-RS-0017 remains the tool contract authority. The shared session-lifecycle repair
-  in `RIGHTSPOT-048` is now a prerequisite because it owns the overlapping adapter lifecycle paths.
-  The existing manual `/agent/operations` page, `GET /api/agent/operations`, Operations projection,
-  Agent role/assignment checks, and Tenant `search_listings` adapter remain read-only inputs.
+- Current increment: The original Builder implementation and Main candidate review are complete. The
+  overlapping session-lifecycle source repair is integrated at `218935c`; Main accepted its
+  deterministic/browser split as `DETERMINISTIC_ACCEPTED / BROWSER_LIMITATION_RETAINED` while keeping
+  the independent browser gate open. The original five-path source snapshot at candidate commit
+  `09d0628e10b9ddb9a59c59eebd1be1ee074a5318` is historical evidence only and must be re-baselined.
+  The 2026-09-03 audit found `F-26` in the production Operations adapter: registration rejection is
+  caught by the helper but no page callback is wired, so failure can remain a silent no-op. This is
+  the next bounded repair checkpoint under this Task and does not change the accepted tool contract.
+- Next gate: recapture the exact current source identity, dispatch and complete `RS-WO-047-03`, then
+  capture the post-repair source identity and resume only the missing `RS-WO-047-02` checks against
+  that new frozen candidate. Do not run the old verifier target or infer closure from partial evidence.
+  Main owns integration, push, and documentation closure only after the re-baselined independent
+  evidence is complete.
+- Dependencies: ADR-RS-0017 remains the tool contract authority. `RIGHTSPOT-048` owns the already
+  integrated shared lifecycle source boundary; its browser evidence remains a limitation, not a reason
+  to block the disjoint Agent registration-observability repair. The existing manual `/agent/operations`
+  page, `GET /api/agent/operations`, Operations projection, Agent role/assignment checks, and Tenant
+  `search_listings` adapter remain read-only inputs.
   `RIGHTSPOT-012` may continue as a non-blocking, read-only audit provided it does not modify either
   repair's source write set during a freeze.
-- Dispatch state: `PAUSED_FOR_SHARED_LIFECYCLE_REPAIR` — `RS-WO-047-01` was completed by supporting
-  agent `01a065ce-ba53-7b71-bb97-7de24e92a60f`; Main independently reviewed the candidate. The
-  `RS-WO-047-02` attempts remain historical incomplete evidence and no longer identify the next
-  source snapshot. No fixture mutation or Worktree is authorized.
+- Dispatch state: `READY_FOR_AGENT_OBSERVABILITY_REPAIR_BASELINE` — `RS-WO-047-01` was completed by
+  supporting agent `01a065ce-ba53-7b71-bb97-7de24e92a60f`; Main independently reviewed the candidate.
+  The reviewed 048 evidence decision permits the separately bounded `RS-WO-047-03` repair after a
+  fresh source recapture. The `RS-WO-047-02` attempts remain historical incomplete evidence and no
+  longer identify the next source snapshot. No fixture mutation or Worktree is authorized.
 - Evidence status: `INDEPENDENT_BROWSER_INCOMPLETE_REBASE_REQUIRED` — contract, original
   implementation, static checks, full deterministic suite, and Main-controlled browser smoke were
   verified for the original candidate; shared external-session lifecycle, final console/page-error,
@@ -278,16 +280,16 @@ and returns a bounded report to Main.
 
 ### RS-WO-047-03 — Surface Agent Operations registration failure without a silent no-op
 
-**Status:** `GATED_PENDING_048_EVIDENCE_DECISION`  
+**Status:** `READY_FOR_DISPATCH`  
 **Role:** WebMCP/API/UI repair Builder  
 **Parallelization:** `SERIAL_AGENT_WEBMCP_ADAPTER` — the Agent adapter, Operations page wiring, and
 focused tests share the existing 047 source ownership; no parallel writer is admitted  
 **Model gate:** When dispatched, WebMCP-specific implementation must use `gpt-5.6-sol` with `medium`
 reasoning. If the capability is unavailable, keep this Work Order gated and do not substitute another
 model.  
-**Source:** The current post-048 candidate is not yet a dispatch baseline. After the reviewed 048
-evidence decision, Main must recapture a full source identity and freeze the exact 047 candidate before
-dispatch or serial implementation.  
+**Source:** Main accepted the reviewed 048 deterministic/browser split without closing its browser
+gate. The current Main source is not yet the dispatch baseline; Main must recapture a full source
+identity immediately before this dispatch and freeze the exact 047 candidate.  
 **Worker write set:** `src/ui/agent/operations/operations-webmcp.ts`,
 `src/ui/agent/operations/operations-page.tsx`, `tests/ui/operations-webmcp.test.ts`, and
 `tests/ui/operations-page.test.ts` only  
@@ -330,13 +332,17 @@ ordinary manual Operations page.
 
 This remains the source-bearing Task for the accepted ADR-RS-0017 tool contract. Its original five-path
 implementation candidate passed deterministic checks and Main browser smoke, but independent browser
-closure is paused because the shared lifecycle contract was found incomplete. `RIGHTSPOT-048` is the
-separate bounded repair owner for the overlapping shared frame and adapter lifecycle paths; after it
-passes, Main must recapture a post-repair `047` candidate and resume independent evidence. The old
-partial attempts remain historical evidence and are not a closure or push authorization.
+closure is paused because its shared lifecycle evidence gate remains harness-blocked. `RIGHTSPOT-048`
+is the separate bounded repair owner for the overlapping shared frame and adapter lifecycle paths; its
+reviewed deterministic/browser split now permits the bounded `RS-WO-047-03` repair. Main must recapture
+a post-repair `047` candidate before resuming independent evidence. The old partial attempts remain
+historical evidence and are not a closure or push authorization.
 The 2026-09-03 audit confirmed `F-26` in the Agent production wiring. `RS-WO-047-03` now owns that
-bounded registration-observability repair after the 048 evidence decision; it is gated and has not
-changed source. The corresponding Tenant adapter boundary is separately registered as `RIGHTSPOT-051`
+bounded registration-observability repair after the reviewed 048 evidence decision; it is ready for
+dispatch after Main recaptures its exact baseline and has not changed source. The corresponding Tenant
+adapter boundary is separately registered as `RIGHTSPOT-051`
 because the 047 write set must remain Agent-only.
 The active `RIGHTSPOT-012` audit may continue on non-overlapping read-only surfaces, but it cannot
-mutate this Task's five-path write set or move a verifier baseline.
+mutate this Task's five-path write set or move a verifier baseline. `RS-WO-047-03` is now admissible
+for serial source dispatch after Main captures its fresh baseline; it remains subject to the exact
+four-path write set and the WebMCP model gate.

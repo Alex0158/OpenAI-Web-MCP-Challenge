@@ -864,7 +864,8 @@ The review accepted no new P0, P1, or P2 product finding. Business-state transit
 projections, privacy, manual Search fallback, 050 action safety, Tenant 051 registration-failure
 observability, and the existing 047/048 evidence boundaries remain as documented. Main therefore
 accepted `NO_ACTION` for new Task registration and retained 048 as `BLOCKED_HARNESS`, not a product
-failure; `RS-WO-047-03` remains gated until a reviewed 048 evidence decision and a new 047 baseline.
+failure. The reviewed split decision makes the already registered `RS-WO-047-03` implementation
+admissible after a new 047 baseline; it does not close 048/047 or authorize browser retry.
 
 The report did identify bounded documentation drift, which Main reconciled without a new Task in
 docs-only commit `968c050`:

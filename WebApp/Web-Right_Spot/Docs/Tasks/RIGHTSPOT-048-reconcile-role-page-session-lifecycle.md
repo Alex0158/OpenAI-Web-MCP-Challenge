@@ -32,10 +32,15 @@ frozen but not independently closed `RIGHTSPOT-047` Agent Operations adapter
 - Evidence status: `DETERMINISTIC_GATES_PASSED_BROWSER_BLOCKED_HARNESS`; this is not a browser
   reproduction, product failure, or claim of data leakage. The server-side role/session checks remain
   intact, while the integrated lifecycle claim remains unverified.
-- Next gate: Keep this Work Order open at the harness boundary until a supported, reproducible browser
-  execution path or a reviewed alternative evidence decision exists. Do not reopen `RIGHTSPOT-047` or
-  make a WebMCP closure/push claim from the incomplete attempts; any future retry requires a new
-  explicit bounded dispatch and must not reuse this hung path.
+- Evidence decision (2026-09-03): Main reviewed Advisor Harvey's read-only report and accepted the
+  split disposition `DETERMINISTIC_ACCEPTED / BROWSER_LIMITATION_RETAINED`. This accepts only the
+  deterministic implementation evidence; it does not close this Task, its browser gate, or the
+  integrated lifecycle claim.
+- Next gate: Keep this Work Order open at the harness boundary with no further blind retry. A future
+  supported, reproducible browser execution path requires a new explicit bounded dispatch and must not
+  reuse this hung path. The reviewed decision permits the separately bounded `RS-WO-047-03` source
+  repair to proceed after a fresh 047 source baseline; it does not authorize a WebMCP closure or push
+  claim.
 - Dependencies: `ADR-RS-0015` and `ADR-RS-0017` require page/session-scoped capability cleanup;
   `RIGHTSPOT-043` and `RIGHTSPOT-047` provide the existing adapter cleanup contracts. `RIGHTSPOT-012`
   may continue as a read-only, non-blocking audit but cannot modify this Task's write set during a
@@ -291,8 +296,10 @@ is frozen at `218935c`; the Task remains open at the harness boundary after Main
 limitation from the final corrected bounded retry without accepted browser evidence. The current Work
 Order is `BLOCKED_HARNESS`; the earlier harness failures and the hung corrected retry remain historical
 evidence and do not count as product verification. A future supported browser path or reviewed
-alternative requires a new explicit bounded verifier dispatch and source checkpoint. It does not reopen
-ordinary local MVP, `RIGHTSPOT-043`'s already verified Search semantics, or the Operations authority.
-`RIGHTSPOT-047` remains `verification_pending` and must not be closed until this repair and its
-independent browser evidence are complete. The Task does not authorize external authentication,
+alternative requires a new explicit bounded verifier dispatch and source checkpoint. Main accepted the
+deterministic/browser split after Harvey's read-only review; the decision removes the evidence-decision
+gate for `RS-WO-047-03` only. It does not close this Task, reopen ordinary local MVP,
+`RIGHTSPOT-043`'s already verified Search semantics, or close the Operations capability.
+`RIGHTSPOT-047` remains `verification_pending` and must not be closed until its re-baselined
+independent browser evidence is complete. The Task does not authorize external authentication,
 Cloud Receiver, WebRTC, Redis, deployment, production hardening, or universal WebMCP support.

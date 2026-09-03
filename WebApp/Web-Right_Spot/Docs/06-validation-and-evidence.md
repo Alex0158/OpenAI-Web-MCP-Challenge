@@ -1746,3 +1746,22 @@ Task. One Advisor link named a non-existent 047 filename; Main corrected the aut
 `RIGHTSPOT-047-implement-agent-operations-webmcp-listing-pipeline.md` file rather than propagating
 the invalid reference. No source, test, fixture, SQLite, Git, Worktree, or product runtime behavior
 changed during this audit, and no browser/WebMCP runtime claim was added.
+
+## 7.50 RIGHTSPOT-048 evidence decision — 2026-09-03
+
+Main reviewed Advisor Harvey's read-only evidence decision against the current canonical Main source
+after docs-only checkpoint `2021ad7`. The review confirmed one physical Main Worktree, clean RightSpot
+tracked source/tests, pinned Node `24.20.0` / npm `11.19.0`, healthy local service, and the recorded
+deterministic `RIGHTSPOT-048` evidence: focused `35/35`, complete `215/215`, typecheck, build,
+validators, scans, and diff checks. These are recorded evidence rather than a new full-suite rerun.
+
+The accepted disposition is `DETERMINISTIC_ACCEPTED / BROWSER_LIMITATION_RETAINED`. The shared
+lifecycle candidate at `218935c` remains accepted only for deterministic/static behavior; independent
+browser evidence was not delivered, so `RS-WO-048-02` remains `BLOCKED_HARNESS` and
+`RIGHTSPOT-048` remains `verification_pending`. No browser teardown, universal WebMCP, push, or
+production claim is added. The decision removes only the evidence-decision gate for the already
+registered Agent `RS-WO-047-03` four-path repair. Main must recapture a fresh 047 baseline before
+dispatch, and the 047 independent browser closure remains open.
+
+No source, tests, fixtures, SQLite, Git, Worktree, browser session, or external system was changed by
+the Advisor review.
