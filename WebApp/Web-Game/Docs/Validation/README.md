@@ -127,6 +127,10 @@ not claim that the game is built or balanced.
 - [`78-cp12-canvas-actor-world-visual-surface-runtime-cross-functional-audit.md`](78-cp12-canvas-actor-world-visual-surface-runtime-cross-functional-audit.md)
   — CP-12 Canvas primitive actor/world presentation, projection authority, responsive readback, and
   final-art boundary.
+- [`79-cp12-canvas-mission-state-readback-runtime-cross-functional-audit.md`](79-cp12-canvas-mission-state-readback-runtime-cross-functional-audit.md)
+  — CP-12 one-mission GATHERER dispatch readback across authoritative route/role/tool/cargo state,
+  Canvas/React agreement, responsive layout, lifecycle, and explicit external/independent-session
+  claim limits.
 
 ## Current concept checks
 
