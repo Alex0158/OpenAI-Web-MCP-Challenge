@@ -6,8 +6,8 @@
 - Closure type: `hosted_verified`
 - Checkpoint: `CP-17`
 - Owner: Game owner
-- Current increment: The owner-approved Railway persistent-volume + SQLite + Clerk direction is implemented at the local production-like boundary, and the Railway service runs the exact Game source with the rotated Clerk Production secret. The custom Game HTTPS endpoint, Clerk DNS/SSL/JWKS surface, signed-out invite-only client gate, sequential identity slices, concurrent Chrome Player A/Codex Browser Player B slice, and hosted restart/reconnect slice are verified at bounded hosted levels 4, 5, and 6: each identity reached its server-derived projection, the two contexts omitted the opposite shelter, both accepted scoped GATHERER commands, both observed extraction/deposit settlement and advancing realtime snapshots, and both reconnected after an in-place Railway restart with the same world, cursor, coins, mission rows, and private scopes. A consistent SQLite backup was hash-verified and the unauthenticated realtime boundary remained `401` after restart. Deliberate authenticated denial, a clean browser-absent interval, rollback/read-restore, and full hosted closure remain open under [`SK-EVID-068`](../Evidence/SK-EVID-068-cp17-independent-contexts-concurrent-hosted-runtime-verification.md), [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md), [`Validation/94`](../Validation/94-cp17-independent-contexts-concurrent-hosted-runtime-cross-functional-audit.md), and [`Validation/95`](../Validation/95-cp17-hosted-restart-backup-continuity-runtime-cross-functional-audit.md).
-- Next gate: Preserve the two clean identities, prove one authenticated wrong-scope command is rejected through an approved test seam, then observe a short interval with both realtime connections absent. Decide whether rollback/read-restore is required; claim `hosted_verified` only after those remaining rows and the complete acceptance matrix pass.
+- Current increment: The owner-approved Railway persistent-volume + SQLite + Clerk direction is implemented at the local production-like boundary, and the Railway service runs the exact Game source with the rotated Clerk Production secret. The custom Game HTTPS endpoint, Clerk DNS/SSL/JWKS surface, signed-out invite-only client gate, sequential identity slices, concurrent Chrome Player A/Codex Browser Player B slice, hosted restart/reconnect slice, and browser-absent continuity slice are verified at bounded hosted levels 4, 5, and 6: each identity reached its server-derived projection, the two contexts omitted the opposite shelter, both accepted scoped GATHERER commands, both observed extraction/deposit settlement and advancing realtime snapshots, both reconnected after an in-place Railway restart with the same world, cursor, coins, mission rows, and private scopes, and the durable world clock advanced while both game tabs were absent. A consistent SQLite backup was hash-verified and the unauthenticated realtime boundary remained `401` after restart. Deliberate authenticated denial, rollback/read-restore, and full hosted closure remain open under [`SK-EVID-068`](../Evidence/SK-EVID-068-cp17-independent-contexts-concurrent-hosted-runtime-verification.md), [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md), [`Validation/94`](../Validation/94-cp17-independent-contexts-concurrent-hosted-runtime-cross-functional-audit.md), and [`Validation/95`](../Validation/95-cp17-hosted-restart-backup-continuity-runtime-cross-functional-audit.md).
+- Next gate: Preserve the two clean identities and prove one authenticated wrong-scope command is rejected through an approved test seam without mutating the other shelter. Decide whether rollback/read-restore is required; claim `hosted_verified` only after those remaining rows and the complete acceptance matrix pass.
 
 ## Identity
 
@@ -165,6 +165,12 @@ restore has been configured.
 - Verified locally: Production Clerk configuration fails closed when the durable database path,
   autonomous worker flag, verification key, or either fixed subject binding is absent; the world cannot
   be accidentally hosted as a browser-driven or non-progressing process.
+- Verified hosted: Railway health, Clerk invite-only sessions, independent Player A/Player B scopes,
+  scoped command and settlement paths, browser-absent world-clock progression, in-place restart and
+  reconnect, same-world/cursor/mission readback, hash-verified SQLite backup, and post-restart
+  unauthenticated WebSocket rejection are recorded in [`SK-EVID-065`](../Evidence/SK-EVID-065-cp17-hosted-deployment-and-clerk-domain-runtime-verification.md),
+  [`SK-EVID-068`](../Evidence/SK-EVID-068-cp17-independent-contexts-concurrent-hosted-runtime-verification.md),
+  and [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md).
 - Verification readback (2026-09-03, Node `v24.20.0`): `npm run test:cp17-admission` passed 4/4;
   `npm run typecheck`, `npm run build`, `npm run test:cp04` (6/6), `npm run test:cp12-fixture`
   (10/10), `npm run test:cp12-dispatch` (31/31), `npm run test:cp13-page-tools` (9/9), the
@@ -173,12 +179,10 @@ restore has been configured.
 - Inferred: Railway plus one persistent SQLite volume and Clerk Production invite-only admission are
   the smallest coherent two-account demonstration topology because they preserve the existing long-
   running Node/page/worker boundary without a new database adapter.
-- Unknown: Successful password sign-in and hosted cookie issuance, independent two-session scope,
-  authenticated command/WebSocket behavior, no-browser worker progression, durable world/bootstrap
-  readback across restart, Volume backup/restore, rollback receipt, provider plan/region details,
-  rate limits, and Eddy's final hosted session/binding handoff.
-- Claim limit: Registering this task proves only that the work is bounded and actionable. It does not
-  prove authenticated hosted gameplay, always-on continuity, Cloud Receiver delivery, or judge
+- Unknown: Volume backup/restore, rollback receipt, provider plan/region details, rate limits, and
+  Eddy's final hosted session/binding handoff.
+- Claim limit: The hosted evidence proves only the bounded identity and continuity slices that were
+  executed. It does not prove rollback, Cloud Receiver delivery, dynamic Agent action, or judge
   reproduction.
 
 ## Hosted resource preflight readback
@@ -194,9 +198,9 @@ domain readback are recorded in [`SK-EVID-065`](../Evidence/SK-EVID-065-cp17-hos
 ## Smallest reversible action for the remaining gate
 
 Keep Clerk credentials outside tracked files. Use the verified deployment as the rollback point while
-the two-identity, no-browser, restart, backup, and rollback rehearsal is executed; if any hosted fact
-fails, preserve the first failure and return to this verified local seam rather than enabling fixture
-mode or adding a hidden fallback.
+the remaining denial and any rollback rehearsal are executed; if any hosted fact fails, preserve the
+first failure and return to this verified local seam rather than enabling fixture mode or adding a
+hidden fallback.
 
 ### Required Railway variable handoff
 
@@ -249,10 +253,9 @@ do not use a full-suite run as a substitute for hosted evidence.
 | A9 | Fixture route or fixture cookie in production mode | Fixture endpoint remains unavailable and no fixture identity is accepted |
 | A10 | Worker runs with no browser and ordinary restart | Worker lifecycle remains browser-independent; hosted proof still requires Railway readback |
 
-Rows A1-A9 are covered by the focused local Node 24 contract/process test. The hosted deployment
-readback proves the public process/health entry point only; authenticated rows, browser-free
-progression, restart, and Volume continuity in A5-A10 remain open until the hosted rehearsal is
-executed.
+Rows A1-A9 are covered by the focused local Node 24 contract/process test. Hosted evidence covers
+the positive identity/scoped command rows, browser-free progression, ordinary restart, and Volume
+continuity; deliberate authenticated cross-scope denial and rollback/read-restore remain open.
 
 ## Verification and closure target
 

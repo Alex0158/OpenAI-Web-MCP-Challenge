@@ -1,6 +1,6 @@
 # CP-17 Hosted Restart, Backup, and Continuity Cross-Functional Audit
 
-**Status:** HOSTED RESTART AND RECONNECT SLICE VERIFIED; DENIAL, BROWSER ABSENCE, AND ROLLBACK REMAIN OPEN  
+**Status:** HOSTED RESTART, RECONNECT, AND BROWSER-ABSENT CONTINUITY VERIFIED; DENIAL AND ROLLBACK REMAIN OPEN  
 **Date:** 2026-09-03  
 **Checkpoint:** CP-17  
 **Task:** [`SK-TASK-078`](../Tasks/SK-TASK-078-cp17-production-identity-and-hosted-admission.md)  
@@ -17,12 +17,12 @@ deployment or Volume replacement; a consistent SQLite backup was created and has
 public health contract returned to `ready`; both pages visibly transitioned to `CLOSED`/stale and
 then explicitly reconnected to `READY`; the same world ID, event cursor, coins, mission rows, and
 private shelter scopes were read back; and the world clock continued advancing. This is ladder level
-6 evidence for hosted continuity. It does not close browser-free progression, authenticated
-cross-player denial, rollback, or the complete `hosted_verified` gate.
+6 evidence for hosted continuity. It does not close authenticated cross-player denial, rollback, or
+the complete `hosted_verified` gate.
 
 ## Evidence reviewed
 
-- [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md): backup, Railway restart, health recovery, browser reconnect, persistence readback, and direct unauthenticated WebSocket rejection.
+- [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md): backup, Railway restart, health recovery, browser reconnect, browser-absent clock progression, persistence readback, and direct unauthenticated WebSocket rejection.
 - [`SK-EVID-068`](../Evidence/SK-EVID-068-cp17-independent-contexts-concurrent-hosted-runtime-verification.md): preceding independent-context concurrent scope and settlement slice.
 - [`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md): one-service, one-replica, one-Volume SQLite topology.
 
@@ -38,7 +38,7 @@ cross-player denial, rollback, or the complete `hosted_verified` gate.
 | Resolved | World event cursor remained `251` while world time advanced from the pre-restart backup | Restart does not reseed or duplicate the durable event history | Keep idempotent named-world bootstrap and cursor continuity |
 | Resolved | Unauthenticated and invalid-bearer realtime upgrades returned HTTP `401` after restart | Reboot does not weaken the WebSocket admission boundary | Keep direct wire rejection in the hosted rehearsal matrix |
 | High | No authenticated wrong-scope command was attempted | Positive private projections do not yet prove mutation denial for a forged Player A → Player B target | Use a supported non-production or owner-approved authenticated test seam; never add a production bypass |
-| High | Both browser tabs remained open in the user's session | The restart window proved connections close and recover, but not a clean interval with no browser present | Run a short browser-absent observation before final hosted closure, preserving the tabs for reconnect |
+| Resolved | Both game tabs were navigated to `about:blank` together | Railway health stayed ready and the durable world clock advanced from `5258` to `5366` while no game page was open; both sessions recovered after restoration | Retain this as the browser-independence evidence row; do not infer external Agent delivery from it |
 | Medium | No rollback or restore was executed | The backup is verified and available, but restore mechanics remain unproven | Perform only if needed for final release confidence; do not claim rollback from backup creation alone |
 
 ## Cross-functional chain check
@@ -55,14 +55,14 @@ from restart success.
 ## Minimum next verification
 
 Preserve the current clean Player A and Player B identities. Execute one authenticated wrong-scope
-command per identity through an approved test seam, then perform a short observation while both
-realtime connections are absent. Record the typed denial and clock progression separately. Only then
-decide whether a rollback/read-restore rehearsal is necessary before marking CP-17 `hosted_verified`.
+command per identity through an approved test seam and record the typed denial without mutating the
+other shelter. Decide whether a rollback/read-restore rehearsal is necessary before marking CP-17
+`hosted_verified`.
 
 ## Claim limits and reopen triggers
 
 This audit supports hosted restart/reconnect continuity at ladder level 6. It does not support
-browser-free progression, authenticated cross-player denial, rollback execution, Cloud Receiver or
-Local Connector delivery, WebMCP dynamic action, Agent wake, judge reproduction, or submission. Reopen
+authenticated cross-player denial, rollback execution, Cloud Receiver or Local Connector delivery,
+WebMCP dynamic action, Agent wake, judge reproduction, or submission. Reopen
 if the deployment, Volume, Clerk mapping, process topology, persistence contract, or canonical origin
 changes.

@@ -501,7 +501,7 @@ The bounded [`SK-TASK-075`](../Tasks/SK-TASK-075-cp12-shelter-economy-summary-ca
   The hosted restart/reconnect and hash-verified backup slice is now recorded under
   [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md)
   and [`Validation/95`](../Validation/95-cp17-hosted-restart-backup-continuity-runtime-cross-functional-audit.md).
-  Deliberate authenticated cross-player denial, a clean browser-absent interval, rollback/read-restore,
+  Deliberate authenticated cross-player denial, rollback/read-restore,
   and final hosted closure remain open. The [`CP-13–CP-18 seam map`](10-cp13-cp18-implementation-seam-map.md)
   routes the remaining implementation to the existing entrypoint, health, runtime, and persistence
   boundaries.

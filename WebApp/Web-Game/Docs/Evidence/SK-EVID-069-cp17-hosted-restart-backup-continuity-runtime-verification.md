@@ -5,12 +5,12 @@
 - Evidence ID: `SK-EVID-069`
 - Related task, issue, or decision: [`SK-TASK-078`](../Tasks/SK-TASK-078-cp17-production-identity-and-hosted-admission.md), [`SK-EVID-068`](SK-EVID-068-cp17-independent-contexts-concurrent-hosted-runtime-verification.md), and [`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md)
 - Evidence class: `hosted`
-- Ladder level: `6` for restart/reconnect and backup readback; browser-free and rollback rows remain open
+- Ladder level: `6` for restart/reconnect, backup readback, and browser-free continuity; denial and rollback rows remain open
 - Executor and date: Codex primary session, 2026-09-03, Europe/London
 
 ## Exact identity under test
 
-- Source state: Game repository `main`, HEAD `5594397`; hosted deployment `218112db-21b0-4c49-8758-50e02dc6352c`
+- Source state: Game repository `main`, HEAD `ffab63b`; hosted deployment `218112db-21b0-4c49-8758-50e02dc6352c`
 - Contract version: `SK-MVP-0.2`
 - Runtime versions: Railway Node.js `v24.19.0`; one Railway `game` service with one `game-data` Volume mounted at `/data`
 - Provider identity: Railway project `sleepless-kingdom`, production environment, custom domain `game.sleepless-kingdom.com`
@@ -20,7 +20,7 @@
 
 - Behavior under test: Create a consistent SQLite backup, restart the hosted application service, reconnect both authenticated page sessions, and confirm the same durable world and player state remain authoritative while the world clock continues.
 - Claim this evidence may support: The named Railway service can be restarted in place without replacing the deployment or Volume; the mounted SQLite world remains readable; the two authenticated pages reconnect to their server-derived scopes; shelter coins, mission state, world identity, and event cursor survive the restart; and the hosted world clock continues after recovery.
-- Claims this evidence cannot support: Independent provider snapshot retention, power-loss safety, rollback execution, browser-free progression with both tabs absent, deliberate cross-player command denial, Cloud Receiver/Local Connector delivery, WebMCP dynamic action, judge reproduction, or full `hosted_verified` closure.
+- Claims this evidence cannot support: Independent provider snapshot retention, power-loss safety, rollback execution, deliberate cross-player command denial, Cloud Receiver/Local Connector delivery, WebMCP dynamic action, judge reproduction, or full `hosted_verified` closure.
 
 ## Preconditions and backup
 
@@ -44,17 +44,20 @@
 | Observe realtime after reconnect | The world clock advances independently of the reconnect request | Both pages remained `READY` and advanced from world time `4734` to `4736` over approximately 1.8 seconds | **pass** |
 | Read the mounted database after recovery | The same world, cursor, shelter economy, and mission rows remain durable | SSH readback found world `sleepless-mvp-01`, cursor `251`, shelter coins `15`/`10`, and the existing mission rows including `WAITING_REVIEW` and `AT_SHELTER` states | **pass** |
 | Open unauthenticated realtime after recovery | The wire remains fail-closed after restart | Direct `wss://game.sleepless-kingdom.com/realtime` with no session and with an invalid bearer each returned the expected HTTP `401` upgrade failure | **pass** |
+| Leave both authenticated game tabs absent from the page | The server remains healthy and the world clock advances without an open browser connection | Both tabs were navigated to `about:blank`; Railway health remained ready and the mounted world clock advanced from `5258` before departure to `5355`, then `5366` after an additional ~2 seconds, with event cursor still `251` | **pass** |
+| Restore both tabs after the browser-absent interval | Existing sessions reconnect to their own server-derived scopes without a new identity | Both tabs returned to the canonical URL; Player A and Player B were signed in, `Connection: READY`, scoped to `shelter-a`/`shelter-b`, and showed shared world time `5381`; WebMCP was registered in Codex Browser and correctly unsupported in Chrome | **pass** |
 
 ## Assertions
 
 - Deployment identity: The service was restarted in place; this run did not deploy new code or replace the Volume.
 - Persistence: The same world ID and event cursor remained present, while the server-owned clock advanced after recovery.
 - Player continuity: Both authenticated browser contexts reconnected to their own shelters and retained their prior coin and mission state.
+- Browser independence: With both game tabs on `about:blank`, Railway health stayed ready and the durable world clock advanced; returning to the page recovered both sessions.
 - Transport behavior: Realtime connections became visibly stale during restart and required an explicit reconnect before returning to `READY`.
 - Backup boundary: The recorded backup is a consistent SQLite copy and was verified by matching remote/local hashes. No provider-level independent snapshot or restore was executed.
 
 ## Analysis and closure
 
 - Failure classification: No restart or readback failure occurred. The first backup command correctly failed because the runtime has no `better-sqlite3`; the follow-up used the deployed Node.js `node:sqlite` API and succeeded. The failed attempt created no backup artifact.
-- Residual gates: A clean browser-absent interval, a deliberate authenticated cross-player denial, rollback/read-restore, and the external Receiver/Connector chain remain unverified.
-- Exact conclusion: Hosted restart, Volume-backed persistence, authenticated reconnect, realtime recovery, and same-world readback passed at the named level-6 slice. CP-17 remains `in_progress` and is not yet `hosted_verified`.
+- Residual gates: A deliberate authenticated cross-player denial, rollback/read-restore, and the external Receiver/Connector chain remain unverified.
+- Exact conclusion: Hosted restart, Volume-backed persistence, authenticated reconnect, browser-independent clock continuity, realtime recovery, and same-world readback passed at the named level-6 slice. CP-17 remains `in_progress` and is not yet `hosted_verified`.

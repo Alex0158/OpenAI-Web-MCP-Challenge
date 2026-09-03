@@ -59,7 +59,7 @@ concurrent Chrome/Codex Browser scoped slice is recorded under [`SK-EVID-068`](.
 The hash-verified SQLite backup, in-place Railway restart, health recovery, authenticated reconnect,
 same-world/cursor/mission readback, and post-restart unauthenticated WebSocket rejection are recorded
 under [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md).
-Deliberate authenticated cross-scope denial, a clean browser-absent interval, rollback/read-restore,
+Deliberate authenticated cross-scope denial, rollback/read-restore,
 and the final hosted acceptance matrix still require the remaining CP-17 rehearsal.
 
 The local CP-04 process contract is intentionally smaller: one explicit Node.js entrypoint hosts the
@@ -91,7 +91,7 @@ one service, one `/data` Volume, one HTTPS Game domain, and the Clerk Production
 the two sequential hosted identity slices and the concurrent two-context slice now prove authenticated
 command/settlement paths, while the mounted Volume, process supervisor, authenticated reconnect, and
 canonical URL behavior have passed the named restart slice under [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md).
-Hosted proof must still verify independent scope denial, a clean browser-absent interval, and any
+Hosted proof must still verify independent scope denial and any
 rollback/read-restore claim before closure. It must not enable fixture mode,
 reseed on every restart, or use a browser heartbeat to keep the world alive.
 
