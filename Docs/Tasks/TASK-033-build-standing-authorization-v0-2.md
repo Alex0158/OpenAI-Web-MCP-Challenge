@@ -13,9 +13,9 @@
 - Current increment: The application-neutral chain and additive active Receiver kernel are locally
   verified; TASK-028 now owns the committed-source pin gate, while this task prepares the exact
   same-user Consent/inspection/revocation contract without exposing unaccepted routes.
-- Next gate: Active v2's reviewed PostgreSQL migration and real Express routes pass Consent once ->
-  signal 1 -> acknowledged effect -> signal 2 -> acknowledged effect -> restart -> revoke -> signal
-  3 rejected, using the same pinned normative scenario and explicit same-user controls.
+- Next gate: Accept the exact same-user Consent/inspection/revocation route, session, and CSRF
+  contract and TASK-027 lifetime policy before exposing standing enrollment. Preserve the minimum
+  Core-pinned trace; TASK-028 separately owns Receiver source closure and full release conformance.
 - Dependencies: ADR-0042 through ADR-0045; TASK-027 for effective lifetime and display policy;
   TASK-028 for active-v2 independent-Receiver conformance; TASK-029 for the real Host-effect
   acknowledgement composition; and the selected Host's own integration contract and tests.
@@ -208,7 +208,8 @@ reference implementation evidence and its non-claims. The active Receiver now ha
 Its 154-test backend aggregate and shared scenario pass are recorded in the
 [Receiver verification record](../../saas-boilerplate/backend/conformance/standing-v0.2/README.md).
 This is not pinned release conformance: Consent/control remain internal seams, effect authority is
-deterministic, and the shared source is uncommitted. TASK-028 owns exact-source integration.
+deterministic. CLOUD-023 now records committed Core source and a passing minimum pinned trace;
+the Receiver implementation remains uncommitted. TASK-028 owns remaining exact-source integration.
 The normal Host facade, product Connector version selection, published Connector, Sleepless Kingdom,
 supported Agent/Browser, and deployment remain open.
 

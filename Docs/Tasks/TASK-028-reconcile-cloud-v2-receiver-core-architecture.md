@@ -9,12 +9,11 @@
 - Lifecycle: `verification_pending`
 - Priority: `P1`
 - Owner: Principal architecture owner and Cloud Receiver v2 owner.
-- Current increment: The additive active Receiver kernel is locally verified in Re-Entry;
-  enforce exact committed Core source identity before conformance and obtain the reviewed source
-  pin without absorbing unrelated owner-held work.
-- Next gate: The same pinned normative suite passes the Core reference through loopback/SQLite and
-  active v2 through real Express/PostgreSQL, while the separate active-v2 production lease profile
-  and exact-source migration gates remain green.
+- Current increment: Reviewed Core source is committed locally and its minimum pinned standing
+  trace passes against the Re-Entry working-tree Receiver; record that bounded source result.
+- Next gate: Review and commit the exact Receiver implementation/migration, complete the mandatory
+  shared v0.1/v0.2 failure/race/recovery matrix, and enforce release checks while retaining the
+  separate active-v2 production lease profile. Public controls need their own accepted contract.
 - Dependencies: ADR-0006, ADR-0012, ADR-0033 through ADR-0039, ADR-0043 through ADR-0045,
   AUDIT-V2-004 in Core/09, TASK-012, and TASK-033.
 
@@ -145,14 +144,13 @@ owns reproduction and limitations; neither this implementation nor migration is 
 deployed.
 
 The Core source at the initial observed HEAD `4a71866ac1a5735b22d4931b0d7f555fa2ba306d` did not contain
-the standing scenario in its Git tree. Relevant standing source and governing ADR files still
-exist only in the working tree. An observed content digest is development evidence, not an
-ADR-0044 commit pin. Do not populate a reviewed pin with the current HEAD, a floating branch, or
-that digest. The source-preflight increment now rejects absent, mismatched, uncommitted, or
+the standing scenario in its Git tree; relevant source and ADRs then existed only in the working
+tree. That historical observed digest was not an ADR-0044 commit pin. The source-preflight
+increment rejects absent, mismatched, uncommitted, or
 modified source before dynamic imports and database work; its development mode is explicit and
 non-release. Sixteen source-identity tests pass, including Git replacement-object and real-entrypoint
-refusal probes. The actual default run correctly refuses the missing pin; the explicitly selected
-development trace still passes. Source-identity verification alone does not close the full normative
+refusal probes. The original default run correctly refused the missing pin; explicit development
+mode passed separately. Source-identity verification alone does not close the full normative
 matrix, production profile, exact-source migration, or required CI/release gates.
 
 The subsequent source-owner review corrected reference time/authority reads before the SQLite
@@ -165,6 +163,13 @@ then a real pin and rerun, without a new branch or push. TASK-033's filename was
 from `v0.2` to `v0-2` with identical content and an updated index. The original naming failure
 is historical; the final exact index must pass governance checks before local closure.
 No source pin is fabricated from a concurrent Game-only parent commit.
+
+CLOUD-023 now records documentation commit `abcbbaa6df8168e8d62f6cb95aca700968759df9`
+and source commit `58d8d71b2508084cf749e3d618d5ce5ae3feec51`. At the source commit,
+the Core loopback/SQLite and real Express/PostgreSQL minimum standing traces each passed 1/1;
+the latter reported verified Core source identity but explicitly unverified release conformance.
+Final evidence-only HEAD/pin readback lives in the Receiver record. Its implementation and
+migration remain uncommitted; this result clears the missing-Core-source gate, not TASK-028.
 
 Public Consent/inspect/revoke remain a separate decision boundary. The
 [control-plane proposal](../../saas-boilerplate/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md)

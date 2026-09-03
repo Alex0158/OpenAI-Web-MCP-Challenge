@@ -129,7 +129,7 @@ or perform a destructive action.
   consent/auth handoff, session-aware entry actions, and interactive Host SDK developer guidance.
 
 - [TASK-001 — Select the Host application](TASK-001-select-host-application.md) — ADR-0042 selects
-  Sleepless Kingdom; exact documentation and remote closure remain verification pending.
+  Sleepless Kingdom; documentation is committed locally, while remote closure remains pending.
 
 - [TASK-026](TASK-026-reconcile-pairing-claim-abuse-fence.md) — Select an enforceable anonymous
   pairing-claim abuse fence.

@@ -10,8 +10,8 @@
 - Lifecycle: `verification_pending`
 - Priority: `P0`
 - Owner: Alex and project team
-- Current increment: Complete the approved local documentation commit of the accepted Sleepless
-  Kingdom selection and related standing contracts under CLOUD-023, excluding Game and RightSpot.
+- Current increment: Selection and related standing contracts are committed locally under
+  CLOUD-023; retain the verified scope and await separately authorized remote delivery.
 - Next gate: After local scope and identity readback, obtain separate push authority and verify the
   remote branch contains ADR-0042 and reconciled authorities without unrelated owner-held work.
 - Dependencies: Local documentation verification must pass; commit and push authority remain

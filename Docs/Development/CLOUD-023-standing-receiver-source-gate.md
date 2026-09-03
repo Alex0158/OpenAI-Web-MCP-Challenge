@@ -1,8 +1,8 @@
 # CLOUD-023 — Standing Receiver Kernel and Source Preflight
 
 **Role:** DEVELOPMENT implementation and verification record  
-**Status:** `locally_verified` working-tree kernel and source-preflight tooling;
-committed-source integration and public controls remain open  
+**Status:** `locally_verified` Core source pin and minimum shared trace;
+Receiver working-tree closure, full release conformance, and public controls remain open  
 **Date:** 2026-09-03  
 **Controls:** ADR-0043 through ADR-0045, TASK-027, TASK-028, TASK-033.
 
@@ -192,3 +192,48 @@ dependencies, 19 files, 52,740 packed / 288,274 unpacked bytes). Connector passe
 demo each passed 2/2. Source-pin fixture tests passed 16/16. These tests ran at
 the above parent HEAD with the reviewed working-tree source; they do not by
 themselves establish the subsequent committed-source or pinned result.
+
+## Local committed-source result: 2026-09-03
+
+The approved documentation/accepted-contract cohort was committed locally as
+`abcbbaa6df8168e8d62f6cb95aca700968759df9` (36 files). The reviewed Core/consumer
+cohort was then committed as `58d8d71b2508084cf749e3d618d5ce5ae3feec51` (31 files).
+Both commits exclude every Game/RightSpot path and preserve other local changes.
+
+At the latter exact commit, the fixed Receiver pin passed the real
+Express/PostgreSQL standing trace in `pinned` mode: 1/1, with
+`source_identity_verified: true` and `release_conformance_verified: false`.
+The Core loopback/SQLite shared trace was rerun separately at the same commit:
+1/1. The selected Core/spec source SHA-256 was
+`5eb4c8c2a94e79b4da68616c921f7d996f53545ce18d559424a908e6b480b73b`.
+This supersedes the earlier absent-pin/development-only result, not its historical
+evidence or the remaining release gates.
+
+The final evidence-only parent writeback may advance HEAD without changing any
+selected Core/spec bytes. The Receiver record and fixed `core-pin.json` own the
+final exact SHA and post-writeback rerun; the pin must be advanced explicitly and
+verified again, never replaced by a floating branch. An unrelated future parent
+commit likewise requires a reviewed pin change or an exact checkout at the pin.
+
+Receiver HEAD remains `6b4826f68bb3634d004c49259d9c5311c660d997` on `Re-Entry`;
+the standing implementation, migration, harness, pin, and local verification
+record remain intentionally uncommitted. Thus neither Receiver exact-source
+release nor two-repository remote delivery is claimed. The unchanged dependency
+lock SHA-256 is
+`3f4354370ec3fa4a965c8434c6e8dd3c80be238dcb6fa7c42747719ac8275314`;
+the standing SQL migration SHA-256 is
+`e707a57e7b7330428ba96d0212bfc75516df26ea583904674996d739f70843c1`.
+Readback of the verified localhost disposable PostgreSQL 16 instance confirmed
+six baseline migrations and `20260903193000_standing_authorization_v02` finished.
+No production database or runtime was targeted; uniquely named test rows remain
+retained. The preceding 154-test backend/type-check/build evidence was not rerun
+by this documentation/pin-only closure.
+
+Final staged repository validation passed after the Task filename and headings
+were corrected; validator/scanner unit tests passed 6/6 and 3/3. Exact staged
+sensitive scans passed separately for 36 documentation and 31 source files.
+The whole-repository scanner still reports the same 21 Game artifact filename
+matches; no whole-repository security pass, CI result, push, or release approval
+is claimed. The next gate is reviewed Receiver source/migration closure and the
+complete mandatory matrix/release enforcement under TASK-028, plus the separate
+lifetime and public-control decisions under TASK-027/TASK-033.
