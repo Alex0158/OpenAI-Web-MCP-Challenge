@@ -162,6 +162,10 @@ not claim that the game is built or balanced.
   — CP-12 shelter economy summary presentation across Coins authority, ready/stale resource
   semantics, fail-closed unavailable state, responsive layout, lifecycle, and unchanged external
   boundaries.
+- [`89-cp14-cloud-receiver-v2-adaptation-cross-functional-audit.md`](89-cp14-cloud-receiver-v2-adaptation-cross-functional-audit.md)
+  — CP-14 pre-implementation audit of Eddy's Cloud Receiver/Local Connector v0.1 contracts, the
+  Game-side signal/outbox seam, signed Event mapping, queue/lease/activation/ACK separation, source
+  readiness, and the exact handoff gates for `SK-TASK-076`.
 
 ## Current concept checks
 

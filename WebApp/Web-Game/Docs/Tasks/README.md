@@ -88,6 +88,15 @@ is unmade, a duplicate, or an external action added merely to make the queue loo
 
 ## 6. Current task routing
 
+[`SK-TASK-076`](SK-TASK-076-cp14-cloud-receiver-v2-game-adaptation.md) is `pending` for the CP-14
+Game-side adaptation to Eddy's exact Cloud Receiver v2 Host Event ingress. Its cross-functional audit
+is [`Validation/89`](../Validation/89-cp14-cloud-receiver-v2-adaptation-cross-functional-audit.md).
+The task preserves the verified local `ReentryDeliveryPort`, treats Cloud `202` as queue acceptance
+only, and keeps Connector claim, fresh Agent activation, page action, and effect acknowledgement as
+separate boundaries. No implementation starts until Eddy supplies an owner-declared exact v2
+Receiver/SDK/Core/Connector handoff, endpoint, consent/binding/session map, test environment, and
+effect-authority boundary.
+
 [`SK-TASK-075`](SK-TASK-075-cp12-shelter-economy-summary-cards.md) is `verified` with `integrated`
 closure for the bounded CP-12 shelter economy summary cards under [`SK-EVID-062`](../Evidence/SK-EVID-062-cp12-shelter-economy-summary-card-runtime-verification.md)
 and [`Validation/88`](../Validation/88-cp12-shelter-economy-summary-card-runtime-cross-functional-audit.md).

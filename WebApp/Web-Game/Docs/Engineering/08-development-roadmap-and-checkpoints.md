@@ -393,6 +393,14 @@ The bounded [`SK-TASK-075`](../Tasks/SK-TASK-075-cp12-shelter-economy-summary-ca
   labelled stub, preserving one signal identity and leaving gameplay unchanged. This remains local
   ladder-level 3 composition evidence; it does not close the external Receiver/Connector, Agent,
   page, WebMCP, Re-entry, hosted, or judge gates.
+  The next live-integration preparation is [`SK-TASK-076`](../Tasks/SK-TASK-076-cp14-cloud-receiver-v2-game-adaptation.md)
+  under [`Validation/89`](../Validation/89-cp14-cloud-receiver-v2-adaptation-cross-functional-audit.md).
+  It treats the Game as a Host publisher, maps one approved `CargoLostToMonster` signal to Eddy's
+  signed v0.1 Event ingress, and keeps Cloud `202` queue acceptance separate from Connector claim,
+  fresh activation, page action, and effect acknowledgement. The task remains pending until Eddy
+  supplies the exact v2 source/package/endpoint/test handoff and the owner accepts the binding,
+  timestamp, canonical URL, session, one-run Grant, and effect-authority mapping; no direct
+  Connector claim or deprecated Receiver fallback is permitted.
 
 ## Phase 5 — local verification and demo closure
 
