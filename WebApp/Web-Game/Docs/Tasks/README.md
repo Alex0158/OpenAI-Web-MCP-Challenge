@@ -88,6 +88,12 @@ is unmade, a duplicate, or an external action added merely to make the queue loo
 
 ## 6. Current task routing
 
+[`SK-TASK-074`](SK-TASK-074-cp12-causal-history-card-hierarchy.md) is `verified` with `integrated`
+closure for the bounded
+CP-12 causal history card hierarchy. It is presentation-only over the existing player-scoped event
+projection and uses a disposable local dispatch solely for readback; it has no dependency on Eddy's
+external Receiver/Connector handoff.
+
 [`SK-TASK-073`](SK-TASK-073-cp12-mission-status-card-hierarchy.md) is verified with `integrated`
 closure for the bounded CP-12 mission dashboard hierarchy under [`SK-EVID-060`](../Evidence/SK-EVID-060-cp12-mission-status-card-runtime-verification.md)
 and [`Validation/86`](../Validation/86-cp12-mission-status-card-runtime-cross-functional-audit.md).

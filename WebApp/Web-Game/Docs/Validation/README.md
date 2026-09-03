@@ -155,6 +155,9 @@ not claim that the game is built or balanced.
 - [`86-cp12-mission-status-card-runtime-cross-functional-audit.md`](86-cp12-mission-status-card-runtime-cross-functional-audit.md)
   — CP-12 structured mission card presentation across projection authority, canonical text equivalence,
   phase/risk readability, accessibility, responsive layout, lifecycle, and unchanged external boundaries.
+- [`87-cp12-causal-history-card-runtime-cross-functional-audit.md`](87-cp12-causal-history-card-runtime-cross-functional-audit.md)
+  — CP-12 causal event card presentation across scoped projection fidelity, append-only ordering,
+  explicit identity text, responsive wrapping, lifecycle, and unchanged external boundaries.
 
 ## Current concept checks
 

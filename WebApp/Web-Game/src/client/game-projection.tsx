@@ -33,6 +33,7 @@ import {
   getProjectionViewport,
 } from "./projection-model";
 import { buildMissionStatusCards } from "./mission-presentation";
+import { buildCausalEventCards } from "./event-presentation";
 import {
   resolveActorVisual,
   resolveResourceVisual,
@@ -413,6 +414,7 @@ export function GameProjection({
   const commands = useMemo(() => buildCanvasDrawCommands(view), [view]);
   const rows = useMemo(() => buildAccessibleMissionRows(view), [view]);
   const missionCards = useMemo(() => buildMissionStatusCards(view.missions), [view.missions]);
+  const causalEventCards = useMemo(() => buildCausalEventCards(view.recentEvents), [view.recentEvents]);
   const rowBySoldier = useMemo(() => new Map(rows.map((row) => [row.soldierId, row.text])), [rows]);
   const selection = useMemo(() => resolveSelectionVisual({
     selectedSoldierId,
@@ -1014,8 +1016,23 @@ export function GameProjection({
               <p className={styles.muted}>No visible causal events yet.</p>
             ) : (
               <ul className={styles.events}>
-                {view.recentEvents.map((event) => (
-                  <li key={event.eventId}>{event.eventType} · world time {event.worldTime}</li>
+                {causalEventCards.map((card) => (
+                  <li key={card.eventId} className={styles.eventCard} data-event-type={card.eventType}>
+                    <div className={styles.eventCardHeader}>
+                      <strong className={styles.eventType}>{card.eventType}</strong>
+                      <span className={styles.eventTime}>World time {card.worldTime}</span>
+                    </div>
+                    <div className={styles.eventMeta}>
+                      <span className={styles.eventDatum}>
+                        <span className={styles.eventLabel}>Cursor</span>
+                        <span className={styles.eventValue}>#{card.worldEventCursor}</span>
+                      </span>
+                      <span className={styles.eventDatum}>
+                        <span className={styles.eventLabel}>Aggregate</span>
+                        <span className={styles.eventValue}>{card.aggregateLabel}</span>
+                      </span>
+                    </div>
+                  </li>
                 ))}
               </ul>
             )}
