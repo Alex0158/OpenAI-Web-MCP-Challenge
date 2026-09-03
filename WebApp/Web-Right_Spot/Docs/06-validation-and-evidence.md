@@ -1470,3 +1470,20 @@ Main froze the reviewed `RIGHTSPOT-048` candidate at product commit `218935c` an
 browser/WebMCP flag against the exact frozen source; no source, test, canonical-document, fixture,
 SQLite, Git, or Worktree change is authorized during the gate. The final status and evidence are still
 pending, so `RIGHTSPOT-048` is not closed and `RIGHTSPOT-047` remains paused.
+
+## 7.36 Shared role-page session lifecycle verifier harness failures — 2026-09-03
+
+The first `RS-WO-048-02` verifier, Ohm (`01a0664b-dac0-7b51-9350-fb93b163a34c`), returned no usable
+browser evidence after its corrected retry remained at `about:blank`; Main closed it as
+`BLOCKED_HARNESS`. This did not establish a product failure. A fresh Noether verifier
+(`01a0666b-0da5-70c1-b0fe-a367af0ba766`) then stopped before navigation because the launch command used
+`--args=--enable-features=WebMCPTesting`, which the installed `agent-browser 0.25.3` binary rejects as
+an unknown command. It produced no page, WebMCP, console, network, accessibility, or mutation evidence.
+
+Main performed a read-only local syntax preflight and confirmed that this binary accepts the declared
+launch argument in the separate-value form `--args "--enable-features=WebMCPTesting"`. The frozen
+candidate remains at product commit `218935c`; source/test paths, fixtures, SQLite, Git refs, and
+Worktrees were not changed by either verifier. `RS-WO-048-02` is therefore recorded as
+`BLOCKED_HARNESS`, not `VERIFIED` or `FAILED_PRODUCT`. One bounded fresh retry may use the validated
+syntax and a unique session; if that retry cannot produce actual page evidence, Main must stop the
+harness path and retain the external verification gap rather than retry indefinitely.
