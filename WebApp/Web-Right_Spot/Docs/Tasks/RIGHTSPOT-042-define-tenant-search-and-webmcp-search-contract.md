@@ -19,7 +19,7 @@
 - Owner: Main RightSpot thread
 - Current increment: Completed — freeze one implementation-ready, read-only Tenant Discovery Search contract that resolves the current Area ambiguity and can be shared by the ordinary UI, the authoritative application/API boundary, and the first page-authored WebMCP adapter.
 - Next gate: Completed by [`RIGHTSPOT-043`](RIGHTSPOT-043-implement-tenant-search-and-webmcp-adapter.md), which integrated the accepted source and passed independent supported-browser verification. This decision remains closed and should be reopened only if a contract boundary changes.
-- Dependencies: The current published-listing authority, tenant role/privacy boundary, and ordinary `RS-FLOW-02` surface remain authoritative. `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP proposal and is not an implementation dependency. External authentication, Cloud Receiver, WebRTC, Redis, deployment, and production readiness remain outside this task.
+- Dependencies: The current published-listing authority, tenant role/privacy boundary, and ordinary `RS-FLOW-02` surface remain authoritative. `RIGHTSPOT-010` is closed as a separate reviewed staged Agent Operations decision and is not an implementation dependency. External authentication, Cloud Receiver, WebRTC, Redis, deployment, and production readiness remain outside this task.
 - Dispatch state: `not dispatched` — Main-owned decision and documentation checkpoint; no Builder, Verifier, dependency installation, WebMCP registration, or Worktree was authorized by this file.
 - Evidence status: `ACCEPTED_CONTRACT_READY_FOR_IMPLEMENTATION` — ADR-RS-0014 and ADR-RS-0015 resolve the Area, criteria, result, error/freshness, page parity, role/privacy, and WebMCP lifecycle boundaries.
 

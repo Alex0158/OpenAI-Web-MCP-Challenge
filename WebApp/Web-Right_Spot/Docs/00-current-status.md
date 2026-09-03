@@ -762,8 +762,9 @@ closed parent or override the current closure statement above.
 
 ## 5.1 Current post-MVP route
 
-The current post-MVP route is the bounded `RIGHTSPOT-045` consumer repair for `F-22`, alongside the
-non-blocking `RIGHTSPOT-012` cross-layer audit against the latest canonical Main source. The already
+The current post-MVP route is the non-blocking `RIGHTSPOT-012` cross-layer audit against the latest
+canonical Main source. The bounded `RIGHTSPOT-045` consumer repair for `F-22` is now
+`CLOSED_VERIFIED` within its manual Operations consumer boundary. The already
 accepted Operations authority and pure projection were consumed by the ordinary Agent-only
 `/agent/operations` page and strict `GET /api/agent/operations` consumer in `RIGHTSPOT-044`; all three
 044 Work Orders are `CLOSED_VERIFIED`. Any Operations WebMCP capability remains separately gated and
@@ -845,16 +846,17 @@ independent verification; its post-closure `320–342px` residual was resolved b
 `RIGHTSPOT-022`, whose Builder handoff and independent verification are complete at product commit
 `f0dbd99`. `RIGHTSPOT-006` and `RIGHTSPOT-012` remain separate credential and read-only audit gates;
 `RIGHTSPOT-010` is closed as the reviewed staged decision, `RIGHTSPOT-044` is `CLOSED_VERIFIED`, and
-`RIGHTSPOT-045` is the current bounded Operations consumer repair gate. `RIGHTSPOT-032` is closed within its tenant projection boundary
+`RIGHTSPOT-045` is `CLOSED_VERIFIED` within its bounded Operations consumer repair boundary.
+`RIGHTSPOT-032` is closed within its tenant projection boundary
 and does not reopen `RIGHTSPOT-020`. `RIGHTSPOT-033` is closed within its Agent presentation boundary.
 `RIGHTSPOT-034` is closed within its tenant listing-detail presentation boundary, and `RIGHTSPOT-035`
 is closed within its tenant request-editor accessibility boundary. `RIGHTSPOT-036` is closed within
 its tenant editor-feedback boundary. `RIGHTSPOT-037` is closed within its Agent latest-read
 truthfulness boundary. `RIGHTSPOT-038` is closed within its Agent stale-action recovery
 presentation boundary.
-The next route is the bounded `RIGHTSPOT-045` Operations consumer repair; the continuous Main-thread
-audit remains active in parallel as a read-only lane. No server, workflow, persistence, privacy, or
-dependency change outside a registered Task is authorized.
+The next route is the continuous Main-thread `RIGHTSPOT-012` audit as a read-only lane; `RIGHTSPOT-045`
+is already closed within its bounded Operations consumer boundary. No server, workflow, persistence,
+privacy, or dependency change outside a registered Task is authorized.
 
 ## 5.2 Accepted MVP Work Order boundary (historical closure)
 
