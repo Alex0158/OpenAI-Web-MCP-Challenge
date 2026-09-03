@@ -537,10 +537,9 @@ Evidence for this Core-only increment:
 The fixture reuses the existing standing Host SDK, Core, SQLite store, and process
 RPC. No production source, protocol, schema, package, route, or deployment behavior
 changed. This closes only the committed standing Core/SQLite fresh-process boundary;
-the active Receiver/PostgreSQL equivalent, forced termination during a transaction,
 supervision, distributed ownership, release conformance, deployment, and production
-durability remain open. The active Receiver/PostgreSQL increment below records the
-corresponding local process-boundary evidence.
+durability remain open. The corresponding active Receiver and transaction-
+interruption evidence is recorded below.
 
 ## Active Receiver/PostgreSQL fresh-process recovery increment: 2026-09-04
 
@@ -600,3 +599,28 @@ active Receiver/PostgreSQL transaction-interruption vector. Supervision,
 distributed ownership, production effect authority, public controls, lifetime,
 deployment, release enforcement, and the remaining shared v0.1/v0.2 failure
 matrix remain open.
+
+## Standing Core transaction-interruption increment: 2026-09-04
+
+The Core process fixture now terminates the child immediately after its standing
+Delivery write inside the SQLite transaction. A fresh process observes Grant
+sequence `0`, zero active activations, and no Event row, proving the transaction
+rolled back rather than leaving partial work. The same signed Event is accepted
+after restart; the committed Delivery is then stopped and recovered by a new
+process through claim, effect verification, acknowledgement, and exact duplicate
+replay. Raw Connector, decision, control, claim, and effect tokens remain absent
+from the SQLite persistence bytes.
+
+Exact evidence:
+
+- focused `node --test reentry-core/test/standing-fresh-process.test.mjs`: `1/1` passed;
+- two additional focused stability reruns: `2/2` passed;
+- Core full verification: `162/162` tests passed, syntax `52` modules, conformance and package checks green;
+- Core implementation commit: `a4a1dc523647e997d8cdb42aa096142e686bfb64`; and
+- runtime: Node `v26.5.0`.
+
+The kill-after-write hook is a test-only wrapper around the SQLite store and
+changes no production behavior. This closes the bounded Core/SQLite
+transaction-interruption vector only. Production durability, supervision,
+distributed ownership, release enforcement, public controls, lifetime,
+deployment, and the remaining cross-implementation matrix remain open.

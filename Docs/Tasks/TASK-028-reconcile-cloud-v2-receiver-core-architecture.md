@@ -389,9 +389,9 @@ The fixture uses the existing standing Host SDK, Core, SQLite store, and process
 RPC only. It changes no production source, protocol, schema, package, route, or
 deployment behavior. This proves committed standing state recovery at the Core/
 SQLite process boundary; it does not prove the active Receiver/PostgreSQL process
-boundary, forced termination during a transaction, supervision, distributed
-ownership, release conformance, deployment, or production durability. The next
-increment is recorded below for the active Receiver/PostgreSQL boundary.
+boundary, supervision, distributed ownership, release conformance, deployment, or
+production durability. The transaction-interruption vectors are recorded in the
+following Core and active Receiver increments.
 
 ## 4.12 Active Receiver/PostgreSQL fresh-process recovery increment
 
@@ -451,6 +451,31 @@ failure. This closes the bounded active Receiver/PostgreSQL transaction
 interruption vector only. Supervision, distributed ownership, production effect
 authority, public controls, lifetime, deployment, release enforcement, and the
 remaining shared v0.1/v0.2 matrix stay open.
+
+## 4.14 Standing Core transaction-interruption increment
+
+**VERIFIED 2026-09-04:** the Core process fixture arms a test-only store wrapper
+that terminates the process immediately after the standing Delivery write. The
+SQLite transaction rolls back completely: a fresh process observes Grant sequence
+`0`, zero active activations, and no Event row. The same signed Event is then
+accepted after restart; a later committed Delivery process stop is recovered by a
+new process that claims, effect-verifies, acknowledges, and replays the Event as
+an exact duplicate. Raw Connector, decision, control, claim, and effect tokens
+remain absent from the retained SQLite persistence bytes.
+
+Evidence for this Core increment:
+
+- focused `node --test reentry-core/test/standing-fresh-process.test.mjs`: `1/1` passed;
+- two additional focused stability reruns: `2/2` passed;
+- Core full verification: `162/162` tests passed, syntax `52` modules, conformance and package checks green;
+- Core implementation commit: `a4a1dc523647e997d8cdb42aa096142e686bfb64`; and
+- runtime: Node `v26.5.0`.
+
+The kill-after-write wrapper is test-only and changes no production source,
+protocol, schema, package, route, or deployment behavior. This closes the bounded
+Core/SQLite transaction-interruption vector only; production durability,
+supervision, distributed ownership, release enforcement, public controls,
+lifetime, deployment, and the remaining cross-implementation matrix stay open.
 
 ## 5. Verification and closure
 
