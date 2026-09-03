@@ -73,6 +73,22 @@ test("listing reads encode only the bounded server filter names", async () => {
   assert.equal(buildListingsUrl({ availableFrom: "2026-09-20" }), "/api/listings?availableBy=2026-09-20");
 });
 
+test("listing reads forward an optional AbortSignal to the same GET request", async () => {
+  const controller = new AbortController();
+  let receivedSignal: AbortSignal | null | undefined;
+  let receivedMethod: string | undefined;
+  globalThis.fetch = async (_input, init) => {
+    receivedSignal = init?.signal;
+    receivedMethod = init?.method;
+    return jsonResponse({ fixtureGeneration: 4, listings: [] });
+  };
+
+  await readListings({}, { signal: controller.signal });
+
+  assert.equal(receivedSignal, controller.signal);
+  assert.equal(receivedMethod, "GET");
+});
+
 test("listing response parsing fails closed on inconsistent or malformed search envelopes", async () => {
   const listing = {
     id: "listing-primary",

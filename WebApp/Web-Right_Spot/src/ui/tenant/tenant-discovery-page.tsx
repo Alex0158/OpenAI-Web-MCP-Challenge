@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import RolePageFrame from "../shared/role-page-frame";
 import ListingMedia from "../shared/listing-media";
 import {
@@ -14,6 +14,10 @@ import {
   resolveCanonicalArea,
   suggestCanonicalAreas,
 } from "../../shared/contracts/listings-api";
+import TenantWebMcp, {
+  TenantSearchStaleError,
+  type TenantSearchExecutor,
+} from "./tenant-webmcp";
 import {
   FavouriteFeedback,
   FavouriteToggle,
@@ -40,29 +44,79 @@ export default function TenantDiscoveryPage() {
   const [filterError, setFilterError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const latestRequestId = useRef(0);
+  const activeSearch = useRef<{ requestId: number; controller: AbortController } | null>(null);
+  const isMounted = useRef(false);
   const favourites = useTenantFavourites();
 
-  useEffect(() => {
-    const requestId = ++latestRequestId.current;
-    let active = true;
+  const cancelSearches = useCallback(() => {
+    activeSearch.current?.controller.abort();
+    activeSearch.current = null;
+    latestRequestId.current += 1;
+    if (isMounted.current) setIsLoading(false);
+  }, []);
+
+  const executeSearch = useCallback<TenantSearchExecutor>(async (nextFilters, options = {}) => {
+    const callerSignal = options.signal;
+    if (callerSignal?.aborted) throw new TenantSearchStaleError();
+
+    activeSearch.current?.controller.abort();
+    const requestId = latestRequestId.current + 1;
+    latestRequestId.current = requestId;
+    const requestController = new AbortController();
+    activeSearch.current = { requestId, controller: requestController };
+    let callerAborted = false;
+    const isCurrentRequest = () => isMounted.current
+      && !callerAborted
+      && !callerSignal?.aborted
+      && !requestController.signal.aborted
+      && requestId === latestRequestId.current;
+    const handleCallerAbort = () => {
+      callerAborted = true;
+      requestController.abort();
+      if (requestId === latestRequestId.current) {
+        latestRequestId.current += 1;
+        if (isMounted.current) setIsLoading(false);
+      }
+    };
+
+    callerSignal?.addEventListener("abort", handleCallerAbort, { once: true });
     setIsLoading(true);
-    void readListings(appliedFilters)
-      .then((nextData) => {
-        if (!active || requestId !== latestRequestId.current) return;
-        setData(nextData);
-        setError(null);
-        if (Object.keys(appliedFilters).length === 0) {
-          setCatalogueListings(nextData.listings);
-        }
-      })
-      .catch((nextError: unknown) => {
-        if (active && requestId === latestRequestId.current) setError(nextError);
-      })
-      .finally(() => {
-        if (active && requestId === latestRequestId.current) setIsLoading(false);
-      });
-    return () => { active = false; };
-  }, [appliedFilters]);
+    setData(null);
+    setError(null);
+
+    try {
+      const nextData = await readListings(nextFilters, { signal: requestController.signal });
+      if (!isCurrentRequest()) throw new TenantSearchStaleError();
+
+      setData(nextData);
+      setAppliedFilters(nextData.appliedFilters);
+      setFilters(filtersFromApplied(nextData.appliedFilters));
+      if (Object.keys(nextData.appliedFilters).length === 0) {
+        setCatalogueListings(nextData.listings);
+      }
+      return nextData;
+    } catch (nextError: unknown) {
+      if (!isCurrentRequest()) throw new TenantSearchStaleError();
+      setData(null);
+      setError(nextError);
+      throw nextError;
+    } finally {
+      callerSignal?.removeEventListener("abort", handleCallerAbort);
+      if (activeSearch.current?.requestId === requestId) {
+        activeSearch.current = null;
+        if (isMounted.current && requestId === latestRequestId.current) setIsLoading(false);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    isMounted.current = true;
+    void executeSearch({}).catch(() => undefined);
+    return () => {
+      isMounted.current = false;
+      cancelSearches();
+    };
+  }, [cancelSearches, executeSearch]);
 
   function applyFilters(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -115,14 +169,14 @@ export default function TenantDiscoveryPage() {
       minSizeSqM: filters.minSizeSqM,
       availableBy: filters.availableBy,
     }));
-    setAppliedFilters(nextFilters);
+    void executeSearch(nextFilters).catch(() => undefined);
   }
 
   function clearFilters() {
     setFilters(EMPTY_FILTERS);
     setError(null);
     setFilterError(null);
-    setAppliedFilters({});
+    void executeSearch({}).catch(() => undefined);
   }
 
   const hasAppliedFilters = Object.keys(appliedFilters).length > 0;
@@ -138,6 +192,7 @@ export default function TenantDiscoveryPage() {
       eyebrow="Tenant marketplace"
       description="Browse the seeded rental catalogue, inspect one listing, and keep one viewing request moving with the property agent."
     >
+      <TenantWebMcp executeSearch={executeSearch} cancelSearches={cancelSearches} />
       <section className={styles.pageSection} aria-labelledby="listing-search-title">
         <div className={styles.sectionHeading}>
           <div>
@@ -249,7 +304,9 @@ export default function TenantDiscoveryPage() {
           hasAppliedFilters={hasAppliedFilters}
           isLoading={isLoading}
           onClear={clearFilters}
-          onRetry={() => setAppliedFilters({ ...appliedFilters })}
+          onRetry={() => {
+            void executeSearch({ ...appliedFilters }).catch(() => undefined);
+          }}
         />
       </section>
     </RolePageFrame>
@@ -360,4 +417,13 @@ function ListingResults({
 function formatDate(value: string): string {
   const date = new Date(`${value}T00:00:00Z`);
   return Number.isNaN(date.valueOf()) ? value : new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeZone: "UTC" }).format(date);
+}
+
+function filtersFromApplied(filters: TenantListingsResponse["appliedFilters"]): FilterForm {
+  return {
+    area: filters.area ?? "",
+    maxRent: filters.maxRent === undefined ? "" : String(filters.maxRent),
+    minSizeSqM: filters.minSizeSqM === undefined ? "" : String(filters.minSizeSqM),
+    availableBy: filters.availableBy ?? "",
+  };
 }

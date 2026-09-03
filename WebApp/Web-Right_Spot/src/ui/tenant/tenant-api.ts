@@ -108,8 +108,14 @@ export function buildListingsUrl(filters: TenantListingHttpFilters = {}): string
   return query ? `/api/listings?${query}` : "/api/listings";
 }
 
-export async function readListings(filters: TenantListingFilters = {}): Promise<TenantListingsResponse> {
-  const payload = await requestJson(buildListingsUrl(filters), { method: "GET" });
+export async function readListings(
+  filters: TenantListingFilters = {},
+  options: Pick<RequestInit, "signal"> = {},
+): Promise<TenantListingsResponse> {
+  const payload = await requestJson(buildListingsUrl(filters), {
+    method: "GET",
+    ...(options.signal !== undefined ? { signal: options.signal } : {}),
+  });
   return parseListingsResponse(payload);
 }
 
