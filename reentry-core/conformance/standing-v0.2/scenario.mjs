@@ -7,6 +7,7 @@ const REQUIRED_DRIVER_METHODS = Object.freeze([
   "enroll",
   "approve",
   "issueEvent",
+  "armEventCommitFailure",
   "setConsentedKeyMaterialForTest",
   "sendEvent",
   "claim",
@@ -120,6 +121,28 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
   const afterRejectedKeys = await driver.inspect({ bindingId: approval.binding.binding_id });
   expect(afterRejectedKeys?.last_event_sequence === 0, "profile_rejected_key_consumed_sequence");
   expect(afterRejectedKeys?.active_activations === 0, "profile_rejected_key_created_delivery");
+
+  // A failure after the Event and sequence writes but before Delivery creation must roll back
+  // the complete transaction. The same signed envelope is accepted after the one-shot fault is
+  // removed, proving the failed attempt did not consume sequence or create work.
+  const rollbackEvent = await driver.issueEvent({
+    binding: approval.binding,
+    ordinal: 1,
+    discriminator: "rollback",
+  });
+  expectEvent(rollbackEvent, 1);
+  await driver.armEventCommitFailure({ bindingId: approval.binding.binding_id });
+  const failedAcceptance = await driver.sendEvent({ envelope: envelopeOf(rollbackEvent) });
+  expectError(
+    failedAcceptance,
+    500,
+    "receiver_internal_error",
+    false,
+    "profile_event_rollback",
+  );
+  const afterRollback = await driver.inspect({ bindingId: approval.binding.binding_id });
+  expect(afterRollback?.last_event_sequence === 0, "profile_rollback_consumed_sequence");
+  expect(afterRollback?.active_activations === 0, "profile_rollback_created_delivery");
 
   const firstCandidates = await Promise.all([
     driver.issueEvent({ binding: approval.binding, ordinal: 1, discriminator: "left" }),
@@ -245,6 +268,10 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
     consent_decisions: 1,
     consented_host_key_enforced: true,
     consented_host_key_material_enforced: true,
+    rollback: {
+      rejected: true,
+      no_mutation: true,
+    },
     ordering: {
       out_of_order_rejected: true,
       retryable: outOfOrder.body.error.retryable,

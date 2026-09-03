@@ -10,7 +10,7 @@ const CLAIM_TOKENS = ["claim_contract_1", "claim_contract_2", "claim_contract_3"
 // These are oracle self-tests, not a Receiver implementation or conformance result. A deliberately
 // small scripted driver stops immediately after the response under test. The boundary assertion
 // proves that a valid response reaches the next step; malformed responses must fail before it.
-for (const boundary of ["approval", "out-of-order", "distinct-race", "identity-conflict", "acceptance", "acknowledgement"]) {
+for (const boundary of ["approval", "rollback", "out-of-order", "distinct-race", "identity-conflict", "acceptance", "acknowledgement"]) {
   test(`scenario accepts the exact ${boundary} response before advancing`, async () => {
     await assert.rejects(run(boundary), { code: BOUNDARY });
   });
@@ -35,6 +35,9 @@ const mutations = [
   ["approval", "wrong challenge identity", value => ({
     ...value, challenge_id: "another_challenge",
   }), "profile_approval_challenge"],
+  ["rollback", "missing retryable flag", value => ({
+    ...value, error: without(value.error, "retryable"),
+  }), "profile_event_rollback_error"],
   ["out-of-order", "missing retryable flag", value => ({
     ...value, error: without(value.error, "retryable"),
   }), "profile_out_of_order_error"],
@@ -101,11 +104,17 @@ function run(boundary, mutate = value => value) {
   let outOfOrderRejected = false;
   let distinctRaceComplete = false;
   let identityConflictComplete = false;
+  let rollbackComplete = false;
+  let eventWriteFailureArmed = false;
   const acceptedEvents = new Map();
   const driver = {
     async issueManifest() { return manifest; },
     async enroll() { return { duplicate: false, challenge: { status: "pending", challenge_id: approval.challenge_id } }; },
     async approve() { return boundary === "approval" ? mutate(approval) : approval; },
+    async armEventCommitFailure({ bindingId }) {
+      if (bindingId !== approval.binding.binding_id) throw new Error("profile_rollback_binding");
+      eventWriteFailureArmed = true;
+    },
     async issueEvent({ ordinal, signer = "consented", discriminator = "", eventId, stateVersion = ordinal }) {
       if (boundary === "approval") stop();
       const event = {
@@ -124,6 +133,15 @@ function run(boundary, mutate = value => value) {
           code: signer === "alternate-trusted" ? "event_key_scope_invalid" : "event_key_material_scope_invalid",
           retryable: false,
         } } };
+      }
+      if (eventWriteFailureArmed) {
+        eventWriteFailureArmed = false;
+        rollbackComplete = true;
+        const response = {
+          statusCode: 500,
+          body: { error: { code: "receiver_internal_error", retryable: false } },
+        };
+        return boundary === "rollback" ? { ...response, body: mutate(response.body) } : response;
       }
       if (boundary === "acknowledgement" && acknowledged) stop();
       if (event.event_sequence === 2 && !outOfOrderRejected && lastEventSequence === 0) {
@@ -182,6 +200,7 @@ function run(boundary, mutate = value => value) {
       if (boundary === "out-of-order" && outOfOrderRejected) stop();
       if ((boundary === "distinct-race" || boundary === "acceptance") && distinctRaceComplete) stop();
       if (boundary === "identity-conflict" && identityConflictComplete) stop();
+      if (boundary === "rollback" && rollbackComplete) stop();
       return {
         last_event_sequence: lastEventSequence,
         active_activations: activeEventId ? 1 : 0,

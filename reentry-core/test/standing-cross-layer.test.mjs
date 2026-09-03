@@ -55,6 +55,7 @@ test("standing v0.2 crosses Host SDK, HTTP Receiver, Connector, Agent Adapter, r
   let consentedKeyMaterial = keys.publicKey;
   let reboundKeyEvent;
   const keyMaterialOverrides = [];
+  let failNextStandingDeliveryWrite = false;
   let store;
   let core;
   let server;
@@ -147,7 +148,14 @@ test("standing v0.2 crosses Host SDK, HTTP Receiver, Connector, Agent Adapter, r
   }
 
   async function startRuntime() {
-    store = new SqliteReceiverStore({ filename: databasePath });
+    store = createFaultInjectableStore(
+      new SqliteReceiverStore({ filename: databasePath }),
+      () => {
+        if (!failNextStandingDeliveryWrite) return false;
+        failNextStandingDeliveryWrite = false;
+        return true;
+      },
+    );
     core = createCore();
     server = createServer(createStandingCloudReceiverHttpHandler({ receiver: core }));
     await new Promise((resolve, reject) => {
@@ -248,6 +256,11 @@ test("standing v0.2 crosses Host SDK, HTTP Receiver, Connector, Agent Adapter, r
       return issued;
     },
 
+    armEventCommitFailure({ bindingId }) {
+      assert.equal(typeof bindingId, "string");
+      failNextStandingDeliveryWrite = true;
+    },
+
     // This hook belongs only to the Receiver test fixture, not the Host SDK or any HTTP route.
     setConsentedKeyMaterialForTest({ material }) {
       assert.ok(["replacement", "consented"].includes(material));
@@ -341,6 +354,10 @@ test("standing v0.2 crosses Host SDK, HTTP Receiver, Connector, Agent Adapter, r
   assert.equal(result.consent_decisions, 1);
   assert.equal(result.consented_host_key_enforced, true);
   assert.equal(result.consented_host_key_material_enforced, true);
+  assert.deepEqual(result.rollback, {
+    rejected: true,
+    no_mutation: true,
+  });
   assert.deepEqual(result.ordering, {
     out_of_order_rejected: true,
     retryable: false,
@@ -385,4 +402,27 @@ function controlAuthorization(bindingId, action, now) {
     authenticated_at: now.toISOString(),
     expires_at: new Date(now.getTime() + 5 * 60_000).toISOString(),
   };
+}
+
+function createFaultInjectableStore(baseStore, shouldFailStandingDeliveryWrite) {
+  let wrapper;
+  wrapper = new Proxy(baseStore, {
+    get(target, property) {
+      if (property === "transaction") {
+        return (callback) => target.transaction((transaction) => callback(wrapper));
+      }
+      if (property === "insertStandingDelivery") {
+        return (...args) => {
+          const result = target.insertStandingDelivery(...args);
+          if (shouldFailStandingDeliveryWrite()) {
+            throw new Error("Injected standing Delivery write failure");
+          }
+          return result;
+        };
+      }
+      const value = Reflect.get(target, property, target);
+      return typeof value === "function" ? value.bind(target) : value;
+    },
+  });
+  return wrapper;
 }
