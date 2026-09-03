@@ -97,9 +97,12 @@ live world beyond the rejected requests.
   intermediate result and does not close the CP-17 hosted gate.
 - Rollback or remediation: Rejected requests must be transactionally side-effect free. The local
   read-restore compatibility rehearsal passed on a disposable copy; any provider-level rollback
-  must use a separate, approved reversible procedure and fresh evidence. If a test or hosted attempt
-  mutates state unexpectedly, stop, preserve the first failure, restore from the verified pre-test
-  copy where safe, and do not retry with a broader bypass.
+  must use a separate, approved reversible procedure and fresh evidence. Railway Volume Backup
+  restore is not a disposable rehearsal: it stages a replacement volume in the same project and
+  environment, requires a reviewed deploy that redeploys the service, and can remove backups newer
+  than the selected restore point ([Railway Volume Backups](https://docs.railway.com/volumes/backups)).
+  If a test or hosted attempt mutates state unexpectedly, stop, preserve the first failure, restore
+  from the verified pre-test copy where safe, and do not retry with a broader bypass.
 - Reopen trigger: Any successful cross-scope mutation, leakage of another shelter's projection,
   non-durable rejection, duplicate rejection effect, identity mismatch, or change in the supported
   hosted session seam.

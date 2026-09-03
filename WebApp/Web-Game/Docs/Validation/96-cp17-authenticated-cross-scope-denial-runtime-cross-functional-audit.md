@@ -39,7 +39,7 @@ read-restore was executed.
 | Resolved | Both rejected idempotency keys persisted `outcome=rejected`, and the exact A → B retry returned the same result | Network retry is safe and cannot duplicate a rejection effect or turn it into success | Retain command/retry/payload identity binding |
 | Resolved | An extra client `player_id` field returned `400` before worker execution | A caller cannot override the server-derived authority through a permissive envelope | Keep exact-key strict parsing for all state-changing commands |
 | High | The deliberate denial has not been exercised against `game.sleepless-kingdom.com` with real Clerk sessions | Positive two-player hosted projections do not yet prove the live mutation boundary | Obtain an owner-approved authenticated request seam or keep the hosted row explicitly open; never add a production test endpoint |
-| Medium | No rollback/read-restore rehearsal was run | The CP-17 backup is verified and preserved, but restore mechanics are not yet a demonstrated release claim | Run one disposable restore rehearsal only if final release confidence needs it; do not infer restore from backup creation |
+| Medium | No provider rollback rehearsal was run | The CP-17 backup is verified and preserved, but provider restore mechanics are not yet a demonstrated release claim | Keep provider restore as a separately approved maintenance operation: Railway stages a replacement volume in the same project/environment, requires a reviewed deploy and service redeploy, and may remove backups newer than the selected point ([Railway Volume Backups](https://docs.railway.com/volumes/backups)). The disposable local read-restore is already verified under SK-EVID-073; do not infer provider restore from backup creation |
 
 ## Cross-functional chain check
 
@@ -64,8 +64,10 @@ Keep the current hosted Player A and Player B identities unchanged. If an approv
 request seam becomes available, send exactly one foreign-soldier command per direction, read back
 both private projections and durable records, and capture the exact `403` body. If the only route
 requires credential extraction, browser injection, or a production bypass, record that limitation
-and leave the gate open. Treat rollback/read-restore as an independent optional rehearsal against
-the preserved operational backup; it is not required to claim the local denial result.
+and leave the gate open. Treat provider rollback as an independent, explicitly approved maintenance
+operation against the preserved backup; it can stage a replacement volume and redeploy the service
+under Railway's [Volume Backup procedure](https://docs.railway.com/volumes/backups). The disposable
+local read-restore is a separate compatibility result and is not required to claim the local denial.
 
 ## Claim limits and reopen triggers
 
