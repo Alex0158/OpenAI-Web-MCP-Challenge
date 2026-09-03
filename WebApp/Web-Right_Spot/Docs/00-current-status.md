@@ -41,12 +41,12 @@ typecheck, production build, repository validators, sensitive scan, local health
 and bounded browser smoke. RightSpot tracked source was clean at that accepted baseline; the known
 untracked boundary artifacts remain preserved and are not product source changes.
 
-**Current source-coordination checkpoint (2026-09-03):** The exact `RIGHTSPOT-051` three-path
+**Product source-coordination checkpoint (2026-09-03; product-source history):** The exact `RIGHTSPOT-051` three-path
 candidate passed independent deterministic verification and is integrated at product commit
 `0489155b9b2f391282e74d42b373ab30b101626a`; the captured file hashes matched before and after the
-verification. Main subsequently merged `origin/main` in `b2e5f93` while preserving the RightSpot
-source; `origin/main` is now the merge's second parent and Main is ahead by `50` commits. No push is
-claimed by this checkpoint. An
+verification. At that checkpoint, Main subsequently merged `origin/main` in `b2e5f93` while preserving the
+RightSpot source; `origin/main` was the merge's second parent and Main was ahead by `50` commits. No push is
+claimed by that checkpoint. An
 alternate mixed-scope commit object `4768cd2` was observed with the same three RightSpot paths plus
 unrelated Web-Game changes; it is not current Main source identity. Protected RightSpot untracked
 artifacts and unrelated Web-Game changes remain preserved outside the RightSpot product commit.
@@ -87,11 +87,14 @@ evidence was claimed by the Builder. The source was frozen for the read-only `RS
 verification; Gauss returned partial independent evidence but not a complete closure package, so
 `RIGHTSPOT-047` and `RIGHTSPOT-048` remain open at their separate evidence boundaries.
 
-The current repository snapshot is merge commit `b2e5f93`, with `ac67285` as its first parent and
-`origin/main=928debc` as its second parent; that merge introduced no RightSpot source/test delta. Main
-is ahead of `origin/main` by `50` commits. This repository identity is recorded separately from the
-RightSpot product-source identity so the verifier can reproduce both without treating the merge as a
-new product implementation.
+**Current repository identity (2026-09-03):** Main is at `21a48d025f57c01d4182c9d0e33da215bc4ba4e9`
+on `main`, with `origin/main=928debcbe6ed8fda9d165ac17318fd30a57f0361`; Main is ahead by `53` commits.
+The current HEAD is a Web-Game-only commit whose parent is the RightSpot docs checkpoint
+`9835388`; `git diff 9835388..21a48d0 -- WebApp/Web-Right_Spot` is empty. The product-source integration
+identity for the Agent repair therefore remains `ac67285` plus the four recorded path hashes, while
+`b2e5f93` remains the historical merge snapshot used by the earlier handoff. No push is claimed. This
+repository identity is recorded separately from the RightSpot product-source identity so a verifier can
+reproduce both without treating unrelated Main commits as new RightSpot implementation.
 
 **Latest independent Agent WebMCP verification attempt (2026-09-03):** Gauss
 (`01a06783-0437-7d13-82ed-2d68f7589a31`) used `gpt-5.6-sol + medium` against the frozen
@@ -103,7 +106,8 @@ boundaries, route/sign-out lifecycle, and clean mid-run errors. It did not claim
 missing registration-rejection observation, external session replacement/in-flight teardown, final
 console/page-error capture, final SQLite/source/Git/Worktree readback, and complete no-mutation proof
 keep `RS-WO-047-02` and `RIGHTSPOT-047` open. This is evidence limitation, not permission for a
-blind retry.
+blind retry. The verifier's repository snapshot was `92bab5b`; later RightSpot docs checkpoint
+`9835388` and unrelated Web-Game commit `21a48d0` did not change the four Agent source/test paths.
 
 The latest visual-only revalidation used isolated session `rightspot-visual-20260902` against the
 unchanged product source baseline represented by `898fea2` (current repository HEAD was the docs-only

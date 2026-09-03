@@ -1782,10 +1782,10 @@ manual Operations surface. It does not change the accepted tool contract, server
 fixture, role model, or shared role frame.
 
 Main reviewed the exact diff and integrated the candidate at product commit
-`ac672854a2c9a793cdf787d6564dd7b99a77035d`. The current repository snapshot is merge commit
-`b2e5f93c538bbf75196d4a128950e15b28e73e52`, whose first parent is `ac67285` and whose second parent
-is `origin/main=928debcbe6ed8fda9d165ac17318fd30a57f0361`; the merge introduced no RightSpot
-source/test delta. The post-repair source hashes are recorded in
+`ac672854a2c9a793cdf787d6564dd7b99a77035d`. At this integration handoff, the repository snapshot was
+merge commit `b2e5f93c538bbf75196d4a128950e15b28e73e52`, whose first parent was `ac67285` and whose
+second parent was `origin/main=928debcbe6ed8fda9d165ac17318fd30a57f0361`; the merge introduced no
+RightSpot source/test delta. The post-repair source hashes are recorded in
 `Docs/Tasks/RIGHTSPOT-047-implement-agent-operations-webmcp-listing-pipeline.md`. Focused tests passed
 `28/28`; the complete package passed `231/231` across `47` authored test files; pinned Node `24.20.0`
 typecheck, production build, repository/docs validators, sensitive scan, and `git diff --check` passed.
