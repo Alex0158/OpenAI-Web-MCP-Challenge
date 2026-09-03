@@ -4,8 +4,9 @@
 **Status:** Core and Receiver sources locally committed; minimum pinned trace,
 exact-commit PostgreSQL upgrade, one-shot Event rollback/retry vector, Core
 standing fresh-process recovery, and active Receiver/PostgreSQL fresh-process
-recovery, and active Receiver transaction interruption are `locally_verified`;
-full release conformance and public controls remain open  
+recovery, active Receiver transaction interruption, and Core/SQLite transaction
+interruption are `locally_verified`; full release conformance and public controls
+remain open  
 **Date:** 2026-09-04  
 **Controls:** ADR-0043 through ADR-0045, TASK-027, TASK-028, TASK-033.
 

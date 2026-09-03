@@ -15,8 +15,8 @@
   with exact-envelope retry, while a standing Core/SQLite pending-Delivery recovery trace now
   survives SIGKILL and fresh-process claim/ack/replay, and the active Receiver/PostgreSQL
   implementation now passes both fresh-process recovery and a forced transaction-interruption
-  rollback trace. The active-v2 lease/reclaim profile also passes. CLOUD-023 owns the bounded
-  evidence.
+  rollback trace; the Core/SQLite reference now passes the corresponding transaction-interruption
+  trace as well. The active-v2 lease/reclaim profile also passes. CLOUD-023 owns the bounded evidence.
 - Next gate: Complete the mandatory shared v0.1/v0.2 failure/race/recovery matrix, including any
   remaining forced-termination and transaction-interruption paths across retained implementations,
   then enforce release checks while retaining the separate active-v2 production lease profile.
