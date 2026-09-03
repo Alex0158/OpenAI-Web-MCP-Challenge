@@ -208,7 +208,7 @@ API.
 
 ### W2 — First read-only WebMCP vertical slice
 
-**State:** `IN_PROGRESS — RIGHTSPOT-043 / RS-WO-043-02 scope amendment`  
+**State:** `IN_PROGRESS — RIGHTSPOT-043 / RS-WO-043-02 redispatched`  
 **Outcome:** one page-authored read-only tool that performs one bounded goal through existing authority.
 
 The implementation must:
@@ -429,8 +429,8 @@ or a new cross-origin/external integration is proposed.
 The ordinary Search authority/UI/API phase of [`RIGHTSPOT-043`](../Tasks/RIGHTSPOT-043-implement-tenant-search-and-webmcp-adapter.md)
 is integrated at product code commit `534f5c9`. The first `RS-WO-043-02` adapter attempt was blocked
 before integration because the shared `readListings` client could not forward the execution
-`AbortSignal`. The current action is to apply the bounded `tenant-api.ts` seam amendment and
-redispatch the adapter against baseline `2bb65cd`; only an accepted handoff may open `RS-WO-043-03`
+`AbortSignal`. Main recorded the bounded `tenant-api.ts` seam amendment in `e7be681` and
+redispatched the adapter against that baseline; only an accepted handoff may open `RS-WO-043-03`
 independent supported-browser verification. No WebMCP success claim is made until the adapter and
 verification gates pass.
 
@@ -438,9 +438,9 @@ Until the `RIGHTSPOT-043` implementation and verification gate is accepted:
 
 - `RIGHTSPOT-010` remains `pending` and `RS-WO-010-01` remains `READY_FOR_REVIEW`;
 - `RIGHTSPOT-042` is `CLOSED_VERIFIED` as a documentation/decision gate and `RIGHTSPOT-043` is
-  `in_progress` through the bounded `RS-WO-043-02` scope amendment after ordinary Search integration;
-- the WebMCP adapter Work Order may be redispatched only with the amended exact page/client write set;
-  independent verification remains gated on its accepted handoff;
+  `in_progress` through redispatched `RS-WO-043-02` after ordinary Search integration;
+- the WebMCP adapter Work Order is limited to the amended exact page/client write set; independent
+  verification remains gated on its accepted handoff;
 - ordinary RightSpot MVP behavior remains the only runnable product claim; and
 - Cloud Receiver, WebRTC, Redis, external authentication, deployment, and production-readiness remain
   deferred or gated.

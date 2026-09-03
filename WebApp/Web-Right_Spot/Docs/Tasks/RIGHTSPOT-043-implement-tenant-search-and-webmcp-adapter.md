@@ -14,15 +14,15 @@ page/session-bound read-only WebMCP capability without creating a second listing
 - **Lifecycle:** `in_progress`
 - **Execution posture:** `SERIAL_PRODUCT_SEARCH_WITH_SEQUENTIAL_WEBMCP_GATE`
 - **Owner:** Main RightSpot thread
-- **Current gate:** The first `RS-WO-043-02` attempt returned a real scope blocker: the shared
-  `readListings` transport did not accept or forward `AbortSignal`. Main is amending the exact
-  client seam before redispatch; `RS-WO-043-03` remains gated on the accepted adapter handoff.
-  No source, dependency, WebMCP registration, fixture, or extra Worktree change is authorized
-  outside the amended active Work Order.
-- **Dispatch state:** `RS-WO-043-01 integrated; RS-WO-043-02 blocked pending bounded scope amendment`
+- **Current gate:** `RS-WO-043-02` has been redispatched against the amended client seam in the
+  canonical Main Worktree. `RS-WO-043-03` remains gated on the accepted adapter handoff. No source,
+  dependency, WebMCP registration, fixture, or extra Worktree change is authorized outside the
+  amended active Work Order.
+- **Dispatch state:** `RS-WO-043-01 integrated; RS-WO-043-02 redispatched after bounded scope amendment`
 - **Supporting workers:** Hubble's first `RS-WO-043-02` attempt returned `BLOCKED` before adapter
-  integration. Main retains source integration, shared-file serialization, verification acceptance,
-  canonical documentation, and Git closure authority.
+  integration; Hubble is now the reused Builder for the amended redispatch. Main retains source
+  integration, shared-file serialization, verification acceptance, canonical documentation, and Git
+  closure authority.
 - **Source identity:** The ordinary Search implementation is integrated in product code commit
   `534f5c9d2125fed77decd8f07202a2ea4693ce7e` on branch `main` at repository root
   `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge`. The reviewed code changed exactly the ten paths in
@@ -119,7 +119,7 @@ it does not claim WebMCP registration or supported-browser capability.
 ### RS-WO-043-02 — Add the thin page-bound read-only WebMCP adapter
 
 **Role:** Builder — WebMCP page capability  
-**Status:** `BLOCKED_PENDING_SCOPE_AMENDMENT`  
+**Status:** `IN_PROGRESS`  
 **Parallelization:** `SERIAL_AFTER_SEARCH_AUTHORITY` — it may not overlap the shared page/controller
 files in `RS-WO-043-01`.  
 **Allowed write set:**
@@ -139,6 +139,11 @@ criterion, URL/parser, response authority, dependency, or behavior change. It do
 ADR-RS-0015; it makes its already-accepted cancellation lifecycle implementable. The two untracked
 draft files created during the blocked attempt remain retained for Main review and are not accepted
 source until the amended handoff passes exact-path review.
+
+**Amended redispatch checkpoint (2026-09-03):** Main committed the scope amendment as
+`e7be681` and redispatched this Work Order against that exact baseline. Hubble must now complete or
+explicitly block the amended five-path scope; the two retained untracked drafts remain subject to
+Main's exact diff review and are not an accepted implementation result.
 
 **Read set:** the frozen post-WO-01 source, `src/ui/tenant/tenant-api.ts`, ADR-RS-0015, the supported
 official WebMCP documentation, the current browser/runtime configuration, and the existing Tenant
@@ -238,7 +243,7 @@ widening the semantic contract.
 This Task remains `in_progress` after `RS-WO-043-01` integration. The closed decision gate is
 recorded in `RIGHTSPOT-042` and ADR-RS-0015. The first `RS-WO-043-02` attempt was blocked before
 integration because the original write set could not provide genuine transport cancellation. Main
-has recorded the bounded `tenant-api.ts` amendment above; the retained adapter/test drafts are not
-accepted source. After redispatch, Main must review the exact handoff before opening `RS-WO-043-03`.
-The current integrated result does not claim WebMCP runtime registration, browser support, deployment,
-or judge reproducibility; those remain later gates.
+recorded the bounded `tenant-api.ts` amendment in `e7be681` and redispatched against that baseline;
+the retained adapter/test drafts are not accepted source. Main must review the exact handoff before
+opening `RS-WO-043-03`. The current integrated result does not claim WebMCP runtime registration,
+browser support, deployment, or judge reproducibility; those remain later gates.

@@ -298,13 +298,13 @@ Search contract. It contains sequential Work Orders for ordinary UI/API semantic
 adapter, and independent supported-browser verification. `RS-WO-043-01` is integrated in the
 canonical Main Worktree at product code commit `534f5c9` after the captured Node 24 checks and exact-
 path review. The first `RS-WO-043-02` attempt was blocked before integration because the shared client
-could not forward `AbortSignal`; Main is recording a bounded `tenant-api.ts` scope amendment before
-redispatch against `2bb65cd`. `RS-WO-043-03` remains gated on the accepted adapter handoff. No extra
-Worktree is open.
+could not forward `AbortSignal`; Main recorded the bounded `tenant-api.ts` scope amendment in
+`e7be681` and redispatched against that baseline. `RS-WO-043-03` remains gated on the accepted
+adapter handoff. No extra Worktree is open.
 
 **Current route:** `RIGHTSPOT-043` is the current active Main-owned implementation route for the
 accepted Tenant Discovery/WebMCP Search direction; `RS-WO-043-01` is integrated and
-`RS-WO-043-02` is at a bounded scope-amendment gate before redispatch. `RIGHTSPOT-042` is closed as the decision gate. `RIGHTSPOT-041` and
+`RS-WO-043-02` is redispatched under the bounded amended client seam. `RIGHTSPOT-042` is closed as the decision gate. `RIGHTSPOT-041` and
 `RIGHTSPOT-040` remain closed within their exact tenant consumer boundaries. No extra code Worktree is
 open.
 `RIGHTSPOT-032` through `RIGHTSPOT-040` remain closed within their exact tenant and Agent
