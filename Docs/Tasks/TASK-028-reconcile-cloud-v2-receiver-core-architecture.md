@@ -12,11 +12,13 @@
 - Current increment: Core and Receiver sources are committed locally; the pinned standing trace now
   covers out-of-order rejection/no mutation, duplicate convergence, the distinct-Event same-sequence
   conflict, same-ID/different-body identity conflict, and one-shot post-write transaction rollback
-  with exact-envelope retry, while the active-v2 lease/reclaim profile also passes. CLOUD-023 owns
-  the bounded evidence.
-- Next gate: Complete the mandatory shared v0.1/v0.2 failure/race/recovery matrix, including forced
-  termination and fresh-process recovery, and enforce release checks while retaining the separate
-  active-v2 production lease profile. Public controls need their own accepted contract.
+  with exact-envelope retry, while a standing Core/SQLite pending-Delivery recovery trace now
+  survives SIGKILL and fresh-process claim/ack/replay. The active-v2 lease/reclaim profile also
+  passes. CLOUD-023 owns the bounded evidence.
+- Next gate: Run the equivalent fresh-process recovery against the active Receiver/PostgreSQL
+  implementation, then complete the mandatory shared v0.1/v0.2 failure/race/recovery matrix,
+  including forced termination, and enforce release checks while retaining the separate active-v2
+  production lease profile. Public controls need their own accepted contract.
 - Dependencies: ADR-0006, ADR-0012, ADR-0033 through ADR-0039, ADR-0043 through ADR-0045,
   AUDIT-V2-004 in Core/09, TASK-012, and TASK-033.
 
@@ -363,6 +365,31 @@ was not rerun for this fixture-only increment; the prior `21/21` suites and
 `158` tests remain bounded evidence. This closes the shared one-shot
 post-write rollback/retry vector, not forced process termination, fresh-process
 recovery, release-enforcement, public-control, lifetime, or production gates.
+
+## 4.11 Standing Core fresh-process recovery increment
+
+**VERIFIED 2026-09-04:** an independent test-only child process created the standing
+Grant and committed one pending Delivery in SQLite, then was terminated with
+`SIGKILL`. A new OS process opened the same database and exact source, observed the
+same active Grant with sequence `1` and one open activation, claimed the pending
+Delivery, acknowledged one newly authorized Host effect, and replayed the original
+Event as an exact duplicate. The raw Connector, decision, control, claim, and
+effect fixture tokens were absent from the database, WAL, journal, and SHM bytes.
+
+Bounded evidence:
+
+- focused fresh-process test: `1/1` passed, with three independent stability reruns also passing;
+- Core syntax check: `52` modules passed;
+- implementation commit: `0945cecf912107ea1aee86da260201da7f17556b`; and
+- runtime: Node `v26.5.0`.
+
+The fixture uses the existing standing Host SDK, Core, SQLite store, and process
+RPC only. It changes no production source, protocol, schema, package, route, or
+deployment behavior. This proves committed standing state recovery at the Core/
+SQLite process boundary; it does not prove the active Receiver/PostgreSQL process
+boundary, forced termination during a transaction, supervision, distributed
+ownership, release conformance, deployment, or production durability. The next
+bounded increment is the equivalent active Receiver trace.
 
 ## 5. Verification and closure
 

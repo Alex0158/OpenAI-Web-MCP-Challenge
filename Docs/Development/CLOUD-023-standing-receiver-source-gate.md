@@ -2,8 +2,9 @@
 
 **Role:** DEVELOPMENT implementation and verification record  
 **Status:** Core and Receiver sources locally committed; minimum pinned trace,
-exact-commit PostgreSQL upgrade, and one-shot Event rollback/retry vector
-`locally_verified`; full release conformance and public controls remain open  
+exact-commit PostgreSQL upgrade, one-shot Event rollback/retry vector, and Core
+standing fresh-process recovery are `locally_verified`; full release conformance
+and public controls remain open  
 **Date:** 2026-09-04  
 **Controls:** ADR-0043 through ADR-0045, TASK-027, TASK-028, TASK-033.
 
@@ -513,3 +514,28 @@ not rerun for this fixture-only increment; the prior `21/21` suites and `158`
 tests remain bounded evidence. This closes the shared one-shot post-write
 rollback/retry vector, not forced process termination, fresh-process recovery,
 release-enforcement, public-control, lifetime, or production gates.
+
+## Standing Core fresh-process recovery increment: 2026-09-04
+
+An independent test-only child process created the standing Grant and committed one
+pending Delivery in SQLite, then was terminated with `SIGKILL`. A new OS process
+opened the same database and exact source, observed the same active Grant with
+sequence `1` and one open activation, claimed the pending Delivery, acknowledged
+one newly authorized Host effect, and replayed the original Event as an exact
+duplicate. The raw Connector, decision, control, claim, and effect fixture tokens
+were absent from the database, WAL, journal, and SHM bytes.
+
+Evidence for this Core-only increment:
+
+- focused test `node --test test/standing-fresh-process.test.mjs`: `1/1` passed;
+- three independent stability reruns: `3/3` passed;
+- Core syntax check: `52` modules passed;
+- implementation commit: `0945cecf912107ea1aee86da260201da7f17556b`; and
+- runtime: Node `v26.5.0`.
+
+The fixture reuses the existing standing Host SDK, Core, SQLite store, and process
+RPC. No production source, protocol, schema, package, route, or deployment behavior
+changed. This closes only the committed standing Core/SQLite fresh-process boundary;
+the active Receiver/PostgreSQL equivalent, forced termination during a transaction,
+supervision, distributed ownership, release conformance, deployment, and production
+durability remain open. The next increment is the equivalent active Receiver trace.
