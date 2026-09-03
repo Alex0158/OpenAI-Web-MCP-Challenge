@@ -35,7 +35,9 @@ import {
 import {
   resolveActorVisual,
   resolveResourceVisual,
+  resolveSelectionVisual,
   resolveTileVisual,
+  type CanvasSelectionVisual,
 } from "./canvas-visuals";
 import styles from "./game-projection.module.css";
 import { VisualIcon } from "./visual-icons";
@@ -66,6 +68,7 @@ export interface GameProjectionProps {
 function drawFrame(canvas: HTMLCanvasElement, props: {
   view: ReturnType<typeof buildProjectionViewModel>;
   commands: ReturnType<typeof buildCanvasDrawCommands>;
+  selection: CanvasSelectionVisual;
 }): void {
   const context = canvas.getContext("2d");
   if (!context) {
@@ -309,6 +312,27 @@ function drawFrame(canvas: HTMLCanvasElement, props: {
     context.restore();
   };
 
+  const drawSelectionRing = (position: { x: number; y: number }, color: string, dashed: boolean) => {
+    const point = toCanvas(position.x, position.y);
+    if (point.x < 0 || point.y < 0 || point.x >= width || point.y >= height) {
+      return;
+    }
+    context.save();
+    context.strokeStyle = color;
+    context.lineWidth = 2;
+    context.setLineDash(dashed ? [4, 3] : []);
+    context.beginPath();
+    context.arc(
+      point.x + TILE_SIZE / 2,
+      point.y + TILE_SIZE / 2,
+      TILE_SIZE * 0.45,
+      0,
+      Math.PI * 2,
+    );
+    context.stroke();
+    context.restore();
+  };
+
   for (const command of props.commands) {
     if (command.kind === "clear") {
       context.fillStyle = command.color;
@@ -344,6 +368,12 @@ function drawFrame(canvas: HTMLCanvasElement, props: {
       continue;
     }
     drawActor(command, toCanvas(command.x, command.y));
+  }
+  if (props.selection.soldierPosition) {
+    drawSelectionRing(props.selection.soldierPosition, "#f8e48b", false);
+  }
+  if (props.selection.targetPosition) {
+    drawSelectionRing(props.selection.targetPosition, "#f4b942", true);
   }
 }
 
@@ -381,6 +411,12 @@ export function GameProjection({
   const view = useMemo(() => buildProjectionViewModel({ snapshot, connectionState, capability }), [snapshot, connectionState, capability]);
   const commands = useMemo(() => buildCanvasDrawCommands(view), [view]);
   const rows = useMemo(() => buildAccessibleMissionRows(view), [view]);
+  const selection = useMemo(() => resolveSelectionVisual({
+    selectedSoldierId,
+    selectedTargetId,
+    actors: view.actors,
+    resourceNodes: view.resourceNodes,
+  }), [selectedSoldierId, selectedTargetId, view.actors, view.resourceNodes]);
   const dispatchChoices = useMemo(
     () => buildGathererDispatchChoices(view.snapshotStatus === "READY" ? snapshot : null),
     [snapshot, view.snapshotStatus],
@@ -395,9 +431,9 @@ export function GameProjection({
 
   useEffect(() => {
     if (canvasRef.current) {
-      drawFrame(canvasRef.current, { view, commands });
+      drawFrame(canvasRef.current, { view, commands, selection });
     }
-  }, [view, commands]);
+  }, [view, commands, selection]);
 
   useEffect(() => {
     setSelectedSoldierId("");

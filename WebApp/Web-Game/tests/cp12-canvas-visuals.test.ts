@@ -4,6 +4,7 @@ import { test } from "node:test";
 import {
   resolveActorVisual,
   resolveResourceVisual,
+  resolveSelectionVisual,
   resolveTileVisual,
 } from "../src/client/canvas-visuals";
 
@@ -94,4 +95,68 @@ test("unknown soldier roles remain visibly neutral instead of inheriting a false
     cargo: false,
     defeated: false,
   });
+});
+
+test("selection visual mapping resolves only current resident soldiers and available sensed resources", () => {
+  assert.deepEqual(resolveSelectionVisual({
+    selectedSoldierId: "soldier-a-01",
+    selectedTargetId: "node-rock-a",
+    actors: [
+      {
+        kind: "soldier",
+        soldierId: "soldier-a-01",
+        shelterId: "shelter-a",
+        state: "AT_SHELTER",
+        position: { x: 16, y: 64 },
+        revision: 0,
+      },
+    ],
+    resourceNodes: [
+      {
+        resourceNodeId: "node-rock-a",
+        resourceType: "rock",
+        position: { x: 34, y: 64 },
+        availability: "AVAILABLE",
+        observedWorldTime: 4,
+        revision: 0,
+      },
+    ],
+  }), {
+    soldierPosition: { x: 16, y: 64 },
+    targetPosition: { x: 34, y: 64 },
+  });
+});
+
+test("selection visual mapping clears empty, stale, field, defeated, and depleted choices", () => {
+  const input = {
+    selectedSoldierId: "soldier-a-01",
+    selectedTargetId: "node-rock-a",
+    actors: [
+      {
+        kind: "soldier" as const,
+        soldierId: "soldier-a-01",
+        shelterId: "shelter-a",
+        state: "FIELD",
+        position: { x: 16, y: 64 },
+        revision: 1,
+      },
+    ],
+    resourceNodes: [
+      {
+        resourceNodeId: "node-rock-a",
+        resourceType: "rock" as const,
+        position: { x: 34, y: 64 },
+        availability: "DEPLETED" as const,
+        observedWorldTime: 7,
+        revision: 1,
+      },
+    ],
+  };
+  assert.deepEqual(resolveSelectionVisual(input), { soldierPosition: null, targetPosition: null });
+  assert.deepEqual(resolveSelectionVisual({ ...input, selectedSoldierId: "", selectedTargetId: "" }), { soldierPosition: null, targetPosition: null });
+  assert.deepEqual(resolveSelectionVisual({
+    ...input,
+    actors: [{ ...input.actors[0], state: "DEFEATED" }],
+    resourceNodes: [{ ...input.resourceNodes[0], availability: "AVAILABLE" }],
+  }), { soldierPosition: null, targetPosition: { x: 34, y: 64 } });
 });

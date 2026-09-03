@@ -88,13 +88,17 @@ is unmade, a duplicate, or an external action added merely to make the queue loo
 
 ## 6. Current task routing
 
+[`SK-TASK-067`](SK-TASK-067-cp12-canvas-selection-feedback.md) is verified for the named CP-12 local
+selection presentation under [`SK-EVID-054`](../Evidence/SK-EVID-054-cp12-canvas-selection-feedback-runtime-verification.md)
+and [`Validation/80`](../Validation/80-cp12-canvas-selection-feedback-runtime-cross-functional-audit.md).
+It adds only a local selection ring for the existing soldier/target form choices and does not change
+snapshot, command, session, WebMCP, Re-entry, or external boundaries.
 [`SK-TASK-066`](SK-TASK-066-cp12-canvas-mission-state-readback.md) is verified for the named one-mission
 local readback under [`SK-EVID-053`](../Evidence/SK-EVID-053-cp12-canvas-mission-state-readback-runtime-verification.md)
 and [`Validation/79`](../Validation/79-cp12-canvas-mission-state-readback-runtime-cross-functional-audit.md).
 It exercises only an existing ordinary GATHERER dispatch against a fresh local fixture so the Canvas
 role, route, and cargo presentation are observed with the accessible mission row; it does not alter
-the server, snapshot, session, WebMCP, Re-entry, or external handoff boundaries. All registered tasks
-are now terminal at their named scope.
+the server, snapshot, session, WebMCP, Re-entry, or external handoff boundaries.
 [`SK-TASK-065`](SK-TASK-065-cp12-canvas-actor-world-visual-surface.md) is verified for the named
 deterministic Canvas actor/world presentation under [`SK-EVID-052`](../Evidence/SK-EVID-052-cp12-canvas-actor-world-visual-surface-runtime-verification.md)
 and [`Validation/78`](../Validation/78-cp12-canvas-actor-world-visual-surface-runtime-cross-functional-audit.md).

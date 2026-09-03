@@ -1,11 +1,23 @@
 import type { ClientSnapshotActor, ClientSnapshotResourceNode } from "../server/world-projection";
-import type { MissionRole } from "../server/persistence/types";
+import type { GridCoordinate, MissionRole } from "../server/persistence/types";
 
 export type CanvasTileVisual = "fog" | "grass" | "blocked";
 
 export interface CanvasResourceVisual {
   resourceType: ClientSnapshotResourceNode["resourceType"];
   depleted: boolean;
+}
+
+export interface CanvasSelectionVisualInput {
+  selectedSoldierId: string;
+  selectedTargetId: string;
+  actors: readonly ClientSnapshotActor[];
+  resourceNodes: readonly ClientSnapshotResourceNode[];
+}
+
+export interface CanvasSelectionVisual {
+  soldierPosition: GridCoordinate | null;
+  targetPosition: GridCoordinate | null;
 }
 
 export type CanvasActorMarker = "rune" | "crystal" | "pickaxe" | "sword" | "eye" | "body";
@@ -36,6 +48,22 @@ export function resolveResourceVisual(input: Pick<ClientSnapshotResourceNode, "r
   return {
     resourceType: input.resourceType,
     depleted: input.availability === "DEPLETED",
+  };
+}
+
+export function resolveSelectionVisual(input: CanvasSelectionVisualInput): CanvasSelectionVisual {
+  const selectedSoldier = input.selectedSoldierId.trim() === ""
+    ? null
+    : input.actors.find((actor) => actor.kind === "soldier"
+      && actor.soldierId === input.selectedSoldierId
+      && actor.state?.trim().toUpperCase() === "AT_SHELTER") ?? null;
+  const selectedTarget = input.selectedTargetId.trim() === ""
+    ? null
+    : input.resourceNodes.find((node) => node.resourceNodeId === input.selectedTargetId
+      && node.availability === "AVAILABLE") ?? null;
+  return {
+    soldierPosition: selectedSoldier ? { ...selectedSoldier.position } : null,
+    targetPosition: selectedTarget ? { ...selectedTarget.position } : null,
   };
 }
 

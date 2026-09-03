@@ -131,6 +131,9 @@ not claim that the game is built or balanced.
   — CP-12 one-mission GATHERER dispatch readback across authoritative route/role/tool/cargo state,
   Canvas/React agreement, responsive layout, lifecycle, and explicit external/independent-session
   claim limits.
+- [`80-cp12-canvas-selection-feedback-runtime-cross-functional-audit.md`](80-cp12-canvas-selection-feedback-runtime-cross-functional-audit.md)
+  — CP-12 Canvas selection feedback across local form state, projection-only lookup, invalid/stale
+  clearing, draw order, semantic UX, responsive layout, and unchanged external boundaries.
 
 ## Current concept checks
 
