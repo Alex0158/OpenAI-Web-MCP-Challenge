@@ -198,6 +198,8 @@ not claim that the game is built or balanced.
   hosted, browser, and Agent action gates.
 - [99-cp17-read-restore-compatibility-cross-functional-audit.md](99-cp17-read-restore-compatibility-cross-functional-audit.md) — disposable local read-restore compatibility across SQLite integrity, schema metadata, PersistenceStore, snapshot/event recovery, identity/economy readback, and the explicit provider-level rollback boundary.
 
+- [100-cp13-dynamic-continuation-refresh-cross-functional-audit.md](100-cp13-dynamic-continuation-refresh-cross-functional-audit.md) — local one-generation WebMCP recall binding refresh, ordered stale-read protection, generation cleanup, unchanged server authority, and the remaining hosted Agent/Re-entry gate.
+
 ## Current concept checks
 
 - The world clock continues independently of browser presence.

@@ -1,6 +1,6 @@
 # CP-13 Page Tools Runtime Cross-Functional Audit
 
-**Status:** LOCAL IMPLEMENTATION AND CANONICAL PAGE READ CAPABILITY VERIFIED; Re-entry and hosted delivery remain open  
+**Status:** LOCAL IMPLEMENTATION, CANONICAL PAGE READ CAPABILITY, AND DYNAMIC CONTINUATION BINDING VERIFIED; Re-entry and hosted delivery remain open  
 **Date:** 2026-09-03  
 **Task:** [`SK-TASK-061`](../Tasks/SK-TASK-061-cp13-page-read-tools-and-recall-action-implementation.md)  
 **Challenge:** [`Validation/74`](74-cp13-page-tools-implementation-preimplementation-challenge.md)  
@@ -15,7 +15,7 @@ recall action?
 
 ## Evidence boundary
 
-- The focused page suite is 9/9 under Node `v24.20.0`, with parser, gateway, entrypoint HTTP query/
+- The focused page suite is 10/10 under Node `v24.20.0`, with parser, gateway, entrypoint HTTP query/
   media/body gates, continuation/recall, semantic schema readback, unsupported behavior, abort cleanup,
   fail-closed registration/readback error coverage, and stale in-flight response rejection after
   reconnect.
@@ -27,6 +27,9 @@ recall action?
   separate genuine Codex In-app Browser adapter run that discovered the canonical page reads and invoked
   one read-only tool. Receiver/Connector, Re-entry delivery, hosted process, and judge evidence remain
   outside this audit.
+- [`SK-EVID-074`](../Evidence/SK-EVID-074-cp13-dynamic-continuation-refresh-runtime-verification.md)
+  records the local registrar refresh proof for a rotated server signal within one page generation; it
+  does not establish a genuine hosted dynamic action.
 
 ## Cross-functional findings
 
@@ -40,7 +43,7 @@ recall action?
 | Mission transition | Page recall delegates to the verified `MissionService`/persistence transition, preserving current revisions, route, role, and cargo and refusing combat through the existing typed boundary. | Pass by composition with SK-EVID-046; page does not duplicate transition logic. |
 | Idempotency | Command and idempotency identities are distinct and forwarded unchanged. Duplicate bodies replay the durable server result without a second event. | Pass. |
 | Realtime reconciliation | Recall response is metadata only. The client requests the existing full snapshot and never writes an optimistic phase, position, cargo, or coin value. | Pass. |
-| Capability lifecycle | Registration starts after the first accepted full snapshot; schema readback is semantic; AbortController generation cleanup runs on reconnect, stale projection, socket failure, scope change, and unmount. Concurrent continuation reads share one recall-registration promise per generation, the recall tool becomes ready only after readback succeeds, and registration/readback failures abort the generation with a visible human fallback. | Pass in the registrar and lifecycle source; real host behavior remains open. |
+| Capability lifecycle | Registration starts after the first accepted full snapshot; schema readback is semantic; AbortController generation cleanup runs on reconnect, stale projection, socket failure, scope change, and unmount. Concurrent continuation reads share one recall-registration promise per generation, the recall tool becomes ready only after readback succeeds, and registration/readback failures abort the generation with a visible human fallback. A later shelter read refreshes the existing closure only when its server continuation is newer. | Pass in the registrar and lifecycle source; real host behavior remains open. |
 | Canonical adapter | A fresh `gpt-5.6-sol` task configured with `medium` used the genuine Codex In-app Browser adapter on the canonical page. Same-page readback returned the four accepted reads and `inspect_client_snapshot` completed read-only. | Pass at ladder level 6 for the named local page/session; dynamic recall grants and Re-entry delivery remain separate. |
 | Unsupported UX | Missing/failed capability stays visible as unsupported/error/stale while movement and dispatch remain available. Disabled fixture mode returns `WEBMCP_UNAVAILABLE` without creating a session. | Pass. |
 | Cross-checkpoint compatibility | Existing CP-06 clock, CP-08 projection/gateway, CP-09 dispatch/route, CP-10 extraction/deposit, and CP-11 combat/reissue authorities remain unchanged and their affected tests pass. | Pass for the executed local suites. |
@@ -57,7 +60,7 @@ recall action?
 | Concurrent continuation reads | A per-generation registration promise serializes the first valid continuation grant; later reads await it instead of calling `registerTool` again, and readiness waits for semantic readback. | Pass locally |
 | Capability registration/readback failure | Partial initial registration, initial schema mismatch, and continuation recall schema mismatch abort the active generation, remove every registered tool, and expose `error` while human controls remain available. | Pass locally |
 | High-frequency page reads | Reads share the existing process-local FIFO and bounded body/results; no new timer or durable queue is introduced. | Accepted local boundary; measured load remains a later gate |
-| Signal changes after registration | The current generation binds to the server signal observed by the shelter read; a stale signal returns typed `STALE_REENTRY_CONTEXT`. | Accepted; a later signal-refresh policy is outside this increment |
+| Signal changes after registration | The current generation binds to the server signal observed by the shelter read; a newer continuation refreshes the existing closure, while an older late read cannot rebind it; a stale signal returns typed `STALE_REENTRY_CONTEXT`. | Pass locally under [`SK-EVID-074`](../Evidence/SK-EVID-074-cp13-dynamic-continuation-refresh-runtime-verification.md); hosted dynamic action remains open |
 | Recall during combat | Existing server encounter guard runs before mutation. | Pass by predecessor transition suite |
 | Duplicate recall | Existing persistence idempotency fingerprint and result replay remain authoritative. | Pass |
 | Partial response/transport failure | Domain effects are never inferred from HTTP metadata; the page requests a full snapshot after committed recall and leaves state unchanged on unknown/error. | Pass for implemented callback path |
@@ -75,13 +78,14 @@ recall action?
    observation for that task context; the new thread result demonstrates that model selection and
    thread/browser context are separate capability variables. No REST, DOM automation, or polyfill was
    used in either result.
-4. Reopen this audit if a real host exposes a different registration/readback shape, if a new signal
-   must refresh an already registered action, if page reads require queue/backpressure policy, or if the
-   SideChat dispatch proposal is promoted into the CP-13 contract.
+4. Reopen this audit if a real host exposes a different registration/readback shape, if the continuation
+   freshness fields change, if page reads require queue/backpressure policy, or if the SideChat dispatch
+   proposal is promoted into the CP-13 contract.
 
 ## Exact conclusion
 
-**The CP-13 page implementation is locally coherent and the canonical page's four read tools are
-verified through a genuine `gpt-5.6-sol` plus `medium` In-app Browser adapter run. This closes
-`SK-TASK-061` for its named ladder-level 6 read capability; it does not prove the dynamic recall action,
+**The CP-13 page implementation is locally coherent, its four read tools are verified through a genuine
+`gpt-5.6-sol` plus `medium` In-app Browser adapter run, and the local recall closure now refreshes to a
+newer server continuation within one generation. This closes `SK-TASK-061` for its named ladder-level 6
+read capability and `SK-TASK-080` for its local lifecycle scope; it does not prove hosted dynamic recall,
 Agent grants, Re-entry delivery, hosted continuity, independent-browser isolation, or judge reproduction.**

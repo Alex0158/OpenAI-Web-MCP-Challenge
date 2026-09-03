@@ -5,6 +5,7 @@ import {
   PAGE_TOOL_NAMES,
   PAGE_TOOLS_EXECUTE_PATH,
   type PageToolName,
+  type PageToolContinuationSummary,
   type PageToolResult,
 } from "../shared/page-tool-contract";
 
@@ -105,7 +106,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function isContinuationResult(value: unknown): value is PageToolResult & {
   readonly tool: "inspect_shelter_state";
-  readonly continuation: { readonly signal_id: string; readonly bounded_action: "force_recall_soldier" };
+  readonly continuation: PageToolContinuationSummary;
 } {
   return isRecord(value)
     && value.tool === "inspect_shelter_state"
@@ -113,6 +114,28 @@ function isContinuationResult(value: unknown): value is PageToolResult & {
     && typeof value.continuation.signal_id === "string"
     && value.continuation.signal_id.trim() !== ""
     && value.continuation.bounded_action === "force_recall_soldier";
+}
+
+interface ContinuationFreshness {
+  readonly signalId: string;
+  readonly cursorEnd: number;
+  readonly latestWorldTime: number;
+}
+
+function continuationFreshness(value: PageToolContinuationSummary): ContinuationFreshness | null {
+  return Number.isSafeInteger(value.cursor_end) && value.cursor_end >= 0
+    && Number.isSafeInteger(value.latest_world_time) && value.latest_world_time >= 0
+    ? {
+        signalId: value.signal_id,
+        cursorEnd: value.cursor_end,
+        latestWorldTime: value.latest_world_time,
+      }
+    : null;
+}
+
+function isContinuationNewer(next: ContinuationFreshness, current: ContinuationFreshness): boolean {
+  return next.latestWorldTime > current.latestWorldTime
+    || (next.latestWorldTime === current.latestWorldTime && next.cursorEnd > current.cursorEnd);
 }
 
 function readToolNames(tools: readonly WebMcpRegisteredTool[]): Set<string> {
@@ -127,6 +150,10 @@ export function createWebMcpPageToolRegistrar(options: WebMcpPageToolRegistrarOp
   let currentStatus: WebMcpPageStatus = "unsupported";
   let recallRegistered = false;
   let recallRegistrationPromise: Promise<void> | null = null;
+  // Keep one host registration per page generation while rebinding its
+  // server-issued continuation identity as the live signal slot rotates.
+  let activeRecallSignalId: string | null = null;
+  let activeRecallFreshness: ContinuationFreshness | null = null;
 
   const setStatus = (status: WebMcpPageStatus, message: string) => {
     currentStatus = status;
@@ -166,9 +193,13 @@ export function createWebMcpPageToolRegistrar(options: WebMcpPageToolRegistrarOp
       const errorCode = isRecord(value) && typeof value.error_code === "string" ? value.error_code : "RECOVERY_REQUIRED";
       throw new Error(errorCode);
     }
-    if (tool === "inspect_shelter_state" && isContinuationResult(value) && !recallRegistered) {
+    if (tool === "inspect_shelter_state" && isContinuationResult(value)) {
+      const nextFreshness = continuationFreshness(value.continuation);
       try {
-        await registerRecall(value.continuation.signal_id, generationAtStart);
+        if (!recallRegistered) {
+          await registerRecall(value.continuation.signal_id, nextFreshness, generationAtStart);
+        }
+        refreshRecall(value.continuation.signal_id, nextFreshness, generationAtStart);
       } catch (error) {
         if (generationAtStart === generation && controller && !controller.signal.aborted) {
           stop("error");
@@ -226,7 +257,34 @@ export function createWebMcpPageToolRegistrar(options: WebMcpPageToolRegistrarOp
     }, { signal: controller.signal });
   };
 
-  async function registerRecall(signalId: string, generationAtStart: number): Promise<void> {
+  function refreshRecall(signalId: string, freshness: ContinuationFreshness | null, generationAtStart: number): void {
+    if (generationAtStart !== generation || !controller || controller.signal.aborted || !recallRegistered) {
+      return;
+    }
+    if (activeRecallSignalId === null) {
+      activeRecallSignalId = signalId;
+      activeRecallFreshness = freshness;
+      return;
+    }
+    if (signalId === activeRecallSignalId) {
+      if (freshness && (!activeRecallFreshness || isContinuationNewer(freshness, activeRecallFreshness))) {
+        activeRecallFreshness = freshness;
+      }
+      return;
+    }
+    // A late response from an older read must never rebind the tool to an
+    // already superseded signal.
+    if (freshness && (!activeRecallFreshness || isContinuationNewer(freshness, activeRecallFreshness))) {
+      activeRecallSignalId = signalId;
+      activeRecallFreshness = freshness;
+    }
+  }
+
+  async function registerRecall(
+    signalId: string,
+    freshness: ContinuationFreshness | null,
+    generationAtStart: number,
+  ): Promise<void> {
     if (recallRegistered) {
       return;
     }
@@ -250,7 +308,7 @@ export function createWebMcpPageToolRegistrar(options: WebMcpPageToolRegistrarOp
         inputSchema: cloneSchema("force_recall_soldier"),
         annotations: { readOnlyHint: false },
         execute: (input, executeOptions) => {
-          if (input.signal_id !== signalId) {
+          if (input.signal_id !== activeRecallSignalId) {
             return Promise.reject(new Error("STALE_REENTRY_CONTEXT"));
           }
           return execute("force_recall_soldier", input, executeOptions.signal, generationAtStart);
@@ -263,6 +321,8 @@ export function createWebMcpPageToolRegistrar(options: WebMcpPageToolRegistrarOp
       if (generationAtStart !== generation || registrationController.signal.aborted) {
         return;
       }
+      activeRecallSignalId = signalId;
+      activeRecallFreshness = freshness;
       recallRegistered = true;
     })();
     recallRegistrationPromise = registration;
@@ -317,6 +377,8 @@ export function createWebMcpPageToolRegistrar(options: WebMcpPageToolRegistrarOp
     activeContext = null;
     recallRegistered = false;
     recallRegistrationPromise = null;
+    activeRecallSignalId = null;
+    activeRecallFreshness = null;
     if (reason !== "error") {
       setStatus("stale", reason === "reconnect"
         ? "WebMCP tools were cleared for reconnect; waiting for a fresh authoritative snapshot."

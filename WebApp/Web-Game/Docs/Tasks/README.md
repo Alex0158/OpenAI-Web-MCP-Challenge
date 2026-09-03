@@ -119,6 +119,12 @@ state changes, rejection retries remain durable, and client-selected identity fi
 The hosted denial row remains open because the supported browser surface has no arbitrary authenticated
 request seam; local read-restore compatibility is verified under [SK-EVID-073](../Evidence/SK-EVID-073-cp17-read-restore-compatibility-runtime-verification.md) and [Validation/99](../Validation/99-cp17-read-restore-compatibility-cross-functional-audit.md); provider-level rollback remains an independent optional rehearsal and no production bypass is allowed.
 
+[`SK-TASK-080`](SK-TASK-080-cp13-dynamic-continuation-refresh.md) is `verified` for the CP-13 local
+dynamic continuation lifecycle under [`SK-EVID-074`](../Evidence/SK-EVID-074-cp13-dynamic-continuation-refresh-runtime-verification.md)
+and [`Validation/100`](../Validation/100-cp13-dynamic-continuation-refresh-cross-functional-audit.md).
+One registered recall action follows the newest server-issued continuation within a page generation;
+hosted WebMCP, Agent, and Re-entry delivery remain separate gates.
+
 The CP-17 production-like WebMCP page-tool admission slice is runtime-verified under
 [`SK-EVID-071`](../Evidence/SK-EVID-071-cp17-production-webmcp-page-tool-admission-runtime-verification.md)
 and [`Validation/97`](../Validation/97-cp17-production-webmcp-page-tool-admission-runtime-cross-functional-audit.md):

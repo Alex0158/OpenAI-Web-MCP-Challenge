@@ -57,6 +57,8 @@ The CP-17 local production-like WebMCP page-tool admission slice is recorded in 
 The CP-17 local production-like WebMCP two-identity scope slice is recorded in [`SK-EVID-072`](SK-EVID-072-cp17-production-webmcp-two-identity-scope-runtime-verification.md); both fixed Clerk subjects receive private reads for their own shelter through one route, while hosted page-tool execution, genuine WebMCP registration, and dynamic Agent action remain open.
 The CP-17 disposable read-restore compatibility rehearsal is recorded in [SK-EVID-073](SK-EVID-073-cp17-read-restore-compatibility-runtime-verification.md); the hash-verified hosted-origin copy reopens through the real PersistenceStore with intact schema, snapshot/event recovery, identity/economy records, and source hash, while provider-level rollback remains open.
 
+The CP-13 local dynamic continuation refresh is recorded in [SK-EVID-074](SK-EVID-074-cp13-dynamic-continuation-refresh-runtime-verification.md); one page-generation recall registration follows the newest ordered server continuation and rejects superseded signals, while hosted WebMCP, Agent, and Re-entry delivery remain open.
+
 ## 2. Identity
 
 Evidence IDs use `SK-EVID-NNN`, beginning at `001` and increasing monotonically. Never renumber or

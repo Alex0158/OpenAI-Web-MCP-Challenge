@@ -479,6 +479,112 @@ test("page registrar keeps unsupported browsers usable and dynamically gates rec
   }
 });
 
+test("page registrar refreshes a newer continuation without duplicate registration", async () => {
+  const originalDocument = (globalThis as { document?: unknown }).document;
+  const registered = new Map<string, {
+    inputSchema: Record<string, unknown>;
+    execute: (input: Record<string, unknown>, options: { signal: AbortSignal }) => Promise<unknown>;
+  }>();
+  let recallRegistrationCount = 0;
+  let shelterReadCount = 0;
+  const modelContext = {
+    async registerTool(tool: {
+      name: string;
+      inputSchema: Record<string, unknown>;
+      execute: (input: Record<string, unknown>, options: { signal: AbortSignal }) => Promise<unknown>;
+    }, options?: { signal?: AbortSignal }) {
+      if (tool.name === "force_recall_soldier") {
+        recallRegistrationCount += 1;
+      }
+      registered.set(tool.name, tool);
+      options?.signal?.addEventListener("abort", () => registered.delete(tool.name), { once: true });
+      return undefined;
+    },
+    async getTools() {
+      return [...registered.entries()].map(([name, tool]) => ({ name, inputSchema: tool.inputSchema }));
+    },
+  };
+  Object.defineProperty(globalThis, "document", { configurable: true, value: { modelContext } });
+  try {
+    const registrar = createWebMcpPageToolRegistrar({
+      onStatus: () => {},
+      onReconcile: () => {},
+      fetchImpl: async (_input, init) => {
+        const body = JSON.parse(String(init?.body)) as { tool: string };
+        if (body.tool !== "inspect_shelter_state") {
+          return new Response(JSON.stringify({ contract_version: CONTRACT_VERSION, status: "ok", tool: body.tool }), {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          });
+        }
+        shelterReadCount += 1;
+        const continuation = shelterReadCount === 1 || shelterReadCount === 3
+          ? {
+              signal_id: "signal-1",
+              status: "acknowledged",
+              bounded_action: "force_recall_soldier",
+              cursor_start: 10,
+              cursor_end: 10,
+              eligible_event_count: 1,
+              event_types: ["CargoLostToMonster"],
+              latest_event_id: "loss-1",
+              latest_event_type: "CargoLostToMonster",
+              latest_world_time: 100,
+            }
+          : {
+              signal_id: "signal-2",
+              status: "pending",
+              bounded_action: "force_recall_soldier",
+              cursor_start: 20,
+              cursor_end: 20,
+              eligible_event_count: 1,
+              event_types: ["CargoLostToMonster"],
+              latest_event_id: "loss-2",
+              latest_event_type: "CargoLostToMonster",
+              latest_world_time: 200,
+            };
+        return new Response(JSON.stringify({
+          contract_version: CONTRACT_VERSION,
+          status: "ok",
+          tool: body.tool,
+          request_id: `shelter-read-${shelterReadCount}`,
+          scope: { world_id: WORLD_ID, player_id: "player-a", shelter_id: "shelter-a" },
+          world_time: continuation.latest_world_time,
+          continuation,
+        }), { status: 200, headers: { "content-type": "application/json" } });
+      },
+    });
+    await registrar.start();
+    const shelterTool = registered.get("inspect_shelter_state");
+    assert.ok(shelterTool);
+    await shelterTool.execute({}, { signal: new AbortController().signal });
+    const firstRecall = registered.get("force_recall_soldier");
+    assert.ok(firstRecall);
+    await shelterTool.execute({}, { signal: new AbortController().signal });
+    const currentRecall = registered.get("force_recall_soldier");
+    assert.strictEqual(currentRecall, firstRecall, "refresh keeps one registered WebMCP tool");
+    assert.equal(recallRegistrationCount, 1);
+    await assert.rejects(
+      currentRecall.execute({ signal_id: "signal-1" }, { signal: new AbortController().signal }),
+      /STALE_REENTRY_CONTEXT/,
+    );
+    await shelterTool.execute({}, { signal: new AbortController().signal });
+    await currentRecall.execute({ signal_id: "signal-2" }, { signal: new AbortController().signal });
+    await assert.rejects(
+      currentRecall.execute({ signal_id: "signal-1" }, { signal: new AbortController().signal }),
+      /STALE_REENTRY_CONTEXT/,
+    );
+    assert.equal(shelterReadCount, 3);
+    registrar.stop("unmount");
+  } finally {
+    if (originalDocument === undefined) {
+      delete (globalThis as { document?: unknown }).document;
+    } else {
+      Object.defineProperty(globalThis, "document", { configurable: true, value: originalDocument });
+    }
+  }
+});
+
 test("page registrar registers a continuation-bound recall only once when shelter reads race", async () => {
   const originalDocument = (globalThis as { document?: unknown }).document;
   const registered = new Map<string, {

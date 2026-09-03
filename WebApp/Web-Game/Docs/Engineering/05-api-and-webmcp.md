@@ -1,6 +1,6 @@
 # API and WebMCP Surface
 
-**Status:** TARGET contract; the process-local worker gateway, transport-neutral projection seam, authenticated local WebSocket wire adapter, bounded CP-09 mission-dispatch/route-arrival boundaries, CP-10 extraction/cadence/`RETURNING`/same-worker contest boundaries, the CP-06 schema-v8 boundary journal/anchor and explicitly enabled autonomous gameplay coordinator, the CP-12 local fixture/bootstrap/browser hydration plus discrete movement, ordinary-UI GATHERER command composition, and server-owned continuous-intent path, and the CP-13 page-bound read/recall implementation are runtime-verified at their named local scopes. Canonical-page four-read registration/readback and one supported read-only invocation are verified for one local `gpt-5.6-sol` plus `medium` session under [`SK-EVID-049`](../Evidence/SK-EVID-049-cp13-canonical-page-webmcp-runtime-verification.md); dynamic recall grant delivery, production identity, external delivery, and hosted behavior remain open.
+**Status:** TARGET contract; the process-local worker gateway, transport-neutral projection seam, authenticated local WebSocket wire adapter, bounded CP-09 mission-dispatch/route-arrival boundaries, CP-10 extraction/cadence/`RETURNING`/same-worker contest boundaries, the CP-06 schema-v8 boundary journal/anchor and explicitly enabled autonomous gameplay coordinator, the CP-12 local fixture/bootstrap/browser hydration plus discrete movement, ordinary-UI GATHERER command composition, and server-owned continuous-intent path, and the CP-13 page-bound read/recall implementation are runtime-verified at their named local scopes. Canonical-page four-read registration/readback and one supported read-only invocation are verified for one local `gpt-5.6-sol` plus `medium` session under [`SK-EVID-049`](../Evidence/SK-EVID-049-cp13-canonical-page-webmcp-runtime-verification.md); the local dynamic continuation refresh is verified under [`SK-EVID-074`](../Evidence/SK-EVID-074-cp13-dynamic-continuation-refresh-runtime-verification.md); dynamic recall grant delivery, production identity, external delivery, and hosted behavior remain open.
 
 ## Human and Agent commands
 
@@ -96,14 +96,18 @@ The page-bound implementation now exposes the accepted four reads through the en
 HttpOnly fixture session, applies bounded snake-case contracts, and serializes reads and recall through
 the existing `WorkerCommandGateway` FIFO. `force_recall_soldier` is registered only after a shelter
 read returns a server-owned continuation grant; the server validates signal provenance and delegates to
-the verified recall transition. The page applies no optimistic mutation and requests the existing full
-snapshot after a committed recall.
+the verified recall transition. One page generation keeps one registered recall action and refreshes its
+active signal identity only when a later shelter read carries newer continuation metadata; an older
+late read cannot rebind the action. The page applies no optimistic mutation and requests the existing
+full snapshot after a committed recall.
 
 The local contract/process result is [`SK-EVID-047`](../Evidence/SK-EVID-047-cp13-page-tools-local-runtime-verification.md)
 and its cross-functional audit is [`Validation/75`](../Validation/75-cp13-page-tools-runtime-cross-functional-audit.md).
-This closes the named local implementation scope only. A fresh supported browser must still prove
-same-page `registerTool`/`getTools` readback and one canonical game-page read-only invocation before
-the task can close at the canonical evidence level.
+The one-generation signal-refresh correction is recorded in [`SK-EVID-074`](../Evidence/SK-EVID-074-cp13-dynamic-continuation-refresh-runtime-verification.md)
+and [`Validation/100`](../Validation/100-cp13-dynamic-continuation-refresh-cross-functional-audit.md).
+The canonical four-read registration/readback and one supported read-only invocation are already
+recorded at the named ladder level; genuine dynamic recall, Agent/Re-entry delivery, and hosted
+behavior remain separate gates.
 
 ## CP-12 local fixture movement boundary
 
