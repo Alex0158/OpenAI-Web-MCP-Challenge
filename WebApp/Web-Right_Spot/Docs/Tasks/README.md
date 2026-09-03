@@ -204,13 +204,14 @@ registered bounded shared role-page session lifecycle repair. Its serial Builder
 after focused `35/35`, complete `215/215`, typecheck, build, repository, sensitive-scan, and diff
 gates. Its independent browser Work Order ended at `BLOCKED_HARNESS` after the corrected retry
 produced no final report; no further blind retry is authorized;
-`RIGHTSPOT-049` is `VERIFICATION_PENDING`, a non-blocking P2 client compatibility repair for `F-23/F-24`
+`RIGHTSPOT-049` is `CLOSED_VERIFIED`, a non-blocking P2 client compatibility repair for `F-23/F-24`
 and the same response-truth boundary: filtered successful responses must not inherit unfiltered metadata
 defaults or relabel non-Area criteria. Its serial Builder `RS-WO-049-01` completed in supporting task
 `01a0669f-fe53-7b52-9fbb-79b4fc502fbd` with `gpt-5.6-sol + medium`; the first independent verifier
 passed the functional/static matrix but exposed a candidate-vs-checkpoint path-gate mismatch, and the
 012 delta audit reproduced the scalar mismatch. `RS-WO-049-03` completed against the corrected
-contract and is awaiting fresh independent verification. The task still owns only `src/ui/tenant/tenant-api.ts` and `tests/ui/tenant-api.test.ts`; it
+contract and fresh independent verification passed against unchanged RightSpot projection checkpoint
+`9994f4e` after separately recorded Web-Game ref incidents. The task still owns only `src/ui/tenant/tenant-api.ts` and `tests/ui/tenant-api.test.ts`; it
 does not change the server envelope, Search authority, page consumer, WebMCP adapter, or the blocked
 047/048 evidence gates.
 `RIGHTSPOT-045` is now `CLOSED_VERIFIED` within its bounded
@@ -368,8 +369,8 @@ the `047` candidate is re-baselined. Its source is frozen at `218935c` pending i
 evidence; its verifier Work Order ended at `BLOCKED_HARNESS` after the bounded corrected retry produced
 no final report, so no further blind agent-browser retry is authorized. `RIGHTSPOT-048` does not authorize changes outside its exact
 eight-path write set or any temporary Worktree.
-`RIGHTSPOT-049` has completed the bounded RS-WO-049-03 scalar-correlation repair and is awaiting fresh
-independent verification for the separate two-path Search response compatibility boundary; it does not
+`RIGHTSPOT-049` has completed and independently verified the bounded RS-WO-049-03 scalar-correlation
+repair for the separate two-path Search response compatibility boundary; it does not
 authorize a WebMCP or server change.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)

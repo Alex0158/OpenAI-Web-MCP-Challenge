@@ -4,7 +4,7 @@
 **Working identity:** RightSpot — the rental-workflow candidate previously documented as
 `Rental Marketplace Relay`  
 **Status:** Accepted ordinary local MVP remains implemented and closed within its bounded business-state scope; the continuing cross-layer audit remains active, Tenant Discovery `search_listings` is verified in its declared local supported-browser capability, and the Agent Operations `read_listing_pipeline` candidate remains open pending independent browser evidence
-**Implementation:** Tenant and agent role pages, durable workflow HTTP/DTO transport, Favourites, listing-interest projection, Agent Operations manual read surface, Tenant Discovery/WebMCP Search, local synthetic media, and responsive navigation are integrated; the documented audit findings are closed within their recorded bounded claims except the retained `F-08` evidence gap. The current complete suite passes `201/201` across 45 authored test files.
+**Implementation:** Tenant and agent role pages, durable workflow HTTP/DTO transport, Favourites, listing-interest projection, Agent Operations manual read surface, Tenant Discovery/WebMCP Search, local synthetic media, and responsive navigation are integrated; the documented audit findings are closed within their recorded bounded claims except the retained `F-08` evidence gap. The current complete suite passes `226/226` across 47 authored test files.
 **Formal outer app-selection decision:** Pending
 
 ## Purpose

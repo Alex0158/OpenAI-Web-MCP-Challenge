@@ -1,7 +1,7 @@
 # RIGHTSPOT-049 — Fail closed on filtered legacy Search responses
 
 **Type:** defect  
-**Lifecycle:** verification_pending  
+**Lifecycle:** closed  
 **Priority:** P2 for Tenant Search result truthfulness and compatibility safety  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-03  
@@ -13,19 +13,24 @@
 - **Objective:** Make the Tenant Search client accept the documented minimal legacy response only for
   an actually unfiltered read, and fail closed when a filtered successful response cannot prove its
   normalized applied filters, exact non-Area criteria, and page metadata.
-- **Execution posture:** VERIFICATION_PENDING — the first two-path Builder candidate passed the original
+- **Execution posture:** CLOSED_VERIFIED — the first two-path Builder candidate passed the original
   deterministic behavior checks, but independent review found one procedural gate ambiguity and one
-  same-contract scalar-correlation gap. RS-WO-049-03 has completed the bounded repair; Main reviewed
-  the exact two-path candidate and no source writer remains active.
+  same-contract scalar-correlation gap. RS-WO-049-03 completed the bounded repair, and the fresh
+  independent RS-WO-049-02 verification passed against the unchanged RightSpot projection.
 - **Blocking status:** Non-blocking to RIGHTSPOT-012, the paused RIGHTSPOT-047 browser gate, and the
   BLOCKED_HARNESS RIGHTSPOT-048 lifecycle evidence gate.
-- **Current next gate:** Commit the reviewed Main checkpoint, freeze the resulting source identity,
-  and run a fresh RS-WO-049-02 verification under the corrected candidate-vs-checkpoint path gate.
+- **Current next gate:** No open 049 implementation or verification gate remains. Main must retain this
+  closure record, commit the canonical documentation writeback, and return to the non-blocking
+  RIGHTSPOT-012 audit for the next evidence-backed decision.
 - **Source identity:** The original Builder started from Main commit 0994e9245f003b68a9f4b301aa27af46b3d0c4d5;
   its reviewed source candidate is retained at 1d041d4. The RS-WO-049-03 Repairer dispatch baseline
   is Main commit 609ef564af808276de81bb49c330a7b79ebc8790, where the source/test blobs are unchanged
-  and the corrected contract/process writeback is canonical. Tracked RightSpot source/test paths were
-  clean at dispatch; protected untracked .playwright-cli/, :memory:, local instruction files, and
+  and the corrected contract/process writeback is canonical. The first fresh verifier was dispatched
+  against product candidate commit `0ef9b0f60f57ed60c48cb2591d2a9204d072993d`; while it was active,
+  an external descendant `9994f4eb85dca58e802640a72934dec7d9dec4dc` changed only Web-Game. Main proved
+  the RightSpot boundary diff empty and the two candidate blobs byte-identical, so the fresh run is
+  explicitly re-anchored to that unchanged RightSpot projection. Tracked RightSpot source/test paths
+  were clean at dispatch; protected untracked .playwright-cli/, :memory:, local instruction files, and
   Docs/Reference/ were excluded from the write set. The required runtime is Node v24.20.0 with npm
   11.19.0.
 - **Main authority:** Main owns task admission, source identity, exact-path review, integration,
@@ -295,10 +300,11 @@ for the bounded RS-WO-049-03 repair; no redesign or new Search criterion is impl
 ### RS-WO-049-02 — Independent parser and integration verification
 
 **Role:** Independent read-only UI/API Verifier  
-**Status:** NOT_VERIFIED_PROCEDURAL  
-**Parallelization:** The first verification run completed against frozen source `1d041d4`. A fresh
-  run starts only after RS-WO-049-03 completes and Main freezes the repaired source; no source writer
-  may modify the two-path candidate during that gate.
+**Status:** VERIFIED  
+**Parallelization:** The first verification run completed against frozen source `1d041d4`. After the
+  RS-WO-049-03 repair and path-projected re-baseline, the fresh run verified the immutable RightSpot
+  projection at repository checkpoint `9994f4eb85dca58e802640a72934dec7d9dec4dc`; no source writer
+  modified the two-path candidate during that gate.
 **Allowed write set:** none in product source or canonical Docs; disposable local evidence only under
 the existing evidence boundary.
 
@@ -321,6 +327,35 @@ code failure; the corrected two-ledger rule above is now authoritative. The five
 were `Docs/00-current-status.md`, `Docs/Development/README.md`,
 `Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`, `Docs/Tasks/README.md`, and this Task File.
 
+**Second verification result (2026-09-03):** The fresh verifier correctly identified the external
+repository-tip movement, but returned `PROCEDURAL_BLOCKED` before running product checks because its
+original dispatch required the whole-repository `HEAD` to remain exactly `0ef9b0f60f57ed60c48cb2591d2a9204d072993d`.
+Main independently confirmed that `9994f4eb85dca58e802640a72934dec7d9dec4dc` is a descendant whose
+diff is exclusively Web-Game, while the RightSpot path projection and both worker blobs are identical.
+This is a coordination/process result, not a product defect. ADR-RS-0005 and the Runbook now define the
+narrow path-projected freeze exception for this monorepo topology; no product source or test check was
+waived. The re-anchored fresh verifier must still execute the full acceptance and static matrix.
+
+**Fresh verification result (2026-09-03):** The re-anchored independent verifier returned `VERIFIED`
+against immutable checkpoint `9994f4eb85dca58e802640a72934dec7d9dec4dc`. It confirmed both ancestor
+relationships, an empty `0ef9b0f..9994f4e` RightSpot diff, and byte-identical worker blobs. The worker
+candidate ledger contained exactly `src/ui/tenant/tenant-api.ts` and `tests/ui/tenant-api.test.ts`; the
+seven-path Main process-only ledger contained the declared status, ADR, Development, Runbook, and Task
+writeback paths. Focused tests passed `17/17`, the complete suite passed `226/226`, typecheck/build,
+repository validators, RightSpot-scoped sensitive scan, `git diff --check`, and the required response
+contract checks all passed under Node `v24.20.0` / npm `11.19.0`. The repository-wide sensitive scan
+reported 10 findings exclusively in disjoint Web-Game documentation; the RightSpot-scoped scan passed
+and this does not weaken or invalidate the RightSpot result. The existing Turbopack dynamic-filesystem
+tracing warning at `src/server/persistence/operations-store.ts:104` remains non-blocking. Browser,
+deployment, production, universal WebMCP, and judge-reproduction claims remain out of scope.
+
+After that verification completed, the external Web-Game descendant
+`0f42f1ca488654fd7abfbdd990d45b67061e2d1b` advanced the repository tip. Main proved it is a descendant
+of `9994f4eb85dca58e802640a72934dec7d9dec4dc` with an empty RightSpot diff, so it does not invalidate the
+verified product projection. The later documentation-only closure writeback also updates the nested
+package README's stale aggregate test-count statement; this is Main-owned process/status documentation,
+not a worker product-path change or a new implementation checkpoint.
+
 If the verifier cannot run a supported browser, it must report the deterministic evidence separately
 and not claim browser verification. A harness limitation is not a reason to weaken the response
 contract or perform an unbounded retry.
@@ -328,7 +363,7 @@ contract or perform an unbounded retry.
 ### RS-WO-049-03 — Correlate filtered Search response values
 
 **Role:** UI/API client Repairer  
-**Status:** READY_FOR_VERIFICATION  
+**Status:** VERIFIED  
 **Parallelization:** SERIAL_TENANT_SEARCH_CLIENT — starts only after the 049-02 procedural result is
 recorded and no verifier is active; one writer only on the two declared paths.  
 **Risk profile:** Bounded P2 extension of the same Search response-truth boundary; no server or domain

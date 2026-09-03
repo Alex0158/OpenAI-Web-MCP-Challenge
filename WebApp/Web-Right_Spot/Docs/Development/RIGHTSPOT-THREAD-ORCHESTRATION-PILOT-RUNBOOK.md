@@ -699,6 +699,12 @@ path is declared, it must also run the equivalent of `test -x <node-binary>`, `t
 failure, not a reason to let the worker infer a path. The resolved values must be copied into the
 prompt and the Task File before the single dispatch call.
 
+The main thread must copy full commit identities from the fresh preflight output and perform one
+literal comparison against the Task File and the final activation prompt immediately before the
+dispatch call. Never manually reconstruct or retype a full SHA from a short prefix or an earlier
+message. If the values differ, discard the prepared prompt, regenerate the identity-bearing fields,
+and do not dispatch until they match.
+
 ### 8.1.2 Execution baseline versus governance revision
 
 Every dispatch records two identities and must not merge them into one undifferentiated manifest:
@@ -755,6 +761,17 @@ automatically a violation of the worker write set. A verification report must na
 they differ; a statement such as "only these paths changed" must say whether it refers to the worker
 candidate or the whole checkpoint commit. Only an explicitly whole-checkpoint Work Order may impose a
 whole-commit path limit.
+
+In a monorepo with separately owned applications, the frozen source identity is also scoped to the
+declared execution boundary. If an unexpected external descendant commit advances the repository tip
+while a checkpoint is active, Main must capture the old and new full SHAs and prove that the new commit
+is a descendant, its diff is empty under the declared product boundary, the relevant product blobs are
+byte-identical, and no shared package, runtime, dependency, or semantic read input changed. Main records
+the event as a coordination incident and may keep the original immutable product checkpoint, or
+explicitly re-anchor verification to the unchanged descendant. This narrow exception does not permit
+Main to move the ref intentionally, and any relevant-path or shared-input change remains a procedural
+stop requiring a fresh baseline and handoff. A whole-repository Work Order retains a whole-repository
+freeze.
 
 ### 8.1.3.1 Semantic slices for mixed canonical documents
 
@@ -817,13 +834,20 @@ thread, may modify that source during verification. The main thread may update a
 process-only record outside the frozen implementation snapshot, but any change to the verified source
 requires a fresh handoff or re-verification.
 
-The T3 freeze is also a Git-ref freeze for the checkpoint. After the Verifier is dispatched, the main
-thread must not create a commit, amend a commit, rebase, switch the verified branch, or otherwise move
-the source reference used by the handoff, even when the intended change is process-only documentation.
-Declared process-only writeback may remain uncommitted and outside the verified source paths while the
-Verifier runs. If an intentional process or source change requires a commit or changes the declared
-identity, stop the verification, record a procedural `BLOCKED` result, capture the new identity, and
-assign a fresh verification run; do not ask the Verifier to infer whether the ref movement was harmless.
+The T3 freeze is a product-scope source freeze. After the Verifier is dispatched, the main thread must
+not create a commit, amend a commit, rebase, switch the verified branch, or otherwise move the source
+reference intentionally, even when the intended change is process-only documentation. Declared
+process-only writeback may remain uncommitted and outside the verified source paths while the Verifier
+runs. If an intentional process or source change requires a commit or changes the declared identity,
+stop the verification, record a procedural `BLOCKED` result, capture the new identity, and assign a
+fresh verification run; do not ask the Verifier to infer whether the ref movement was harmless.
+
+If an external collaborator unexpectedly advances a multi-application repository with a disjoint
+descendant commit, apply the path-projected freeze rule above before deciding whether the current
+verification can continue. The Main thread must not hide or ignore the incident: record both commits,
+the exact disjoint diff, relevant blob equality, and the unchanged product boundary. If any check fails,
+the result is procedural `BLOCKED`; if all pass, the verifier may continue against the immutable product
+projection and must report the repository-tip incident separately from product evidence.
 
 ### 8.1.4 Candidate adoption after a coordination or provenance defect
 
@@ -908,7 +932,9 @@ context before editing. The minimum reading route is:
 1. the available global instructions, including `/Users/alex/.codex/AGENTS.md` when present;
 2. the workspace `AGENTS.md` when the task runs inside this workspace;
 3. the actual repository `AGENTS.md`;
-4. repository `Docs/README.md`, current outer status, and applicable Engineering controls;
+4. the repository documentation map and current outer status: use `Docs/README.md` at the repository
+   root, or the nested application's package `README.md` when the Work Order targets a child app;
+   also read the applicable Engineering controls;
 5. `WebApp/Web-Right_Spot/RUNBOOK.md`;
 6. `WebApp/Web-Right_Spot/Docs/00-current-status.md`;
 7. the active RightSpot parent Task;

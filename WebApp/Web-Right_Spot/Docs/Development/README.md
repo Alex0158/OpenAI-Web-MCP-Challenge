@@ -174,13 +174,15 @@ deterministic checks and Main browser smoke, while its independent browser gate 
 after a reviewed 048 evidence decision. The `F-01` queue/privacy defect is closed within `RIGHTSPOT-025`; `RIGHTSPOT-026`
 is also closed within its presentation-only boundary. `RIGHTSPOT-027` is closed after its bounded
 presentation repair and independent verification; no implementation Worktree is active. `RIGHTSPOT-049`
-has completed its bounded same-contract repair after the first candidate handoff: the independent
+is `CLOSED_VERIFIED` after its bounded same-contract repair: the independent
 review exposed a candidate-vs-checkpoint path-gate ambiguity, and the fresh Main-thread delta audit
-reproduced a non-Area response/request correlation gap. RS-WO-049-03 is ready for fresh independent
-verification and remains limited to the same two client/test paths; the 048 browser evidence decision
-and the later 047 re-baseline remain separate
-gates. Source push and Task closure remain gated by
-exact-path review, focused/full checks, and complete frozen-source browser verification.
+reproduced a non-Area response/request correlation gap. The first fresh verifier was procedurally
+blocked by an unrelated Web-Game descendant ref movement; the RightSpot projection was proven unchanged
+and the re-anchored RS-WO-049-02 verification passed at checkpoint `9994f4e`. The repair remains limited
+to the same two client/test paths; the 048 browser evidence decision and the later 047 re-baseline remain separate
+gates. The Task closure is now recorded; any future source push remains gated by remote
+synchronization and the separate 047/048 evidence boundaries. No WebMCP, browser, deployment, or
+production claim is inferred from this Search repair.
 The authoritative sequence is maintained in the [development roadmap](RIGHTSPOT-DEVELOPMENT-ROADMAP.md#31-current-next-route).
 
 ## Closure record requirements

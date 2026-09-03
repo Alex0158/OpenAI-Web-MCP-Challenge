@@ -16,6 +16,11 @@ The pilot therefore needs to distinguish source identity, path ownership, and pr
 manifest must identify what a worker saw at one checkpoint; it must not become a substitute for Git,
 a merge protocol, or a global lock on the whole child application.
 
+The RightSpot application lives in a repository that also contains separately owned child
+applications. A collaborator can therefore advance the repository tip with a commit outside the
+RightSpot execution boundary while a RightSpot checkpoint is being verified. Repository-tip movement
+and RightSpot source movement are not identical facts in that topology.
+
 ## Decision
 
 ### 1. Use checkpoint-scoped source identity
@@ -34,6 +39,22 @@ lock throughout a checkpoint.
 The dispatch record also names the repository root, branch, runtime, package/dependency identity,
 and the governance revision used for the handoff. Governance revision and execution baseline are
 separate identities: a process-only revision does not change the product execution baseline.
+
+For a multi-application repository, the execution identity is the declared product boundary and its
+semantic inputs, not an unconditional lock on unrelated child applications. If an unexpected
+descendant commit advances the repository tip outside that boundary, Main may preserve the frozen
+RightSpot checkpoint only after proving that the new commit is a descendant, its diff is empty under
+the declared RightSpot boundary, the relevant product blobs are byte-identical, and no shared package,
+runtime, dependency, or semantic read input changed. Main records the old and new commits as a
+coordination incident and either keeps verifying the original immutable checkpoint or explicitly
+re-anchors verification to the unchanged descendant. This is not permission for Main to move the ref
+during verification, and any change to a relevant path or shared input still requires a stop and fresh
+re-baseline.
+
+Full commit identities in a Work Order and dispatch prompt must be copied from a fresh command result
+and compared literally immediately before dispatch. A short prefix may aid human scanning but never
+replaces the full SHA; a manually transcribed or mismatched identity invalidates the dispatch record
+until Main regenerates it.
 
 ### 2. Declare ownership by path, and by section when a shared file mixes concerns
 
@@ -87,6 +108,12 @@ At T2, the main thread records actual changed paths, generated output, the post-
 identity, and the Builder report. Once T3 starts, no worker or main-thread product writer may modify
 the frozen verification source. A reviewed local commit is preferred for the T2 snapshot; if dirty
 source remains, the Verifier receives the exact commit plus dirty-path/content record.
+
+The freeze is scoped to the declared product source and semantic inputs. In a monorepo, an unexpected
+external commit that changes only a disjoint child application does not change the frozen RightSpot
+source when the descendant and path-projection checks above pass. Such an event is recorded separately;
+an intentional Main commit, or any commit touching the frozen product, shared dependency, runtime, or
+semantic-input boundary, remains a verification stop and requires a fresh handoff.
 
 ### 5. Resolve shared ownership explicitly
 
