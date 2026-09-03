@@ -149,6 +149,11 @@ The [Feature 2 implementation summary](CLOUD-015-feature2-implementation-summary
 companion implementation detail for CLOUD-015; it does not own a separate lifecycle or evidence
 status.
 
+The [CLOUD-026 bound-task driver feasibility record](CLOUD-026-bound-task-driver-feasibility.md)
+records a persisted inert queue input without observed same-task wake at 142 seconds. TASK-035's
+owning-runtime admission gate is blocked; no product Adapter is selected and retained effect-backed
+profiles are unchanged.
+
 ## Verification reports
 
 - [`SDK v2 Verification Report`](SDK-V2-Verification-Report.md) — post-push SDK-to-Cloud-Receiver v2

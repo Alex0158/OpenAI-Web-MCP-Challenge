@@ -6,14 +6,17 @@
 ## Task Control
 
 - Type: `implementation`
-- Lifecycle: `pending`
+- Lifecycle: `blocked`
 - Priority: `P0`
 - Owner: Local Connector/Agent Adapter owner, with Receiver and Host SDK owners.
-- Current increment: Specify the smallest trusted enrollment-to-existing-task binding and a
-  supported local driver without changing the accepted product direction.
-- Next gate: A reviewed route-specific contract names how the user selects the task, how ownership
-  and Grant scope are verified, where the private binding persists, and which tests falsify restart
-  recovery, wrong-task routing, and unsupported-runtime behavior before code changes.
+- Current increment: CLOUD-026 completed the installed-runtime check and one bounded queue
+  diagnostic: input persisted, but no same-task wake was observed at the 142-second readback.
+  A private binding/notification contract is drafted, not accepted or implemented.
+- Next gate: Establish supported access to the owning Desktop runtime, or obtain an explicit owner
+  decision for a separately labelled local experimental bridge. Review that route before another
+  live probe or implementation. The binding contract must then name trusted task selection,
+  ownership/Grant verification, private persistence, restart, wrong-task, and unsupported-runtime
+  tests; a manually targeted transport probe does not close enrollment.
 - Dependencies: ADR-0014 and ADR-0046 for the first binding/driver specification. TASK-029's receipt
   contract and TASK-033's standing controls are integration inputs; TASK-034 consumes the specified
   binding for subsequent runtime verification, not a prerequisite to starting this specification.
@@ -63,3 +66,9 @@ unit tests alone do not close those runtime gates.
 
 A supported runtime/custody conflict reopens the route decision; it does not silently change
 ADR-0046.
+
+## 7. Current evidence increment
+
+[CLOUD-026](../Development/CLOUD-026-bound-task-driver-feasibility.md) records installed-version
+differences, queue versus tool-output semantics, and the bounded existing-task diagnostic. It does
+not select a product driver or replace the reviewed enrollment, privacy, and receipt gates above.
