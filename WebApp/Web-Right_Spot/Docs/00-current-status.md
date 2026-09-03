@@ -213,13 +213,15 @@ post-048 review with no new product finding, and Main corrected one documentatio
 claim. `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its manual Operations consumer
 latest-read boundary at product source `3582ba4`; it does not reopen `RIGHTSPOT-044` or change the
 Operations API, domain, projection, fixture, role/privacy, navigation, or WebMCP boundary.
-`RIGHTSPOT-049` is now a `BUILDER_READY_FOR_VERIFICATION`, non-blocking P2 repair for the Search
-client compatibility boundary: an effective filtered response must not inherit unfiltered legacy
-metadata defaults. Its serial `RS-WO-049-01` Builder completed against the recorded Main baseline
-in supporting task `01a0669f-fe53-7b52-9fbb-79b4fc502fbd` with `gpt-5.6-sol + medium`; Main review
-confirmed only the declared two source/test paths changed and all deterministic gates passed. Its
-scope remains limited to `tenant-api.ts` and its focused test; it does not authorize a server,
-predicate, page, WebMCP, or 047/048 lifecycle change.
+`RIGHTSPOT-049` is now `REPAIR_REQUIRED`, a non-blocking P2 repair for the Search client compatibility
+boundary: an effective filtered response must not inherit unfiltered legacy metadata defaults or
+silently relabel non-Area criteria. Its serial `RS-WO-049-01` Builder completed against the recorded
+Main baseline in supporting task `01a0669f-fe53-7b52-9fbb-79b4fc502fbd` with `gpt-5.6-sol + medium`;
+Main review confirmed only the declared two source/test paths changed and the original deterministic
+gates passed. Independent review found a procedural candidate-vs-checkpoint path-gate ambiguity and
+Main reproduced the scalar-correlation gap; the bounded RS-WO-049-03 repair is next. Its scope remains
+limited to `tenant-api.ts` and its focused test; it does not authorize a server, predicate, page,
+WebMCP, or 047/048 lifecycle change.
 `RIGHTSPOT-006` remains credential-gated. The existing Tenant Discovery/WebMCP slice remains
 `RIGHTSPOT-043` `CLOSED_VERIFIED` in its declared local supported-browser capability. No production,
 universal browser, judge, or probabilistic agent success claim is made.
@@ -696,7 +698,7 @@ final response can remain a normal application action.
 | Delegated development | **EXPERIMENTAL PILOT — TASK-OWNED** | `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; corrected `RS-WO-002-02` rerun returned `VERIFIED`; `RS-WO-002-03` bounded repair commit `6e70c9f` passed fresh independent verification; `RS-WO-002-04` candidate `68bbc69` passed dedicated verification against frozen source `28105e4d`; `RS-WO-002-05` candidate is frozen at T2 code commit `de169ce` and passed dedicated independent verification against snapshot `bc3bc42`; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted/revised decomposition is recorded in ADR-RS-0008; `RS-WO-002-07` candidate `d71fe3e` passed dedicated independent verification and is integrated at `f700ba9`; `RS-WO-002-08` is integrated at `006d2fd` after process re-baseline `8b77bdd`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-11` candidate `f1f83c7` passed dedicated independent verification and is integrated at `6a0b4b8`; `RS-WO-002-13` candidate `169cb95d` passed dedicated independent verification and is integrated at `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final independent verification and is integrated at `9348aa5`; `RS-WO-002-14` passed direct read-only cross-role verification; `RS-WO-002-15` passed the isolated browser walkthrough and closure evidence is reconciled in `RIGHTSPOT-MVP-CLOSURE-RECORD.md` |
 | Cloud Receiver | **Not a first-phase dependency** | Future integration boundary only |
 | Agent Operations manual read surface | **CLOSED_VERIFIED; `RIGHTSPOT-044`** | Existing Operations authority/projection is consumed by the strict Agent-only `/agent/operations` page and HTTP route; independent local browser/API verification passed, while later Operations WebMCP remains separately gated |
-| Active product repair | **`RIGHTSPOT-049` BUILDER_READY_FOR_VERIFICATION; `RIGHTSPOT-048` BLOCKED_HARNESS; `RIGHTSPOT-045` CLOSED_VERIFIED** | The Search response compatibility candidate passed Main deterministic review and is ready for an independent frozen-source verifier; its Builder owns only `tenant-api.ts` and its focused test. The shared role-page session lifecycle candidate is integrated at `218935c`; its deterministic gates passed, but the bounded independent browser gate produced no final report and is blocked at the harness boundary. The earlier Operations latest-read repair remains closed within its manual page boundary |
+| Active product repair | **`RIGHTSPOT-049` REPAIR_REQUIRED; `RIGHTSPOT-048` BLOCKED_HARNESS; `RIGHTSPOT-045` CLOSED_VERIFIED** | The Search response compatibility candidate passed its original deterministic checks, but its first independent gate exposed a process-scope mismatch and a same-contract scalar-correlation gap; RS-WO-049-03 is the bounded next repair on the same two client/test paths. The shared role-page session lifecycle candidate is integrated at `218935c`; its deterministic gates passed, but the bounded independent browser gate produced no final report and is blocked at the harness boundary. The earlier Operations latest-read repair remains closed within its manual page boundary |
 | WebMCP | **TENANT DISCOVERY SLICE VERIFIED; `RIGHTSPOT-046` ACCEPTED; `RIGHTSPOT-047` PAUSED; `RIGHTSPOT-048` BROWSER GATE BLOCKED_HARNESS** | Page-bound `search_listings` is verified only in the declared local supported-browser capability; the Agent `read_listing_pipeline` candidate is frozen but must be re-baselined after a reviewed 048 evidence decision |
 | Runtime / deployment | **Not started** | No service, hosting, credentials, or public URL |
 | Evidence | **LOCAL MVP + `RIGHTSPOT-043`, `RIGHTSPOT-044`, AND `RIGHTSPOT-045` CLOSED_VERIFIED; `RIGHTSPOT-046` ACCEPTED; `RIGHTSPOT-048` STATIC_GATES_PASSED / BROWSER BLOCKED_HARNESS; `RIGHTSPOT-047` INDEPENDENT_BROWSER_INCOMPLETE** | The 048 candidate is integrated at `218935c` and passes focused `35/35`, complete `215/215`, typecheck, build, validators, sensitive scan, and diff checks; three verifier attempts produced no accepted browser evidence, including one corrected retry that hung after launch. The 047 gate remains paused. No push, WebMCP closure, or production/deployment claim is made |
@@ -829,12 +831,12 @@ accepted Operations authority and pure projection were consumed by the ordinary 
 044 Work Orders are `CLOSED_VERIFIED`. Any Operations WebMCP capability remains separately gated and
 is not implied by the manual surface closure or the 045 repair.
 
-`RIGHTSPOT-049` is the active independent bounded implementation candidate from the continuing Search
-audit. Its serial `RS-WO-049-01` Builder completed against the recorded Main baseline and is ready
-for a frozen-source independent verifier; it is independent of the paused 047 candidate and the 048
-harness-blocked evidence gate, and remains within its two-path client/test boundary without reopening
-either gate. It must preserve the complete current server envelope and the intentionally supported
-unfiltered legacy response.
+`RIGHTSPOT-049` is the active bounded Search repair from the continuing audit. Its original
+RS-WO-049-01 Builder handoff is retained, but RS-WO-049-03 must add exact non-Area response/request
+correlation before a fresh verifier run. It is independent of the paused 047 candidate and the 048
+harness-blocked evidence gate, and remains within the same two-path client/test boundary without
+reopening either gate. It must preserve the complete current server envelope and the intentionally
+supported unfiltered legacy response.
 
 The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.
 The cross-layer page-entry audit then verified the narrow `RIGHTSPOT-021` defect: the existing

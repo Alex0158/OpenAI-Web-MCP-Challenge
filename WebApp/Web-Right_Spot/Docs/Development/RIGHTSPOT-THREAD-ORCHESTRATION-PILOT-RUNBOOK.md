@@ -746,6 +746,16 @@ contract section and the process-only section separately. A process-only writeba
 the execution baseline; a semantic contract or authority change does and requires a stop and
 re-baseline. The main thread must not guess when the boundary is ambiguous.
 
+The worker-candidate diff and the enclosing Main checkpoint diff are separate accounting ledgers. The
+worker-candidate diff is the product/source diff from the Builder's dispatch baseline to its T2 handoff
+and must be limited to the Work Order's worker write set. The enclosing Main checkpoint may also contain
+explicitly declared Main-thread orchestration writeback, such as Task status, evidence, roadmap, or
+current-status sections. Those process-only paths must be checked for semantic drift, but they are not
+automatically a violation of the worker write set. A verification report must name both ledgers when
+they differ; a statement such as "only these paths changed" must say whether it refers to the worker
+candidate or the whole checkpoint commit. Only an explicitly whole-checkpoint Work Order may impose a
+whole-commit path limit.
+
 ### 8.1.3.1 Semantic slices for mixed canonical documents
 
 A path is not a sufficiently precise read-set boundary when one canonical document contains both

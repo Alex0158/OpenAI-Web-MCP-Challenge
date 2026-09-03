@@ -212,6 +212,13 @@ malformed, superseded,
 unauthenticated, and wrong-role outcomes remain bounded and never expose raw server text or stale
 listing data as current. A valid empty result never falls back to an unfiltered catalogue.
 
+For response compatibility, normalized applied filters must preserve the serialized query values:
+`maxRent`, `minSizeSqM`, and `availableBy` must be exactly equal to the effective request values.
+`area` may instead be the server-resolved canonical label after the accepted trim/case normalization.
+A complete response with a mismatched numeric/date value is invalid and must fail closed; the client
+does not re-run listing predicates or infer a correction. Reopen the Search contract before accepting
+a future server transformation of those scalar criteria.
+
 The integrated first Tenant WebMCP registration is page/session scoped: feature-detect the current
 supported API, register only after a server-resolved Tenant session is present on `/tenant`, and
 unregister/cancel on route, session, role, capability, or component teardown. Registration does not

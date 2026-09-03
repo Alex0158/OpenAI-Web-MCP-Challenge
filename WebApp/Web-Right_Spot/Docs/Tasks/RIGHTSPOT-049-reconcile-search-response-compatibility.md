@@ -12,13 +12,15 @@
 
 - **Objective:** Make the Tenant Search client accept the documented minimal legacy response only for
   an actually unfiltered read, and fail closed when a filtered successful response cannot prove its
-  normalized applied filters and page metadata.
-- **Execution posture:** BUILDER_READY_FOR_VERIFICATION — the serial parser/test-only Builder Work
-  Order RS-WO-049-01 completed its handoff; no other writer owns either declared source path.
+  normalized applied filters, exact non-Area criteria, and page metadata.
+- **Execution posture:** REPAIR_REQUIRED — the first two-path Builder candidate passed the original
+  deterministic behavior checks, but independent review found one procedural gate ambiguity and one
+  same-contract scalar-correlation gap; no other writer owns either declared source path.
 - **Blocking status:** Non-blocking to RIGHTSPOT-012, the paused RIGHTSPOT-047 browser gate, and the
   BLOCKED_HARNESS RIGHTSPOT-048 lifecycle evidence gate.
-- **Current next gate:** Commit the reviewed post-Builder candidate as a frozen Main checkpoint, then
-  dispatch RS-WO-049-02 against that exact source identity.
+- **Current next gate:** Correct the candidate-vs-checkpoint path gate and extend the same response
+  contract to exact non-Area scalar correlation, then dispatch RS-WO-049-03 before a fresh
+  RS-WO-049-02 verification against the repaired frozen source.
 - **Source identity:** Builder dispatch started from Main commit 0994e9245f003b68a9f4b301aa27af46b3d0c4d5.
   Tracked RightSpot source/test paths were clean; protected untracked .playwright-cli/, :memory:,
   local instruction files, and Docs/Reference/ were excluded from the write set. The required
@@ -29,6 +31,13 @@
 - **No browser retry implication:** This task does not reopen or authorize another blind
   agent-browser attempt for RIGHTSPOT-048. Browser evidence is optional for this parser boundary and
   cannot be used to hide the deterministic response-contract checks.
+- **Review disposition:** The first independent verifier found no implementation failure, but returned
+  `NOT_VERIFIED` because its prompt incorrectly treated the entire seven-path Main checkpoint as if it
+  were the Builder's two-path candidate. Main classified this as a process-contract defect. The
+  subsequent 012 read-only audit independently reproduced a real P2 mismatch: non-Area filtered
+  metadata was required to contain the criterion but was not required to equal the serialized value.
+  Main reproduced `maxRent: 2500` accepting response metadata `maxRent: 999`; this is now included in
+  the same 049 repair boundary.
 
 ## Verified problem
 
@@ -74,8 +83,10 @@ The compatibility rule is narrowed as follows:
 - A read with one or more effective Search criteria requires a complete logical success envelope:
   appliedFilters, matchedCount, pagePath, and pageState must all be present and valid.
 - For a filtered success, appliedFilters must contain every effective requested criterion under its
-  public normalized name. Area may be returned as the server-resolved canonical label; the client
-  must not require raw input spelling or implement Area resolution itself.
+  public normalized name. The non-Area scalar criteria `maxRent`, `minSizeSqM`, and `availableBy`
+  must equal the actual serialized request values; the client must not accept a complete-looking
+  response that relabels those values. Area may be returned as the server-resolved canonical label;
+  the client must not require raw input spelling or implement Area resolution itself.
 - A missing or partial logical envelope, including an appliedFilters object that omits an effective
   criterion, is INVALID_RESPONSE. It must not be converted into an unfiltered success.
 - The parser must not derive appliedFilters from caller input, infer a filtered result from listing
@@ -83,6 +94,9 @@ The compatibility rule is narrowed as follows:
   remains the source of normalized filters and result semantics.
 - A complete filtered envelope with a valid zero match remains a successful explicit empty result.
   An invalid or incomplete envelope remains a bounded error and never becomes a catalogue fallback.
+- A filtered envelope whose non-Area applied value differs from the serialized request is
+  `INVALID_RESPONSE`, even when its metadata is otherwise complete. If the server later introduces
+  a legitimate numeric/date transformation, reopen ADR-RS-0015 before changing this client rule.
 - Effective-filter detection must reflect the actual serialized request, not merely the presence of
   object keys whose values are undefined. Existing date compatibility mapping remains unchanged.
 
@@ -94,9 +108,10 @@ ranking rule, source, pagination scheme, or WebMCP capability.
 1. Pass enough request context from readListings to the parser to distinguish an effective filtered
    read from an unfiltered read.
 2. Preserve the current full response behavior and existing unfiltered legacy compatibility.
-3. Reject filtered minimal and partial success envelopes with TenantApiError code INVALID_RESPONSE.
-4. Prevent the Tenant page and the existing search_listings executor from presenting an incomplete
-   filtered response as a successful unfiltered result.
+3. Reject filtered minimal and partial success envelopes, and semantically mismatched non-Area
+   applied-filter values, with TenantApiError code INVALID_RESPONSE.
+4. Prevent the Tenant page and the existing search_listings executor from presenting an incomplete or
+   mismatched filtered response as a successful unfiltered result.
 5. Prove the boundary with focused TDD Red → Green → Refactor tests and the required complete
    RightSpot static checks.
 
@@ -108,7 +123,10 @@ ranking rule, source, pagination scheme, or WebMCP capability.
 - A filtered response missing appliedFilters, matchedCount, pagePath, or pageState is rejected as
   INVALID_RESPONSE, including a filtered response with zero listings.
 - A filtered response with all logical metadata and the requested normalized criterion keys is
-  accepted when the existing field and cross-field validation passes.
+  accepted when the existing field/cross-field validation passes and non-Area values exactly match the
+  serialized request.
+- A filtered response with a complete envelope but a mismatched `maxRent`, `minSizeSqM`, or
+  `availableBy` value is rejected as `INVALID_RESPONSE`.
 - The existing complete server response remains accepted with the same normalized values, counts,
   page path, page state, and tenant-safe listing fields.
 - An object containing filter keys with undefined values is treated according to the serialized
@@ -143,8 +161,9 @@ Before implementation, add focused failing tests that demonstrate:
 2. a filtered response with zero listings and only fixtureGeneration/listings is rejected;
 3. a filtered response with a partial logical envelope is rejected;
 4. a filtered response whose appliedFilters omits an effective requested criterion is rejected;
-5. the existing unfiltered minimal response remains accepted; and
-6. a complete filtered response, including server-normalized Area, remains accepted.
+5. a complete filtered response with a mismatched non-Area applied value is rejected;
+6. the existing unfiltered minimal response remains accepted; and
+7. a complete filtered response, including server-normalized Area, remains accepted.
 
 The tests must assert the public INVALID_RESPONSE outcome, not a private helper name.
 
@@ -155,7 +174,9 @@ Implement the smallest client-only change that:
 - derives effective-filter context from the actual serialized logical filters;
 - gives the parser that context;
 - preserves legacy inference only when no effective filter was sent; and
-- requires and validates the complete logical fields and effective filter keys for filtered success.
+- requires and validates the complete logical fields and effective filter keys for filtered success;
+- compares non-Area applied values with the serialized request while allowing the accepted server
+  canonicalization for Area.
 
 Do not change the server route, application service, shared domain contract, WebMCP adapter, or page
 consumer to compensate for the parser defect.
@@ -190,7 +211,7 @@ evidence must not be relabeled as a product failure or used to reopen the blocke
 ### RS-WO-049-01 — Filtered Search response parser repair
 
 **Role:** UI/API client Builder  
-**Status:** READY_FOR_VERIFICATION  
+**Status:** REPAIR_REQUIRED  
 **Parallelization:** SERIAL_TENANT_SEARCH_CLIENT — one writer only; do not overlap with another
   writer on tenant-api.ts or its focused test.  
 **Risk profile:** Bounded P2 client compatibility repair; no server or domain behavior change.  
@@ -219,6 +240,10 @@ the independent response probe produced `INVALID_RESPONSE` for filtered minimal 
 the unfiltered minimal result and normalized Area success. The build emitted only the existing
 Turbopack dynamic-filesystem tracing warning in `src/server/persistence/operations-store.ts`; no
 forbidden path, Git index, commit, Worktree, or unrelated file was changed.
+
+This handoff remains a valid partial implementation of the original minimal-response boundary, but it
+does not yet satisfy the later scalar-correlation criterion recorded after the 012 audit. It is held
+for the bounded RS-WO-049-03 repair; no redesign or new Search criterion is implied.
 
 **Read set:**
 
@@ -255,22 +280,60 @@ forbidden path, Git index, commit, Worktree, or unrelated file was changed.
 ### RS-WO-049-02 — Independent parser and integration verification
 
 **Role:** Independent read-only UI/API Verifier  
-**Status:** NOT_STARTED  
-**Parallelization:** Starts only after Main reviews RS-WO-049-01 and freezes the exact candidate source.
-  No source writer may modify the two-path candidate during this gate.
+**Status:** NOT_VERIFIED_PROCEDURAL  
+**Parallelization:** The first verification run completed against frozen source `1d041d4`. A fresh
+  run starts only after RS-WO-049-03 completes and Main freezes the repaired source; no source writer
+  may modify the two-path candidate during that gate.
 **Allowed write set:** none in product source or canonical Docs; disposable local evidence only under
 the existing evidence boundary.
 
 The Verifier must inspect the exact frozen source and run the focused, complete, typecheck, build,
 repository, sensitive-scan, and diff checks. It must confirm the unfiltered legacy response, filtered
 complete response, filtered minimal/partial failures, normalized Area key handling, zero-result
-truthfulness, bounded INVALID_RESPONSE mapping, no page/tool fallback, and no changes outside the
-two-path write set. It may perform a controlled API/client response comparison but must not modify
-server fixtures or persistence to manufacture a result.
+truthfulness, bounded INVALID_RESPONSE mapping, no page/tool fallback, and no unexpected product
+changes outside the two-path worker write set. It must report two path ledgers separately: (1) the
+Builder candidate product diff, which must be limited to the two worker paths, and (2) any explicitly
+declared Main-owned process-only documentation writeback in the enclosing checkpoint, which must not
+alter the task contract or product behavior. It may perform a controlled API/client response comparison
+but must not modify server fixtures or persistence to manufacture a result.
+
+**First verification result (2026-09-03):** The verifier passed the functional acceptance matrix,
+`12/12` focused tests, `221/221` complete tests, typecheck, build, validators, sensitive scan, diff
+checks, and the response probes. It returned `NOT_VERIFIED` only because it applied the worker's
+two-path scope to the whole seven-path Main checkpoint, which also contained five Main-owned
+documentation writeback paths. Main classifies that outcome as a procedural contract mismatch, not a
+code failure; the corrected two-ledger rule above is now authoritative. The five documentation paths
+were `Docs/00-current-status.md`, `Docs/Development/README.md`,
+`Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`, `Docs/Tasks/README.md`, and this Task File.
 
 If the verifier cannot run a supported browser, it must report the deterministic evidence separately
 and not claim browser verification. A harness limitation is not a reason to weaken the response
 contract or perform an unbounded retry.
+
+### RS-WO-049-03 — Correlate filtered Search response values
+
+**Role:** UI/API client Repairer  
+**Status:** GATED  
+**Parallelization:** SERIAL_TENANT_SEARCH_CLIENT — starts only after the 049-02 procedural result is
+recorded and no verifier is active; one writer only on the two declared paths.  
+**Risk profile:** Bounded P2 extension of the same Search response-truth boundary; no server or domain
+behavior change.  
+**Allowed write set:**
+
+- src/ui/tenant/tenant-api.ts
+- tests/ui/tenant-api.test.ts
+
+The Repairer must retain the accepted 049-01 behavior and add only the missing semantic correlation:
+for an effective filtered request, `maxRent`, `minSizeSqM`, and `availableBy` in `appliedFilters` must
+equal the serialized request values exactly. The server-normalized Area value remains authoritative and
+may differ from caller spelling according to ADR-RS-0014/0015. A mismatch must return the existing
+`INVALID_RESPONSE` error without client-side re-filtering, retry, cache, fallback, or response rewriting.
+
+The Repairer must add public-behavior TDD Red coverage for mismatched numeric and date values, retain
+the filtered minimal/partial/omitted-key failures, preserve complete matching/empty responses and
+unfiltered legacy compatibility, run the required static checks, and return `READY_FOR_VERIFICATION`.
+It must not modify the server, shared contract, page, WebMCP adapter, canonical Docs, fixtures,
+persistence, package/dependency files, Git/index, Worktrees, or unrelated paths.
 
 ## Rollback and stop conditions
 

@@ -105,6 +105,14 @@ with healthy health.
   test change and no follow-on Task. The Advisor did not edit source, tests, Docs, fixtures, SQLite,
   Git, Worktrees, or register follow-on work; this run is complete and the lane returns to its pending
   continuous-audit posture.
+- The subsequent 2026-09-03 delta audit by Gibbs (`01a066b4-79a3-7a71-aeb0-83cb65d98379`) reviewed
+  frozen source `1d041d4` after the Search compatibility increment. It found no new P0/P1 issue and
+  confirmed the tenant-to-Agent chain, role/privacy boundaries, UI/accessibility floor, and WebMCP
+  page/executor separation. It independently reproduced one P2 response-truth gap within the existing
+  `RIGHTSPOT-049` boundary: filtered `appliedFilters` required the non-Area key but did not require its
+  numeric/date value to equal the serialized request (`maxRent: 2500` accepted returned `999`). Main
+  confirmed the probe, expanded 049 rather than registering a duplicate Task, and recorded the report
+  as advisory evidence. No source or canonical documents were changed by the Advisor.
 - Execution posture: `READ_ONLY_ADVISORY`; the Advisor may inspect the current implementation and run safe, bounded verification, but must not implement findings or write canonical product truth.
 - Dependencies: Current RightSpot source, tests, runtime evidence where safely available, and the accepted documentation/decision hierarchy. `RIGHTSPOT-008` and its `RIGHTSPOT-020` implementation are closed within the bounded ADR-RS-0013 direction; `RIGHTSPOT-009` is closed as `REVIEWED_DEFERRED`; `RIGHTSPOT-010` is closed as a reviewed staged decision; `RIGHTSPOT-044` is `CLOSED_VERIFIED` for the manual Operations surface; and `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its bounded Operations consumer repair boundary. None authorizes unregistered implementation behavior.
 
