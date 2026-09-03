@@ -6,8 +6,8 @@
 - Closure type: `integrated`
 - Checkpoint: `CP-14`
 - Owner: Game owner, with Eddy as external Receiver/Connector handoff owner
-- Current increment: A static cross-functional audit has mapped the current Game outbox and local port to Eddy's v0.1 Cloud Receiver/Local Connector contracts; the exact v2 implementation, endpoint, identity/session map, and effect authority are still handoff gates under [`Validation/89`](../Validation/89-cp14-cloud-receiver-v2-adaptation-cross-functional-audit.md).
-- Next gate: Eddy supplies one exact owner-declared v2 handoff packet (Receiver SHA/package, Host SDK/Core/Connector versions, endpoint/TLS, database/test command, consent route, binding/Grant, claim/ACK, activation, and effect-authority details) and the Game owner accepts the mapping.
+- Current increment: The read-only cross-stack audit now records the observed active Receiver mainline, local and published SDK/Connector provenance, protocol and lifecycle mismatches, feasible adaptation choices, and the separate CP-17 deployment handoff. No Game or external runtime implementation is authorized by this record.
+- Next gate: The Game owner accepts the decision packet in this task, the external Receiver/Connector owner confirms one exact installable handoff, and the CP-17 owner supplies the canonical URL and Agent-session contract required for any activation claim beyond queue acceptance.
 
 ## Identity
 
@@ -84,20 +84,171 @@ Connector activation, page action, and effect acknowledgement remain separate au
 - Verified: The Game has a durable schema-v8 signal slot/outbox, one pending or in-flight signal per
   shelter/binding, a 60-world-second cooldown, a local wall-time publication lease, and a
   transport-neutral `ReentryDeliveryPort` with typed accepted/retryable/terminal outcomes.
-- Verified: Eddy's candidate Core defines protocol `0.1`, signed Event ingress at
+- Verified: The candidate Core defines protocol `0.1`, signed Event ingress at
   `POST /v0.1/events`, target-scoped Connector claim at `POST /v0.1/delivery-claims`, explicit ACK at
   `POST /v0.1/delivery-acknowledgements`, a 60-second Cloud lease, three attempts, five-second poll/
   delivery defaults, and a fresh Codex activation that does not auto-ACK.
-- Verified: Eddy's v0.1 Event body and the Game signal envelope are different contracts; Cloud `202`
+- Verified: The observed active Cloud Receiver v2 mainline is the separate public
+  [`4xeoz/saas-boilerplate` commit `6b4826f68bb3634d004c49259d9c5311c660d997`](https://github.com/4xeoz/saas-boilerplate/tree/6b4826f68bb3634d004c49259d9c5311c660d997),
+  dated 2026-09-03. Its commit metadata reports backend `56/56` and one Node 24 full-chain check, but
+  those checks were not rerun from this Game checkout and production/publication gates remain open.
+- Verified: The current active Receiver exposes account-first consent at
+  `POST /v0.1/account-consent-decisions`; the local Host SDK still contains the older
+  `/v0.1/consent-decisions` helper. The normal account-first flow can avoid that legacy helper by
+  letting the Receiver consent page decide and the Host poll consent status, but the external owner
+  must still declare the accepted public route in the handoff.
+- Verified: The local Core package is `0.1.0`, the local Host SDK is `0.3.1`, and the local Connector
+  is `0.2.20`, all on Node `>=24`. Live npm metadata also reports SDK `0.3.1` and Connector `0.2.20`,
+  but equal version strings do not identify equal source behavior: the published SDK predates the
+  local simple `createReentry()` facade, while the published Connector source predates the local
+  instruction-bearing lease shape required by active Receiver v2.
+- Verified: The local simple Host SDK facade hard-codes a generic workflow, `workflow.ready`, state
+  version `0`, a random workflow identity, a five-minute offer, and a nominal thirty-minute Grant.
+  It is not a safe Game integration surface. The advanced SDK surface can express the Game's stable
+  workflow, approved event type, causal version, canonical URL, and human boundary.
+- Verified: The current Connector is outbound-only and claims at most one delivery per run. Its
+  default adapter starts a new `codex exec` session, explicitly does not resume another session,
+  instructs that process to open the canonical page, and does not automatically obtain Host-effect
+  proof or ACK the lease. The instruction is not proof that a Browser, authenticated Game session,
+  or page-bound WebMCP runtime was actually acquired.
+- Verified: The v0.1 Event body and the Game signal envelope are different contracts; Cloud `202`
   means accepted and queued only; v0.1 Grant runs are limited to one; and the candidate's old Cloud
   runtime is deprecated.
+- Verified: The active Receiver currently implements its consent, Grant, Event, delivery, and ACK
+  state machines independently rather than consuming `reentry-core` as a runtime dependency. This
+  can be interoperable only through exact-version conformance evidence; matching names and protocol
+  version strings are insufficient.
 - Inferred: The smallest compatible shape is a server-only Host Event transport behind the existing
   Game port, with `event_id = signalId`, a Receiver-owned binding map, and explicit queue-acceptance
   claim wording. The first external slice should be one approved Grant and one
   `CargoLostToMonster` event.
-- Unknown: Eddy's owner-selected v2 implementation SHA/package/endpoint, the public consent-decision
-  route, the production binding and session map, the accepted Game `state_version`/`occurred_at`
-  mapping, the fresh Codex page-authentication path, and a production/test effect authority.
+- Inferred: The CP-17 deployment stream is useful but does not automatically solve Re-entry. It can
+  supply a stable HTTPS origin, canonical page, durable Game identity, and ordinary player session;
+  CP-14 must still prove how the exact Connector-started Agent acquires an authorized page context
+  without receiving a cookie, bearer token, Connector credential, or lease secret in its prompt.
+- Unknown: Whether the external owner designates the observed Receiver commit as the Game handoff;
+  the exact installable SDK/Core/Connector artifacts and hashes; the production binding/session map;
+  the accepted Game `state_version`/`occurred_at` mapping; the effective consent/Grant expiry policy;
+  a supported fresh-Codex Browser/session path; a structured adapter result channel; and a
+  production/test Host-effect authority.
+
+## Cross-stack observation and adaptation register
+
+This section records the current observations, their decision consequence, and a feasible adaptation.
+It does not itself accept a contract change. Any row that changes Game identity, outbox semantics,
+page-tool authority, hosted admission, or the human boundary requires the named decision gate before
+code.
+
+| Observation | Failure if ignored | Feasible adaptation | Recommended disposition |
+|---|---|---|---|
+| The Game `ReentrySignalEnvelope` is a rich internal publication envelope; protocol v0.1 accepts a strict signed Event with no arbitrary Game payload. | Direct serialization will fail validation or create an undocumented protocol fork. | Add a server-only mapper that persists the exact canonical Event body and signature inputs. Keep rich causal data in the Game; the Agent rereads it from the canonical page. | Required. Never POST the Game envelope directly. |
+| `opaqueBinding` is a Game/session routing value, while Receiver `binding_id` identifies an approved consent/Grant binding. | Copying the value can route the wrong player, leak internal scope, or reuse an exhausted Grant. | Persist a server-only map keyed by stable Game player/shelter/workflow identity to the Receiver-issued binding and Grant metadata. | Required. No binding value is accepted from browser or Agent input. |
+| The Game has no Re-entry Manifest enrollment path. | A later signed Event would have no Receiver-owned consent, target, or valid Grant. | Use the advanced Host SDK on the Game server to register the Host key, create the exact signed Manifest, open a Receiver consent session, poll status, and persist only the approved public binding map. | Required before live Event ingress. Do not use the generic simple facade. |
+| Cloud `202` means Event accepted and queued; the current Game transport `accepted` settles publication and appends `ContinuationDelivered`. | Queue acceptance may be misreported as Connector claim, Agent activation, Game effect, or Cloud ACK. | Let `202` settle only the Game publication attempt, but persist and present the receipt as `receiver_queue_accepted`. If `ContinuationDelivered` cannot truthfully carry that narrow meaning, record an ADR and add a distinct acceptance state/event before code. | Prefer an explicit Receiver-acceptance receipt; never use `ContinuationDelivered` as downstream proof. |
+| Game cooldown allows a later signal; v0.1 Grant has `max_runs = 1` and is exhausted by the first accepted Event. | A second signal can be published under an exhausted Grant or silently disappear. | Limit the first slice to one approved Grant and one signal. Define re-consent/rearm as a visible later workflow; recurring or multi-run Grants require an outer protocol decision. | One-shot first. No local Grant reuse. |
+| The Game publication lease and Receiver delivery lease are different state machines and clocks. | A stale Game worker or Game-side Cloud claim could duplicate activation or settle the wrong owner. | Keep `ReentryDeliveryPort` responsible only for Game publication. Receiver and Connector exclusively own claim, lease token, attempt count, expiry, and ACK. | Preserve strict separation; never pass a Cloud lease token through Game code or page tools. |
+| The local SDK and npm SDK share `0.3.1` but expose different practical integration surfaces. | An install from npm can compile without the assumed facade or behave differently from the audited checkout. | Integrate against an owner-declared artifact with package name, semantic version, Git SHA, tarball integrity, exports, Node floor, and contract-test command. Publish a new version for changed behavior rather than reusing `0.3.1`. | Use the advanced API and exact provenance. Do not accept version-only handoff. |
+| The local and published Connector share `0.2.20`, but the published provenance predates the active v2 `continuation.instruction` lease. | A nominally correct install can reject a valid active-v2 lease as `connector_response_invalid`. | Require a corrected uniquely versioned Connector release or an explicitly pinned audited Git artifact before Game-to-Connector evidence. | Treat current npm `0.2.20` as incompatible with the observed active-v2 lease until proven otherwise. |
+| The active Receiver uses account-first consent while the SDK exposes a legacy decision helper. | Guessing an alias creates two consent authorities and breaks interoperability. | The user decides through the Receiver account consent page; the Host creates and polls the consent session. Remove the legacy helper from the Game path and contract-test the selected route. | Recommended normal flow; external owner confirmation remains mandatory. |
+| Receiver expiry is the earliest applicable session, offer, or requested Grant expiry; the simple SDK facade requests a thirty-minute Grant under a five-minute offer. | The apparent thirty-minute Grant may effectively expire after about five minutes, causing nondeterministic demo failures. | Choose one explicit effective first-slice expiry, expose it in consent/status, and assert it in cross-repo tests. Do not infer validity from the requested Grant timestamp alone. | Align and test effective expiry before the live trace. |
+| Game documents historically describe a bound existing Thread; the actual Connector adapter starts a fresh `codex exec`. | The implementation can lose managed context, Browser attachment, authentication, and the promised continuation experience. | Choose one architecture explicitly: accept a fresh session for v0.1 and update the Game contract/claims, or require a separate managed-context adapter that can target an existing task and prove safe-boundary activation. | Recommend fresh-session v0.1 for the smallest current-compatible slice; same-task activation is a separate capability task. |
+| A Connector prompt tells Codex to open the canonical page, but the fresh process has no proven Browser or production Game session. | The run can stop unauthenticated, use the wrong player, or tempt an unsafe credential-in-prompt workaround. | First test whether the supported adapter can use an already authenticated local Browser profile without transporting secrets. If not, stop and design a dedicated short-lived, audience-bound Agent admission mechanism with the CP-17 owner; never put session credentials in the Event, lease instruction, URL, or prompt. | Treat this as an early kill test and CP-17/CP-14 join gate. |
+| Default Connector dispatch does not automatically return a structured effect receipt or ACK. | Codex process exit or natural-language success can falsely close the delivery; unacknowledged work may be reclaimed up to the attempt limit. | Either stop first-slice evidence at activation/page action, or add a separately owned structured adapter-result contract plus a Game-issued, Receiver-verifiable effect receipt bound to the Event, action, and resulting revision. | Stop at the strongest honest boundary until effect authority and structured return are proven. |
+| Active Receiver state machines are implemented separately from Core. | Route, expiry, signature, duplicate, and error behavior can drift even when both sides say protocol `0.1`. | Pin exact source and run shared positive/negative conformance vectors against Core and the deployed Receiver. A later upstream task may consolidate implementation, but Game adaptation must not modify external source. | Conformance is a handoff gate; upstream refactor is not a Game task. |
+
+## Recommended first compatibility profile
+
+The recommended v0.1 compatibility profile is deliberately narrow:
+
+1. one Game player, one shelter, one stable workflow, one paired Connector target, one consent, one
+   one-run Grant, and one `CargoLostToMonster` Event;
+2. advanced Host SDK usage on the Game server with an exact pinned artifact and server-only Host key;
+3. `event_id = signalId`, `event_sequence = 1`, fixed approved `event_type`, durable ISO
+   `occurred_at`, owner-approved causal `state_version`, and no extra Event payload;
+4. a durable Game receipt named and evidenced as Receiver queue acceptance, separate from Connector
+   claim, Agent activation, page action, Host effect, and ACK;
+5. Connector delivery to a fresh session only if the supported Browser and authenticated page-context
+   kill test passes without moving credentials into prompts or URLs;
+6. one fresh `inspect_shelter_state` read before any conditional `force_recall_soldier` invocation;
+7. activation-only or page-action evidence unless a structured adapter result and independent
+   Host-effect authority are actually available; and
+8. no compatibility alias, second queue, hidden retry, direct Thread message, local reuse of an
+   exhausted Grant, or fallback to fixture identity.
+
+This profile is recommended because it matches the strict Core wire contract, the actual Connector
+behavior, the Game's verified local seams, and the smallest reversible proof. It intentionally gives
+up recurring wake and same-task continuity in the first slice rather than pretending those capabilities
+already exist.
+
+## Owner decision packet for the next discussion
+
+The following decisions must be explicit. The recommendation is recorded so discussion can focus on
+trade-offs rather than rediscovering the problem.
+
+1. **Queue receipt semantics.** Recommended: a distinct durable `receiver_queue_accepted` meaning that
+   may settle Game publication but cannot satisfy Agent delivery or effect claims. Alternative: retain
+   `ContinuationDelivered` only after an ADR narrows its meaning and every UI/evidence consumer is
+   audited for misleading language.
+2. **Grant lifecycle.** Recommended: one consent, one Grant, one Event for v0.1. Alternative recurring
+   behavior requires a visible rearm flow or a new Core/Receiver protocol decision; cooldown alone is
+   not authorization.
+3. **Activation target.** Recommended: accept a fresh Codex session as the first implementation truth
+   and update any existing-Thread language before evidence. Alternative: block CP-14 activation and
+   commission a managed-context adapter that can prove exact-task selection and safe-turn activation.
+4. **Host SDK surface.** Recommended: advanced SDK only, with Game-owned stable workflow and causal
+   fields. Do not adopt the generic `createReentry()` facade unless a later version makes every
+   hard-coded value explicit and passes the Game contract tests.
+5. **Agent authentication.** Recommended: first attempt supported reuse of an already authenticated
+   local Browser profile, with no credential transport. If unavailable, stop for a jointly reviewed
+   Agent-admission design; do not place Clerk, Game, Connector, or lease secrets in signed Event data,
+   canonical URLs, prompts, page-tool inputs, or committed fixtures.
+6. **ACK boundary.** Recommended: keep Cloud ACK outside the first integration claim unless the
+   Connector obtains a structured result and the Game/Host effect authority verifies the exact Event,
+   action, idempotency identity, and resulting revision. A successful Codex process is never enough.
+7. **Artifact policy.** Recommended: exact Git SHA plus immutable package integrity for development,
+   followed by uniquely versioned SDK/Connector releases before hosted closure. Same semantic version
+   with different behavior is a stop condition.
+8. **Receiver/Core relationship.** Recommended: require conformance tests now; consider upstream code
+   consolidation separately. Game code must adapt only to the accepted public contract, not reach into
+   Receiver internals.
+
+## Parallel CP-17 deployment workstream handoff
+
+The independent deployment workstream is useful and should continue in parallel. This task does not
+take ownership of [`SK-TASK-077`](SK-TASK-077-cp17-host-decision-and-deployment-preflight.md), its
+hosting decisions, or the current collaborator-owned
+[`SK-TASK-078`](SK-TASK-078-cp17-production-identity-and-hosted-admission.md) draft. Until that draft is
+integrated by its owner, it is bounded working context rather than canonical completion evidence.
+
+Work that can proceed before hosted deployment:
+
+- owner decisions on queue semantics, one-shot Grant, fresh-session scope, SDK surface, and ACK claim;
+- exact artifact/source handoff and Core/Receiver conformance checks;
+- server-only Event mapping design and focused contract tests against a disposable Receiver database;
+- local proof that no secret or Cloud lease crosses into browser, Agent prompt, or Game page tools.
+
+CP-17 must eventually supply to CP-14:
+
+- one stable HTTPS origin and exact canonical Game page path;
+- production player/shelter/world identity resolution and ordinary authenticated page behavior;
+- world readiness, durable store, restart, and canonical URL evidence at the level actually claimed;
+- an explicit answer on whether the supported Agent can reuse an authenticated local Browser context;
+  and
+- a reviewed secret-configuration boundary for Host signing material and Receiver endpoint settings,
+  without committing or exposing those values.
+
+CP-14 must supply back to CP-17:
+
+- the accepted Receiver origin and consent opener requirements;
+- the server-only binding/Grant map and Event publisher configuration contract;
+- the exact page route and identity scope required by the continuation;
+- the supported activation and claim limit; and
+- any later Host-effect verification endpoint or receipt contract, without transferring Connector
+  credentials or delivery lease tokens into the Game.
+
+The streams join only when the exact hosted URL, ordinary player identity, Agent session acquisition,
+Receiver binding, and claim wording refer to the same player/shelter/workflow. A hosted Game does not
+prove Re-entry, and a queued Event does not prove hosted page access.
 
 ## Contract mapping to settle before code
 

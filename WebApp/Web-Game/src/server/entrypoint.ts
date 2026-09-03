@@ -17,6 +17,13 @@ import {
 } from "../shared/move-player-command";
 import { loadRuntimeConfig, type RuntimeConfig } from "./config";
 import { createPersistenceStore, PersistenceError, PersistenceStore } from "./persistence/store";
+import { ensureProductionWorld } from "./production-bootstrap";
+import {
+  createClerkGameSessionResolver,
+  type GameSessionContext,
+  type GameSessionResolution,
+  type GameSessionResolver,
+} from "./game-session";
 import {
   LOCAL_FIXTURE_COOKIE_NAME,
   LocalFixtureSessionResolver,
@@ -67,12 +74,16 @@ export interface EntrypointDependencies {
   createWorker?: (options?: {
     store?: WorkerPersistence;
     autonomous?: boolean;
+    worldId?: string;
     signalEligibilityProvider?: MonsterCombatSignalEligibilityProvider;
+    bootstrap?: (store: WorkerPersistence) => void;
   }) => WorldWorker;
   createHttpServer?: (handler: (req: IncomingMessage, res: ServerResponse) => void) => Server;
   logger?: JsonLogger;
   realtime?: RealtimeWireAdapterContract;
   realtimeSessionResolver?: RealtimeSessionResolver;
+  /** Optional injected production resolver for local production-like tests. */
+  gameSessionResolver?: GameSessionResolver;
 }
 
 const localFixtureSignalEligibilityProvider: MonsterCombatSignalEligibilityProvider = ({ shelterId }) => {
@@ -235,6 +246,23 @@ function fixtureResolutionError(resolution: Extract<LocalFixtureResolution, { ki
     status: 401,
     code,
   };
+}
+
+function gameReadinessError(state: RuntimeRegistry["state"]): string {
+  switch (state) {
+    case "starting":
+    case "created":
+      return "GAME_ADMISSION_NOT_READY";
+    case "degraded":
+      return "GAME_ADMISSION_DEGRADED";
+    case "draining":
+      return "GAME_ADMISSION_DRAINING";
+    case "stopped":
+    case "failed":
+      return "GAME_ADMISSION_CLOSED";
+    case "ready":
+      return "";
+  }
 }
 
 type BoundedJsonResult =
@@ -415,16 +443,38 @@ function pageToolFailure(error: unknown): { readonly status: number; readonly co
   }
 }
 
-function pageToolScope(context: LocalFixtureResolution & { kind: "resolved" }): {
+function pageToolScope(context: Pick<GameSessionContext, "worldId" | "playerId" | "shelterId">): {
   readonly world_id: string;
   readonly player_id: string;
   readonly shelter_id: string;
 } {
   return {
-    world_id: context.context.worldId,
-    player_id: context.context.playerId,
-    shelter_id: context.context.shelterId,
+    world_id: context.worldId,
+    player_id: context.playerId,
+    shelter_id: context.shelterId,
   };
+}
+
+function sessionFailureResponse(reason: Exclude<GameSessionResolution, { kind: "resolved" }>['reason']): { status: number; code: string } {
+  switch (reason) {
+    case "MISSING_SESSION":
+      return { status: 401, code: "GAME_SESSION_REQUIRED" };
+    case "MALFORMED_SESSION":
+      return { status: 401, code: "GAME_SESSION_MALFORMED" };
+    case "INVALID_SESSION":
+      return { status: 401, code: "GAME_SESSION_INVALID" };
+    case "IDENTITY_NOT_ALLOWED":
+      return { status: 403, code: "GAME_IDENTITY_NOT_ALLOWED" };
+    case "STORE_NOT_READY":
+      return { status: 503, code: "GAME_ADMISSION_NOT_READY" };
+    case "IDENTITY_SCOPE_INVALID":
+      return { status: 503, code: "GAME_IDENTITY_SCOPE_INVALID" };
+  }
+}
+
+interface ActiveGameSession {
+  readonly context: GameSessionContext;
+  readonly issueFixtureCookie?: string;
 }
 
 export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoint {
@@ -437,35 +487,107 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
     ?? ((options?: {
       store?: WorkerPersistence;
       autonomous?: boolean;
+      worldId?: string;
       signalEligibilityProvider?: MonsterCombatSignalEligibilityProvider;
+      bootstrap?: (store: WorkerPersistence) => void;
     }) => options?.store
       ? new WorldWorkerModule({
           store: options.store,
           autonomous: options.autonomous,
+          worldId: options.worldId,
           signalEligibilityProvider: options.signalEligibilityProvider,
+          bootstrap: options.bootstrap,
         })
       : new WorldWorkerModule({
           dbPath: config.gameDbPath,
           autonomous: options?.autonomous,
+          worldId: options?.worldId,
           signalEligibilityProvider: options?.signalEligibilityProvider,
+          bootstrap: options?.bootstrap,
         }));
+  const productionBootstrap = !fixtureEnabled && config.authProvider === "clerk"
+    ? (store: WorkerPersistence): void => {
+        if (!(store instanceof PersistenceStore)) {
+          throw new PersistenceError("RECOVERY_REQUIRED");
+        }
+        ensureProductionWorld(store, config.gameWorldId);
+      }
+    : undefined;
   const worker = createWorker({
     ...(fixtureStore ? { store: fixtureStore } : {}),
     autonomous: config.autonomousWorldMode,
+    ...(!fixtureEnabled && config.authProvider === "clerk" ? { worldId: config.gameWorldId } : {}),
     ...(fixtureEnabled ? { signalEligibilityProvider: localFixtureSignalEligibilityProvider } : {}),
+    ...(productionBootstrap ? { bootstrap: productionBootstrap } : {}),
   });
   const registry = new RuntimeRegistry(undefined, worker.instanceId);
+  const runtimeStore = fixtureStore ?? (worker.persistence instanceof PersistenceStore ? worker.persistence : null);
+  let gameSessionResolver: GameSessionResolver | null = dependencies.gameSessionResolver ?? null;
+  if (!gameSessionResolver && !fixtureEnabled && config.authProvider === "clerk" && runtimeStore) {
+    gameSessionResolver = createClerkGameSessionResolver({
+      store: runtimeStore,
+      worldId: config.gameWorldId,
+      subjects: config.clerkPlayerSubjects,
+      secretKey: config.clerkSecretKey,
+      jwtKey: config.clerkJwtKey,
+      authorizedParties: config.clerkAuthorizedParties,
+    });
+  }
   const createRealtimeAdapter = (resolver: RealtimeSessionResolver): RealtimeWireAdapter => new RealtimeWireAdapter({
     hub: new RealtimeSnapshotHub({ gateway: worker.gateway as NonNullable<WorldWorker["gateway"]> }),
     sessionResolver: resolver,
     admission: () => realtimeAdmission(registry),
     movement: worker.gateway,
-    ...(fixtureStore ? { contractVersion: fixtureStore.contractVersion } : {}),
+    ...((fixtureStore ?? runtimeStore) ? { contractVersion: (fixtureStore ?? runtimeStore)?.contractVersion } : {}),
   });
   let fixtureResolver: LocalFixtureSessionResolver | null = null;
+  const gameAdmissionEnabled = fixtureEnabled || gameSessionResolver !== null;
+  const gameStore = fixtureStore ?? runtimeStore;
+  const resolveActiveSession = async (
+    req: IncomingMessage,
+    bootstrap: boolean,
+  ): Promise<
+    | { readonly kind: "resolved"; readonly session: ActiveGameSession }
+    | { readonly kind: "rejected"; readonly status: number; readonly code: string }
+  > => {
+    if (fixtureEnabled) {
+      if (!fixtureResolver) {
+        return { kind: "rejected", status: 503, code: "LOCAL_FIXTURE_UNAVAILABLE" };
+      }
+      const resolution = bootstrap
+        ? fixtureResolver.resolveBootstrap(req)
+        : fixtureResolver.resolveExistingSession(req);
+      if (resolution.kind === "rejected") {
+        const rejected = fixtureResolutionError(resolution);
+        return { kind: "rejected", status: rejected.status, code: rejected.code };
+      }
+      return {
+        kind: "resolved",
+        session: {
+          context: {
+            worldId: resolution.context.worldId,
+            playerId: resolution.context.playerId,
+            shelterId: resolution.context.shelterId,
+            binding: resolution.context.binding,
+            providerSubject: `local-fixture:${resolution.handle}`,
+          },
+          ...(resolution.issueCookie ? { issueFixtureCookie: resolution.handle } : {}),
+        },
+      };
+    }
+    if (!gameSessionResolver) {
+      return { kind: "rejected", status: 503, code: "GAME_ADMISSION_UNAVAILABLE" };
+    }
+    const resolution = await gameSessionResolver.resolveGameSession(req);
+    if (resolution.kind === "rejected") {
+      const rejected = sessionFailureResponse(resolution.reason);
+      return { kind: "rejected", status: rejected.status, code: rejected.code };
+    }
+    return { kind: "resolved", session: { context: resolution.context } };
+  };
   let realtimeAdapter = dependencies.realtime
-    ?? (dependencies.realtimeSessionResolver && worker.gateway
-      ? createRealtimeAdapter(dependencies.realtimeSessionResolver)
+    ?? ((dependencies.realtimeSessionResolver ?? gameSessionResolver) && worker.gateway
+      ? createRealtimeAdapter((dependencies.realtimeSessionResolver ?? gameSessionResolver) as RealtimeSessionResolver)
       : null);
   let realtimeProgressWired = false;
   const observedRealtimePublications = new WeakSet<Promise<void>>();
@@ -555,34 +677,72 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
     writeJson(res, 200, payload, headers);
   };
 
+  const handleGameBootstrap = async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
+    if (req.method !== "GET") {
+      writeJson(res, 405, { error_code: "GAME_BOOTSTRAP_METHOD_NOT_ALLOWED" }, { Allow: "GET" });
+      return;
+    }
+    if (!gameAdmissionEnabled) {
+      writeJson(res, 503, { error_code: "GAME_ADMISSION_UNAVAILABLE" });
+      return;
+    }
+    const readinessError = gameReadinessError(registry.state);
+    if (readinessError !== "") {
+      writeJson(res, 503, { error_code: readinessError });
+      return;
+    }
+    const active = await resolveActiveSession(req, true);
+    if (active.kind === "rejected") {
+      writeJson(res, active.status, { error_code: active.code });
+      return;
+    }
+    const store = gameStore;
+    if (!store?.isOpen) {
+      writeJson(res, 503, { error_code: "GAME_ADMISSION_NOT_READY" });
+      return;
+    }
+    const context = active.session.context;
+    const payload = {
+      capability: "supported" as const,
+      contractVersion: store.contractVersion,
+      worldId: context.worldId,
+      playerId: context.playerId,
+      shelterId: context.shelterId,
+    };
+    const headers: Record<string, string> = {};
+    if (active.session.issueFixtureCookie) {
+      headers["Set-Cookie"] = `${LOCAL_FIXTURE_COOKIE_NAME}=${active.session.issueFixtureCookie}; Path=/; HttpOnly; SameSite=Lax`;
+    }
+    writeJson(res, 200, payload, headers);
+  };
+
   const handleMovePlayerCommand = async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
     if (req.method !== "POST") {
       req.resume();
       writeJson(res, 405, { error_code: "MOVE_PLAYER_METHOD_NOT_ALLOWED" }, { Allow: "POST" });
       return;
     }
-    if (!fixtureEnabled) {
+    if (!gameAdmissionEnabled) {
       req.resume();
       writeJson(res, 503, { error_code: "LOCAL_FIXTURE_UNAVAILABLE" });
       return;
     }
-    const readinessError = fixtureReadinessError(registry.state);
+    const readinessError = fixtureEnabled ? fixtureReadinessError(registry.state) : gameReadinessError(registry.state);
     if (readinessError !== "") {
       req.resume();
       writeJson(res, 503, { error_code: readinessError });
       return;
     }
     const gateway = worker.gateway;
-    if (!fixtureResolver || !fixtureStore?.isOpen || !gateway) {
+    if (!gameStore?.isOpen || !gateway) {
       req.resume();
-      writeJson(res, 503, { error_code: "LOCAL_FIXTURE_UNAVAILABLE" });
+      writeJson(res, 503, { error_code: fixtureEnabled ? "LOCAL_FIXTURE_UNAVAILABLE" : "GAME_ADMISSION_NOT_READY" });
       return;
     }
-    const resolution = fixtureResolver.resolveExistingSession(req);
-    if (resolution.kind === "rejected") {
+    const active = await resolveActiveSession(req, false);
+    if (active.kind === "rejected") {
       req.resume();
-      const rejected = fixtureResolutionError(resolution);
-      writeJson(res, rejected.status, { error_code: rejected.code });
+      writeJson(res, active.status, { error_code: active.code });
       return;
     }
     if (!hasJsonMediaType(req)) {
@@ -608,18 +768,18 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
       writeJson(res, 400, { error_code: "MOVE_PLAYER_COMMAND_INVALID" });
       return;
     }
-    if (command.contract_version !== fixtureStore.contractVersion) {
+    if (command.contract_version !== gameStore.contractVersion) {
       writeJson(res, 400, { error_code: "MOVE_PLAYER_CONTRACT_UNSUPPORTED" });
       return;
     }
 
-    const postParseReadinessError = fixtureReadinessError(registry.state);
+    const postParseReadinessError = fixtureEnabled ? fixtureReadinessError(registry.state) : gameReadinessError(registry.state);
     if (postParseReadinessError !== "") {
       writeJson(res, 503, { error_code: postParseReadinessError });
       return;
     }
 
-    const admission = commandAdmission.begin(`${resolution.context.worldId}\u0000${resolution.context.playerId}`);
+    const admission = commandAdmission.begin(`${active.session.context.worldId}\u0000${active.session.context.playerId}`);
     if (!admission) {
       writeJson(res, 429, { error_code: "MOVE_PLAYER_COMMAND_IN_FLIGHT" });
       return;
@@ -627,9 +787,9 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
 
     try {
       const result = await gateway.movePlayer({
-        worldId: resolution.context.worldId,
-        playerId: resolution.context.playerId,
-        binding: resolution.context.binding,
+        worldId: active.session.context.worldId,
+        playerId: active.session.context.playerId,
+        binding: active.session.context.binding,
         commandId: command.command_id,
         direction: command.typed_arguments.direction,
         expectedRevision: command.expected_entity_revisions.player,
@@ -647,14 +807,14 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
     } catch (error) {
       const failure = movementCommandFailure(error);
       if (failure.definitive) {
-        const currentPlayer = fixtureStore.getPlayer(resolution.context.worldId, resolution.context.playerId);
+        const currentPlayer = gameStore.getPlayer(active.session.context.worldId, active.session.context.playerId);
         if (!currentPlayer) {
           writeJson(res, 500, { error_code: "RECOVERY_REQUIRED" });
         } else {
           writeJson(res, failure.status, {
             command_id: command.command_id,
             command_type: "move_player",
-            contract_version: fixtureStore.contractVersion,
+            contract_version: gameStore.contractVersion,
             effect: "rejected",
             error_code: failure.code,
             current_entity_revisions: { player: currentPlayer.revision },
@@ -674,28 +834,27 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
       writeJson(res, 405, { error_code: "ASSIGN_SOLDIER_MISSION_METHOD_NOT_ALLOWED" }, { Allow: "POST" });
       return;
     }
-    if (!fixtureEnabled) {
+    if (!gameAdmissionEnabled) {
       req.resume();
       writeJson(res, 503, { error_code: "LOCAL_FIXTURE_UNAVAILABLE" });
       return;
     }
-    const readinessError = fixtureReadinessError(registry.state);
+    const readinessError = fixtureEnabled ? fixtureReadinessError(registry.state) : gameReadinessError(registry.state);
     if (readinessError !== "") {
       req.resume();
       writeJson(res, 503, { error_code: readinessError });
       return;
     }
     const gateway = worker.gateway;
-    if (!fixtureResolver || !fixtureStore?.isOpen || !gateway) {
+    if (!gameStore?.isOpen || !gateway) {
       req.resume();
-      writeJson(res, 503, { error_code: "LOCAL_FIXTURE_UNAVAILABLE" });
+      writeJson(res, 503, { error_code: fixtureEnabled ? "LOCAL_FIXTURE_UNAVAILABLE" : "GAME_ADMISSION_NOT_READY" });
       return;
     }
-    const resolution = fixtureResolver.resolveExistingSession(req);
-    if (resolution.kind === "rejected") {
+    const active = await resolveActiveSession(req, false);
+    if (active.kind === "rejected") {
       req.resume();
-      const rejected = fixtureResolutionError(resolution);
-      writeJson(res, rejected.status, { error_code: rejected.code });
+      writeJson(res, active.status, { error_code: active.code });
       return;
     }
     if (hasQueryComponent(req.url)) {
@@ -726,18 +885,18 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
       writeJson(res, 400, { error_code: "ASSIGN_SOLDIER_MISSION_COMMAND_INVALID" });
       return;
     }
-    if (command.contract_version !== fixtureStore.contractVersion) {
+    if (command.contract_version !== gameStore.contractVersion) {
       writeJson(res, 400, { error_code: "ASSIGN_SOLDIER_MISSION_CONTRACT_UNSUPPORTED" });
       return;
     }
 
-    const postParseReadinessError = fixtureReadinessError(registry.state);
+    const postParseReadinessError = fixtureEnabled ? fixtureReadinessError(registry.state) : gameReadinessError(registry.state);
     if (postParseReadinessError !== "") {
       writeJson(res, 503, { error_code: postParseReadinessError });
       return;
     }
 
-    const admission = commandAdmission.begin(`${resolution.context.worldId}\u0000${resolution.context.playerId}`);
+    const admission = commandAdmission.begin(`${active.session.context.worldId}\u0000${active.session.context.playerId}`);
     if (!admission) {
       writeJson(res, 429, { error_code: "ASSIGN_SOLDIER_MISSION_COMMAND_IN_FLIGHT" });
       return;
@@ -747,7 +906,7 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
       writeJson(res, 403, {
         command_id: command.command_id,
         command_type: "assign_soldier_mission",
-        contract_version: fixtureStore.contractVersion,
+        contract_version: gameStore.contractVersion,
         effect: "rejected",
         error_code: "NOT_OWNER",
         current_entity_revisions: {},
@@ -756,9 +915,9 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
 
     try {
       const result = await gateway.assignSoldierMission({
-        worldId: resolution.context.worldId,
-        playerId: resolution.context.playerId,
-        binding: resolution.context.binding,
+        worldId: active.session.context.worldId,
+        playerId: active.session.context.playerId,
+        binding: active.session.context.binding,
         commandId: command.command_id,
         soldierId: command.typed_arguments.soldier_id,
         role: command.typed_arguments.role,
@@ -794,9 +953,9 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
       } else {
         try {
           const snapshot = await gateway.fullSnapshot({
-            worldId: resolution.context.worldId,
-            playerId: resolution.context.playerId,
-            binding: resolution.context.binding,
+            worldId: active.session.context.worldId,
+            playerId: active.session.context.playerId,
+            binding: active.session.context.binding,
           });
           const soldier = snapshot.soldiers.find(
             (candidate) => candidate.soldierId === command.typed_arguments.soldier_id,
@@ -807,7 +966,7 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
             writeJson(res, 409, {
               command_id: command.command_id,
               command_type: "assign_soldier_mission",
-              contract_version: fixtureStore.contractVersion,
+              contract_version: gameStore.contractVersion,
               effect: "rejected",
               error_code: failure.kind === "ownership" ? "TARGET_UNAVAILABLE" : failure.code,
               current_entity_revisions: { soldier: soldier.revision },
@@ -828,28 +987,27 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
       writeJson(res, 405, { error_code: "PAGE_TOOL_METHOD_NOT_ALLOWED" }, { Allow: "POST" });
       return;
     }
-    if (!fixtureEnabled) {
+    if (!gameAdmissionEnabled) {
       req.resume();
       writeJson(res, 503, { error_code: "WEBMCP_UNAVAILABLE" });
       return;
     }
-    const readinessError = fixtureReadinessError(registry.state);
+    const readinessError = fixtureEnabled ? fixtureReadinessError(registry.state) : gameReadinessError(registry.state);
     if (readinessError !== "") {
       req.resume();
       writeJson(res, 503, { error_code: "WEBMCP_UNAVAILABLE" });
       return;
     }
     const gateway = worker.gateway;
-    if (!fixtureResolver || !fixtureStore?.isOpen || !gateway) {
+    if (!gameStore?.isOpen || !gateway) {
       req.resume();
       writeJson(res, 503, { error_code: "WEBMCP_UNAVAILABLE" });
       return;
     }
-    const resolution = fixtureResolver.resolveExistingSession(req);
-    if (resolution.kind === "rejected") {
+    const active = await resolveActiveSession(req, false);
+    if (active.kind === "rejected") {
       req.resume();
-      const rejected = fixtureResolutionError(resolution);
-      writeJson(res, rejected.status, { error_code: rejected.code });
+      writeJson(res, active.status, { error_code: active.code });
       return;
     }
     if (hasQueryComponent(req.url)) {
@@ -883,9 +1041,9 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
 
     const requestId = `page-tool-request:${randomUUID()}`;
     const base = {
-      worldId: resolution.context.worldId,
-      playerId: resolution.context.playerId,
-      binding: resolution.context.binding,
+      worldId: active.session.context.worldId,
+      playerId: active.session.context.playerId,
+      binding: active.session.context.binding,
     };
     try {
       switch (command.tool) {
@@ -928,7 +1086,7 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
             status: "committed",
             tool: "force_recall_soldier",
             request_id: requestId,
-            scope: pageToolScope(resolution),
+            scope: pageToolScope(active.session.context),
             command_id: input.command_id,
             effect: result.effect,
             duplicate: result.duplicate ?? false,
@@ -955,10 +1113,10 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
         return;
       }
       const input = command.input as PageRecallInput;
-      const soldier = fixtureStore.listSoldiers(resolution.context.worldId)
-        .find((candidate) => candidate.soldierId === input.soldier_id && candidate.shelterId === resolution.context.shelterId);
-      const mission = fixtureStore.getMission(resolution.context.worldId, input.mission_id);
-      const attempt = fixtureStore.getMissionAttempt(resolution.context.worldId, input.mission_attempt_id);
+      const soldier = gameStore.listSoldiers(active.session.context.worldId)
+        .find((candidate) => candidate.soldierId === input.soldier_id && candidate.shelterId === active.session.context.shelterId);
+      const mission = gameStore.getMission(active.session.context.worldId, input.mission_id);
+      const attempt = gameStore.getMissionAttempt(active.session.context.worldId, input.mission_attempt_id);
       const revisions = soldier && mission?.soldierId === soldier.soldierId && attempt?.missionId === mission.missionId
         ? {
             soldier: soldier.revision,
@@ -967,11 +1125,11 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
           }
         : {};
       writeJson(res, failure.status, {
-        contract_version: fixtureStore.contractVersion,
+        contract_version: gameStore.contractVersion,
         status: "rejected",
         tool: "force_recall_soldier",
         request_id: requestId,
-        scope: pageToolScope(resolution),
+        scope: pageToolScope(active.session.context),
         command_id: input.command_id,
         effect: "rejected",
         error_code: failure.code,
@@ -986,6 +1144,16 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
     }
     if (pathOf(req.url) === "/api/local-fixture/bootstrap") {
       handleFixtureBootstrap(req, res);
+      return;
+    }
+    if (pathOf(req.url) === "/api/game/bootstrap") {
+      void handleGameBootstrap(req, res).catch(() => {
+        if (!res.headersSent && !res.writableEnded && !res.destroyed) {
+          writeJson(res, 500, { error_code: "RECOVERY_REQUIRED" });
+        } else if (!res.writableEnded) {
+          res.destroy();
+        }
+      });
       return;
     }
     if (pathOf(req.url) === MOVE_PLAYER_COMMAND_PATH) {

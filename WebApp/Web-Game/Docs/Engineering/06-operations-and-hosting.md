@@ -1,6 +1,6 @@
 # Operations and Hosting
 
-**Status:** TARGET operations plan; CP-17 host decision/preflight is tracked under [`SK-TASK-077`](../Tasks/SK-TASK-077-cp17-host-decision-and-deployment-preflight.md)
+**Status:** TARGET operations plan; CP-17 host decision/preflight is tracked under [`SK-TASK-077`](../Tasks/SK-TASK-077-cp17-host-decision-and-deployment-preflight.md), the owner-accepted first topology is [`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md), and production identity/admission implementation is under [`SK-TASK-078`](../Tasks/SK-TASK-078-cp17-production-identity-and-hosted-admission.md)
 
 ## Local CP-12 fixture run
 
@@ -43,6 +43,14 @@ logs, metrics, and automatic process restart. The user-facing requirement is con
 progress and recoverable state, supported by infrastructure rather than an assumption that a process
 can never fail.
 
+For the first hosted MVP, use one Railway application service, one replica, and one attached persistent
+Volume containing the SQLite file. Set `GAME_DB_PATH` to that absolute mounted path, bind `HOST` to
+`0.0.0.0`, and use Railway's injected `PORT`. This is a durable single-writer topology; it does not
+support multiple replicas or zero-downtime Volume redeploys. Railway documents that files outside a
+Volume are ephemeral, Volume backups include SQLite, and WebSockets use HTTP/1.1 upgrade. The actual
+project, plan, Volume, restart policy, URL, backup, and Clerk cookie issuance still require hosted
+readback under CP-17.
+
 The local CP-04 process contract is intentionally smaller: one explicit Node.js entrypoint hosts the
 page and world-worker modules and exposes process health. `live` and `ready` are separate health
 signals; a `degraded` worker is observable and rejects state-changing work, while the host owns the
@@ -64,11 +72,14 @@ exist, a `ready` worker must have loaded a compatible snapshot and clock; a proc
 cannot serve authoritative world commands is `degraded` or `not ready`. If hosted page and worker
 services are split, the page health surface must not invent readiness from its own process alone.
 
-The current production-like gap is explicit: an empty store has no default-world bootstrap, and the
-entrypoint's command, page-tool, and realtime scope are currently fixture-gated or resolver-injected.
-The deployment preflight must close those boundaries through an idempotent one-time bootstrap and a
-server-derived production identity before a hosted gameplay claim. It must not enable fixture mode,
-reseed on every restart, or use a browser heartbeat to keep the world alive.
+The local production-like gap is now closed for the first boundary: an empty store has an idempotent
+named-world bootstrap, the entrypoint has a server-derived Clerk subject resolver for command/page-tool/
+realtime scope, and the default host is public-bind safe in production. The owner-authorized Railway
+resource preflight has provisioned and read back the selected project, one service, one `/data` Volume,
+one HTTPS domain, and non-secret production settings; hosted proof must still verify the mounted Volume
+at runtime, process supervisor, Clerk session issuance, deployment, restart catch-up, and canonical URL
+behavior. It must not enable fixture mode, reseed on every restart, or use a browser heartbeat to keep
+the world alive.
 
 ## Security and abuse boundary
 

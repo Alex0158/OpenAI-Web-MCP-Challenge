@@ -150,6 +150,7 @@ Record the actual versions when producing evidence.
 | CP-13 recall transition suite | `npm run test:cp13-recall` | Server-authoritative recall transition, signal provenance, stale/combat/duplicate outcomes, route-preserving return, and full-snapshot reconciliation seam |
 | CP-15 owned local matrix | `npm run test:cp15` | Fixed-order CP-04 through CP-12 transitive checks, trace-support contract, documentation validators, sensitive-evidence scan, and explicit gated/not-run CP-13/CP-14/CP-16 rows |
 | CP-16 bounded local causal slice | `npm run test:cp16-local` | Server-owned terminal cargo-loss eligibility, atomic signal/outbox handoff, rollback, duplicate safety, no-grant silence, and scoped two-player local readback; no positive WebMCP, external delivery, or independent-browser claim |
+| CP-17 production-like admission | `npm run test:cp17-admission` | Named-world bootstrap, Clerk two-subject scope, fixture exclusion, HTTP bootstrap, WebSocket first frame, and one scoped command under Node 24; no hosted claim |
 | Production build | `npm run build` | Build output for the current source; not runtime proof |
 | Process runtime | `PORT=<free-port> npm start`, then read `GET /api/health` and send `SIGTERM` | CP-04 process evidence when the exact environment and readback are recorded |
 

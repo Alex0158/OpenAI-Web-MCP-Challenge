@@ -36,11 +36,11 @@ import {
 } from "./keyboard-movement";
 import { createServerMovementIntentController, type ServerMovementIntentController } from "./server-movement-intent";
 import {
-  localRealtimeUrl,
-  parseLocalFixtureBootstrap,
+  gameRealtimeUrl,
+  parseGameBootstrap,
   snapshotMatchesBootstrapScope,
-  type LocalFixtureBootstrapPayload,
-} from "./local-fixture-bootstrap";
+  type GameBootstrapPayload,
+} from "./game-bootstrap";
 import {
   explicitResyncPresentationState,
   RealtimeProjectionClient,
@@ -56,7 +56,7 @@ function parseFrame(value: unknown): value is { kind: "client_snapshot"; connect
   return (value as { kind?: unknown }).kind === "client_snapshot";
 }
 
-function movementScope(payload: LocalFixtureBootstrapPayload): string {
+function movementScope(payload: GameBootstrapPayload): string {
   return [payload.contractVersion, payload.worldId, payload.playerId, payload.shelterId].join("\u0000");
 }
 
@@ -95,7 +95,7 @@ export function LiveGameProjection() {
   const snapshotRef = useRef<ClientSnapshot | null>(null);
   const projectionRef = useRef<RealtimeProjectionClient | null>(null);
   const socketRef = useRef<WebSocket | null>(null);
-  const bootstrapRef = useRef<LocalFixtureBootstrapPayload | null>(null);
+  const bootstrapRef = useRef<GameBootstrapPayload | null>(null);
   const connectionStateRef = useRef<RealtimeConnectionState>("CONNECTING");
   const movementGateRef = useRef<ReturnType<typeof createMovementReconciliationGate> | null>(null);
   const heldMovementRef = useRef<HeldMovementController | null>(null);
@@ -321,14 +321,14 @@ export function LiveGameProjection() {
         setDispatchStatus("Dispatch unavailable while the authoritative connection is starting.");
       }
       try {
-        const response = await fetch("/api/local-fixture/bootstrap", {
+        const response = await fetch("/api/game/bootstrap", {
           credentials: "same-origin",
           cache: "no-store",
         });
         if (!response.ok) {
           throw new Error("LOCAL_FIXTURE_BOOTSTRAP_UNAVAILABLE");
         }
-        const payload = parseLocalFixtureBootstrap(await response.json()) as LocalFixtureBootstrapPayload;
+        const payload = parseGameBootstrap(await response.json()) as GameBootstrapPayload;
         if (disposed || !connectionGate.isCurrent(connectionAttempt)) {
           return;
         }
@@ -358,7 +358,7 @@ export function LiveGameProjection() {
         projectionRef.current = projection;
         setCapability("supported");
 
-        const socket = new WebSocket(localRealtimeUrl(window.location));
+        const socket = new WebSocket(gameRealtimeUrl(window.location));
         socketRef.current = socket;
         socket.onopen = () => {
           if (disposed || !connectionGate.isCurrent(connectionAttempt) || socketRef.current !== socket) {

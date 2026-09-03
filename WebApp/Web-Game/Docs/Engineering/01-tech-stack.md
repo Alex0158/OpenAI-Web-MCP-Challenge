@@ -1,6 +1,6 @@
 # Target Tech Stack
 
-**Status:** TARGET; CP-02 local runtime evidence recorded, CP-04 process foundation, CP-08 local realtime wire boundary, the bounded CP-12 local fixture/session/browser, automatic publication, snapshot-gated hold, and server-owned continuous-intent paths, and the CP-06 explicitly enabled local autonomous driver verified at named local scopes; production identity, default hosted scheduler, WebMCP, and hosted gameplay remain open
+**Status:** TARGET; CP-02 local runtime evidence recorded, CP-04 process foundation, CP-08 local realtime wire boundary, the bounded CP-12 local fixture/session/browser, automatic publication, snapshot-gated hold, and server-owned continuous-intent paths, and the CP-06 explicitly enabled local autonomous driver verified at named local scopes; the CP-17 local production-like identity/bootstrap seam is implemented, while provider configuration, hosted scheduler, WebMCP, and hosted gameplay remain open
 
 ## CP-02 local result
 
@@ -30,7 +30,7 @@ CP-17 measures an operational need and preserves the same world-authority and re
 | Game server | Node.js 24 and TypeScript authoritative simulation service inside the local entrypoint | Matches the repository's reproducible baseline and supports a long-running worker without a local supervisor |
 | Command API | Typed HTTP commands plus a realtime update channel | HTTP makes state-changing commands explicit; realtime updates keep the view current |
 | Realtime channel | Direct `ws` `WebSocketServer({ noServer: true })` adapter on the CP-04 custom HTTP upgrade owner | Efficient `client_snapshot` projections plus one-shot server-owned movement-intent commands without a second listener; the adapter is enabled only with a server-owned session resolver and ready gateway |
-| Durable store | PostgreSQL for a hosted world; SQLite for a disposable local concept harness | Production durability and a low-friction local smoke path |
+| Durable store | SQLite on one Railway persistent Volume for the first hosted MVP; PostgreSQL remains a future adapter | Reuses the verified store and keeps one writer; Railway Volume supplies persistence across replacement |
 | Event delivery | Transactional outbox plus an Agent Signal dispatcher feeding Re-entry Core's Receiver boundary | Preserves every committed Domain Event while coalescing eligible notifications and applying Thread backpressure |
 | WebMCP | Native page-bound `document.modelContext` tools where supported | Lets an Agent act through the canonical game page and current permission surface |
 | Hosting | Managed always-on application worker, durable database, health checks, auto-restart | Preserves world continuity across process faults |
@@ -68,10 +68,12 @@ The accepted visual split and parallel asset boundary are recorded in
 and [`../Design/06-visual-ui-and-asset-spec.md`](../Design/06-visual-ui-and-asset-spec.md). Asset
 replacement must not alter the `client_snapshot`, command, or event contracts.
 
-The first implementation increment is deliberately narrower than this full target. Its proposed
+The first implementation increment is deliberately narrower than this full target. Its accepted
 authority, storage, transport, and WebMCP proof boundary is recorded in
 [`07-hackathon-mvp-build-gate.md`](07-hackathon-mvp-build-gate.md); that document is a build proposal,
-not an accepted production topology.
+and the CP-17 hosted storage/identity choice is recorded in
+[`../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md).
+Neither document is hosted runtime evidence.
 
 ## Outer integration
 

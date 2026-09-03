@@ -44,6 +44,8 @@ export interface WorldWorkerOptions {
   schedulerCadenceMs?: number;
   /** Optional server-owned grant policy for terminal eligible combat events. */
   signalEligibilityProvider?: MonsterCombatSignalEligibilityProvider;
+  /** One-time server-owned startup provisioning; never called by the browser. */
+  bootstrap?: (store: WorkerPersistence) => void;
 }
 
 export type WorkerFaultListener = (errorCode: "WORKER_FAULT") => void;
@@ -285,6 +287,7 @@ export class WorldWorkerModule implements WorldWorker {
         }
         try {
           this.store.open();
+          this.options.bootstrap?.(this.store);
           this.initializeGameplayClock();
           this.currentClock?.start();
           this.recoverAutonomousWorld();

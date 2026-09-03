@@ -470,21 +470,26 @@ The bounded [`SK-TASK-075`](../Tasks/SK-TASK-075-cp12-shelter-economy-summary-ca
 
 ## Phase 6 — hosted continuity and submission proof
 
-### CP-17 — hosted always-on deployment (`PLANNED`)
+### CP-17 — hosted always-on deployment (`IN PROGRESS`)
 
-- **Scope:** Select a host that keeps the Node worker alive, configure durable hosted storage, health
-  checks, restart policy, safe environment configuration, and a stable canonical page URL.
+- **Scope:** Use the accepted Railway single-service/Volume-backed SQLite topology, configure durable
+  hosted storage, health checks, restart policy, safe environment configuration, Clerk admission, and
+  a stable canonical page URL.
 - **Depends on:** CP-16 and the separate host decision.
 - **Acceptance:** The worker survives ordinary process restart, hosted state persists, the page and
   worker use the same world, and no serverless-only timer owns world time.
 - **Verify:** Actual endpoint, process health, deployment logs, database persistence, restart catch-up,
   and command ownership checks.
-- **Preparation:** [`SK-TASK-017`](../Tasks/SK-TASK-017-cp17-hosted-continuity-preimplementation-pack.md)
+- **Local implementation:** [`SK-TASK-078`](../Tasks/SK-TASK-078-cp17-production-identity-and-hosted-admission.md)
+  implements the named-world bootstrap, server-derived two-subject identity, generic bootstrap, HTTP
+  command, page-tool, and WebSocket scope seam with focused Node 24 coverage. [`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md)
+  fixes the MVP topology. **Preparation:** [`SK-TASK-017`](../Tasks/SK-TASK-017-cp17-hosted-continuity-preimplementation-pack.md)
   and [`CP-17 scenario fixtures`](../Scenarios/17-cp17-hosted-continuity-fixtures.md) define the
   host-neutral acceptance matrix, deployment rehearsal, failure branches, evidence packet, and claim
-  limits. [`SK-TASK-077`](../Tasks/SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) now
-  owns the earlier host decision and production-like preflight; it identifies the missing bootstrap,
-  production identity, and provider facts without selecting a host by assumption. The
+  limits. [`SK-TASK-077`](../Tasks/SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) owns
+  the host fact preflight and deployment evidence; the Railway project, Volume, and generated service
+  URL are now provisioned and read back under [`SK-EVID-063`](../Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md);
+  the Clerk instance, source deployment, restart, backup, runtime, and hosted continuity remain open. The
   [`CP-13–CP-18 seam map`](10-cp13-cp18-implementation-seam-map.md) routes the later implementation
   to the existing entrypoint, health, runtime, and persistence boundaries.
 

@@ -88,11 +88,19 @@ is unmade, a duplicate, or an external action added merely to make the queue loo
 
 ## 6. Current task routing
 
+[`SK-TASK-078`](SK-TASK-078-cp17-production-identity-and-hosted-admission.md) is `in_progress` for the
+CP-17 production identity and hosted admission implementation. Its owner-approved MVP direction is
+one Railway application service, one persistent Volume-backed SQLite writer, and Clerk Production
+invite-only admission for the two pre-created demo players. The local production-like resolver,
+idempotent bootstrap, HTTP/WebSocket scope, and focused Node 24 matrix are implemented and verified;
+no provider mutation or hosted claim has been made. Hosted proof still consumes the acceptance matrix
+and provider facts recorded by [`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md).
+
 [`SK-TASK-077`](SK-TASK-077-cp17-host-decision-and-deployment-preflight.md) is `in_progress` for the
-CP-17 host decision and production-like deployment preflight. It reconciles the current production
-start/configuration boundary, the missing production world bootstrap and identity resolver, and the
-host/store/WebSocket/health/rollback decision fields. It does not select a provider by assumption,
-change an external environment, or claim hosted gameplay; its audit is [`Validation/90`](../Validation/90-cp17-host-decision-and-deployment-preflight-cross-functional-audit.md).
+CP-17 host decision and production-like deployment preflight. It records the host-neutral process,
+store, WebSocket, health, and rollback fields; the owner-accepted Railway/SQLite Volume topology is
+now durable in [`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md).
+It does not change an external environment or claim hosted gameplay; its audit is [`Validation/90`](../Validation/90-cp17-host-decision-and-deployment-preflight-cross-functional-audit.md).
 
 [`SK-TASK-076`](SK-TASK-076-cp14-cloud-receiver-v2-game-adaptation.md) is `pending` for the CP-14
 Game-side adaptation to Eddy's exact Cloud Receiver v2 Host Event ingress. Its cross-functional audit

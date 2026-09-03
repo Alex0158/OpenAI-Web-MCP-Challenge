@@ -101,3 +101,7 @@ Research, or a Scenario until accepted.
   connection-bound ownership, newer-session supersession, synchronous close safety, and full-snapshot-only
   rendering; the named local implementation is runtime-verified under SK-TASK-057, SK-EVID-043, and
   Validation/71.
+- [`ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md`](ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md)
+  — accepts one Railway service, one replica, one persistent Volume-backed SQLite writer, and Clerk
+  fixed-player admission for the first hosted MVP; the resource provisioning preflight is recorded,
+  while source deployment, Clerk admission, and hosted proof remain open.

@@ -6,8 +6,8 @@
 - Closure type: `decided`
 - Checkpoint: `CP-17`
 - Owner: Game owner
-- Current increment: The production start/build/configuration boundary and the remaining hosted continuity gaps are being reconciled; no external provider or public environment has been changed.
-- Next gate: Record one explicit host topology and ADR after its long-lived worker, durable store, WebSocket, TLS/URL, restart, backup, secret, and rollback facts are verified.
+- Current increment: The production start/build/configuration boundary is reconciled and the accepted Railway resource topology has been provisioned and read back; the hosted runtime and identity gates remain open.
+- Next gate: Supply Clerk Production credentials and two fixed subject bindings, upload the exact Game source, and record the actual project/plan, URL, restart, backup, secret, and rollback readback; hosted proof remains open.
 
 ## Identity
 
@@ -28,8 +28,9 @@ not perform a public deployment or silently select a provider.
 - Success: The current runtime gaps are explicit, one host decision can be made against observable
   acceptance rows, and the next implementation task can deploy the same authoritative world without a
   second scheduler, fixture-only identity, or unreviewed contract change.
-- Non-goals: Public deployment, provider account changes, paid resources, credentials in the repository,
-  a serverless timer, a browser heartbeat, a second world authority, or a hosted claim from a build log.
+- Non-goals: Credentials in the repository, a serverless timer, a browser heartbeat, a second world
+  authority, or a hosted claim from a build log. The owner-authorized Railway resource setup is now
+  complete; source deployment and hosted verification remain governed by `SK-TASK-078`.
 
 ## Scope and authority
 
@@ -37,7 +38,9 @@ not perform a public deployment or silently select a provider.
   `src/server/world-worker.ts`, `src/server/runtime.ts`, `src/server/health.ts`, the production identity
   and default-world bootstrap gap, host/store decision fields, and the CP-17 rehearsal handoff.
 - Out of scope: `reentry-core/`, `mvp/`, Eddy's Receiver/Local Connector implementation, RightSpot,
-  public DNS or TLS changes, provider mutations, and new gameplay rules.
+  further provider mutations beyond the owner-authorized resource preflight recorded in
+  [`SK-EVID-063`](../Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md), public DNS
+  or TLS changes, and new gameplay rules.
 - Owning sources: [`Engineering/06-operations-and-hosting.md`](../Engineering/06-operations-and-hosting.md),
   [`Engineering/08-development-roadmap-and-checkpoints.md`](../Engineering/08-development-roadmap-and-checkpoints.md),
   [`Engineering/09-mvp-contract-sheet.md`](../Engineering/09-mvp-contract-sheet.md),
@@ -52,18 +55,18 @@ not perform a public deployment or silently select a provider.
 - Verified: `npm run build` passes with the repository's Node 24-compatible runtime (`v24.20.0` was
   used for this readback); the custom start script runs one `tsx src/server/entrypoint.ts` process; the
   target operations packet already defines health, persistence, restart, rollback, and claim limits.
-- Verified: `HOST` defaults to `127.0.0.1`, `GAME_DB_PATH` defaults to a local SQLite path,
+- Verified: `HOST` defaults to `127.0.0.1` locally and `0.0.0.0` in production, `GAME_DB_PATH` defaults to a local SQLite path,
   `AUTONOMOUS_WORLD_MODE` is opt-in, and `LOCAL_FIXTURE_MODE` is disabled in production.
-- Verified: production command and page-tool routes currently return fixture-unavailable responses
-  when fixture mode is disabled; the runtime has no production session resolver in the default
-  entrypoint.
-- Verified: an autonomous worker refuses an empty store with `WORLD_NOT_FOUND`; a repeatable production
-  bootstrap path is therefore still open and must not be simulated by creating a world on every restart.
-- Verified: the Game tree contains no provider/deployment manifest, selected host, durable hosted-store
-  mapping, production identity configuration, or rollback receipt.
-- Unknown: the selected provider's exact process supervision, sleep/scale-to-zero behavior, persistent
-  volume or PostgreSQL contract, WebSocket proxy behavior, TLS/custom URL, backup/restore, secret store,
-  and rollback semantics.
+- Verified: [`SK-TASK-078`](SK-TASK-078-cp17-production-identity-and-hosted-admission.md) now supplies a
+  production-like Clerk resolver, idempotent default-world bootstrap, and server-derived HTTP/
+  page-tool/WebSocket scope without enabling fixture mode.
+- Verified: the production-like bootstrap rejects a different non-empty world and loads the same world
+  on restart; it never reseeds a non-empty store.
+- Verified: the Game tree contains no provider deployment manifest or secret, while the selected Railway
+  host and durable hosted-store mapping are now recorded by [`SK-EVID-063`](../Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md).
+- Unknown: the selected provider's actual plan, source/build identity, Clerk instance/session issuance,
+  secret bindings, runtime process supervision, Volume backup/restore, WebSocket proxy behavior,
+  restart catch-up, and rollback semantics.
 - Claim limit: this task supports preparation and decision evidence only. It does not prove a hosted
   endpoint, always-on continuity, production gameplay, WebMCP, Re-entry delivery, or judge reproduction.
 
@@ -73,7 +76,7 @@ not perform a public deployment or silently select a provider.
 |---|---|---|
 | Process authority | One supervised Node 24 entrypoint owns page, worker, health, and command gateway for the MVP | Prevents a second clock or split-brain world |
 | Worker continuity | Worker advances without a browser and restarts from durable world time | Preserves the continuous-world thesis |
-| Store | Durable SQLite volume or PostgreSQL with compatible migrations, one writer, snapshots, events, outbox, and backup handle | Prevents world regeneration and duplicate effects |
+| Store | Accepted MVP: SQLite on one Railway persistent Volume with one writer, snapshots, events, outbox, and backup handle; PostgreSQL remains deferred | Prevents world regeneration and duplicate effects |
 | Bootstrap | One idempotent, one-time world seed/provisioning path before readiness; restart must never reseed | Closes the current empty-store `WORLD_NOT_FOUND` gap safely |
 | Identity and scope | Production resolver binds player, shelter, world, realtime connection, and future Agent binding from server-side identity | Fixture cookies cannot be the hosted authority |
 | Health and admission | Liveness, readiness/world readiness, and degraded command rejection are separately readable | A live but unusable worker must not accept mutations |
@@ -91,9 +94,10 @@ not perform a public deployment or silently select a provider.
    file-backed world that was explicitly provisioned once, `HOST=0.0.0.0`, `NODE_ENV=production`, and
    `AUTONOMOUS_WORLD_MODE=1`. Record any missing bootstrap, identity, or command route as a bounded
    implementation task rather than enabling fixture mode.
-4. Record the selected topology in an `ADR-GAME-*` and then execute the existing CP-17 rehearsal. The
-   hosted page and worker must remain one world and one authority even if the provider requires a
-   separate database or process wrapper.
+4. Use the accepted [`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md)
+   topology and execute the existing CP-17 rehearsal. The
+  hosted page and worker must remain one world and one authority; a separate database or process
+  wrapper requires a new decision.
 5. Bind the hosted canonical URL and server-side identity to Eddy's accepted v2 handoff only after the
    Game deployment passes its own health, persistence, restart, and scope gates.
 
@@ -110,9 +114,10 @@ not perform a public deployment or silently select a provider.
 
 ## Smallest reversible action
 
-Complete the candidate host fact sheet and the local production-like rehearsal checklist, preserving the
-first failure. Stop before provider account changes, secrets, public DNS, or deployment if bootstrap,
-production identity, WebSocket support, durable storage, or rollback cannot be named.
+The candidate host fact sheet and local production-like rehearsal are complete enough to provision the
+accepted resources. Keep secrets outside the repository, preserve the first hosted failure, and stop
+before claiming deployment if Clerk admission, bootstrap, WebSocket support, durable storage, or
+rollback cannot be verified.
 
 ## Verification and closure target
 
@@ -134,4 +139,6 @@ production identity, WebSocket support, durable storage, or rollback cannot be n
 
 The initial audit found no external deployment configuration or selected host. The local production build
 passed under Node 24.20.0; the generated `next-env.d.ts` reference was restored to its tracked form after
-the build. No external service, credential, public URL, or Game runtime authority was changed.
+the build. On 2026-09-03 the owner-authorized Railway project, service, Volume, domain, and non-secret
+configuration were provisioned and read back; no Game source deployment, credential, or runtime authority
+has been changed. See [`SK-EVID-063`](../Evidence/SK-EVID-063-cp17-railway-resource-provisioning-preflight.md).
