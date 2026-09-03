@@ -306,10 +306,14 @@ remains the non-blocking audit lane. `RIGHTSPOT-045` is `CLOSED_VERIFIED` for `F
 manual Operations consumer boundary; `RS-WO-045-01` is integrated at `3582ba4`, with Main-controlled
 race evidence and the explicit independent-browser harness limitation recorded. `RIGHTSPOT-046` is
 closed through accepted `ADR-RS-0017` for one bounded Agent-only `read_listing_pipeline` contract;
-the separate implementation Task `RIGHTSPOT-047` is in progress after T0 baseline recapture and
-Builder dispatch. Its five-path candidate is frozen locally; deterministic checks and Main browser
-smoke pass, while the independent browser gate remains incomplete after one command-level harness
-block and two bounded partial retries. Other Operations WebMCP capabilities remain separately gated.
+the separate implementation Task `RIGHTSPOT-047` is paused after T0 baseline recapture and Builder
+dispatch because `RIGHTSPOT-048` owns the shared lifecycle gate. Its five-path candidate is frozen
+locally; deterministic checks and Main browser smoke pass, while its independent browser gate remains
+incomplete after one command-level harness block and two bounded partial retries. The 048 candidate is
+integrated at `218935c`, but its independent browser gate ended at `BLOCKED_HARNESS` after the corrected
+retry produced no final report; no further blind retry is authorized. After a reviewed 048 evidence
+decision, 047 must be re-baselined before verification resumes. Other Operations WebMCP capabilities
+remain separately gated.
 
 The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.
 The page-entry audit registered `RIGHTSPOT-021` as a bounded implementation route: restore a
@@ -620,13 +624,14 @@ evidence is recorded in [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSUR
 `RIGHTSPOT-002` is closed. Future work requires a new explicit scope decision.
 
 The previously admitted post-MVP increments, including `RIGHTSPOT-005` and `RIGHTSPOT-007`, are
-closed historical work rather than the current implementation queue. The current route is the bounded
-shared session-lifecycle repair in `RIGHTSPOT-048`, while the non-blocking `RIGHTSPOT-012` audit
-continues. The original `RIGHTSPOT-047` candidate's deterministic checks and Main-controlled browser
-smoke pass, but its independent gate is paused after one command-level harness block and two bounded
-partial retries; it must be re-baselined after a reviewed 048 evidence decision, and no push or closure
-claim is authorized. The 048 independent gate itself ended at `BLOCKED_HARNESS` after its corrected
-retry produced no final report; no further blind agent-browser retry is authorized. This does not reopen
+closed historical work rather than the current implementation queue. The current decision boundary is
+the `RIGHTSPOT-048` harness-blocked evidence gap, while the non-blocking `RIGHTSPOT-012` audit
+continues; no active implementation Work Order is open. The original `RIGHTSPOT-047` candidate's
+deterministic checks and Main-controlled browser smoke pass, but its independent gate is paused after
+one command-level harness block and two bounded partial retries; it must be re-baselined after a
+reviewed 048 evidence decision, and no push or closure claim is authorized. The 048 independent gate
+ended at `BLOCKED_HARNESS` after its corrected retry produced no final report; no further blind
+agent-browser retry is authorized. This does not reopen
 the accepted MVP closure or authorize external authentication, Cloud Receiver,
 deployment, or commercial-marketplace scope by itself.
 

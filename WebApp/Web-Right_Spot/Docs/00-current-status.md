@@ -194,10 +194,11 @@ review confirmed the mount-only lifecycle gap described in ADR-RS-0018. `RIGHTSP
 reviewed eight-path candidate integrated at product commit `218935c`: focus/visible-session
 revalidation and adapter-side authentication deactivation have direct behavioral tests; actor-id keyed
 child teardown is covered by static wiring/source assertions, while integrated cross-component teardown
-remains pending supported-browser evidence. Main independently reran focused `35/35`, complete `215/215`, typecheck, production
-build, repository validation, sensitive scan, and diff checks. No server/API/fixture behavior changed;
-the supported-browser lifecycle gate remains open. `RIGHTSPOT-047` is paused and must be re-baselined
-after the `048` gate.
+remains unverified because the bounded supported-browser gate ended at the harness boundary. Main
+independently reran focused `35/35`, complete `215/215`, typecheck, production build, repository
+validation, sensitive scan, and diff checks. No server/API/fixture behavior changed; `RIGHTSPOT-048`
+is `BLOCKED_HARNESS`, not product-failed. `RIGHTSPOT-047` is paused and must be re-baselined after a
+reviewed 048 evidence decision.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current next product action:** `RS-WO-048-02` has ended at `BLOCKED_HARNESS`, not product-failed: two
 earlier attempts produced no browser evidence, and the one corrected retry used the validated CLI form

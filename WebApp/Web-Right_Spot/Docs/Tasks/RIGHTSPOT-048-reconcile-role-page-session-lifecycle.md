@@ -287,10 +287,11 @@ Stop and return to Main if:
 ## Current disposition
 
 The finding is accepted as a bounded shared lifecycle repair under ADR-RS-0018. Its reviewed candidate
-is frozen at `218935c`, but the Task remains open until `RS-WO-048-02` supplies the required independent
-supported-browser evidence or Main records a reviewed harness limitation after the one corrected bounded
-retry. The current Work Order is `BLOCKED_HARNESS`; the earlier harness failures and the hung corrected
-retry remain historical evidence and do not count as product verification. It does not reopen the
+is frozen at `218935c`; the Task remains open at the harness boundary after Main recorded a reviewed
+limitation from the final corrected bounded retry without accepted browser evidence. The current Work
+Order is `BLOCKED_HARNESS`; the earlier harness failures and the hung corrected retry remain historical
+evidence and do not count as product verification. A future supported browser path or reviewed
+alternative requires a new explicit bounded verifier dispatch and source checkpoint. It does not reopen
 ordinary local MVP, `RIGHTSPOT-043`'s already verified Search semantics, or the Operations authority.
 `RIGHTSPOT-047` remains `verification_pending` and must not be closed until this repair and its
 independent browser evidence are complete. The Task does not authorize external authentication,

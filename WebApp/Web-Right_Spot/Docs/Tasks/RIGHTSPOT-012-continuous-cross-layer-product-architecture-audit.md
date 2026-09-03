@@ -96,12 +96,15 @@ with healthy health.
 - Next gate: Continue the cross-layer audit against the latest Main source after the now-closed
   `RIGHTSPOT-045` checkpoint. Register another follow-on Task only after reproducing a new bounded gap
   and recording its owner, scope, and acceptance gate.
-- Active bounded rerun (2026-09-03): Main dispatched read-only Advisor Linnaeus
+- Latest bounded rerun (2026-09-03): Main dispatched read-only Advisor Linnaeus
   (`01a06674-8423-7af1-ae10-b7cf3c23dbac`) against documentation checkpoint `99d38ed` and product/source
-  candidate `218935c`. The scope is limited to post-048 static route/role/flow review, the shared
-  lifecycle contract, UI/UX/accessibility/fallback boundaries, privacy/data authority, WebMCP/Re-entry
-  classification, and documentation drift. The Advisor must not edit source, tests, Docs, fixtures,
-  SQLite, Git, Worktrees, or register follow-on work; Main will review and disposition its report.
+  candidate `218935c`. The scope covered post-048 static route/role/flow review, the shared lifecycle
+  contract, UI/UX/accessibility/fallback boundaries, privacy/data authority, WebMCP/Re-entry
+  classification, and documentation drift. Linnaeus returned `READY_FOR_REVIEW` with no new P0/P1/P2
+  product finding; Main confirmed and corrected one evidence-strength wording drift, with no source or
+  test change and no follow-on Task. The Advisor did not edit source, tests, Docs, fixtures, SQLite,
+  Git, Worktrees, or register follow-on work; this run is complete and the lane returns to its pending
+  continuous-audit posture.
 - Execution posture: `READ_ONLY_ADVISORY`; the Advisor may inspect the current implementation and run safe, bounded verification, but must not implement findings or write canonical product truth.
 - Dependencies: Current RightSpot source, tests, runtime evidence where safely available, and the accepted documentation/decision hierarchy. `RIGHTSPOT-008` and its `RIGHTSPOT-020` implementation are closed within the bounded ADR-RS-0013 direction; `RIGHTSPOT-009` is closed as `REVIEWED_DEFERRED`; `RIGHTSPOT-010` is closed as a reviewed staged decision; `RIGHTSPOT-044` is `CLOSED_VERIFIED` for the manual Operations surface; and `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its bounded Operations consumer repair boundary. None authorizes unregistered implementation behavior.
 

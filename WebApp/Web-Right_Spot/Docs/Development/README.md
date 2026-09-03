@@ -174,8 +174,9 @@ deterministic checks and Main browser smoke, while its independent browser gate 
 after a reviewed 048 evidence decision. The `F-01` queue/privacy defect is closed within `RIGHTSPOT-025`; `RIGHTSPOT-026`
 is also closed within its presentation-only boundary. `RIGHTSPOT-027` is closed after its bounded
 presentation repair and independent verification; no implementation Worktree is active. The next step
-is to resolve the 048 browser evidence boundary or record a reviewed alternative, then re-baseline
-`RS-WO-047-02` after the shared repair, while the fresh Main-thread cross-layer audit continues. Source push and Task closure remain gated by
+is to make a reviewed decision on the 048 browser evidence boundary or an accepted alternative, then
+re-baseline `RS-WO-047-02` after the shared repair, while the fresh Main-thread cross-layer audit
+continues. Source push and Task closure remain gated by
 exact-path review, focused/full checks, and complete frozen-source browser verification.
 The authoritative sequence is maintained in the [development roadmap](RIGHTSPOT-DEVELOPMENT-ROADMAP.md#31-current-next-route).
 
