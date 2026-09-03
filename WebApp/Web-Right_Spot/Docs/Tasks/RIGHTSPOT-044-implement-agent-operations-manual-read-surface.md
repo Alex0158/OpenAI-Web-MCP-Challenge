@@ -1,7 +1,7 @@
 # RIGHTSPOT-044: Implement the bounded Agent Operations manual read surface
 
 **Type:** `implementation`  
-**Lifecycle:** `pending`  
+**Lifecycle:** `closed`  
 **Priority:** `P1` for the next RightSpot product milestone  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-03  
@@ -11,14 +11,17 @@ accepted `ADR-RS-0012`, closed `RIGHTSPOT-015`, and closed `RIGHTSPOT-016`
 ## Task control
 
 - Type: `implementation`
-- Lifecycle: `pending`
-- Execution posture: `VERIFICATION_DISPATCHED_IN_PROGRESS`
+- Lifecycle: `closed`
+- Execution posture: `CLOSED_VERIFIED`
 - Objective: Expose the existing deterministic Operations profile and pure projection through one
   agent-only manual read surface without changing the relay workflow or registering WebMCP.
-- Current increment: `RS-WO-044-03` is dispatched against frozen integrated source `f884879`; it is
-  the bounded independent verification increment for the manual Operations surface.
-- Next gate: Receive and classify the independent verification result; do not modify source, fixtures,
-  task files, or documentation during verification.
+- Current increment: Completed the manual Agent Operations read surface, strict HTTP consumer, Agent
+  navigation entry, and independent integrated verification at the declared local claim level.
+- Next gate: Return to the Main-thread cross-layer audit. Any later Operations WebMCP capability needs
+  its own accepted contract, Task, and evidence gate.
+- Evidence status: `CLOSED_VERIFIED` — source, contract, role/privacy, error, accessibility,
+  responsive, and runtime/browser evidence agree for the bounded manual surface; known shell-level
+  network residuals are documented and excluded from the product claim.
 - Parent role: This is one registered Task File. Application/API, UI/navigation, and verification are
   Work Order checkpoints under this file, not additional Tasks.
 
@@ -82,7 +85,7 @@ detail route, or WebMCP registration.
 ### RS-WO-044-01 — Operations application and HTTP consumer
 
 **Role:** Backend/API Builder  
-**Status:** `READY_FOR_VERIFICATION`  
+**Status:** `CLOSED_VERIFIED`  
 **Parallelization:** `SERIAL_CONTRACT_FIRST` — the UI consumer may inspect the frozen response
 contract after this handoff, but must not modify these paths.  
 **Risk profile:** `Assured` — crosses session, separate persistence, strict transport parsing,
@@ -157,7 +160,7 @@ Information Request/Favourite metric, WebMCP, external auth, or any third path.
 ### RS-WO-044-02 — Manual Operations page and Agent navigation
 
 **Role:** UI Builder  
-**Status:** `READY_FOR_VERIFICATION`  
+**Status:** `CLOSED_VERIFIED`  
 **Parallelization:** May run after the `044-01` response contract is frozen; navigation remains a
 narrow shared-file change.  
 **Risk profile:** `High` for role entry, error truthfulness, responsive accessibility, and shared
@@ -214,7 +217,7 @@ registration, charts, natural-language parsing, a new route family, or a third q
 ### RS-WO-044-03 — Independent integrated verification
 
 **Role:** Independent browser/API Verifier  
-**Status:** `IN_PROGRESS`  
+**Status:** `CLOSED_VERIFIED`  
 **Parallelization:** `READ_ONLY` — no source, task, fixture, or documentation writes.  
 **Risk profile:** `Assured` for cross-role, data-authority, error, and responsive claims.
 
@@ -226,6 +229,22 @@ Operations source was reviewed and integrated at `f884879`. The verifier receive
 instruction surface, `RIGHTSPOT-044`, `ADR-RS-0016`, the exact verification matrix, fresh-state and
 privacy constraints, evidence discipline, and claim limits. It must not modify source, fixtures beyond
 bounded reversible reset, task files, or documentation.
+
+**Verifier handoff (2026-09-03):** `Ptolemy` returned `NEEDS_REPAIR` only because the signed-out
+browser context recorded the pre-existing shell request `GET /favicon.ico → 404` and the expected
+`GET /api/session → 401` as raw console/network events. The declared Operations checks otherwise passed:
+signed-out/Tenant/Agent role boundaries, both query families and filters, London `[from,to)` semantics,
+empty and bounded failures, relay non-mutation, existing request drill-down, 320px/768px/1440px
+no-overflow, first-Tab skip-link entry, Agent Operations console, and no uncaught page error. Fresh
+relay generation `88` and Operations generation `2` were used; the final session was cleared.
+
+**Main disposition (2026-09-03):** `RS-WO-044-03` is accepted as `CLOSED_VERIFIED` for its declared
+manual Operations scope. The `401` is the intentional signed-out session boundary, not an application
+exception; the favicon `404` is a known pre-existing shell resource explicitly outside this Task's
+write set and previously classified as an expected residual by the navigation/viewport Tasks. No
+Operations repair, session-contract change, favicon Task, or scope expansion is authorized by this
+closure. The local claim is therefore “no Operations page error or uncaught exception”; it is not a
+claim that every raw browser network-status event is zero.
 
 The Verifier must use the frozen integrated Main source and fresh, separately resettable relay and
 Operations profiles. It must verify:
