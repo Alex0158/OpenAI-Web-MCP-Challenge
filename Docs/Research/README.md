@@ -44,6 +44,9 @@ proof claims belong in `Docs/Core/00-current-status.md` and
 - [Research 25](25-until-revoked-standing-lifetime-proposal.md): proposed explicit no-scheduled-expiry
   authority, clock separation, version/storage alternatives, invalidation and implementation gates;
   not an accepted contract.
+- [Research 26](26-pairing-claim-abuse-fence-proposal.md): proposed pairing identity, durable
+  per-pair/source abuse controls, terminal failure, replay, concurrency, and rollout boundary;
+  not an accepted contract.
 
 ## Maintenance rules
 
