@@ -66,13 +66,17 @@ Event/delivery history. One Node 24 disposable composition passed through the re
 PostgreSQL Receiver, separately spawned Local Connector worker, independent Host-effect authority,
 acknowledgement, and restart replay. Separate developer and end-user browser personas passed after
 queued-state and plain-language usability corrections. This increment is
-`separate_process_verified`; it was not committed, deployed, published, or exercised with a
-supported external Agent/Browser adapter. The older SDK `0.3.1` is published from exact Git source,
-but it predates the working-tree simple facade; TASK-031 owns that separate package release. The
-published Connector `0.2.20` reports root `gitHead` `733d77f`, whose source still records Connector
-version `0.2.14`, and its bundled client rejects active v2's instruction-bearing lease. TASK-032
-owns the exact-source compatible Connector release; the approved local composition used the current
-checkout, not that registry artifact.
+`separate_process_verified`; the Re-entry integration candidate is committed at
+`4713024a027a8834745ecccaf88ee85f93cf2885` on `codex/reentry-main-candidate-preview`, and the
+active-v2 candidate is committed at `0d7bc3c4282fd3db2e9558874a0941ece3df13f5` on
+`codex/cloud-receiver-v2-clean-integration`. Both candidates are pushed for review, but neither is
+merged into `main`, deployed from its exact SHA, published, or exercised with a supported external
+Agent/Browser adapter. The older SDK `0.3.1` is published from exact Git source, but it predates the
+working-tree simple facade; TASK-031 owns that separate package release. The published Connector
+`0.2.20` reports root `gitHead` `733d77f`, whose source still records Connector version `0.2.14`,
+and its bundled client rejects active v2's instruction-bearing lease. TASK-032 owns the exact-source
+compatible Connector release; the approved local composition used the current checkout, not that
+registry artifact.
 
 The 2026-09-03 TASK-012 reconciliation found four material active-v2 gaps that the green local
 suites do not close. **CONFLICTED:** ADR-0033's five-failed-claim pairing fence is not enforceable by

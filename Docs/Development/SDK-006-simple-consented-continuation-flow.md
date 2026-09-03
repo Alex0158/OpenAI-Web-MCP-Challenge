@@ -21,8 +21,9 @@ after Receiver restart. Independent developer and end-user personas exercised th
 flow and were rerun after their findings were corrected.
 
 This is local and separate-process evidence. It is not a deployed-production, external Codex,
-general browser-automation, npm-publication, committed-source, or arbitrary-business-safety claim.
-An Event `202` remains accepted and queued only.
+general browser-automation, npm-publication, or arbitrary-business-safety claim. The verified source
+is now committed and pushed to dedicated review branches; those candidates are not merged into
+`main` or deployed from their exact SHAs. An Event `202` remains accepted and queued only.
 
 ## Developer flow
 
@@ -135,13 +136,15 @@ Screenshots:
 
 ## Source and delivery state
 
-- Root branch: `codex/eyad-reentry-core-foundation`
-- Root pre-existing `HEAD`: `733d77f97cca34429e2784dcf39663256dd3544b`
-- Active v2 nested branch: `main`
-- Active v2 pre-existing `HEAD`: `e0d6b72f724aad7462b6a62c0591a081eac8cb66`
-- Both worktrees contain concurrent owner-held changes; neither SHA contains this increment.
-- No commit, push, deployment, alias promotion, Supabase migration, npm publication, or production
-  smoke was performed for this increment.
+- Root review branch: `codex/reentry-main-candidate-preview`
+- Root candidate SHA: `4713024a027a8834745ecccaf88ee85f93cf2885`
+- Active v2 review branch: `codex/cloud-receiver-v2-clean-integration`
+- Active v2 candidate SHA: `0d7bc3c4282fd3db2e9558874a0941ece3df13f5`
+- Both candidates are pushed and remain separate from `main`; original owner-held worktrees remain
+  untouched.
+- Exact-SHA Node 24 `CONNECTOR-V2-E2E-001` rerun: 1/1 passed with zero failures or skips.
+- No merge into `main`, deployment, alias promotion, Supabase migration, npm publication, or
+  production smoke was performed from these candidate SHAs.
 
 ## Residual gates and reopen conditions
 
