@@ -41,6 +41,15 @@ invalidation semantics are decision prerequisites. The user endorsed the directi
 wire version, migration topology, public route contract, or automatic credential renewal. This
 proposal does not close the older simple-facade expiry discrepancy or authorize schema changes.
 
+The user explicitly confirmed offline authorization retention and intentional user revocation on
+2026-09-03. Local Connector is the intended revocation entry, with Game Settings a possible future
+entry; Receiver-owned same-user authorization remains unchanged. Stopping/offlining a Connector is
+not revoking a Grant, and the clarification does not authorize a device-wide cascade. Research 25
+records exact scope distinctions, pending/unconfirmed offline revocation, and additional acceptance
+tests. This aligns with ADR-0043; no new public route, authentication authority, lifetime version,
+or executable behavior is accepted by this clarification. Core status and the public-shell gate
+therefore remain unchanged.
+
 ## 2. Authority and evidence
 
 - ADR-0007 owns distinct offer and Grant fields and Receiver narrowing.

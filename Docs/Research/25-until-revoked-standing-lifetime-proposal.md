@@ -18,6 +18,34 @@ invalidation, or a material scope change. Browser closure, ordinary Events, proc
 and expiration of the original Consent page do not consume or recreate it. This does not promise
 uninterrupted operation when account, Host, Connector, or network access is unavailable.
 
+### Confirmed offline and user-control direction
+
+The user explicitly confirmed on 2026-09-03 that offline operation must preserve authorization:
+re-entry exists to resume useful work after absence. This agrees with ADR-0043's restart and
+non-consumable-authority boundary. Network loss, device sleep, closing the Browser, stopping the
+Connector process, or an absence of polling is not user revocation. Finite existing Grants still
+obey their independently accepted deadlines; this clarification does not extend them.
+
+Execution availability and Grant authority are separate state dimensions. While a local device
+is unavailable, its Connector cannot start an Agent. Work is retained/coalesced under the accepted
+outbox and one-open-activation rules; after eligible authenticated connectivity returns, the Agent
+must read current Game state rather than blindly replay stale gameplay commands. This is not a
+promise to power on an offline computer, retain an unlimited backlog, or bypass expired credentials.
+
+The user wants an explicit revocation action in Local Connector and a possible future entry in
+Game Settings. These are user-facing initiation surfaces, not new authorities. The smallest
+proposed integration opens Receiver-owned authenticated management for the selected authorization;
+the owning user selects and confirms the bounded scope, and Receiver applies the revocation.
+A delivery-only Connector token, Host Organization key, browser-supplied account, or Agent prompt
+must not gain Grant-management authority. Exact UI, routes and authenticated handoff remain proposed.
+
+Do not equate "stop Connector", "revoke this Game authorization", and "remove this device and all
+its authorizations". The user's clarification confirms offline retention and intentional user
+revocation, not a blanket device-wide cascade or target rebinding. The scope of explicit device
+decommission remains a separate decision. Preserve history and the in-flight revocation limitation.
+If a local revocation request cannot reach Receiver, show pending/unconfirmed state, not successful
+cloud revocation; any local execution stop is a distinct fact.
+
 ## 2. Verified source constraints
 
 Reviewed parent source is `01c7c415d54358829d8abef252e074d0e9884186`; active Receiver executable
@@ -122,7 +150,8 @@ The new contract must explicitly decide:
   revoked authority. Mere temporary lookup failure must not invent permanent revocation.
 - **Temporary offline/expired Connector authentication:** no claim without current valid identity;
   do not equate an offline device with a revoked Grant. Pending work, one-open backpressure and
-  same-identity recovery need bounded, visible semantics, not endless unobservable retries.
+  same-identity recovery need bounded, visible semantics, not endless unobservable retries. Offline
+  authorization retention is user-confirmed above; authentication recovery remains a separate gate.
 - **Explicit Connector disconnect/decommission:** decide whether it revokes dependent Grants or
   leaves them visibly unusable, and how pending work terminates. Current sticky subject binding
   prevents assuming revoke plus new Consent can transfer to another target.
@@ -156,7 +185,9 @@ Stronger cancellation needs a separately accepted Host pre-effect authorization 
 Additional negative cases: lifetime tampering; null/mixed/unknown fields; cross-version receipts;
 Consent/page deadlines just before/at/after expiry and after lock waits; unchanged Grant after
 page-token expiry; finite credentials/leases still expiring; issuer/Connector invalidation races;
-wrong scope/key/target; no mutation on rejected Events; response loss and process interruption.
+wrong scope/key/target; no mutation on rejected Events; response loss and process interruption;
+offline-to-online recovery without re-consent or duplicate effects; no implicit revoke from process
+exit; selected-Grant versus device-wide scope fencing; offline revoke never falsely reported complete.
 
 ## 7. Approval package and remaining boundaries
 
