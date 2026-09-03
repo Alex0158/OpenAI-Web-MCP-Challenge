@@ -88,11 +88,13 @@ is unmade, a duplicate, or an external action added merely to make the queue loo
 
 ## 6. Current task routing
 
-[`SK-TASK-071`](SK-TASK-071-cp16-real-event-burst-page-context.md) is in progress for the named CP-16
-local real-worker burst composition: two actionable loss/reissue outcomes must remain one coalesced
-signal while both causal records stay page-readable and the latest reissued mission remains recallable.
-It is local process/page work only and cannot claim Connector, Thread, Agent, WebMCP dynamic, browser,
-hosted, or judge behavior.
+[`SK-TASK-071`](SK-TASK-071-cp16-real-event-burst-page-context.md) is verified for the named CP-16
+local real-worker burst composition: two actionable loss/reissue outcomes remain one coalesced signal
+while both causal records stay page-readable and the latest reissued mission remains recallable under
+[`SK-EVID-058`](../Evidence/SK-EVID-058-cp16-real-event-burst-page-context-runtime-verification.md) and
+[`Validation/84`](../Validation/84-cp16-real-event-burst-page-context-runtime-cross-functional-audit.md).
+It is local process/page evidence only and cannot claim Connector, Thread, Agent, WebMCP dynamic,
+browser, hosted, or judge behavior.
 [`SK-TASK-070`](SK-TASK-070-cp16-local-causal-restart-recall-continuity.md) is verified for the named
 CP-16 local clean-restart continuity composition: the same durable real loss/reissue signal, mission
 attempt, page read state, and bounded recall survive an entrypoint/worker restart, with once-only local
