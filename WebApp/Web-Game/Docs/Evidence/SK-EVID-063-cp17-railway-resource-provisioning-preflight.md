@@ -10,7 +10,7 @@
 
 ## Exact identity under test
 
-- Source state: Game repository `main`, `HEAD f4ddfe4`; CP-17 implementation is committed locally and has not been used to claim a hosted deployment
+- Source state: Game repository `main`, source snapshot `f4ddfe4` with the evidence-only refresh in `9ffe446`; CP-17 implementation is committed locally and has not been used to claim a hosted deployment
 - Contract version: `SK-MVP-0.2`
 - Runtime versions: Railway MCP readback; no Game process or browser runtime was started
 - Fixture world and seed: none; no database was created or opened by the hosted service

@@ -10,7 +10,7 @@
 
 ## Exact identity under test
 
-- Source state: Game repository `main`, local commit `14df10a` plus the Clerk client admission working-tree increment
+- Source state: Game repository `main`, Clerk client admission code committed in `f4ddfe4` (current evidence-only HEAD refresh is `9ffe446`)
 - Contract version: `SK-MVP-0.2`
 - Runtime versions: Node.js `v24.13.1`, npm `11.6.2`, Next.js `16.3.4`, React `19.2.8`, `@clerk/nextjs` `7.9.0`
 - Fixture world and seed: none for the pure presentation contract; local fallback semantics are tested without a world
