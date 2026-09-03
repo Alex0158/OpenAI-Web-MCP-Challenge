@@ -117,7 +117,7 @@ test(
 
     const decision = await harness.userAgent
       .post("/v0.1/account-consent-decisions")
-      .set("Origin", HOST_BROWSER_ORIGIN)
+      .set("Origin", RECEIVER_ORIGIN)
       .set("Content-Type", "application/json")
       .send({
         consent_token: consentToken,
