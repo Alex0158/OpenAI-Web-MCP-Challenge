@@ -1,7 +1,7 @@
 # RIGHTSPOT-048 — Reconcile role-page session lifecycle for page-bound capabilities
 
 **Type:** `defect`  
-**Lifecycle:** `in_progress`  
+**Lifecycle:** `verification_pending`  
 **Priority:** `P1` for session least privilege and page truthfulness  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-03  
@@ -12,21 +12,22 @@ frozen but not independently closed `RIGHTSPOT-047` Agent Operations adapter
 ## Task Control
 
 - Type: `defect`
-- Lifecycle: `in_progress`
+- Lifecycle: `verification_pending`
 - Priority: `P1` — a mounted role page can retain a prior actor and page-bound capability after an
   external HttpOnly session change; the server still rejects unauthorized reads, but the client
   lifecycle is not reconciled.
 - Owner: Main RightSpot thread
 - Current increment: Static audit and Contract Advisor review confirmed the same mount-only lifecycle
-  pattern in the shared role frame, Tenant Search adapter, and Agent Operations candidate. T0 was
-  recaptured and the serial Builder is now active; no product source has changed for this Task.
-- Execution posture: `BUILDER_ACTIVE_MAIN_SOURCE_FROZEN` — one serial shared-boundary Builder,
-  followed by a frozen independent browser gate; no supporting Worktree is required or authorized.
-- Evidence status: `STATIC_FINDING_CONFIRMED`; this is not a browser reproduction or a claim of data
-  leakage. The server-side role/session checks remain intact.
-- Next gate: Complete the dispatched `RS-WO-048-01` against the exact Main source identity, then
-  independently verify the repaired Tenant and Agent page-capability lifecycle before reopening
-  `RIGHTSPOT-047`'s incomplete browser gate.
+  pattern in the shared role frame, Tenant Search adapter, and Agent Operations candidate. The serial
+  Builder completed the exact eight-path implementation, and Main integrated the reviewed candidate at
+  product commit `218935c`.
+- Execution posture: `BUILDER_HANDOFF_SOURCE_FROZEN` — the post-Builder candidate is frozen for one
+  independent browser gate; no supporting Worktree is required or authorized.
+- Evidence status: `DETERMINISTIC_GATES_PASSED_BROWSER_PENDING`; this is not a browser reproduction or
+  a claim of data leakage. The server-side role/session checks remain intact.
+- Next gate: Dispatch `RS-WO-048-02` against frozen source `218935c`, independently verify the repaired
+  Tenant and Agent page-capability lifecycle, then reopen `RIGHTSPOT-047` only after its candidate is
+  re-baselined.
 - Dependencies: `ADR-RS-0015` and `ADR-RS-0017` require page/session-scoped capability cleanup;
   `RIGHTSPOT-043` and `RIGHTSPOT-047` provide the existing adapter cleanup contracts. `RIGHTSPOT-012`
   may continue as a read-only, non-blocking audit but cannot modify this Task's write set during a
@@ -85,7 +86,7 @@ without authoritative session confirmation.
 ### Required read set
 
 - repository `AGENTS.md` and tracked contributor/runbook authority;
-- RightSpot `AGENTS.md`, `Docs/README.md`, `Docs/00-current-status.md`, `Docs/06-validation-and-evidence.md`,
+- RightSpot `AGENTS.md`, `Docs/Tasks/README.md`, `Docs/00-current-status.md`, `Docs/06-validation-and-evidence.md`,
   `Docs/07-business-flows-and-scenarios.md`, `Docs/Development/README.md`,
   `Docs/Development/RIGHTSPOT-DEVELOPMENT-ROADMAP.md`, and
   `Docs/Development/RIGHTSPOT-WEBMCP-ROADMAP.md`;
@@ -187,9 +188,9 @@ Close this Task only after all of the following are true:
 ### RS-WO-048-01 — Implement the shared role-page lifecycle repair
 
 **Role:** Senior UI/WebMCP lifecycle Builder  
-**Status:** `IN_PROGRESS`  
-**Parallelization:** `SERIAL_SHARED_ROLE_SESSION_BOUNDARY` — one writer across the exact eight-path
-  set; no other source writer or verifier may overlap it.  
+**Status:** `READY_FOR_INDEPENDENT_VERIFICATION`  
+**Parallelization:** `SOURCE_FROZEN_AFTER_BUILDER` — the exact eight-path set is frozen; no other source
+  writer or verifier may overlap it.  
 **Model gate:** Because this changes WebMCP capability lifetime, dispatch a capable supporting worker
 with `gpt-5.6-sol` and `medium` reasoning. If that model/capability is unavailable, stop and report
 the blocker; do not substitute an unsupported model for WebMCP lifecycle work.  
@@ -210,12 +211,22 @@ the required Red/Green/Refactor and static/build handoff before Main starts veri
 results, focused/full/static/build results, no-mutation checks, and any unresolved boundary. The
 Builder must not edit canonical docs, Git refs, fixtures, or create a Worktree.
 
+**Builder handoff (2026-09-03):** Main reviewed the exact eight changed paths and integrated the
+candidate at `218935c` (`fix(rightspot): reconcile role page session lifecycle`). The code/test baseline
+was `e4c3df4`; intervening `fd2b10e` was a docs-only dispatch record and did not alter the allowed
+source/test paths. Main independently reran focused `35/35`, complete `215/215`, non-incremental
+typecheck, production build, repository validation, sensitive scan, and diff checks. The build retained
+the existing Operations dynamic filesystem-tracing warning. No browser or WebMCP closure evidence is
+claimed yet.
+
 ### RS-WO-048-02 — Independently verify the repaired lifecycle
 
 **Role:** Independent supported-browser WebMCP Verifier  
-**Status:** `NOT_STARTED`  
+**Status:** `READY_FOR_DISPATCH`  
 **Parallelization:** `AFTER_BUILDER_SOURCE_FREEZE` — freeze the post-Builder source and Git identity;
   no Main source/status movement during the check.  
+**Frozen source identity:** product commit `218935c` on canonical Main; no source/test path may change
+during this verification gate.  
 **Scope:** Read-only evidence against the exact frozen candidate. No source, docs, Git, Worktree, or
   durable fixture mutation. Use `gpt-5.6-sol` with `medium` reasoning for WebMCP-specific evaluation.  
 **Required evidence:** initial and repeated registration counts, focus/visibility revalidation,
@@ -240,7 +251,9 @@ Stop and return to Main if:
 
 ## Current disposition
 
-The finding is accepted as a bounded shared lifecycle repair under ADR-RS-0018. It does not reopen the
+The finding is accepted as a bounded shared lifecycle repair under ADR-RS-0018. Its reviewed candidate
+is frozen at `218935c`, but the Task remains open until `RS-WO-048-02` supplies the required independent
+supported-browser evidence. It does not reopen the
 ordinary local MVP, `RIGHTSPOT-043`'s already verified Search semantics, or the Operations authority.
 `RIGHTSPOT-047` remains `verification_pending` and must not be closed until this repair and its
 independent browser evidence are complete. The Task does not authorize external authentication,

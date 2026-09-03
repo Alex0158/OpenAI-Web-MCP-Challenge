@@ -1,11 +1,17 @@
 # ADR-RS-0018: Role-page session lifecycle revalidation for page-bound capabilities
 
-**Status:** Accepted — bounded implementation decision; source not yet changed  
+**Status:** Accepted — implementation frozen at local product commit `218935c`; independent browser verification pending  
 **Decision date:** 2026-09-03  
 **Owners:** Main RightSpot thread  
 **Source review:** Current `RolePageFrame`, Tenant `search_listings` adapter, Agent Operations
 `read_listing_pipeline` candidate, ADR-RS-0015, ADR-RS-0017, and the read-only `RIGHTSPOT-012`
 audit checkpoint
+
+**Implementation checkpoint (2026-09-03):** `RIGHTSPOT-048` Builder output was reviewed in Main and
+integrated at `218935c`. The candidate is limited to the accepted shared frame, two page-bound
+adapters, and four regression-test paths. Focused `35/35`, complete `215/215`, typecheck, production
+build, repository validation, sensitive scan, and diff checks pass. Supported-browser lifecycle and
+WebMCP evidence remains an open independent gate; this record does not yet claim closure.
 
 ## Context
 
@@ -106,7 +112,8 @@ Independent supported-browser evidence must exercise both `/tenant` and `/agent/
 declared WebMCP flag: initial discovery, same-actor lifecycle no-duplication, external session
 replacement/clear, actor-id/role transition, tool removal, page recovery, manual fallback, console and
 page-error state, and persistent no-mutation readback. The `RIGHTSPOT-047` browser gate remains open
-until this shared repair is integrated and its frozen candidate is re-verified.
+until this shared repair is independently verified and its frozen candidate is re-baselined and
+re-verified.
 
 ## Alternatives rejected
 

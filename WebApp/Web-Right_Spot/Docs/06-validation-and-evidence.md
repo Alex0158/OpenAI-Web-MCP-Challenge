@@ -1435,5 +1435,29 @@ authenticated unassigned Agent is a valid bounded result.
 Main confirmed the source pattern and registered `RIGHTSPOT-048` with ADR-RS-0018 for a shared,
 event-driven session revalidation and adapter deactivation repair. The repair is source-bearing and
 has not started; `RIGHTSPOT-047` is paused and its old candidate must be re-baselined after the repair.
-The complete deterministic suite remains `201/201` across `45` files under pinned Node `24.20.0`;
-this documentation checkpoint changed no product source, fixture, or runtime behavior.
+The Builder completed the exact eight-path candidate, and Main integrated it at product commit
+`218935c`; the code/test baseline was `e4c3df4`, with `fd2b10e` recorded separately as a docs-only
+dispatch checkpoint. Main reran focused `35/35`, the complete suite `215/215`, non-incremental
+typecheck, production build, repository validation, sensitive scan, and diff checks under pinned Node
+`24.20.0`. The existing Operations dynamic filesystem-tracing build warning remains unchanged.
+Supported-browser lifecycle/WebMCP evidence is still pending; `RIGHTSPOT-047` remains paused and its
+old candidate must be re-baselined after the `048` gate. No browser closure, push, or universal WebMCP
+claim is made.
+
+## 7.34 Shared role-page session lifecycle Builder candidate — 2026-09-03
+
+The `RS-WO-048-01` Builder returned `READY_FOR_INDEPENDENT_VERIFICATION` after changing exactly the
+declared eight paths: the shared lifecycle monitor and role frame, Tenant and Agent page-bound
+adapters, and four focused regression-test files. The implementation revalidates the server-resolved
+session on focus and visible `visibilitychange`, coalesces one in-flight read, suppresses late
+settlements after disposal, keys authenticated children by `{role}:{id}`, and preserves the Agent
+unassigned-`FORBIDDEN` distinction. No server, API, DTO, fixture, workflow, dependency, navigation,
+or canonical-document path changed.
+
+Main integrated the reviewed candidate at `218935c` from code/test baseline `e4c3df4`. Independent
+Main checks passed: focused `35/35`, complete `215/215`, non-incremental typecheck, production build,
+repository validation, sensitive scan, and `git diff --check`. The build's existing Operations
+dynamic filesystem-tracing warning remains recorded and is not a deployment claim. This is a frozen
+static/deterministic checkpoint only. `RS-WO-048-02` must still independently verify both role pages,
+external session transitions, registration removal, manual recovery, accessibility/responsive state,
+clean page errors, and persistent no-mutation readback before `RIGHTSPOT-048` can close.

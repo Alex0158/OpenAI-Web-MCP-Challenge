@@ -189,18 +189,20 @@ Agent queue, and `/agent/operations` with expected role navigation and no applic
 did not mutate the fixture or add a populated workflow claim. RightSpot Main remains the single local
 canonical Worktree, ahead of `origin/main` while the `RIGHTSPOT-047` independent browser gate remains
 incomplete, so no push or WebMCP closure claim is made.
-**Latest shared session-lifecycle audit (2026-09-03):** The Contract Advisor and Main source review
-confirmed that `RolePageFrame` reads `GET /api/session` only once, while both page-bound WebMCP
-adapters dispose only on child unmount. The server still rejects unauthorized reads and no privacy
-leak was reproduced, but an external HttpOnly session clear/replacement can leave a stale capability
-registered in the mounted page. `RIGHTSPOT-048` and ADR-RS-0018 now own the bounded shared repair;
-`RIGHTSPOT-047` is paused and must be re-baselined after it. No product source or fixture changed.
+**Latest shared session-lifecycle checkpoint (2026-09-03):** The Contract Advisor and Main source
+review confirmed the mount-only lifecycle gap described in ADR-RS-0018. `RIGHTSPOT-048` now has a
+reviewed eight-path candidate integrated at product commit `218935c`: focus/visible-session
+revalidation, actor-id keyed child teardown, and adapter-side authentication deactivation are covered
+by the new tests. Main independently reran focused `35/35`, complete `215/215`, typecheck, production
+build, repository validation, sensitive scan, and diff checks. No server/API/fixture behavior changed;
+the supported-browser lifecycle gate remains open. `RIGHTSPOT-047` is paused and must be re-baselined
+after the `048` gate.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Complete the active `RS-WO-048-01` Builder against the recaptured
-Main source identity, using the exact eight-path write set and TDD contract in `RIGHTSPOT-048`. Then
-freeze the repaired source, run its independent lifecycle/browser gate, re-baseline `RIGHTSPOT-047`,
-and resume only the missing independent Operations WebMCP evidence. Do not run the old 047 verifier
-target or push/claim WebMCP closure before both gates are complete. In parallel, `RIGHTSPOT-012`
+**Current next product action:** Dispatch `RS-WO-048-02` against frozen candidate `218935c`, using the
+exact lifecycle/browser evidence gate in `RIGHTSPOT-048`. Do not modify the frozen eight source/test
+paths during verification. After that gate passes, re-baseline `RIGHTSPOT-047` and resume only the
+missing independent Operations WebMCP evidence. Do not run the old 047 verifier target or push/claim
+WebMCP closure before both gates are complete. In parallel, `RIGHTSPOT-012`
 remains a non-blocking
 read-only audit lane. `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its manual Operations consumer
 latest-read boundary at product source `3582ba4`; it does not reopen `RIGHTSPOT-044` or change the
@@ -681,10 +683,10 @@ final response can remain a normal application action.
 | Delegated development | **EXPERIMENTAL PILOT — TASK-OWNED** | `RS-WO-002-01` returned `READY_FOR_VERIFICATION`; corrected `RS-WO-002-02` rerun returned `VERIFIED`; `RS-WO-002-03` bounded repair commit `6e70c9f` passed fresh independent verification; `RS-WO-002-04` candidate `68bbc69` passed dedicated verification against frozen source `28105e4d`; `RS-WO-002-05` candidate is frozen at T2 code commit `de169ce` and passed dedicated independent verification against snapshot `bc3bc42`; `RS-WO-002-06` returned `READY_FOR_REVIEW` and its accepted/revised decomposition is recorded in ADR-RS-0008; `RS-WO-002-07` candidate `d71fe3e` passed dedicated independent verification and is integrated at `f700ba9`; `RS-WO-002-08` is integrated at `006d2fd` after process re-baseline `8b77bdd`; `RS-WO-002-09` is integrated as bounded UI guidance; `RS-WO-002-11` candidate `f1f83c7` passed dedicated independent verification and is integrated at `6a0b4b8`; `RS-WO-002-13` candidate `169cb95d` passed dedicated independent verification and is integrated at `3765747`; repaired `RS-WO-002-12` candidate `52cba87c` passed final independent verification and is integrated at `9348aa5`; `RS-WO-002-14` passed direct read-only cross-role verification; `RS-WO-002-15` passed the isolated browser walkthrough and closure evidence is reconciled in `RIGHTSPOT-MVP-CLOSURE-RECORD.md` |
 | Cloud Receiver | **Not a first-phase dependency** | Future integration boundary only |
 | Agent Operations manual read surface | **CLOSED_VERIFIED; `RIGHTSPOT-044`** | Existing Operations authority/projection is consumed by the strict Agent-only `/agent/operations` page and HTTP route; independent local browser/API verification passed, while later Operations WebMCP remains separately gated |
-| Active product repair | **NONE; `RIGHTSPOT-045` CLOSED_VERIFIED** | The consumer-only latest-read sequencing guard for Operations is closed at product source `3582ba4` within the manual page boundary; Main-controlled race evidence passed, the independent browser-helper limitation is recorded, and no API/domain/projection/WebMCP change was authorized |
-| WebMCP | **TENANT DISCOVERY SLICE VERIFIED; `RIGHTSPOT-046` ACCEPTED; `RIGHTSPOT-047` PENDING** | Page-bound `search_listings` is verified only in the declared local supported-browser capability; ADR-RS-0017 accepts one Agent Operations `read_listing_pipeline` contract, and `RIGHTSPOT-047` owns its separate implementation and supported-browser evidence |
+| Active product repair | **`RIGHTSPOT-048` VERIFICATION_PENDING; `RIGHTSPOT-045` CLOSED_VERIFIED** | The shared role-page session lifecycle candidate is integrated at `218935c` and awaits independent supported-browser verification; the earlier Operations latest-read repair remains closed within its manual page boundary |
+| WebMCP | **TENANT DISCOVERY SLICE VERIFIED; `RIGHTSPOT-046` ACCEPTED; `RIGHTSPOT-047` PAUSED; `RIGHTSPOT-048` BROWSER GATE PENDING** | Page-bound `search_listings` is verified only in the declared local supported-browser capability; the Agent `read_listing_pipeline` candidate is frozen but must be re-baselined after the shared lifecycle gate |
 | Runtime / deployment | **Not started** | No service, hosting, credentials, or public URL |
-| Evidence | **LOCAL MVP + `RIGHTSPOT-043`, `RIGHTSPOT-044`, AND `RIGHTSPOT-045` CLOSED_VERIFIED; `RIGHTSPOT-046` ACCEPTED; `RIGHTSPOT-047` INDEPENDENT_BROWSER_INCOMPLETE** | The frozen `RIGHTSPOT-047` candidate passes the complete authored suite `201/201` across `45` test files; 045 product commit `3582ba4` passed focused `8/8`, typecheck, production build, repository validators, sensitive scan, exact-path review, and Main-controlled browser race checks. The 047 independent-browser limitation is recorded; no push, WebMCP closure, or production/deployment claim is made |
+| Evidence | **LOCAL MVP + `RIGHTSPOT-043`, `RIGHTSPOT-044`, AND `RIGHTSPOT-045` CLOSED_VERIFIED; `RIGHTSPOT-046` ACCEPTED; `RIGHTSPOT-048` STATIC_GATES_PASSED_BROWSER_PENDING; `RIGHTSPOT-047` INDEPENDENT_BROWSER_INCOMPLETE** | The 048 candidate is integrated at `218935c` and passes focused `35/35`, complete `215/215`, typecheck, build, validators, sensitive scan, and diff checks; browser lifecycle evidence is still required, and the 047 gate remains paused. No push, WebMCP closure, or production/deployment claim is made |
 
 ## 3. Confirmed working inputs
 

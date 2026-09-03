@@ -198,8 +198,10 @@ WebMCP contract decision. `RIGHTSPOT-047` is the source implementation gate afte
 recapture and Builder dispatch; its original five-path candidate passed deterministic checks and Main
 browser smoke, but its independent browser gate is paused pending the shared lifecycle repair in
 `RIGHTSPOT-048` and must be re-baselined before verification resumes. `RIGHTSPOT-048` is the newly
-registered bounded shared role-page session lifecycle repair, with its serial Builder Work Order now
-active under the frozen T0 source identity;
+registered bounded shared role-page session lifecycle repair. Its serial Builder Work Order returned
+`READY_FOR_INDEPENDENT_VERIFICATION`, and Main integrated the exact eight-path candidate at `218935c`
+after focused `35/35`, complete `215/215`, typecheck, build, repository, sensitive-scan, and diff
+gates. Its independent browser Work Order is now the active gate;
 `RIGHTSPOT-045` is now `CLOSED_VERIFIED` within its bounded
 Operations consumer repair boundary after Main-controlled race verification and an explicitly recorded
 independent-browser harness limitation;
@@ -351,7 +353,8 @@ selected Tenant Search contract gate; `RIGHTSPOT-043` is `CLOSED_VERIFIED`; `RIG
 closed through accepted `ADR-RS-0017` as the separate Main-owned contract decision for one Agent
 Operations WebMCP `read_listing_pipeline` capability; `RIGHTSPOT-047` remains paused with its original
 candidate retained as historical evidence, and `RIGHTSPOT-048` owns the shared lifecycle repair before
-the `047` candidate is re-baselined. `RIGHTSPOT-048` does not authorize changes outside its exact
+the `047` candidate is re-baselined. Its source is frozen at `218935c` pending independent browser
+evidence. `RIGHTSPOT-048` does not authorize changes outside its exact
 eight-path write set or any temporary Worktree.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)

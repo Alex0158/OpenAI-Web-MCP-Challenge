@@ -478,14 +478,16 @@ The non-blocking `RIGHTSPOT-012` audit may continue in parallel. `RIGHTSPOT-046`
 through `ADR-RS-0017` for one bounded Agent Operations WebMCP slice covering only
 `read_listing_pipeline`; `RIGHTSPOT-047` is registered and its original five-path Builder candidate
 passed deterministic checks and Main browser smoke. Its independent browser gate is paused after one
-command-level harness block and two bounded partial retries because `RIGHTSPOT-048` now owns the
-shared role-page session lifecycle repair; after that repair the `047` source must be re-baselined
-before another bounded attempt. No push or closure claim is made. `upcomingViewings` remains deferred
+command-level harness block and two bounded partial retries because `RIGHTSPOT-048` owns the
+shared role-page session lifecycle repair. The reviewed 048 candidate is integrated at `218935c` and
+its independent browser gate is now the next action; after that gate passes, the `047` source must be
+re-baselined before another bounded attempt. No push or closure claim is made. `upcomingViewings` remains deferred
 until its `asOf`/fixture-clock reproducibility boundary is explicitly resolved.
 `RIGHTSPOT-010` is closed as a reviewed staged decision; its authority and projection are not being
 reimplemented. `RIGHTSPOT-046` owns the current bounded Operations WebMCP contract decision and does
 not authorize source work. `RIGHTSPOT-048` owns the shared session-lifecycle repair required by both
-page-bound adapters before the Agent candidate can close. Any later Operations WebMCP capability or W4 mutation requires its own
+page-bound adapters before the Agent candidate can close; its source candidate is frozen at `218935c`
+pending independent browser evidence. Any later Operations WebMCP capability or W4 mutation requires its own
 accepted contract, Task, write set, tests, browser evidence, and closure. Cloud Receiver, external authentication,
 deployment, WebRTC, Redis, and production readiness remain deferred.
 
