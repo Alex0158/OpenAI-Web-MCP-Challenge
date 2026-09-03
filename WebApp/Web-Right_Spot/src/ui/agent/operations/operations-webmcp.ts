@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { OperationsApiResponse } from "../../../shared/contracts/operations-api";
+import { readSession, type SessionActor } from "../../shared/session-api";
 import {
   OperationsApiError,
   reconstructOperationsResponse,
@@ -151,20 +152,23 @@ export function createOperationsListingPipelineTool(
 export function registerOperationsListingPipelineTool({
   modelContext,
   executeRead,
+  readCurrentSession = readSession,
   onRegistrationError,
 }: {
   modelContext: OperationsWebMcpModelContext | null;
   executeRead: OperationsListingPipelineExecutor;
+  readCurrentSession?: () => Promise<SessionActor | null>;
   onRegistrationError?: (error: unknown) => void;
 }): () => void {
   const registrationController = new AbortController();
   let active = true;
+  const deactivate = () => {
+    active = false;
+    registrationController.abort();
+  };
 
   if (!modelContext) {
-    return () => {
-      active = false;
-      registrationController.abort();
-    };
+    return deactivate;
   }
 
   const tool = createOperationsListingPipelineTool(async (query, options) => {
@@ -174,6 +178,20 @@ export function registerOperationsListingPipelineTool({
       const result = await executeRead(query, { signal: linkedExecution.signal });
       if (!active || linkedExecution.signal.aborted) throw new OperationsReadStaleError();
       return result;
+    } catch (error: unknown) {
+      if (error instanceof OperationsApiError) {
+        if (error.code === "UNAUTHENTICATED") {
+          deactivate();
+        } else if (error.code === "FORBIDDEN") {
+          try {
+            const actor = await readCurrentSession();
+            if (actor === null || actor.role !== "agent") deactivate();
+          } catch {
+            // The original bounded FORBIDDEN remains authoritative when confirmation is unavailable.
+          }
+        }
+      }
+      throw error;
     } finally {
       linkedExecution.dispose();
     }
@@ -188,10 +206,7 @@ export function registerOperationsListingPipelineTool({
     if (active) onRegistrationError?.(error);
   }
 
-  return () => {
-    active = false;
-    registrationController.abort();
-  };
+  return deactivate;
 }
 
 export default function OperationsWebMcp({

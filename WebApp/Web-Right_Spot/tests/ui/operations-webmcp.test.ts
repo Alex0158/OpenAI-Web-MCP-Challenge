@@ -383,3 +383,91 @@ test("unsupported capability does not register and the adapter stays inside the 
   assert.match(page, /Clear filters/);
   assert.match(page, /Retry operations read/);
 });
+
+test("authoritative Operations UNAUTHENTICATED deactivates immediately without confirmation", async () => {
+  const tools: OperationsListingPipelineTool[] = [];
+  let registrationSignal: AbortSignal | undefined;
+  let sessionReads = 0;
+  const dispose = registerOperationsListingPipelineTool({
+    modelContext: {
+      registerTool(tool, options) {
+        tools.push(tool);
+        registrationSignal = options?.signal;
+      },
+    },
+    executeRead: async () => {
+      throw new OperationsApiError(401, "UNAUTHENTICATED", "private");
+    },
+    readCurrentSession: async () => {
+      sessionReads += 1;
+      return { id: "agent-primary", role: "agent" };
+    },
+  });
+
+  const result = await tools[0]!.execute({});
+  assert.equal("error" in result ? result.error.code : undefined, "UNAUTHENTICATED");
+  assert.equal(sessionReads, 0);
+  assert.equal(registrationSignal?.aborted, true);
+  dispose();
+});
+
+test("Operations FORBIDDEN deactivates only after one session read confirms null or wrong role", async () => {
+  for (const confirmedActor of [null, { id: "tenant-primary", role: "tenant" } as const]) {
+    const tools: OperationsListingPipelineTool[] = [];
+    let registrationSignal: AbortSignal | undefined;
+    let sessionReads = 0;
+    const dispose = registerOperationsListingPipelineTool({
+      modelContext: {
+        registerTool(tool, options) {
+          tools.push(tool);
+          registrationSignal = options?.signal;
+        },
+      },
+      executeRead: async () => {
+        throw new OperationsApiError(403, "FORBIDDEN", "private");
+      },
+      readCurrentSession: async () => {
+        sessionReads += 1;
+        return confirmedActor;
+      },
+    });
+
+    const result = await tools[0]!.execute({});
+    assert.equal("error" in result ? result.error.code : undefined, "FORBIDDEN");
+    assert.equal(sessionReads, 1);
+    assert.equal(registrationSignal?.aborted, true);
+    dispose();
+  }
+});
+
+test("unassigned-Agent FORBIDDEN and unavailable confirmation preserve the registration", async () => {
+  for (const readCurrentSession of [
+    async () => ({ id: "agent-unassigned", role: "agent" } as const),
+    async () => { throw new Error("session service unavailable"); },
+  ]) {
+    const tools: OperationsListingPipelineTool[] = [];
+    let registrationSignal: AbortSignal | undefined;
+    let sessionReads = 0;
+    const dispose = registerOperationsListingPipelineTool({
+      modelContext: {
+        registerTool(tool, options) {
+          tools.push(tool);
+          registrationSignal = options?.signal;
+        },
+      },
+      executeRead: async () => {
+        throw new OperationsApiError(403, "FORBIDDEN", "private");
+      },
+      readCurrentSession: async () => {
+        sessionReads += 1;
+        return await readCurrentSession();
+      },
+    });
+
+    const result = await tools[0]!.execute({});
+    assert.equal("error" in result ? result.error.code : undefined, "FORBIDDEN");
+    assert.equal(sessionReads, 1);
+    assert.equal(registrationSignal?.aborted, false);
+    dispose();
+  }
+});

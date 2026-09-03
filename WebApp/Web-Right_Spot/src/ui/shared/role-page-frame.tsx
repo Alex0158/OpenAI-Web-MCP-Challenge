@@ -3,6 +3,10 @@
 import { useEffect, useState, type ReactNode } from "react";
 import SessionNav from "./session-nav";
 import {
+  createRoleSessionLifecycleMonitor,
+  sessionActorKey,
+} from "./role-session-lifecycle";
+import {
   deleteSession,
   readSession,
   type SessionActor,
@@ -42,31 +46,56 @@ export default function RolePageFrame({
   const [isLoading, setIsLoading] = useState(true);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [banner, setBanner] = useState<Banner>(null);
+  const [sessionReadError, setSessionReadError] = useState<string | null>(null);
 
   useEffect(() => {
     let isCurrent = true;
+    let disposeMonitor = () => {};
+
+    const startMonitor = (initialActor: SessionActor | null) => {
+      if (!isCurrent) return;
+      disposeMonitor = createRoleSessionLifecycleMonitor({
+        windowTarget: window,
+        documentTarget: document,
+        initialActor,
+        readSession,
+        onActorChange: (resolvedActor) => {
+          setActor(resolvedActor);
+        },
+        onError: (error: unknown) => {
+          setSessionReadError(sessionErrorMessage(error, "read"));
+        },
+        onSuccess: () => {
+          setSessionReadError(null);
+        },
+      });
+    };
 
     void readSession()
       .then((resolvedActor) => {
         if (!isCurrent) return;
         setActor(resolvedActor);
         setIsLoading(false);
+        setSessionReadError(null);
+        startMonitor(resolvedActor);
       })
       .catch((error: unknown) => {
         if (!isCurrent) return;
-        setActor(null);
         setIsLoading(false);
-        setBanner({ tone: "error", message: sessionErrorMessage(error, "read") });
+        setSessionReadError(sessionErrorMessage(error, "read"));
+        startMonitor(null);
       });
 
     return () => {
       isCurrent = false;
+      disposeMonitor();
     };
   }, []);
 
   async function handleLogout() {
     setIsSigningOut(true);
     setBanner(null);
+    setSessionReadError(null);
 
     try {
       await deleteSession();
@@ -97,6 +126,7 @@ export default function RolePageFrame({
 
       <main id="main-content" className="site-main" style={{ minWidth: 0 }}>
         <section aria-labelledby="role-page-title">
+          {sessionReadError ? <StatusBanner tone="error" message={sessionReadError} /> : null}
           {banner ? <StatusBanner tone={banner.tone} message={banner.message} /> : null}
 
           <div className="session-panel" style={{ minWidth: 0, overflowWrap: "anywhere" }}>
@@ -124,7 +154,7 @@ export default function RolePageFrame({
                 <a className="button button-quiet" href="/">Return to session surface</a>
               </div>
             ) : (
-              <div style={{ minWidth: 0, overflowWrap: "anywhere" }}>
+              <div key={sessionActorKey(actor)} style={{ minWidth: 0, overflowWrap: "anywhere" }}>
                 {children}
               </div>
             )}

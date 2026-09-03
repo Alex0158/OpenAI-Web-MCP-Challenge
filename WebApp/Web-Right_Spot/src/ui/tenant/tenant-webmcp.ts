@@ -176,12 +176,13 @@ export function registerTenantSearchTool({
 }): () => void {
   const registrationController = new AbortController();
   let active = true;
+  const deactivate = () => {
+    active = false;
+    registrationController.abort();
+  };
 
   if (!modelContext) {
-    return () => {
-      active = false;
-      registrationController.abort();
-    };
+    return deactivate;
   }
 
   const tool = createTenantSearchTool(async (filters, options) => {
@@ -196,6 +197,9 @@ export function registerTenantSearchTool({
         throw new TenantSearchStaleError();
       }
       return result;
+    } catch (error: unknown) {
+      if (isTenantAuthenticationFailure(error)) deactivate();
+      throw error;
     } finally {
       linkedExecution.dispose();
     }
@@ -210,10 +214,7 @@ export function registerTenantSearchTool({
     if (active) onRegistrationError?.(error);
   }
 
-  return () => {
-    active = false;
-    registrationController.abort();
-  };
+  return deactivate;
 }
 
 export default function TenantWebMcp({
@@ -329,6 +330,10 @@ function hasOwn(value: Record<string, unknown>, name: string): boolean {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isTenantAuthenticationFailure(error: unknown): boolean {
+  return error instanceof TenantApiError && (error.status === 401 || error.status === 403);
 }
 
 function linkAbortSignals(signals: readonly (AbortSignal | undefined)[]): {

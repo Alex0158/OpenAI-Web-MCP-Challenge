@@ -12,6 +12,7 @@ import {
   type WebMcpModelContext,
 } from "../../src/ui/tenant/tenant-webmcp";
 import type { TenantListingsResponse } from "../../src/shared/contracts/listings-api";
+import { TenantApiError } from "../../src/ui/tenant/tenant-api";
 
 const PAGE_PATH = resolve(process.cwd(), "src/ui/tenant/tenant-discovery-page.tsx");
 
@@ -260,4 +261,31 @@ test("the adapter is mounted inside the server-resolved Tenant /tenant child bou
   assert.ok(adapterStart > frameGate);
   assert.match(page, /<TenantWebMcp[\s\S]*executeSearch=\{executeSearch\}/);
   assert.match(page, /cancelSearches=\{cancelSearches\}/);
+});
+
+test("authoritative Tenant authentication failures deactivate the page registration", async () => {
+  for (const failure of [
+    new TenantApiError(401, "UNAUTHENTICATED", "private"),
+    new TenantApiError(403, "FORBIDDEN", "private"),
+  ]) {
+    const tools: TenantSearchTool[] = [];
+    let registrationSignal: AbortSignal | undefined;
+    const modelContext: WebMcpModelContext = {
+      registerTool(tool, options) {
+        tools.push(tool);
+        registrationSignal = options?.signal;
+      },
+    };
+    const dispose = registerTenantSearchTool({
+      modelContext,
+      executeSearch: async () => { throw failure; },
+    });
+
+    const result = await tools[0]!.execute({});
+    assert.equal("error" in result ? result.error.code : undefined, failure.code);
+    assert.equal(registrationSignal?.aborted, true);
+    const afterDeactivation = await tools[0]!.execute({});
+    assert.equal("error" in afterDeactivation ? afterDeactivation.error.code : undefined, "STALE_RESULT");
+    dispose();
+  }
 });
