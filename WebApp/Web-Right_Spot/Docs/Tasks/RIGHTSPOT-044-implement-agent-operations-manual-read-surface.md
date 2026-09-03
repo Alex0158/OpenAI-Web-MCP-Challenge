@@ -12,14 +12,13 @@ accepted `ADR-RS-0012`, closed `RIGHTSPOT-015`, and closed `RIGHTSPOT-016`
 
 - Type: `implementation`
 - Lifecycle: `pending`
-- Execution posture: `UI_READY_FOR_INDEPENDENT_VERIFICATION`
+- Execution posture: `VERIFICATION_DISPATCHED_IN_PROGRESS`
 - Objective: Expose the existing deterministic Operations profile and pure projection through one
   agent-only manual read surface without changing the relay workflow or registering WebMCP.
-- Current increment: `RS-WO-044-02` returned `READY_FOR_VERIFICATION`; Main reviewed and integrated
-  the manual surface at `9ed906b` after the complete static/build/repository gates. `RS-WO-044-03`
-  is now the bounded independent verification increment.
-- Next gate: Dispatch `RS-WO-044-03` against the frozen integrated source; do not modify source,
-  fixtures, task files, or documentation during verification.
+- Current increment: `RS-WO-044-03` is dispatched against frozen integrated source `f884879`; it is
+  the bounded independent verification increment for the manual Operations surface.
+- Next gate: Receive and classify the independent verification result; do not modify source, fixtures,
+  task files, or documentation during verification.
 - Parent role: This is one registered Task File. Application/API, UI/navigation, and verification are
   Work Order checkpoints under this file, not additional Tasks.
 
@@ -215,9 +214,18 @@ registration, charts, natural-language parsing, a new route family, or a third q
 ### RS-WO-044-03 — Independent integrated verification
 
 **Role:** Independent browser/API Verifier  
-**Status:** `READY_TO_DISPATCH`  
+**Status:** `IN_PROGRESS`  
 **Parallelization:** `READ_ONLY` — no source, task, fixture, or documentation writes.  
 **Risk profile:** `Assured` for cross-role, data-authority, error, and responsive claims.
+
+**Supporting worker:** Multi-agent Independent Browser/API Verifier `01a06553-2741-7310-8437-e37f7f7f05f3`
+(`Ptolemy`)
+
+**Dispatch record (2026-09-03):** Main dispatched this read-only verification after the manual
+Operations source was reviewed and integrated at `f884879`. The verifier received the full repository
+instruction surface, `RIGHTSPOT-044`, `ADR-RS-0016`, the exact verification matrix, fresh-state and
+privacy constraints, evidence discipline, and claim limits. It must not modify source, fixtures beyond
+bounded reversible reset, task files, or documentation.
 
 The Verifier must use the frozen integrated Main source and fresh, separately resettable relay and
 Operations profiles. It must verify:
