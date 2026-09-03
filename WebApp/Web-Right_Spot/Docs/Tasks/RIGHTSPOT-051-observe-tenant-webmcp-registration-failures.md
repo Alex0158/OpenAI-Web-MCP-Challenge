@@ -20,11 +20,11 @@ accepted [ADR-RS-0015](../Decisions/ADR-RS-0015-tenant-search-and-webmcp-contrac
 - **Blocking status:** Non-blocking to the ordinary local MVP and to the Agent Operations 047/048
   evidence gates. It is related to the Agent-side `F-26` repair, which remains a checkpoint under
   `RIGHTSPOT-047` rather than a second Task here.
-- **Current increment:** Pre-dispatch contract review is complete. The three-path Builder checkpoint
-  is ready to implement the exact registration-failure signal and neutral capability-unavailable
-  presentation.
-- **Next gate:** Dispatch the exact three-path Builder under the WebMCP model gate, then review its
-  Red → Green → Refactor handoff before any Main integration or closure claim.
+- **Current increment:** The exact three-path Builder checkpoint has been dispatched under the WebMCP
+  model gate. Main is continuing non-overlapping source-identity, documentation, and integration
+  preparation while the worker runs.
+- **Next gate:** Review the Builder's exact diff and Red → Green → Refactor handoff; then freeze the
+  candidate for independent verification before any Main integration or closure claim.
 - **Source baseline at registration:** Main `7650db00cc60d23b262b6c506c81e8913ad4d3ca`; RightSpot
   source/test paths were clean. Existing validation-ledger and protected untracked paths are outside
   the worker write set.
@@ -144,14 +144,15 @@ Close this Task only when all are true:
 
 ### RS-WO-051-01 — Surface Tenant Search registration failure
 
-**Status:** `READY_FOR_DISPATCH`  
+**Status:** `DISPATCHED_BUILDER`  
 **Role:** WebMCP/API/UI implementation Builder  
 **Parallelization:** `SERIAL_TENANT_WEBMCP_ADAPTER` — no other writer may touch the three-path worker
 write set during the checkpoint  
 **Model gate:** When dispatched, WebMCP-specific implementation must use `gpt-5.6-sol` with `medium`
 reasoning. If that capability is unavailable, keep this Work Order gated; do not substitute another
 model for the WebMCP implementation.  
-**Dispatch:** Ready for one exact WebMCP Builder dispatch after Main's identity and prompt review  
+**Dispatch:** Supporting Builder Socrates (`01a0672d-ebb1-7831-a8e9-ca23f248fc42`) dispatched by Main
+with `gpt-5.6-sol` and `medium` reasoning from the reviewed source projection  
 **Execution mode:** Prefer the canonical Main Worktree if Main elects a serial implementation; an
 isolated Worktree requires an explicit source-freeze and integration record  
 **Worker write set:** the exact three paths listed above  
@@ -159,6 +160,15 @@ isolated Worktree requires an explicit source-freeze and integration record
 roadmap, and Git closure records  
 **Stop condition:** If a user-visible status requires a new ADR, shared lifecycle contract, telemetry
 system, or manual Search behavior change, stop and return to Main's decision gate.
+
+**Dispatch record (2026-09-03):** Main sent one self-contained Builder prompt requiring the global,
+repository, RightSpot, Next.js, Task, ADR, and WebMCP contract surfaces to be read before action. The
+prompt fixes the actual repository root, the source baseline `14cd82c7a66e352d9ba0810b14ceaf9bfb5138e0`,
+the exact three-path worker write set, the Node `24.20.0` runtime, TDD Red → Green → Refactor, and the
+full/static verification ladder. It explicitly forbids documentation, Git/index, Worktree, fixture,
+server/API/domain/DTO, ordinary manual Search, shared role-frame, Agent/047, and unrelated Web-Game
+changes. The worker must stop at `READY_FOR_VERIFICATION`; Main owns all documentation, integration,
+independent-verification, and closure decisions.
 
 ## Stop and reopen conditions
 

@@ -9,11 +9,11 @@ The current integrated RightSpot package complete suite passes `226/226` across 
 files. The Tenant Discovery Search/WebMCP slice is independently verified within its declared local
 supported-browser capability, while the Agent Operations `read_listing_pipeline` candidate remains
 open behind its independent browser evidence gate. The latest bounded cross-layer findings `F-17` /
-`RIGHTSPOT-039`, `F-18` / `RIGHTSPOT-040`, `F-19` / `RIGHTSPOT-041`, and `F-23/F-24` /
-`RIGHTSPOT-049` are closed within their recorded listing-detail, Discovery, request-editor, and
-Search response-truthfulness boundaries. The latest multi-angle audit also accepted open P2 findings
-`F-25` / `RIGHTSPOT-050` for stale Tenant mutation actions after failed conflict recovery and
-`F-26` / `RIGHTSPOT-051` plus `RS-WO-047-03` for silent page-bound WebMCP registration failure.
+`RIGHTSPOT-039`, `F-18` / `RIGHTSPOT-040`, `F-19` / `RIGHTSPOT-041`, `F-23/F-24` /
+`RIGHTSPOT-049`, and `F-25` / `RIGHTSPOT-050` are closed within their recorded listing-detail,
+Discovery, request-editor, Search response-truthfulness, and Tenant action-safety boundaries. The
+latest multi-angle audit also accepted open P2 finding `F-26` / `RIGHTSPOT-051` plus `RS-WO-047-03` for
+silent page-bound WebMCP registration failure.
 `F-25` / `RIGHTSPOT-050` is now closed within its bounded Tenant editor action-safety claim after
 serial Main TDD and supported ordinary conflict-recovery evidence; the injected failed-refetch browser
 branch remains an explicit harness limitation. `F-26` / `RIGHTSPOT-051` and `RS-WO-047-03` remain open
@@ -1633,3 +1633,21 @@ Main reviewed the exact diff and preserved unrelated Web-Game changes and protec
 untracked artifacts. This is a bounded consumer closure, not a claim about the separate dynamic-route
 `F-08` evidence gap, the paused `RIGHTSPOT-047` capability, or the `BLOCKED_HARNESS` `RIGHTSPOT-048`
 gate.
+
+## 7.44 Tenant WebMCP registration-observability Builder dispatch — `RIGHTSPOT-051` — 2026-09-03
+
+After the 050 closure, Main completed the pre-dispatch review for the separate Tenant portion of
+`F-26` and dispatched `RS-WO-051-01` to supporting Builder Socrates
+(`01a0672d-ebb1-7831-a8e9-ca23f248fc42`) with `gpt-5.6-sol` and `medium` reasoning. The source
+projection baseline is Main `14cd82c7a66e352d9ba0810b14ceaf9bfb5138e0`; the subsequent
+`RIGHTSPOT-051` status writeback is documentation-only and does not change the worker source/test
+projection.
+
+The Builder's exact write set is `src/ui/tenant/tenant-webmcp.ts`,
+`src/ui/tenant/tenant-discovery-page.tsx`, and `tests/ui/tenant-webmcp.test.ts`. The prompt requires
+TDD Red → Green → Refactor, sync/rejected registration failure coverage, single bounded page-owned
+signal, lifecycle deactivation, late-disposal safety, manual Search fallback preservation, pinned Node
+`24.20.0`, and the complete/static verification ladder. It forbids canonical documentation, Git/index,
+Worktree, fixture/SQLite, server/API/domain/DTO, ordinary Search, shared role-frame, Agent/047, and
+unrelated Web-Game changes. The worker has no authority to integrate, independently verify, commit,
+push, or close the Task; its next valid outcome is `READY_FOR_VERIFICATION`.

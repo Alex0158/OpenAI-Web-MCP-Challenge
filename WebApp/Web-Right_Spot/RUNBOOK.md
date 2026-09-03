@@ -190,7 +190,7 @@ privacy, and both page-bound WebMCP adapters. It accepted `F-25` / `RIGHTSPOT-05
 stale-action gate after a failed conflict recovery; that bounded Main-serial repair is now
 `CLOSED_VERIFIED`. It also accepted `F-26` / `RIGHTSPOT-051` plus
 `RS-WO-047-03` for silent WebMCP registration failure in the Tenant and Agent production wiring.
-`RS-WO-051-01` remains gated pending final pre-dispatch review;
+`RS-WO-051-01` is dispatched to one exact WebMCP Builder checkpoint under `gpt-5.6-sol + medium`;
 `RS-WO-047-03` waits for the reviewed 048 evidence decision and a new 047 source baseline. These
 follow-ups do not authorize a new API, domain state, transport, external integration, or deployment
 claim. The 048 browser-harness limitation and the `F-08` dynamic-route concern remain evidence
