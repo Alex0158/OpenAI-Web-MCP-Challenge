@@ -22,8 +22,8 @@ flow and were rerun after their findings were corrected.
 
 This is local and separate-process evidence. It is not a deployed-production, external Codex,
 general browser-automation, npm-publication, or arbitrary-business-safety claim. The verified source
-is now committed and pushed to dedicated review branches; those candidates are not merged into
-`main` or deployed from their exact SHAs. An Event `202` remains accepted and queued only.
+is committed, pushed, and merged into the respective root and active-v2 `main` branches; those merge
+commits are not deployed from their exact SHAs. An Event `202` remains accepted and queued only.
 
 ## Developer flow
 
@@ -136,15 +136,18 @@ Screenshots:
 
 ## Source and delivery state
 
-- Root review branch: `codex/reentry-main-candidate-preview`
-- Root candidate SHA: `4713024a027a8834745ecccaf88ee85f93cf2885`
-- Active v2 review branch: `codex/cloud-receiver-v2-clean-integration`
-- Active v2 candidate SHA: `0d7bc3c4282fd3db2e9558874a0941ece3df13f5`
-- Both candidates are pushed and remain separate from `main`; original owner-held worktrees remain
-  untouched.
-- Exact-SHA Node 24 `CONNECTOR-V2-E2E-001` rerun: 1/1 passed with zero failures or skips.
-- No merge into `main`, deployment, alias promotion, Supabase migration, npm publication, or
-  production smoke was performed from these candidate SHAs.
+- Root review branch: `codex/reentry-main-candidate-preview`; root candidate SHA:
+  `4713024a027a8834745ecccaf88ee85f93cf2885`; root `main` merge commit:
+  `cdcc0a81aee0b58767ff8450f9a6757339974f92`
+- Active v2 review branch: `codex/cloud-receiver-v2-clean-integration`; active-v2 candidate SHA:
+  `0d7bc3c4282fd3db2e9558874a0941ece3df13f5`; active-v2 `main` merge commit:
+  `6b4826f68bb3634d004c49259d9c5311c660d997`
+- Both candidates are merged into their respective `main` branches; original owner-held worktrees
+  remain untouched.
+- Exact-SHA Node 24 `CONNECTOR-V2-E2E-001` rerun: 1/1 passed with zero failures or skips before
+  the documentation-only follow-up.
+- No deployment, alias promotion, Supabase migration, npm publication, or production smoke was
+  performed from these merge commits.
 
 ## Residual gates and reopen conditions
 

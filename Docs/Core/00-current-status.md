@@ -69,9 +69,10 @@ queued-state and plain-language usability corrections. This increment is
 `separate_process_verified`; the Re-entry integration candidate is committed at
 `4713024a027a8834745ecccaf88ee85f93cf2885` on `codex/reentry-main-candidate-preview`, and the
 active-v2 candidate is committed at `0d7bc3c4282fd3db2e9558874a0941ece3df13f5` on
-`codex/cloud-receiver-v2-clean-integration`. Both candidates are pushed for review, but neither is
-merged into `main`, deployed from its exact SHA, published, or exercised with a supported external
-Agent/Browser adapter. The older SDK `0.3.1` is published from exact Git source, but it predates the
+`codex/cloud-receiver-v2-clean-integration`. Both candidates are now merged into their respective
+`main` branches: root merge commit `cdcc0a81aee0b58767ff8450f9a6757339974f92` and active-v2 merge
+commit `6b4826f68bb3634d004c49259d9c5311c660d997`. Neither has been deployed from its exact merge
+SHA, published, or exercised with a supported external Agent/Browser adapter. The older SDK `0.3.1` is published from exact Git source, but it predates the
 working-tree simple facade; TASK-031 owns that separate package release. The published Connector
 `0.2.20` reports root `gitHead` `733d77f`, whose source still records Connector version `0.2.14`,
 and its bundled client rejects active v2's instruction-bearing lease. TASK-032 owns the exact-source
