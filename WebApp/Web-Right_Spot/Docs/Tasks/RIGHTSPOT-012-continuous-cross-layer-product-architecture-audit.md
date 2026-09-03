@@ -86,6 +86,13 @@ with healthy health.
   Main-controlled race evidence, with the independent-browser harness limitation explicitly recorded.
   It does not reopen 044 or block this audit lane. Audit worker Dewey
   (`01a0655c-c292-7cd1-9560-ca612d64ea1e`) made no source or canonical-document changes.
+  The subsequent read-only chain audit by Helmholtz (`01a0659c-344c-7de2-8dee-0ed309b9b554`) began
+  against `cf931d0`; Main advanced to `21bed15` with documentation-only changes and no product-source
+  or test drift. It found no P0/P1/P2 defect across the human Tenant-to-Agent viewing-request chain:
+  focused UI/projection checks passed `36/36`, pure-domain workflow checks passed `18/18`, all six page
+  routes returned `200`, bounded `401`/`403`/`404` API boundaries held, health returned `200`, and the
+  SQLite hash/mtime stayed unchanged. The run intentionally did not mutate fixtures or perform populated
+  browser actions, so it adds no new rendered happy-path claim and registers no follow-on Task.
 - Next gate: Continue the cross-layer audit against the latest Main source after the now-closed
   `RIGHTSPOT-045` checkpoint. Register another follow-on Task only after reproducing a new bounded gap
   and recording its owner, scope, and acceptance gate.
@@ -617,3 +624,25 @@ duplicate was caused by overlapping shell output ranges. The temporary request w
 documented reset command and the fixture returned to generation `86` with empty request/Favourite state.
 Full tests (`159/159`), non-incremental typecheck, production build, and health passed. `RIGHTSPOT-012`
 remains `pending`; no repair, fallback, Task, or Work Order was registered.
+
+## Latest read-only chain-audit disposition — 2026-09-03
+
+Supporting Advisor Helmholtz (`01a0659c-344c-7de2-8dee-0ed309b9b554`) reviewed the bounded human chain
+from `/` through Tenant catalogue/detail/request, Agent queue/detail/review/prepare/send, and Tenant
+response. The audit began at `cf931d0`; Main advanced to `21bed15` during the run with documentation-only
+changes, while product source remained `3582ba4` and the canonical Main Worktree remained the only
+physical Worktree.
+
+No P0/P1/P2 defect was reproduced. The source, accepted route matrix, role checks, tenant/Agent DTO
+privacy, authoritative version handling, preparation/send separation, and bounded missing-resource and
+wrong-role responses remained coherent. Focused UI/projection checks passed `36/36`; pure-domain
+workflow checks passed `18/18`; all six page routes returned `200`; unauthenticated, wrong-role, and
+missing-resource API probes returned `401`, `403`, and `404`; health returned `200`; and the SQLite
+hash/mtime was unchanged before and after the read-only probes.
+
+This run deliberately did not perform fixture mutation, populated browser actions, failure injection,
+or workflow POST actions. It therefore adds no new rendered happy-path claim; prior canonical rendered
+evidence remains applicable and the fresh-render evidence gap is retained. The zsh reserved-variable
+shell error was corrected without a product request or mutation. Main disposition: no new Task or Work
+Order; keep `RIGHTSPOT-012` `pending` and re-dispatch it only after a meaningful route, data, permission,
+UI interaction, integration-boundary, or evidence increment.

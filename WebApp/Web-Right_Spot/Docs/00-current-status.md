@@ -154,6 +154,16 @@ was shutdown after a non-terminating browser retry, so its lack of response is r
 harness limitation rather than an independent pass. Existing independent `RIGHTSPOT-044` evidence
 remains valid because 045 changed only the consumer async lifecycle. `RIGHTSPOT-045` is now
 `CLOSED_VERIFIED` within this bounded manual Operations consumer boundary.
+**Latest `RIGHTSPOT-012` chain-audit checkpoint (2026-09-03):** Read-only Advisor Helmholtz reviewed
+the human `/` → Tenant catalogue/detail/request → Agent queue/detail/review/prepare/send → Tenant
+response chain against Main `21bed15` (product source remains `3582ba4`). Route/role entry, authoritative
+version use, DTO privacy, bounded failure/recovery, and wrong-role boundaries remained coherent. The
+Advisor's focused UI/projection checks passed `36/36`, pure-domain workflow checks passed `18/18`, all
+six page routes returned `200`, unauthenticated/wrong-role/missing-resource API probes returned bounded
+`401`/`403`/`404`, health remained `200`, and the SQLite file hash/mtime did not change. No P0/P1/P2
+defect or follow-on Task was reproduced or registered. Because this pass intentionally avoided fixture
+mutation and populated browser actions, it adds no new rendered happy-path claim; that evidence gap is
+explicitly retained. `RIGHTSPOT-012` remains the active pending audit lane.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current next product action:** Continue the non-blocking `RIGHTSPOT-012` cross-layer audit against
 the latest canonical Main source and register a new bounded Task only if a fresh evidence-backed gap

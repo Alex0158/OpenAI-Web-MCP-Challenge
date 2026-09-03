@@ -1249,3 +1249,26 @@ SQLite filesystem-tracing warning remains a deployment residual. `RIGHTSPOT-045`
 `CLOSED_VERIFIED` only for the bounded manual Operations latest-read consumer boundary. It does not
 claim an independent browser-helper pass, Operations WebMCP capability, deployment readiness, or any
 change to API, domain, projection, persistence, role/privacy, navigation, or other product scope.
+
+## 7.25 Tenant-to-Agent chain read-only audit — 2026-09-03
+
+Supporting Advisor Helmholtz audited the bounded human chain from `/` through Tenant catalogue, listing
+detail, request dashboard, Agent queue/detail/review/prepare/send, and Tenant response against the
+canonical Main source. Main advanced from the audit's starting `cf931d0` to `21bed15` during the run, but
+that delta was documentation-only; the latest product source remained `3582ba4`, and the single physical
+Main Worktree, unrelated collaborator changes, and pre-existing RightSpot untracked boundary artifacts
+were preserved.
+
+The read-only evidence found no P0/P1/P2 defect. Tenant and Agent navigation/CTA handoffs remained on
+the accepted routes; save/submit, conflict reread, explicit confirm/decline, terminal action removal,
+Agent preparation/send separation, role checks, and tenant-safe versus Agent-safe DTO projections matched
+the accepted contracts. Focused UI/projection checks passed `36/36`; pure-domain workflow checks passed
+`18/18`; all six page routes returned `200`; unauthenticated, wrong-role, and missing-resource probes
+returned bounded `401`, `403`, and `404`; `/api/health` returned `200`; and the SQLite hash and mtime
+were unchanged before and after the probes.
+
+This run intentionally did not create a browser session, mutate a fixture, inject a failure, or issue
+workflow POST actions. It therefore adds no fresh populated rendered happy-path evidence; existing
+canonical browser evidence remains the authority. No new Task or Work Order was registered, and
+`RIGHTSPOT-012` remains a pending continuous audit lane. A shell failure caused by zsh's reserved
+`path` variable was corrected under Bash and was not a product request or mutation.
