@@ -94,9 +94,9 @@ with healthy health.
   SQLite hash/mtime stayed unchanged. The run intentionally did not mutate fixtures or perform populated
   browser actions, so it adds no new rendered happy-path claim and registers no follow-on Task.
 - Next gate: `RIGHTSPOT-050` and the Tenant portion of `RIGHTSPOT-051` are now closed within their
-  bounded consumer claims. The Agent `RS-WO-047-03` repair is integrated at `ac67285`; the next
-  product gate is its separate read-only `RS-WO-047-02` verification, while retaining the 048 WebMCP
-  evidence gate. Re-dispatch this audit after a meaningful source,
+  bounded consumer claims. The Agent `RS-WO-047-03` repair is integrated at `ac67285`; its fresh
+  `RS-WO-047-02` read-only verification returned `INCOMPLETE_EVIDENCE` after a bounded Main
+  interruption, while the 048 WebMCP evidence gate remains retained. Re-dispatch this audit after a meaningful source,
   route, data, permission, UI interaction, integration, or evidence increment. Register another
   follow-on Task only after reproducing a new bounded gap and recording its owner, scope, and
   acceptance gate.
@@ -887,5 +887,8 @@ repair. The exact four-path candidate is integrated at product commit `ac67285`;
 repository/docs validators, sensitive scan, and exact diff checks passed. This is a deterministic
 implementation checkpoint only: no browser evidence is claimed. The next audit lane must not treat
 the repair as a new finding or create another Task; it should observe the frozen candidate through the
-read-only `RS-WO-047-02` independent verification and continue to avoid mutating its source, fixture,
-or documentation write sets during the verification freeze.
+read-only `RS-WO-047-02` independent verification. That fresh verification returned
+`INCOMPLETE_EVIDENCE` after a bounded Main interruption: it found no product failure, but its missing
+final readback and remaining lifecycle/failure observations do not close the 047 evidence gate. The
+audit lane must continue to avoid mutating its source, fixture, or documentation write sets during any
+future explicitly bounded evidence-completion run.

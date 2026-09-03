@@ -128,7 +128,8 @@ failed conflict recovery and `F-26` / `RIGHTSPOT-051` plus `RS-WO-047-03` for pa
 registration observability. `RIGHTSPOT-050` is now `CLOSED_VERIFIED` after its bounded Main-serial
 repair and required checks; `RIGHTSPOT-051` has completed its exact Tenant adapter Builder handoff
 and independent deterministic verification and is integrated at product commit `0489155`, while
-`047-03` is integrated at `ac67285` and its independent browser verification is now the next gate. No new P0/P1 issue,
+`047-03` is integrated at `ac67285`; its fresh independent browser verification returned
+`INCOMPLETE_EVIDENCE` after a bounded Main interruption, so no new P0/P1 issue,
 workflow-state defect, privacy leak, or server-authority failure was accepted, and these findings do
 not expand the WebMCP contract or the roadmap's deferred integrations.
 **Owner:** Main RightSpot thread  
@@ -661,11 +662,13 @@ separate from Main-owned process-only documentation writeback.
 The bounded documentation reconciliation from the reviewed post-051 audit is complete in docs-only
 commit `968c050`, and Main has accepted the subsequent 048 deterministic/browser split as a bounded
 evidence decision. The bounded `RS-WO-047-03` repair is now integrated at `ac67285` after its exact
-source handoff and deterministic checks. The current post-audit route is deliberately small: dispatch
-the read-only `RS-WO-047-02` independent verifier against the frozen post-repair source while
-continuing the non-blocking audit lane. Keep the 048 browser harness issue as an evidence limitation,
-not a reason to retry indefinitely. The Main thread continues to own source freeze, integration,
-canonical documentation, and Git closure; no extra Worktree is required for this increment.
+source handoff and deterministic checks. The fresh read-only `RS-WO-047-02` verifier returned
+`INCOMPLETE_EVIDENCE` after a bounded Main interruption; its partial runtime evidence does not close
+the Task. The current route is deliberately small: continue the non-blocking audit lane and require a
+new explicitly bounded evidence-completion decision before any further browser run. Keep the 048 browser
+harness issue as an evidence limitation, not a reason to retry indefinitely. The Main thread continues
+to own source freeze, integration, canonical documentation, and Git closure; no extra Worktree is
+required for this increment.
 
 ### Historical execution chronology
 

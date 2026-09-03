@@ -196,8 +196,9 @@ stale-action gate after a failed conflict recovery; that bounded Main-serial rep
 `RS-WO-051-01` has completed its reviewed exact Builder handoff and independent deterministic
 verification, and is integrated at product commit `0489155` within the Tenant page-bound boundary;
 `RS-WO-047-03` is now integrated at `ac67285` after the reviewed 048 evidence decision, with its exact
-four-path serial write set and deterministic handoff checks recorded in the owning Task File. The next
-action is the read-only `RS-WO-047-02` independent verification against that frozen source. These
+four-path serial write set and deterministic handoff checks recorded in the owning Task File. The fresh
+read-only `RS-WO-047-02` run returned `INCOMPLETE_EVIDENCE` after a bounded Main interruption; any
+continuation requires a new explicitly bounded evidence-completion decision. These
 follow-ups do not authorize a new API, domain state, transport, external integration, or deployment
 claim. The Tenant portion is now closed at its deterministic boundary. Advisor Beauvoir
 (`01a0674b-3ad8-73a0-8f52-f59bc33a9d80`) completed the next non-blocking read-only audit under

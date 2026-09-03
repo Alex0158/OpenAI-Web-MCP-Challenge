@@ -24,11 +24,11 @@ Operations authority/projection, and the verified Tenant adapter pattern in `RIG
   deterministic/browser split as `DETERMINISTIC_ACCEPTED / BROWSER_LIMITATION_RETAINED` while keeping
   the independent browser gate open. The original five-path source snapshot and all earlier verifier
   attempts remain historical evidence only. The accepted Agent tool contract is unchanged.
-- Next gate: freeze the post-repair `ac67285` source identity and dispatch only the read-only
-  `RS-WO-047-02` independent verification against that exact candidate. Do not run an old verifier
+- Next gate: the fresh read-only `RS-WO-047-02` verification against the frozen post-repair source
+  returned `INCOMPLETE_EVIDENCE` after Main stopped a bounded hang guard. Do not run an old verifier
   target, mutate the fixture, or infer closure from deterministic checks or partial browser evidence.
-  Main owns the final integration and documentation closure decision after independent evidence is
-  complete.
+  Any further evidence-completion run requires a new explicitly bounded decision; Main owns the final
+  integration and documentation closure decision after independent evidence is complete.
 - Dependencies: ADR-RS-0017 remains the tool contract authority. `RIGHTSPOT-048` owns the already
   integrated shared lifecycle source boundary; its browser evidence remains a limitation, not a reason
   to block the disjoint Agent registration-observability repair. The existing manual `/agent/operations`
@@ -36,15 +36,18 @@ Operations authority/projection, and the verified Tenant adapter pattern in `RIG
   `search_listings` adapter remain read-only inputs.
   `RIGHTSPOT-012` may continue as a non-blocking, read-only audit provided it does not modify either
   repair's source write set during a freeze.
-- Dispatch state: `READY_FOR_INDEPENDENT_VERIFICATION` — `RS-WO-047-03` completed its exact four-path
-  repair under supporting agent `01a06769-085c-7c51-899b-3f41425cd58e` using `gpt-5.6-sol + medium`.
-  Main reviewed the handoff, integrated it at `ac67285`, and reproduced the deterministic gates. The
-  only next dispatch is the read-only `RS-WO-047-02` verifier against the frozen post-repair source.
-  No fixture mutation or Worktree is authorized.
-- Evidence status: `DETERMINISTIC_REPAIR_INTEGRATED_INDEPENDENT_BROWSER_PENDING` — the contract,
-  repair behavior, focused/full deterministic suite, typecheck, build, repository/static checks,
-  sensitive scan, and exact diff checks passed. The independent browser lifecycle, final
-  console/page-error, and final persistent-state readback remain open for this post-repair candidate.
+- Dispatch state: `INDEPENDENT_VERIFICATION_INCOMPLETE` — `RS-WO-047-03` completed its exact
+  four-path repair under supporting agent `01a06769-085c-7c51-899b-3f41425cd58e` using
+  `gpt-5.6-sol + medium`. Main reviewed the handoff, integrated it at `ac67285`, and reproduced the
+  deterministic gates. Fresh Verifier Gauss (`01a06783-0437-7d13-82ed-2d68f7589a31`) then returned
+  `INCOMPLETE_EVIDENCE` after a bounded Main interruption; no product failure was reported. No
+  fixture mutation or Worktree is authorized.
+- Evidence status: `DETERMINISTIC_REPAIR_INTEGRATED_BROWSER_PARTIAL` — the contract, repair behavior,
+  focused/full deterministic suite, typecheck, build, repository/static checks, sensitive scan, exact
+  diff checks, discovery, valid/invalid boundaries, page parity, role/route lifecycle, privacy,
+  GET-only behavior, responsive/accessibility checks, and mid-run console checks are recorded. Actual
+  registration rejection observation, external-session replacement/in-flight teardown, and final
+  console/page-error plus persistent-state/source readback remain open; this is not a `VERIFIED` claim.
 
 ## Bounded objective
 
@@ -234,7 +237,7 @@ by Main; Builder did not commit, push, alter canonical docs, or create a Worktre
 
 ### RS-WO-047-02 — Independently verify the integrated capability
 
-**Status:** `READY_FOR_DISPATCH`  
+**Status:** `INCOMPLETE_EVIDENCE`  
 **Role:** Independent WebMCP/browser Verifier  
 **Parallelization:** `AFTER_BUILDER_SOURCE_FREEZE` — Builder source and Main Git ref are frozen during
 the check; no Main docs/status writeback or other worker may move the verified source  
@@ -277,6 +280,19 @@ and returns a bounded report to Main.
   bounded limit before Agent registration, teardown, mobile, error, and final-state readback. It
   reported no product mutation or source change, but its incomplete final readback is not independent
   no-mutation proof.
+- Attempt 4 (`01a06783-0437-7d13-82ed-2d68f7589a31`, `2026-09-03`, session
+  `rs-wo-047-02-post-repair-20260903-1348z`): the fresh Verifier used the supported Chrome
+  WebMCP launch form and independently confirmed exact discovery/schema, valid and invalid boundaries,
+  valid-result/page parity, allowlisted privacy output, GET-only transport, invalid-input preservation,
+  responsive/accessibility behavior, Agent/Tenant/wrong-role tool boundaries, route/sign-out lifecycle,
+  and clean mid-run errors. The first object-shaped imperative invocation was rejected by Chrome's
+  current input parser; the JSON-string invocation then succeeded, which is an API-shape compatibility
+  observation rather than a product failure. Main interrupted the run after approximately six minutes
+  to prevent a harness hang, so the Verifier did not perform final source/Git/Worktree/SQLite readback,
+  final console/page-error capture, external session replacement, same-role actor change, in-flight
+  teardown, or registration-rejection observation. It returned `INCOMPLETE_EVIDENCE`; no product
+  failure or source/test/docs/Git/Worktree mutation was observed before interruption, but the missing
+  final readback prevents an independent no-mutation claim.
 
 ### RS-WO-047-03 — Surface Agent Operations registration failure without a silent no-op
 
@@ -364,13 +380,14 @@ closure remains incomplete because its shared lifecycle evidence gate is harness
 is the separate bounded repair owner for the overlapping shared frame and adapter lifecycle paths; its
 reviewed deterministic/browser split permitted the disjoint `RS-WO-047-03` repair. The new four-path
 Agent registration-observability repair is integrated at `ac67285` and has passed every deterministic
-handoff gate, but it has no browser claim yet. The next action is a fresh, read-only
-`RS-WO-047-02` verification against the frozen post-repair source. The old partial attempts remain
-historical evidence and are not a closure or push authorization.
+handoff gate, but its first fresh post-repair browser verification returned `INCOMPLETE_EVIDENCE`
+after Main stopped the run at a bounded hang guard. The old partial attempts and this incomplete run
+remain historical evidence and are not a closure or push authorization.
 The 2026-09-03 audit confirmed `F-26` in the Agent production wiring. `RS-WO-047-03` owns that bounded
 repair; the corresponding Tenant adapter boundary is separately registered as `RIGHTSPOT-051` because
 the 047 write set must remain Agent-only.
 The active `RIGHTSPOT-012` audit may continue on non-overlapping read-only surfaces, but it cannot
 mutate this Task's four-path write set or move the frozen verifier baseline. `RS-WO-047-02` is now
-admissible for serial independent verification under the recorded source identity and WebMCP model
-gate.
+recorded as `INCOMPLETE_EVIDENCE` under the recorded source identity and WebMCP model gate. A further
+verification is not implied by this record; any continuation must be a new, explicitly bounded
+evidence-completion decision rather than a blind retry.

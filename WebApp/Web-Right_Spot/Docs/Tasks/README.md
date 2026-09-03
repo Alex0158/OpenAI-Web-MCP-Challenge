@@ -389,8 +389,9 @@ Agent-side registration-observability portion of the same `F-26` finding
 is a bounded repair checkpoint under the still-open `RIGHTSPOT-047`, not a duplicate parent Task.
 The reviewed 048 deterministic/browser split made `RS-WO-047-03` admissible after a fresh source
 baseline. Its exact four-path repair is now integrated at product commit `ac67285`; deterministic
-handoff evidence is complete and its independent browser closure remains open. The next admitted
-action is the read-only `RS-WO-047-02` verification against that frozen post-repair source.
+handoff evidence is complete. The fresh independent `RS-WO-047-02` run returned
+`INCOMPLETE_EVIDENCE` after a bounded Main interruption, so its browser closure remains open without
+a blind retry. Any continuation must be a new explicitly bounded evidence-completion decision.
 `RIGHTSPOT-048` remains a harness-blocked evidence gate and `RIGHTSPOT-012` remains the non-blocking
 audit lane; Advisor Beauvoir completed its latest post-051 read-only review with no new P0/P1/P2
 product finding, and Main accepted only the bounded documentation reconciliation.

@@ -1800,3 +1800,25 @@ valid/invalid invocation, page parity, role/session teardown, failure signal/man
 accessibility, console/page errors, and final persistent-state/source readback. A browser failure or
 unavailable harness must be reported as bounded incomplete evidence or `BLOCKED_HARNESS`; it must not be
 converted into a product claim or trigger a blind retry.
+
+## 7.52 Post-repair independent verification attempt — 2026-09-03
+
+Main dispatched fresh Verifier Gauss (`01a06783-0437-7d13-82ed-2d68f7589a31`) with
+`gpt-5.6-sol + medium` against repository snapshot `92bab5b` and product source `ac67285`. The
+session `rs-wo-047-02-post-repair-20260903-1348z` used the supported Chrome WebMCP launch form. The
+Verifier confirmed the exact single Agent `read_listing_pipeline` discovery, metadata/schema and
+annotations, valid and invalid argument boundaries, result/manual-page parity, allowlisted privacy
+output, GET-only transport, invalid-input preservation, 320px responsive/accessibility behavior,
+Agent/Tenant/wrong-role tool boundaries, route/sign-out lifecycle, and clean mid-run errors. An
+initial object-shaped imperative invocation was rejected by the current Chrome parser; the JSON-string
+shape then succeeded. This is recorded as API-shape compatibility evidence, not a product failure.
+
+Main stopped the run after approximately six minutes at a bounded hang guard. The Verifier returned
+`INCOMPLETE_EVIDENCE`, not `FAILED_PRODUCT`: it did not complete actual registration-rejection
+observation, external-session replacement, same-role actor change, in-flight teardown, final
+console/page-error capture, final SQLite/source/Git/Worktree readback, or a complete independent
+no-mutation proof. No product failure or source/test/docs/Git/Worktree mutation was observed before
+the interruption; the browser session's expected demo-session cookie changes are not product-state
+evidence. The partial result supplements but does not close `RIGHTSPOT-047` or `F-26` Agent ownership.
+No further browser run is implied; any continuation requires a new explicitly bounded
+evidence-completion decision, with no blind retry.

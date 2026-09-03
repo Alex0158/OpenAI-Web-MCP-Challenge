@@ -1550,7 +1550,8 @@ contract, and it does not upgrade static tests or a browser-harness attempt into
 
 **Disposition:** Tenant ownership is `CLOSED_VERIFIED`, `P2`, within deterministic `RIGHTSPOT-051`
 adapter/page evidence. Agent ownership is integrated at `ac67285` through `RS-WO-047-03` under open
-`RIGHTSPOT-047`; its final independent browser evidence remains open, so the combined
+`RIGHTSPOT-047`; the latest independent browser attempt returned `INCOMPLETE_EVIDENCE`, so its final
+evidence remains open and the combined
 `F-26` finding remains partially open only on the Agent side.
 
 ## 9.10 Agent preparation validation boundary evidence — 2026-09-02
