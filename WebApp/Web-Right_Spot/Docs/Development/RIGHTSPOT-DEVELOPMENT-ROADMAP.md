@@ -111,8 +111,11 @@ WebMCP lifecycle. `RIGHTSPOT-042` is closed as a decision gate; `RIGHTSPOT-043` 
 commits `534f5c9` and `ec7a679`; `RS-WO-043-03` passed independent supported-browser registration,
 invocation, and browser evidence against frozen source baseline
 `afd5df67507dc81743bde02c706e1232faa7e12c`. `RIGHTSPOT-010` is closed as a reviewed staged Agent
-Operations decision through `ADR-RS-0016`; `RIGHTSPOT-044` is the current bounded manual Operations
-implementation gate, and later Operations WebMCP remains deferred until that surface is verified.
+Operations decision through `ADR-RS-0016`; `RIGHTSPOT-044` is now `CLOSED_VERIFIED` for the bounded
+manual Agent Operations surface, and later Operations WebMCP remains separately gated. `RIGHTSPOT-012`
+continues as the non-blocking read-only audit lane against the latest Main source. The post-044 audit
+also registered `F-22` / `RIGHTSPOT-045` for a bounded Operations consumer latest-read race repair;
+the finding is non-blocking and does not reopen the 044 API, projection, or WebMCP decisions.
 **Owner:** Main RightSpot thread  
 **As of:** 2026-09-03, Europe/London
 
@@ -130,7 +133,9 @@ privacy, no-mutation, keyboard, responsive, and console evidence. The accepted l
 `RIGHTSPOT-039` / `RS-WO-039-01` F-17 listing-detail partial-read repair are closed within their
 bounded outcomes.
 `RIGHTSPOT-042` is closed as the preceding contract decision, and the Main-thread cross-layer audit
-remains non-blocking evidence work.
+remains non-blocking evidence work. `RIGHTSPOT-044` is also `CLOSED_VERIFIED` at code commit
+`9ed906b` and verification snapshot `f884879`; its manual Operations closure evidence is recorded in
+the owning Task File. There is no active implementation Worktree.
 `RIGHTSPOT-033`, `RIGHTSPOT-034`, `RIGHTSPOT-035`, `RIGHTSPOT-036`, `RIGHTSPOT-037`, and `RIGHTSPOT-038` are `CLOSED_VERIFIED` within their bounded presentation scopes in
 the canonical Main Worktree; no extra implementation Worktree is open. `RS-WO-002-13` is integrated at product commit
 `3765747`, repaired `RS-WO-002-12` is integrated at `9348aa5`, `RS-WO-002-14` passed direct combined
@@ -288,9 +293,11 @@ is closed within that bounded local outcome. No production, universal browser, j
 integration claim is implied.
 `RIGHTSPOT-010` is closed as a reviewed staged Agent Operations decision through `ADR-RS-0016`;
 its authority and pure projection are already complete through `RIGHTSPOT-013`, `RIGHTSPOT-015`, and
-`RIGHTSPOT-016`. `RIGHTSPOT-044` is the current bounded manual Operations implementation gate;
-`RIGHTSPOT-012` remains a non-blocking audit lane. WebMCP remains deferred until the ordinary
-Operations surface is independently verified.
+`RIGHTSPOT-016`. `RIGHTSPOT-044` is `CLOSED_VERIFIED` for the ordinary manual Operations page,
+strict HTTP consumer, Agent navigation, and independent local browser/API evidence. `RIGHTSPOT-012`
+remains the non-blocking audit lane. `RIGHTSPOT-045` is the current bounded P2 consumer repair gate
+for `F-22`, with no active implementation Worktree yet. Any Operations WebMCP capability remains
+separately gated and is not implied by the manual surface closure.
 
 The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.
 The page-entry audit registered `RIGHTSPOT-021` as a bounded implementation route: restore a
@@ -392,8 +399,8 @@ for its bounded repair and verification. Main selected the existing `320px` floo
 CSS candidate at product commit `f0dbd99`, and independent `RS-WO-022-02` verification returned
 `VERIFIED`. The bounded Task is closed and no implementation Worktree is open. `RIGHTSPOT-006` and
 `RIGHTSPOT-012` remain separate credential and read-only audit gates; `RIGHTSPOT-010` is closed as
-the reviewed staged decision, and `RIGHTSPOT-044` is the current manual Operations implementation
-gate. These do not reopen `RIGHTSPOT-020`. Local Git closure for the prior `RIGHTSPOT-021` increment
+the reviewed staged decision, `RIGHTSPOT-044` is `CLOSED_VERIFIED`, and `RIGHTSPOT-045` is the current
+bounded Operations consumer repair gate. These do not reopen `RIGHTSPOT-020`. Local Git closure for the prior `RIGHTSPOT-021` increment
 is recorded at `66615d0`.
 
 The post-`RIGHTSPOT-036` fresh Main-thread audit covered reset generations `38` and `39`: the local

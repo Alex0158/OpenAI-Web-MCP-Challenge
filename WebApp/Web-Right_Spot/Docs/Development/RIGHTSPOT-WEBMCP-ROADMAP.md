@@ -133,7 +133,7 @@ The product goal, not the number of exposed controls, determines the first slice
 |---|---|---:|---|---|
 | Find published rentals by bounded area/filter and show the result on Tenant Discovery | Existing listing application/API and page | Low | **Selected first slice** | Directly supports the core tenant journey, requires no new reporting model, and is read-only; contract work is registered in `RIGHTSPOT-042` |
 | Inspect one published listing and return to a human-readable detail surface | Existing listing detail route/API | Low | Follow-on read slice | Useful after discovery, but not necessary for the first registration proof |
-| Query upcoming Operations viewings or listing pipeline | Accepted Operations authority/projection; `ADR-RS-0016`; `RIGHTSPOT-044` manual surface | Medium | Staged follow-on | Useful after the ordinary manual surface is implemented and verified; WebMCP remains a later separate capability gate |
+| Query upcoming Operations viewings or listing pipeline | Accepted Operations authority/projection; `ADR-RS-0016`; `RIGHTSPOT-044` manual surface | Medium | Manual surface `CLOSED_VERIFIED`; WebMCP follow-on gated | The ordinary manual surface is verified; a later WebMCP capability still requires its own contract, Task, and browser evidence |
 | Save a Favourite or Viewing Request draft | Existing mutation authority | Medium | Later mutation slice | State-changing and must preserve idempotency, version, role, and user-intent rules |
 | Submit a Viewing Request, send a proposal, confirm/decline a viewing | Existing workflow authority | High | Defer until read slice is verified | Human-consequential transitions need explicit confirmation and stronger browser evidence |
 | Login, expose internal notes, contact a tenant, send notifications, or operate Cloud Receiver | Separate or deferred authority | High | Exclude | Not part of the current WebMCP slice and would expand security/integration scope |
@@ -463,7 +463,12 @@ is integrated at `534f5c9`, the amended page-bound adapter is integrated at `ec7
 `afd5df67507dc81743bde02c706e1232faa7e12c` in the declared local supported-browser capability.
 `RIGHTSPOT-043` is `CLOSED_VERIFIED`; there is no active product Work Order for this increment.
 
-The next action is the separately registered `RIGHTSPOT-044` manual Agent Operations read surface.
+The manual Agent Operations read surface is now `RIGHTSPOT-044` `CLOSED_VERIFIED` at code commit
+`9ed906b`, with independent browser/API verification against frozen snapshot `f884879`; its closure
+record is in the owning Task File. A post-044 audit registered the bounded P2 consumer repair
+`RIGHTSPOT-045` for the `F-22` latest-read race; this does not admit an Operations WebMCP slice.
+The non-blocking `RIGHTSPOT-012` audit may continue, followed by an explicit decision on whether an
+Operations WebMCP slice is worth admitting.
 `RIGHTSPOT-010` is closed as a reviewed staged decision; its authority and projection are not being
 reimplemented. Any later Operations WebMCP capability or W4 mutation requires its own contract,
 Task, write set, tests, browser evidence, and closure. Cloud Receiver, external authentication,
@@ -477,8 +482,8 @@ This roadmap records a verified first local page-bound WebMCP slice; it does not
 universal browser support, judge reproducibility, or probabilistic LLM-agent success.
 
 `RIGHTSPOT-010` is `closed` as `REVIEWED_STAGED_CLOSED`; `RS-WO-010-01` returned `READY_FOR_REVIEW`,
-and its disposition is recorded in the Task File and `ADR-RS-0016`. `RIGHTSPOT-044` is pending for
-the ordinary manual Operations surface; no new WebMCP capability is admitted until that surface is
-implemented and independently verified under its own contract, Task, and evidence gate. Ordinary
+and its disposition is recorded in the Task File and `ADR-RS-0016`. `RIGHTSPOT-044` is now
+`CLOSED_VERIFIED` for the ordinary manual Operations surface; no new Operations WebMCP capability is
+admitted without its own contract, Task, and evidence gate. Ordinary
 RightSpot UI/API behavior remains the runnable baseline. Cloud Receiver, WebRTC, Redis, external
 authentication, deployment, and production-readiness remain deferred or gated.

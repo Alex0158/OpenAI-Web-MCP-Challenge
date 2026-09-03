@@ -1168,3 +1168,24 @@ validation, sensitive-pattern scan, RightSpot `git diff --check`, and `/api/heal
 Task was registered. Lint/dead-code verification is unavailable because the package exposes no such
 tool. This evidence is limited to the inspected error/fallback and authority boundaries; it does not
 close `F-08`, promote `F-20`, or claim any deferred external integration or production readiness.
+
+## 7.21 F-22 Operations latest-read race registration — 2026-09-03
+
+The post-`RIGHTSPOT-044` read-only audit rechecked the Operations API, Agent-only role/privacy
+boundary, projection, London date semantics, valid empty results, bounded error/retry states, route
+entry, responsive layout, keyboard/skip-link path, and existing browser evidence. Those 044 boundaries
+remain accepted and unchanged.
+
+The audit identified `F-22`, a P2 `VERIFIED_DEFECT` in the Operations page consumer. The current
+`operations-page.tsx` starts an asynchronous `readOperations` call but has no latest-read sequence,
+query identity, or abort guard. A slower older success, error, or `finally` callback can therefore
+overwrite or finish a newer logical read after report switching or overlapping requests. This is
+high-confidence static control-flow evidence; the audit did not add a controlled browser race
+reproduction, so no new runtime race claim is made.
+
+`RIGHTSPOT-045` is registered as a bounded consumer-only repair. Its acceptance requires a latest-read
+guard, focused Red → Green → Refactor coverage, preservation of the existing Operations API/domain/
+projection/role/privacy/WebMCP boundaries, and independent integrated verification where response
+ordering can be controlled. The finding is non-blocking to `RIGHTSPOT-012` and does not reopen or widen
+`RIGHTSPOT-044`. Existing shell-level `favicon.ico` `404` and expected signed-out session `401`
+network events remain documented residuals and are unrelated to `F-22`.
