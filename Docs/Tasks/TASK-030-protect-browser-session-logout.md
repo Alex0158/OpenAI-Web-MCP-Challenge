@@ -6,11 +6,12 @@
 ## Task Control
 
 - Type: `defect`
-- Lifecycle: `pending`
+- Lifecycle: `verification_pending`
 - Priority: `P2`
 - Owner: Cloud Receiver v2 authentication owner.
-- Current increment: Bind user and developer logout to the intended session and origin/content-type
-  boundary.
+- Current increment: Bind user and developer logout to the existing same-origin JSON guard, update
+  browser clients to send the exact empty JSON body, and verify cross-origin rejection without
+  disturbing the other account session.
 - Next gate: Focused negative tests prove that a cross-origin request cannot clear either production
   session cookie while same-origin logout remains idempotent.
 - Dependencies: AUDIT-V2-008 in Core/09, Core/04, ADR-0033's separate account boundary, and the
@@ -50,6 +51,12 @@ tests. Preserve stable public error handling.
 Close only when focused authentication tests, backend aggregate tests, type-check, build, and a
 credentialed split-origin browser check pass, and Core/04 plus the active auth README match the
 implemented boundary.
+
+Current evidence is recorded in [CLOUD-025](../Development/CLOUD-025-browser-session-logout-protection.md):
+the focused authentication suite, backend/frontend type-checks and builds, route guard, frontend
+JSON body, and local credentialed split-origin browser flow are verified. The aggregate backend
+standing suites still require their task-owned database preflight; hosted release readback remains
+outside this local closure.
 
 ## 6. Reopen condition
 

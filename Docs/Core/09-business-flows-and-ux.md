@@ -457,7 +457,7 @@ code, migration, deployment, or architecture change.
 | Field | Record |
 |---|---|
 | Severity | **P1** |
-| Status and confidence | `open`; high confidence; **VERIFIED** |
+| Status and confidence | `implementation_verified`; high confidence; **VERIFIED** locally, including split-origin browser behavior; hosted release evidence not claimed |
 | Affected component / flow / contract | Background Connector, Agent dispatch, Host-effect verification, acknowledgement, and retry exhaustion |
 | Current behavior | `LocalConnector.runOnce()` claims and dispatches, and the CLI loop reports the activation result. Although the client exposes `acknowledgeDelivery()`, neither `start` nor `claim-once` obtains a trusted Host-effect attestation or calls it. The verified full-chain test uses a separate test-only effect file and acknowledgement worker. |
 | Intended / documented behavior | ADR-0009 and ADR-0038 require separate trusted Host-effect verification before acknowledgement. ADR-0037 permits up to three lease attempts, so a non-acknowledged successful dispatch becomes eligible for reclaim and can end `retry_exhausted`. |
@@ -539,14 +539,14 @@ code, migration, deployment, or architecture change.
 | Severity | **P2** |
 | Status and confidence | `open`; high confidence; **VERIFIED** |
 | Affected component / flow / contract | User and developer browser sessions |
-| Current behavior | Production session cookies use `SameSite=None; Secure`. Both logout routes accept an unauthenticated POST without the same-origin JSON guard used by state-changing portal routes. A cross-site form can cause session termination; it cannot gain the session or mutate Receiver authority. |
+| Current behavior | Production session cookies use `SameSite=None; Secure`. Both logout routes now require the configured frontend `Origin` and `application/json` before clearing only their own cookie. Cross-origin and unsupported-content-type requests are rejected; same-origin logout remains idempotent and cannot clear the other account session. |
 | Intended / documented behavior | State-changing browser endpoints should be bound to the intended origin/session boundary; Core/04 lists production anti-CSRF and session security as required. |
-| Exact evidence | `saas-boilerplate/backend/src/modules/authentication/session.ts:18-45`; `users/user-auth.routes.ts:10-13`; `developers/developer-auth.routes.ts:15-28`; both logout controllers at lines 49-52; `middleware/same-origin.ts`. |
-| Risk and impact | An attacker can disrupt a signed-in browser session, causing user-visible denial of service during setup or consent. No privilege escalation is evidenced. |
-| Drift class | **B** — the implemented session boundary omits a control used on other state-changing browser routes. |
-| Recommended disposition | Bind logout to the matching session and intended origin/content type, then add cross-origin negative tests for both account types. |
+| Exact evidence | `saas-boilerplate/backend/src/modules/authentication/session.ts:18-45`; `users/user-auth.routes.ts`; `developers/developer-auth.routes.ts`; both logout controllers; `middleware/same-origin.ts`; and `saas-boilerplate/backend/src/modules/authentication/test/authentication.test.ts` cross-origin, content-type, account-isolation, and idempotence cases. |
+| Risk and impact | The local route and credentialed split-origin browser flow now block the observed cross-site session-disruption path. Hosted cookie-domain and exact-release behavior remain unverified; no privilege escalation is evidenced. |
+| Drift class | **A/B resolved locally** — the route now matches the existing state-changing browser guard; aggregate standing preflight and hosted evidence remain separate gates. |
+| Recommended disposition | Keep the route guard and frontend JSON body, complete the required aggregate/runtime readback, then close TASK-030 if the intended release matches. |
 | Documentation owner | Core/04, this register, and [TASK-030](../Tasks/TASK-030-protect-browser-session-logout.md). |
-| Change gates | Code: **yes**. ADR: no current need identified. Migration: no. Tests: **yes**. Owner decision: implementation approval. |
+| Change gates | Code: **implemented locally**. ADR: no current need identified. Migration: no. Focused tests/build/browser: **passed locally**. Aggregate/runtime: **pending**. Owner decision: implementation approval. |
 
 ### AUDIT-V2-009 — Governance indexes and links lagged current lifecycle state
 
