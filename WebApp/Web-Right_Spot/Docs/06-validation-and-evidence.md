@@ -5,7 +5,7 @@
 boundary, tenant discovery API, workflow HTTP/DTO transport, shared shell, shared role-page frame,
 accepted ordinary role-page product workflow, and post-MVP shared CSS foundation are independently
 verified or integrated.
-The current integrated RightSpot package complete suite passes `229/229` across `47` authored test
+The current integrated RightSpot package complete suite passes `231/231` across `47` authored test
 files. The Tenant Discovery Search/WebMCP slice is independently verified within its declared local
 supported-browser capability, while the Agent Operations `read_listing_pipeline` candidate remains
 open behind its independent browser evidence gate. The latest bounded cross-layer findings `F-17` /
@@ -14,7 +14,8 @@ open behind its independent browser evidence gate. The latest bounded cross-laye
 Discovery, request-editor, Search response-truthfulness, and Tenant action-safety boundaries. The
 latest multi-angle audit accepted P2 finding `F-26` / `RIGHTSPOT-051` plus `RS-WO-047-03` for
 silent page-bound WebMCP registration failure. The Tenant portion is now closed within its
-deterministic adapter/page boundary; the Agent portion remains gated under `RS-WO-047-03`.
+deterministic adapter/page boundary; the Agent four-path repair is integrated at `ac67285` and remains
+gated only on its independent browser evidence.
 `F-25` / `RIGHTSPOT-050` is now closed within its bounded Tenant editor action-safety claim after
 serial Main TDD and supported ordinary conflict-recovery evidence; the injected failed-refetch browser
 branch remains an explicit harness limitation. `RS-WO-047-03` remains gated as stated below. The
@@ -1738,8 +1739,8 @@ its no-mutation constraints excluded the SQLite/generated-state writes used by t
 Main reviewed the report and accepted no new P0, P1, or P2 product finding. It confirmed that the
 Tenant-to-Agent state machine, role-safe projections, privacy boundaries, manual Search fallback,
 050 action gate, and Tenant 051 deterministic registration-failure repair remain valid. Existing
-`RIGHTSPOT-048` `BLOCKED_HARNESS`, paused 047/`RS-WO-047-03` dependency, and `F-08` evidence gap
-remain limitations or gates rather than new product failures. The report found bounded documentation
+`RIGHTSPOT-048` `BLOCKED_HARNESS`, the integrated 047/`RS-WO-047-03` candidate awaiting independent
+browser evidence, and the `F-08` evidence gap remain limitations or gates rather than new product failures. The report found bounded documentation
 drift only: RightSpot README suite count/closure wording, business-flow Tenant 051 status, and the
 Runbook description of the 048 browser attempt. Main reconciled those records without opening a new
 Task. One Advisor link named a non-existent 047 filename; Main corrected the authority to the actual
@@ -1760,8 +1761,42 @@ lifecycle candidate at `218935c` remains accepted only for deterministic/static 
 browser evidence was not delivered, so `RS-WO-048-02` remains `BLOCKED_HARNESS` and
 `RIGHTSPOT-048` remains `verification_pending`. No browser teardown, universal WebMCP, push, or
 production claim is added. The decision removes only the evidence-decision gate for the already
-registered Agent `RS-WO-047-03` four-path repair. Main must recapture a fresh 047 baseline before
-dispatch, and the 047 independent browser closure remains open.
+registered Agent `RS-WO-047-03` four-path repair. Main has integrated the repair at `ac67285`; the
+047 independent browser closure remains open against that frozen candidate.
 
 No source, tests, fixtures, SQLite, Git, Worktree, browser session, or external system was changed by
 the Advisor review.
+
+## 7.51 Agent registration-observability repair handoff — 2026-09-03
+
+Main dispatched `RS-WO-047-03` after the reviewed `RIGHTSPOT-048` evidence decision and a fresh source
+baseline. Builder Jason (`01a06769-085c-7c51-899b-3f41425cd58e`) used `gpt-5.6-sol + medium` and
+returned only the declared four-path write set:
+`src/ui/agent/operations/operations-webmcp.ts`,
+`src/ui/agent/operations/operations-page.tsx`,
+`tests/ui/operations-webmcp.test.ts`, and
+`tests/ui/operations-page.test.ts`. The repair makes synchronous and rejected registration failures
+reach one stable page-owned neutral signal, deactivates the failed registration/execution lifecycle,
+prevents stale tool execution, ignores late rejection after disposal, and preserves the ordinary
+manual Operations surface. It does not change the accepted tool contract, server/API/domain authority,
+fixture, role model, or shared role frame.
+
+Main reviewed the exact diff and integrated the candidate at product commit
+`ac672854a2c9a793cdf787d6564dd7b99a77035d`. The current repository snapshot is merge commit
+`b2e5f93c538bbf75196d4a128950e15b28e73e52`, whose first parent is `ac67285` and whose second parent
+is `origin/main=928debcbe6ed8fda9d165ac17318fd30a57f0361`; the merge introduced no RightSpot
+source/test delta. The post-repair source hashes are recorded in
+`Docs/Tasks/RIGHTSPOT-047-implement-agent-operations-webmcp-listing-pipeline.md`. Focused tests passed
+`28/28`; the complete package passed `231/231` across `47` authored test files; pinned Node `24.20.0`
+typecheck, production build, repository/docs validators, sensitive scan, and `git diff --check` passed.
+The build emitted only the known dynamic filesystem-tracing warning in
+`src/server/persistence/operations-store.ts`. No browser evidence was claimed by the Builder, and no
+source, tests, fixture, SQLite, Worktree, or unrelated collaborator files were changed by Main's
+product integration.
+
+The post-repair source is now frozen. The next and only admitted action for this chain is the read-only
+`RS-WO-047-02` independent browser verification against `ac67285`, including registration discovery,
+valid/invalid invocation, page parity, role/session teardown, failure signal/manual fallback,
+accessibility, console/page errors, and final persistent-state/source readback. A browser failure or
+unavailable harness must be reported as bounded incomplete evidence or `BLOCKED_HARNESS`; it must not be
+converted into a product claim or trigger a blind retry.

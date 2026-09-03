@@ -94,8 +94,9 @@ with healthy health.
   SQLite hash/mtime stayed unchanged. The run intentionally did not mutate fixtures or perform populated
   browser actions, so it adds no new rendered happy-path claim and registers no follow-on Task.
 - Next gate: `RIGHTSPOT-050` and the Tenant portion of `RIGHTSPOT-051` are now closed within their
-  bounded consumer claims. Review the integrated 051 increment through a fresh read-only audit,
-  while retaining the 047/048 WebMCP evidence gates. Re-dispatch this audit after a meaningful source,
+  bounded consumer claims. The Agent `RS-WO-047-03` repair is integrated at `ac67285`; the next
+  product gate is its separate read-only `RS-WO-047-02` verification, while retaining the 048 WebMCP
+  evidence gate. Re-dispatch this audit after a meaningful source,
   route, data, permission, UI interaction, integration, or evidence increment. Register another
   follow-on Task only after reproducing a new bounded gap and recording its owner, scope, and
   acceptance gate.
@@ -864,8 +865,9 @@ The review accepted no new P0, P1, or P2 product finding. Business-state transit
 projections, privacy, manual Search fallback, 050 action safety, Tenant 051 registration-failure
 observability, and the existing 047/048 evidence boundaries remain as documented. Main therefore
 accepted `NO_ACTION` for new Task registration and retained 048 as `BLOCKED_HARNESS`, not a product
-failure. The reviewed split decision makes the already registered `RS-WO-047-03` implementation
-admissible after a new 047 baseline; it does not close 048/047 or authorize browser retry.
+failure. The reviewed split decision made the already registered `RS-WO-047-03` implementation
+admissible; Main subsequently integrated it at `ac67285`, but this does not close 048/047 or authorize
+browser evidence beyond the separately frozen `RS-WO-047-02` gate.
 
 The report did identify bounded documentation drift, which Main reconciled without a new Task in
 docs-only commit `968c050`:
@@ -876,3 +878,14 @@ current Runbook still described the 048 browser attempt as active. The report al
 `Docs/Tasks/RIGHTSPOT-047-implement-agent-operations-webmcp-listing-pipeline.md` and did not copy the
 invalid link. No source, tests, fixtures, SQLite, Git, Worktree, or runtime product behavior changed
 in the audit; the bounded documentation writeback is Main-owned.
+
+## Post-audit implementation checkpoint — 2026-09-03
+
+After the audit decision, Main completed the already registered and disjoint `RS-WO-047-03` Agent
+repair. The exact four-path candidate is integrated at product commit `ac67285`; focused tests passed
+`28/28`, the complete package passed `231/231`, and pinned typecheck, production build,
+repository/docs validators, sensitive scan, and exact diff checks passed. This is a deterministic
+implementation checkpoint only: no browser evidence is claimed. The next audit lane must not treat
+the repair as a new finding or create another Task; it should observe the frozen candidate through the
+read-only `RS-WO-047-02` independent verification and continue to avoid mutating its source, fixture,
+or documentation write sets during the verification freeze.

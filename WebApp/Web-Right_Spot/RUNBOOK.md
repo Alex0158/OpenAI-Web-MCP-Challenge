@@ -180,8 +180,9 @@ session revalidation, actor-identity child teardown, and invocation-side authent
 Its reviewed candidate is frozen at `218935c`; `RS-WO-048-02` ended at `BLOCKED_HARNESS` after its
 bounded corrected retry produced no final verifier report, and no browser process or active retry
 remains. Do not run the old 047 verifier target, claim external-session teardown, or push the
-Operations capability as closed until a new 047 baseline and its independent evidence exist. Main
-accepted the reviewed 048 deterministic/browser split; this gate remains open for browser evidence and
+Operations capability as closed until independent evidence exists for the frozen post-repair `ac67285`
+candidate. Main accepted the reviewed 048 deterministic/browser split; `RS-WO-047-03` is now integrated
+at `ac67285`, and this gate remains open for browser evidence and
 does not authorize a blind retry. This gate does not
 change the server session authority or authorize polling, external authentication, Cloud Receiver,
 WebRTC, Redis, deployment, or production hardening.
@@ -194,8 +195,9 @@ stale-action gate after a failed conflict recovery; that bounded Main-serial rep
 `RS-WO-047-03` for silent WebMCP registration failure in the Tenant and Agent production wiring.
 `RS-WO-051-01` has completed its reviewed exact Builder handoff and independent deterministic
 verification, and is integrated at product commit `0489155` within the Tenant page-bound boundary;
-`RS-WO-047-03` is now admissible after the reviewed 048 evidence decision, subject to a new 047 source
-baseline and its exact four-path serial write set. These
+`RS-WO-047-03` is now integrated at `ac67285` after the reviewed 048 evidence decision, with its exact
+four-path serial write set and deterministic handoff checks recorded in the owning Task File. The next
+action is the read-only `RS-WO-047-02` independent verification against that frozen source. These
 follow-ups do not authorize a new API, domain state, transport, external integration, or deployment
 claim. The Tenant portion is now closed at its deterministic boundary. Advisor Beauvoir
 (`01a0674b-3ad8-73a0-8f52-f59bc33a9d80`) completed the next non-blocking read-only audit under

@@ -114,10 +114,10 @@ invocation, and browser evidence against frozen source baseline
 Operations decision through `ADR-RS-0016`; `RIGHTSPOT-044` is now `CLOSED_VERIFIED` for the bounded
 manual Agent Operations surface. `RIGHTSPOT-046` is closed through accepted `ADR-RS-0017` for one
 bounded Agent-only `read_listing_pipeline` contract; the separate implementation Task
-`RIGHTSPOT-047` is paused after T0 baseline recapture and Builder dispatch because the shared
-session-lifecycle gap is now registered as `RIGHTSPOT-048`; its original candidate must be
-re-baselined after that repair before browser evidence resumes. Other Operations WebMCP capabilities
-remain separately gated.
+`RIGHTSPOT-047` remains open because the shared session-lifecycle gap is now registered as
+`RIGHTSPOT-048`, but its bounded Agent registration-observability repair is integrated at product
+commit `ac67285` after the reviewed split decision. The post-repair candidate is frozen for the
+remaining independent browser evidence; other Operations WebMCP capabilities remain separately gated.
 `RIGHTSPOT-012` continues as the non-blocking read-only audit lane against the latest Main source. The post-044 audit
 also registered `F-22` / `RIGHTSPOT-045` for a bounded Operations consumer latest-read race repair;
 the repair is now `CLOSED_VERIFIED` at product source `3582ba4` after Main-controlled race evidence
@@ -128,8 +128,7 @@ failed conflict recovery and `F-26` / `RIGHTSPOT-051` plus `RS-WO-047-03` for pa
 registration observability. `RIGHTSPOT-050` is now `CLOSED_VERIFIED` after its bounded Main-serial
 repair and required checks; `RIGHTSPOT-051` has completed its exact Tenant adapter Builder handoff
 and independent deterministic verification and is integrated at product commit `0489155`, while
-`047-03` is
-gated until the reviewed 048 evidence decision permits a new 047 source baseline. No new P0/P1 issue,
+`047-03` is integrated at `ac67285` and its independent browser verification is now the next gate. No new P0/P1 issue,
 workflow-state defect, privacy leak, or server-authority failure was accepted, and these findings do
 not expand the WebMCP contract or the roadmap's deferred integrations.
 **Owner:** Main RightSpot thread  
@@ -644,9 +643,10 @@ RightSpot projection at repository checkpoint `9994f4e` after its same-contract 
 repair. Its original implementation Work Order completed its Builder handoff: `RS-WO-049-01`; the
 completed bounded repair is `RS-WO-049-03`. The original
 `RIGHTSPOT-047` candidate's
-deterministic checks and Main-controlled browser smoke pass, but its independent gate is paused after
-one command-level harness block and two bounded partial retries; it must be re-baselined after a
-reviewed 048 evidence decision, and no push or closure claim is authorized. The 048 independent gate
+deterministic checks and Main-controlled browser smoke pass, but its independent gate remains open after
+one command-level harness block and two bounded partial retries; the Agent registration-observability
+repair is now integrated at `ac67285`, and its independent browser evidence is the next gate. No push
+or closure claim is authorized. The 048 independent gate
 ended at `BLOCKED_HARNESS` after its corrected retry produced no final report; no further blind
 agent-browser retry is authorized. This does not reopen
 the accepted MVP closure or authorize external authentication, Cloud Receiver,
@@ -660,11 +660,12 @@ separate from Main-owned process-only documentation writeback.
 
 The bounded documentation reconciliation from the reviewed post-051 audit is complete in docs-only
 commit `968c050`, and Main has accepted the subsequent 048 deterministic/browser split as a bounded
-evidence decision. The current post-audit route is deliberately small: recapture a fresh 047 source
-baseline and dispatch `RS-WO-047-03` under its separate ownership and model gates, while continuing
-the non-blocking audit lane. Keep the 048 browser harness issue as an evidence limitation, not a reason
-to retry indefinitely. The Main thread continues to own source freeze, integration, canonical
-documentation, and Git closure; no extra Worktree is required for this increment.
+evidence decision. The bounded `RS-WO-047-03` repair is now integrated at `ac67285` after its exact
+source handoff and deterministic checks. The current post-audit route is deliberately small: dispatch
+the read-only `RS-WO-047-02` independent verifier against the frozen post-repair source while
+continuing the non-blocking audit lane. Keep the 048 browser harness issue as an evidence limitation,
+not a reason to retry indefinitely. The Main thread continues to own source freeze, integration,
+canonical documentation, and Git closure; no extra Worktree is required for this increment.
 
 ### Historical execution chronology
 

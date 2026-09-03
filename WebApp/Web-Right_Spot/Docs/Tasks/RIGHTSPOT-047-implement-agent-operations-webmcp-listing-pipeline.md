@@ -18,19 +18,17 @@ Operations authority/projection, and the verified Tenant adapter pattern in `RIG
 - Execution posture: `MAIN_THREAD_SINGLE_SOURCE_WEBMCP_IMPLEMENTATION`
 - Priority: `P1` — implement only the accepted Agent Operations `read_listing_pipeline` capability.
 - Owner: Main RightSpot thread
-- Current increment: The original Builder implementation and Main candidate review are complete. The
-  overlapping session-lifecycle source repair is integrated at `218935c`; Main accepted its
+- Current increment: The bounded `F-26` Agent registration-observability repair was completed by
+  Builder Jason and integrated into the canonical Main source at product commit `ac67285`. The
+  overlapping session-lifecycle source repair remains integrated at `218935c`; Main accepted its
   deterministic/browser split as `DETERMINISTIC_ACCEPTED / BROWSER_LIMITATION_RETAINED` while keeping
-  the independent browser gate open. The original five-path source snapshot at candidate commit
-  `09d0628e10b9ddb9a59c59eebd1be1ee074a5318` is historical evidence only and must be re-baselined.
-  The 2026-09-03 audit found `F-26` in the production Operations adapter: registration rejection is
-  caught by the helper but no page callback is wired, so failure can remain a silent no-op. This is
-  the next bounded repair checkpoint under this Task and does not change the accepted tool contract.
-- Next gate: recapture the exact current source identity, dispatch and complete `RS-WO-047-03`, then
-  capture the post-repair source identity and resume only the missing `RS-WO-047-02` checks against
-  that new frozen candidate. Do not run the old verifier target or infer closure from partial evidence.
-  Main owns integration, push, and documentation closure only after the re-baselined independent
-  evidence is complete.
+  the independent browser gate open. The original five-path source snapshot and all earlier verifier
+  attempts remain historical evidence only. The accepted Agent tool contract is unchanged.
+- Next gate: freeze the post-repair `ac67285` source identity and dispatch only the read-only
+  `RS-WO-047-02` independent verification against that exact candidate. Do not run an old verifier
+  target, mutate the fixture, or infer closure from deterministic checks or partial browser evidence.
+  Main owns the final integration and documentation closure decision after independent evidence is
+  complete.
 - Dependencies: ADR-RS-0017 remains the tool contract authority. `RIGHTSPOT-048` owns the already
   integrated shared lifecycle source boundary; its browser evidence remains a limitation, not a reason
   to block the disjoint Agent registration-observability repair. The existing manual `/agent/operations`
@@ -38,15 +36,15 @@ Operations authority/projection, and the verified Tenant adapter pattern in `RIG
   `search_listings` adapter remain read-only inputs.
   `RIGHTSPOT-012` may continue as a non-blocking, read-only audit provided it does not modify either
   repair's source write set during a freeze.
-- Dispatch state: `READY_FOR_AGENT_OBSERVABILITY_REPAIR_BASELINE` — `RS-WO-047-01` was completed by
-  supporting agent `01a065ce-ba53-7b71-bb97-7de24e92a60f`; Main independently reviewed the candidate.
-  The reviewed 048 evidence decision permits the separately bounded `RS-WO-047-03` repair after a
-  fresh source recapture. The `RS-WO-047-02` attempts remain historical incomplete evidence and no
-  longer identify the next source snapshot. No fixture mutation or Worktree is authorized.
-- Evidence status: `INDEPENDENT_BROWSER_INCOMPLETE_REBASE_REQUIRED` — contract, original
-  implementation, static checks, full deterministic suite, and Main-controlled browser smoke were
-  verified for the original candidate; shared external-session lifecycle, final console/page-error,
-  and final persistent-state readback remain open for the post-repair candidate.
+- Dispatch state: `READY_FOR_INDEPENDENT_VERIFICATION` — `RS-WO-047-03` completed its exact four-path
+  repair under supporting agent `01a06769-085c-7c51-899b-3f41425cd58e` using `gpt-5.6-sol + medium`.
+  Main reviewed the handoff, integrated it at `ac67285`, and reproduced the deterministic gates. The
+  only next dispatch is the read-only `RS-WO-047-02` verifier against the frozen post-repair source.
+  No fixture mutation or Worktree is authorized.
+- Evidence status: `DETERMINISTIC_REPAIR_INTEGRATED_INDEPENDENT_BROWSER_PENDING` — the contract,
+  repair behavior, focused/full deterministic suite, typecheck, build, repository/static checks,
+  sensitive scan, and exact diff checks passed. The independent browser lifecycle, final
+  console/page-error, and final persistent-state readback remain open for this post-repair candidate.
 
 ## Bounded objective
 
@@ -236,13 +234,15 @@ by Main; Builder did not commit, push, alter canonical docs, or create a Worktre
 
 ### RS-WO-047-02 — Independently verify the integrated capability
 
-**Status:** `PAUSED_PENDING_RIGHTSPOT_048`  
+**Status:** `READY_FOR_DISPATCH`  
 **Role:** Independent WebMCP/browser Verifier  
 **Parallelization:** `AFTER_BUILDER_SOURCE_FREEZE` — Builder source and Main Git ref are frozen during
 the check; no Main docs/status writeback or other worker may move the verified source  
-**Source:** After `RIGHTSPOT-048` is integrated, Main must recapture and freeze a new exact candidate
-commit and path hashes; the original candidate commit `09d0628e10b9ddb9a59c59eebd1be1ee074a5318` is
-historical evidence only.  
+**Source:** The current frozen post-repair candidate is product source commit `ac67285`, preserved
+unchanged in repository merge snapshot `b2e5f93c538bbf75196d4a128950e15b28e73e52`; the original
+candidate commit `09d0628e10b9ddb9a59c59eebd1be1ee074a5318` is historical evidence only. The exact
+post-repair path hashes are recorded under `RS-WO-047-03`. Main must not modify the four source/test
+paths, the fixture, or this Work Order's evidence baseline during verification.  
 **Scope:** Verify the integrated candidate against the exact frozen source and fixture without editing
 source/tests/docs or mutating the durable fixture; use `gpt-5.6-sol` with `medium` reasoning for
 WebMCP-specific evaluation  
@@ -280,17 +280,14 @@ and returns a bounded report to Main.
 
 ### RS-WO-047-03 — Surface Agent Operations registration failure without a silent no-op
 
-**Status:** `READY_FOR_DISPATCH`  
-**Role:** WebMCP/API/UI repair Builder  
+**Status:** `READY_FOR_INDEPENDENT_VERIFICATION`  
+**Role:** Completed WebMCP/API/UI repair Builder handoff; independent verification is the next gate  
 **Parallelization:** `SERIAL_AGENT_WEBMCP_ADAPTER` — the Agent adapter, Operations page wiring, and
 focused tests share the existing 047 source ownership; no parallel writer is admitted  
 **Model gate:** When dispatched, WebMCP-specific implementation must use `gpt-5.6-sol` with `medium`
 reasoning. If the capability is unavailable, keep this Work Order gated and do not substitute another
 model.  
-**Source:** Main accepted the reviewed 048 deterministic/browser split without closing its browser
-gate. The current Main source is not yet the dispatch baseline; Main must recapture a full source
-identity immediately before this dispatch and freeze the exact 047 candidate.  
-**T0 product source baseline (2026-09-03):** Repository root
+**Historical T0 product source baseline (2026-09-03):** Repository root
 `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge`; branch `main`; product snapshot
 `a68b76221db62e8a14207a2f94076a2aae661b31`; `origin/main...HEAD` is `70` behind / `47` ahead;
 one physical Worktree at the canonical Main path. RightSpot tracked source/tests were clean;
@@ -301,8 +298,26 @@ outside this Work Order. Pinned Node is `v24.20.0`, npm `11.19.0`, and `/api/hea
 `operations-page.tsx` `8b7fd1df584e9789187052db96e09c635008739993b4baff95ea9c845b152a3e`,
 `operations-webmcp.test.ts` `84375e27f76ce47f34cc5a0817d3909a9c536cfc1cae6df021218c16e4f16b1c`,
 and `operations-page.test.ts` `4701c237272b370e3790bf39d84fc0d78028eb03fd2371542346688655b0482a`.
-The task-record writeback may create a later docs-only Main commit, but these four source/test paths
-must remain byte-identical until the Builder handoff.  
+This is retained as the pre-repair evidence record; it no longer identifies the current verifier
+candidate.  
+**T2 Builder handoff and Main integration (2026-09-03):** Supporting Builder Jason
+(`01a06769-085c-7c51-899b-3f41425cd58e`) returned only the declared four paths. Main reviewed and
+integrated the candidate at product commit
+`ac672854a2c9a793cdf787d6564dd7b99a77035d`. The post-repair hashes are:
+`operations-webmcp.ts` `fff1b7544f46d21ea65d1499bb0102eb7362dd276504c2c2c0903de0bc5dd710`,
+`operations-page.tsx` `04c7aefa9c6e3e75e3548279cbc797e2c26ce50baf85105d283dbcdcd5238ba4`,
+`operations-webmcp.test.ts` `e1c8d918d3eaf1349c2cb9b83238abef2c7c0684b7f6232151581bbf60d28e5e`, and
+`operations-page.test.ts` `65ff5f90089db2419039779a045c3c0a513ccc18e03d1a80cccb686df1e26c18`.
+Repository HEAD at this handoff is merge commit `b2e5f93c538bbf75196d4a128950e15b28e73e52`, with
+`ac67285` as its first parent and `origin/main` at second parent `928debcbe6ed8fda9d165ac17318fd30a57f0361`;
+the merge introduced no RightSpot source/test delta. Main is ahead of `origin/main` by `50` commits.
+The RightSpot product-source identity therefore remains `ac67285` plus the four hashes above, while the
+full repository snapshot for the verifier is `b2e5f93`. Focused tests passed `28/28`; the complete suite passed `231/231`; pinned Node `24.20.0` typecheck,
+production build, repository/docs validators, sensitive scan, and `git diff --check` passed. The
+build emitted only the known dynamic filesystem-tracing warning in `src/server/persistence/
+operations-store.ts`. No browser evidence was claimed or produced by the Builder. The product source
+is now frozen for the independent verifier; later Main documentation-only commits do not alter these
+four source/test paths.  
 **Worker write set:** `src/ui/agent/operations/operations-webmcp.ts`,
 `src/ui/agent/operations/operations-page.tsx`, `tests/ui/operations-webmcp.test.ts`, and
 `tests/ui/operations-page.test.ts` only  
@@ -345,17 +360,17 @@ ordinary manual Operations page.
 
 This remains the source-bearing Task for the accepted ADR-RS-0017 tool contract. Its original five-path
 implementation candidate passed deterministic checks and Main browser smoke, but independent browser
-closure is paused because its shared lifecycle evidence gate remains harness-blocked. `RIGHTSPOT-048`
+closure remains incomplete because its shared lifecycle evidence gate is harness-blocked. `RIGHTSPOT-048`
 is the separate bounded repair owner for the overlapping shared frame and adapter lifecycle paths; its
-reviewed deterministic/browser split now permits the bounded `RS-WO-047-03` repair. Main must recapture
-a post-repair `047` candidate before resuming independent evidence. The old partial attempts remain
+reviewed deterministic/browser split permitted the disjoint `RS-WO-047-03` repair. The new four-path
+Agent registration-observability repair is integrated at `ac67285` and has passed every deterministic
+handoff gate, but it has no browser claim yet. The next action is a fresh, read-only
+`RS-WO-047-02` verification against the frozen post-repair source. The old partial attempts remain
 historical evidence and are not a closure or push authorization.
-The 2026-09-03 audit confirmed `F-26` in the Agent production wiring. `RS-WO-047-03` now owns that
-bounded registration-observability repair after the reviewed 048 evidence decision; it is ready for
-dispatch after Main recaptures its exact baseline and has not changed source. The corresponding Tenant
-adapter boundary is separately registered as `RIGHTSPOT-051`
-because the 047 write set must remain Agent-only.
+The 2026-09-03 audit confirmed `F-26` in the Agent production wiring. `RS-WO-047-03` owns that bounded
+repair; the corresponding Tenant adapter boundary is separately registered as `RIGHTSPOT-051` because
+the 047 write set must remain Agent-only.
 The active `RIGHTSPOT-012` audit may continue on non-overlapping read-only surfaces, but it cannot
-mutate this Task's five-path write set or move a verifier baseline. `RS-WO-047-03` is now admissible
-for serial source dispatch after Main captures its fresh baseline; it remains subject to the exact
-four-path write set and the WebMCP model gate.
+mutate this Task's four-path write set or move the frozen verifier baseline. `RS-WO-047-02` is now
+admissible for serial independent verification under the recorded source identity and WebMCP model
+gate.
