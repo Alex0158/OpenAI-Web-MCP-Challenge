@@ -488,10 +488,12 @@ wrong-role, unsupported, privacy, untrusted-content, and manual-fallback boundar
 empty results never fall back to the full catalogue and read execution never mutates workflow state.
 
 The contract is reconciled in the API, Flow, current-status, development-roadmap, and WebMCP-roadmap
-documents. `RIGHTSPOT-042` is `CLOSED_VERIFIED` as a decision/documentation gate. The separate
-implementation Task [`RIGHTSPOT-043`](RIGHTSPOT-043-implement-tenant-search-and-webmcp-adapter.md)
-is registered but not dispatched; it must recapture its source/runtime/browser identity before any
-source change or WebMCP registration.
+documents. `RIGHTSPOT-042` is `CLOSED_VERIFIED` as a decision/documentation gate. At this Task's
+2026-09-03 closure checkpoint, the separate implementation Task
+[`RIGHTSPOT-043`](RIGHTSPOT-043-implement-tenant-search-and-webmcp-adapter.md) was registered but not
+dispatched and was required to recapture its source/runtime/browser identity. It subsequently
+integrated ordinary Search at `534f5c9` and dispatched its page-bound adapter against the reviewed
+`2bb65cd` baseline; its independent verification gate remains open.
 
 ## Reopen condition
 

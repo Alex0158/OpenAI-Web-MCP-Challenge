@@ -164,21 +164,23 @@ payloads merely to reserve names.
 ### 8.1 Tenant Discovery Area contract direction
 
 [ADR-RS-0014](Decisions/ADR-RS-0014-area-search-semantics.md) accepts Area as a canonical structured
-facet for the future shared Tenant Discovery Search contract. The ordinary UI may use bounded,
+facet for the shared Tenant Discovery Search contract. The ordinary UI uses bounded,
 case-insensitive prefix suggestions to help a tenant select a canonical `listing.area` label, but the
 applied application/WebMCP filter uses the selected canonical label after shared trim and
 case-insensitive normalization. An unselected fragment is not an applied Area filter; an unknown value
 is a bounded validation outcome; and a selected Area with no published matches remains an explicit
 empty result without fallback.
 
-This is an accepted semantic direction, not an implementation claim. The complete Search contract is
-now frozen in [ADR-RS-0015](Decisions/ADR-RS-0015-tenant-search-and-webmcp-contract.md).
+The ordinary Search implementation applies this direction at product code commit `534f5c9`. The
+complete Search contract is frozen in [ADR-RS-0015](Decisions/ADR-RS-0015-tenant-search-and-webmcp-contract.md);
+the page-bound WebMCP adapter remains a separate gated implementation step.
 
 ### 8.2 Tenant Discovery Search contract
 
-The first Search capability is one authenticated Tenant read on `/tenant`, exposed to a future
-page-authored WebMCP adapter as `search_listings`. The ordinary form, HTTP/API path, and adapter must
-share the existing listing application authority and one semantic predicate.
+The first Search capability is one authenticated Tenant read on `/tenant`, exposed to the page-authored
+WebMCP adapter as `search_listings` once its registration gate is accepted. The ordinary form and
+HTTP/API path are integrated at `534f5c9`; the adapter must share the existing listing application
+authority and one semantic predicate.
 
 The first slice accepts exactly four optional criteria:
 
@@ -198,10 +200,11 @@ empty result. Only `PUBLISHED` listings enter the tenant-safe projection, in det
 order. The bounded synthetic catalogue is returned in full: no caller limit, pagination, ranking,
 or silent truncation is part of this slice.
 
-The logical tool result includes the evaluated `fixtureGeneration`, normalized applied filters,
+The logical Search result includes the evaluated `fixtureGeneration`, normalized applied filters,
 `matchedCount`, the existing tenant-safe `TenantListing[]`, `/tenant` as `pagePath`, and `results` or
-`empty` as `pageState`. The existing HTTP response may retain its compatibility shape, but it must
-map to the same application result and page state. Invalid, unavailable, malformed, superseded,
+`empty` as `pageState`. The integrated HTTP response carries the same bounded envelope and maps the
+compatibility `availableFrom` query name to the public `availableBy` meaning. Invalid, unavailable,
+malformed, superseded,
 unauthenticated, and wrong-role outcomes remain bounded and never expose raw server text or stale
 listing data as current. A valid empty result never falls back to an unfiltered catalogue.
 

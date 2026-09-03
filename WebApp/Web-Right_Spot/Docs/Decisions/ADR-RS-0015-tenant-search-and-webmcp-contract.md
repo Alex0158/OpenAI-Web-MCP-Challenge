@@ -266,14 +266,16 @@ authority must remain the only source of role-safe listing truth.
 
 - The ordinary API retains a compatibility mapping for `availableFrom`, while the public Search
   language becomes `availableBy`.
-- The first Search implementation will change the Area interaction from raw free text to bounded
-  canonical resolution; this is an accepted behavior change, not a WebMCP-only workaround.
+- The ordinary Search implementation changes the Area interaction from raw free text to bounded
+  canonical resolution at product code commit `534f5c9`; this is a product behavior change, not a
+  WebMCP-only workaround.
 - A future adapter can remain thin because filtering, authorization, DTO projection, and page-state
   semantics are already defined once.
 - The first slice deliberately cannot claim fuzzy discovery, live inventory, ranking, pagination,
   broad keyword search, or a production-scale output contract.
-- The current source remains pre-implementation for this ADR until `RIGHTSPOT-043` is executed and
-  independently verified.
+- The ordinary Search portion of `RIGHTSPOT-043` is integrated at `534f5c9`. The page-bound adapter
+  and independent supported-browser verification remain open gates; this ADR does not claim either
+  gate has passed.
 
 ## Validation and reopen triggers
 
@@ -282,4 +284,3 @@ location authority or data source is needed, a criterion requires ranking/geospa
 semantics, the result must mutate workflow state, the page cannot share one authoritative predicate,
 the browser's supported WebMCP lifecycle differs materially, or a deployment/Cloud Receiver/
 external-authentication boundary is introduced.
-
