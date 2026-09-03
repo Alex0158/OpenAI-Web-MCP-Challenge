@@ -1,7 +1,7 @@
 # Re-entry
 
-Re-entry lets a website ask once, wait for a real business event, and deliver the approved next
-step to Codex on the user’s Mac.
+Re-entry lets a website obtain bounded future-continuation consent, wait for an authoritative later
+signal, and return the approved next step to an Agent on the user’s Mac.
 
 ```text
 Host website -> Re-entry consent -> signed Host event -> background Connector -> fresh Codex session
@@ -9,9 +9,14 @@ Host website -> Re-entry consent -> signed Host event -> background Connector ->
 
 > **Current status:** `saas-boilerplate/` is the active Cloud Receiver v2 bounded preview selected
 > by ADR-0033 and extended through ADR-0041. Its local separate-process chain is verified, but it is
-> not production-ready: pairing abuse-fence, Consent/Grant lifetime, shared-Core architecture,
+> not production-ready: pairing abuse-fence, Consent/Grant lifetime, pinned Receiver conformance,
 > default effect acknowledgement, exact deployed Git, and full deployed-flow gates remain open.
-> Only the older `runtime/cloud-receiver/` implementation and its former service are deprecated.
+> ADR-0042 selects Sleepless Kingdom as the Host/demo carrier. ADR-0043 through ADR-0045 and
+> RECORE-007 add a locally verified standing-v0.2 SDK/HTTP/Core/SQLite/Connector/Adapter reference
+> chain. CLOUD-023 separately records the active Receiver's locally verified working-tree standing
+> kernel and additive migration; public controls and pinned release remain open. The normal Host
+> facade, product Connector default, Game, and external runtime remain v0.1 or unadapted. Only the older
+> `runtime/cloud-receiver/` implementation and its former service are deprecated.
 
 This is an independent challenge project, not an official OpenAI product. Canonical claims live in
 [`Docs/Core/00-current-status.md`](Docs/Core/00-current-status.md); [`mvp/`](mvp/) remains frozen
@@ -62,11 +67,12 @@ The Host SDK and Local Connector target that active contract; current preview or
 evidence are recorded in [Core/00](Docs/Core/00-current-status.md), not promoted here as a
 production availability claim.
 
-The active implementation is independently written and does not compose `reentry-core/`. That
-conflicts with the accepted one-Receiver-authority architecture and remains a decision under
-TASK-028. Pairing abuse fencing, effective Grant lifetime, and default Connector effect-to-ack
-composition are also open under TASK-026, TASK-027, and TASK-029. Do not infer closure from green
-component or integration tests.
+The active implementation is independently written and does not compose `reentry-core/`. ADR-0044
+accepts that structure only behind one pinned black-box conformance contract and exact-source
+migration/release gates; TASK-028 remains verification pending until both implementations pass.
+Pairing abuse fencing, effective Grant lifetime, and default Connector effect-to-ack composition are
+also open under TASK-026, TASK-027, and TASK-029. Do not infer closure from green component or
+integration tests.
 
 The registry's SDK `0.3.1` is published from exact commit `9864ba0`, but it predates the current
 checkout-only `createReentry()` facade shown in the active developer portal. TASK-031 owns the new
@@ -98,6 +104,37 @@ review is separate from Re-entry consent, and neither one triggers the later bus
 the [Host SDK WebMCP integration](runtime/host-sdk/README.md#2-use-one-javascript-function-for-ui-and-webmcp)
 for the complete code and runnable Next.js sample.
 
+## Selected Host: Sleepless Kingdom
+
+ADR-0042 selects [`WebApp/Web-Game/`](WebApp/Web-Game/) as the challenge Host and prototype carrier.
+The first bounded story is deliberately small:
+
+```text
+player dispatches a gatherer and leaves
+-> authoritative world commits CargoLostToMonster
+-> one approved Re-entry delivery
+-> Agent returns to the canonical shelter page
+-> fresh shelter, mission, and causal-history reads
+-> conditional force_recall_soldier
+-> migration, siege, destructive upgrades, and irreversible recovery stay human-only
+```
+
+That is the first visible cycle. The final standing-mode proof must acknowledge its Game effect and
+then repeat a second eligible signal under the same Consent; a v0.1 one-shot run is compatibility
+evidence only.
+
+The Game already has bounded local persistent-world, causal-signal, four-read WebMCP, and local
+page-recall evidence. It does not yet have one proved Game Manifest/Consent -> Cloud Receiver ->
+compatible Connector -> supported Agent -> authenticated Browser -> genuine dynamic recall ->
+effect-ACK chain. Cloud Event `202`, Connector claim, Agent activation, page access, tool invocation,
+Game effect, and delivery acknowledgement remain separate facts.
+
+The Game requires the advanced Host SDK because its stable workflow, exact event, causal state,
+canonical URL, and human boundary cannot be represented safely by the generic simple-facade
+defaults. ADR-0045's standing transport now has a local application-neutral Host-to-Receiver-to-
+Connector-to-Adapter reference proof; TASK-033 must still prove active-v2 and Game adoption before
+any external repeatable-activation claim.
+
 ## What is actually connected
 
 | Block | Input | Output |
@@ -121,7 +158,7 @@ Copy this into a coding-agent task and supply only non-secret paths and origins:
 ```text
 Use the reusable Re-entry contracts from this repository. Read Docs/README.md,
 Docs/Core/00-current-status.md, Docs/Core/09-business-flows-and-ux.md, runtime/host-sdk/README.md,
-runtime/local-connector/README.md, ADR-0032, and ADR-0033 through ADR-0041 first. Use Node.js 24 or
+runtime/local-connector/README.md, ADR-0032, and ADR-0033 through ADR-0045 first. Use Node.js 24 or
 newer. Do not set up or target the deprecated runtime/cloud-receiver package. Use only the accepted
 active-v2 Receiver origin for the bounded environment being verified. Integrate runtime/host-sdk
 only in the Host server,
@@ -138,6 +175,9 @@ list of unverified genuine Codex Site Tool invocation, production, deployment, a
 assumptions.
 ```
 
+For Sleepless Kingdom, replace the generic facade portion with the advanced Host SDK and the exact
+ADR-0042/Game contract. Do not use the simple facade's generic workflow/event/state defaults.
+
 ## Repository layout
 
 ```text
@@ -146,6 +186,8 @@ runtime/cloud-receiver/   [DEPRECATED] historical loopback Cloud Receiver servic
 saas-boilerplate/          active Cloud Receiver v2 bounded preview; production gates remain open
 runtime/host-sdk/         Next.js-compatible Host server and browser handoff library
 runtime/local-connector/  macOS background Connector and fresh Codex process adapter
+WebApp/Web-Game/          selected Sleepless Kingdom Host application and scoped product authority
+WebApp/Web-Right_Spot/    preserved unselected alternative application work
 mvp/                      frozen MVP1 fixture, runbooks, and bounded evidence
 Docs/Core/                canonical product, architecture, trust, and evidence truth
 Docs/Mechanisms/          stable Re-entry lifecycle and authority module contracts
@@ -155,7 +197,7 @@ Docs/Development/         bounded implementation, verification, runbook, and clo
 Docs/Engineering/         project-wide development, testing, and execution controls
 Docs/Challenge/           current English challenge routing and refresh gates
 Docs/Research/            supporting research and unresolved analysis
-Docs/Scenarios/           unselected application mappings
+Docs/Scenarios/           selected-scenario history, alternatives, and reference mappings
 Experiments/              isolated reproducible experiments and verdicts
 References/               immutable, external, and historical reference material
 ```
@@ -185,6 +227,11 @@ dashboard-issued Mac pairing, Re-entry-owned consent, opaque Host bindings, a ba
 Connector, and a fresh Codex process adapter. Its real HTTP integration test crossed the whole path
 through delivery claim. The frozen MVP1 fixture
 separately demonstrates genuine page-bound WebMCP continuation and its human-effect boundary.
+
+Sleepless Kingdom separately verifies a persistent local world and causal cargo-loss signal, four
+canonical-page WebMCP reads with one genuine read-only invocation, and a local labelled-port/page-
+HTTP/provenance-bound recall composition. Those are partial Host-side results, not a live external
+Re-entry true chain.
 
 The frozen MVP1 runtime evidence includes:
 
@@ -271,8 +318,9 @@ returned an active-writer rejection for the exact task supplied
 by the controlled Desktop-priming step. These results reject both tested standalone App Server
 Desktop joins and remove that route from current selection unless a materially different supported
 contract or topology appears; they do not reject App Server thread control outside those tested
-joins. App selection is the current gate. A published Workspace Agent is a
-conditional distinct hosted-topology probe only when entitlement and the selected app justify it;
+joins. ADR-0042 closes app selection; the supported Agent-to-authenticated-Browser/WebMCP join is
+the current external gate. A published Workspace Agent is a conditional distinct hosted-topology
+probe only when entitlement and the selected app justify it;
 it must carry its own Browser/WebMCP evidence boundary. Scheduled Heartbeat remains a bounded
 fallback experiment, not the core mechanism or a production transport. The preserved D4
 Desktop-restart harness remains optional compatibility evidence.
@@ -307,19 +355,20 @@ Desktop-restart harness remains optional compatibility evidence.
 14. [`Docs/Core/06-mvp-and-demo.md`](Docs/Core/06-mvp-and-demo.md) — demo-app selection, challenge scope, build order, and proof rhythm.
 15. [`Docs/Challenge/README.md`](Docs/Challenge/README.md) — current challenge constraints and release refresh gates.
 16. [`Docs/Core/07-p0-technical-validation-mvp.md`](Docs/Core/07-p0-technical-validation-mvp.md) — frozen technical-validation contract and Q1–Q5 proof boundary.
-17. [`Docs/Scenarios/README.md`](Docs/Scenarios/README.md) — concrete examples that do not select the final application.
+17. [`Docs/Scenarios/README.md`](Docs/Scenarios/README.md) — selected-scenario history, alternatives, and reference examples.
 
 ## Source-of-truth hierarchy
 
 1. Devpost Official Rules control legal eligibility and submission requirements.
-2. [`ADR-0002`](Docs/Decisions/ADR-0002-separate-mechanism-from-demo-app.md) controls the separation between the selected mechanism and the unselected demo app.
+2. [`ADR-0002`](Docs/Decisions/ADR-0002-separate-mechanism-from-demo-app.md) controls separation between the reusable mechanism and application-specific product authority; [`ADR-0042`](Docs/Decisions/ADR-0042-select-sleepless-kingdom-host-application.md) selects Sleepless Kingdom.
 3. [`ADR-0006`](Docs/Decisions/ADR-0006-establish-reentry-core-development-baseline.md) controls the current source root, MVP reference freeze, and Receiver/Connector topology.
 4. `Docs/Core/00-current-status.md` controls current project status and evidence claims.
 5. Each named Core document controls its own product or system surface.
 6. Each Mechanism document controls its named lifecycle and authority module within the Core invariants.
 7. Each Task record controls its own lifecycle, owner, current increment, dependencies, and next gate; it cannot redefine product truth.
 8. `Docs/Engineering/` controls project-wide development, testing, verification, and execution procedure without redefining product truth.
-9. Selected scenario and application decisions require a separate accepted ADR.
+9. ADR-0042 controls the current selected scenario/application; changing it requires a separate
+   accepted superseding ADR.
 10. The frozen TenderRelay dossier is an immutable concept reference, not a live specification or app decision.
 11. General WebMCP research and earlier ideas are supporting or historical references only.
 
@@ -327,7 +376,8 @@ Desktop-restart harness remains optional compatibility evidence.
 
 The imported TenderRelay dossier and architecture image are byte-for-byte snapshots. They
 must never be edited in place. Mechanism refinements belong in `Docs/Core/`; tender-specific
-refinements belong in `Docs/Scenarios/`; application selection belongs in a new ADR.
+refinements belong in `Docs/Scenarios/`; ADR-0042 owns the current application selection and any
+future change requires a superseding ADR.
 
 ## Historical research
 

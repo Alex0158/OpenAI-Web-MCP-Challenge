@@ -1,12 +1,13 @@
 # Reference and Candidate Scenarios
 
 **Role:** SUPPORTING examples of the core mechanism  
-**Current selected demo app:** None  
-**Controlling decision:** [ADR-0002](../Decisions/ADR-0002-separate-mechanism-from-demo-app.md)
+**Current selected demo app:** Sleepless Kingdom  
+**Controlling decisions:** [ADR-0002](../Decisions/ADR-0002-separate-mechanism-from-demo-app.md)
+and [ADR-0042](../Decisions/ADR-0042-select-sleepless-kingdom-host-application.md)
 
-Scenarios make the domain-neutral re-entry workflow concrete without selecting the final
-application. A scenario may define users, events, artifacts, states, Site Tools, and human
-boundaries for comparison and validation.
+Scenarios make the domain-neutral re-entry workflow concrete. A scenario may define users, events,
+artifacts, states, Site Tools, and human boundaries for comparison and validation; ADR-0042, not
+folder placement, selects Sleepless Kingdom.
 
 ## Rules
 
@@ -24,21 +25,21 @@ boundaries for comparison and validation.
 |---|---|---|
 | [Tender workflow](01-tender-reference-scenario.md) | REFERENCE CANDIDATE | TenderRelay dossier version 1.1 |
 | [Opportunity-to-Arrival Relay](02-opportunity-to-arrival-relay.md) | ELIMINATED — PRESERVED REFERENCE | Historical custom-question application continuation and optional arrival relay |
-| [Sleepless Kingdom](03-sleepless-kingdom.md) | ACTIVE SHORTLIST — NOT SELECTED | First-party bounded persistent game |
+| [Sleepless Kingdom](03-sleepless-kingdom.md) | SELECTED BY ADR-0042; OUTER FILE RETAINED AS SELECTION HISTORY | Current product truth lives under `WebApp/Web-Game/` |
 | [Greenlight Relay](04-greenlight-relay.md) | ELIMINATED — PRESERVED REFERENCE | Historical conditional creative-release continuation |
-| [Rental Marketplace Relay](05-rental-marketplace-relay.md) | ACTIVE SHORTLIST — NOT SELECTED | Role-scoped bilateral rental workflow |
+| [Rental Marketplace Relay](05-rental-marketplace-relay.md) | UNSELECTED ALTERNATIVE — PRESERVED | Role-scoped bilateral rental workflow |
 
-The current active shortlist is Sleepless Kingdom and Rental Marketplace Relay. Opportunity and
-Greenlight remain preserved as eliminated historical references; their earlier comparative
-recommendations are no longer current. The historical comparative review, official-criteria
+ADR-0042 closes the current shortlist by selecting Sleepless Kingdom. Rental Marketplace Relay is
+the preserved unselected alternative. Opportunity and Greenlight remain eliminated historical
+references; their earlier comparative recommendations are no longer current. The historical
+comparative review, official-criteria
 analysis, external evidence, calibrated scorecards, sensitivity analysis, and implementation
 kill-test order are recorded in
 [Research 23 — Historical Three-Candidate Competition App Selection Review](../Research/23-three-candidate-competition-app-selection-review.md).
-Research 23 is not itself a decision record; TASK-001 and an accepted app-selection ADR remain
-controlling.
+Research 23 is not itself a decision record; ADR-0042 controls the current application selection.
 
 Additional candidates should be added only when they are concrete enough to score against
 the full workflow, not as unstructured idea lists. The detailed supporting candidates above
 preserve complete product theses and design hypotheses for comparison; their status labels
-express comparative research disposition only. They do not select an application or change Core
-product truth.
+express comparative research disposition only. A future application change requires a new ADR that
+supersedes ADR-0042.

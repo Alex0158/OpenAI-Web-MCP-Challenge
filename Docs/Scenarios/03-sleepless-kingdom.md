@@ -1,22 +1,24 @@
 # Candidate Scenario C — Sleepless Kingdom
 
-**Role:** ACTIVE SHORTLIST CANDIDATE — NOT SELECTED  
-**Selected as the challenge demo app:** No  
-**Implementation status:** Concept only; not implemented or validated  
+**Role:** SELECTED SCENARIO HISTORY — CURRENT PRODUCT AUTHORITY LIVES UNDER `WebApp/Web-Game/`  
+**Selected as the challenge demo app:** Yes, by ADR-0042  
+**Implementation status:** Substantial bounded local implementation and evidence exist in the scoped
+Game layer; the external Re-entry chain, hosted continuity, and judge path remain open  
 **Primary pattern:** Multi-user, event-driven Agent participation in a shared 24/7 world  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-03
 
-**Current disposition:** Remains in the active application shortlist alongside Rental Marketplace
-Relay. It is not selected, implemented, or validated; TASK-001 and a future accepted ADR remain
-the selection authority.
+**Current disposition:** ADR-0042 selects Sleepless Kingdom as the first Host application and
+challenge-demo carrier. This file preserves the earlier candidate thesis and comparative analysis;
+current Game behavior, tasks, evidence, and validation live under
+[`WebApp/Web-Game/`](../../WebApp/Web-Game/).
 
-**Comparative research disposition:** Preserve as the highest-creativity alternative, but do not
-promote it to the primary challenge entry without passing Agent-value, decision-window,
-single-run-demo, and prior-art differentiation tests. The earlier disposition in the
+**Comparative research disposition:** The selection supersedes the earlier shortlist status but not
+its risks. Agent value, decision window, clean-run demonstration, transport, cost, and prior-art
+differentiation remain validation gates. The earlier disposition in the
 [historical three-candidate app-selection review](../Research/23-three-candidate-competition-app-selection-review.md)
-remains useful as historical comparative evidence but does not rank the current shortlist.
+remains useful as historical comparative evidence but does not control current product truth.
 
-## Comparative Research Update
+## Historical Comparative Research Update
 
 Sleepless Kingdom remains the most visual candidate. The clarified design materially weakens one
 earlier objection: it is not automation against an unrelated third-party game, and Agent access is
@@ -45,10 +47,9 @@ explicit rule and player expression comes partly from how each human communicate
 - **UNRESOLVED:** the game still has the largest combined build, multiplayer-state, fairness,
   transport-frequency, cost, and three-minute reproducibility surface. Direct WebMCP game prior
   art also increases the burden of explaining what is new.
-- **SHORTLIST RECOMMENDATION:** retain a first-party, symmetric, turn-based version with one event, one
+- **HISTORICAL SHORTLIST RECOMMENDATION:** retain a first-party, symmetric, turn-based version with one event, one
   defender, three legal plans, one bounded doctrine, no allied cascade, no spending, and one
-  server-authoritative receipt. Treat it as an active creative wild card within the current
-  shortlist rather than a selected app.
+  server-authoritative receipt. ADR-0042 later selected a still narrower G2 cargo-loss/recall slice.
 
 ### What is actually novel
 
@@ -1399,15 +1400,15 @@ reading: every player may use the same Agent/WebMCP surface, and part of the gam
 human communicates doctrine, priorities, and risk. That makes it a legitimate Agent-native product
 hypothesis rather than unauthorized automation.
 
-It remains unselected. Open Mercy proves that multiplayer WebMCP play already exists, so novelty
-must come from bounded re-entry after the player leaves and from human-authored strategy under
-later unforeseen state. The project has not yet shown that this form of Agent judgment beats a
-transparent strategy builder, that the transport fits the chosen window, or that the multi-user
-world can be demonstrated reproducibly inside three minutes. Whether it is preferable to Rental
-Marketplace Relay requires the same comparative tests.
+ADR-0042 now selects it. Open Mercy still proves that multiplayer WebMCP play already exists, so the
+defensible novelty must come from governed re-entry after the player leaves, fresh state-derived
+tools, and eventually human-authored strategy under later unforeseen state. The project has not yet
+shown that Agent judgment beats a transparent strategy builder, that the external transport fits
+the chosen window and cost, or that the full loop is reproducible inside three minutes.
 
-The correct current disposition is an active creative wild card, not a selection. Preserve a
-first-party, turn-based, single-event build concept with symmetric access, three legal plans,
-contrasting doctrines, one defender continuation, and no allied cascade or spending. Promote it
-only if the Agent-value test, multi-minute transport test, and one-run demo test all pass early.
-This document does not select, implement, deploy, or validate the app.
+The selected first visible cycle is narrower than this historical concept: one shelter owner, one
+`CargoLostToMonster` signal, four fresh reads, one conditional `force_recall_soldier`, and explicit
+human-only high-consequence actions. ADR-0043 then requires a second sequential effect-acknowledged
+signal under the same Consent for the standing-mode claim; a v0.1 one-shot is compatibility evidence
+only. This file remains supporting history; ADR-0042 and the scoped Game authorities control the
+decision, implementation, deployment, and evidence claims.

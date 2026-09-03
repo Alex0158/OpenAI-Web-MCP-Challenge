@@ -1,16 +1,19 @@
 # Re-entry Core — Trust, Security, and Reliability
 
 **Role:** CANONICAL cross-cutting trust, security, and reliability policy  
-**Status:** Application-neutral controls and bounded active-v2 authorization/consent/delivery paths
-locally verified; pairing abuse control, effective expiry, default effect acknowledgement,
+**Status:** Protocol-v0.1 controls, bounded active-v2 authorization/Consent/delivery paths, and the
+additive standing-v0.2 application-neutral transport reference and active-Receiver working-tree
+kernel locally verified; public controls, pinned release, product v0.2 adoption, pairing abuse
+control, effective expiry, default effect acknowledgement,
 production identity, custody, services, and runtime evidence remain open  
 **Authority:** ADR-0006 through ADR-0015, historical ADR-0019 through ADR-0032, and active v2
-ADR-0033 through ADR-0041
+ADR-0033 through ADR-0045
 
 ## 1. Security objective
 
-Allow one user-approved future continuation without letting the Host, event issuer, Receiver,
-Connector, Agent Adapter, page content, or stale runtime silently widen authority.
+Allow user-approved future continuation, including a scoped standing relationship, without letting
+the Host, event issuer, Receiver, Connector, Agent Adapter, page content, or stale runtime silently
+widen durable authority or turn it into unbounded execution.
 
 This document owns system-wide policy and trust boundaries. Module-specific state and failure
 semantics belong to [Docs/Mechanisms](../Mechanisms/README.md). Dated implementation evidence
@@ -33,10 +36,10 @@ belongs to Core/05, Development, Research, and frozen evidence.
 
 | Authority | Granted by | Permits | Does not permit |
 |---|---|---|---|
-| Manifest issuer | Host key and trusted origin | offer one bounded future event | create a Grant or choose an Agent context |
+| Manifest issuer | Host key and trusted origin | offer one bounded v0.1 Event or one scoped v0.2 signal relationship | create a Grant or choose an Agent context |
 | Consent decision | Receiver-owned authenticated session | approve or decline one exact challenge | caller-asserted approval or Host-selected subject |
-| Continuation Grant | Receiver Core | accept one matching event within scope | Host mutation or arbitrary Agent instruction |
-| Signed event | Host issuer plus live Grant | reserve one pending delivery | prove current Host state or Agent execution |
+| Continuation Grant | Receiver Core | accept one v0.1 Event or repeated ordered v0.2 signals within the visible scope | Host mutation, parallel activations, or arbitrary Agent instruction |
+| Signed event | Host issuer plus live Grant | reserve one pending Delivery within the protocol mode | prove current Host state, Consent, or Agent execution |
 | Connector lease | Receiver target authority | dispatch one bounded activation attempt | issue/revoke Grants or choose a context |
 | Private context binding | configured adapter authority | select one exact managed context | expose the locator or acknowledge delivery |
 | Current Host session | Host application | read or mutate current authorized workflow state | inherit stale event or Agent assertions |
@@ -58,6 +61,10 @@ Possession of one opaque identifier is never sufficient to gain the next authori
 8. Revocation fences future authority but does not rewrite committed history.
 9. Test authorities, loopback transport, and deterministic adapters are not production identity.
 10. No fallback may hide unsupported capability, missing binding, stale state, or failed evidence.
+11. A standing Grant is non-consumable, but each signal receives only one bounded activation and the
+    initial v0.2 profile permits at most one non-terminal activation per Grant.
+12. High-frequency Host domain events are coalesced into bounded Agent signals; the canonical page,
+    not an Event backlog or Agent memory, remains authoritative for current work.
 
 ## 5. Trust boundaries
 
@@ -89,11 +96,13 @@ integration.
 
 | Threat | Required control | Current evidence limit |
 |---|---|---|
-| Forged Host offer or event | origin anchoring, allowlisted Ed25519 key, canonical bytes, bounded clock skew | local deterministic keys and vectors |
+| Forged Host offer or event | origin anchoring, allowlisted Ed25519 key, canonical bytes, bounded clock skew; standing Grants pin exact consented key ID and SHA-256 SPKI material fingerprint | local deterministic keys and vectors; same-origin alternate key and same-ID material rebinding rejected |
 | Caller-asserted consent | Receiver-owned decision authority, challenge/action/subject binding, expiry | local preview control only; no production session |
 | Binding enumeration or cross-subject control | authenticate before private resolution, same-subject check, bounded summary | Core/store tests; no production session |
 | Replay or conflicting event reuse | exact event identity, canonical payload comparison, atomic prior-outcome return | local Core/store tests |
-| Double run or partial reservation | one transaction consumes run and creates pending delivery | SQLite reference evidence |
+| Double run or partial reservation | v0.1 atomically consumes one run and creates pending delivery; v0.2 atomically advances sequence and reserves one active slot without consuming the Grant | SQLite reference evidence |
+| Standing-Grant Agent storm or parallel mutation | one-active reservation, contiguous sequence, retryable backpressure, Host-side signal coalescing, Receiver quota | **REFERENCE LOCALLY VERIFIED:** one-active/sequence/backpressure; Host coalescing and production quota open under TASK-033 |
+| Hidden standing-scope expansion | exact visible scope, new Consent for origin/Host-key/workflow/URL/signal/instruction/subject/target/human-boundary change unless a separately accepted audited rotation preserves authority | **REFERENCE LOCALLY VERIFIED:** strict v0.2 Manifest scope and persisted key-material pin; product UX and cross-layer enforcement open under TASK-033 |
 | Stale or wrong Connector | target identity, short lease, claim digest, attempt bound, stale-worker fence | local and test-process evidence |
 | Adapter credential leakage | credential-free activation and private adapter-local binding lookup | deterministic contract evidence |
 | Wrong managed context | lookup only by private Grant and configured adapter, exact scope and lifetime checks | deterministic authority/driver |
@@ -104,7 +113,7 @@ integration.
 | Accidental Stage 1 public exposure | literal loopback bind, absolute trusted composition, fail-closed startup | local shell and child-process tests; no TLS or public-profile evidence |
 | Device-authorization or Connector-token leakage | short-lived device secret, one-time credential issue, digest-only control state, no token logs or browser display, restrictive local credential file | local preview tests; no production browser session, rotation, or recovery evidence |
 | Pairing-code guessing | bounded entropy plus an enforceable attempt/rate fence and secret-free terminal behavior | **CONFLICTED:** active v2 has an eight-hex-character code, no claim limiter, and an unused failed-attempt field; TASK-026 |
-| Consent/Grant lifetime misunderstanding | distinct windows, explicit Receiver narrowing, and user-visible effective expiry | **CONFLICTED:** active v2 copies the shorter session expiry into the Grant and does not display it; TASK-027 |
+| Consent/Grant lifetime misunderstanding | distinct windows, explicit Receiver narrowing, and user-visible effective expiry | **CONFLICTED:** the retained active-v2 v0.1 path copies the shorter session expiry into the Grant without displaying it. The standing kernel stores separate deadlines, but product lifetime and display policy remain open under TASK-027 |
 | Cross-site session termination | matching session plus origin/content-type protection on state-changing browser requests | **OPEN:** production cookies are cross-site and logout lacks the guards used by other writes; TASK-030 |
 | Consent replay, wrong-account approval, or Host-selected device | account session, organization authentication, challenge/action binding, eligible-device selection, digest-only storage, exact decision fencing | local preview tests; no production session or CSRF evidence |
 
@@ -113,8 +122,10 @@ integration.
 ### Atomic boundaries
 
 - Enrollment decision creates Grant, binding, and receipt under one Receiver transaction.
-- Event acceptance records the event, consumes the one-run budget, and creates pending delivery
-  atomically.
+- Protocol-v0.1 Event acceptance records the Event, consumes the one-run budget, and creates pending
+  Delivery atomically.
+- Protocol-v0.2 signal acceptance must record the Event, advance its sequence, reserve the single
+  active slot, and create pending Delivery atomically without consuming the standing Grant.
 - Revocation compare-and-set serializes against event and lease transitions.
 - Delivery claim, reclaim, stale-worker fencing, effect binding, and acknowledgement use explicit
   store transactions.
@@ -159,9 +170,12 @@ selected-app and deployment decisions. They are not invented by the application-
 
 ## 9. Human control
 
-The user must understand the event, scope, expiry, one-run limit, reason for return, and consequence
-that remains human-only. The user can decline enrollment and later inspect or revoke the exact
-Grant through an authenticated Receiver-owned control surface.
+The user must understand the signal, scope, expiry or renewal rule, activation limit, reason for
+return, and consequence that remains human-only. For v0.1 the control surface shows the one-run
+limit. For v0.2 it shows that authorization persists across signals until revoked, expired, or
+materially changed, plus the fact that revocation cannot retract an activation already delivered to
+an external Agent. The user can decline enrollment and later inspect or revoke the exact Grant
+through an authenticated Receiver-owned control surface.
 
 Agent preparation must remain visible and revisable in normal Host UI. A selected app must enforce
 the human consequence in backend authorization and tool registration, not only in copy or model

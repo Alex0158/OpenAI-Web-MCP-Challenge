@@ -7,7 +7,8 @@
 **Completion date:** 2026-08-31  
 **Terminal audit:** [RECORE-003](RECORE-003-program-completion-audit.md)  
 **Program:** Re-entry Core  
-**Final Host application:** Unselected
+**Final Host application at Program closure:** Unselected; ADR-0042 later selects Sleepless Kingdom
+without reopening this application-neutral Program
 
 ## 1. Purpose
 

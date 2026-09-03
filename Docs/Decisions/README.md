@@ -1,7 +1,7 @@
 # Decision Register
 
 **Role:** DECISION index  
-**Status:** Accepted decisions current through ADR-0041; ADR-0034 remains pending approval
+**Status:** Accepted decisions current through ADR-0045; ADR-0034 remains pending approval
 **Last updated:** 2026-09-03
 
 This directory records accepted durable choices and their consequences. A decision record owns
@@ -53,6 +53,10 @@ and runtime evidence.
 | [ADR-0039](ADR-0039-adopt-cloud-receiver-v2-transport-operations.md) | Accepted for Feature 6 local v2 implementation only | Harden v2 HTTP bounds, errors, health, readiness, and redacted operations without changing protocol routes |
 | [ADR-0040](ADR-0040-adopt-connector-self-disconnection.md) | Accepted for active v2 and Local Connector | Add replay-safe Connector self-disconnection, remote-first local cleanup, and a disconnected dashboard projection |
 | [ADR-0041](ADR-0041-adopt-simple-consented-continuation-facade.md) | Accepted | Add a simple server-only SDK facade, consented instruction delivery, and the minimum developer self-service control plane |
+| [ADR-0042](ADR-0042-select-sleepless-kingdom-host-application.md) | Accepted | Select Sleepless Kingdom as the first Host application and challenge-demo carrier while preserving the external continuation and evidence gates |
+| [ADR-0043](ADR-0043-adopt-standing-authorization-v0.2.md) | Accepted | Add a versioned non-consumable standing Grant with ordered repeatable signals, one-active backpressure, and explicit revocation |
+| [ADR-0044](ADR-0044-allow-conforming-receiver-implementations.md) | Accepted | Keep one normative Receiver authority model while permitting independently implemented Receivers only behind pinned black-box conformance and exact-source release gates |
+| [ADR-0045](ADR-0045-adopt-standing-transport-profile-v0.2.md) | Accepted | Add explicit v0.2 Host, HTTP, Connector, and Agent Adapter dispatch without changing or downgrading v0.1 |
 
 ## Pending approval
 
@@ -67,6 +71,6 @@ freeze, application selection, or project-wide engineering or collaboration cont
 not prove implementation, deployment, or runtime behavior. Supersede an earlier decision explicitly;
 do not silently rewrite its historical context.
 
-The next application-selection decision should use a new ADR. It must specialize the
-application-neutral Core without promoting a supporting scenario or research recommendation into
+ADR-0042 is the accepted application-selection decision. A future application change requires a new
+ADR that explicitly supersedes it; supporting scenarios or research recommendations never become
 product truth by location alone.

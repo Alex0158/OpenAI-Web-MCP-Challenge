@@ -1,9 +1,11 @@
 # Re-entry Core - Business Flows and UX
 
 **Role:** CANONICAL cross-layer sequence and user-experience contract  
-**Status:** Current pre-application baseline; active v2 findings and release gates visible  
+**Status:** Current cross-layer baseline with Sleepless Kingdom selected; active v2, standing-mode,
+Game-integration, and release gates visible  
 **Last updated:** 2026-09-03  
-**Scope:** Re-entry account portals, Host SDK handoff, consent, event delivery, Local Connector, and Codex continuation  
+**Scope:** Re-entry account portals, Host SDK handoff, consent, event delivery, Local Connector,
+Codex continuation, and the selected Sleepless Kingdom Host mapping  
 **Authority:** [Core/00](00-current-status.md), [Core/02](02-product-requirements.md), [Core/03](03-system-design.md), [Mechanisms](../Mechanisms/README.md), and accepted ADRs
 
 > **Implementation status:** `saas-boilerplate/` is the active Cloud Receiver v2 implementation
@@ -30,11 +32,33 @@ It exists to connect the existing authorities without replacing them:
 This document owns the cross-layer order and UX handoffs. It does not repeat full wire schemas,
 cryptographic rules, lease rules, or database migration detail. Those remain in the linked owners.
 
-The selected Host application is still open. Therefore, this is a domain-neutral business-flow
-baseline. A later selected application must add its own domain record, event, artifact, page tools,
-and human consequence without changing the Re-entry authority boundaries.
+ADR-0042 selects Sleepless Kingdom as the Host and challenge-demo carrier. This remains the
+domain-neutral cross-layer baseline; the scoped Game authority adds the shelter mission,
+`CargoLostToMonster`, canonical page reads, conditional recall, and human-confirmed consequence
+boundary without changing Re-entry authority. ADR-0043 through ADR-0045 separately accept standing
+authorization, independent-Receiver conformance, and v0.2 transport. RECORE-007 locally verifies the
+low-level Host SDK/HTTP/Core/Connector/Adapter reference. CLOUD-023 separately records the active
+Receiver's locally verified working-tree standing kernel and additive migration; public controls
+and pinned release remain open. Normal Host facade, product Connector, Game, and external-runtime
+evidence remains v0.1 or unadapted until TASK-028 and TASK-033 close adoption.
 
-### 1.1 Evidence and drift labels
+### 1.1 Selected Host join
+
+```text
+Sleepless Kingdom page and backend
+-> advanced Host SDK Manifest and Receiver-owned Consent [OPEN in Game]
+-> authoritative CargoLostToMonster signals [two sequential cycles for the v0.2 proof]
+-> Cloud 202 = durable queue acceptance only
+-> Connector claim -> Agent activation -> authenticated canonical page [OPEN as one chain]
+-> fresh shelter, mission, and history reads
+-> conditional force_recall_soldier
+-> independent Game effect proof -> delivery acknowledgement [OPEN]
+```
+
+The Game has bounded local evidence on both sides of the external join. Those results are not
+collapsed into a true-chain claim.
+
+### 1.2 Evidence and drift labels
 
 Every flow below separates implementation state from evidence quality.
 
@@ -444,21 +468,21 @@ code, migration, deployment, or architecture change.
 | Documentation owner | Core/03–05, Mechanism 03, Connector README, this register, and [TASK-029](../Tasks/TASK-029-integrate-connector-effect-acknowledgement.md). |
 | Change gates | Code: **yes**. ADR/owner decision: **yes** for the concrete effect authority. Migration: no current need identified. Tests: **yes**, including lost response, repeat dispatch, and restart. |
 
-### AUDIT-V2-004 — Active v2 duplicates Receiver authority instead of composing Receiver Core
+### AUDIT-V2-004 — Independent active-v2 Receiver requires executable conformance
 
 | Field | Record |
 |---|---|
 | Severity | **P1** |
-| Status and confidence | `decision_required`; high confidence; **CONFLICTED** |
+| Status and confidence | `verification_pending`; high confidence; **ARCHITECTURE DECIDED** |
 | Affected component / flow / contract | System topology, Receiver authority ownership, contract evolution, and conformance |
 | Current behavior | The active v2 backend implements Consent, Grant, Event, delivery, lease, and acknowledgement rules in its own TypeScript services and declares no `reentry-core` dependency or import. |
-| Intended / documented behavior | ADR-0006 says Re-entry has one Receiver authority model, not two implementations, and the Cloud/local shells wrap the same Receiver Core. Core/03 preserves that invariant. ADR-0033 says Core and accepted ADRs remain authoritative but does not explicitly amend the one-implementation rule. |
-| Exact evidence | `saas-boilerplate/backend/package.json:19-50`; active services under `backend/src/modules/{consent,events,deliveries}/`; ADR-0006 Section 3; ADR-0033 Sections 1 and 2; Core/03 Section 2. |
+| Intended / documented behavior | ADR-0044 preserves one normative Receiver authority model while allowing independently written implementations. `reentry-core` owns the reference and shared scenario; every active implementation must pass exact pinned black-box conformance through its real HTTP surface and durable store before release. |
+| Exact evidence | `saas-boilerplate/backend/package.json:19-50`; active services under `backend/src/modules/{consent,events,deliveries}/`; ADR-0006 Section 3; ADR-0044 Sections 1–5; Core/03 Section 2. |
 | Risk and impact | Two algorithms can drift despite shared tests; AUDIT-V2-002 is already an example of different expiry behavior. Fixes may land in one implementation only. |
-| Drift class | **B** — current code may have deviated from an accepted architecture invariant. |
-| Recommended disposition | Decide whether active v2 must adapt/compose the Core package or whether the architecture intentionally permits an independently conforming implementation. If the latter, amend the ADR and define a mandatory cross-implementation conformance suite before rewriting Core truth. |
+| Drift class | **D** — the architecture is decided, but the mandatory active-v2 conformance and release evidence do not exist yet. |
+| Recommended disposition | Pin and rerun the locally implemented v0.2 scenario adapter against the reviewed active-v2 Express/PostgreSQL source, retain production lease-profile regressions, and block migration/release claims until the full required gates pass. The working-tree trace is development evidence, not pinned conformance; matching names or copied tests are not substitutes. |
 | Documentation owner | Core/01 and Core/03, Mechanisms 01–03, this register, and [TASK-028](../Tasks/TASK-028-reconcile-cloud-v2-receiver-core-architecture.md). |
-| Change gates | Code or architecture amendment: **yes**. ADR/owner decision: **yes**. Migration: unknown until the direction is selected. Tests: **yes**, including cross-implementation vectors and state transitions. |
+| Change gates | Code: the adapter and additive standing migration exist in the locally verified working tree; exact-source verification and release enforcement remain open. ADR/owner decision: complete in ADR-0044. Migration: **yes**, reviewed committed-source verification. Tests: **yes**, including the full shared cross-implementation vectors, real state transitions, and active lease-profile regressions. |
 
 ### AUDIT-V2-005 — Canonical flow mapped the retired receiver and obsolete routes
 
@@ -599,7 +623,8 @@ AUDIT-V2-007 and TASK-022 through TASK-024. No retired file was deleted or treat
 ### 11.2 What this audit does not conclude
 
 - It does not authorize a production-code, migration, deployment, publication, or cleanup change.
-- It does not select a final Host application, identity provider, Agent runtime, or effect authority.
+- It does not implement or alter the selected Host application, identity provider, Agent runtime, or
+  effect authority.
 - It does not invalidate the named bounded local tests; it limits what those tests prove.
 - It does not promote a B, C, D, or F finding into accepted architecture.
 - It does not justify deleting or reverting any pre-existing dirty or historical file.
@@ -616,8 +641,9 @@ AUDIT-V2-007 and TASK-022 through TASK-024. No retired file was deleted or treat
 | Delivery claim, lease, replay, and exhaustion | active v2 delivery routes/service, Delivery/Attempt schema, Core client | ADR-0009, ADR-0037, ADR-0039 | Current checkout **VERIFIED** by `CLAIM-001`–`005` and Connector contract tests; registry Connector `0.2.20` rejects the active instruction-bearing response (AUDIT-V2-012); no distributed-load/SLO proof | Mechanism 03 plus TASK-032 |
 | Agent activation and instruction safety frame | Local Connector `runOnce`, Core adapter dispatcher, fresh `codex exec` adapter | ADR-0011, ADR-0026, ADR-0041 | **VERIFIED** from the current local checkout; registry package compatibility and supported Agent/Browser/WebMCP return remain **OPEN** | Mechanism 04, Core/05, and TASK-032 |
 | Host effect and delivery acknowledgement | active v2 acknowledgement service, Core Connector client, separate test effect authority/worker | ADR-0009 and ADR-0038 | Protocol and separate-process test path **VERIFIED**; default product composition **OPEN** (AUDIT-V2-003) | Mechanism 03 plus TASK-029 |
-| Canonical Host-page return, fresh tools, and human stop | Host SDK sample, `runtime/reference-system/`, `runtime/application-demo/`, frozen MVP1 | Core/02, Mechanism 05, app-selection ADR still required | Bounded sample evidence **VERIFIED**; selected real app and supported Connector-to-Browser join **OPEN** | Mechanism 05 and TASK-001 |
-| Receiver algorithm ownership and conformance | `reentry-core/src/receiver-*.mjs` and independent active v2 TypeScript services | ADR-0006 and Core/03 | **CONFLICTED** (AUDIT-V2-004); shared vectors do not yet establish one implementation | Core/03 plus TASK-028 |
+| Canonical Host-page return, fresh tools, and human stop | selected `WebApp/Web-Game/` plus Host SDK sample, reference system, application demo, and frozen MVP1 | ADR-0042, Core/02, Mechanism 05, and scoped Game authority | Game four-read inventory and one read-only invocation **VERIFIED** locally; local page-HTTP recall separately verified; external Connector-to-authenticated-Browser dynamic recall **OPEN** | Mechanism 05, TASK-001, and Game SK-TASK-076 |
+| Standing authorization and repeated signals | `reentry-core` standing Host SDK, v0.2 HTTP, Core/schema-v6 store, Connector client, Agent Adapter, shared scenario, and tests; active Receiver standing module and additive migration | ADR-0043 through ADR-0045 | **LOCALLY VERIFIED** application-neutral reference by RECORE-007 and active-Receiver working-tree kernel by CLOUD-023; public controls, pinned release, normal facade, product Connector, Game, and external runtime remain open | Mechanisms 01–04, TASK-028, and TASK-033 |
+| Receiver algorithm ownership and conformance | `reentry-core` reference/conformance owner and independent active-v2 TypeScript services | ADR-0006 and ADR-0044 | **ARCHITECTURE DECIDED; VERIFICATION PENDING** (AUDIT-V2-004); pinned black-box suite and exact-source PostgreSQL migration still open | Core/03 plus TASK-028 |
 | Persistence, transport, configuration, and operations | active Prisma schema/migrations, protocol middleware, health/readiness, Vercel entrypoint and config | ADR-0033 through ADR-0039; release gates in Core/05 | Local builds/tests and bounded preview probes **VERIFIED**; exact deployed Git/runtime, production operations, backup/recovery/SLOs **UNKNOWN/OPEN** | Core/04–05 and TASK-022 through TASK-024 |
 
 The deprecated `runtime/cloud-receiver/` source and its tests remain historical evidence only. This
@@ -629,16 +655,16 @@ implementation normative merely because it exists.
 | Document group | Disposition | Reason and remaining boundary |
 |---|---|---|
 | Core/00 | **UPDATED / CURRENT** | Separates active v2, retired v1, bounded evidence, the four material contract gaps, and the SDK/Connector release gaps. |
-| Core/01 and Core/02 | **CORE/01 UPDATED; CORE/02 CURRENT TARGET** | Product boundary remains application-neutral; Core/01 now records the active-v2 implementation conflict, while final app specialization remains open. |
-| Core/03 | **UPDATED / CONFLICTED** | Target topology remains accepted; active v2's independent Receiver implementation is isolated under AUDIT-V2-004 and TASK-028. |
+| Core/01 and Core/02 | **UPDATED / CURRENT TARGET** | Product boundary remains application-neutral; Sleepless Kingdom specialization is selected while its external implementation evidence remains bounded. |
+| Core/03 | **UPDATED / ARCHITECTURE DECIDED; VERIFICATION PENDING** | ADR-0044 accepts independent active-v2 implementation behind one normative model; the shared black-box suite, exact-source migration, and release enforcement remain open under AUDIT-V2-004 and TASK-028. |
 | Core/04 | **UPDATED / CURRENT WITH OPEN RISKS** | Trust model remains normative; pairing abuse, expiry visibility, logout origin, production identity, custody, recovery, and SLO evidence remain open. |
 | Core/05 | **UPDATED / CURRENT EVIDENCE** | Local, separate-process, hosted-preview, and external claims are separated; default effect acknowledgement and release gates remain open. |
-| Core/06 | **CURRENT / BLOCKED ON SELECTION** | App/demo criteria remain valid; TASK-001 still owns the final Host application decision. |
+| Core/06 | **UPDATED / APP SELECTED** | ADR-0042 closes the application choice; continuation, hosted, product, and judge gates remain open. |
 | Core/07 | **CURRENT FROZEN VERDICT** | Preserves the bounded P0 technical-validation contract and does not control active-v2 implementation. |
 | Core/08 | **CURRENT CLAIM FRAME** | Competition thesis remains current only within Core/00 and Core/05 evidence limits. |
 | Core/09 | **UPDATED / CURRENT AUDIT BASELINE** | Owns active-v2 flows, coverage, findings, historical v1 separation, and next gates. |
-| Mechanisms 01–03 | **UPDATED / CURRENT WITH CONFLICTS** | Contracts remain normative; active-v2 mappings and pairing, expiry, architecture, and default-ack gaps are explicit. |
-| Mechanisms 04–05 | **UPDATED / CURRENT TARGET WITH BOUNDED EVIDENCE** | Local activation and sample Host evidence are separated from a supported Agent/Browser join and selected application. |
+| Mechanisms 01–03 | **UPDATED / CURRENT WITH OPEN GATES** | Contracts remain normative; the active-v2 standing kernel is locally verified, while pairing, expiry, public controls, pinned conformance/release, and default-ack gaps remain explicit. |
+| Mechanisms 04–05 | **UPDATED / CURRENT TARGET WITH BOUNDED EVIDENCE** | Local activation, sample Host, and selected Game evidence are separated from a supported Agent/Browser join. |
 | Docs, Task, and Development indexes | **UPDATED / CURRENT** | Authority navigation, non-terminal membership, companion records, and active evidence summaries are reconciled. |
 | Root, Host SDK, and Local Connector guides | **UPDATED / CURRENT WITH RELEASE WARNINGS** | New users are routed to active v2; retired v1, checkout-only SDK, incompatible registry Connector, test-only acknowledgement, and production non-claims are explicit. |
 | Active developer-portal SDK guide | **CONFLICTED / RELEASE OPEN** | It pairs the registry install command with a checkout-only facade; AUDIT-V2-011 and TASK-031 prevent that code from becoming accepted release truth. |
@@ -667,17 +693,21 @@ capability is unsupported, show the failure and record the next gate.
 
 This document is useful now, but it does not close these gates:
 
-1. select the final Host application and its real business event;
+1. integrate the selected Sleepless Kingdom Host through exact advanced-SDK enrollment, signed Event,
+   authenticated page return, dynamic recall, and independent effect acknowledgement;
 2. resolve AUDIT-V2-001's pairing abuse-control contract before wider preview or production use;
 3. decide AUDIT-V2-002's separate Consent/Grant lifetime and displayed-expiry policy;
-4. resolve AUDIT-V2-004's one-Receiver-Core architecture conflict;
+4. complete AUDIT-V2-004/ADR-0044 pinned conformance, committed-source standing migration
+   verification, and release enforcement;
 5. integrate a real effect-to-acknowledgement path for the default Connector under AUDIT-V2-003;
 6. close exact-Git and full deployed-flow evidence under TASK-022 through TASK-024;
 7. publish the simple SDK facade from exact source and reconcile the active portal under TASK-031;
 8. publish a current instruction-compatible Connector from exact source under TASK-032;
-9. select and verify a supported Agent-to-Browser-to-page-bound-WebMCP route; and
-10. define production identity, recovery, observability, retention, backup, SLO, incident, and
+9. select and verify a supported Agent-to-Browser-to-page-bound-WebMCP route;
+10. adopt and verify ADR-0043 through ADR-0045 across the normal Host facade, active Receiver,
+    product Connector, and selected Game without relabeling the local reference or v0.1 evidence; and
+11. define production identity, recovery, observability, retention, backup, SLO, incident, and
    deployment behavior.
 
-TASK-026 through TASK-032 provide bounded owners for newly identified actionable issues. A task or
+TASK-026 through TASK-033 provide bounded owners for newly identified actionable issues. A task or
 this document records a gate; it is not evidence that the underlying behavior is fixed.

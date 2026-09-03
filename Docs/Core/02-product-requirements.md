@@ -1,19 +1,28 @@
 # Re-entry Core — Product Requirements
 
 **Role:** CANONICAL mechanism-level user behavior  
-**Status:** Target application-neutral requirements baseline; the v0.1 application-neutral Core is locally verified at its stated boundary, while selected-app specialization and application implementation remain open  
-**Last updated:** 2026-08-31
+**Status:** Target application-neutral requirements baseline with Sleepless Kingdom specialization
+selected; application and external continuation evidence remain bounded and incomplete  
+**Last updated:** 2026-09-03
 
 ## 1. Requirements objective
 
 Define the observable behavior every acceptable demo application must implement to prove
-the selected re-entry workflow. Domain-specific requirements must be added only after the
-host application is selected.
+the selected re-entry workflow. ADR-0042 selects Sleepless Kingdom; its scoped documents add the
+domain-specific Game contract without moving Game rules into this application-neutral baseline.
 
 These requirements define target behavior. They do not imply that every requirement is
 implemented or verified; current evidence status is owned by [Core/00](00-current-status.md)
 and [Core/05](05-validation-and-evidence.md). Detailed protocol, authority, delivery, activation,
 and re-entry contracts are routed through the [Mechanism index](../Mechanisms/README.md).
+
+ADR-0043 through ADR-0045 accept additive standing authorization, independent-Receiver conformance,
+and explicit v0.2 transport. RECORE-007 locally verifies the application-neutral low-level Host
+SDK/HTTP/Core/Connector/Adapter chain; CLOUD-023 separately records the active Receiver's locally
+verified working-tree kernel and additive migration. Public standing controls and pinned release
+remain open under TASK-028/TASK-033. The selected Game, normal Host facade, product Connector, and
+external chain remain bounded by their v0.1 or unintegrated behavior; neither local result proves
+those consumers.
 
 ## 2. Abstract end-to-end journey
 
@@ -31,10 +40,23 @@ and re-entry contracts are routed through the [Mechanism index](../Mechanisms/RE
 12. The Agent stops at the defined human boundary.
 13. The user reviews the outcome and the system records a receipt.
 
+### Sleepless Kingdom specialization
+
+For the first selected slice, the workflow participant is a shelter owner, the persistent decision
+is a gatherer mission, the external state change is server-owned monster combat, and the one eligible
+event is `CargoLostToMonster`. The canonical page must expose the four current-state reads and may
+register `force_recall_soldier` only when live continuation and mission state permit it. The ordinary
+human UI remains complete, and migration, siege, destructive upgrades, irreversible recovery, and
+actions outside the accepted G2 recall envelope remain human-confirmed.
+
+Current implementation and proof remain owned by the scoped
+[`WebApp/Web-Game/Docs/00-current-status.md`](../../WebApp/Web-Game/Docs/00-current-status.md), not by
+this target requirements document.
+
 ## 3. Experience principles
 
 - Use the selected domain's language, not internal protocol terminology, in the user interface.
-- Explain the future trigger, scope, expiry, run count, and consequence before permission.
+- Explain the trigger, scope, expiry, v0.1 run budget or v0.2 one-active limit, and consequence before permission.
 - Show the current record, stage, re-entry reason, Agent activity, and human boundary.
 - Never present a prepared artifact as approved, committed, published, or submitted.
 - Keep the host application's normal human workflow usable without the Agent.
@@ -76,7 +98,7 @@ Agent to return before I authorize anything.
 
 - The application describes one legitimate future event in domain language.
 - The offer identifies the record, purpose, canonical return location, separate offer and
-  requested Grant expiries, maximum runs, and human boundary.
+  requested Grant expiries, v0.1 maximum runs or v0.2 standing/one-active scope, and human boundary.
 - Merely viewing or invoking the offer creates no continuation authority.
 - The offer is bound to the current origin and workflow record.
 
@@ -103,7 +125,8 @@ I leave without causing background work before the authorized event.
 - Waiting creates no workflow mutation or event-authorized continuation. If a bounded pull
   adapter is used, empty checks are explicitly time-bounded, separately recorded, and never
   reported as event delivery; perpetual polling is not required by the mechanism.
-- The grant retains its scope, expiry, remaining run count, and revocation state.
+- The Grant retains scope, expiry, and revocation; v0.1 retains its remaining run budget,
+  while v0.2 retains accepted sequence and active-slot state without consuming the Grant.
 - Ending the page session does not falsely mark the business workflow complete.
 
 ### WR-06 — Emit one bounded authoritative event
@@ -138,7 +161,8 @@ unrelated Agent work.
   Connector or Agent credentials, or a raw platform thread identifier.
 - The event, delivery target, Local Connector caller, and activation cannot select or carry the
   raw context locator.
-- Run count and concurrency limits are reserved atomically.
+- v0.1 run budget and delivery reservation are atomic; v0.2 atomically reserves the next
+  sequence and one active slot without consuming standing authorization.
 - An activation or resume failure produces a visible retry-safe status without broadening
   application authority.
 - The resumed experience identifies the record and reason for return.
@@ -168,6 +192,11 @@ stage so the continuation is bounded and understandable.
 - Tools invalid for the current stage are absent or reject invocation.
 - Tool names, descriptions, schemas, and outputs are narrow and domain-specific.
 - A read-before-write path exists for the resumed stage.
+
+For Sleepless Kingdom, the target initial-only role is the Game-specific cargo-loss Re-entry consent
+action and the resumed-only mutation is `force_recall_soldier`. The current Game has verified the
+four shared reads and implemented conditional recall locally; initial enrollment and genuine dynamic
+recall after external Re-entry remain open.
 
 ### WR-10 — Continue the same work and stop for the human
 
@@ -214,7 +243,7 @@ Every selected app must express these states in its own domain language:
 
 - **Traceability:** Grant, event, accepted delivery, activation, run, tool mutation, artifact revision, and human decision share a correlation path.
 - **Idempotency:** Retried delivery cannot produce duplicate accepted work, runs, or effects.
-- **Least privilege:** Authority is limited by origin, workflow, event, time, run count, and human boundary.
+- **Least privilege:** Authority is limited by origin, workflow, event, time, the selected run/active-slot profile, and human boundary.
 - **State freshness:** Every mutation validates current business state and expected revision.
 - **Judge reproducibility:** A fresh evaluator can complete the loop from one public entry point with documented setup.
 - **Privacy:** Events and logs contain only the minimum identifiers and state metadata.
@@ -234,21 +263,24 @@ The challenge MVP will not:
 - claim universal browser, identity-provider, or authentication continuity;
 - use the tender scenario as the default app without an explicit selection decision.
 
-## 8. Domain specialization gate
+## 8. Selected domain specialization
 
-Before selected-app implementation, the selected application must add:
+ADR-0042 and the scoped Game authority define:
 
-- named user and external actor;
-- concrete workflow record and persistent artifact;
-- initial and resumed business states;
-- one exact event type;
-- initial and resumed Site Tool inventory;
-- human decision boundary;
-- user-visible terminology and error states;
-- synthetic fixture and reset behavior;
-- domain-specific safety and data rules.
+- named user and external actor: shelter owner and authoritative world worker/monster;
+- concrete persistent object: shelter-scoped mission, attempt, causal history, signal, and recall
+  decision;
+- initial and resumed states: dispatched gatherer before absence, then current loss/reissue state;
+- one exact event type: `CargoLostToMonster`;
+- tool inventory: four shared reads, target initial consent action, and conditional resumed recall;
+- human decision boundary: migration, siege, destructive upgrades, irreversible recovery, and
+  actions outside the G2 recall envelope;
+- user-visible terminology and typed stale/in-combat/ownership failures;
+- deterministic `sleepless-mvp-01` fixture and fresh-world reset; and
+- server-owned state, revisions, ownership, idempotency, causal provenance, and scope isolation.
 
-These additions require a new accepted ADR and an update to 06-mvp-and-demo.md.
+The selection record is complete. Implementation, external integration, hosted continuity, and
+judge evidence still have to pass the vertical-slice acceptance below.
 
 ## 9. Selected-app vertical-slice acceptance
 
@@ -267,3 +299,8 @@ The selected-app mechanism slice is accepted only when one clean run demonstrate
 11. preservation of the human decision boundary;
 12. safe duplicate and invalid-event behavior;
 13. a correlated, judge-reproducible evidence trace.
+
+One cycle is compatibility or component evidence, not selected standing-mode acceptance.
+ADR-0043 through ADR-0045 and TASK-033 additionally require two sequential effect-backed
+acknowledgements under one Consent, one-active backpressure, restart/replay, and revocation
+rejecting the next signal. Each activation must revalidate current page state and human limits.

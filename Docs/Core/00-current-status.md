@@ -2,21 +2,21 @@
 
 **Role:** CANONICAL current project and evidence truth  
 **As of:** 2026-09-03, Europe/London  
-**Selected direction:** Application-neutral Re-entry Core  
-**Host application:** Unselected  
+**Selected direction:** Re-entry Core with Sleepless Kingdom as the first Host application  
+**Host application:** Sleepless Kingdom, selected by ADR-0042  
 **Agent continuation adapter:** Unselected  
 **Phase:** Application-neutral Core remains current; the former `runtime/cloud-receiver/` account-
 first runtime is deprecated historical evidence; active `saas-boilerplate/` Cloud Receiver v2,
-macOS Connector/Host SDK previews, final application, production controls, and supported Agent
-selection remain separately bounded work
+macOS Connector/Host SDK previews, selected Game integration, active-v2 standing-authorization
+adoption, production controls, and supported Agent selection remain separately bounded work
 
 ## 1. Executive status
 
 The project has implemented and locally verified the application-neutral Re-entry Core at the
-scope accepted by ADR-0006 through ADR-0014. RECORE-001 through RECORE-004 and RECORE-006 are
-`locally_verified`; RECORE-005 is `separate_process_verified`. The current aggregate Core suite
-passes 81 of 81 tests on Node 24; earlier records also cover Node 26. The package has zero runtime
-dependencies and 16 selected package files.
+scope accepted by ADR-0006 through ADR-0014. RECORE-001 through RECORE-004, RECORE-006, and the
+additive ADR-0043 through ADR-0045 RECORE-007 reference are `locally_verified`; RECORE-005 is
+`separate_process_verified`. The current aggregate Core suite passes 153 of 153 tests on Node 24.
+The package has zero runtime dependencies and 19 selected package files.
 
 The completed Core covers strict protocol values, Host issuance, Receiver-owned enrollment and
 Grant authority, signed event acceptance, exact replay, atomic pending delivery, authenticated
@@ -84,14 +84,51 @@ suites do not close. **CONFLICTED:** ADR-0033's five-failed-claim pairing fence 
 the current anonymous request and is not implemented; TASK-026 owns the decision. **CONFLICTED:**
 the SDK requests separate five-minute offer and thirty-minute Grant windows, while v2 copies the
 shorter Consent-session expiry into the Grant without displaying it; TASK-027 owns the policy.
-**CONFLICTED:** active v2 independently implements Receiver authority despite ADR-0006's one-shared-
-Receiver-Core invariant; TASK-028 owns that architecture decision. **VERIFIED OPEN:** the default
-Connector dispatch path has no real Host-effect-to-acknowledgement integration and can therefore be
-reclaimed within the accepted attempt bound; TASK-029 owns the selected-app completion path. These
+ADR-0044 resolves the implementation-identity decision: active v2 may remain independently
+implemented only behind the pinned normative Receiver conformance suite. **VERIFICATION PENDING:**
+the active-v2 standing kernel and additive migration now pass local working-tree checks, but pinned
+source conformance and release enforcement remain open under TASK-028. **VERIFIED
+OPEN:** the default Connector dispatch path has no real Host-effect-to-acknowledgement integration
+and can therefore be reclaimed within the accepted attempt bound; TASK-029 owns the selected-app
+completion path. These
 findings limit production and whole-product claims; they do not erase the exact bounded test results.
 Two additional P1 release findings keep the active install path open: TASK-031 owns the unpublished
 simple SDK facade, and TASK-032 owns the non-reproducible, instruction-incompatible Connector
 artifact.
+
+ADR-0043 through ADR-0045 accept an additive protocol-v0.2 standing-authorization and transport
+profile: one informed Consent decision may authorize repeated ordered Agent signals while each
+signal still receives only one bounded activation. RECORE-007 now locally verifies the
+application-neutral chain through a low-level standing Host SDK, exact `/v0.2` HTTP Receiver,
+Core/SQLite, version-selected Connector client, Agent Adapter, two deterministic effect
+acknowledgements, restart, inspection, revocation, and historical replay. The Node 24 aggregate is
+green at 153/153 after the CLOUD-023 source-owner review. The reference now keeps the private receipt out of Host-visible approval, pins
+each standing Grant to the consented Host key ID and public-key material, rejects approval/Event
+timestamps at their expiry boundaries, and fails closed on inconsistent private Delivery state.
+Mutating reference operations resolve time and live authority after the SQLite writer lock;
+20 deterministic boundary regressions cover stale-authority and backdated-revocation risks.
+The shared scenario checks exact success envelopes and correlation, with 21 oracle self-tests;
+these additions do not establish the full shared race, rollback, or crash matrix.
+Schema 6 preserves but security-disables older preview Grants lacking key-material evidence;
+ordinary new-Grant restarts do not require another Consent. **LOCALLY VERIFIED, NOT RELEASED:** the
+active Receiver `Re-Entry` working tree now adds separate standing tables and real Express v0.2
+routes. Its 154-test backend aggregate, type-check, build, and shared two-signal trace passed against
+disposable PostgreSQL. Consent/control are internal seams and Host-effect authority is deterministic;
+the Core corpus remains uncommitted, so this is not pinned release evidence. The normal Host facade,
+product/published Connector v0.2 selection, Sleepless Kingdom, and an external Agent/Browser remain
+unintegrated. TASK-028/TASK-033 and the
+[Receiver verification record](../../saas-boilerplate/backend/conformance/standing-v0.2/README.md)
+own the remaining source, control, and adoption gates.
+
+ADR-0042 selects Sleepless Kingdom under `WebApp/Web-Game/` as the first Host application and
+challenge-demo carrier. The selected v0.1 compatibility slice is one shelter owner, one approved
+`CargoLostToMonster` Event, fresh canonical-page reads, and a conditional
+`force_recall_soldier` action, while high-consequence Game actions remain human-confirmed. The Game
+already has bounded local gameplay, causal-signal, WebMCP-read, and local page-recall evidence, but
+those pieces are not a live Receiver-to-Connector-to-Agent-to-authenticated-page chain. ADR-0045's
+repeatable standing mode now has a local application-neutral SDK-to-Adapter reference proof, but it
+does not turn the current Game, active Receiver, normal Host facade, product Connector, or external
+runtime into v0.2 evidence.
 
 CLOUD-006 adds `runtime/reference-system/`, a one-command generic reference consumer that crosses
 the complete local path through an actual loopback Host page, pairing, Receiver-owned consent,
@@ -105,16 +142,19 @@ delivery, prepares the visible next-stage plan through an evidence-only Agent, e
 stage-derived page-bound WebMCP tools, and stops before applicant acceptance. It is integration
 evidence only and does not select the final Host product.
 
-The project has not selected or implemented the final Host application, public or production
-Receiver profile, concrete Agent adapter, production consent and control sessions, binding capture
-or custody, deployment, product validation, judge reproduction, or submission.
+The project has selected and partially implemented Sleepless Kingdom as the Host application. It has
+not proved the Game's Manifest/Consent enrollment, external signed Event handoff, compatible
+published Connector, concrete supported Agent adapter, authenticated Browser return, dynamic recall
+through genuine WebMCP after Re-entry, production effect acknowledgement, public production
+Receiver/Game profile, product validation, judge reproduction, or submission.
 
 ## 2. Selected concept
 
-> A user authorizes one bounded future business event. After that event occurs, an available
-> continuation adapter may return the bound Agent to the authoritative web page, where the Agent
-> reads current state, discovers the Site Tools valid now, continues the same visible work, and
-> stops at a human decision boundary.
+> A user authorizes one bounded future continuation relationship. Protocol v0.1 permits one Event;
+> the accepted protocol-v0.2 standing mode permits repeated ordered Agent signals without repeated
+> Consent. Every signal still creates only one bounded activation that returns the Agent to the
+> authoritative page to read current state, discover the Site Tools valid now, continue visible
+> work, and stop at the human boundary.
 
 ```text
 live WebMCP page
@@ -129,8 +169,10 @@ live WebMCP page
 -> human consequence boundary
 ```
 
-The mechanism is selected. The domain, user, application, event, artifact, tool schemas, concrete
-Agent runtime, and final product name remain open until accepted decisions select them.
+The mechanism and first Host are selected. Sleepless Kingdom supplies the shelter owner, persistent
+mission decision, first `CargoLostToMonster` continuation, fresh Game reads, conditional recall, and
+human-confirmed consequence boundary. The concrete Agent runtime, production profile, commercial
+customer, cross-layer standing-mode adoption, and final market/distribution model remain open.
 
 ## 3. Current decision and evidence state
 
@@ -139,7 +181,8 @@ Agent runtime, and final product name remain open until accepted decisions selec
 | Mechanism/application separation | **DECIDED** | ADR-0002 |
 | Re-entry Core source and target topology | **DECIDED** | ADR-0006 |
 | Protocol, Host, Receiver, delivery, transport, adapter, and private binding contracts | **DECIDED** | ADR-0007 through ADR-0014 |
-| Application-neutral implementation | **LOCALLY VERIFIED** | `reentry-core/`, RECORE-001 through RECORE-006 |
+| Standing authorization and repeatable activation | **LOCALLY VERIFIED APPLICATION-NEUTRAL CROSS-LAYER REFERENCE; ACTIVE/GAME ADOPTION OPEN** | ADR-0043 through ADR-0045, TASK-033, and RECORE-007; low-level Host SDK -> v0.2 HTTP -> Core/SQLite -> Connector -> Agent Adapter passed one Consent/two acknowledged signals/backpressure/restart/revoke on Node 24 |
+| Application-neutral implementation | **LOCALLY VERIFIED** | `reentry-core/`, RECORE-001 through RECORE-007 |
 | Exact bounded process-fault matrix | **SEPARATE-PROCESS VERIFIED** | RECORE-005 |
 | Source conformance profile | **LOCALLY VERIFIED, NON-PRODUCTION** | ADR-0012 and direct conformance execution |
 | Stage 1 Cloud Receiver shell | **DEPRECATED, HISTORICAL LOOPBACK EVIDENCE** | ADR-0019, CLOUD-001, and `runtime/cloud-receiver/`; retired by ADR-0032 |
@@ -147,14 +190,14 @@ Agent runtime, and final product name remain open until accepted decisions selec
 | Consent-session and Host SDK handoff preview | **CLOUD RECEIVER PREVIEW DEPRECATED; SDK CONTRACT RETAINED AS EVIDENCE** | ADR-0022, CLOUD-005, paired Host subject, signed Manifest, public challenge, opaque token, approval/decline fencing, public binding, restart, and no raw-token persistence |
 | Shared Host UI/WebMCP consent action | **LOCALLY VERIFIED WITH BOUNDED BROWSER RUNTIME EVIDENCE** | TASK-010, HOST-002, Host SDK v0.3 tests/build, and live `request_codex_reentry` discovery plus bounded invocation |
 | Simple subject/prompt/URL SDK and v2 developer flow | **SEPARATE-PROCESS VERIFIED; REGISTRY PATH OPEN** | ADR-0041, TASK-025, SDK-006, TASK-031, and TASK-032; 81 Core, 25 SDK, 56 Receiver, 47 Connector tests plus separate-process acknowledgement/restart replay and independent browser personas used current checkouts; published SDK `0.3.1` predates the facade and Connector `0.2.20` rejects its instruction-bearing lease |
-| Active v2 contract reconciliation | **P0/P1 DECISIONS OPEN** | Core/09 AUDIT-V2-001 through AUDIT-V2-004 and TASK-026 through TASK-029; pairing abuse fence, Consent/Grant lifetime, Receiver-Core composition, and default effect acknowledgement remain unresolved |
+| Active v2 contract reconciliation | **STANDING KERNEL LOCALLY VERIFIED; PINNED RELEASE AND POLICY WORK OPEN** | ADR-0044 and TASK-028; additive PostgreSQL migration and Express standing trace pass on the `Re-Entry` working tree. Reviewed source pin, full conformance/release enforcement, public controls, pairing abuse fence, lifetime policy, and production effect acknowledgement remain open |
 | Re-entry Cloud console preview | **DEPRECATED, HISTORICAL LOOPBACK EVIDENCE** | CLOUD-004 and `runtime/cloud-receiver/`; retired by ADR-0032 |
 | Complete generic reference flow | **LOCALLY VERIFIED, EVIDENCE-ONLY AGENT** | CLOUD-006 and `runtime/reference-system/` |
 | Application-review sample Host | **LOCALLY VERIFIED, SAMPLE ONLY** | ADR-0023, HOST-001, and `runtime/application-demo/` |
 | Frozen MVP1 mechanism proof | **VERIFIED, BOUNDED REFERENCE** | `mvp/` and its evidence index |
 | Standalone App Server/Desktop Browser joins | **FAILED FOR BOTH TESTED ROUTES** | Research 19 and frozen probe artifacts |
 | Current in-app Browser and page-bound WebMCP | **RUNTIME VERIFIED MANUALLY; CONNECTOR JOIN OPEN** | HOST-001 fresh DRAFT and resumed inventories plus exact resumed-stage invocation |
-| Final Host application and user | **UNSELECTED** | new app-selection ADR required |
+| Host application and first user/workflow | **SELECTED; PARTIALLY IMPLEMENTED** | ADR-0042; Sleepless Kingdom under `WebApp/Web-Game/`; external vertical slice remains open |
 | Local Codex fresh-session adapter preview | **LOCALLY VERIFIED, PREVIEW ONLY** | ADR-0026, TASK-007, CLOUD-008, and `runtime/local-connector/` |
 | macOS Local Connector readiness preview | **LOCALLY VERIFIED, PREVIEW ONLY** | ADR-0027, TASK-008, CLOUD-009, and `runtime/local-connector/` |
 | Account-first consent and background Connector path | **CLOUD RECEIVER RUNTIME DEPRECATED; SDK/CONNECTOR SEAMS RETAINED AS PREVIEW EVIDENCE** | ADR-0028, TASK-009, CLOUD-010, and `runtime/{cloud-receiver,host-sdk,local-connector}/` |
@@ -176,7 +219,8 @@ The current reusable contract source is `reentry-core/`. Its stable contracts ar
 5. [Host re-entry, WebMCP, and human boundary](../Mechanisms/05-host-reentry-webmcp-and-human-boundary.md).
 
 The first four have application-neutral local contract evidence. The fifth is a selected-app
-obligation with frozen bounded MVP1 evidence; it is not implemented in `reentry-core/`.
+obligation with frozen bounded MVP1 and partial Sleepless Kingdom evidence; it is not implemented in
+`reentry-core/`.
 
 `mvp/` is a frozen MVP1 proof fixture. MVP2 remains a preserved contributor reference. Neither is
 the active source baseline for new application-neutral behavior.
@@ -204,22 +248,35 @@ path; it is not a selected product adapter and its return value is not Host-effe
 `runtime/application-demo/` is the first application-shaped sample consumer. It serves one
 durable applicant record and separate applicant/reviewer pages, uses the Host SDK browser and
 server surfaces, and consumes the same local Receiver and Connector contracts. Its automatic Agent
-step remains deterministic evidence; the final application and real Agent bridge remain open.
+step remains deterministic evidence; it is not the selected application, and the real Agent bridge
+remains open.
+
+`WebApp/Web-Game/` is the ADR-0042 selected Host product layer. Its scoped authority owns Sleepless
+Kingdom gameplay, state, tools, evidence, deployment, and task lifecycle. Current bounded evidence
+covers the deterministic persistent world, browser-absent causal loss/signal, four canonical-page
+WebMCP reads with one genuine read-only invocation, and a local labelled-port/page-HTTP/provenance-
+bound recall composition. Game Manifest/Consent, external Receiver/Connector delivery, supported
+Agent/browser return, genuine dynamic recall, effect acknowledgement, hosted continuity, and judge
+reproduction remain separate open gates.
 
 `runtime/host-sdk/` packages the Host consent action for ordinary UI and WebMCP and now adds the
 ADR-0041 `createReentry()` server facade for the normal subject/prompt/URL path. Its Next.js sample
 keeps organization and signing credentials in server routes, retains the approved continuation
 only in a process-local demo server store, and sends the later Event through a separate route.
 The advanced protocol API remains available. Production Host persistence and the selected app
-remain open.
+integration remain open; Sleepless Kingdom must use the advanced surface rather than the generic
+facade defaults.
 
 `saas-boilerplate/` is the active Cloud Receiver v2 implementation base. Its independently
 deployable Express/Prisma backend and Next.js frontend implement separate user/developer sessions,
 account pairing, Host-key registration, Receiver-owned consent and target binding, signed Event
 ingress, delivery lease/acknowledgement, developer self-service, and bounded operations. It does not
-import or compose `reentry-core`; that is a recorded architecture conflict under TASK-028 rather
-than an accepted replacement for ADR-0006. Its local and preview-deployment evidence is bounded by
-Core/05, CLOUD-022, and SDK-006.
+import or compose `reentry-core`. ADR-0044 accepts that independent implementation behind one
+normative Receiver authority model and mandatory pinned black-box conformance. TASK-028 remains
+verification-pending for the pinned shared suite, exact committed-source PostgreSQL migration, and
+release enforcement. The standing kernel is locally verified only; its new account control plane
+is proposed, not implemented. Its local and preview-deployment evidence is bounded by Core/05,
+CLOUD-022, SDK-006, and the Receiver standing verification record.
 
 `runtime/local-connector/` now has a terminal-testable Codex fresh-session preview. It can claim one
 delivery and start one new local Codex session with a fixed prompt containing the validated
@@ -278,6 +335,9 @@ Current evidence supports these bounded claims:
 - the application-review sample crosses browser consent, submission, reviewer approval, stable
   event ingress, delivery, visible next-stage preparation, effect acknowledgement, fresh
   page-bound WebMCP invocation, and a negative human-boundary check in the recorded local run;
+- Sleepless Kingdom locally proves persistent causal gameplay, four same-page WebMCP reads with one
+  genuine read-only invocation, and a separate labelled-port/page-HTTP/provenance-bound recall
+  composition, without claiming those pieces form an external Re-entry chain;
 - the frozen MVP1 suite currently passes 118 tests; and
 - bounded P0/H1/H2 evidence demonstrates technical composability in the recorded local/current-
   build environments.
@@ -304,13 +364,18 @@ Experiments, and frozen evidence rather than this status file.
 
 ## 7. Current highest-leverage sequence
 
-1. Complete [TASK-001](../Tasks/TASK-001-select-host-application.md) and accept the
-   application-selection ADR using Core/06 and the candidate evidence.
-2. Create a bounded selected-app Program and domain documentation layer.
-3. Specialize the verified sample or implement the selected replacement as the real Host product.
-4. Validate and select one supported continuation adapter or explicitly narrow the demo claim.
-5. Implement only the production Receiver and Connector profiles required by that selected path.
-6. Produce selected-app runtime, product, judge, deployment, and submission evidence.
+1. Finish [TASK-001](../Tasks/TASK-001-select-host-application.md) exact documentation and remote
+   closure without absorbing owner-held Game or RightSpot work.
+2. Close the Game's exact protocol-v0.2 advanced-SDK, active-Receiver, and compatible-Connector
+   handoff gate; keep a v0.1 one-shot trace labelled as compatibility evidence only.
+3. Select and verify an authenticated Agent-to-Browser-to-canonical-Game-page path with fresh
+   WebMCP reads and conditional recall, or explicitly narrow the demo claim.
+4. Prove signal 1 as queue acceptance, claim, activation, page action, independent Game effect, and
+   ACK without collapsing those facts.
+5. Under the same Consent, prove one-active backpressure, a second sequential signal/effect/ACK, then
+   revocation; this is the minimum standing-mode Game claim under TASK-033.
+6. Complete hosted identity/reset, product/Agent-value, transport-cost, clean-judge, deployment, and
+   submission evidence.
 
 Closed RECORE records are not reopened merely because application work begins.
 
@@ -318,7 +383,8 @@ Closed RECORE records are not reopened merely because application work begins.
 
 The project does not currently claim:
 
-- a selected commercial product or validated customer problem;
+- a validated commercial product, customer problem, or player demand merely because Sleepless
+  Kingdom is selected;
 - a new WebMCP standard or universal Agent continuation protocol;
 - a supported public Codex or other Agent wake API;
 - production consent identity, credential rotation/recovery, or administration;

@@ -1,8 +1,9 @@
 # Re-entry Core — Product Definition
 
 **Role:** CANONICAL concept and product boundary  
-**Status:** Re-entry Core accepted; application and concrete Agent continuation adapter unselected  
-**Last updated:** 2026-08-31
+**Status:** Re-entry Core accepted; Sleepless Kingdom selected as the first Host application;
+concrete Agent continuation adapter unselected  
+**Last updated:** 2026-09-03
 
 This document defines the target concept and product boundary. Current implementation and
 evidence status are owned by [Core/00](00-current-status.md) and
@@ -28,24 +29,36 @@ next.
 - binding to the intended Agent context;
 - canonical page re-entry and fresh-state verification;
 - stage-derived Site Tools;
-- visible human governance across runs.
+- visible human governance across runs;
 - Re-entry Core as the authoritative application-neutral implementation baseline;
-- one Receiver authority model with Cloud Receiver and local development service shells; and
-- an outbound Local Connector behind a replaceable Agent Continuation Adapter boundary.
+- one normative Receiver authority model, with every retained executable implementation gated by
+  pinned black-box conformance;
+- an outbound Local Connector behind a replaceable Agent Continuation Adapter boundary;
+- Sleepless Kingdom as the first Host application and challenge-demo carrier;
+- a strategy-game player, persistent shelter/gatherer mission, and authoritative world worker;
+- `CargoLostToMonster` as the only initial standing signal type, with v0.1 retained only as a
+  one-run compatibility profile;
+- fresh shelter, client, mission, and history reads plus conditional `force_recall_soldier`;
+- migration, siege, destructive upgrades, and irreversible recovery as human-confirmed boundaries; and
+- additive protocol-v0.2 standing authorization with a locally verified application-neutral
+  SDK/HTTP/Core/Connector/Adapter reference and active-Receiver working-tree kernel, with one active
+  bounded activation at a time; public controls, pinned release, Game, normal-facade, and
+  product-Connector adoption remain open.
 
-### Not selected
+### Still not selected
 
-- the final web application;
-- industry or domain;
-- primary persona or customer;
-- business event;
-- domain artifact and state machine;
-- Site Tool names and schemas;
-- final product name;
-- monetization or long-term distribution model.
+- a production Agent continuation adapter and Browser/session return path;
+- commercial buyer, payer, validated demand, monetization, or long-term distribution;
+- production identity, hosting, storage, operations, and effect authority;
+- post-G2 signal taxonomy, standing-mode product integration, multiplayer Agent policy, or broader
+  tool authority; and
+- final visual brand treatment beyond the Sleepless Kingdom working product identity.
 
-TenderRelay and its tender flow are reference material for the selected mechanism. They do
-not fill these open application-layer decisions automatically.
+ADR-0042 owns the selection; ADR-0043 through ADR-0045 own standing authorization, independent-
+Receiver conformance, and transport, while RECORE-007 proves only the application-neutral local
+reference without changing the current Game or external v0.1 evidence boundary. The detailed Game behavior and evidence live under
+[`WebApp/Web-Game/`](../../WebApp/Web-Game/); TenderRelay, RightSpot, and the other scenario records
+remain reference or alternative material.
 
 ## 3. The problem class
 
@@ -69,10 +82,10 @@ the same governed workflow, and the tools valid for the new state.
 |---|---|---|
 | **Problem class** | Multi-stage asynchronous web work loses Agent continuity across time | Selected |
 | **Core mechanism** | Re-entry Core: Grant, accepted delivery, adapter activation, re-entry, fresh-state tools, human boundary | Selected |
-| **Host application** | The real web product whose workflow demonstrates the mechanism | TBD |
+| **Host application** | The real web product whose workflow demonstrates the mechanism | Sleepless Kingdom selected by ADR-0042 |
 | **Reference scenario** | A concrete example used to reason about the mechanism | Tender workflow available |
 | **Platform implementation** | Cloud Receiver, outbound Local Connector, Agent runtime, Browser, and Host integration | Target process shape selected; concrete Agent adapter and runtime proof remain TBD |
-| **Final product identity** | App name, brand, market, and commercial boundary | TBD |
+| **Final product identity** | App name, brand, market, and commercial boundary | Sleepless Kingdom working identity selected; final brand and market validation open |
 
 ## 5. Abstract actors
 
@@ -110,12 +123,15 @@ Host business authority.
 ADR-0006 selects a hosted Cloud Receiver plus outbound Local Connector as the target reference
 topology. The current `runtime/cloud-receiver/` implementation and hosted preview were retired by
 ADR-0032. ADR-0033 selects `saas-boilerplate/` as the active v2 replacement base, and ADR-0035
-through ADR-0041 authorize its bounded current increments. **CONFLICTED:** active v2 independently
-implements Receiver state transitions rather than composing `reentry-core`, while ADR-0006 still
-requires one Receiver implementation. TASK-028 owns that decision; this document does not silently
-amend the invariant. A local service shell may run through the same Receiver Core for development
-and deterministic tests, but it is not a second production authority or an automatic fallback. The
-Local Connector owns device-side delivery and Agent-adapter dispatch, not Grants or event truth.
+through ADR-0041 authorize its bounded current increments. ADR-0044 preserves one normative Receiver
+authority model while allowing active v2 to implement the model independently from `reentry-core`,
+provided it passes the pinned black-box conformance and exact-source release gates. The standing
+kernel and additive PostgreSQL migration are locally verified in the active Receiver working tree
+under CLOUD-023. TASK-028 remains verification-pending for the pinned suite, committed-source
+migration verification, and release enforcement. A local
+service shell may run through the reference Core for development and deterministic tests, but it is
+not a second production authority or an automatic fallback. The Local Connector owns device-side
+delivery and Agent-adapter dispatch, not Grants or event truth.
 
 This distinction creates two separate interoperability questions:
 
@@ -148,7 +164,9 @@ concept definition and has not been proven for the current local Codex and Brows
 > Show why the workflow returned, which authority allowed it, what current state was read,
 > what the Agent prepared or changed, and what still requires my decision.
 
-The selected app must rewrite these abstract jobs in domain language before implementation.
+Sleepless Kingdom specializes these jobs as “return to my shelter after a cargo-loss event, inspect
+the live mission and causal history, and take only the bounded action currently allowed.” Its scoped
+documents own the domain language and implementation detail.
 
 ## 7. Core mechanism
 
@@ -208,18 +226,18 @@ or proven production pattern.
 
 ## 11. Reference scenarios
 
-Concrete domain mappings live in [Scenarios](../Scenarios/README.md) and do not select the
-host application. The TenderRelay dossier supplies the first complete example; its current
-interpretation is [Reference Scenario A](../Scenarios/01-tender-reference-scenario.md).
+Concrete comparative mappings live in [Scenarios](../Scenarios/README.md). ADR-0042 selects
+Sleepless Kingdom; the outer [Sleepless Kingdom scenario](../Scenarios/03-sleepless-kingdom.md)
+remains historical selection input, while the scoped Game documents own current product truth.
+TenderRelay and the remaining scenarios stay reference or alternative material.
 
 ## 12. Open decisions
 
-- Which host app yields the clearest real user pain and shortest complete proof?
-- Which event creates an unmistakable reason for bounded pending continuation?
-- Which artifact preserves meaningful continuity across stages?
-- Which tools disappear and appear after the state change?
-- Which final action must remain human-controlled?
 - Which Agent platform and browser path can satisfy the adapter contract?
-- Is fully background re-entry essential, or can the product support a user-mediated mode?
-- Who owns, funds, and revokes continuation authority in the selected domain?
-- What final name describes the app without conflating it with the reference scenario?
+- Can the Game integrate advanced-SDK Manifest/Consent enrollment and a supported authenticated
+  Browser/WebMCP return without moving credentials into prompts or URLs?
+- Can genuine dynamic `force_recall_soldier` use and independent Host-effect acknowledgement be
+  proved in one causal external trace?
+- Does player-authored doctrine create Agent value beyond a transparent deterministic rule builder?
+- What latency, offline, operating-cost, identity, and recovery profile is acceptable?
+- Who pays, operates, supports, and revokes continuation authority beyond the challenge prototype?

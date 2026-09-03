@@ -1,8 +1,9 @@
 # WebMCP Re-entry Workflow — Competition Thesis and Positioning
 
 **Role:** CANONICAL competition-facing thesis, value proposition, positioning, and claim hierarchy  
-**Status:** Application-neutral Re-entry Core Program complete at `locally_verified`; application, audience, product proof, concrete Agent adapter, and final app name remain unselected  
-**Last updated:** 2026-08-31  
+**Status:** Application-neutral Re-entry Core Program complete at `locally_verified`; Sleepless
+Kingdom selected as the Host/demo carrier; product proof and concrete Agent adapter remain open  
+**Last updated:** 2026-09-03  
 **Official basis refreshed:** [Devpost Official Rules](https://webmcp.devpost.com/rules) and
 [challenge overview](https://webmcp.devpost.com/), observed 2026-08-30
 
@@ -40,11 +41,35 @@ the human decision boundary.
 ### Current identity boundary
 
 - **Selected:** the domain-neutral re-entry workflow mechanism.
-- **Unselected:** final app, user, customer, domain, event, product name, and production
-  continuation transport.
+- **Selected Host/demo:** Sleepless Kingdom; shelter-owning player; first-party persistent game;
+  `CargoLostToMonster`; bounded `force_recall_soldier`; high-consequence actions remain human-only.
+- **Unselected or unproved:** commercial customer and demand, broader Agent doctrine value,
+  production continuation transport, hosted true chain, and final market/distribution model.
+- **Locally verified reference, product adoption open:** ADR-0043 through ADR-0045/RECORE-007 prove
+  the application-neutral v0.2 Host/HTTP/Core/Connector/Adapter chain for repeated ordered signals
+  with one active bounded activation. CLOUD-023 separately records the active Receiver's locally
+  verified working-tree standing kernel; public controls, pinned release, normal facade, product
+  Connector, Game, external runtime, and production evidence remain open.
 - **Reference only:** TenderRelay and its tender workflow.
-- **Not submission copy yet:** the final product promise must be rewritten around the
-  selected app and observed user problem.
+- **Not submission copy yet:** the product promise still requires observed player evidence and a
+  clean hosted causal run.
+
+### Selected prototype
+
+Sleepless Kingdom makes the mechanism visible through a world that continues while the player is
+away. The player dispatches a gatherer and grants one cargo-loss return. A later server-owned monster
+encounter commits `CargoLostToMonster`; the Agent must return to the live shelter page, reread current
+mission and causal history, discover the conditional recall tool, and either commit one bounded
+recall or show a typed live-state refusal. Migration, siege, destructive upgrades, irreversible
+recovery, and actions outside that envelope stay with the human.
+
+The final standing-mode proof then repeats a second eligible signal under the same Consent after the
+first effect is acknowledged, while preserving one-active backpressure and revocation. A single
+v0.1 cycle remains useful compatibility evidence but does not prove the selected recurring concept.
+
+The current narrow action demonstrates governed temporal re-entry and fresh WebMCP authority. The
+stronger claim that natural-language doctrine outperforms transparent deterministic rules remains a
+validation hypothesis, not an accepted advantage.
 
 ## 2. Problem and value
 
@@ -56,8 +81,8 @@ actions. Notifications preserve awareness but not governed Agent continuity; bac
 automation can preserve activity but may act without the current page, current tools, or a
 visible human boundary.
 
-The final app must prove a specific real audience and recurring reconstruction cost. Until
-that app is selected, product impact is a target, not a validated fact.
+Sleepless Kingdom must still prove a specific real audience, recurring attention/reconstruction
+cost, and measurable benefit. Selection makes it the validation target; it does not validate impact.
 
 ### Core value
 
@@ -144,8 +169,8 @@ equally. The official criteria, not this interpretation, control.
 |---|---|---|---|
 | Stage One fit | WebMCP is structurally necessary to enrollment and re-entry | The current fixture is not the final web app | A deployed selected-app loop using genuine imperative Site Tool registration |
 | WebMCP Leverage | Two-stage discovery, fresh state, changed tools, and page-native action are non-trivial | Current evidence is local and domain-neutral | Genuine initial and resumed Site Tool use in the public judge path |
-| Execution | The mechanism has a rigorous bounded implementation and evidence foundation | The entry is still a technical proof, not a complete coherent product | Selected app, normal human UI, deterministic reset, deployment, and clean-room run |
-| Potential Impact | The mechanism targets reconstruction cost, stale action, and lost continuity | Real audience, demand, frequency, and outcome are unselected and unmeasured | Observed user problem plus a concrete before/after outcome |
+| Execution | The mechanism has a rigorous bounded implementation and Sleepless Kingdom has substantial local Host/gameplay evidence | The external causal chain and hosted judge journey are incomplete | Manifest/Consent, Event, Connector/Agent return, dynamic recall, effect ACK, deployment, and clean-room run |
+| Potential Impact | A persistent game makes off-page attention cost and later-state change concrete | Player demand, frequency, doctrine value, and outcome remain unmeasured | Observed player problem plus a concrete before/after outcome and deterministic-rule comparison |
 | Creativity & Ambition | The governed event-to-page re-entry composition is distinctive | Architecture novelty alone is hard to see and easy to overclaim | A domain workflow where the value is visible before the architecture is explained |
 
 ### Alignment verdict
@@ -154,21 +179,22 @@ equally. The official criteria, not this interpretation, control.
 more useful when a person and an external Agent share a live application surface across
 time. WebMCP is material rather than incidental.
 
-**The current project is not yet a competition-ready product.** Submitting the generic
-technical fixture would leave the two largest judging gaps unresolved: a complete coherent
-product experience and a credible real problem for a real audience. Re-entry Core foundation
-and app selection now proceed in parallel: the core must close only the contracts and process
-boundaries every candidate needs, while product proof remains the binding competition gate.
-Additional generic infrastructure with no selected-app or core-contract consumer is still out
-of scope.
+**The current project is not yet a competition-ready product.** Sleepless Kingdom resolves the
+application choice, but submitting its current local pieces would still leave a complete external
+continuation, clean hosted product experience, and credible observed player problem unresolved.
+Selected-app product proof is now the binding competition gate. Additional generic infrastructure
+with no Game or Core-contract consumer remains out of scope.
 
 ## 7. Claim hierarchy
 
 ### Decided
 
 - The re-entry workflow is the selected mechanism.
+- Sleepless Kingdom is the selected first Host application and challenge-demo carrier.
+- The first bounded Game workflow uses `CargoLostToMonster`, fresh page reads, conditional recall,
+  and a human-confirmed high-consequence boundary.
 - Website Backend-to-Receiver event semantics are separate from Receiver-to-Agent transport.
-- The final app and transport require their own decisions.
+- The concrete production transport still requires its own decision and proof.
 - TenderRelay is a preserved reference scenario, not the default product.
 
 ### Verified, within bounded environments
@@ -185,17 +211,17 @@ The exact current evidence and its limitations are maintained in
 
 ### Unselected or unproven
 
-- final app, user, customer, domain, event, and product name;
-- observed demand, measured user impact, and exact-thread advantage over a strong capsule;
+- observed demand, measured player impact, payer/operator model, and final distribution;
+- Agent doctrine advantage over deterministic rules and exact-thread advantage over a strong capsule;
 - supported production continuation transport and topology;
 - cross-user, cross-account, cross-machine, or offline durability;
 - public deployment, independent judge reproducibility, and submission status.
 
 No external pitch may promote a target or local bounded result into one of these claims.
 
-## 8. Binding product-selection gate
+## 8. Binding selected-product proof gate
 
-The selected app must make all of the following observable:
+ADR-0042 selects the Host. Sleepless Kingdom must now make all of the following observable:
 
 1. a specific recurring user problem supported by evidence independent of WebMCP;
 2. an intrinsic later business event after the initial page session;
@@ -207,8 +233,8 @@ The selected app must make all of the following observable:
 8. a safe, public, synthetic, resettable path that is clear within three minutes; and
 9. a material loss of value if WebMCP is removed.
 
-Selection requires an accepted app ADR. A sophisticated story, a high weighted score, or an
-existing TenderRelay implementation cannot bypass a failed hard gate.
+The accepted ADR does not bypass a failed proof gate. A sophisticated story, current implementation
+volume, or a high historical score cannot substitute for the named runtime and product evidence.
 
 ## 9. Current implementation posture
 
@@ -220,12 +246,12 @@ This summary does not replace current status or the named-commit
 | MVP1 | Frozen reference for mechanism, Receiver authority, durability, adapter boundaries, conformance, and evidence |
 | MVP2 | Preserved contributor reference for modular protocol and Host seams, product-shaped UI, shared artifact, state choreography, and demo patterns |
 | Re-entry Core | Authoritative application-neutral implementation, selectively adapting the references under ADR-0006 |
-| Selected app | A later Host Adapter chosen through the app-selection ADR, reusing only assets that pass the relevant product, protocol, or adapter gate |
+| Selected app | Sleepless Kingdom under `WebApp/Web-Game/`, reusing only assets that pass the relevant Game, product, protocol, and adapter gates |
 
 The project does not choose between MVP1 and MVP2 as complete competing replacements. Re-entry
 Core preserves MVP1's stronger authority and evidence contracts while selectively adapting
-MVP2's modularity. Final-app product and presentation assets still wait for the owning app
-decision.
+MVP2's modularity. Sleepless Kingdom now owns final-app product and presentation work under its
+scoped authority; the selection does not promote incomplete assets into submission evidence.
 
 ## 10. Competition proof contract
 
@@ -240,6 +266,10 @@ The final entry must let a judge observe, without first learning the internal ar
 7. continuation of the same artifact; and
 8. a visible human decision plus a correlated safety receipt.
 
+Those per-cycle observations do not alone prove standing authorization. The selected entry must
+also show two sequential effect-acknowledged signals under one Consent, one-active backpressure,
+restart/replay, and revocation refusing the next signal, as required by TASK-033.
+
 The live app, public repository, short narrated video, testing instructions, and submission
 description must all prove the same version and claim boundary. Volatile requirements are
 maintained through the [Challenge governance router](../Challenge/README.md)
@@ -249,8 +279,9 @@ and must be refreshed against the live Official Rules before release.
 
 - Optimize for one complete, comprehensible product loop, not the number of tools or modules.
 - Show product value before Receiver or transport architecture.
-- Do not build a generic re-entry platform before selecting and proving one app.
-- Do not select TenderRelay by historical inertia; apply the same gates to every candidate.
+- Do not return to generic platform expansion before proving the selected Game loop.
+- Preserve TenderRelay, RightSpot, and other candidates as references or alternatives unless a new
+  ADR supersedes the selection.
 - Do not let a private adapter, enqueue acknowledgement, scheduled check, or technical trace
   masquerade as supported Agent wake or completed user value.
 - Keep ordinary human UI functional; WebMCP should be progressive enhancement for shared

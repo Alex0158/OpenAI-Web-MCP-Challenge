@@ -1,10 +1,10 @@
 # Managed Context and Agent Activation
 
 **Role:** CANONICAL mechanism contract  
-**Status:** Deterministic activation and private binding-resolution contracts locally verified;
+**Status:** Deterministic v0.1/v0.2 activation and v0.1-only private binding-resolution contracts locally verified;
 active-v2 separate-process dispatch and local Codex fresh-session preview verified only in bounded
 test compositions; concrete supported Agent runtime open  
-**Controls:** ADR-0011, ADR-0014, ADR-0025, ADR-0026, and ADR-0041
+**Controls:** ADR-0011, ADR-0014, ADR-0025, ADR-0026, ADR-0041, ADR-0043, and ADR-0045
 
 ## Responsibility
 
@@ -51,7 +51,9 @@ live delivery lease + private receipt
 -> one bounded typed result
 ```
 
-The adapter result is not Host-effect evidence and cannot authorize acknowledgement.
+The adapter result is not Host-effect evidence and cannot authorize acknowledgement. Protocol v0.2
+changes only the validated activation version and positive ordered Event sequence; it does not
+expose the standing Grant or let one Agent turn schedule another activation.
 
 ## Failure semantics
 
@@ -80,14 +82,18 @@ The adapter result is not Host-effect evidence and cannot authorize acknowledgem
 
 ## Current evidence and non-claims
 
-Deterministic tests cover credential omission, expiry and correlation rejection, all bounded
-outcomes, one-call behavior, timeout, exceptions, malformed results, missing and invalid bindings,
+Deterministic tests cover v0.1 and v0.2 profile selection, positive standing sequence, credential
+omission, expiry and correlation rejection, all bounded outcomes, one-call behavior, timeout,
+exceptions, malformed results, missing and invalid bindings,
 adapter scope, lifetime fencing, late resolution, raw-reference non-disclosure, and exact bounded
 instruction validation. They do not
 prove context capture, encrypted custody, persistence, retirement, real task resume, dormant wake,
 Browser attachment, WebMCP, supported Codex activation, hosted-agent support, or user-visible
 continuation. CLOUD-008 adds local fake-process evidence for one opt-in fresh-session CLI dispatch.
-SDK-006 adds a Node 24 separate-process v2 composition, but its effect and acknowledgement authority
+RECORE-007 adds two standing dispatches and verifies that the current Codex result seam preserves
+v0.2. The managed-context and Codex queue adapters explicitly reject v0.2 before private lookup or
+process effects; generic activation validation does not make them standing-capable. SDK-006 adds a
+Node 24 separate-process v2 composition, but its effect and acknowledgement authority
 is a distinct test worker rather than the default Connector product path. Neither result changes the
 supported-runtime or Browser/WebMCP claim boundary.
 

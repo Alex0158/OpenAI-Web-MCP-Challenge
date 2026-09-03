@@ -83,7 +83,7 @@ Current dispositions:
 | AUDIT-V2-001 pairing abuse fence | **P0 CONFLICTED / decision required** — TASK-026 |
 | AUDIT-V2-002 Consent/Grant expiry | **P1 CONFLICTED / decision required** — TASK-027 |
 | AUDIT-V2-003 default effect acknowledgement | **P1 VERIFIED OPEN** — TASK-029 |
-| AUDIT-V2-004 Receiver-Core composition | **P1 CONFLICTED / decision required** — TASK-028 |
+| AUDIT-V2-004 Receiver implementation conformance | **P1 architecture decided / verification pending** — ADR-0044 / TASK-028 |
 | AUDIT-V2-005 active flow/route mapping | **documentation updated** — TASK-012 / DOCS-004 |
 | AUDIT-V2-006 SDK consent example | **documentation updated** — TASK-012 / DOCS-004 |
 | AUDIT-V2-007 release/deployed full chain | **verification pending** — TASK-022 through TASK-024 |

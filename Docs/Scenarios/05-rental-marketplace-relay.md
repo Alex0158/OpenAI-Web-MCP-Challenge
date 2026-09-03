@@ -1,14 +1,14 @@
 # Candidate Scenario E — Rental Marketplace Relay
 
-**Role:** ACTIVE SHORTLIST CANDIDATE — NOT SELECTED  
+**Role:** UNSELECTED ALTERNATIVE — PRESERVED SUPPORTING CANDIDATE  
 **Selected as the challenge demo app:** No  
 **Implementation status:** Concept only; not implemented or validated  
 **Primary pattern:** Role-scoped bilateral continuation inside one marketplace  
 **Last updated:** 2026-08-31
 
-**Current disposition:** Remains in the active application shortlist alongside Sleepless Kingdom.
-It is not selected, implemented, or validated; TASK-001 and a future accepted ADR remain the
-selection authority.
+**Current disposition:** ADR-0042 selects Sleepless Kingdom. Rental Marketplace Relay remains an
+unselected, unimplemented, and unvalidated alternative for future comparison; changing the current
+selection requires a superseding ADR.
 
 This is a fourth application candidate for comparison. It does not select the host application,
 change the Re-entry Core, or authorize implementation. The Core mechanism, protocol, authority
@@ -411,16 +411,15 @@ It should not include:
 - multiple concurrent requests before one complete loop is proven; or
 - a second Agent platform or hidden fallback transport.
 
-## 16. Current status and next decision
+## 16. Current status and future reconsideration
 
 This scenario is a supporting candidate only. It does not change the application-neutral Core,
 the accepted authority model, or the current Cloud Receiver/Local Connector topology.
 
-The next decision is whether this candidate or Sleepless Kingdom should be selected through
-TASK-001. Both active candidates must enter the same comparative app-selection scorecard. Selection
-would require a new accepted application ADR followed by domain-specific Core requirements,
-role/privacy rules, WebMCP tool contracts, a selected-app implementation record, and a genuine
-adapter/browser proof.
+ADR-0042 resolves the current decision in favor of Sleepless Kingdom. Reconsidering this candidate
+would require material evidence that it offers a stronger complete proof and a new accepted ADR,
+followed by domain-specific Core requirements, role/privacy rules, WebMCP tool contracts, an
+implementation record, and genuine adapter/browser evidence.
 
 Until then, the recommended posture is:
 

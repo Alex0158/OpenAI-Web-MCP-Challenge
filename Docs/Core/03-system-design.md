@@ -2,11 +2,12 @@
 
 **Role:** CANONICAL system-wide architecture overview  
 **Status:** Application-neutral Core and target topology remain current; `runtime/cloud-receiver/` is
-deprecated historical evidence; active `saas-boilerplate/` v2 is a bounded replacement preview with
-an unresolved Receiver-Core composition conflict; selected application, production profiles, and
-concrete Agent runtime remain open  
+deprecated historical evidence; ADR-0044 permits active `saas-boilerplate/` v2 to remain an
+independent Receiver only behind pinned conformance, whose active-v2 proof remains open; Sleepless
+Kingdom is the selected Host application, while production profiles and a concrete Agent runtime
+remain open  
 **Authority:** ADR-0006 through ADR-0015, historical ADR-0019 through ADR-0032, and active v2
-ADR-0033 through ADR-0041
+ADR-0033 through ADR-0045
 
 ## 1. Objective
 
@@ -27,17 +28,22 @@ choices belong to ADRs; current evidence belongs to Core/00 and Core/05.
 5. The event carries bounded typed transition data, not a prompt, artifact, or tool plan.
 6. Accepted event, pending delivery, activation attempt, Host effect, and acknowledgement are
    separate states.
-7. The Cloud Receiver and local development service use the same Receiver Core.
+7. Re-entry has one normative Receiver authority model; every retained executable Receiver must pass
+   the same pinned versioned black-box conformance contract.
 8. The Local Connector is outbound-only and cannot issue or reinterpret authority.
 9. Context selection occurs only inside the selected Agent Adapter's private boundary.
 10. Re-entry returns to the canonical page and revalidates current state and tools.
 11. Human and Agent interfaces share backend authorization and state rules.
 12. Unsupported capability fails visibly; no hidden fallback exists.
+13. Protocol-v0.2 standing authority persists across signals, but each signal reserves only one
+    bounded activation and the initial profile permits at most one non-terminal activation per
+    Grant.
 
-Invariant 7 remains normative. **CONFLICTED:** the active v2 backend has no `reentry-core`
-dependency and implements Receiver authority in separate TypeScript services. TASK-028 must either
-restore composition or amend the architecture through an accepted ADR and mandatory conformance;
-current code existence does not amend this section.
+ADR-0044 amends only ADR-0006's implementation-identity rule. The Core/SQLite path remains the
+reference and conformance owner; the active TypeScript/Prisma/PostgreSQL Receiver may remain
+independent. **VERIFICATION PENDING:** both implementations have not yet passed the same pinned
+v0.1/v0.2 suite through real transport and durable stores, so architecture acceptance is not active-
+Receiver equivalence or deployment evidence.
 
 ## 3. Component topology
 
@@ -60,7 +66,7 @@ flowchart LR
 |---|---|---|
 | Host web page | Human UI, current-state presentation, genuine state-derived Site Tools, re-entry explanation | Receiver or Agent credentials |
 | Host backend | Workflow state, authorization, artifact revisions, business transitions, event outbox, issuer key | Consent, delivery, or Agent activation |
-| Cloud Receiver shell | Authenticated ingress, service identity, Core lifecycle, durable work availability | A second Receiver algorithm or device control |
+| Cloud Receiver shell or conforming implementation | Authenticated ingress, service identity, durable work availability, exact protocol-profile dispatch | Alternate normative semantics or device control |
 | Receiver Core | Challenge, Grant, event, replay, reservation, delivery, revocation, acknowledgement rules | Host mutation or Agent execution |
 | Durable delivery ledger | Pending, lease, attempt, effect, acknowledgement, expiry, terminal projection | Business-event truth or Agent instruction |
 | Local Connector | Account-linked target retrieval, lease handoff, adapter dispatch, acknowledgement request | Grant issuance, event interpretation, public inbound control |
@@ -90,7 +96,9 @@ flowchart LR
 1. The Host commits its business transition and event intent atomically.
 2. The outbox delivers the same signed typed event at least once.
 3. Receiver Core verifies the event against the private live Grant.
-4. One transaction records event truth, consumes the run, and creates one pending delivery.
+4. One transaction records Event truth and creates one pending Delivery. Protocol v0.1 consumes the
+   one-run Grant; protocol v0.2 reserves the standing Grant's single active slot without consuming
+   the Grant.
 5. Event acceptance performs no Agent call.
 
 ### Phase D — Delivery and activation
@@ -109,6 +117,8 @@ flowchart LR
 4. The Agent continues the same visible artifact or decision.
 5. The Agent stops before the selected human consequence.
 6. A separate trusted authority may prove one correlated Host effect for delivery acknowledgement.
+7. After acknowledgement or explicit terminal state, a v0.2 standing Grant may accept its next
+   ordered signal without another Consent decision.
 
 ## 5. Integration contracts
 
@@ -117,7 +127,7 @@ flowchart LR
 | Host backend to Receiver | Re-entry protocol and Host SDK | issuer identity, signed Manifest/event, outbox, canonical workflow | application-neutral kernel locally verified |
 | Receiver to Connector | Receiver Core and transport contract | target identity, outbound claim, lease, effect-backed acknowledgement | bounded local contract locally verified |
 | Connector to Agent runtime | Agent Adapter and binding contract | private binding custody, activation, Browser and WebMCP evidence | deterministic contract verified; concrete runtime open |
-| Agent to Host page | selected Host application | canonical page, current authority, dynamic Site Tools, persistent artifact, human boundary | target only; frozen MVP1 evidence |
+| Agent to Host page | Sleepless Kingdom under `WebApp/Web-Game/` | canonical shelter page, current authority, dynamic reads/recall, persistent mission decision, human boundary | selected; bounded local Game evidence exists, external Agent return remains open |
 
 These contracts are versioned and verified separately. Conformance on one does not prove the next.
 
@@ -126,9 +136,9 @@ These contracts are versioned and verified separately. Conformance on one does n
 ### Target production profile
 
 ```text
-Host application and backend
+Sleepless Kingdom Host application and backend
 -> hosted Cloud Receiver shell
--> shared Receiver Core and durable store
+-> conforming Receiver authority implementation and durable store
 -> paired outbound Local Connector
 -> selected Agent Adapter and runtime
 ```
@@ -154,8 +164,13 @@ not an automatic shipping fallback or public deployment profile.
 `saas-boilerplate/` contains a separate Next.js frontend and Express/Prisma/PostgreSQL Receiver.
 It implements the ADR-0033 through ADR-0041 pairing, consent, Event, delivery, acknowledgement,
 transport, disconnect, and developer-control increments. Local aggregate, browser-persona, and
-separate-process evidence exists, and bounded preview deployments are recorded. It is not the local
-shared-Core profile above, a production service, or a supported Agent-to-Browser/WebMCP join.
+separate-process evidence exists, and bounded preview deployments are recorded. ADR-0044 permits
+this independent implementation only behind pinned shared conformance. CLOUD-023 records the
+working-tree standing kernel's 154-test backend aggregate, additive disposable-PostgreSQL migration,
+and shared Express two-signal trace. These use internal Consent/control seams and deterministic
+effect authority; pinned conformance, committed-source migration verification, public controls, and
+release enforcement remain open. This is not a production service or a supported
+Agent-to-Browser/WebMCP join.
 
 ### Alternative hosted-Agent profile
 
@@ -163,9 +178,9 @@ A hosted Agent may replace the Local Connector path only through a later ADR pro
 Browser, genuine page-bound WebMCP, authority, context, and evidence behavior. It cannot silently
 replace the selected topology.
 
-## 7. Application boundary
+## 7. Selected application boundary
 
-The selected application must implement:
+ADR-0042 selects Sleepless Kingdom. Its scoped product layer must implement:
 
 - one durable workflow and canonical page;
 - one asynchronous later event;
@@ -182,10 +197,11 @@ business rules in the Connector.
 
 ## 8. Current as-built boundary
 
-`reentry-core/` implements the first four application-neutral mechanism contracts and their
-source conformance profile. Local tests cover protocol, Receiver authority, durable reference
-state, delivery, HTTP mapping, outbound client, deterministic adapter, private binding resolution,
-and bounded process-fault compositions.
+`reentry-core/` implements the first four application-neutral mechanism contracts, the frozen v0.1
+process profile, and the shared standing-v0.2 expected-state scenario. Local tests cover protocol,
+Receiver authority, durable reference state, delivery, exact v0.1/v0.2 HTTP mapping, versioned
+outbound client, deterministic adapter, two-signal standing cross-layer flow, private binding
+resolution, and bounded process-fault compositions.
 
 `runtime/cloud-receiver/` implemented the ADR-0019 Stage 1 listener, operational readiness, native relational
 hosted persistence with one-time snapshot backfill under ADR-0031, durable composition, process lifecycle,
@@ -205,14 +221,22 @@ developer accounts, pairing and Connector rows, organizations and API keys, Host
 sessions, subject bindings, Grants, Events, Deliveries, and Delivery Attempts in PostgreSQL. Its
 frontend owns the user and developer portals; the Receiver backend serves the consent document.
 AUDIT-V2-001 through AUDIT-V2-004 in Core/09 record the current pairing-abuse, expiry, default
-acknowledgement, and shared-Core gaps. Those gaps are not resolved by the otherwise green local
-contract suites.
+acknowledgement, and pinned-conformance gaps. The active Receiver working tree now adds separate
+standing tables and v0.2 Event/claim/ACK routes. ADR-0044 resolves the architecture choice, but its
+committed-source migration and pinned release gates are not resolved by the green local suites.
 
-The repository still does not contain the selected Host application, public Receiver profile,
-public TLS, production identity, production pairing/account recovery, real binding custody, real
-Host-effect verification, supported Agent activation, Browser acquisition, or WebMCP runtime access.
-The local Codex fresh-session preview only proves that a new local CLI process can be invoked. Those gaps remain
-visible rather than being filled with test authorities or implicit fallback.
+`WebApp/Web-Game/` contains the selected Sleepless Kingdom Host application. Its scoped authority
+records persistent local gameplay, deterministic fixture/reset behavior, one real
+`CargoLostToMonster` signal path, canonical-page WebMCP read evidence, and a local
+worker-to-labelled-port-to-page-HTTP-to-recall composition. Those results do not compose into a live
+external Re-entry chain.
+
+The repository still does not prove a public production Game profile, production identity,
+production pairing/account recovery, real binding custody, real Host-effect verification, supported
+Agent activation, authenticated Browser acquisition, or dynamic WebMCP recall after external
+delivery. The local Codex fresh-session preview only proves that a new local CLI process can be
+invoked. Those gaps remain visible rather than being filled with test authorities or implicit
+fallback.
 
 ## 9. Module routing
 
@@ -229,12 +253,14 @@ visible rather than being filled with test authorities or implicit fallback.
 
 ## 10. Open architecture decisions
 
-The application-selection ADR and later runtime decisions must still choose:
+ADR-0042 resolves the Host domain, user, first event, persistent decision, target tools, and human
+boundary. Later runtime decisions must still choose or prove:
 
-- Host domain, user, event, artifact, tools, and human boundary;
+- exact advanced-SDK Manifest/Consent and signed-Event integration for Sleepless Kingdom;
 - production Receiver identity, storage, key lifecycle, and service ownership;
 - production Connector pairing, credential custody, supervision, and offline behavior;
 - concrete Agent adapter, binding capture, Browser path, and WebMCP runtime;
 - real Host-effect proof and acknowledgement integration; and
-- active v2 Receiver-Core composition or an accepted independent-conformance architecture; and
+- active-v2 pinned Receiver conformance, committed-source standing migration verification, and
+  release enforcement;
 - deployment, observability, retention, recovery, and judge reproduction.

@@ -2,8 +2,9 @@
 
 **Role:** CANONICAL mechanism contract  
 **Status:** Target application contract with frozen MVP1, bounded sample-Host, Host SDK, and
-active-v2 simple-flow evidence; selected app and supported Connector-to-Browser join open  
-**Controls:** ADR-0002, ADR-0003, ADR-0006, ADR-0041, Core/01, and Core/02
+active-v2 simple-flow evidence; Sleepless Kingdom selected with partial local Host evidence;
+supported Connector-to-Browser join open  
+**Controls:** ADR-0002, ADR-0003, ADR-0006, ADR-0041 through ADR-0045, Core/01, and Core/02
 
 ## Responsibility
 
@@ -78,18 +79,26 @@ human control.
 | Application-shaped local sample | `runtime/application-demo/` and HOST-001 | deterministic Agent; not final app or real Connector-to-Browser join |
 | Shared UI/WebMCP consent action | `runtime/host-sdk/` and HOST-002 | live tool discovery and bounded handler invocation; configured consent-to-return Browser chain remains open |
 | Simple SDK-to-active-v2 flow | `runtime/host-sdk/`, `saas-boilerplate/`, `runtime/local-connector/`, and SDK-006 | separate process reaches a test effect/ack worker; no supported external Agent, Browser attachment, selected Host page, or default product acknowledgement |
+| Selected Sleepless Kingdom Host | `WebApp/Web-Game/`, ADR-0042, and scoped Game evidence | persistent local gameplay and causal signal; four canonical-page reads with one genuine read-only invocation; local labelled-port/page-HTTP recall composition; no external Agent return or dynamic recall proof |
 
 No corresponding application code exists in `reentry-core/`; that package intentionally owns only
 application-neutral contracts and adapters. The application-review code under
 `runtime/application-demo/` is a bounded sample consumer accepted by ADR-0023, not the selected
-Host product.
+Host product. Sleepless Kingdom is the selected product layer under `WebApp/Web-Game/`; its scoped
+authority owns Game behavior and evidence.
 
 ## Application integration obligations
 
-The app-selection ADR must name the user, asynchronous workflow, later event, durable artifact,
-initial and resumed states, stage-specific tool roles, human consequence, reset path, and why a
-notification or ordinary one-shot Agent call is insufficient. It must also identify the exact
-backend authority and the real Agent/WebMCP runtime evidence required.
+ADR-0042 names the shelter owner, persistent gatherer mission, `CargoLostToMonster`, initial and
+resumed states, four reads, target initial consent action, conditional recall, human-confirmed
+high-consequence actions, deterministic fixture/reset, experimental adapter posture, and WebMCP
+materiality. The remaining integration obligation is to prove the advanced-SDK enrollment, signed
+Event, supported authenticated Browser return, fresh dynamic tool inventory, recall effect, and
+independent acknowledgement as separate facts. ADR-0045's standing mode now has a locally verified
+application-neutral low-level SDK-to-Adapter reference under RECORE-007. CLOUD-023 adds the active
+Receiver's locally verified working-tree kernel, not its public controls or pinned release. Game,
+normal Host facade, product Connector, and external Agent/Browser adoption remain open under
+TASK-028 and TASK-033.
 
 ## Reopen conditions
 

@@ -1,22 +1,23 @@
 # WebMCP Re-entry Workflow — Demo App Selection and Challenge MVP
 
 **Role:** CANONICAL app-selection framework and challenge execution target  
-**Status:** Application-neutral Re-entry Core Program complete at `locally_verified`; demo app and supported continuation adapter remain unselected  
-**Last updated:** 2026-08-31
+**Status:** Sleepless Kingdom selected by ADR-0042; application-neutral Core remains complete at
+`locally_verified`; supported continuation adapter and complete challenge slice remain open  
+**Last updated:** 2026-09-03
 
 This document owns app selection and challenge-MVP shape. Stable application-neutral lifecycle
 contracts remain owned by the [Mechanism index](../Mechanisms/README.md).
 
 ## 1. Current decision boundary
 
-The challenge entry is centered on the re-entry workflow mechanism. The website that
-demonstrates it is a separate product decision.
+The challenge entry is centered on the Re-entry Core mechanism. ADR-0042 separately selects
+Sleepless Kingdom as the Host application and demo carrier.
 
 ### Fixed
 
-- one user-scoped future event;
+- one user-scoped future signal type within the consented relationship;
 - one ended page session or Agent turn;
-- one accepted bounded delivery;
+- one accepted bounded Delivery per signal, with at most one active standing activation;
 - one selected continuation adapter resume of managed Agent context;
 - one canonical page re-entry;
 - one fresh state read;
@@ -24,16 +25,19 @@ demonstrates it is a separate product decision.
 - continuation of the same artifact or decision process;
 - one visible human decision boundary.
 
-### Variable until app selection
+### Resolved by ADR-0042
 
-- application domain and name;
-- primary user and external actor;
-- workflow record and artifact;
-- event semantics;
-- initial and resumed states;
-- Site Tool names and schemas;
-- consequence and human boundary;
-- business model and long-term product scope.
+- application: Sleepless Kingdom, a first-party persistent web strategy game;
+- primary user and external actor: shelter owner and authoritative world worker/monster;
+- persistent decision: gatherer mission, attempt, causal history, signal, and recall decision;
+- signal scope: one approved `CargoLostToMonster` type, repeated only as sequential bounded
+  activations under the standing Grant;
+- initial/resumed states: dispatched gatherer before absence, then current loss/reissue state;
+- Site Tools: four fresh reads, target Game-specific consent action, and conditional
+  `force_recall_soldier`;
+- human boundary: migration, siege, destructive upgrades, irreversible recovery, and actions beyond
+  the accepted G2 recall; and
+- still variable: commercial demand, buyer, business model, production runtime, and long-term scope.
 
 ## 2. Selection objective
 
@@ -45,7 +49,9 @@ workflow creates the strongest observable proof with the lowest execution risk.
 
 ## 3. Hard selection gates
 
-A candidate app is rejected if any answer is no:
+A candidate app should be rejected if an answer is no. An owner may accept an evidence field that is
+still `UNKNOWN` only as an explicit prototype risk; that does not convert the field into product
+proof:
 
 1. Is there observed evidence of a current user problem, workaround, abandonment, or
    reconstruction cost without mentioning WebMCP?
@@ -97,9 +103,24 @@ not the weighted total, controls selection.
 
 A high total does not override a failed hard gate.
 
+### Sleepless Kingdom decision result
+
+ADR-0042 accepts Sleepless Kingdom on asynchronous-event necessity, WebMCP materiality, continuity,
+visual clarity, deterministic control, and current implementation progress. Observed player-demand
+evidence, LLM advantage over deterministic rules, transport economics, and clean judge reproduction
+remain open validation fields. The decision selects the challenge Host; it does not claim validated
+commercial fit.
+
+ADR-0043 through ADR-0045 separately accept protocol-v0.2 standing authorization and transport, and
+RECORE-007 locally verifies its application-neutral low-level SDK-to-Adapter reference. A smaller
+protocol-v0.1 one-Consent/one-Event run may test current compatibility, but the final selected Game
+proof requires TASK-033 to reproduce two sequential effect-acknowledged signals under one Consent
+across the Host SDK, active Receiver, Local Connector, Game, and external runtime. No current Game
+result is relabeled as v0.2.
+
 ## 5. Required app-selection record
 
-The selection ADR must answer in one page:
+The selection ADR must answer:
 
 - **App thesis:** What is the web application in one sentence?
 - **Product layer:** Is this a Host feature, an integration platform, or an Agent-side
@@ -138,16 +159,16 @@ Use `UNKNOWN` with a named validation step where evidence does not exist. These 
 constrain adapter and topology selection after app selection; they do not select a topology
 by themselves.
 
-Do not begin the selected-app vertical slice before this record is accepted. Application-neutral
-Re-entry Core protocol, authority, durability, Cloud Receiver, Local Connector, conformance,
-and evidence work may proceed under ADR-0006 and RECORE-001 without inventing domain behavior.
+ADR-0042 is the accepted record. Existing scoped Game work is now reconciled as the selected product
+layer; no new cross-stack or external integration may use selection as a substitute for its own
+authority, evidence, or exact handoff.
 
 ## 6. Reference candidates
 
-Reference scenarios are inputs to selection, not defaults. The TenderRelay dossier supplies
-the first complete candidate, documented as
-[Reference Scenario A](../Scenarios/01-tender-reference-scenario.md). It must pass the same
-hard gates and scorecard as every other candidate.
+ADR-0042 selects Sleepless Kingdom. The outer
+[Sleepless Kingdom scenario](../Scenarios/03-sleepless-kingdom.md) is preserved as selection history;
+current behavior lives in the scoped Game layer. RightSpot is the preserved unselected alternative,
+and TenderRelay, Opportunity, and Greenlight remain reference or historical candidates.
 
 ## 7. Domain-neutral MVP shape
 
@@ -170,20 +191,34 @@ The selected app should contain:
 Avoid microservices, multiple Agent platforms, broad event taxonomies, or production
 multi-tenancy unless the selected runtime makes one unavoidable.
 
+### Selected first-slice mapping
+
+| MVP element | Sleepless Kingdom value |
+|---|---|
+| Web application | `WebApp/Web-Game/` |
+| Primary page | Authenticated shelter/game page |
+| Later transition | Server-owned monster combat causing `CargoLostToMonster` |
+| Persistent object | Shelter-scoped mission, attempt, history, signal, and recall decision |
+| Database and authority | Game server/worker with durable file-backed state locally; hosted profile remains open |
+| Event path | Two sequential signed signals through the advanced Host SDK under one Receiver-owned Consent decision and standing Grant; v0.1 one-shot is compatibility evidence only |
+| Agent action | Conditional `force_recall_soldier` after fresh reads |
+| Human boundary | Migration, siege, destructive upgrades, irreversible recovery, and out-of-envelope actions |
+| Fixture/reset | `sleepless-mvp-01`; reset creates a fresh `world_id` |
+
 ## 8. Required Site Tool roles
 
 Use approximately five unique tools:
 
 | Stage | Role | Required visible effect |
 |---|---|---|
-| Initial | Context reader | Show the Agent current workflow, artifact, stage, and versions |
-| Initial | Draft or proposal writer | Create visible revisable work |
-| Initial | Re-entry offer reader | Explain the future event without creating authority |
-| Resumed | Follow-up context reader | Read the new event-related state and existing artifact |
-| Resumed | Continuation writer | Continue the same artifact or decision process |
+| Initial | `inspect_shelter_state`, `inspect_client_snapshot`, `inspect_missions` | Show current shelter, mission, and revisions |
+| Initial | Game-specific Re-entry consent action (target, not implemented) | Explain and request the scoped standing cargo-loss relationship without creating authority itself |
+| Resumed | `inspect_shelter_state`, `inspect_missions`, `inspect_mission_history` | Reread current loss/reissue state and causal history |
+| Resumed | `force_recall_soldier` | Continue the same mission decision through one bounded revision-checked recall |
 
-The selected app must replace these role labels with domain-specific names and schemas.
-The final consequential action remains in the human UI.
+The four reads are locally implemented and one has genuine local WebMCP invocation evidence. The
+Game-specific consent action and genuine post-delivery dynamic recall remain open. Consequential
+actions outside the G2 recall envelope remain in the human UI.
 
 ## 9. Synthetic scenario template
 
@@ -191,17 +226,17 @@ The implementation document created after app selection must define:
 
 | Field | Required value |
 |---|---|
-| Scenario name | Short, memorable, non-branded |
-| Workflow ID | Stable synthetic identifier |
-| Primary actor | Named domain role |
-| External actor | Named person or system |
-| Initial state | Concrete domain state |
-| Initial artifact | Visible persistent object |
-| Authorized event | One exact typed transition |
-| Resumed state | Concrete domain state |
-| Tool delta | At least one initial-only and one resumed-only tool |
-| Human boundary | One visible consequential decision |
-| Reset | One deterministic action returning to initial state |
+| Scenario name | Sleepless Kingdom G2 cargo-loss return |
+| Workflow ID | Stable server-owned player/shelter workflow mapped privately to the Receiver binding |
+| Primary actor | Shelter-owning strategy player |
+| External actor | Authoritative world worker and seeded monster |
+| Initial state | GATHERER dispatched to a Wood or Rock route; player leaves the page |
+| Initial artifact | Persistent mission, attempt, causal history, and open recall decision |
+| Authorized event | `CargoLostToMonster` |
+| Resumed state | Current loss, respawn/reissue, mission revisions, signal digest, and history |
+| Tool delta | Initial consent action disappears; conditional `force_recall_soldier` becomes eligible |
+| Human boundary | Migration, siege, destructive upgrades, irreversible recovery, and any broader action |
+| Reset | Recreate `sleepless-mvp-01` with a fresh `world_id` |
 
 ## 10. Build sequence
 
@@ -225,8 +260,8 @@ fallback.
 
 ### Gate 0C — Select the app
 
-Apply the hard gates and scorecard. Record the decision in a new ADR and specialize Core
-requirements, security, validation, and tool inventory. This is the current product gate.
+**Complete as a decision:** ADR-0042 selects Sleepless Kingdom and specializes Core requirements,
+validation, tool inventory, human boundary, and transport assumptions.
 
 Full selected-app implementation requires the completed P0 proof, the relevant Re-entry Core
 contract baseline, and an accepted app-selection ADR.
@@ -286,19 +321,20 @@ route passes its genuine WebMCP join gate.
 
 ## 11. Three-minute demo framework
 
-The domain content is TBD, but the proof rhythm is fixed:
+The selected Sleepless Kingdom proof rhythm is:
 
 | Time | Screen and action | Evidence |
 |---:|---|---|
-| 0:00–0:15 | State the selected asynchronous user problem | Why one live page session is insufficient |
-| 0:15–0:40 | Open the workflow; Agent reads context and prepares visible work | Genuine WebMCP and shared state |
-| 0:40–1:00 | User authorizes one future event | Scope, expiry, one run, human boundary |
-| 1:00–1:15 | End the turn; external actor creates the state transition | Real backend event |
-| 1:15–1:45 | Receiver shows one accepted pending delivery; the selected adapter resumes the intended workflow and opens the canonical page | Delivery/activation separation and continuation bridge |
-| 1:45–2:10 | Agent reads new state and uses a new-stage Site Tool | Dynamic tool surface and continuity |
-| 2:10–2:30 | User reviews and decides | Human control and receipt |
-| 2:30–2:50 | Show correlated timeline and duplicate-event safety | Trust and completeness |
-| 2:50–3:00 | Restate the mechanism contribution | Page actionability extended into safe re-entry |
+| 0:00–0:15 | Show the persistent shelter and explain that the world continues while the player is away | Why one live page session is insufficient |
+| 0:15–0:35 | Inspect shelter/mission state and authorize one standing `CargoLostToMonster` relationship | Genuine page state, visible scope/expiry, one-active limit, and human boundary |
+| 0:35–0:50 | Dispatch the gatherer through the normal UI and leave the page | Persistent mission decision and real absence |
+| 0:50–1:10 | World worker commits signal 1; show queue acceptance separately from claim/activation | Real authoritative later event and honest status separation |
+| 1:10–1:35 | Agent returns, rereads current state/history, conditionally recalls, and obtains effect-backed ACK | Fresh WebMCP capability, bounded action, and trusted completion |
+| 1:35–2:00 | Cause signal 2; show one-active backpressure where applicable, then accept it without another Consent | Standing authority, ordering, and bounded repeated activation |
+| 2:00–2:25 | Agent rereads changed state and completes or receives a typed refusal | No stale replay and server-owned legality |
+| 2:25–2:45 | Show correlated two-cycle timeline, revoke, and reject the next signal | Replay safety, visibility, and user control |
+| 2:45–2:55 | Show migration/siege/destructive actions remain human-only | Consequence boundary |
+| 2:55–3:00 | Restate the mechanism contribution | Page actionability extended into safe re-entry |
 
 Prefer the live product over slides. Use one brief architecture view only if it clarifies the
 event-to-page handoff.

@@ -1,12 +1,14 @@
 # Delivery Lease and Local Connector
 
 **Role:** CANONICAL mechanism contract  
-**Status:** Core, active v2, and current-checkout Local Connector contracts locally verified at
-bounded scopes; pairing abuse fence, registry-package compatibility, default effect
-acknowledgement, production identity/deployment, and supported Agent runtime open; former receiver
-historical  
+**Status:** Protocol-v0.1 Core, active v2, and current-checkout Local Connector contracts locally
+verified at bounded scopes; additive v0.2 two-delivery Connector/Agent-Adapter reference locally
+verified, with an active-v2 standing kernel locally verified in its working tree; pinned release,
+public controls, and product version selection remain open; pairing abuse fence,
+registry compatibility, default effect acknowledgement, production identity/deployment, and
+supported Agent runtime open; former receiver historical  
 **Controls:** ADR-0009, ADR-0010, ADR-0013, historical ADR-0019 through ADR-0032, and active
-ADR-0033, ADR-0037 through ADR-0041
+ADR-0033, ADR-0037 through ADR-0041, and ADR-0043 through ADR-0045
 
 ## Responsibility
 
@@ -35,6 +37,12 @@ PENDING or expired LEASED
 Accepted event truth, delivery selection, adapter activation, Host effect, and acknowledgement are
 separate facts. Local process completion or an adapter return never proves that the Host changed.
 
+For protocol v0.2, standing authorization does not make a lease standing. Every accepted signal
+still creates one Delivery with one bounded lease lifecycle and one activation. Acknowledged or
+explicit terminal state releases the standing Grant's active slot; another signal may then create a
+new Delivery without another Consent decision. The initial profile permits only one non-terminal
+Delivery per standing Grant.
+
 ## Lease authority
 
 - a trusted Connector identity resolves to one subject and delivery target;
@@ -49,12 +57,15 @@ separate facts. Local process completion or an adapter return never proves that 
 
 ## Transport contract
 
-The Core HTTP adapter and active v2 Receiver both map event acceptance, delivery claim, and
-effect-backed acknowledgement. Active v2 adds separate pairing and disconnect routes for Connector
-identity; those routes are not part of the Core protocol kernel. The outbound Connector client:
+The Core HTTP adapter maps exact v0.1 and v0.2 Event, claim, and acknowledgement routes; it never
+infers or downgrades a version. The active-v2 working tree adds the three standing `/v0.2` kernel
+routes alongside unchanged v0.1 routes. Its separate pairing and disconnect routes establish
+Connector identity; they are not part of the Core protocol kernel and do not select standing
+capability. The outbound Connector client:
 
 - requires HTTPS except on literal loopback;
 - follows no redirects;
+- selects one exact protocol profile before a request and performs no fallback or downgrade;
 - validates exact bounded responses;
 - enforces timeout and response-size limits;
 - makes one request per caller decision; and
@@ -86,6 +97,7 @@ silently reconciled.
 | Receiver facade and authority integration | `reentry-core/src/receiver-core.mjs` | `reentry-core/test/receiver-core.test.mjs` |
 | HTTP route mapping | `reentry-core/src/cloud-receiver-http.mjs` | `reentry-core/test/cloud-receiver-http.test.mjs` |
 | Outbound Connector client | `reentry-core/src/local-connector-client.mjs` | `reentry-core/test/local-connector-client.test.mjs` |
+| Standing Connector-to-Adapter reference trace | `reentry-core/conformance/standing-v0.2/scenario.mjs`, `agent-adapter.mjs`, and current-checkout Codex result seam | `reentry-core/test/standing-cross-layer.test.mjs`, `agent-adapter.test.mjs`, and `runtime/local-connector/test/codex-exec-adapter.test.mjs` |
 | Process and restart composition | conformance and process fixtures | separate-process and fault-matrix tests |
 | Stage 1 Cloud Receiver process shell and local pairing preview | `runtime/cloud-receiver/src/` | `runtime/cloud-receiver/test/` |
 | Local Connector process and credential custody preview | `runtime/local-connector/src/` | `runtime/local-connector/test/` |
@@ -117,7 +129,13 @@ lease can be reclaimed within the accepted three-attempt bound (TASK-029). **CON
 registry Connector `0.2.20` bundles a pre-instruction Core client and rejects active v2's current
 lease response; its reported `gitHead` also records package version `0.2.14`, so the artifact is not
 exact-source reproducible (TASK-032). The passing separate-process run used the current checkout.
-This does not prove a
+RECORE-007 proves two sequential effect-acknowledged Deliveries under one standing Grant through the
+low-level Host SDK, loopback v0.2 Receiver, Core/SQLite, Connector client, and Agent Adapter. The
+current-checkout Codex adapter preserves v0.2 result identity. Pairing and saved credentials still
+select no v0.2 capability and the CLI/published package remains a v0.1 product path. CLOUD-023 records
+the active Receiver's local Express/PostgreSQL two-signal kernel trace using internal Consent/control
+and deterministic effect authority. It does not prove the product chain or pinned release
+conformance; TASK-028 and TASK-033 own those gates. This does not prove a
 production Cloud Receiver, TLS termination, production account identity, credential rotation or
 recovery, production service supervision, offline catch-up, real Host-effect verifier, service
 capacity, cross-machine operation, or distributed queue.

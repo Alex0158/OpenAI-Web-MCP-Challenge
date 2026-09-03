@@ -24,6 +24,14 @@ later-event flow, and the consent page does not display it.
 
 The objective is to make the lifetime policy explicit, user-visible, and consistently enforced.
 
+The additive standing kernel now stores the two deadlines separately and requires a trusted
+Receiver caller to supply `maximumGrantLifetimeMs`; it does not select the product maximum.
+Protocol v0.2 still requires a finite `grant_expires_at`. Non-consumable authorization therefore
+does not yet mean no-expiry authorization. Neither a distant expiry nor silent automatic renewal
+may substitute for an accepted lifetime decision. The
+[standing control-plane proposal](../../saas-boilerplate/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md)
+records the public-shell implications without choosing a duration or changing existing v0.1 rows.
+
 ## 2. Authority and evidence
 
 - ADR-0007 owns distinct offer and Grant fields and Receiver narrowing.

@@ -128,7 +128,8 @@ or perform a destructive action.
 - [TASK-024](TASK-024-build-v2-consent-and-developer-experience.md) — Complete the active v2
   consent/auth handoff, session-aware entry actions, and interactive Host SDK developer guidance.
 
-- [TASK-001 — Select the Host application](TASK-001-select-host-application.md)
+- [TASK-001 — Select the Host application](TASK-001-select-host-application.md) — ADR-0042 selects
+  Sleepless Kingdom; exact documentation and remote closure remain verification pending.
 
 - [TASK-026](TASK-026-reconcile-pairing-claim-abuse-fence.md) — Select an enforceable anonymous
   pairing-claim abuse fence.
@@ -136,8 +137,9 @@ or perform a destructive action.
 - [TASK-027](TASK-027-reconcile-consent-and-grant-expiry.md) — Select separate Consent-session and
   effective-Grant lifetime and display rules.
 
-- [TASK-028](TASK-028-reconcile-cloud-v2-receiver-core-architecture.md) — Reconcile active v2's
-  independent Receiver implementation with the one-Receiver-Core architecture.
+- [TASK-028](TASK-028-reconcile-cloud-v2-receiver-core-architecture.md) — Enforce ADR-0044's pinned
+  black-box conformance and exact-source migration gates across the Core reference and independent
+  active-v2 Receiver.
 
 - [TASK-029](TASK-029-integrate-connector-effect-acknowledgement.md) — Integrate a real Host-effect
   authority and acknowledgement path into the default Connector composition.
@@ -150,6 +152,11 @@ or perform a destructive action.
 
 - [TASK-032](TASK-032-release-compatible-local-connector.md) — Release an exact-source Local
   Connector that accepts the active instruction-bearing delivery contract.
+
+- [TASK-033](TASK-033-build-standing-authorization-v0-2.md) — Add non-consumable standing
+  authorization with ordered repeatable signals, one-active backpressure, revocation, and a local
+  SDK/HTTP/Connector/Adapter two-signal reference chain while active-v2 and Game adoption remain
+  open.
 
 Discover all task records with:
 

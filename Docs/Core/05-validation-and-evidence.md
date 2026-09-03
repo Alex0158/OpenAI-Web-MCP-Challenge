@@ -1,12 +1,12 @@
 # Re-entry Core — Validation and Evidence
 
 **Role:** CANONICAL current proof matrix, future evidence gates, and claim limits  
-**Status:** Application-neutral Core and bounded active-v2/simple-flow composition locally verified;
+**Status:** Application-neutral Core including a standing-v0.2 reference chain and bounded active-v2/simple-flow composition locally verified;
 the former `runtime/cloud-receiver/` preview is deprecated historical evidence; active-v2
-reconciliation, final application, production runtime, exact deployment, product, judge, and
-submission gates remain open  
+reconciliation remains open; Sleepless Kingdom is selected, while its external continuation,
+production runtime, exact deployment, product, judge, and submission gates remain open  
 **Authority:** ADR-0003, ADR-0006 through ADR-0015, historical ADR-0019 through ADR-0032, active v2
-ADR-0033 through ADR-0041, and executed evidence
+ADR-0033 through ADR-0045, and executed evidence
 
 ## 1. Evidence discipline
 
@@ -39,6 +39,7 @@ handle do not prove page-bound invocation.
 | Host SDK isolation and issuance | **LOCALLY VERIFIED** | deterministic Host values and keys |
 | Manifest enrollment and consent-authority seam | **LOCALLY VERIFIED** | deterministic Receiver authority; no production session |
 | Grant, event, replay, one-run reservation, pending delivery | **LOCALLY VERIFIED** | Receiver Core and SQLite reference store |
+| Standing authorization and repeatable activation | **LOCALLY VERIFIED APPLICATION-NEUTRAL CROSS-LAYER REFERENCE; ACTIVE/GAME OPEN** | ADR-0043 through ADR-0045, TASK-033, and RECORE-007; Node 24 proves low-level Host SDK -> v0.2 HTTP -> Core/SQLite -> Connector -> Agent Adapter with one Consent, two acknowledged signals, backpressure, restart, replay, and revoke, but not active Receiver, normal facade, product Connector, Game, or external runtime adoption |
 | Grant inspection and atomic revocation | **LOCALLY VERIFIED** | Core/store behavior; no control HTTP or UI |
 | Delivery lease, stale-worker fence, effect acknowledgement | **LOCALLY VERIFIED** | deterministic identities and effect authority |
 | Receiver HTTP and outbound Connector client | **LOCALLY VERIFIED** | bounded loopback transport; no production TLS or identity |
@@ -53,16 +54,18 @@ handle do not prove page-bound invocation.
 | Shared Host UI/WebMCP consent action | **LOCALLY VERIFIED WITH BOUNDED BROWSER RUNTIME EVIDENCE** | same JavaScript handler, exact popup handoff, server confirmation gate, no-binding browser result, live Site Tool inventory and invocation to a visible unconfigured state; no newly configured consent-to-Connector Browser chain |
 | Account-first consent and background Connector path | **CLOUD RECEIVER RUNTIME DEPRECATED; SDK/CONNECTOR SEAMS RETAINED AS HISTORICAL PREVIEW EVIDENCE** | dashboard-issued pairing code, credential reuse, organization-key Host control, Re-entry-owned consent and device selection, bounded polling, LaunchAgent profile, and fresh Codex process seam; no production identity, deployment, or supported Browser/WebMCP join |
 | Native hosted relational schema | **HISTORICAL / DEPRECATED** | Prisma schema/migration and one-time legacy snapshot backfill exercised in the retired preview; no current hosted service or production persistence claim |
-| Active Cloud Receiver v2 | **LOCALLY VERIFIED WITH BOUNDED PREVIEW-DEPLOYMENT EVIDENCE; CONTRACT DECISIONS OPEN** | 56/56 backend tests, PostgreSQL migrations, browser personas, and route/database/Connector preview probes; pairing abuse fence, effective expiry, shared-Core architecture, exact deployed Git identity, and full deployed flow remain open |
+| Active Cloud Receiver v2 | **LOCALLY VERIFIED WITH BOUNDED PREVIEW-DEPLOYMENT EVIDENCE; STANDING RELEASE OPEN** | Historical v0.1/backend and preview evidence remain bounded separately; the `Re-Entry` standing increment passes 154 backend tests, type-check/build, additive disposable-PostgreSQL migration, and the shared two-signal Express trace. Its sources are uncommitted, Consent/control use internal seams, and effect authority is deterministic. Pinned v0.1/v0.2 conformance, committed-source migration/release enforcement, public controls, lifetime, exact deployment, and full product flow remain open under TASK-028/TASK-033 |
 | Simple SDK-to-v2-to-Connector composition | **SEPARATE-PROCESS VERIFIED, NON-PRODUCTION** | Core 81/81, SDK 25/25, Connector 47 passed, one separate Connector worker plus separate test effect/ack worker and Receiver restart replay; default product effect authority and supported external Agent/Browser absent |
 | Published SDK and Connector install path | **CONFLICTED / RELEASE OPEN** | SDK `0.3.1` predates `createReentry`; Connector `0.2.20` is not reproducible from its reported `gitHead` and its bundled Core client rejects active v2's instruction-bearing lease; local composition used current checkouts, not clean registry consumers |
 | Active v2 default Connector completion | **OPEN** | `runOnce` proves claim and activation only; no default Host-effect or acknowledgement integration; reclaim/retry exhaustion remains possible |
 | Quality and package-weight baseline | **LOCALLY VERIFIED, NON-SLA** | same-machine regression samples; zero runtime dependencies |
 | Application-neutral Program | **COMPLETE AT LOCALLY VERIFIED BOUNDARY** | RECORE-003 terminal audit |
 | Frozen MVP1 technical composition | **VERIFIED, BOUNDED REFERENCE** | P0/H1/H2 evidence in recorded environments |
-| Application-review sample Host | **LOCALLY VERIFIED, SAMPLE ONLY** | applicant/reviewer UI, real local SDK/Receiver/Connector flow, deterministic Agent, page-bound WebMCP invocation, and human stop; no final app selection or real Connector-to-Browser join |
+| Application-review sample Host | **LOCALLY VERIFIED, SAMPLE ONLY** | applicant/reviewer UI, real local SDK/Receiver/Connector flow, deterministic Agent, page-bound WebMCP invocation, and human stop; not the ADR-0042 Host and no real Connector-to-Browser join |
 | Supported concrete Agent-to-Browser/WebMCP join | **OPEN** | both tested standalone App Server/Desktop joins failed |
-| Selected Host application and vertical slice | **OPEN** | ADR-0023 explicitly keeps the verified sample outside final app selection |
+| Selected Host application | **DECIDED** | ADR-0042 selects Sleepless Kingdom under `WebApp/Web-Game/`; selection is not implementation or product proof |
+| Sleepless Kingdom bounded local Host evidence | **PARTIALLY RUNTIME VERIFIED, NON-COMPOSED** | persistent local gameplay and causal signal; four canonical-page WebMCP reads plus one genuine read-only invocation; labelled-port/page-HTTP/provenance-bound recall composition; no external Agent chain |
+| Sleepless Kingdom external vertical slice | **OPEN** | Game Manifest/Consent, signed Event-to-active-v2, compatible published Connector, supported authenticated Browser return, dynamic recall through genuine WebMCP, independent effect/ACK, hosted continuity, and judge reproduction remain unproved |
 | Production services, identity, custody, and deployment | **OPEN** | The retired v1 service is deprecated at source; active-v2 preview aliases and probes do not establish exact deployed Git identity, production custody, recovery, or a complete deployed flow |
 | Product value and judge reproduction | **UNKNOWN** | selected-app external evidence required |
 | Submission | **NOT SUBMITTED** | live Devpost readback required |
@@ -71,9 +74,9 @@ Current aggregate counts and package facts belong to Core/00 and the terminal De
 Historical counts remain in their event-time verdicts; they are not merged into one cumulative
 number.
 
-## 3. Application-selection gate
+## 3. Application-selection decision
 
-Before final product-app implementation, the accepted selection decision must identify:
+ADR-0042 closes the application choice by identifying:
 
 - a real asynchronous multi-stage workflow;
 - one later event that changes the correct next action;
@@ -87,8 +90,15 @@ Before final product-app implementation, the accepted selection decision must id
 - why notification, deep link, ordinary API, or one-shot Agent interaction is insufficient; and
 - a judge-reproducible path consistent with current Challenge rules.
 
-Candidate research and scoring recommendations are inputs, not selection evidence.
-The ADR-0023 sample implementation is integration evidence and does not satisfy this selection gate.
+The selected values are a Sleepless Kingdom shelter owner, persistent gatherer mission and causal
+history, authoritative `CargoLostToMonster`, canonical shelter page, four fresh reads, a target
+initial consent action, conditional resumed `force_recall_soldier`, human-confirmed high-consequence
+actions, and deterministic `sleepless-mvp-01` reset. The current fresh-session Connector route is
+explicitly experimental.
+
+Candidate research and scoring recommendations remain inputs, not decision authority. ADR-0042 is
+selection evidence only; it does not pass the concrete-adapter or selected-app vertical-slice gates.
+The ADR-0023 sample remains separate integration evidence.
 
 ## 4. Concrete-adapter gate
 
@@ -125,6 +135,9 @@ The chosen Host app must prove:
 10. a stop before the human-only consequence.
 
 Passing the generic Core or frozen MVP1 suite does not pass this gate.
+One successful cycle is compatibility/component evidence only. Selected standing acceptance
+also requires two sequential effect-backed acknowledgements under the same Consent, one-active
+backpressure, restart/replay, and revocation rejecting the next signal under TASK-033.
 
 ## 6. Functional validation matrix
 
@@ -169,7 +182,7 @@ state, public URL, and runtime readback. HTTP success alone is insufficient.
 
 ## 9. Product evidence
 
-After selection, record the real workflow, current workaround, frequency, context-reconstruction
+For Sleepless Kingdom, record the real workflow, current workaround, frequency, context-reconstruction
 cost, error or delay consequence, authorization expectations, and measurable before/after outcome.
 Qualitative interviews support workflow understanding but do not prove demand, pricing, retention,
 or market size.
@@ -202,7 +215,8 @@ operator burden, and usage per safe success. Positive-event-only cost is invalid
 - Reproducible experiments: Experiments.
 - Frozen MVP1 runtime evidence: mvp/evidence.
 - External and historical sources: References.
-- Submission and runtime records: future selected-app release/evidence layer.
+- Submission and runtime records: the scoped Game release/evidence layer and future submission
+  records.
 
 ## 12. Update rule
 

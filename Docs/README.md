@@ -2,7 +2,7 @@
 
 **Role:** CANONICAL documentation governance and authority index  
 **Status:** Current index  
-**Project:** Re-entry Core; demo app and final app name TBD  
+**Project:** Re-entry Core with Sleepless Kingdom selected as the Host/demo carrier  
 **Last updated:** 2026-09-03
 
 This directory separates current product truth from challenge governance, evidence, and
@@ -31,9 +31,10 @@ closure. Neither Decisions nor Development replaces the owning Core truth.
 | Document | Role | Owns |
 |---|---|---|
 | [`Core/00-current-status.md`](Core/00-current-status.md) | CANONICAL | Current phase, evidence state, binding assumptions, next gate |
-| [`Decisions/ADR-0002-separate-mechanism-from-demo-app.md`](Decisions/ADR-0002-separate-mechanism-from-demo-app.md) | DECISION | Selection of the mechanism and separation from the unselected app/domain |
+| [`Decisions/ADR-0002-separate-mechanism-from-demo-app.md`](Decisions/ADR-0002-separate-mechanism-from-demo-app.md) | DECISION | Separation between the reusable mechanism and application-specific product authority |
+| [`Decisions/ADR-0042-select-sleepless-kingdom-host-application.md`](Decisions/ADR-0042-select-sleepless-kingdom-host-application.md) | DECISION | Selection of Sleepless Kingdom as the first Host application and challenge-demo carrier |
 | [`Core/01-product-definition.md`](Core/01-product-definition.md) | CANONICAL | Selected concept and target product boundary; not current implementation status |
-| [`Core/02-product-requirements.md`](Core/02-product-requirements.md) | CANONICAL | Target domain-neutral behavior and selected-app requirements; specialization remains pending |
+| [`Core/02-product-requirements.md`](Core/02-product-requirements.md) | CANONICAL | Target domain-neutral behavior and selected Sleepless Kingdom specialization |
 | [`Core/03-system-design.md`](Core/03-system-design.md) | CANONICAL | Target architecture and logical contracts; current as-built truth remains in Core/00 and Core/05 |
 | [`Core/04-trust-security-reliability.md`](Core/04-trust-security-reliability.md) | CANONICAL | Target authority, security, and reliability controls plus its dated evidence boundary |
 | [`Core/05-validation-and-evidence.md`](Core/05-validation-and-evidence.md) | CANONICAL | Current proof matrix and future evidence gates |
@@ -42,12 +43,12 @@ closure. Neither Decisions nor Development replaces the owning Core truth.
 | [`Core/08-competition-thesis-and-positioning.md`](Core/08-competition-thesis-and-positioning.md) | CANONICAL | Competition-facing thesis, value proposition, differentiation, judging posture, and claim hierarchy; underlying status remains in Core/00 and Core/05 |
 | [`Core/09-business-flows-and-ux.md`](Core/09-business-flows-and-ux.md) | CANONICAL | Cross-layer business-flow sequence, portal redirects, UX handoffs, credential boundaries, and current-flow audit findings |
 | [`Mechanisms/README.md`](Mechanisms/README.md) | CANONICAL MODULE INDEX | Stable Re-entry lifecycle and authority contracts, with code, test, and evidence routing |
-| [`Decisions/README.md`](Decisions/README.md) | DECISION INDEX | Accepted, superseded, pending, and scoped durable choices through ADR-0041 |
+| [`Decisions/README.md`](Decisions/README.md) | DECISION INDEX | Accepted, superseded, pending, and scoped durable choices through ADR-0045 |
 | [`Tasks/README.md`](Tasks/README.md) | CANONICAL TASK INDEX | Unified lifecycle for pending work, problems, defects, investigations, risks, decisions, and verification gaps |
 | [`Development/README.md`](Development/README.md) | CANONICAL | Program, implementation, verification, runbook, and closure records |
 | [`Engineering/README.md`](Engineering/README.md) | CANONICAL ENGINEERING INDEX | Project-wide development, testing, verification, and execution controls |
 | [`Challenge/README.md`](Challenge/README.md) | GOVERNING ROUTER | Current English routing for challenge constraints, volatile facts, and release refresh gates |
-| [`Scenarios/README.md`](Scenarios/README.md) | SUPPORTING | Concrete domain mappings that are not selected product truth |
+| [`Scenarios/README.md`](Scenarios/README.md) | SUPPORTING | Selected-scenario history, alternatives, and reference domain mappings |
 
 The [decision register](Decisions/README.md) owns the complete decision index. ADR-0001 is
 superseded by ADR-0002; ADR-0004 is partially superseded by ADR-0006 and ADR-0007; ADR-0006 through
@@ -56,16 +57,19 @@ deterministic Agent boundary, conformance, Grant control, private binding resolu
 documentation ownership, unified task lifecycle, engineering governance baseline, and the retired
 hosted Cloud Receiver preview. ADR-0032 retires `runtime/cloud-receiver/` and its hosted preview
 while preserving reusable Core and integration contracts. ADR-0033 selects `saas-boilerplate/` as
-the active v2 base; ADR-0035 through ADR-0041 control its accepted bounded increments. The index
-records decision status, not implementation or runtime proof, and those v2 decisions do not resolve
-the one-Receiver-Core architecture conflict recorded by TASK-028.
+  the active v2 base; ADR-0035 through ADR-0041 control its accepted bounded increments. ADR-0042
+  selects Sleepless Kingdom; ADR-0043 accepts additive standing authorization; ADR-0044 permits
+  independently implemented Receivers only behind pinned conformance; and ADR-0045 fixes the v0.2
+  Host/HTTP/Connector/Adapter transport profile. RECORE-007 locally verifies the application-neutral
+  cross-layer reference; TASK-028 and TASK-033 still own active-Receiver, product, Game, and external-
+  runtime adoption. The index records decision status, not implementation or runtime proof.
 
 ## 3. Tasks, development, and closure
 
 - [`Tasks/README.md`](Tasks/README.md) — CANONICAL lifecycle authority for every registered
   non-terminal task, including problems and defects.
-- [`Tasks/TASK-001-select-host-application.md`](Tasks/TASK-001-select-host-application.md) — current
-  P0 task to produce and reconcile the application-selection ADR.
+- [`Tasks/TASK-001-select-host-application.md`](Tasks/TASK-001-select-host-application.md) — ADR-0042
+  is accepted; exact reconciliation and Git/remote closure remain verification pending.
 - [`Engineering/README.md`](Engineering/README.md) — CANONICAL project-wide development, testing,
   verification, and execution controls.
 - [`Engineering/03-primary-development-runbook.md`](Engineering/03-primary-development-runbook.md) —
@@ -94,8 +98,9 @@ and neither may accumulate conversational history.
 - [`Mechanisms/04-managed-context-and-agent-activation.md`](Mechanisms/04-managed-context-and-agent-activation.md) — private context resolution and replaceable Agent activation boundary.
 - [`Mechanisms/05-host-reentry-webmcp-and-human-boundary.md`](Mechanisms/05-host-reentry-webmcp-and-human-boundary.md) — canonical return, fresh WebMCP tools, bounded continuation, and human decision boundary.
 
-These contracts own stable module behavior and application obligations. They do not claim that a
-production process shell, supported Agent adapter, selected application, or deployment exists.
+These contracts own stable module behavior and application obligations. Sleepless Kingdom is
+selected, but the contracts do not claim that its production process shell, supported Agent
+adapter, external true chain, or deployment exists.
 
 ## 5. Challenge governance
 
@@ -118,8 +123,8 @@ decision.
 - [`Research/23-three-candidate-competition-app-selection-review.md`](Research/23-three-candidate-competition-app-selection-review.md)
   — SUPPORTING source-backed comparison of Opportunity, Sleepless, and Greenlight, including the
   preserved original Greenlight ranking and a post-clarification update that makes Opportunity the
-  provisional scenario-level lead. It does not select the app; TASK-001 and an accepted ADR remain
-  controlling.
+  provisional scenario-level lead. It remains historical selection input; ADR-0042 now controls the
+  current Host decision.
 
 ## 7. Deprioritized ideation
 

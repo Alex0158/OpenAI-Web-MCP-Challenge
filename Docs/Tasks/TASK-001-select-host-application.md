@@ -1,38 +1,54 @@
 # TASK-001: Select the Host Application
 
 **Role:** CANONICAL task lifecycle record  
-**Registered:** 2026-08-31
+**Registered:** 2026-08-31  
+**Decision accepted:** 2026-09-03
 
 ## Task Control
 
 - Type: `decision`
-- Lifecycle: `pending`
+- Lifecycle: `verification_pending`
 - Priority: `P0`
 - Owner: Alex and project team
-- Current increment: Compare the qualified candidates and produce one application-selection ADR.
-- Next gate: The ADR is accepted and the affected Core documents are reconciled to the selected
-  application.
-- Dependencies: Candidate evidence must be reviewed as supporting input rather than product truth.
+- Current increment: Complete the approved local documentation commit of the accepted Sleepless
+  Kingdom selection and related standing contracts under CLOUD-023, excluding Game and RightSpot.
+- Next gate: After local scope and identity readback, obtain separate push authority and verify the
+  remote branch contains ADR-0042 and reconciled authorities without unrelated owner-held work.
+- Dependencies: Local documentation verification must pass; commit and push authority remain
+  separate from application-decision acceptance.
 
 ## 1. Problem
 
-Re-entry Core is selected and locally verified at its application-neutral boundary, but the Host
-application, user, domain, event, artifact, state model, Site Tools, human consequence, supported
-continuation route, and final product identity remain unselected.
+Before ADR-0042, Re-entry Core was selected and locally verified at its application-neutral boundary,
+but the Host application, user, domain, event, artifact, state model, Site Tools, human consequence,
+supported continuation route, and final product identity remained unselected.
 
-Without this decision, application-layer source placement, product requirements, runtime scope,
-judge journey, and production-shell requirements cannot be specialized without inventing product
-truth.
+ADR-0042 now selects Sleepless Kingdom as the first Host application and challenge-demo carrier. The
+remaining task scope is exact reconciliation and Git/remote closure; selection does not close the
+external continuation, hosted, product-demand, judge, or submission gates.
 
 ## 2. Authority and evidence
 
-- [Core/00](../Core/00-current-status.md) owns the current unselected status and next project gate.
+- [ADR-0042](../Decisions/ADR-0042-select-sleepless-kingdom-host-application.md) owns the accepted
+  application decision.
+- [Core/00](../Core/00-current-status.md) owns current selected-app status and next project gate.
 - [Core/06](../Core/06-mvp-and-demo.md) owns the hard selection gates, scorecard, and Challenge MVP
   boundary.
 - [Core/08](../Core/08-competition-thesis-and-positioning.md) owns the competition thesis and claim
   hierarchy.
 - [Core/05](../Core/05-validation-and-evidence.md) owns the application-selection evidence gate.
 - Candidate research and scenarios are supporting inputs. They cannot select the application.
+
+## 2.1 Accepted outcome
+
+- Host application and challenge-demo carrier: **Sleepless Kingdom**.
+- Product layer: [`WebApp/Web-Game/`](../../WebApp/Web-Game/), under its scoped authority.
+- First continuation: one approved `CargoLostToMonster` Event followed by fresh canonical-page reads
+  and a conditional `force_recall_soldier` action.
+- Human boundary: migration, siege, destructive upgrades, irreversible recovery, and actions outside
+  the G2 recall envelope.
+- Adapter posture: the current fresh-session Local Connector path remains experimental; supported
+  authenticated Browser/WebMCP return and effect-backed acknowledgement remain open.
 
 ## 3. Required decision output
 
@@ -63,8 +79,8 @@ This task does not:
 
 ## 5. Verification and closure
 
-Move to `verification_pending` only when one ADR candidate and its exact Core reconciliation are
-ready for complete review. Close only when:
+This task moved to `verification_pending` when ADR-0042 was accepted and the exact authority
+reconciliation became ready for complete review. Close only when:
 
 - one application-selection ADR is accepted;
 - Core/00, Core/01, Core/02, Core/03, Core/05, Core/06, and Core/08 are reconciled where affected;
