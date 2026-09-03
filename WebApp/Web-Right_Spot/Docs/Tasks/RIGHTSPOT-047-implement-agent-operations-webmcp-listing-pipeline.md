@@ -18,26 +18,29 @@ Operations authority/projection, and the verified Tenant adapter pattern in `RIG
 - Execution posture: `MAIN_THREAD_SINGLE_SOURCE_WEBMCP_IMPLEMENTATION`
 - Priority: `P1` — implement only the accepted Agent Operations `read_listing_pipeline` capability.
 - Owner: Main RightSpot thread
-- Current increment: Builder implementation and Main candidate review are complete; the exact source is
-  frozen locally at candidate commit `09d0628e10b9ddb9a59c59eebd1be1ee074a5318`. The independent
-  browser gate has one harness-blocked attempt and two bounded partial evidence attempts; it is not a
-  product pass or failure.
-- Next gate: resolve the supporting browser completion path (with preflighted commands and an outer
-  bounded wait), then complete the missing checks in `RS-WO-047-02` against that exact candidate. Do
-  not start another retry in the current unreliable path. Main owns integration, push, and
-  documentation closure only after the independent evidence is complete.
-- Dependencies: ADR-RS-0017 is the contract authority. The existing manual `/agent/operations` page,
-  `GET /api/agent/operations`, Operations projection, Agent role/assignment checks, and Tenant
-  `search_listings` adapter remain read-only inputs. `RIGHTSPOT-012` may continue as a non-blocking,
-  read-only audit provided it does not modify this Task's write set during a source freeze.
-- Dispatch state: `verifier_attempt_incomplete` — `RS-WO-047-01` was completed by supporting agent
-  `01a065ce-ba53-7b71-bb97-7de24e92a60f`; Main independently reviewed and froze the exact candidate.
-  `RS-WO-047-02` first stopped before navigation because the worker used unavailable `timeout`, then
-  a corrected retry reached the page and produced partial browser evidence before its bounded stop.
-  No fixture mutation, source drift, or Worktree is authorized.
-- Evidence status: `INDEPENDENT_BROWSER_INCOMPLETE` — contract, implementation, static checks, full
-  deterministic suite, and Main-controlled browser smoke are verified; independent wrong-role/session
-  teardown, final console/page-error, and final persistent-state readback remain open.
+- Current increment: The original Builder implementation and Main candidate review are complete, but
+  the candidate is now paused for the shared session-lifecycle repair registered as `RIGHTSPOT-048`.
+  Its original five-path source snapshot remains historical evidence at candidate commit
+  `09d0628e10b9ddb9a59c59eebd1be1ee074a5318`; it must be re-baselined after the overlapping lifecycle
+  repair before independent closure.
+- Next gate: complete `RIGHTSPOT-048`, recapture the exact post-repair source identity, and then resume
+  the missing `RS-WO-047-02` checks against that new frozen candidate. Do not run the old verifier
+  target or infer closure from its partial evidence. Main owns integration, push, and documentation
+  closure only after the re-baselined independent evidence is complete.
+- Dependencies: ADR-RS-0017 remains the tool contract authority. The shared session-lifecycle repair
+  in `RIGHTSPOT-048` is now a prerequisite because it owns the overlapping adapter lifecycle paths.
+  The existing manual `/agent/operations` page, `GET /api/agent/operations`, Operations projection,
+  Agent role/assignment checks, and Tenant `search_listings` adapter remain read-only inputs.
+  `RIGHTSPOT-012` may continue as a non-blocking, read-only audit provided it does not modify either
+  repair's source write set during a freeze.
+- Dispatch state: `PAUSED_FOR_SHARED_LIFECYCLE_REPAIR` — `RS-WO-047-01` was completed by supporting
+  agent `01a065ce-ba53-7b71-bb97-7de24e92a60f`; Main independently reviewed the candidate. The
+  `RS-WO-047-02` attempts remain historical incomplete evidence and no longer identify the next
+  source snapshot. No fixture mutation or Worktree is authorized.
+- Evidence status: `INDEPENDENT_BROWSER_INCOMPLETE_REBASE_REQUIRED` — contract, original
+  implementation, static checks, full deterministic suite, and Main-controlled browser smoke were
+  verified for the original candidate; shared external-session lifecycle, final console/page-error,
+  and final persistent-state readback remain open for the post-repair candidate.
 
 ## Bounded objective
 
@@ -224,13 +227,13 @@ by Main; Builder did not commit, push, alter canonical docs, or create a Worktre
 
 ### RS-WO-047-02 — Independently verify the integrated capability
 
-**Status:** `INCOMPLETE_EVIDENCE`  
+**Status:** `PAUSED_PENDING_RIGHTSPOT_048`  
 **Role:** Independent WebMCP/browser Verifier  
 **Parallelization:** `AFTER_BUILDER_SOURCE_FREEZE` — Builder source and Main Git ref are frozen during
 the check; no Main docs/status writeback or other worker may move the verified source  
-**Source:** Verify candidate commit `09d0628e10b9ddb9a59c59eebd1be1ee074a5318` and the five hashes
-listed above; `origin/main` remains at `075a868086e962112b550583cb1705478bbdf16b8` until this gate
-passes.  
+**Source:** After `RIGHTSPOT-048` is integrated, Main must recapture and freeze a new exact candidate
+commit and path hashes; the original candidate commit `09d0628e10b9ddb9a59c59eebd1be1ee074a5318` is
+historical evidence only.  
 **Scope:** Verify the integrated candidate against the exact frozen source and fixture without editing
 source/tests/docs or mutating the durable fixture; use `gpt-5.6-sol` with `medium` reasoning for
 WebMCP-specific evaluation  
@@ -294,12 +297,11 @@ ordinary manual Operations page.
 
 ## Current disposition
 
-This is the only source-bearing Task admitted by the accepted ADR-RS-0017 contract. Its five-path
-implementation candidate is frozen and all deterministic checks plus Main browser smoke are complete,
-but the separate frozen-source independent browser gate remains incomplete after one command-level
-harness block and two bounded partial retries. The implementation must not be pushed or closed as
-verified until `RS-WO-047-02` completes its missing checks or a new explicit evidence decision is made;
-the repeated non-completion is now a harness reliability condition, not a reason to widen product
-scope or keep retrying indefinitely.
+This remains the source-bearing Task for the accepted ADR-RS-0017 tool contract. Its original five-path
+implementation candidate passed deterministic checks and Main browser smoke, but independent browser
+closure is paused because the shared lifecycle contract was found incomplete. `RIGHTSPOT-048` is the
+separate bounded repair owner for the overlapping shared frame and adapter lifecycle paths; after it
+passes, Main must recapture a post-repair `047` candidate and resume independent evidence. The old
+partial attempts remain historical evidence and are not a closure or push authorization.
 The active `RIGHTSPOT-012` audit may continue on non-overlapping read-only surfaces, but it cannot
 mutate this Task's five-path write set or move a verifier baseline.

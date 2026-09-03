@@ -175,6 +175,15 @@ and is integrated into Main, retire the exact extra checkout promptly; do not re
 parent Task closes. Unresolved, dirty, rejected, or dependency-bearing checkouts remain protected
 under the [pilot Runbook](Docs/Development/RIGHTSPOT-THREAD-ORCHESTRATION-PILOT-RUNBOOK.md).
 
+**Current WebMCP lifecycle gate (2026-09-03):** The accepted Tenant and Agent page-bound adapters
+still rely on child unmount for registration disposal. `RIGHTSPOT-048` and ADR-RS-0018 now own the
+shared focus/visibility session revalidation, actor-identity child teardown, and invocation-side
+authentication deactivation required before the paused `RIGHTSPOT-047` candidate can be re-baselined.
+Do not run the old 047 verifier target, claim external-session teardown, or push the Operations
+capability as closed until the repair and its independent browser evidence pass. This gate does not
+change the server session authority or authorize polling, external authentication, Cloud Receiver,
+WebRTC, Redis, deployment, or production hardening.
+
 ## 1. Authority and reading order
 
 RightSpot inherits the repository's engineering and safety rules. Read these in order:

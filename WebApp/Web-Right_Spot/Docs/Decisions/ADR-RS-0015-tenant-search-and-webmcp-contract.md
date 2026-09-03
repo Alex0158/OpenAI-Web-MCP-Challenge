@@ -212,6 +212,11 @@ and verification gates. The logical lifecycle is fixed:
   change, role change, or loss of the relevant browser capability; and
 - keep manual Search as the fallback and regression baseline.
 
+The existing Tenant adapter's verified local lifecycle remains valid for its explicit route and local
+sign-out teardown. The stronger shared actor/session reconciliation boundary for externally changed
+HttpOnly sessions is separately specified by ADR-RS-0018 and implemented, if admitted, through
+`RIGHTSPOT-048`; that follow-on does not reopen the accepted Search predicate or result contract.
+
 The adapter must not bridge cross-origin frames, grant authentication, accept a role/tenant id,
 return private fields, interpret listing content as instructions, or call Cloud Receiver, Redis,
 WebRTC, external authentication, or a remote listing provider. The preferred implementation shape

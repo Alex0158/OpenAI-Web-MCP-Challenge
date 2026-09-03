@@ -704,3 +704,21 @@ No product source, API, fixture, dependency, route, or WebMCP behavior changed. 
 reconciliation does not upgrade `RIGHTSPOT-047`: its frozen Agent Operations candidate still lacks the
 formal independent browser gate and remains unpushed/open. `RIGHTSPOT-012` remains `pending` and
 non-blocking.
+
+## Latest page-session lifecycle audit — 2026-09-03
+
+The Contract Advisor reviewed the frozen Agent Operations WebMCP candidate against ADR-RS-0017 and
+found one high-confidence P1 lifecycle gap: `RolePageFrame` reads the HttpOnly demo session only once,
+while the Tenant Search and Agent Operations adapters dispose only on child unmount. If a session is
+cleared or replaced outside the mounted tab, the server still rejects unauthorized reads and no data
+leak was reproduced, but the old page-bound capability can remain registered in the stale page context.
+The Agent `FORBIDDEN` response cannot be used alone as a session-change signal because an authenticated
+unassigned Agent is an accepted bounded outcome. The focused tests also lack executable component-level
+external-session and both-order lifecycle coverage.
+
+Main verified the shared one-time session read and mount-only adapter effects in current source. The
+finding is therefore accepted as a cross-cutting session-lifecycle defect, not as an Operations-only
+repair and not as a browser data-leak claim. `RIGHTSPOT-048` and ADR-RS-0018 now own the bounded
+focus/visibility revalidation, actor-id/role child teardown, and adapter-side auth-failure deactivation
+contract. `RIGHTSPOT-047` is paused and must be re-baselined after this repair; `RIGHTSPOT-012` remains
+pending and non-blocking. No product source, fixture, API, or Git state changed during this audit.

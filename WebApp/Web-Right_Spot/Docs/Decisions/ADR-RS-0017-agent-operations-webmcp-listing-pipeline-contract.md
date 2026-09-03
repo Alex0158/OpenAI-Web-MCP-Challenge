@@ -1,6 +1,6 @@
 # ADR-RS-0017: Agent Operations WebMCP listing-pipeline contract
 
-**Status:** Accepted — bounded implementation contract; no source implementation yet  
+**Status:** Accepted — bounded implementation contract; candidate implementation frozen locally, independent browser gate incomplete  
 **Decision date:** 2026-09-03  
 **Owners:** Main RightSpot thread  
 **Source review:** `RIGHTSPOT-046` against Main documentation checkpoint `2f09d0a`; product
@@ -18,9 +18,10 @@ Operations control should become a tool.
 WebMCP slice. An independent static review found that the initial proposal was directionally sound but
 left several implementation-critical decisions open: static metadata and schema, exact Area and age
 boundaries, response-field allowlisting, stale-result/error behavior, and the distinction between an
-Agent role and an assigned Operations profile. This ADR closes those contract gaps. It does not claim
-that the browser API is available everywhere, that an Agent can complete a natural-language goal, or
-that the capability is implemented.
+Agent role and an assigned Operations profile. This ADR closes those contract gaps. At decision time it
+did not claim that the browser API was available everywhere, that an Agent could complete a
+natural-language goal, or that the capability had been implemented. The current candidate and evidence
+state are owned by `RIGHTSPOT-047` below.
 
 ## Decision
 
@@ -147,7 +148,7 @@ availableFrom, publicationState, lifecycleState, firstPublishedAt,
 publishedAgeDays, stale
 ```
 
-The future adapter must validate and reconstruct an exact allowlisted result. Returning a parsed
+The candidate adapter must validate and reconstruct an exact allowlisted result. Returning a parsed
 response through a type assertion is insufficient because unknown runtime keys could otherwise cross
 the tool boundary. Unknown top-level, filter, count, or item keys fail closed. In particular, the
 result must never expose tenant identity, contact information, notes, raw workflow ledger fields,
@@ -193,6 +194,10 @@ Registration is feature-detected and ephemeral:
   registration and execution;
 - rerender does not create duplicate registrations; and
 - a stale tool cannot remain callable in a different route, role, or session context.
+
+The shared implementation of the session-change portion of this lifecycle is separately governed by
+ADR-RS-0018 and `RIGHTSPOT-048`. Until that repair is integrated, the `RIGHTSPOT-047` candidate is
+not eligible for final independent browser closure.
 
 When WebMCP is unavailable or registration fails, the manual Operations page remains fully usable
 with its existing filters, loading/empty/error/retry states, navigation, keyboard access, and bounded
@@ -243,9 +248,11 @@ non-empty evidence without changing the workflow authority.
 
 ### 9. Required implementation and verification gate
 
-This ADR authorizes registration of a separate implementation Task, not source work by itself. That
-Task must recapture the actual browser API, feature flag, origin, registration return value, cleanup
-behavior, current Git baseline, and collaborator ownership before dispatch.
+This ADR authorized registration of a separate implementation Task, not source work by itself. `RIGHTSPOT-047`
+recaptured the actual browser API, feature flag, origin, cleanup behavior, current Git baseline, and
+collaborator ownership before dispatch. Its five-path candidate is now frozen locally; the independent
+supported-browser closure evidence remains incomplete and must not be inferred from the deterministic
+checks or Main-controlled smoke.
 
 The implementation must use Red → Green → Refactor coverage for:
 
@@ -305,8 +312,10 @@ is time-sensitive and not reproducible under the current seeded fixture without 
   freeze gates.
 - The ordinary Operations page/API, projection, fixture, role model, and Tenant Search adapter are
   unchanged by this decision.
-- The future adapter must harden the shared consumer or reconstruct an exact tool result; privacy
-  allowlisting is part of the implementation acceptance criteria, not an optional polish item.
+- The candidate adapter hardens the shared consumer and reconstructs an exact tool result; privacy
+  allowlisting remains part of the implementation acceptance criteria, not optional polish. Independent
+  browser discovery, invocation, lifecycle, parity, and no-mutation evidence is still required before
+  this capability can be called closed.
 - The active `RIGHTSPOT-012` audit remains non-blocking and may continue against the latest Main
   source. It does not authorize unrelated implementation or canonical writeback.
 

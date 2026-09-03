@@ -60,6 +60,7 @@ authority to RightSpot; it does not create a second task system.
 - [`RIGHTSPOT-045 — Prevent stale Operations reads from overwriting the latest query`](RIGHTSPOT-045-prevent-stale-operations-read-results.md)
 - [`RIGHTSPOT-046 — Define Agent Operations WebMCP Listing Pipeline contract`](RIGHTSPOT-046-define-agent-operations-webmcp-listing-pipeline-contract.md)
 - [`RIGHTSPOT-047 — Implement Agent Operations WebMCP listing-pipeline capability`](RIGHTSPOT-047-implement-agent-operations-webmcp-listing-pipeline.md)
+- [`RIGHTSPOT-048 — Reconcile role-page session lifecycle for page-bound capabilities`](RIGHTSPOT-048-reconcile-role-page-session-lifecycle.md)
 
 `RIGHTSPOT-001`, `RIGHTSPOT-002`, `RIGHTSPOT-003`, `RIGHTSPOT-004`, `RIGHTSPOT-005`,
 `RIGHTSPOT-007`, `RIGHTSPOT-011`, `RIGHTSPOT-013`, `RIGHTSPOT-014`, `RIGHTSPOT-015`,
@@ -193,10 +194,11 @@ and `RIGHTSPOT-002` is closed.
 
 **Current post-MVP gates:** `RIGHTSPOT-006` and `RIGHTSPOT-012` remain pending (credential and
 read-only audit gates); `RIGHTSPOT-046` is closed through accepted `ADR-RS-0017` as the Operations
-WebMCP contract decision, and `RIGHTSPOT-047` is the in-progress source implementation gate after
-its T0 baseline recapture and Builder dispatch. Its five-path candidate is frozen locally, deterministic
-checks and Main browser smoke pass, and the independent browser gate remains incomplete after one
-command-level harness block and two bounded partial retries;
+WebMCP contract decision. `RIGHTSPOT-047` is the source implementation gate after its T0 baseline
+recapture and Builder dispatch; its original five-path candidate passed deterministic checks and Main
+browser smoke, but its independent browser gate is paused pending the shared lifecycle repair in
+`RIGHTSPOT-048` and must be re-baselined before verification resumes. `RIGHTSPOT-048` is the newly
+registered bounded shared role-page session lifecycle repair, ready for its serial Builder Work Order;
 `RIGHTSPOT-045` is now `CLOSED_VERIFIED` within its bounded
 Operations consumer repair boundary after Main-controlled race verification and an explicitly recorded
 independent-browser harness limitation;
@@ -346,10 +348,10 @@ selected Tenant Search contract gate; `RIGHTSPOT-043` is `CLOSED_VERIFIED`; `RIG
 `CLOSED_VERIFIED` for its bounded manual Operations surface; and `RIGHTSPOT-045` is
 `CLOSED_VERIFIED` for its bounded Operations consumer latest-read boundary. `RIGHTSPOT-046` is
 closed through accepted `ADR-RS-0017` as the separate Main-owned contract decision for one Agent
-Operations WebMCP `read_listing_pipeline` capability; `RIGHTSPOT-047` is the separate in-progress
-implementation Task with a frozen local candidate and incomplete independent browser evidence. It does
-not authorize further source change or registration beyond its declared five-path write set. Only that
-implementation Task may open its bounded code Work Orders; no temporary Worktree is required.
+Operations WebMCP `read_listing_pipeline` capability; `RIGHTSPOT-047` remains paused with its original
+candidate retained as historical evidence, and `RIGHTSPOT-048` owns the shared lifecycle repair before
+the `047` candidate is re-baselined. `RIGHTSPOT-048` does not authorize changes outside its exact
+eight-path write set or any temporary Worktree.
 
 The completed [`RIGHTSPOT-001`](RIGHTSPOT-001-establish-product-thesis-and-backbone-boundary.md)
 record remains discoverable by filename and is not deleted or moved.

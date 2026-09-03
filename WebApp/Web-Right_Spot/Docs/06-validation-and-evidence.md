@@ -1421,3 +1421,19 @@ description, suite count, and bounded non-claims.
 This was documentation-only. No product source, fixture, dependency, route, API, or WebMCP behavior
 changed. The Operations `read_listing_pipeline` candidate remains `RIGHTSPOT-047`
 `INDEPENDENT_BROWSER_INCOMPLETE`; no closure, push, or universal WebMCP claim is made.
+
+## 7.33 Shared role-page session lifecycle finding — 2026-09-03
+
+Contract Advisor review of the frozen `RIGHTSPOT-047` candidate found a high-confidence lifecycle gap:
+the shared `RolePageFrame` performs only its initial `GET /api/session` read, and both page-bound
+WebMCP adapters currently dispose only on child unmount. An external HttpOnly session clear or actor
+replacement can therefore leave a stale capability registered until navigation or local teardown.
+The existing server authority still rejects unauthorized reads; no privacy leak, fixture mutation, or
+business-state defect was reproduced. Agent `FORBIDDEN` is intentionally ambiguous because an
+authenticated unassigned Agent is a valid bounded result.
+
+Main confirmed the source pattern and registered `RIGHTSPOT-048` with ADR-RS-0018 for a shared,
+event-driven session revalidation and adapter deactivation repair. The repair is source-bearing and
+has not started; `RIGHTSPOT-047` is paused and its old candidate must be re-baselined after the repair.
+The complete deterministic suite remains `201/201` across `45` files under pinned Node `24.20.0`;
+this documentation checkpoint changed no product source, fixture, or runtime behavior.

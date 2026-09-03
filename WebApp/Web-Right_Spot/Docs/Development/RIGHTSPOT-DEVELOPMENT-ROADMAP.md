@@ -114,8 +114,10 @@ invocation, and browser evidence against frozen source baseline
 Operations decision through `ADR-RS-0016`; `RIGHTSPOT-044` is now `CLOSED_VERIFIED` for the bounded
 manual Agent Operations surface. `RIGHTSPOT-046` is closed through accepted `ADR-RS-0017` for one
 bounded Agent-only `read_listing_pipeline` contract; the separate implementation Task
-`RIGHTSPOT-047` is in progress after T0 baseline recapture and Builder dispatch, with source review
-and browser evidence still open. Other Operations WebMCP capabilities remain separately gated.
+`RIGHTSPOT-047` is paused after T0 baseline recapture and Builder dispatch because the shared
+session-lifecycle gap is now registered as `RIGHTSPOT-048`; its original candidate must be
+re-baselined after that repair before browser evidence resumes. Other Operations WebMCP capabilities
+remain separately gated.
 `RIGHTSPOT-012` continues as the non-blocking read-only audit lane against the latest Main source. The post-044 audit
 also registered `F-22` / `RIGHTSPOT-045` for a bounded Operations consumer latest-read race repair;
 the repair is now `CLOSED_VERIFIED` at product source `3582ba4` after Main-controlled race evidence
@@ -618,13 +620,13 @@ evidence is recorded in [`RIGHTSPOT-MVP-CLOSURE-RECORD.md`](RIGHTSPOT-MVP-CLOSUR
 `RIGHTSPOT-002` is closed. Future work requires a new explicit scope decision.
 
 The previously admitted post-MVP increments, including `RIGHTSPOT-005` and `RIGHTSPOT-007`, are
-closed historical work rather than the current implementation queue. The current route is the
-bounded completion of `RIGHTSPOT-047`'s independent browser evidence against its frozen five-path
-candidate, while the non-blocking `RIGHTSPOT-012` audit continues. The candidate's deterministic checks
-and Main-controlled browser smoke pass, but the independent gate stopped after one command-level
-harness block and two bounded partial retries; no push or closure claim is authorized. This does not
-reopen the accepted MVP closure or authorize external authentication, Cloud Receiver, deployment, or
-commercial-marketplace scope by itself.
+closed historical work rather than the current implementation queue. The current route is the bounded
+shared session-lifecycle repair in `RIGHTSPOT-048`, while the non-blocking `RIGHTSPOT-012` audit
+continues. The original `RIGHTSPOT-047` candidate's deterministic checks and Main-controlled browser
+smoke pass, but its independent gate is paused after one command-level harness block and two bounded
+partial retries; it must be re-baselined after `048`, and no push or closure claim is authorized. This
+does not reopen the accepted MVP closure or authorize external authentication, Cloud Receiver,
+deployment, or commercial-marketplace scope by itself.
 
 ### Historical execution chronology
 

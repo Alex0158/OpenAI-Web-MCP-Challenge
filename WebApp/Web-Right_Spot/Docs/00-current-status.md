@@ -176,7 +176,8 @@ source identity, then dispatched its single Builder Work Order `RS-WO-047-01`. T
 is implemented and frozen at local candidate commit `09d0628`; Main's docs-only gate commit is
 `b8324f1`. Deterministic checks and Main-controlled browser smoke pass, but the independent browser
 gate has one command-level harness block and two bounded partial retries, so `RIGHTSPOT-047` remains
-open at `INDEPENDENT_BROWSER_INCOMPLETE`.
+open at `INDEPENDENT_BROWSER_INCOMPLETE` and is now paused pending the shared session-lifecycle repair
+in `RIGHTSPOT-048`; the original candidate must be re-baselined after that repair.
 `upcomingViewings` remains excluded because its `asOf`/fixture-clock behavior needs deterministic
 reproducible non-empty evidence. The active `RIGHTSPOT-012` audit remains non-blocking.
 **Latest Main-controlled Search/route revalidation (2026-09-03):** In supported Chrome session
@@ -188,13 +189,19 @@ Agent queue, and `/agent/operations` with expected role navigation and no applic
 did not mutate the fixture or add a populated workflow claim. RightSpot Main remains the single local
 canonical Worktree, ahead of `origin/main` while the `RIGHTSPOT-047` independent browser gate remains
 incomplete, so no push or WebMCP closure claim is made.
+**Latest shared session-lifecycle audit (2026-09-03):** The Contract Advisor and Main source review
+confirmed that `RolePageFrame` reads `GET /api/session` only once, while both page-bound WebMCP
+adapters dispose only on child unmount. The server still rejects unauthorized reads and no privacy
+leak was reproduced, but an external HttpOnly session clear/replacement can leave a stale capability
+registered in the mounted page. `RIGHTSPOT-048` and ADR-RS-0018 now own the bounded shared repair;
+`RIGHTSPOT-047` is paused and must be re-baselined after it. No product source or fixture changed.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Resolve the supporting browser completion path with preflighted
-commands and an outer bounded wait, then complete the missing independent evidence for `RS-WO-047-02`
-against the frozen `09d0628` candidate, without moving the source ref or modifying the five-path write
-set. Do not keep retrying the current unreliable harness path; if the gate still cannot complete,
-record the exact limitation and keep the Task open. Do not push or claim WebMCP closure. In parallel,
-`RIGHTSPOT-012` remains a non-blocking
+**Current next product action:** Dispatch and complete `RS-WO-048-01` against a freshly recaptured
+Main source identity, using the exact eight-path write set and TDD contract in `RIGHTSPOT-048`. Then
+freeze the repaired source, run its independent lifecycle/browser gate, re-baseline `RIGHTSPOT-047`,
+and resume only the missing independent Operations WebMCP evidence. Do not run the old 047 verifier
+target or push/claim WebMCP closure before both gates are complete. In parallel, `RIGHTSPOT-012`
+remains a non-blocking
 read-only audit lane. `RIGHTSPOT-045` is `CLOSED_VERIFIED` within its manual Operations consumer
 latest-read boundary at product source `3582ba4`; it does not reopen `RIGHTSPOT-044` or change the
 Operations API, domain, projection, fixture, role/privacy, navigation, or WebMCP boundary.

@@ -2,8 +2,9 @@
 
 **Role:** Canonical business-flow, scenario, state-transition, and acceptance authority for the
 RightSpot Web application
-**Status:** Accepted current-flow baseline; `F-01`–`F-06`, `F-09`–`F-19` are closed within their
-recorded claims. `RIGHTSPOT-032` added the tenant-safe selected-slot projection
+**Status:** Accepted current-flow baseline; `F-01`–`F-06`, `F-09`–`F-19`, and `F-22` are closed within their
+recorded claims. `F-20` remains non-gating typography polish, and `F-21` is closed as the accepted Search
+contract decision. `RIGHTSPOT-032` added the tenant-safe selected-slot projection
 and presentation
 needed by the proposal and retained terminal response flows.
 `RIGHTSPOT-034` added the truthful cross-listing request-status notice grouping for saved drafts,
@@ -18,6 +19,10 @@ the latest read is loading or has failed, without changing server authority or w
 stale action conflict while retaining neutral conflict feedback and a fail-closed recovery boundary.
 `RIGHTSPOT-039` separated listing-detail listing-fact and tenant request-context reads so a partial
 request-context failure does not mislabel successful listing facts as unavailable.
+The cross-layer audit found a shared role-page session-lifecycle gap affecting page-bound capabilities:
+`RIGHTSPOT-048` now owns bounded focus/visibility revalidation, actor identity reconciliation, and
+adapter deactivation. The existing server role/session authority remains unchanged; this is not a
+data-leak or external-authentication claim.
 `F-18` was a tenant Discovery error-copy defect tracked by `RIGHTSPOT-040`; the bounded consumer
 repair is now closed and verified.
 The continuing audit then reproduced `F-19`, tracked by `RIGHTSPOT-041`, where successful tenant draft
@@ -168,7 +173,7 @@ Status values used below:
 | `RS-FLOW-14` | Proposal expires without a scheduler | Relevant tenant/agent read or write | `EXPIRED`; slot released | `CLOSED_VERIFIED` — projection retains the selected time while terminal expiry remains non-actionable under `RIGHTSPOT-032` |
 | `RS-FLOW-15` | Reset and replay a deterministic fixture | Development script/test boundary | New generation; empty request/Favourites | `CLOSED_VERIFIED` — `F-06` / `RIGHTSPOT-028` repaired the CLI composition and passed focused and independent verification |
 | `RS-FLOW-16` | Show privacy-preserving listing interest to an agent | `/agent` embedded section | Read-only aggregate | `CLOSED_VERIFIED` |
-| `RS-FLOW-17` | Query the Agent Operations profile | `/agent/operations`, `GET /api/agent/operations` | Read-only projection; no relay mutation | `CLOSED_VERIFIED` for the manual surface through `RIGHTSPOT-044`/`045`; `RIGHTSPOT-046` / ADR-RS-0017 accepts the separate `read_listing_pipeline` contract, with implementation and tool-registration evidence pending |
+| `RS-FLOW-17` | Query the Agent Operations profile | `/agent/operations`, `GET /api/agent/operations` | Read-only projection; no relay mutation | Manual surface is `CLOSED_VERIFIED` through `RIGHTSPOT-044`/`045`; the `RIGHTSPOT-047` `read_listing_pipeline` candidate is implemented and frozen, with independent browser evidence incomplete |
 | `RS-FLOW-18` | Enforce role, privacy, version, and failure boundaries | All API/projection surfaces | Visible bounded error; no invalid mutation | `CLOSED_VERIFIED` for the tenant Discovery error-copy consumer boundary through `RIGHTSPOT-040`; other audited role/privacy/version/failure claims remain closed within their recorded scopes |
 | `RS-FLOW-19` | Information Request, external auth, later WebMCP capabilities, Cloud Receiver, or Remote Viewing | Future integration | No current state effect | `DEFERRED` / `GATED` |
 
@@ -732,20 +737,24 @@ workflow state change.
 **Acceptance:** The Agent-only route and HTTP consumer preserve the projection envelope, isolation,
 filters, caps, empty states, bounded failures, and London date semantics. The manual page remains
 usable without WebMCP, and the latest-read consumer does not show stale results after overlapping
-queries. The separate `RIGHTSPOT-046` / ADR-RS-0017 contract accepts one future
-`read_listing_pipeline` capability; implementation and browser evidence remain required in the
-separate `RIGHTSPOT-047` Task.
+queries. The separate `RIGHTSPOT-046` / ADR-RS-0017 contract accepts one bounded
+`read_listing_pipeline` capability; its five-path implementation is retained as the original candidate
+in `RIGHTSPOT-047`, while independent supported-browser evidence is paused pending shared lifecycle
+repair `RIGHTSPOT-048`.
 **Evidence:** `src/server/domain/operations-profile*.ts`,
 `src/server/application/operations-insights-http.ts`,
 `src/server/application/operations-insights.ts`, `src/server/persistence/operations-store.ts`,
 `src/ui/agent/operations/operations-page.tsx`, `src/ui/agent/operations/operations-api.ts`,
 `tests/domain/operations-profile*.test.ts`, `tests/domain/operations-projection.test.ts`,
 `tests/application/operations-insights.test.ts`, `tests/api/operations-insights.test.ts`,
-`tests/ui/operations-page.test.ts`, and `RIGHTSPOT-044`/`RIGHTSPOT-045`.
+`tests/ui/operations-page.test.ts`, `src/ui/agent/operations/operations-webmcp.ts`,
+`tests/ui/operations-webmcp.test.ts`, and `RIGHTSPOT-044`/`RIGHTSPOT-045`/`RIGHTSPOT-047`.
 
-**Boundary:** This is a bounded manual Operations read surface, not listing CRUD, a status editor,
-CRM, calendar, or an Operations WebMCP capability. `RIGHTSPOT-046` / ADR-RS-0017 is the accepted
-contract gate for the separately implemented read-only `read_listing_pipeline` enhancement.
+**Boundary:** This is a bounded manual Operations read surface plus a separately gated, read-only
+page-bound `read_listing_pipeline` enhancement. It is not listing CRUD, a status editor, CRM, or
+calendar. `RIGHTSPOT-046` / ADR-RS-0017 is the accepted contract gate; `RIGHTSPOT-047` owns the
+implementation and independent browser evidence, which is paused until the shared `RIGHTSPOT-048`
+lifecycle repair is integrated and the candidate is re-baselined.
 
 ### RS-FLOW-18 — Enforce role, privacy, version, and failure boundaries
 
@@ -824,13 +833,15 @@ business state at `AGENT_REVIEWING`.
 | `/tenant/requests` | Tenant | Current request, timeline, response, confirm/decline | Available | `GET/PATCH/POST /api/tenant/request*` |
 | `/agent` | Property agent | Request queue plus embedded listing-interest projection | Available | `GET /api/agent/requests`; `GET /api/agent/listing-interest` |
 | `/agent/requests/:requestId` | Property agent | Request facts, availability, review, prepare, send | Available for visible assigned work | Agent request APIs |
-| `/agent/operations` | Property agent | Bounded listing-pipeline and upcoming-viewing reads | Available | `GET /api/agent/operations`; Operations authority/projection; WebMCP follow-on gated by `RIGHTSPOT-046` |
+| `/agent/operations` | Property agent | Bounded listing-pipeline and upcoming-viewing reads | Available | `GET /api/agent/operations`; Operations authority/projection; `read_listing_pipeline` implementation/evidence gated by `RIGHTSPOT-047`, with shared session lifecycle repair in `RIGHTSPOT-048` |
 | Information Request page | Tenant/agent | Contact enquiry | Not implemented by decision | `RIGHTSPOT-009` deferred |
 | Listing administration | Property agent | CRUD/status changes | Not implemented by decision | No current route/API |
 
 The agent listing-interest projection is intentionally a section of `/agent`, not a separate page.
-Operations is now a current manual page/API with an Agent-only navigation entry; the accepted
-`read_listing_pipeline` contract is not implied as a registration or implementation by that manual
+Operations is now a current manual page/API with an Agent-only navigation entry. The accepted
+`read_listing_pipeline` implementation is present in the original `RIGHTSPOT-047` candidate, but its
+independent supported-browser gate is paused pending `RIGHTSPOT-048` and is not implied to be verified
+by the manual
 surface. The deferred Information Request and listing
 administration remain deliberate non-user-facing boundaries, not broken navigation links.
 
@@ -857,7 +868,7 @@ present, not that every evidence branch is closed.
 | `RS-FLOW-14` | Implemented and verified; expiry retains the selected time | Implemented on relevant reads/writes with terminal no-action presentation | `RIGHTSPOT-032` expiry projection regression plus prior expiry evidence | No scheduler/notification claim |
 | `RS-FLOW-15` | Implemented in application authority and CLI composition | Development boundary only | Focused child-process regression, full suite, and frozen-source independent verification for `F-06` / `RIGHTSPOT-028` | No public reset route; arbitrary corrupt-database salvage remains unclaimed |
 | `RS-FLOW-16` | Implemented | Implemented on `/agent` | Domain/API/UI and fresh populated Agent UI aggregate evidence in `rightspot-audit-078` | No analytics/history claim |
-| `RS-FLOW-17` | Implemented and independently verified manual Operations authority | Implemented and verified on `/agent/operations` | `RIGHTSPOT-044` manual route/API/browser matrix and `RIGHTSPOT-045` latest-read repair; Operations domain/projection tests | `RIGHTSPOT-046` / ADR-RS-0017 accepts the separate `read_listing_pipeline` contract; implementation and tool-registration evidence remain pending |
+| `RS-FLOW-17` | Implemented and independently verified manual Operations authority; original frozen `read_listing_pipeline` candidate implementation | Implemented and verified on `/agent/operations`; tool lifecycle evidence requires shared repair | `RIGHTSPOT-044` manual route/API/browser matrix, `RIGHTSPOT-045` latest-read repair, Operations domain/projection tests, `RIGHTSPOT-047` candidate checks, and ADR-RS-0018/`RIGHTSPOT-048` lifecycle gate | Complete `RIGHTSPOT-048`, re-baseline `RIGHTSPOT-047`, then complete independent supported-browser evidence; do not claim WebMCP closure before both gates |
 | `RS-FLOW-18` | Implemented and verified for audited boundaries | Implemented and verified | Broad negative tests plus formal `RIGHTSPOT-025` F-01 and browser `F-02`/`F-03` evidence | Re-check on the next cross-layer audit; no production-readiness claim |
 | `RS-FLOW-19` | Deliberately absent | Deliberately absent | ADR/task boundaries | Do not use fallback implementations |
 

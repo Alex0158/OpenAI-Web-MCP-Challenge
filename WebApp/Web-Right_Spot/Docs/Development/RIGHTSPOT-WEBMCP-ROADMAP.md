@@ -476,15 +476,16 @@ Main-controlled race evidence and explicit independent-browser harness limitatio
 the Task File. This does not admit an Operations WebMCP slice.
 The non-blocking `RIGHTSPOT-012` audit may continue in parallel. `RIGHTSPOT-046` is now accepted
 through `ADR-RS-0017` for one bounded Agent Operations WebMCP slice covering only
-`read_listing_pipeline`; `RIGHTSPOT-047` is registered and its five-path Builder candidate is frozen
-locally after deterministic checks and Main browser smoke. The independent browser gate remains
-incomplete after one command-level harness block and two bounded partial retries; the next action is
-to resolve the supporting browser completion path before another bounded attempt. No push or closure
-claim is made. `upcomingViewings` remains deferred until its `asOf`/fixture-clock reproducibility
-boundary is explicitly resolved.
+`read_listing_pipeline`; `RIGHTSPOT-047` is registered and its original five-path Builder candidate
+passed deterministic checks and Main browser smoke. Its independent browser gate is paused after one
+command-level harness block and two bounded partial retries because `RIGHTSPOT-048` now owns the
+shared role-page session lifecycle repair; after that repair the `047` source must be re-baselined
+before another bounded attempt. No push or closure claim is made. `upcomingViewings` remains deferred
+until its `asOf`/fixture-clock reproducibility boundary is explicitly resolved.
 `RIGHTSPOT-010` is closed as a reviewed staged decision; its authority and projection are not being
 reimplemented. `RIGHTSPOT-046` owns the current bounded Operations WebMCP contract decision and does
-not authorize source work. Any later Operations WebMCP capability or W4 mutation requires its own
+not authorize source work. `RIGHTSPOT-048` owns the shared session-lifecycle repair required by both
+page-bound adapters before the Agent candidate can close. Any later Operations WebMCP capability or W4 mutation requires its own
 accepted contract, Task, write set, tests, browser evidence, and closure. Cloud Receiver, external authentication,
 deployment, WebRTC, Redis, and production readiness remain deferred.
 
