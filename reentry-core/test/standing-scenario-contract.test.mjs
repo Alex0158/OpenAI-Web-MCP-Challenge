@@ -120,7 +120,7 @@ function run(boundary, mutate = value => value) {
         return boundary === "out-of-order" ? { ...response, body: mutate(response.body) } : response;
       }
       normalSends += 1;
-      if (normalSends > (boundary === "acceptance" ? 1 : 3)) stop();
+      if (normalSends > (boundary === "acceptance" ? 2 : 3)) stop();
       if (normalSends === 3) {
         return { statusCode: 409, body: { error: { code: "activation_in_progress", retryable: true } } };
       }

@@ -143,11 +143,11 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
   expect(afterOutOfOrder?.last_event_sequence === 0, "profile_out_of_order_consumed_sequence");
   expect(afterOutOfOrder?.active_activations === 0, "profile_out_of_order_created_delivery");
 
-  const firstAcceptance = await driver.sendEvent({ envelope: envelopeOf(first) });
-  expectAcceptance(firstAcceptance, first.event, false);
-
-  const firstReplay = await driver.sendEvent({ envelope: envelopeOf(first) });
-  expectAcceptance(firstReplay, first.event, true);
+  const concurrentFirst = await Promise.all([
+    driver.sendEvent({ envelope: envelopeOf(first) }),
+    driver.sendEvent({ envelope: envelopeOf(first) }),
+  ]);
+  expectConcurrentAcceptance(concurrentFirst, first.event);
 
   const blockedSecond = await driver.sendEvent({ envelope: envelopeOf(second) });
   expect(blockedSecond?.statusCode === 409, "profile_backpressure_status");
@@ -210,6 +210,11 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
       out_of_order_rejected: true,
       retryable: outOfOrder.body.error.retryable,
       no_mutation: true,
+    },
+    concurrency: {
+      duplicate_event_converged: true,
+      accepted_responses: 1,
+      duplicate_responses: 1,
     },
     accepted_sequences: [1, 2],
     backpressure: {
@@ -302,6 +307,16 @@ function expectAcceptance(response, event, duplicate) {
   expect(response?.body?.accepted === true, "profile_event_not_accepted");
   expect(response?.body?.duplicate === duplicate, "profile_event_duplicate_state");
   expect(response.body.status === "accepted", "profile_event_acceptance_state");
+}
+
+function expectConcurrentAcceptance(responses, event) {
+  expect(Array.isArray(responses) && responses.length === 2, "profile_concurrent_response_count");
+  const duplicates = responses.filter((response) => response?.body?.duplicate === true);
+  const fresh = responses.filter((response) => response?.body?.duplicate === false);
+  expect(fresh.length === 1, "profile_concurrent_fresh_count");
+  expect(duplicates.length === 1, "profile_concurrent_duplicate_count");
+  expectAcceptance(fresh[0], event, false);
+  expectAcceptance(duplicates[0], event, true);
 }
 
 function expectError(response, statusCode, code, retryable, prefix) {

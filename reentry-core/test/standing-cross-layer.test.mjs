@@ -343,6 +343,11 @@ test("standing v0.2 crosses Host SDK, HTTP Receiver, Connector, Agent Adapter, r
     retryable: false,
     no_mutation: true,
   });
+  assert.deepEqual(result.concurrency, {
+    duplicate_event_converged: true,
+    accepted_responses: 1,
+    duplicate_responses: 1,
+  });
   assert.deepEqual(result.accepted_sequences, [1, 2]);
   assert.equal(result.backpressure.retryable, true);
   assert.equal(result.revocation.third_event_rejected, true);
