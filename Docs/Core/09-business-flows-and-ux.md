@@ -537,16 +537,16 @@ code, migration, deployment, or architecture change.
 | Field | Record |
 |---|---|
 | Severity | **P2** |
-| Status and confidence | `open`; high confidence; **VERIFIED** |
+| Status and confidence | `implementation_verified`; high confidence; **VERIFIED** locally, including split-origin browser behavior and the full backend aggregate; hosted release evidence not claimed |
 | Affected component / flow / contract | User and developer browser sessions |
 | Current behavior | Production session cookies use `SameSite=None; Secure`. Both logout routes now require the configured frontend `Origin` and `application/json` before clearing only their own cookie. Cross-origin and unsupported-content-type requests are rejected; same-origin logout remains idempotent and cannot clear the other account session. |
 | Intended / documented behavior | State-changing browser endpoints should be bound to the intended origin/session boundary; Core/04 lists production anti-CSRF and session security as required. |
 | Exact evidence | `saas-boilerplate/backend/src/modules/authentication/session.ts:18-45`; `users/user-auth.routes.ts`; `developers/developer-auth.routes.ts`; both logout controllers; `middleware/same-origin.ts`; and `saas-boilerplate/backend/src/modules/authentication/test/authentication.test.ts` cross-origin, content-type, account-isolation, and idempotence cases. |
 | Risk and impact | The local route and credentialed split-origin browser flow now block the observed cross-site session-disruption path. Hosted cookie-domain and exact-release behavior remain unverified; no privilege escalation is evidenced. |
-| Drift class | **A/B resolved locally** — the route now matches the existing state-changing browser guard; aggregate standing preflight and hosted evidence remain separate gates. |
-| Recommended disposition | Keep the route guard and frontend JSON body, complete the required aggregate/runtime readback, then close TASK-030 if the intended release matches. |
+| Drift class | **A/B resolved locally** — the route now matches the existing state-changing browser guard; hosted evidence remains a separate gate. |
+| Recommended disposition | Keep the route guard and frontend JSON body, complete the hosted release readback, then close TASK-030 if the intended release matches. |
 | Documentation owner | Core/04, this register, and [TASK-030](../Tasks/TASK-030-protect-browser-session-logout.md). |
-| Change gates | Code: **implemented locally**. ADR: no current need identified. Migration: no. Focused tests/build/browser: **passed locally**. Aggregate/runtime: **pending**. Owner decision: implementation approval. |
+| Change gates | Code: **implemented locally**. ADR: no current need identified. Migration: no. Focused tests/build/browser and backend aggregate (`21/21` suites, `158` tests): **passed locally**. Hosted runtime: **pending**. Owner decision: implementation approval. |
 
 ### AUDIT-V2-009 — Governance indexes and links lagged current lifecycle state
 

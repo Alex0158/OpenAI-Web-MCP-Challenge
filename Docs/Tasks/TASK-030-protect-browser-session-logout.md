@@ -12,8 +12,8 @@
 - Current increment: Bind user and developer logout to the existing same-origin JSON guard, update
   browser clients to send the exact empty JSON body, and verify cross-origin rejection without
   disturbing the other account session.
-- Next gate: Focused negative tests prove that a cross-origin request cannot clear either production
-  session cookie while same-origin logout remains idempotent.
+- Next gate: Hosted release readback confirms the deployed routes, configured origins/cookies, and
+  the same split-origin protection; then close the task if the intended release matches.
 - Dependencies: AUDIT-V2-008 in Core/09, Core/04, ADR-0033's separate account boundary, and the
   Primary Development Runbook.
 
@@ -54,9 +54,8 @@ implemented boundary.
 
 Current evidence is recorded in [CLOUD-025](../Development/CLOUD-025-browser-session-logout-protection.md):
 the focused authentication suite, backend/frontend type-checks and builds, route guard, frontend
-JSON body, and local credentialed split-origin browser flow are verified. The aggregate backend
-standing suites still require their task-owned database preflight; hosted release readback remains
-outside this local closure.
+JSON body, local credentialed split-origin browser flow, and full backend aggregate (`21/21` suites,
+`158` tests, no skips) are verified. Hosted release readback remains outside this local closure.
 
 ## 6. Reopen condition
 

@@ -1,7 +1,7 @@
 # CLOUD-025: Browser Session Logout Protection
 
 **Role:** IMPLEMENTATION AND VERIFICATION RECORD  
-**Status:** `verification_pending` — local route, focused tests, builds, and credentialed split-origin browser flow pass; standing aggregate preflight and hosted readback remain open  
+**Status:** `verification_pending` — local route, focused tests, builds, credentialed split-origin browser flow, and standing aggregate pass; hosted readback remains open  
 **Opened:** 2026-09-03  
 **Task:** [TASK-030](../Tasks/TASK-030-protect-browser-session-logout.md)  
 **Finding:** AUDIT-V2-008 in [Core/09](../Core/09-business-flows-and-ux.md)
@@ -45,10 +45,10 @@ The backend and frontend type-checks passed. Backend compilation passed with `np
 backend`, and the frontend production build passed with
 `NEXT_PUBLIC_BACKEND_URL=http://127.0.0.1:4400 npm run build -w frontend`.
 
-An aggregate backend run with the same disposable database passed `16` suites and `121` tests.
-Five standing suites (`32` tests) intentionally stopped at their existing task-owned database
-preflight because this run did not provide the restricted `STANDING_*_TEST_DATABASE_URL` values;
-this is a verification precondition, not a logout failure. The full aggregate gate remains open.
+The full backend aggregate was then run with all six database URL variables pointed at the
+task-owned loopback baseline (`127.0.0.1:55432/reentry_baseline`). It passed `21/21` suites and
+`158` tests with no skips or failures, including the five standing suites that require their
+restricted `STANDING_*_TEST_DATABASE_URL` preflight.
 
 ## Browser evidence
 
@@ -64,8 +64,7 @@ No cookie values were captured or written to evidence.
 
 ## Remaining verification gate
 
-Run the standing aggregate suites with their task-owned baseline/closure database preflight and
-perform the intended hosted release readback. Capture only status/cookie-presence outcomes; never
+Perform the intended hosted release readback. Capture only status/cookie-presence outcomes; never
 record cookie values.
 
 This record does not claim that hosted deployment, production cookie domain configuration, or a
