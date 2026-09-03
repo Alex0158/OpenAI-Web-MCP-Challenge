@@ -1,9 +1,10 @@
 # CLOUD-023 — Standing Receiver Kernel and Source Preflight
 
 **Role:** DEVELOPMENT implementation and verification record  
-**Status:** Core and Receiver sources locally committed; minimum pinned trace and
-exact-commit PostgreSQL upgrade `locally_verified`; full release conformance and public controls remain open  
-**Date:** 2026-09-03  
+**Status:** Core and Receiver sources locally committed; minimum pinned trace,
+exact-commit PostgreSQL upgrade, and one-shot Event rollback/retry vector
+`locally_verified`; full release conformance and public controls remain open  
+**Date:** 2026-09-04  
 **Controls:** ADR-0043 through ADR-0045, TASK-027, TASK-028, TASK-033.
 
 ## Objective and bounded outcome
@@ -484,3 +485,31 @@ The full backend aggregate was not rerun for this oracle increment; the prior
 production source, schema, and migration bytes are unchanged. The mandatory
 forced rollback, fresh-process recovery, release-enforcement, public-control,
 lifetime, and production gates remain open under TASK-028.
+
+## Shared Event transaction rollback increment: 2026-09-04
+
+The shared standing-v0.2 scenario now injects a one-shot failure after the Event
+and Grant sequence writes but before Delivery creation. The Core reference and
+pinned Receiver return the exact non-retryable `500 receiver_internal_error`
+response, leave the Grant sequence and active Delivery state unchanged, and
+accept the exact same signed Event envelope after the fixture fault is removed.
+That retry completes its normal claim, dispatch, effect, and acknowledgement
+cycle, so a post-write failure does not consume sequence or strand partial work.
+
+Evidence for this increment:
+
+- Core scenario contract and cross-layer tests: `30/30` passed;
+- Core full verification: `161/161` tests passed, with syntax, conformance, and package checks green;
+- source-pin fixtures: `16/16` passed;
+- pinned Express/PostgreSQL Receiver trace: `1/1` passed, including the expected one-shot injected `500`;
+- Core commit: `1446d73aa3e66533547471728ad8fa5344d51f9e`;
+- selected Core/spec SHA-256: `6210d7724417e0533c77d5989e8ffdd3c404af4063ac9d70d70db9b622f73d45`;
+- Receiver commit: `f4aae34320356c1d6c06fc1c1598d80c08661b62`; and
+- runtime: Node `v26.5.0`, `release_conformance_verified: false`.
+
+The failure is injected only by disposable test fixtures; no production source,
+schema, migration, or deployment path changed. The full backend aggregate was
+not rerun for this fixture-only increment; the prior `21/21` suites and `158`
+tests remain bounded evidence. This closes the shared one-shot post-write
+rollback/retry vector, not forced process termination, fresh-process recovery,
+release-enforcement, public-control, lifetime, or production gates.

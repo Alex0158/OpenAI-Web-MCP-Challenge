@@ -11,11 +11,12 @@
 - Owner: Principal architecture owner and Cloud Receiver v2 owner.
 - Current increment: Core and Receiver sources are committed locally; the pinned standing trace now
   covers out-of-order rejection/no mutation, duplicate convergence, the distinct-Event same-sequence
-  conflict, and same-ID/different-body identity conflict, while the active-v2 lease/reclaim profile
-  also passes. CLOUD-023 owns the bounded evidence.
-- Next gate: Complete the mandatory
-  shared v0.1/v0.2 failure/race/recovery matrix, and enforce release checks while retaining the
-  separate active-v2 production lease profile. Public controls need their own accepted contract.
+  conflict, same-ID/different-body identity conflict, and one-shot post-write transaction rollback
+  with exact-envelope retry, while the active-v2 lease/reclaim profile also passes. CLOUD-023 owns
+  the bounded evidence.
+- Next gate: Complete the mandatory shared v0.1/v0.2 failure/race/recovery matrix, including forced
+  termination and fresh-process recovery, and enforce release checks while retaining the separate
+  active-v2 production lease profile. Public controls need their own accepted contract.
 - Dependencies: ADR-0006, ADR-0012, ADR-0033 through ADR-0039, ADR-0043 through ADR-0045,
   AUDIT-V2-004 in Core/09, TASK-012, and TASK-033.
 
@@ -333,6 +334,35 @@ The full backend aggregate was not rerun for this oracle increment; prior
 production source, schema, and migration bytes are unchanged. This does not
 close forced rollback, fresh-process recovery, release-enforcement,
 public-control, lifetime, or production gates.
+
+## 4.10 Shared Event transaction rollback increment
+
+**VERIFIED 2026-09-04:** the shared standing-v0.2 scenario injects a one-shot
+failure after Event and Grant-sequence writes but before Delivery creation. The
+Core reference and pinned Receiver return the exact non-retryable `500
+receiver_internal_error` response, leave the Grant sequence and open Delivery
+state unchanged, and then accept the exact same signed Event envelope after the
+fault is removed. The retried Event completes its normal claim, dispatch, effect,
+and acknowledgement cycle, proving that a post-write failure does not consume
+the sequence or strand partial work.
+
+Evidence for this increment:
+
+- Core scenario contract and cross-layer tests: `30/30` passed;
+- Core full verification: `161/161` tests passed, with syntax, conformance, and package checks green;
+- source-pin fixtures: `16/16` passed;
+- pinned Express/PostgreSQL Receiver trace: `1/1` passed, including the expected one-shot injected `500`;
+- Core commit: `1446d73aa3e66533547471728ad8fa5344d51f9e`;
+- selected Core/spec SHA-256: `6210d7724417e0533c77d5989e8ffdd3c404af4063ac9d70d70db9b622f73d45`;
+- Receiver commit: `f4aae34320356c1d6c06fc1c1598d80c08661b62`; and
+- runtime: Node `v26.5.0`, `release_conformance_verified: false`.
+
+The failure is injected only by disposable test fixtures; no production source,
+schema, migration, or deployment path was changed. The full backend aggregate
+was not rerun for this fixture-only increment; the prior `21/21` suites and
+`158` tests remain bounded evidence. This closes the shared one-shot
+post-write rollback/retry vector, not forced process termination, fresh-process
+recovery, release-enforcement, public-control, lifetime, or production gates.
 
 ## 5. Verification and closure
 
