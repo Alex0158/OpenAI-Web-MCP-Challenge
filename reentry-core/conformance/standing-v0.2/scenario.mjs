@@ -121,10 +121,13 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
   expect(afterRejectedKeys?.last_event_sequence === 0, "profile_rejected_key_consumed_sequence");
   expect(afterRejectedKeys?.active_activations === 0, "profile_rejected_key_created_delivery");
 
-  const first = await driver.issueEvent({ binding: approval.binding, ordinal: 1 });
+  const firstCandidates = await Promise.all([
+    driver.issueEvent({ binding: approval.binding, ordinal: 1, discriminator: "left" }),
+    driver.issueEvent({ binding: approval.binding, ordinal: 1, discriminator: "right" }),
+  ]);
   const second = await driver.issueEvent({ binding: approval.binding, ordinal: 2 });
   const third = await driver.issueEvent({ binding: approval.binding, ordinal: 3 });
-  expectEvent(first, 1);
+  firstCandidates.forEach(candidate => expectEvent(candidate, 1));
   expectEvent(second, 2);
   expectEvent(third, 3);
 
@@ -143,11 +146,23 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
   expect(afterOutOfOrder?.last_event_sequence === 0, "profile_out_of_order_consumed_sequence");
   expect(afterOutOfOrder?.active_activations === 0, "profile_out_of_order_created_delivery");
 
-  const concurrentFirst = await Promise.all([
-    driver.sendEvent({ envelope: envelopeOf(first) }),
-    driver.sendEvent({ envelope: envelopeOf(first) }),
+  const distinctFirstResponses = await Promise.all([
+    driver.sendEvent({ envelope: envelopeOf(firstCandidates[0]) }),
+    driver.sendEvent({ envelope: envelopeOf(firstCandidates[1]) }),
   ]);
-  expectConcurrentAcceptance(concurrentFirst, first.event);
+  const first = expectConcurrentSequenceConflict(distinctFirstResponses, firstCandidates);
+  const losingFirst = firstCandidates.find(candidate => candidate.event.event_id !== first.event.event_id);
+  const losingReplay = await driver.sendEvent({ envelope: envelopeOf(losingFirst) });
+  expectError(
+    losingReplay,
+    409,
+    "event_sequence_conflict",
+    false,
+    "profile_distinct_loser_replay",
+  );
+  const afterDistinct = await driver.inspect({ bindingId: approval.binding.binding_id });
+  expect(afterDistinct?.last_event_sequence === 1, "profile_distinct_conflict_consumed_sequence");
+  expect(afterDistinct?.active_activations === 1, "profile_distinct_conflict_created_multiple_deliveries");
 
   const blockedSecond = await driver.sendEvent({ envelope: envelopeOf(second) });
   expect(blockedSecond?.statusCode === 409, "profile_backpressure_status");
@@ -162,8 +177,11 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
 
   const firstCycle = await completeDeliveryCycle(driver, claimTokens[0], first.event);
 
-  const secondAcceptance = await driver.sendEvent({ envelope: envelopeOf(second) });
-  expectAcceptance(secondAcceptance, second.event, false);
+  const concurrentSecond = await Promise.all([
+    driver.sendEvent({ envelope: envelopeOf(second) }),
+    driver.sendEvent({ envelope: envelopeOf(second) }),
+  ]);
+  expectConcurrentAcceptance(concurrentSecond, second.event);
   const secondCycle = await completeDeliveryCycle(driver, claimTokens[1], second.event);
 
   await driver.restart();
@@ -212,6 +230,8 @@ export async function runStandingAuthorizationV02Scenario({ driver, claimTokens 
       no_mutation: true,
     },
     concurrency: {
+      distinct_sequence_conflict: true,
+      conflict_responses: 1,
       duplicate_event_converged: true,
       accepted_responses: 1,
       duplicate_responses: 1,
@@ -317,6 +337,25 @@ function expectConcurrentAcceptance(responses, event) {
   expect(duplicates.length === 1, "profile_concurrent_duplicate_count");
   expectAcceptance(fresh[0], event, false);
   expectAcceptance(duplicates[0], event, true);
+}
+
+function expectConcurrentSequenceConflict(responses, candidates) {
+  expect(Array.isArray(responses) && responses.length === 2, "profile_distinct_response_count");
+  const accepted = responses.filter(response => response?.statusCode === 202);
+  const conflicts = responses.filter(response => response?.statusCode === 409);
+  expect(accepted.length === 1, "profile_distinct_accepted_count");
+  expect(conflicts.length === 1, "profile_distinct_conflict_count");
+  expectError(
+    conflicts[0],
+    409,
+    "event_sequence_conflict",
+    false,
+    "profile_distinct_sequence_conflict",
+  );
+  const winner = candidates.find(candidate => candidate?.event?.event_id === accepted[0]?.body?.event_id);
+  expect(winner, "profile_distinct_winner_identity");
+  expectAcceptance(accepted[0], winner.event, false);
+  return winner;
 }
 
 function expectError(response, statusCode, code, retryable, prefix) {

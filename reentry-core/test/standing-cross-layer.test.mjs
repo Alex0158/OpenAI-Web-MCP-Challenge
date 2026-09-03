@@ -221,7 +221,7 @@ test("standing v0.2 crosses Host SDK, HTTP Receiver, Connector, Agent Adapter, r
       return core.decideConsent({ challengeId, decisionToken: DECISION_TOKEN });
     },
 
-    issueEvent({ binding, ordinal, signer = "consented" }) {
+    issueEvent({ binding, ordinal, signer = "consented", discriminator = "" }) {
       const signers = {
         consented: { host, eventId: `event_standing_profile_00${ordinal}` },
         "alternate-trusted": { host: alternateHost, eventId: "event_standing_profile_wrong_key_001" },
@@ -229,9 +229,12 @@ test("standing v0.2 crosses Host SDK, HTTP Receiver, Connector, Agent Adapter, r
       };
       const selected = signers[signer];
       assert.ok(selected, "Unknown standing scenario signer");
+      const eventId = signer === "consented" && discriminator
+        ? `${selected.eventId}_${discriminator}`
+        : selected.eventId;
       const issued = selected.host.issueEvent({
         binding,
-        eventId: selected.eventId,
+        eventId,
         eventSequence: ordinal,
         occurredAt: clockRef.value.toISOString(),
         deliveryTimestamp: String(Math.floor(clockRef.value.getTime() / 1_000)),
@@ -344,6 +347,8 @@ test("standing v0.2 crosses Host SDK, HTTP Receiver, Connector, Agent Adapter, r
     no_mutation: true,
   });
   assert.deepEqual(result.concurrency, {
+    distinct_sequence_conflict: true,
+    conflict_responses: 1,
     duplicate_event_converged: true,
     accepted_responses: 1,
     duplicate_responses: 1,

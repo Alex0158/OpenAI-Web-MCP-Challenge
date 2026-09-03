@@ -10,7 +10,7 @@ const CLAIM_TOKENS = ["claim_contract_1", "claim_contract_2", "claim_contract_3"
 // These are oracle self-tests, not a Receiver implementation or conformance result. A deliberately
 // small scripted driver stops immediately after the response under test. The boundary assertion
 // proves that a valid response reaches the next step; malformed responses must fail before it.
-for (const boundary of ["approval", "out-of-order", "acceptance", "acknowledgement"]) {
+for (const boundary of ["approval", "out-of-order", "distinct-race", "acceptance", "acknowledgement"]) {
   test(`scenario accepts the exact ${boundary} response before advancing`, async () => {
     await assert.rejects(run(boundary), { code: BOUNDARY });
   });
@@ -38,6 +38,9 @@ const mutations = [
   ["out-of-order", "missing retryable flag", value => ({
     ...value, error: without(value.error, "retryable"),
   }), "profile_out_of_order_error"],
+  ["distinct-race", "missing retryable flag", value => ({
+    ...value, error: without(value.error, "retryable"),
+  }), "profile_distinct_sequence_conflict_error"],
   ["acceptance", "private grant ID", value => ({ ...value, grant_id: "private_grant" }),
     "profile_event_acceptance_fields"],
   ["acceptance", "missing status", value => without(value, "status"),
@@ -88,16 +91,21 @@ function run(boundary, mutate = value => value) {
       status: "active",
     },
   };
-  let normalSends = 0;
+  let lastEventSequence = 0;
+  let activeEventId;
+  let activeDeliveryId;
+  let acknowledged = false;
   let outOfOrderRejected = false;
+  let distinctRaceComplete = false;
+  const acceptedEvents = new Map();
   const driver = {
     async issueManifest() { return manifest; },
     async enroll() { return { duplicate: false, challenge: { status: "pending", challenge_id: approval.challenge_id } }; },
     async approve() { return boundary === "approval" ? mutate(approval) : approval; },
-    async issueEvent({ ordinal, signer = "consented" }) {
+    async issueEvent({ ordinal, signer = "consented", discriminator = "" }) {
       if (boundary === "approval") stop();
       const event = {
-        protocol_version: "0.2", event_id: `event_contract_${ordinal}`,
+        protocol_version: "0.2", event_id: `event_contract_${ordinal}${discriminator ? `_${discriminator}` : ""}`,
         correlation_id: manifest.correlation_id, event_sequence: ordinal,
       };
       return { event, body: JSON.stringify({ event, signer }), headers: { [REENTRY_HEADER_NAMES.keyId]: "key_contract" } };
@@ -111,7 +119,8 @@ function run(boundary, mutate = value => value) {
           retryable: false,
         } } };
       }
-      if (event.event_sequence === 2 && !outOfOrderRejected) {
+      if (boundary === "acknowledgement" && acknowledged) stop();
+      if (event.event_sequence === 2 && !outOfOrderRejected && lastEventSequence === 0) {
         outOfOrderRejected = true;
         const response = {
           statusCode: 409,
@@ -119,37 +128,69 @@ function run(boundary, mutate = value => value) {
         };
         return boundary === "out-of-order" ? { ...response, body: mutate(response.body) } : response;
       }
-      normalSends += 1;
-      if (normalSends > (boundary === "acceptance" ? 2 : 3)) stop();
-      if (normalSends === 3) {
+      const replay = acceptedEvents.get(event.event_id);
+      if (replay) {
+        return { statusCode: 202, body: { ...replay, duplicate: true } };
+      }
+      const expectedSequence = lastEventSequence + 1;
+      if (event.event_sequence !== expectedSequence) {
+        const response = {
+          statusCode: 409,
+          body: { error: {
+            code: event.event_sequence <= lastEventSequence
+              ? "event_sequence_conflict"
+              : "event_sequence_out_of_order",
+            retryable: false,
+          } },
+        };
+        if (response.body.error.code === "event_sequence_conflict") {
+          distinctRaceComplete = true;
+          return boundary === "distinct-race" ? { ...response, body: mutate(response.body) } : response;
+        }
+        return response;
+      }
+      if (activeEventId) {
         return { statusCode: 409, body: { error: { code: "activation_in_progress", retryable: true } } };
       }
       const body = {
         type: "webmcp.continuation_acceptance", protocol_version: "0.2",
-        event_id: event.event_id, correlation_id: event.correlation_id,
-        accepted: true, duplicate: normalSends === 2, status: "accepted",
+        event_id: event.event_id, correlation_id: event.correlation_id, accepted: true, duplicate: false,
+        status: "accepted",
       };
+      acceptedEvents.set(event.event_id, body);
+      lastEventSequence = event.event_sequence;
+      activeEventId = event.event_id;
+      activeDeliveryId = `delivery_contract_${event.event_sequence}`;
+      acknowledged = false;
       return { statusCode: 202, body: boundary === "acceptance" ? mutate(body) : body };
     },
     async inspect() {
       if (boundary === "out-of-order" && outOfOrderRejected) stop();
-      return { last_event_sequence: 0, active_activations: 0 };
+      if ((boundary === "distinct-race" || boundary === "acceptance") && distinctRaceComplete) stop();
+      return {
+        last_event_sequence: lastEventSequence,
+        active_activations: activeEventId ? 1 : 0,
+      };
     },
     async claim({ claimToken }) {
       return { duplicate: false, lease: {
-        protocol_version: "0.2", delivery_id: "delivery_contract_1", event_id: "event_contract_1",
+        protocol_version: "0.2", delivery_id: activeDeliveryId, event_id: activeEventId,
         lease_token: claimToken,
-        continuation: { correlation_id: manifest.correlation_id, event_sequence: 1 },
+        continuation: { correlation_id: manifest.correlation_id, event_sequence: lastEventSequence },
       } };
     },
     async dispatch() { return { protocol_version: "0.2", outcome: "accepted" }; },
     async authorizeEffect() { return "effect_token_contract"; },
     async acknowledge() {
-      return mutate({
+      const response = mutate({
         type: "webmcp.delivery_acknowledgement", protocol_version: "0.2",
-        delivery_id: "delivery_contract_1", event_id: "event_contract_1", effect_id: "effect_contract_1",
+        delivery_id: activeDeliveryId, event_id: activeEventId, effect_id: `effect_contract_${lastEventSequence}`,
         acknowledged: true, duplicate: false, status: "acknowledged",
       });
+      acknowledged = true;
+      activeEventId = undefined;
+      activeDeliveryId = undefined;
+      return response;
     },
     async restart() { stop(); },
     async revoke() { stop(); },
