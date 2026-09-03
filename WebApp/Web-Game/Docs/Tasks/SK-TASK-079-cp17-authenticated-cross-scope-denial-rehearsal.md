@@ -6,8 +6,8 @@
 - Closure type: `hosted_verified`
 - Checkpoint: `CP-17`
 - Owner: Game owner
-- Current increment: The dedicated production-like Clerk-mode HTTP regression test now proves both Player A → Player B and Player B → Player A foreign-soldier commands return the fixed `403`/`NOT_OWNER` response, leave the world/economy/mission/event projections unchanged, persist a rejected idempotency identity, replay the same rejection, and reject a client-supplied `player_id` before worker execution. The result is recorded under [`SK-EVID-070`](../Evidence/SK-EVID-070-cp17-authenticated-cross-scope-denial-runtime-verification.md) and [`Validation/96`](../Validation/96-cp17-authenticated-cross-scope-denial-runtime-cross-functional-audit.md).
-- Next gate: Exercise the same bidirectional denial against the hosted service only if an approved authenticated request seam can preserve the real Clerk sessions. If the supported browser surface cannot provide that seam, keep the hosted row explicitly open; do not read credentials or add a production bypass. Rollback/read-restore remains a separate optional rehearsal against the preserved backup.
+- Current increment: The dedicated production-like Clerk-mode HTTP regression test now proves both Player A to Player B and Player B to Player A foreign-soldier commands return the fixed 403 / NOT_OWNER response, leave the world/economy/mission/event projections unchanged, persist a rejected idempotency identity, replay the same rejection, and reject a client-supplied player_id before worker execution. The result is recorded under [SK-EVID-070](../Evidence/SK-EVID-070-cp17-authenticated-cross-scope-denial-runtime-verification.md) and [Validation/96](../Validation/96-cp17-authenticated-cross-scope-denial-runtime-cross-functional-audit.md). A disposable read-restore compatibility rehearsal also passes through the real PersistenceStore against the hash-verified CP-17 backup, with the result recorded under [SK-EVID-073](../Evidence/SK-EVID-073-cp17-read-restore-compatibility-runtime-verification.md) and [Validation/99](../Validation/99-cp17-read-restore-compatibility-cross-functional-audit.md); it does not claim a provider-level rollback.
+- Next gate: Exercise the same bidirectional denial against the hosted service only if an approved authenticated request seam can preserve the real Clerk sessions. If the supported browser surface cannot provide that seam, keep the hosted row explicitly open; do not read credentials or add a production bypass. The local read-restore compatibility rehearsal is verified under [SK-EVID-073](../Evidence/SK-EVID-073-cp17-read-restore-compatibility-runtime-verification.md); provider-level rollback remains optional and separately gated.
 
 ## Identity
 
@@ -70,6 +70,10 @@ player's state unchanged.
 - Verified locally: The task-owned Clerk-mode HTTP test exercises both cross-scope directions through
   the real entrypoint and confirms unchanged world, shelter, soldier, resource, mission, attempt,
   and event state, durable rejected retries, and strict rejection of client-selected `player_id`.
+- Verified locally: A fresh disposable copy of the hash-verified CP-17 backup opens through the real
+  PersistenceStore, passes schema and snapshot/event recovery validation, exposes the expected world,
+  identity, shelter, mission, attempt, resource, and event records, and leaves the source hash unchanged
+  under [SK-EVID-073](../Evidence/SK-EVID-073-cp17-read-restore-compatibility-runtime-verification.md).
 - Verified hosted: Positive independent Player A/Player B projections and scoped commands pass under
   [`SK-EVID-068`](../Evidence/SK-EVID-068-cp17-independent-contexts-concurrent-hosted-runtime-verification.md).
 - Unknown: A deliberately forged authenticated hosted command and its typed no-mutation readback;
@@ -86,14 +90,16 @@ live world beyond the rejected requests.
 
 ## Verification and closure target
 
-- Minimum verification: Node 24 focused bidirectional HTTP test, strict envelope test, typecheck, and
-  affected documentation validation; hosted level 7 only if an approved authenticated seam is
-  available.
+- Minimum verification: Node 24 focused bidirectional HTTP test, strict envelope test, typecheck,
+  affected documentation validation, and the disposable Node 24 read-restore compatibility rehearsal;
+  hosted level 7 only if an approved authenticated seam is available.
 - Closure target: `hosted_verified` for the full task; local `runtime_verified` evidence is a valid
   intermediate result and does not close the CP-17 hosted gate.
-- Rollback or remediation: Rejected requests must be transactionally side-effect free. If a test or
-  hosted attempt mutates state unexpectedly, stop, preserve the first failure, restore from the
-  verified pre-test copy where safe, and do not retry with a broader bypass.
+- Rollback or remediation: Rejected requests must be transactionally side-effect free. The local
+  read-restore compatibility rehearsal passed on a disposable copy; any provider-level rollback
+  must use a separate, approved reversible procedure and fresh evidence. If a test or hosted attempt
+  mutates state unexpectedly, stop, preserve the first failure, restore from the verified pre-test
+  copy where safe, and do not retry with a broader bypass.
 - Reopen trigger: Any successful cross-scope mutation, leakage of another shelter's projection,
   non-durable rejection, duplicate rejection effect, identity mismatch, or change in the supported
   hosted session seam.

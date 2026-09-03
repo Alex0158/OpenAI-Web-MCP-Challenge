@@ -62,8 +62,7 @@ under [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continu
 The local production-like authenticated cross-scope denial slice is recorded under
 [`SK-EVID-070`](../Evidence/SK-EVID-070-cp17-authenticated-cross-scope-denial-runtime-verification.md)
 and [`Validation/96`](../Validation/96-cp17-authenticated-cross-scope-denial-runtime-cross-functional-audit.md).
-Deliberate hosted authenticated cross-scope denial, rollback/read-restore, and the final hosted
-acceptance matrix still require the remaining CP-17 rehearsal.
+Deliberate hosted authenticated cross-scope denial and the final hosted acceptance matrix still require the remaining CP-17 rehearsal. The local read-restore compatibility rehearsal is verified under [SK-EVID-073](../Evidence/SK-EVID-073-cp17-read-restore-compatibility-runtime-verification.md); provider-level rollback remains optional and separately gated.
 
 The local CP-04 process contract is intentionally smaller: one explicit Node.js entrypoint hosts the
 page and world-worker modules and exposes process health. `live` and `ready` are separate health
@@ -94,8 +93,7 @@ one service, one `/data` Volume, one HTTPS Game domain, and the Clerk Production
 the two sequential hosted identity slices and the concurrent two-context slice now prove authenticated
 command/settlement paths, while the mounted Volume, process supervisor, authenticated reconnect, and
 canonical URL behavior have passed the named restart slice under [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md).
-Hosted proof must still verify independent scope denial and any
-rollback/read-restore claim before closure. It must not enable fixture mode,
+Hosted proof must still verify independent scope denial and any provider-level rollback claim before closure. The local read-restore compatibility result under [SK-EVID-073](../Evidence/SK-EVID-073-cp17-read-restore-compatibility-runtime-verification.md) does not substitute for a provider restore. It must not enable fixture mode,
 reseed on every restart, or use a browser heartbeat to keep the world alive.
 
 ## Security and abuse boundary

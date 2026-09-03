@@ -196,6 +196,7 @@ not claim that the game is built or balanced.
   — local production-like two-identity page-tool isolation across one shared route, server-derived
   Player A/B scopes, opposite-shelter exclusion, strict client-authority parsing, and the remaining
   hosted, browser, and Agent action gates.
+- [99-cp17-read-restore-compatibility-cross-functional-audit.md](99-cp17-read-restore-compatibility-cross-functional-audit.md) — disposable local read-restore compatibility across SQLite integrity, schema metadata, PersistenceStore, snapshot/event recovery, identity/economy readback, and the explicit provider-level rollback boundary.
 
 ## Current concept checks
 

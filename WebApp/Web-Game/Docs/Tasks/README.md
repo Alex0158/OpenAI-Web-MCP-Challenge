@@ -104,8 +104,9 @@ independent authenticated contexts now pass the concurrent scoped slice in [`SK-
 and [`Validation/94`](../Validation/94-cp17-independent-contexts-concurrent-hosted-runtime-cross-functional-audit.md);
 the hosted restart/reconnect and hash-verified backup slice now passes in [`SK-EVID-069`](../Evidence/SK-EVID-069-cp17-hosted-restart-backup-continuity-runtime-verification.md)
 and [`Validation/95`](../Validation/95-cp17-hosted-restart-backup-continuity-runtime-cross-functional-audit.md);
-deliberate authenticated cross-scope denial, rollback/read-restore, and the full hosted acceptance
-matrix remain open; the local production-like denial rehearsal is tracked separately under
+deliberate authenticated cross-scope denial and provider-level rollback remain open; local
+read-restore compatibility is verified under [SK-EVID-073](../Evidence/SK-EVID-073-cp17-read-restore-compatibility-runtime-verification.md) and [Validation/99](../Validation/99-cp17-read-restore-compatibility-cross-functional-audit.md); the full hosted acceptance
+matrix remains open; the local production-like denial rehearsal is tracked separately under
 [`SK-TASK-079`](SK-TASK-079-cp17-authenticated-cross-scope-denial-rehearsal.md); the provider facts and topology remain governed by
 [`ADR-GAME-0037`](../Decisions/ADR-GAME-0037-cp17-railway-single-service-sqlite-volume.md).
 
@@ -116,7 +117,7 @@ and [`Validation/96`](../Validation/96-cp17-authenticated-cross-scope-denial-run
 both directions return the privacy-preserving `403`/`NOT_OWNER` result, no gameplay/economy/mission/event
 state changes, rejection retries remain durable, and client-selected identity fields fail closed.
 The hosted denial row remains open because the supported browser surface has no arbitrary authenticated
-request seam; rollback/read-restore is an independent optional rehearsal and no production bypass is allowed.
+request seam; local read-restore compatibility is verified under [SK-EVID-073](../Evidence/SK-EVID-073-cp17-read-restore-compatibility-runtime-verification.md) and [Validation/99](../Validation/99-cp17-read-restore-compatibility-cross-functional-audit.md); provider-level rollback remains an independent optional rehearsal and no production bypass is allowed.
 
 The CP-17 production-like WebMCP page-tool admission slice is runtime-verified under
 [`SK-EVID-071`](../Evidence/SK-EVID-071-cp17-production-webmcp-page-tool-admission-runtime-verification.md)

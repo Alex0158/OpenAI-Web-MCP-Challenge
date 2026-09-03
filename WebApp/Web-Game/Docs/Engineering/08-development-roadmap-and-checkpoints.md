@@ -504,8 +504,9 @@ The bounded [`SK-TASK-075`](../Tasks/SK-TASK-075-cp12-shelter-economy-summary-ca
   The local production-like bidirectional denial slice is recorded under
   [`SK-EVID-070`](../Evidence/SK-EVID-070-cp17-authenticated-cross-scope-denial-runtime-verification.md)
   and [`Validation/96`](../Validation/96-cp17-authenticated-cross-scope-denial-runtime-cross-functional-audit.md).
-  Deliberate hosted authenticated cross-player denial, rollback/read-restore, and final hosted closure
-  remain open. The [`CP-13–CP-18 seam map`](10-cp13-cp18-implementation-seam-map.md)
+  Deliberate hosted authenticated cross-player denial and provider-level rollback remain open; the
+  disposable local read-restore compatibility rehearsal is verified under [SK-EVID-073](../Evidence/SK-EVID-073-cp17-read-restore-compatibility-runtime-verification.md) and [Validation/99](../Validation/99-cp17-read-restore-compatibility-cross-functional-audit.md).
+  Final hosted closure remains open. The [`CP-13–CP-18 seam map`](10-cp13-cp18-implementation-seam-map.md)
   routes the remaining implementation to the existing entrypoint, health, runtime, and persistence
   boundaries.
 
