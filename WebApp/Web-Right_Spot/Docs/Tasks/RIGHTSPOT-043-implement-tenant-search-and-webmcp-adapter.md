@@ -14,15 +14,15 @@ page/session-bound read-only WebMCP capability without creating a second listing
 - **Lifecycle:** `in_progress`
 - **Execution posture:** `SERIAL_PRODUCT_SEARCH_WITH_SEQUENTIAL_WEBMCP_GATE`
 - **Owner:** Main RightSpot thread
-- **Current gate:** `RS-WO-043-02` is dispatched in the canonical Main Worktree for the thin
-  page-bound adapter. `RS-WO-043-03` remains gated on its exact handoff and independent review.
+- **Current gate:** The first `RS-WO-043-02` attempt returned a real scope blocker: the shared
+  `readListings` transport did not accept or forward `AbortSignal`. Main is amending the exact
+  client seam before redispatch; `RS-WO-043-03` remains gated on the accepted adapter handoff.
   No source, dependency, WebMCP registration, fixture, or extra Worktree change is authorized
-  outside the active Work Order.
-- **Dispatch state:** `RS-WO-043-01 integrated; RS-WO-043-02 dispatched`
-- **Supporting workers:** Hubble is the reused delegated Builder for `RS-WO-043-02` after its
-  `RS-WO-043-01` handoff was reviewed and integrated by Main. Main retains source integration,
-  shared-file serialization, verification acceptance, canonical documentation, and Git closure
-  authority.
+  outside the amended active Work Order.
+- **Dispatch state:** `RS-WO-043-01 integrated; RS-WO-043-02 blocked pending bounded scope amendment`
+- **Supporting workers:** Hubble's first `RS-WO-043-02` attempt returned `BLOCKED` before adapter
+  integration. Main retains source integration, shared-file serialization, verification acceptance,
+  canonical documentation, and Git closure authority.
 - **Source identity:** The ordinary Search implementation is integrated in product code commit
   `534f5c9d2125fed77decd8f07202a2ea4693ce7e` on branch `main` at repository root
   `/Users/alex/OpenAI-WebMCP/WebMCP_Challenge`. The reviewed code changed exactly the ten paths in
@@ -119,7 +119,7 @@ it does not claim WebMCP registration or supported-browser capability.
 ### RS-WO-043-02 — Add the thin page-bound read-only WebMCP adapter
 
 **Role:** Builder — WebMCP page capability  
-**Status:** `IN_PROGRESS`  
+**Status:** `BLOCKED_PENDING_SCOPE_AMENDMENT`  
 **Parallelization:** `SERIAL_AFTER_SEARCH_AUTHORITY` — it may not overlap the shared page/controller
 files in `RS-WO-043-01`.  
 **Allowed write set:**
@@ -127,9 +127,22 @@ files in `RS-WO-043-01`.
 - `src/ui/tenant/tenant-discovery-page.tsx` (only the accepted adapter integration after WO-01)
 - `src/ui/tenant/tenant-webmcp.ts` (new page-local adapter, if a separate module is cleaner)
 - `tests/ui/tenant-webmcp.test.ts` (new focused adapter contract tests)
+- `src/ui/tenant/tenant-api.ts` (only add an optional `AbortSignal` transport option to
+  `readListings` and forward it to the same GET request; no Search semantic change)
+- `tests/ui/tenant-api.test.ts` (only prove the bounded signal-forwarding seam)
 
-**Read set:** the frozen post-WO-01 source, ADR-RS-0015, the supported official WebMCP documentation,
-the current browser/runtime configuration, and the existing Tenant Search tests.  
+**Bounded scope amendment (2026-09-03):** The first dispatch exposed that the existing shared
+`readListings(filters)` function could not forward the WebMCP execution signal to its `fetch` call.
+The adapter cannot satisfy the accepted cancellation and shared-authority contract without that
+small client seam. The amendment authorizes only the two exact paths above, with no new public
+criterion, URL/parser, response authority, dependency, or behavior change. It does not reopen
+ADR-RS-0015; it makes its already-accepted cancellation lifecycle implementable. The two untracked
+draft files created during the blocked attempt remain retained for Main review and are not accepted
+source until the amended handoff passes exact-path review.
+
+**Read set:** the frozen post-WO-01 source, `src/ui/tenant/tenant-api.ts`, ADR-RS-0015, the supported
+official WebMCP documentation, the current browser/runtime configuration, and the existing Tenant
+Search tests.  
 **Forbidden set:** server/domain/persistence/API authority changes, package manifests/lockfiles,
 direct SQLite access, new tool registry, global/root/Agent registration, external authentication,
 Cloud Receiver, WebRTC, Redis, browser automation workarounds, and canonical document edits.  
@@ -223,7 +236,9 @@ widening the semantic contract.
 ## Closure evidence
 
 This Task remains `in_progress` after `RS-WO-043-01` integration. The closed decision gate is
-recorded in `RIGHTSPOT-042` and ADR-RS-0015. `RS-WO-043-02` is dispatched against the reviewed
-baseline `2bb65cd`; Main is awaiting its exact handoff before opening `RS-WO-043-03`. The current
-integrated result does not claim WebMCP runtime registration, browser support, deployment, or judge
-reproducibility; those remain later gates.
+recorded in `RIGHTSPOT-042` and ADR-RS-0015. The first `RS-WO-043-02` attempt was blocked before
+integration because the original write set could not provide genuine transport cancellation. Main
+has recorded the bounded `tenant-api.ts` amendment above; the retained adapter/test drafts are not
+accepted source. After redispatch, Main must review the exact handoff before opening `RS-WO-043-03`.
+The current integrated result does not claim WebMCP runtime registration, browser support, deployment,
+or judge reproducibility; those remain later gates.

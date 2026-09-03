@@ -105,9 +105,11 @@ strict input/envelope validation, shared Area normalization, and fail-closed mal
 handling. The WebMCP adapter and independent browser verification are not active yet; no WebMCP
 runtime claim is made. Five pre-existing untracked RightSpot boundary artifacts remain preserved.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
-**Current next product action:** Review the dispatched `RS-WO-043-02` page-bound adapter handoff
-against baseline `2bb65cd`; only after Main accepts it should `RS-WO-043-03` independent verification
-be dispatched.
+**Current next product action:** Apply the bounded `RS-WO-043-02` client-signal scope amendment and
+redispatch the page-bound adapter against baseline `2bb65cd`; only after Main accepts its exact handoff
+should `RS-WO-043-03` independent verification be dispatched. The first adapter attempt was blocked
+before integration because `readListings` could not forward `AbortSignal`; no WebMCP implementation
+claim is made.
 `RIGHTSPOT-010` remains a separate pending Agent Operations/WebMCP decision proposal. The Main-thread
 cross-layer audit Goal is closed
 for the accepted ordinary local MVP; `RIGHTSPOT-039` /
