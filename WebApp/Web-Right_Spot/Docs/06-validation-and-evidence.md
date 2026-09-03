@@ -1390,3 +1390,33 @@ beyond normal React DevTools/HMR informational logs. This supplements but does n
 independent gate. `RIGHTSPOT-047` remains open at `INDEPENDENT_BROWSER_INCOMPLETE`; the candidate must
 not be pushed or closed as verified until the same Work Order completes its bounded independent
 evidence or Main records an explicit evidence decision.
+
+## 7.31 Main-controlled Search and route revalidation — 2026-09-03
+
+The isolated supported-browser session `rs-main-audit-20260903` retested the suspected Tenant Area
+interaction issue with a real pointer sequence rather than relying on the earlier failed locator
+click. The rendered `Southwark` suggestion populated the controlled input, and `Apply filters`
+returned exactly one published result, `Riverside Studio`. This disproves a product click defect;
+the earlier observation was an automation interaction artifact. No source, fixture, API mutation,
+Task, or Work Order changed.
+
+The session also rendered the signed-in Tenant catalogue, Favourites, Viewing Requests, and listing
+detail, then exercised sign-out recovery, the Agent queue, and `/agent/operations`. Expected navigation,
+role boundaries, empty/populated read surfaces, and the Operations listing-pipeline projection were
+visible; no framework error overlay or browser page error was observed. This was Main-controlled
+evidence only and did not add a populated workflow happy-path claim or replace the incomplete
+independent `RS-WO-047-02` gate. The SQLite fixture remained unchanged and `RIGHTSPOT-047` remains
+`INDEPENDENT_BROWSER_INCOMPLETE`.
+
+## 7.32 README documentation-drift reconciliation — 2026-09-03
+
+Read-only review identified stale RightSpot README claims: Operations was described as having no page
+or public HTTP route, the complete suite was reported as `159/159` across 39 files, and the document
+made a blanket non-claim for WebMCP even though the Tenant `search_listings` slice is verified in its
+declared local supported-browser capability. Main confirmed the mismatch against current source and
+canonical status/evidence records, then updated only the README status, feature map, Operations route
+description, suite count, and bounded non-claims.
+
+This was documentation-only. No product source, fixture, dependency, route, API, or WebMCP behavior
+changed. The Operations `read_listing_pipeline` candidate remains `RIGHTSPOT-047`
+`INDEPENDENT_BROWSER_INCOMPLETE`; no closure, push, or universal WebMCP claim is made.

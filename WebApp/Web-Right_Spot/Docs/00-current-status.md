@@ -179,6 +179,15 @@ gate has one command-level harness block and two bounded partial retries, so `RI
 open at `INDEPENDENT_BROWSER_INCOMPLETE`.
 `upcomingViewings` remains excluded because its `asOf`/fixture-clock behavior needs deterministic
 reproducible non-empty evidence. The active `RIGHTSPOT-012` audit remains non-blocking.
+**Latest Main-controlled Search/route revalidation (2026-09-03):** In supported Chrome session
+`rs-main-audit-20260903`, a real pointer click on the rendered `Southwark` Area suggestion populated
+the controlled field and Apply returned exactly the single matching `Riverside Studio` listing. The
+suspected Area defect was an automation interaction artifact and no Search Task was registered. The
+same session rendered Tenant catalogue/Favourites/Viewing Requests/listing detail, sign-out recovery,
+Agent queue, and `/agent/operations` with expected role navigation and no application/page errors; it
+did not mutate the fixture or add a populated workflow claim. RightSpot Main remains the single local
+canonical Worktree, ahead of `origin/main` while the `RIGHTSPOT-047` independent browser gate remains
+incomplete, so no push or WebMCP closure claim is made.
 **Working product:** RightSpot — rental workflow / Rental Marketplace Relay
 **Current next product action:** Resolve the supporting browser completion path with preflighted
 commands and an outer bounded wait, then complete the missing independent evidence for `RS-WO-047-02`

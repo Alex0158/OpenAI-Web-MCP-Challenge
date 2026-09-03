@@ -3,8 +3,8 @@
 **Role:** Independent child application inside the WebMCP Challenge repository  
 **Working identity:** RightSpot — the rental-workflow candidate previously documented as
 `Rental Marketplace Relay`  
-**Status:** Accepted ordinary local MVP remains implemented and closed within its bounded business-state scope; the continuing cross-layer audit has closed `RIGHTSPOT-041` within its tenant mutation-feedback consumer boundary
-**Implementation:** Tenant and agent role pages, durable workflow HTTP/DTO transport, Favourites, listing-interest projection, local synthetic media, and responsive navigation are integrated; `F-01`–`F-07` and `F-09`–`F-19` are closed within their recorded bounded claims, and `F-08` remains an evidence gap. The current complete suite passes `159/159` across 39 authored test files.
+**Status:** Accepted ordinary local MVP remains implemented and closed within its bounded business-state scope; the continuing cross-layer audit remains active, Tenant Discovery `search_listings` is verified in its declared local supported-browser capability, and the Agent Operations `read_listing_pipeline` candidate remains open pending independent browser evidence
+**Implementation:** Tenant and agent role pages, durable workflow HTTP/DTO transport, Favourites, listing-interest projection, Agent Operations manual read surface, Tenant Discovery/WebMCP Search, local synthetic media, and responsive navigation are integrated; the documented audit findings are closed within their recorded bounded claims except the retained `F-08` evidence gap. The current complete suite passes `201/201` across 45 authored test files.
 **Formal outer app-selection decision:** Pending
 
 ## Purpose
@@ -84,9 +84,11 @@ need to become a complete commercial rental marketplace.
 - a bounded response note attached to an agent proposal; and
 - local synthetic media and responsive role navigation.
 
-The Operations profile authority and projection are implemented as an isolated domain/persistence
-seam, but there is no current Operations page or public HTTP route. Listing status edits are not
-implemented and are not a hidden prerequisite for the MVP.
+The Operations profile authority and projection are consumed by the Agent-only manual
+`/agent/operations` page and strict `GET /api/agent/operations` route. The later
+`read_listing_pipeline` Operations WebMCP capability is a separate frozen implementation candidate
+whose independent browser gate remains open. Listing status edits are not implemented and are not a
+hidden prerequisite for the MVP.
 
 ### Explicitly deferred
 
@@ -145,6 +147,9 @@ architecture.
 
 ## Current non-claims
 
-RightSpot does not yet claim a selected production application, validated customer demand, a
-deployed service, a supported Cloud Receiver integration, genuine WebMCP execution, WebRTC Remote
-Viewing, a real Agent adapter, or Hackathon submission readiness.
+RightSpot does not yet claim a selected production application, validated customer demand, a deployed
+service, a supported Cloud Receiver integration, universal WebMCP/browser support, probabilistic
+agent success, WebRTC Remote Viewing, external authentication, or Hackathon submission readiness.
+The verified local claims are limited to the ordinary local application, the Tenant
+`search_listings` capability in its declared supported-browser runtime, and the Agent Operations
+manual read surface; the separate Operations `read_listing_pipeline` candidate is not yet closed.

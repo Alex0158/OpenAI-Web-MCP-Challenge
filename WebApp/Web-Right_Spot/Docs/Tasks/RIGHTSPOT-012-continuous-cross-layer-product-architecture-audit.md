@@ -673,3 +673,34 @@ requires its own source freeze.
 `RIGHTSPOT-012` remains `pending` and non-blocking. This reconciliation adds documentation evidence,
 not a new product-flow completion claim; the existing populated-browser evidence and the retained
 listing-detail same-document `F-08` evidence gap remain unchanged.
+
+## Latest Main-controlled Search and route revalidation — 2026-09-03
+
+Main used the supported local Chrome/agent-browser runtime in isolated session
+`rs-main-audit-20260903` against the current canonical source. A suspected Area-selection defect was
+retested with a real pointer sequence on the rendered suggestion button: `Southwark` entered the
+controlled Area field, and applying the filter returned exactly one published listing,
+`Riverside Studio`. The earlier failed locator clicks were therefore classified as an automation
+interaction artifact, not a product defect. No Search Task or fallback was registered.
+
+The same session revalidated the signed-in Tenant catalogue, Favourites, Viewing Requests, and
+listing-detail routes, then ended the Tenant session and entered the Property Agent session. The Agent
+queue and `/agent/operations` manual surface rendered with their expected navigation and bounded empty
+or populated read projections; no application error overlay or browser page error was observed. The
+fixture was not mutated, no workflow POST was issued, and the check adds no populated request
+happy-path claim. Existing business-flow evidence and the `RIGHTSPOT-047` independent-verifier gate
+remain unchanged. `RIGHTSPOT-012` stays `pending` and non-blocking.
+
+## Latest README truthfulness reconciliation — 2026-09-03
+
+The read-only architecture auditor found documentation drift in the RightSpot `README.md`: it still
+described the Operations authority as having no page or public HTTP route, reported the pre-Operations
+complete suite as `159/159` across 39 files, and made a blanket non-claim for WebMCP despite the
+verified Tenant `search_listings` slice. Main confirmed the drift against the current Operations page,
+API route, Task records, and validation ledger, then corrected only the README's status, implementation
+map, Operations description, test/evidence count, and bounded non-claims.
+
+No product source, API, fixture, dependency, route, or WebMCP behavior changed. The documentation
+reconciliation does not upgrade `RIGHTSPOT-047`: its frozen Agent Operations candidate still lacks the
+formal independent browser gate and remains unpushed/open. `RIGHTSPOT-012` remains `pending` and
+non-blocking.
