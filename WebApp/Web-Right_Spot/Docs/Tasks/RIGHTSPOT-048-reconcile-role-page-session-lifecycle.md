@@ -1,7 +1,7 @@
 # RIGHTSPOT-048 — Reconcile role-page session lifecycle for page-bound capabilities
 
 **Type:** `defect`  
-**Lifecycle:** `pending`  
+**Lifecycle:** `in_progress`  
 **Priority:** `P1` for session least privilege and page truthfulness  
 **Owner:** Main RightSpot thread  
 **Opened:** 2026-09-03  
@@ -12,21 +12,21 @@ frozen but not independently closed `RIGHTSPOT-047` Agent Operations adapter
 ## Task Control
 
 - Type: `defect`
-- Lifecycle: `pending`
+- Lifecycle: `in_progress`
 - Priority: `P1` — a mounted role page can retain a prior actor and page-bound capability after an
   external HttpOnly session change; the server still rejects unauthorized reads, but the client
   lifecycle is not reconciled.
 - Owner: Main RightSpot thread
 - Current increment: Static audit and Contract Advisor review confirmed the same mount-only lifecycle
-  pattern in the shared role frame, Tenant Search adapter, and Agent Operations candidate. No product
-  source has changed for this Task.
-- Execution posture: `READY_FOR_DISPATCH` — one serial shared-boundary Builder, followed by a frozen
-  independent browser gate; no supporting Worktree is required or authorized.
+  pattern in the shared role frame, Tenant Search adapter, and Agent Operations candidate. T0 is now
+  recaptured and the serial Builder is being dispatched; no product source has changed for this Task.
+- Execution posture: `MAIN_THREAD_SOURCE_FREEZE_FOR_BUILDER` — one serial shared-boundary Builder,
+  followed by a frozen independent browser gate; no supporting Worktree is required or authorized.
 - Evidence status: `STATIC_FINDING_CONFIRMED`; this is not a browser reproduction or a claim of data
   leakage. The server-side role/session checks remain intact.
-- Next gate: Dispatch `RS-WO-048-01` against the exact Main source identity, then independently
-  verify the repaired Tenant and Agent page-capability lifecycle before reopening `RIGHTSPOT-047`'s
-  incomplete browser gate.
+- Next gate: Complete the dispatched `RS-WO-048-01` against the exact Main source identity, then
+  independently verify the repaired Tenant and Agent page-capability lifecycle before reopening
+  `RIGHTSPOT-047`'s incomplete browser gate.
 - Dependencies: `ADR-RS-0015` and `ADR-RS-0017` require page/session-scoped capability cleanup;
   `RIGHTSPOT-043` and `RIGHTSPOT-047` provide the existing adapter cleanup contracts. `RIGHTSPOT-012`
   may continue as a read-only, non-blocking audit but cannot modify this Task's write set during a
@@ -187,14 +187,20 @@ Close this Task only after all of the following are true:
 ### RS-WO-048-01 — Implement the shared role-page lifecycle repair
 
 **Role:** Senior UI/WebMCP lifecycle Builder  
-**Status:** `READY_FOR_DISPATCH`  
+**Status:** `DISPATCHING`  
 **Parallelization:** `SERIAL_SHARED_ROLE_SESSION_BOUNDARY` — one writer across the exact eight-path
   set; no other source writer or verifier may overlap it.  
 **Model gate:** Because this changes WebMCP capability lifetime, dispatch a capable supporting worker
 with `gpt-5.6-sol` and `medium` reasoning. If that model/capability is unavailable, stop and report
 the blocker; do not substitute an unsupported model for WebMCP lifecycle work.  
-**Source identity:** Main must recapture repository root, branch, HEAD, status, Node `24.20.0`,
-supported browser/flag, and local health immediately before dispatch.  
+**T0 source identity (2026-09-03):** Repository root
+`/Users/alex/OpenAI-WebMCP/WebMCP_Challenge`; branch `main`; HEAD
+`9f139084dc1d46329a222bdf7ded7fd85fa2201e`; `origin/main...HEAD` is `0 6`; one physical Worktree
+at the canonical Main path. RightSpot tracked source was clean. Preserved untracked boundary artifacts
+were `.playwright-cli/`, `:memory:`, `AGENTS.md`, `CLAUDE.md`, and `Docs/Reference/`; none is part of
+the Builder write set. Pinned Node is `v24.20.0`, npm `11.19.0`, `agent-browser` is `0.25.3`, Chrome
+is `152.0.7977.65`, the `WebMCPTesting` flag is available, and `GET /api/health` returned `200`
+with `{"ok":true,"service":"rightspot"}`.  
 **Write set:** exactly the eight paths listed in this Task.  
 **Handoff:** Return `READY_FOR_INDEPENDENT_VERIFICATION` with exact changed paths, Red/Green/Refactor
 results, focused/full/static/build results, no-mutation checks, and any unresolved boundary. The
