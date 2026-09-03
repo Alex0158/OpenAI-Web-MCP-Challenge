@@ -93,8 +93,8 @@ with healthy health.
   routes returned `200`, bounded `401`/`403`/`404` API boundaries held, health returned `200`, and the
   SQLite hash/mtime stayed unchanged. The run intentionally did not mutate fixtures or perform populated
   browser actions, so it adds no new rendered happy-path claim and registers no follow-on Task.
-- Next gate: `RIGHTSPOT-050` is now closed within its bounded Tenant consumer action-safety claim.
-  Review and execute the remaining Tenant `RIGHTSPOT-051` registration-observability boundary,
+- Next gate: `RIGHTSPOT-050` and the Tenant portion of `RIGHTSPOT-051` are now closed within their
+  bounded consumer claims. Review the integrated 051 increment through a fresh read-only audit,
   while retaining the 047/048 WebMCP evidence gates. Re-dispatch this audit after a meaningful source,
   route, data, permission, UI interaction, integration, or evidence increment. Register another
   follow-on Task only after reproducing a new bounded gap and recording its owner, scope, and
@@ -838,3 +838,15 @@ Tenant adapter/page boundary and makes registration failure observable without w
 Search path. No browser runtime claim was added. The Agent-side counterpart remains `RS-WO-047-03`,
 gated by the separate 048 evidence decision. The next audit increment should inspect the integrated
 source and evidence, not reopen 051 without a new concrete failure.
+
+## Latest post-051 audit dispatch — 2026-09-03
+
+After the deterministic `RIGHTSPOT-051` closure at product commit `0489155`, Main dispatched a new
+read-only cross-layer audit to Advisor Beauvoir (`01a0674b-3ad8-73a0-8f52-f59bc33a9d80`) under
+`gpt-5.6-sol + medium` reasoning. The audit is anchored to Main documentation checkpoint `e115c8c`
+and the current RightSpot source, and covers business-flow closure, route/role entry, UI/UX and
+accessibility, fallback/error truthfulness, code quality, privacy/data authority, WebMCP lifecycle
+boundaries, and documentation/test evidence drift. The Advisor may report evidence-backed findings
+for Main review, but may not modify source, tests, documents, fixtures, SQLite, Git, Worktrees, or
+register follow-on Tasks. The lane remains non-blocking; 047-03 remains gated by the separate 048
+evidence decision.

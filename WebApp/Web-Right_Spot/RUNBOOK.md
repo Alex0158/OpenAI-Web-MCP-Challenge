@@ -195,8 +195,10 @@ verification, and is integrated at product commit `0489155` within the Tenant pa
 `RS-WO-047-03` waits for the
 reviewed 048 evidence decision and a new 047 source baseline. These
 follow-ups do not authorize a new API, domain state, transport, external integration, or deployment
-claim. The 048 browser-harness limitation and the `F-08` dynamic-route concern remain evidence
-limitations, not permission for blind retries.
+claim. The Tenant portion is now closed at its deterministic boundary. Main has dispatched the next
+non-blocking read-only audit to Advisor Beauvoir (`01a0674b-3ad8-73a0-8f52-f59bc33a9d80`) under
+`gpt-5.6-sol + medium`; its report is advisory until Main review. The 048 browser-harness limitation
+and the `F-08` dynamic-route concern remain evidence limitations, not permission for blind retries.
 
 ## 1. Authority and reading order
 

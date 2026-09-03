@@ -1714,3 +1714,14 @@ and test paths. No browser/WebMCP runtime claim was made; the known Operations d
 filesystem-tracing warning is non-gating and outside this Task. `RIGHTSPOT-051` is
 `CLOSED_VERIFIED` within its deterministic adapter/page contract. The Agent-side portion remains
 separately gated under `RS-WO-047-03`, and the 048 harness boundary is unchanged.
+
+## 7.48 Post-051 continuous cross-layer audit dispatch — `RIGHTSPOT-012` — 2026-09-03
+
+After the deterministic `RIGHTSPOT-051` closure, Main dispatched read-only Advisor Beauvoir
+(`01a0674b-3ad8-73a0-8f52-f59bc33a9d80`) under `gpt-5.6-sol + medium` against Main documentation
+checkpoint `e115c8c` and the integrated RightSpot source. The review covers the Tenant-to-Agent
+business chain, route and role entry, UI/UX/accessibility, fallback and code quality, privacy/data
+authority, WebMCP lifecycle boundaries, and test/evidence/documentation drift. The Advisor cannot
+modify source, tests, documents, fixtures, SQLite, Git, Worktrees, or register follow-on Tasks; its
+report requires Main review. The audit is non-blocking, and the separate Agent `RS-WO-047-03` repair
+remains gated by the `RIGHTSPOT-048` evidence decision.
