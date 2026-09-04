@@ -307,7 +307,7 @@ weakening, Game-document edit, or whole-repository security-scan pass is claimed
 reference implementation evidence and its non-claims. The active Receiver now has a locally verified
 `Re-Entry` kernel, additive PostgreSQL migration, and real Event/claim/ACK transport.
 Its 156-test backend aggregate, exact-commit upgrade rehearsal, and shared scenario pass are recorded in the
-[Receiver verification record](../../saas-boilerplate/backend/conformance/standing-v0.2/README.md).
+[Receiver verification record](https://github.com/4xeoz/saas-boilerplate/blob/8f5ade26f288685142b78c705bef8577b9180354/backend/conformance/standing-v0.2/README.md).
 This is not pinned release conformance: Consent/control remain internal seams, effect authority is
 deterministic. CLOUD-023 records locally committed Core and Receiver source, the passing minimum
 pinned trace, and a six-to-seven-migration rehearsal preserving old rows before any reseeding.
@@ -322,7 +322,7 @@ RECORE-007 result. The standing shared corpus is still a minimum sequential trac
 concurrent race, forced multi-row rollback/no-mutation, and fresh-process crash vectors remain
 open. Active-Receiver-specific suites and synthetic oracle tests do not close those shared gates.
 
-The [control-plane proposal](../../saas-boilerplate/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md)
+The [control-plane proposal](https://github.com/4xeoz/saas-boilerplate/blob/8f5ade26f288685142b78c705bef8577b9180354/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md)
 records candidate shell routes, same-user/session/CSRF boundaries, durable decision replay,
 page-token lifetime, and acceptance tests. It is a proposal, not an accepted API. TASK-027 must
 resolve effective lifetime and renewal before public enrollment is enabled; no new routes, automatic

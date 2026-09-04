@@ -150,7 +150,7 @@ The active Receiver `Re-Entry` working tree based on
 isolated standing service, and real `/v0.2` Event/claim/ACK routes. Node 24 verification passed
 21 backend suites / 154 tests, root type-check and build, and the shared standing scenario against
 disposable PostgreSQL. Consent and control use typed internal seams, and effect evidence is
-deterministic. The [Receiver verification record](../../saas-boilerplate/backend/conformance/standing-v0.2/README.md)
+deterministic. The [Receiver verification record](https://github.com/4xeoz/saas-boilerplate/blob/8f5ade26f288685142b78c705bef8577b9180354/backend/conformance/standing-v0.2/README.md)
 owns reproduction and limitations; neither this implementation nor migration is committed or
 deployed.
 
@@ -183,7 +183,7 @@ Final evidence-only HEAD/pin readback lives in the Receiver record. Its implemen
 migration remain uncommitted; this result clears the missing-Core-source gate, not TASK-028.
 
 Public Consent/inspect/revoke remain a separate decision boundary. The
-[control-plane proposal](../../saas-boilerplate/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md)
+[control-plane proposal](https://github.com/4xeoz/saas-boilerplate/blob/8f5ade26f288685142b78c705bef8577b9180354/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md)
 is non-authoritative under TASK-027/TASK-033; it does not add routes or decide lifetime policy.
 
 ## 4.3 Receiver local source and migration closure

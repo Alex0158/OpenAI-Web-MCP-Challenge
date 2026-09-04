@@ -66,8 +66,8 @@ source is `9156e68fe9b988f2ec7423d1c93930da3a105d4e`. No executable file changes
 Source anchors: [Core protocol](../../reentry-core/src/standing-protocol.mjs),
 [Core authority](../../reentry-core/src/standing-authorization-core.mjs),
 [Agent Adapter](../../reentry-core/src/agent-adapter.mjs),
-[Receiver service](../../saas-boilerplate/backend/src/modules/standing/standing.service.ts), and
-[committed migration](../../saas-boilerplate/backend/prisma/migrations/20260903193000_standing_authorization_v02/migration.sql).
+[Receiver service](https://github.com/4xeoz/saas-boilerplate/blob/8f5ade26f288685142b78c705bef8577b9180354/backend/src/modules/standing/standing.service.ts), and
+[committed migration](https://github.com/4xeoz/saas-boilerplate/blob/8f5ade26f288685142b78c705bef8577b9180354/backend/prisma/migrations/20260903193000_standing_authorization_v02/migration.sql).
 
 ## 3. Recommended lifetime semantics
 
@@ -198,7 +198,7 @@ and an additive v0.3 compatibility boundary. The remaining implementation gates 
 wire namespace, storage/migration topology, same-user control routes, target decommission policy,
 issuer/device invalidation cutoff, and the coordinated TASK-029 notification-handoff profile.
 
-The existing [public control-plane proposal](../../saas-boilerplate/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md)
+The existing [public control-plane proposal](https://github.com/4xeoz/saas-boilerplate/blob/8f5ade26f288685142b78c705bef8577b9180354/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md)
 still requires exact route, identity, token, CSRF, login, retry and abuse-control acceptance.
 Until-revoked approval alone does not approve all candidate public routes. TASK-027's older
 one-shot five-minute/thirty-minute discrepancy also remains separate; this proposal does not

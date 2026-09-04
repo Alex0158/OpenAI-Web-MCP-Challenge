@@ -221,7 +221,7 @@ exact-commit six-to-seven PostgreSQL upgrade preserves 13 old tables and 10 fixt
 any reseeding. Full release conformance is unproved. The normal Host facade,
 product/published Connector v0.2 selection, Sleepless Kingdom, and an external Agent/Browser remain
 unintegrated. TASK-028/TASK-033 and the
-[Receiver verification record](../../saas-boilerplate/backend/conformance/standing-v0.2/README.md)
+[Receiver verification record](https://github.com/4xeoz/saas-boilerplate/blob/8f5ade26f288685142b78c705bef8577b9180354/backend/conformance/standing-v0.2/README.md)
 own the remaining source, control, and adoption gates.
 
 ADR-0042 selects Sleepless Kingdom under `WebApp/Web-Game/` as the first Host application and

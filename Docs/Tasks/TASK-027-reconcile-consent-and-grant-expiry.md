@@ -34,7 +34,7 @@ Receiver caller to supply `maximumGrantLifetimeMs`; it does not select the produ
 Protocol v0.2 still requires a finite `grant_expires_at`. Non-consumable authorization therefore
 does not yet mean no-expiry authorization. Neither a distant expiry nor silent automatic renewal
 may substitute for an accepted lifetime decision. The
-[standing control-plane proposal](../../saas-boilerplate/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md)
+[standing control-plane proposal](https://github.com/4xeoz/saas-boilerplate/blob/8f5ade26f288685142b78c705bef8577b9180354/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md)
 records the public-shell implications without choosing a duration or changing existing v0.1 rows.
 
 [Research 25](../Research/25-until-revoked-standing-lifetime-proposal.md) records the source-backed

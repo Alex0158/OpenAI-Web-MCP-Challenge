@@ -51,7 +51,7 @@ Node `v24.20.0` verification:
   reports the 21 pre-existing Game artifact filename matches recorded by
   RECORE-007; no whole-repository scan pass is claimed.
 
-The [Receiver verification record](../../saas-boilerplate/backend/conformance/standing-v0.2/README.md)
+The [Receiver verification record](https://github.com/4xeoz/saas-boilerplate/blob/8f5ade26f288685142b78c705bef8577b9180354/backend/conformance/standing-v0.2/README.md)
 owns exact commands, source fingerprints, dependency-lock identity, migration
 scope, fixture retention, and the distinction between reused and rerun results.
 
@@ -67,7 +67,7 @@ Core/00, Core/05, Mechanisms 01-02, and TASK-028/TASK-033 are updated only for
 the active kernel's bounded evidence. ADR-0043 through ADR-0045 remain aligned:
 there is no new authority, protocol, lifetime, target-transfer, or deployment
 decision. Public route/session/CSRF behavior is explicitly open in the
-[control-plane proposal](../../saas-boilerplate/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md),
+[control-plane proposal](https://github.com/4xeoz/saas-boilerplate/blob/8f5ade26f288685142b78c705bef8577b9180354/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md),
 not promoted into canonical mechanism truth. TASK-027 remains pending for
 lifetime and renewal; current finite-expiry wire values do not mean no expiry.
 
