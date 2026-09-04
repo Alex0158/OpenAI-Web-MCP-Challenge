@@ -9,13 +9,19 @@
 - Lifecycle: `in_progress`
 - Priority: `P1`
 - Owner: Receiver, Local Connector, and Agent Adapter owners.
-- Current increment: Refine Research 27 around reliable admission by the owning task runtime,
-  local-only task binding, and distinct historical-receipt versus new-handoff authority. A
-  Connector-local backlog alone is not the recommended completion boundary. This remains a proposal.
+- Current increment: Architecture review separates exact-task binding, notification handoff and
+  settlement from the retained process-runner preview. Research 27 now distinguishes runtime
+  reconciliation needed for automatic recovery from a bounded single-attempt/unknown profile;
+  it records the coordinated remediation and unaccepted first-version crash-recovery trade-off.
+  CLOUD-028 owns the lease-timeout/late-child regression evidence. No runtime or ACK behavior changes.
 - Next gate: Accept the concrete runtime admission/attestation contract, stable delivery correlation,
   bounded unknown-outcome recovery, busy-task policy, and version/migration compatibility; then prove
   convergence without waiting for Agent completion or a Game effect. Generic agreement with the
   product direction does not select the proposed v0.3 route, storage, or receipt fields.
+  First decide whether the first version requires runtime crash recovery or accepts qualified
+  exact-task acceptance with a documented post-acceptance loss risk. Then specify unknown-slot
+  disposition without revoking the Grant. Actual wake evidence does not block specification;
+  legitimate invocation still gates live execution.
 - Dependencies: ADR-0046; retained ADR-0009/0037/0038/0045 compatibility contracts; TASK-035 binding;
   TASK-034 runtime evidence; TASK-033 standing adoption; AUDIT-V2-003 in Core/09.
 

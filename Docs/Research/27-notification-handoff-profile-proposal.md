@@ -61,10 +61,13 @@ attempts. Create or recover this mapping before the first runtime call; a new le
 notification. Serialize competing workers against that identity and retain the binding generation
 locally so a changed binding cannot silently redirect an in-flight delivery.
 
-The runtime must provide idempotent admission or authoritative lookup of that same notification.
-A Connector journal alone cannot resolve a crash after runtime admission but before the journal
-records success. Without a suitable runtime primitive, preserve `unknown` and surface the limitation;
-do not claim exactly-once delivery or start an alternative task.
+Automatic recovery of an uncertain submission requires idempotent runtime admission or authoritative
+lookup of that same notification. Those capabilities are not prerequisites to specifying a bounded
+single-attempt profile. Before any call, persist its stable identity, binding generation and attempt
+reservation. A post-call crash or timeout remains durable `unknown` without automatic resend when
+no runtime reconciliation primitive exists. A Connector journal cannot prove what the runtime did
+between admission and the local success record; do not claim exactly-once delivery or start another
+task. The unknown delivery's slot disposition remains an explicit decision below.
 
 An additive notification profile remains recommended so retained v0.1/v0.2 effect ACKs keep their
 meaning. `v0.3`, `POST /v0.3/delivery-handoffs`, `handoff_id` and `notified` are candidate names,
@@ -159,6 +162,38 @@ Reuse the existing Connector's pairing, credentials, outbound claim and Adapter 
 actual launcher/caller assumptions before promoting necessary code. Neither the frozen MVP nor the
 experimental probe becomes a parallel production Connector. TASK-035 owns legitimate runtime and
 binding feasibility; this proposal cannot supply that evidence.
+
+## Smallest coordinated remediation
+
+The architecture review confirms three connected implementation gaps, not a reason to replace the
+Cloud/outbound Connector topology. Retain pairing, credential custody, signed delivery validation
+and the existing Adapter seam. The selected-product change must close these boundaries together:
+
+| Boundary | Required implementation | Falsifier |
+|---|---|---|
+| Enrollment and private binding | Capture the exact task through trusted runtime context; verify owner/Grant scope; persist and recover the same binding generation. | A first Event chooses the task, restart loses it, or a wrong binding reaches the driver. |
+| Notification driver | Make one permitted exact-task handoff; distinguish its result from Agent execution, Browser use and business completion. | A fresh process substitutes for the task, or a delivery timeout cancels the ongoing task. |
+| Receipt and recovery | Persist qualified handoff or explicit unknown under stable correlation; coordinate Receiver receipt and slot release using an accepted profile. | An unknown send is blindly repeated, a late process exit is promoted to receipt evidence, or no Game effect causes redelivery. |
+
+TASK-034's actual wake/Browser evidence closes the product trace; it is not a prerequisite to
+specifying these semantics. TASK-035's permitted runtime invocation remains a prerequisite to any
+live call. Neither a fixture nor agreement with this plan creates that invocation capability.
+
+### First-version reliability decision, not yet accepted
+
+The stronger recommendation above assumes a runtime contract covering admitted work's scheduling
+and recovery. A smaller alternative can settle on qualified exact-task acceptance without promising
+recovery after an App crash. This keeps notification-only semantics, but an accepted notification
+could be lost before a turn starts; the Receiver would not resend it. A later Event is not a
+guaranteed remedy, especially when the lost Event is the last one. This narrower assurance must be
+accepted explicitly and labelled runtime acceptance, never crash-durable delivery or guaranteed wake.
+
+Both alternatives preserve unknown after a lost reply and prohibit blind resend. Unknown handling
+does not revoke the Grant. Its queue consequence is a separate decision: pause the affected lane
+pending resolution, or retain the unknown record while explicitly releasing the slot for newer
+Events. The former can delay later reminders; the latter accepts an unresolved earlier reminder and
+needs bounded scheduling. Neither behavior, a new receipt API, wire version or migration is selected
+by the owner's approval to investigate and optimize the architecture.
 
 ## Minimum acceptance matrix
 

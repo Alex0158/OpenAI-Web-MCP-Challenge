@@ -241,6 +241,84 @@ test("Codex process timeout is killed and becomes an unknown activation", async 
   assert.equal(killed, true);
 });
 
+test("remaining lease timeout stays unknown after the dispatched Codex child later succeeds", { timeout: 2_000 }, async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  const child = new EventEmitter();
+  let kills = 0;
+  child.kill = () => {
+    kills += 1;
+    return true;
+  };
+  let invocations = 0;
+  let spawns = 0;
+  let adapterCompletion;
+  t.after(async () => {
+    child.emit("close", 0, null);
+    await adapterCompletion;
+    t.mock.timers.reset();
+  });
+  const adapter = createCodexExecAdapter({
+    workingDirectory: process.cwd(),
+    executable: "/private/codex",
+    commandTimeoutMs: 1_000,
+    clock: () => NOW,
+    spawnCommand() {
+      spawns += 1;
+      return child;
+    },
+  });
+  const lease = {
+    ...deliveryLease(),
+    lease_expires_at: new Date(NOW.getTime() + 25).toISOString(),
+  };
+  const dispatch = dispatchAgentActivation({
+    adapter: {
+      activate(activation) {
+        invocations += 1;
+        adapterCompletion = adapter.activate(activation);
+        return adapterCompletion;
+      },
+    },
+    lease,
+    now: NOW,
+    timeoutMs: 1_000,
+  });
+  let dispatchSettled = false;
+  dispatch.then(() => { dispatchSettled = true; });
+  await Promise.resolve();
+  assert.equal(invocations, 1);
+  assert.equal(spawns, 1);
+
+  t.mock.timers.tick(24);
+  await Promise.resolve();
+  assert.equal(dispatchSettled, false);
+  t.mock.timers.tick(1);
+  const result = await dispatch;
+  const expected = {
+    type: "webmcp.agent_activation_result",
+    protocol_version: lease.protocol_version,
+    delivery_id: lease.delivery_id,
+    event_id: lease.event_id,
+    attempt: lease.attempt,
+    outcome: "outcome_unknown",
+    code: "adapter_invocation_timed_out",
+    unavailable_capability: null,
+  };
+  assert.deepEqual(result, expected);
+  assert.equal(Object.isFrozen(result), true);
+  assert.equal(kills, 0);
+
+  // The child is still live after Core stops waiting; timeout does not mean no dispatch.
+  child.emit("close", 0, null);
+  assert.equal((await adapterCompletion).outcome, "accepted");
+  t.mock.timers.tick(1_000);
+  assert.equal(await dispatch, result);
+  assert.deepEqual(result, expected);
+  assert.equal(invocations, 1);
+  assert.equal(spawns, 1);
+  assert.equal(kills, 0);
+});
+
 test("local smoke test exposes a Codex-specific timeout", async () => {
   await assert.rejects(
     runCodexPrompt({

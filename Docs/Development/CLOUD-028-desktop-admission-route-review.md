@@ -208,6 +208,48 @@ covering those properties. If it is unavailable locally, request that specific i
 repeating the same archive/wrapper inspection or requesting generic consent again. A permissioned
 invocation still requires the unused C1 runtime check; no successful admission is presumed.
 
+## Connector architecture remediation review
+
+The owner approved investigation and optimization of the three connected gaps: trusted existing-
+task enrollment, a notification driver rather than a fresh-process runner, and notification-only
+settlement. The source baseline is shared `main` at `805ee65`. This Assured assessment produces
+only a bounded test and proposal refinement; it does not select a new runtime or protocol.
+
+`codex-exec-adapter.mjs` waits for child completion, while Core `dispatchAgentActivation` separately
+limits its wait by the lease. ADR-0011 requires unknown on that timeout, not cancellation of work
+already started. ADR-0026 retains process-completion semantics and command-timeout termination in
+the preview. These are unsuitable selected-product semantics, but changing cancellation, returning
+success on spawn, or automatically acknowledging an unknown result is not a contract-preserving fix.
+
+The added fake-timer regression in `runtime/local-connector/test/codex-exec-adapter.test.mjs` uses
+the real Core/exec-adapter boundary, a fake child, a 25 ms remaining lease and a 1,000 ms command
+deadline. Core returns one immutable correlated unknown before the child deadline. The child can
+later complete successfully without changing that result or dispatching again. This demonstrates
+why timeout cannot prove non-delivery; it neither reproduces a live Desktop failure nor tests
+Receiver ACK, reclaim or durable recovery. No real Codex process or App call is made by this test.
+
+[Research 27](../Research/27-notification-handoff-profile-proposal.md) now separates automatic
+unknown recovery, which needs a runtime reconciliation primitive, from specifying a single-attempt
+profile with durable unknown and no blind resend. It also names the unaccepted reliability choice:
+qualified exact-task acceptance versus runtime-backed crash recovery. Unknown-slot disposition and
+the shared wire/storage transition remain decisions, not inferred defaults. TASK-029 owns that gate;
+TASK-035's legitimate invocation and unused C1 remain unchanged. No prior source trace was repeated.
+
+Only the test, Research 27, TASK-029 and this record belong to the increment. Core/00, Mechanism 04,
+ADR-0011/0026/0046/0047 and the package README remain aligned: no executable behavior, public surface,
+authority or integration claim changed, so no canonical behavior update or accepted ADR is needed.
+Concurrent lifetime/package, Receiver, SDK, Game and deployment work remains untouched.
+
+Verification on Node `24.20.0`: the focused exec-adapter suite passed 10/10; the Connector aggregate
+`CLOUD_RECEIVER_V2_E2E=0 node --test test/*.test.mjs` passed 56, failed zero and skipped 12 opt-in
+Receiver/database cases. The new regression uses fake timers, not timing-sensitive sleeps or a
+real child. It characterizes the retained contract; no production fix or Red/Green behavior change
+is claimed. Validator tests passed 6/6, scanner tests 3/3, and indexed repository validation passed.
+Owned-file CJK/private-identifier checks and working/staged whitespace checks were clear. The full
+sensitive-pattern scan still reports 21 existing findings in seven Game files, all unchanged against
+HEAD; it is not a clean repository scan. No Core runtime suite was reopened for this test-only and
+proposal change. C1 remains unused; no deployment or external notification occurred.
+
 ## Receiving-side correction: idle caller is not the demonstrated blocker
 
 The follow-on review traced the receiving App main process and renderer, rather than inferring
