@@ -115,6 +115,20 @@ that consented field. A Node `v24.20.0` representative claim response through th
 `connector_response_invalid`; the PM-approved `CONNECTOR-V2-E2E-001` run used the current checkout.
 AUDIT-V2-012 and TASK-032 own the compatible Connector release and clean-consumer gate.
 
+## Connector release-readiness audit: 2026-09-04
+
+The clean `runtime/local-connector/` checkout passed `npm run verify` on Node `v26.5.0` with npm
+`11.17.0`: its syntax check covered `36` modules, `49` enabled tests passed, and `12` external
+active-v2 tests were explicitly skipped because their Receiver/database configuration was not
+supplied. `npm pack --dry-run --json` passed without creating a tarball and described `35` files,
+including the bundled Core client with the active instruction-bearing continuation fields and the
+standing-v0.2 source modules. The package version remains the unchanged `0.2.20` checkout version.
+
+This is current-checkout release-candidate evidence only. It does not prove a new immutable version,
+registry compatibility, active-v2 Claim/full-chain execution, publication, deployment, or the
+selected-product notification handoff. The registry `0.2.20` mismatch and its `instruction` rejection
+remain the release defect owned by TASK-032; no package file or version was changed in this audit.
+
 The first Acknowledgement aggregate run produced one noncanonical transport response in ACK-003
 and finished `4/5`. The isolated case passed immediately, followed by three complete `5/5` runs.
 No production change was made for a non-reproduced harness observation; it remains a reopen signal
