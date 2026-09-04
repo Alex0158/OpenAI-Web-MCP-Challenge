@@ -104,6 +104,27 @@ The pairing abuse fence is implemented in the active `saas-boilerplate/` boundar
 This is local implementation evidence only. The reviewed hosted preview has not been mutated; the
 production HMAC secret, migration, and disposable hosted readback remain TASK-026 Gate B2 work.
 
+### Hosted Gate B2 readback attempt — 2026-09-04
+
+The current Preview alias `https://cloud-receiver-delta.vercel.app` was checked without credentials
+or a real pairing identifier. Health/readiness and the frontend-origin claim preflight were
+successful. An empty JSON claim body returned `400 http_body_invalid`; 30 additional identical
+requests, each handled by a distinct Vercel execution, also returned `400` with no `429` or
+`Retry-After`. A syntactically valid disposable `{ pairing_id, pairing_code, device_name }` body
+was rejected with the same error. The alias is therefore not evidence of the reviewed Amendment A
+strict-schema/rate-fence build. No pairing or Connector effect was attempted; hosted Gate B2 stays
+open pending deployment of the reviewed commit and migration followed by a fresh disposable
+readback.
+
+### Vercel deployment preflight — 2026-09-04
+
+Vercel CLI `50.22.1` is authenticated as `ukalexwonguk-9663` in the
+`ukalexwonguk-gmailcoms-projects` team. The team has no `cloud-receiver-delta` project, the
+documented alias is not inspectable under that account, and the clean `saas-boilerplate/` checkout
+has no `.vercel` project or repository linkage. This was a read-only preflight: no project, link,
+environment value, deployment, or alias was created or changed. A reviewed Vercel ownership path
+or an equivalent disposable host is still required before Gate B2 can be rerun.
+
 ## Current closure boundary
 
 The baseline pairing gate is locally verified and Pairing Feature 1 is closed. Amendment A is

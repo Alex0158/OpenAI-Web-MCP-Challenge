@@ -239,6 +239,17 @@ customer, cross-layer standing-mode adoption, and final market/distribution mode
 | Product value and judge reproducibility | **UNKNOWN** | selected-app evidence required |
 | Submission | **NOT SUBMITTED** | live Devpost readback required |
 
+The 2026-09-04 hosted pairing readback adds a sharper limit to the active deployment claim: the
+Preview alias answered health/readiness and CORS preflight, but rejected both an empty claim body
+and a syntactically valid Amendment A three-field body with `400 http_body_invalid`. Thirty bounded
+follow-up invalid requests, each on a distinct Vercel execution, produced no `429` or
+`Retry-After`. The alias therefore cannot prove the reviewed strict-schema/rate-fence build,
+source-bucket durability, or migration identity; TASK-026 Gate B2 remains open and no valid claim
+or Connector effect was attempted. A same-day read-only Vercel CLI preflight found no
+`cloud-receiver-delta` project or inspectable alias in the currently authenticated team, and the
+clean nested Receiver checkout has no `.vercel` linkage. No project, environment, deployment, or
+alias mutation was made; hosted ownership remains an explicit Gate B2 prerequisite.
+
 ## 4. Current implementation map
 
 The current reusable contract source is `reentry-core/`. Its stable contracts are routed through the

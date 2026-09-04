@@ -252,6 +252,42 @@ configuration probe exits non-zero when the source HMAC secret is absent. Gate B
 current hosted preview still needs a reviewed deployment with the production HMAC secret and a
 disposable hosted readback; no hosted mutation was made by this local increment.
 
+An exact-commit recheck on 2026-09-04 used the clean `saas-boilerplate` `Re-Entry` tree at
+`0195a9846024c4f65c62d3922069970ad1b96b92` with Node `v26.5.0` and a fresh disposable PostgreSQL
+16 database. The eight migrations, backend type-check, backend build, and the four pairing/source/
+abuse/restart suites passed (`19/19` tests). This confirms the local implementation identity and
+does not close Gate B2 or authorize a hosted claim-path mutation.
+
+### Gate B2 hosted readback attempt — 2026-09-04
+
+The documented Preview alias `https://cloud-receiver-delta.vercel.app` was probed without
+credentials or a real pairing identifier. `GET /healthz` and `GET /readyz` remained `200`, and a
+frontend-origin `OPTIONS` preflight for the claim route remained `204`. One invalid `POST` with an
+empty JSON object returned `400 {"error":{"code":"http_body_invalid"}}`. A bounded follow-up of
+30 more identical invalid requests was served by 30 distinct Vercel execution IDs; every response
+was the same `400` and none returned `429` or `Retry-After`. A well-formed disposable three-field
+claim body was also rejected with the same `http_body_invalid` response.
+
+This is evidence that the reviewed Preview alias is not serving the Amendment A build (or is not
+serving its strict claim schema/rate-fence boundary). It does not prove source-bucket persistence,
+bounded rate limiting, migration identity, or any claim effect. No valid pairing, Connector, or
+credential was supplied, and no claim was consumed. Gate B2 therefore remains open. The next gate
+is to deploy the reviewed `0195a9846024c4f65c62d3922069970ad1b96b92` backend and its
+`20260904000000_pairing_claim_rate_limit` migration to a reviewed disposable Preview with the
+required production-shaped HMAC/PostgreSQL configuration, then repeat the same bounded readback
+before enabling anonymous claims.
+
+### Vercel deployment preflight — 2026-09-04
+
+The deployment path was checked read-only after the hosted readback. Vercel CLI `50.22.1` is
+authenticated as `ukalexwonguk-9663` in the `ukalexwonguk-gmailcoms-projects` team, but that team
+has no project named `cloud-receiver-delta`, and the documented alias cannot be inspected under
+that account. The clean nested `saas-boilerplate/` `Re-Entry` checkout has no `.vercel` project or
+repository linkage. No project was created, no local link was written, no environment value was
+read, and no deployment or alias mutation was made. Gate B2 remains open pending an explicitly
+reviewed Vercel project/ownership path (or an equivalent disposable host) for the exact commit and
+migration above.
+
 ## 6. Reopen condition
 
 Reopen for changed code entropy, request identity, attempt semantics, rate-limit scope, replay,
