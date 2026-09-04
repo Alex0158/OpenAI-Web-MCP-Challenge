@@ -308,6 +308,36 @@ deployment. Gate B2 remains open pending a healthy reviewed database target, the
 production-shaped Preview variables including the source-HMAC secret, and an exact reviewed
 deployment followed by the bounded readback.
 
+### Hosted Preview deployment and Gate B2 readback — 2026-09-04
+
+The owner-authenticated Vercel session connected `cloud-receiver` to
+`4xeoz/saas-boilerplate` and created a new isolated Preview deployment
+`EpcQLku5oinjQ2matmtVwvgZsYeA` from the exact `Re-Entry` commit
+`0195a9846024c4f65c62d3922069970ad1b96b92`. The deployment is Ready at
+`https://cloud-receiver-fknoq31l9-eyads-projects-b54e035a.vercel.app` and also has the branch alias
+`https://cloud-receiver-git-re-entry-eyads-projects-b54e035a.vercel.app`. The existing
+`cloud-receiver-delta.vercel.app` production alias and prior deployments were left untouched.
+
+The Preview-only secret variable `CLOUD_RECEIVER_PAIRING_SOURCE_HMAC_SECRET` was added in the
+owner session. Its value is not recorded or exposed. No Production environment variable, alias,
+promotion, rollback, or redeploy was performed.
+
+Supabase project `re-entry` (`vycutuvanimbndxykiih`) recovered to Healthy. Creating the proposed
+`reentry-closure-preview` project failed twice with a provider Partial System Outage, so no new
+database was used. The exact reviewed `cr2_pairing_claim_rate_buckets` table and
+`window_expires_at` index were applied once in a single SQL transaction. Table Editor confirms the
+table and later readback confirms one persistent bucket row with `request_count=31`; RLS remains
+disabled by the reviewed migration posture. The `_prisma_migrations` ledger was deliberately not
+edited, so this evidence must not be described as a remote `prisma migrate deploy` run.
+
+The new Preview returned `200` for `/healthz` and `/readyz`, `204` for the frontend-origin claim
+preflight, and `400 http_body_invalid` for an empty claim body. A bounded same-source probe was
+served by 31 distinct Vercel execution IDs and crossed the 30-request window; the over-budget
+response was `429 pairing_rate_limited` with `Retry-After: 558`. No real pairing, token, Connector,
+or credential was used. Gate B2 is therefore verified for the minimum disposable hosted Preview
+readback when combined with the existing local atomicity/concurrency/restart evidence. Production
+promotion remains open pending a separately reviewed production secret and migration procedure.
+
 ## 6. Reopen condition
 
 Reopen for changed code entropy, request identity, attempt semantics, rate-limit scope, replay,

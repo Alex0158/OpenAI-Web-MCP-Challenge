@@ -144,10 +144,38 @@ change, deployment, or alias mutation was made. The owner project is now identif
 still requires a healthy reviewed database target, the source-HMAC configuration, and an exact
 reviewed deployment before readback.
 
+### Hosted Preview deployment and Gate B2 readback — 2026-09-04
+
+The owner session later showed Supabase `re-entry` (`vycutuvanimbndxykiih`) Healthy. Two creation
+attempts for `reentry-closure-preview` failed during a provider Partial System Outage, so the
+existing project remained the target. The exact reviewed `cr2_pairing_claim_rate_buckets` table
+and expiry index were applied manually in one SQL transaction and are visible in Table Editor; RLS
+was left disabled to preserve the reviewed `cr2_*` posture. The migration ledger was not changed,
+and the reviewed migration name remains absent there.
+
+Vercel project `cloud-receiver` is now connected to `4xeoz/saas-boilerplate` and has an isolated
+Ready Preview deployment `EpcQLku5oinjQ2matmtVwvgZsYeA` from `Re-Entry` commit
+`0195a9846024c4f65c62d3922069970ad1b96b92`. Its unique hostname is
+`cloud-receiver-fknoq31l9-eyads-projects-b54e035a.vercel.app`, with a branch alias at
+`cloud-receiver-git-re-entry-eyads-projects-b54e035a.vercel.app`. The original
+`cloud-receiver-delta.vercel.app` production alias and prior deployments were not changed. The
+Preview-only `CLOUD_RECEIVER_PAIRING_SOURCE_HMAC_SECRET` variable was added without recording its
+value; no Production variable or alias was touched.
+
+Against the unique Preview hostname, `/healthz` and `/readyz` returned `200`, the frontend-origin
+claim preflight returned `204`, and an empty claim body returned `400 http_body_invalid`. The
+bounded same-source probe crossed the 30-request window across 31 distinct Vercel execution IDs;
+Supabase showed one durable bucket row at `request_count=31`, and the over-budget response was
+`429 pairing_rate_limited` with `Retry-After: 558`. No valid pairing or Connector credential was
+used. The minimum disposable hosted Preview readback is verified when combined with the local
+atomicity, concurrency, restart, header, and outage suites. Production promotion and managed
+migration closure remain separate and open.
+
 ## Current closure boundary
 
 The baseline pairing gate is locally verified and Pairing Feature 1 is closed. Amendment A is
-locally verified but remains open for hosted Gate B2. ADR-0013 and proposed
+locally verified and the minimum disposable hosted Preview Gate B2 readback is verified; production
+promotion remains open. ADR-0013 and proposed
 [ADR-0034](../Decisions/ADR-0034-propose-organization-grant-control-amendment.md) are separate from
 Pairing and do not block TASK-014/CLOUD-014 closure; they must be handled before later
 Grant-revocation work. Consent and later v2 work remain paused. No Grant route was implemented or

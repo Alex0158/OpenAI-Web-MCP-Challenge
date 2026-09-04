@@ -205,6 +205,40 @@ secret is absent. Gate B2 remains open until a reviewed deployment with the prod
 passes the disposable hosted readback; this amendment did not enable or mutate the hosted claim
 path.
 
+### 3.3 Hosted Preview Gate B2 readback — 2026-09-04
+
+The owner-authenticated Vercel session connected project `cloud-receiver` to the pushed
+`4xeoz/saas-boilerplate` `Re-Entry` branch and created a separate Preview deployment
+`EpcQLku5oinjQ2matmtVwvgZsYeA` from exact commit
+`0195a9846024c4f65c62d3922069970ad1b96b92` (`feat(receiver): add pairing claim abuse fence`).
+It is Ready at `cloud-receiver-fknoq31l9-eyads-projects-b54e035a.vercel.app` and retains the
+branch alias `cloud-receiver-git-re-entry-eyads-projects-b54e035a.vercel.app`. The existing
+`cloud-receiver-delta.vercel.app` production alias and its prior deployments were not promoted,
+redeployed, or reassigned.
+
+The Preview environment now contains the secret variable
+`CLOUD_RECEIVER_PAIRING_SOURCE_HMAC_SECRET`. Its value was generated and managed in the owner
+session, is Preview-scoped, and is intentionally absent from repository files, logs, and this
+record. No Production variable or alias was changed.
+
+The existing Supabase `re-entry` project (`vycutuvanimbndxykiih`) recovered to Healthy. Two
+attempts to create `reentry-closure-preview` failed with the provider's Partial System Outage, so
+the existing project remained the target. The exact reviewed rate-bucket DDL and expiry index were
+applied once in a single SQL transaction; the table is visible and has RLS disabled to preserve the
+reviewed `cr2_*` posture. The `_prisma_migrations` ledger was not edited and still does not contain
+`20260904000000_pairing_claim_rate_limit`; this is manual exact-DDL evidence, not a claim that
+`prisma migrate deploy` ran remotely.
+
+The bounded readback against the new Preview returned `200` for `/healthz` and `/readyz`, `204`
+for the frontend-origin claim preflight, and `400 http_body_invalid` for an empty claim body. A
+same-source probe crossed the 30-per-10-minute budget across 31 distinct Vercel execution IDs;
+the persistent Supabase bucket readback showed one row with `request_count=31`, and the over-budget
+response returned `429 pairing_rate_limited` with bounded `Retry-After: 558`. No valid pairing,
+Connector token, or credential was supplied or consumed. Combined with the local concurrency,
+restart, header, and limiter-outage suites, this verifies the minimum disposable hosted Preview
+readback for Amendment A. Production promotion remains a separate decision because the production
+secret and migration-ledger/deployment procedure are intentionally not configured by this increment.
+
 ### 4. Explicitly rejected or deferred authority
 
 1. **Rejected for now:** Organization API keys controlling User-owned Grants. The current Core
@@ -237,8 +271,9 @@ path.
 For the original increment, `PAIR-001`–`PAIR-005` run over the real v2 handler and a disposable
 PostgreSQL database. Amendment A additionally requires its strict-shape, attempt, source budget,
 concurrency, restart, outage, secret-free, and client-compatibility tests plus the hosted readback
-described above. The local implementation and client compatibility are now verified; pairing closure
-still requires the hosted Gate B2 readback. Both the original and amended evidence are recorded in
+described above. The local implementation, client compatibility, and minimum disposable hosted
+Preview readback are now verified; production promotion and managed migration closure remain open.
+Both the original and amended evidence are recorded in
 [CLOUD-014](../Development/CLOUD-014-cloud-receiver-v2-pairing.md).
 Reopen this ADR if implementation requires a different public wire shape, delegated Grant authority,
 raw secret persistence, target reuse, a weaker fallback, or migration of the retired Receiver state.
