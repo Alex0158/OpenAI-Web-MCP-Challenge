@@ -35,8 +35,9 @@ an integration gap, not evidence that the original success did not happen or has
 The original clean-run and post-fix rehearsal invocation timelines now show that goal auto-
 continuation had already started the target turn before each Event arrived. They therefore prove
 notification into the existing task and subsequent Browser work, not Event-caused wake from idle.
-The original launch recipe is available; the missing evidence is a permitted Connector invocation
-and an isolated idle-target wake trace, not an assumed lost implementation or a model regression.
+The original launch recipe is available. The later D2 and Q2 controls below now establish narrow
+idle-wake routes; product Connector integration remains open, not an assumed lost implementation
+or a model regression.
 
 [CLOUD-027](../Development/CLOUD-027-experimental-desktop-bridge-probe.md) records rejection of an
 ordinary-Node custom client before task readback, not a complete reproduction of MVP 1's launcher.
@@ -62,9 +63,20 @@ out a universal idle or warm-state prohibition. The old-target fault remains unr
 not a controlled model comparison or independent Connector access. B1/D1/D2 are consumed with
 no retries, no development task was targeted, and the existing Connector invocation is the next gate.
 
+Q2 now verifies a public CLI path: one `codex queue` invocation to the same loaded, warm, idle D2
+fixture started a distinct turn, delivered the fixed notification as `userMessage`, and returned
+the exact marker with zero tools. Passive rollout observation confirmed completion before any
+post-send App task read; no App-message rescue or new task was used. This is externally invoked
+same-task wake for the recorded condition, not `LocalConnector.runOnce()` integration, a qualified
+receipt, unloaded/restart reliability or Browser proof. Q2 is consumed. Its positive result makes
+the existing public queue primitive the next integration candidate; the message role, durable
+private binding and ADR-0049 admission proof still need explicit qualification. The earlier failed
+targets' precise causes remain unresolved; target state is a discriminator, not a controlled sole-cause finding.
+
 Separately, the owner approved one temporary local relay and a C1 inert notification. C1 is
 unused: CLOUD-028 identifies the real Connector adapter seam, but no App-authorized background
-invocation is established. No listener or notification was started. Resolve host-provided caller
+invocation for that private relay is established. It is not a prerequisite to Q2's public path.
+No listener or C1 notification was started. Resolve host-provided caller
 and approval handling; another generic user approval or active-Agent-mediated send does not close
 that gate. This is not a new runtime failure or a reversal of MVP1's original proof.
 Receiving-side source inspection now finds no active-caller-turn gate in the MCP messaging path
@@ -274,7 +286,8 @@ customer, cross-layer standing-mode adoption, and final market/distribution mode
 | Complete generic reference flow | **LOCALLY VERIFIED, EVIDENCE-ONLY AGENT** | CLOUD-006 and `runtime/reference-system/` |
 | Application-review sample Host | **LOCALLY VERIFIED, SAMPLE ONLY** | ADR-0023, HOST-001, and `runtime/application-demo/` |
 | Frozen MVP1 mechanism proof | **REAL SAME-TASK / BROWSER / WEBMCP VERIFIED ON RECORDED BUILD** | `mvp/` P0 Stage-B and rehearsal evidence; original conversation/artifact continued, not a deterministic Agent substitute or current product integration |
-| Current host-mediated task control | **SAME-TASK INPUT/RESPONSE VERIFIED; ISOLATED WAKE UNPROVED** | CLOUD-028: B1 tool-data input and exact response after old Q1 in a new completed turn; no new task or observed tools, no independent Connector or Browser claim |
+| Current host-mediated task control | **D2 CLEAN IDLE WAKE VERIFIED; D1 OLD-TARGET FAULT OPEN** | CLOUD-028: D2 starts a distinct same-task turn from idle; B1 only joins the old Q1 turn. App-mediated controls do not prove Connector integration or Browser return |
+| Public CLI same-task wake | **Q2 LOADED-IDLE WAKE RUNTIME-VERIFIED; PRODUCT INTEGRATION OPEN** | CLOUD-028: one public `codex queue` starts a distinct turn in the existing loaded fixture, with exact response and no tools or App-message rescue. Actual input is `userMessage`; durable binding, unloaded/restart behavior and qualified admission remain open |
 | Standalone App Server/Desktop Browser joins | **FAILED FOR BOTH TESTED ROUTES** | Research 19 and frozen probe artifacts |
 | Current in-app Browser and page-bound WebMCP | **RUNTIME VERIFIED MANUALLY; CONNECTOR JOIN OPEN** | HOST-001 fresh DRAFT and resumed inventories plus exact resumed-stage invocation |
 | Host application and first user/workflow | **SELECTED; PARTIALLY IMPLEMENTED** | ADR-0042; Sleepless Kingdom under `WebApp/Web-Game/`; external vertical slice remains open |
@@ -481,16 +494,14 @@ Experiments, and frozen evidence rather than this status file.
 
 1. Finish [TASK-001](../Tasks/TASK-001-select-host-application.md) exact documentation and remote
    closure without absorbing owner-held Game or RightSpot work.
-2. Use TASK-035's completed launcher comparison and CLOUD-028's current host-mediated response
-   evidence to define the smallest legitimate Connector-to-host invocation. Do not repeat the same
-   control or treat missing public documentation as impossibility. B1 is consumed; the separately
-   approved C1 relay test remains unused pending actual host invocation, and the native CLI remains
-   held. Receiving-side source supports idle compatibility; focus on legitimate client admission
-   and upstream approval, not an assumed active-turn restriction or invented delegation mechanism.
-   Do not ask for the unchanged test approval again. Keep the existing Local Connector as the product
-   integration surface. Private binding and TASK-029's notification receipt/recovery specification
-   may progress in parallel; neither proves autonomous admission. Preserve v0.1/v0.2 compatibility
-   and do not repurpose effect ACKs.
+2. Use TASK-035/CLOUD-028's positive Q2 public-CLI result to qualify the existing Connector queue
+   primitive for the ADR-0049/TASK-036 integration. Do not repeat generic idle tests or claim no
+   independent callable route exists. Define the loaded-state support boundary, trusted private
+   binding, fixed event-only input and qualified runtime admission before wiring the standing
+   consumer. A queue exit code is not a receipt; `userMessage` is not typed tool data. Preserve
+   unknown without blind resend and do not repurpose effect ACKs. Coordinate dirty-file ownership
+   with TASK-036. B1/D1/D2/Q2 are consumed; private C1 remains a separate held alternative, not a
+   prerequisite to the public candidate. Keep one existing Connector and no fresh-task fallback.
 3. Select and verify actual same-task notification/wake and authenticated canonical-Game-page
    access with fresh WebMCP under TASK-034. Do not substitute a fresh session to pass the gate.
 4. Prove signal 1 as queue acceptance, notification handoff, actual task wake, page reads, and

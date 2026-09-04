@@ -177,6 +177,33 @@ handoff reliability, or implement enrollment or delivery settlement. B1 and D1 r
 C1 remains separate. No App restart/patch/configuration change, Browser, Game, Receiver, SDK,
 service, deployment or credential operation is authorized by this extension.
 
+### Public queue loaded-idle discriminator Q2, 2026-09-04
+
+The owner's subsequent instruction to continue Connector integration is applied to one bounded
+public-CLI diagnostic against the existing D2 fixture. This is not another App-tool idle control,
+a reset of B1/D1/D2, or use of the private C1 relay. The reviewed difference is target state:
+CLOUD-026's Q1 targeted an unloaded task, whereas D2 is already loaded, warm and idle. Installed
+queue-coordinator source distinguishes these states, and the retained Connector queue adapter
+already uses the public CLI primitive. Neither source nor CLI acceptance proves actual wake.
+
+Reserve Q2 in CLOUD-028 before one invocation of the owning App's public `codex queue`, with
+the exact private D2 locator and fixed marker `REENTRY_PUBLIC_QUEUE_LOADED_IDLE_20260904_Q2`.
+Verify the unchanged completed task, expected workspace, zero goal and queued-item rows, and no
+associated automation immediately before dispatch. The prompt requests only the exact marker,
+no tools or other work. No model, reasoning, remote endpoint, configuration, caller or permission
+override is permitted. Do not call the retained adapter's Browser-requesting prompt unchanged.
+
+An attempted or uncertain submission consumes Q2. Observe for at most two minutes through
+read-only task-scoped stores, rollout and App readback; no resend, App-tool rescue, private-client
+fallback, restart, navigation or queue deletion. Leave an unconsumed message intact. No new task,
+development-task probe, Receiver/Game/SDK traffic, service, App modification or deployment is in
+scope. Record queue acceptance separately from actual input role, distinct turn and exact response.
+
+Success would establish only this loaded-idle public-CLI path, not the product Connector consumer,
+unloaded/restart reliability, durable enrollment, typed notification admission or delivery receipt.
+Failure closes this state discriminator without authorizing more transport variants. The private
+native-client hold and C1's legitimate-host-invocation prerequisite remain unchanged.
+
 ### Required observations
 
 Unit and local socket tests must cover disabled mode, malformed/override input, exact-target and

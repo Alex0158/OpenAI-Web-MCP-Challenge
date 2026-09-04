@@ -1,7 +1,7 @@
 # CLOUD-028: Desktop Admission Route Review
 
 **Role:** DEVELOPMENT feasibility review, host-mediated control, and unsent platform-question draft  
-**Status:** D2 clean idle App-mediated wake runtime-verified; D1 old-target fault unresolved; C1 unused; independent client admission unresolved  
+**Status:** Q2 public CLI loaded-idle same-task wake runtime-verified; production Adapter admission and durable binding open  
 **Date:** 2026-09-04, Europe/London  
 **Task:** [TASK-035](../Tasks/TASK-035-bind-existing-agent-task-during-enrollment.md)  
 **Authority:** ADR-0046; ADR-0047 permits only its bounded diagnostic and host-mediated clarification
@@ -18,6 +18,116 @@ No App restart, environment/configuration change,
 daemon start, native call, test message, task migration, SDK installation, Receiver claim, deployment,
 signing change, credential retrieval, or external message was performed in the original static-review
 increment. The separately recorded host-mediated control below includes one authorized inert send.
+
+## Public queue loaded-idle discriminator Q2
+
+**Reservation:** Q2 was reserved before the sole public CLI invocation on 2026-09-04 and consumed
+at approximately `05:43:16Z`. The bundled CLI returned exit code zero and one queued-message
+identifier. Separate target evidence then verified an attributable new turn and exact response. The exact
+private target is the existing D2 fixture, not a development task or the old Q1/B1/D1 target.
+Any attempted or uncertain submission consumes this allowance; no retry or App-tool rescue.
+B1/D1/D2 remain consumed and C1 remains unused. ADR-0047 records this bounded diagnostic scope.
+
+**Hypothesis:** the previously untested loaded-idle state can allow the public queue route to
+start a turn even though Q1 did not wake an unloaded task. The installed renderer's queue send
+predicate rejects an absent conversation, while a completed loaded conversation can proceed
+subject to other ownership/readiness checks. Its queue coordinator reloads stored messages and
+attempts execution on queue changes. This is source evidence for a discriminator, not proof that
+the standalone CLI write reaches that coordinator in the current Desktop configuration.
+
+The owning bundled CLI documents `queue --thread <exact-locator> --message <fixed-text>`.
+The [official CLI changelog](https://learn.chatgpt.com/docs/changelog) records the public queue
+command and idle-session wake improvements in 0.149.0; it does not prove this Desktop route.
+The retained `runtime/local-connector/src/codex-queue-adapter.mjs` uses this CLI primitive, but
+its unchanged v0.1 prompt requests Browser work and is not used in this inert diagnostic.
+A shell invocation is not a `LocalConnector.runOnce()` integration result or a v0.2 receipt.
+
+The fixed marker is `REENTRY_PUBLIC_QUEUE_LOADED_IDLE_20260904_Q2`. Preflight must verify the
+same D2 task/workspace, unchanged completed turn, idle state, no goal, no queue and no associated
+automation. Use no model/effort/configuration/remote-endpoint override. After one CLI call, make
+only bounded read-only observations for at most two minutes. Distinguish command acceptance,
+queued item, target input and role, actual new turn, exact response, and unexpected tools.
+Preserve uncertain or unconsumed input and stop without another send or transport substitution.
+
+### Executed result and causal boundaries
+
+The owning ChatGPT Desktop is `26.901.20858`, build `7658`; its public bundled CLI is
+`0.153.0-alpha.5`. The single invocation supplied only the exact existing target and fixed prompt.
+It did not use a private App-tools endpoint, a remote endpoint, a substituted App Server, another
+caller identity, an App task-message tool, a listener or a fresh task. The investigator's source
+turn remained active, but it did not relay the notification through an App tool.
+
+| UTC time, 2026-09-04 | Observed boundary | Evidence |
+|---|---|---|
+| `05:42:55` to immediately before submission | Same D2 fixture remains idle with its prior completed turn, zero goal and queued rows, and no associated automation. | Exposed read-only task tool and target-scoped stores; no state changed. |
+| Approximately `05:43:16` | Exactly one public CLI call exits zero with a queued-message identifier. | CLI result; queue acceptance alone is not a handoff receipt. |
+| `05:43:23.007` | A distinct third turn starts in the existing fixture. | Target rollout; no other input or automatic goal turn in the interval. |
+| `05:43:23.220` | The Q2 prompt arrives as `userMessage`. | Rollout role is `user`, independently confirmed by later App readback. |
+| `05:43:27.369` / `.670` | Exact marker response, then turn completion. | Target rollout; zero tool calls. |
+| `05:43:38.938` | First post-send observation already sees the completed result; queue count is zero. | Passive filesystem/SQLite read, before any post-send App task read. |
+| `05:44:09` and final target-scoped checks | App readback agrees on the exact third turn and idle state; goals and queued rows remain zero. | Owning App readback and local stores. |
+
+The actual turn kept the configured `gpt-5.6-luna` / `max`; no override was supplied. No Browser,
+Game or Receiver action occurred. App logs also record the exact target's turn-complete event.
+No App-tool rescue or navigation occurred between submission and the passive observation of
+completion. Raw locators, message identifiers, task content, local paths and logs remain private.
+Q2 is consumed and complete; the fixture is left idle without a new goal or automation.
+
+**RUNTIME-VERIFIED:** a public external CLI invocation can wake this already-loaded, idle existing
+Desktop task and obtain its exact response, without App task-message mediation. This closes the
+blanket "no independently callable wake route found" claim for this specific condition. It does
+not prove that the installed renderer queue predicate was the component that consumed Q2; that
+source motivated the test but is not a traced backend causal chain. Q1 used a different unloaded
+target and D1 used accumulated historical state, so loaded state is not proven to be the sole
+cause of their failures. Neither a model comparison nor an old-target fix follows.
+
+**NOT YET PROVEN:** product `LocalConnector.runOnce()` dispatch, enrollment-time task selection,
+durable private binding, unloaded/busy/restart behavior, operation after the source task exits,
+repeated-event reliability, qualified v0.2 admission, hosted delivery, or Browser/WebMCP return.
+The CLI's `userMessage` role is not typed event/tool input; any product use must explicitly review
+the fixed notification envelope and preserve the existing user strategy and untrusted-event
+boundary. A successful marker response is diagnostic evidence, not an Agent-completion requirement
+for Receiver settlement. Do not fabricate an attestation from exit code zero or queue disappearance.
+
+### Concrete integration gate
+
+The next increment should start from this existing public queue primitive and the retained
+Connector adapter, not another generic idle control or an assumed platform-wide admission ban.
+Coordinate with TASK-036's owner before touching its dirty Connector/Core surfaces. Specify the
+minimum supported loaded-state profile, private enrollment/binding custody, bounded event-only
+message, and qualified admission proof under ADR-0049. The existing v0.1 queue adapter is not
+silently promoted: it binds in memory, builds a Browser/action prompt, and treats command acceptance
+as dispatch acceptance. The current CLI factory still selects the fresh-session preview for v0.1;
+the new owner-held v0.2 admission seam fails closed without a qualified Adapter. Neither result is
+the restored product route. Retain unknown without blind resend and preserve effect-backed routes.
+
+If the actual notification role or admission boundary requires a different product contract,
+present that precise decision before changing it. A public queue success does not select a
+production proof authority, authorize another diagnostic send, or bypass C1's private-route hold.
+C1 is a separate unused alternative, not a prerequisite to evaluating the now-positive public path.
+Two development-coordination updates were sent to the existing main Game task to establish file
+ownership and share Q2's bounded result; neither message was a diagnostic probe of that task.
+
+### Q2 documentation closure
+
+This Assured diagnostic changed five documentation files only: ADR-0047, this record, TASK-035
+and the narrow Core/00/Core/05 evidence and next-step sections. No product runtime, dependency,
+frozen MVP, App code/configuration, Receiver, SDK or Game implementation changed. Existing runtime
+aggregate results were not rerun or presented as new evidence. The live CLI test above, not a fake
+Adapter fixture, is the new runtime proof. Node `24.20.0` was used for passive rollout/store checks.
+
+Validator unit tests passed 6/6 and sensitive-scanner unit tests passed 3/3. Repository validation
+passed after correcting Task Control field formatting without changing the collaborator's
+implementation content. Exact owned staged hunks passed whitespace, CJK and raw-identifier checks.
+The full sensitive scan still reports 21 findings in seven Game documents; all seven were verified
+byte-identical in HEAD, index and worktree. No finding was suppressed or unrelated file edited.
+This is not a clean whole-repository sensitive-scan claim.
+
+Shared `main` remained three commits ahead of fetched `origin/main` before this closure, including
+another owner's unpublished Game judge-guide commit. Only Q2-owned hunks are staged; concurrent
+TASK-036, pairing, Receiver/Core/Connector/SDK, Game and RightSpot work remains outside the commit.
+Local documentation closure does not authorize publishing the other owner's history. No branch,
+push, package publication, deployment or additional diagnostic send is included.
 
 ## Dedicated clean-task idle control D2
 

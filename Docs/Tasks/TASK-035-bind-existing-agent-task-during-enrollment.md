@@ -9,7 +9,15 @@
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Local Connector/Agent Adapter owner, with Receiver and Host SDK owners.
-- Current increment: The owner-approved D2 clean-state control created one dedicated projectless
+- Current increment: Public queue Q2 now verifies one loaded-idle same-task wake.
+  Q2 used one public `codex queue` call to the existing D2 fixture
+  after loaded-idle/no-goal/no-queue/no-automation preflight. A distinct turn received the fixed
+  `userMessage`, returned its exact marker and completed with zero tools. Passive observation
+  confirmed completion before post-send App readback; there was no App-message rescue or fresh
+  task. This runtime-verifies the external public-CLI path for the named condition, not the
+  product Connector consumer, durable enrollment, qualified receipt, unloaded/restart behavior
+  or Browser/WebMCP. Q2 is consumed with no retry; CLOUD-028 owns its timeline and claim limits.
+- Historical diagnostic record (retained): The owner-approved D2 clean-state control created one dedicated projectless
   diagnostic task, completed its inert initial turn, verified idle/no-goal/no-queue/no-automation,
   then sent one fixed App-tool notification. A distinct turn in that same task returned the exact
   marker and completed with zero tool calls. Both turns used the configured default without
@@ -58,31 +66,22 @@
   the idle D2 fixture, App state, development tasks and spent B1/D1/D2 allowances. No additional
   send or App mutation is authorized. Repeated-handoff reliability still needs overlap/state-
   reconciliation evidence; D2 does not prove the old task repaired or automatic retries safe.
-  Define the smallest legitimate invocation from the existing Connector into the
-  host-owned task interface when no Agent turn is active, retaining actual caller and approval
-  handling. The original task-launched relay is the implementation reference, not a requirement
-  to repeat the completed source audit or copy a private pipe into a detached process.
-  The B1 allowance was consumed by the host-mediated control. The owner subsequently approved
-  ADR-0047's temporary local relay and one new C1 inert notification; C1 is not yet submitted.
-  This scope excludes Browser and still requires legitimate host invocation before listener startup.
-  CLOUD-028 identifies the existing adapter seam but no independently usable host invocation;
-  implementation is stopped at that boundary, not waiting for another generic test approval.
-  The pre-execution prerequisite is a permitted client invocation contract that preserves upstream
-  App approval. Successful runtime admission is then an observation of the authorized experiment,
-  not a result that must already be proved before testing. Neither an active-turn restriction nor
-  a need for a new delegation token has been demonstrated.
-  The readable-source trace is complete at the named compiled-executor boundary. Obtain its
-  permitted invocation contract for caller context and upstream approval, or original-integrator
-  evidence of a genuinely independent idle-target run. The original active-executor launch recipe
-  has been found and is not the missing source. Do not repeat that trace without new input.
-  The new verification must rule out automatic goal continuation, a user wake message or another
-  scheduler before the Event. Do not turn those mechanisms off in another task without authority;
-  use a confirmed idle target within the approved diagnostic scope. C1 remains unused.
-  Do not repeat wrapper metadata inspection as evidence for those unsupported requirements.
-  A stored task locator or Re-entry Grant does not itself authorize
-  App invocation. Name any actual authority change before requesting it; do not presume one from
-  missing public documentation. Then specify scope, lifetime, renewal if needed, restart and revocation.
-  Platform coordination is a conditional next step, not a proven universal prerequisite.
+  Start with the now-positive Q2 public queue primitive and retained Connector adapter, while
+  coordinating the owner-held TASK-036 surfaces. Define the loaded-state support boundary,
+  trusted enrollment/private binding, fixed event-only message and qualified admission under
+  ADR-0049. The unchanged v0.1 adapter is not ready for promotion: it binds in process memory,
+  sends a Browser/action prompt, and reports command acceptance rather than a qualified v0.2
+  attestation. Do not silently wire it into the standing consumer or relabel queue success.
+  Q2's `userMessage` role must be reviewed against notification-only semantics, not hidden as
+  typed event data or treated as a new user strategy. Present any contract change before code.
+  Unloaded/busy/restart and ambiguous outcomes still need a bounded implementation contract;
+  preserve unknown without blind resend. A marker response is diagnostic evidence, not business
+  completion required for handoff. Product proof must distinguish ingress, admission and wake.
+  C1 remains unused and held on its private host-invocation prerequisite; it is a separate
+  alternative, not the gate for the public path. B1/D1/D2/Q2 are consumed. Do not repeat generic
+  idle controls, impersonate a caller, copy the private pipe into a detached process, or mutate
+  another task's goal/queue/automation. A stored locator or Grant alone is not invocation authority.
+  Platform coordination is conditional, not a universal prerequisite after Q2's narrow success.
   Keep product integration in the existing Connector. No supported production Adapter is selected.
   The binding contract must then name trusted task selection,
   ownership/Grant verification, private persistence, restart, wrong-task, and unsupported-runtime
