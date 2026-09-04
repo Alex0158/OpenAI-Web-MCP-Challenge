@@ -174,6 +174,14 @@ Please provide commands and redacted evidence for at least:
 
 For each row, include expected outcome, observed outcome, event/sequence/correlation IDs, source/runtime identity, and the exact claim limit. Do not use raw credentials or platform task locators in the evidence.
 
+### 5.7 Ownership recommendation
+
+- Source code exists in the current `main` history and in the Receiver candidate, but the standing v0.2 path is not yet a verified public release. Do not treat source presence as release or compatibility evidence.
+- Eddy should own the Core, Host SDK, Local Connector, Receiver protocol closure, package/version identity, release artifact, and Receiver deployment. Those surfaces carry shared authority, signing, task-binding, lease, and public-contract decisions.
+- The Game team should own only the Game adapter, event mapping, Game-side persistence boundary, and CP-14 integration evidence. We should not fork or republish Eddy's packages under the same identity, import the private Core signer as a shortcut, or silently change the Receiver contract from the Game tree.
+- Public NPM publication is optional for the first hackathon handoff. An immutable reviewed Git ref or tarball, exact integrity, a matching hosted Receiver deployment, and reproducible conformance evidence are sufficient to begin integration. Eddy can publish the public package after that release gate passes.
+- If Eddy wants the Game team to implement a missing external component, the ownership transfer must be explicit: identify the exact repository/path, accepted contract owner, signing/deployment authority, release version, and review gate before we modify it.
+
 ## 6. What our Game team will do after the handoff
 
 Once the external contract is supplied and reviewed, we will:
