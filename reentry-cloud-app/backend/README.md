@@ -8,7 +8,7 @@ Receiver v2.
 Configure the Vercel project root as:
 
 ```text
-reentry-cloud-receiver-backend
+reentry-cloud-app/backend
 ```
 
 Vercel then discovers [`api/index.ts`](api/index.ts) as the Node.js function
