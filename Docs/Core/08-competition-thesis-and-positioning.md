@@ -3,7 +3,7 @@
 **Role:** CANONICAL competition-facing thesis, value proposition, positioning, and claim hierarchy  
 **Status:** Application-neutral Re-entry Core Program complete at `locally_verified`; Sleepless
 Kingdom selected as the Host/demo carrier; product proof and concrete Agent adapter remain open  
-**Last updated:** 2026-09-03  
+**Last updated:** 2026-09-04  
 **Official basis refreshed:** [Devpost Official Rules](https://webmcp.devpost.com/rules) and
 [challenge overview](https://webmcp.devpost.com/), observed 2026-08-30
 
@@ -45,6 +45,33 @@ delivery, not a free-form prompt and not application truth. When the selected ad
 available, the bound Agent returns to the authoritative page, rereads current state,
 rediscovers the tools valid for that stage, continues the same visible artifact, and stops at
 the human decision boundary.
+
+### Judge-facing narrative
+
+The root [README](../../README.md) is the judge-facing product introduction, not an installation
+guide or a second evidence ledger. Its lead is:
+
+> The web moves on. Your agent should too.
+
+Explain the value as a move from one-off prompts to ongoing collaboration between people, their
+existing Agent, and a live website. Lead with the demo video and a strongly recommended Judge Guide,
+then the waiting problem, scoped continuity, differentiation, platform vision, Sleepless Kingdom,
+potential business value, and concise component roles. Keep installation, deployment, commands,
+retired-runtime walkthroughs, and internal task chronology out of this entry point; deeper
+documentation remains available through the documentation map.
+
+The user-approved long-term vision is compatibility across mainstream Agents through supported,
+permission-aware continuation interfaces. We would welcome exploration with OpenAI of native
+consent-aware routing and existing-task continuation. Such an integration could replace the
+separately operated Re-entry Receiver/Connector bridge for that platform, while Hosts retain
+business truth and access control. This is an aspiration, not a partnership, shipped feature,
+universal compatibility claim, or accepted replacement of the current ADR-governed topology.
+
+Present business value as potential reductions in manual follow-up and context reconstruction, not
+validated demand, measured ROI, or proven superiority to deterministic automation. Retain a compact
+prototype boundary and links to Core/00 and Core/05; neither the video nor the Judge Guide closes
+the hosted standing same-task proof gate. Avoid categorical claims that Agents have no notification
+capabilities or that no Codex continuation primitive exists.
 
 ### Current identity boundary
 
