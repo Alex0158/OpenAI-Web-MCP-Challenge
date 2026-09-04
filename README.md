@@ -172,3 +172,8 @@ the [recommended Judge Guide](https://game.sleepless-kingdom.com/OpenAI-WebMCP-C
 This is an integration workspace, not a claim that every edge is perfectly polished. The pieces
 are here so the full idea can be tested, challenged, improved, and occasionally asked why it needs
 quite so many environment variables.
+
+## ⚖️ License
+
+REENTRY is available under the [Apache License 2.0](LICENSE). You may use, modify, and distribute
+the project under the terms of that license.
