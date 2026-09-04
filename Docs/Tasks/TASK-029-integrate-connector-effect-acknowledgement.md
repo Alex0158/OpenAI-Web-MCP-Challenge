@@ -9,11 +9,13 @@
 - Lifecycle: `in_progress`
 - Priority: `P1`
 - Owner: Receiver, Local Connector, and Agent Adapter owners.
-- Current increment: Specify ADR-0046's trusted notification-handoff receipt and explicit protocol
-  transition, replacing this task's former product Host-effect integration objective.
-- Next gate: Accept exact receipt authority/correlation, bounded retry and unknown-outcome recovery,
-  notification slot release, and version/migration compatibility; then prove convergence without
-  waiting for Agent completion or a Game effect.
+- Current increment: Refine Research 27 around reliable admission by the owning task runtime,
+  local-only task binding, and distinct historical-receipt versus new-handoff authority. A
+  Connector-local backlog alone is not the recommended completion boundary. This remains a proposal.
+- Next gate: Accept the concrete runtime admission/attestation contract, stable delivery correlation,
+  bounded unknown-outcome recovery, busy-task policy, and version/migration compatibility; then prove
+  convergence without waiting for Agent completion or a Game effect. Generic agreement with the
+  product direction does not select the proposed v0.3 route, storage, or receipt fields.
 - Dependencies: ADR-0046; retained ADR-0009/0037/0038/0045 compatibility contracts; TASK-035 binding;
   TASK-034 runtime evidence; TASK-033 standing adoption; AUDIT-V2-003 in Core/09.
 

@@ -6,6 +6,16 @@
 **Authority:** [ADR-0047](../Decisions/ADR-0047-authorize-local-desktop-bridge-probe.md)  
 **Task:** [TASK-035](../Tasks/TASK-035-bind-existing-agent-task-during-enrollment.md)
 
+## Evidence correction after provenance review
+
+The recorded ordinary-Node rejection remains valid, but it is not a complete reproduction of
+MVP 1's successful process identity. The frozen launcher requires the App-provided
+`CODEX_MCP_NODE_PATH`; all three live attempts below instead ran PATH Node `26.5.0`, including
+the frozen native-client comparison. That comparison reused wire code, not the launcher.
+No inference that an App update broke the complete MVP route is supported. CLOUD-028 records
+the corrected equivalence gate and subsequent read-only metadata; no additional IPC or send
+has been performed by that correction.
+
 ## Increment and challenge
 
 Build a default-disabled one-shot local client with one real disposable-task consumer. Test whether
@@ -56,7 +66,7 @@ tracks older Q1 input independently, and keeps native error text, task content, 
 |---|---|---|
 | New CLI read-only preflight | `preflight_failed`, `submission:not_sent`; its own connection closed | Exact-task readback was not reached |
 | New native client's read-only catalog diagnostic | `native_connection_closed`, before a catalog response | No task operation or send |
-| Frozen MVP native client, read-only comparison | Same immediate close before catalog, not a timeout | Frozen files unchanged; not a fallback send |
+| Frozen MVP native client, read-only comparison | Same immediate close before catalog, not a timeout | Wire-client comparison under ordinary Node, not the MVP App-bundled launcher; no fallback send |
 | App's existing log, bounded read-only inspection | Three `dynamic_app_tools_peer_rejected` events with reason `missing-code-signing-identity`, at `23:23:47.904`, `23:24:12.761`, and `23:24:38.722` UTC on September 3 | These correspond to the three local read-only attempts on September 4 in Europe/London |
 | New B1 probe | **Not submitted** | No acceptance, input-role, turn, marker-response, Browser, or Game claim |
 | Prior Q1 | No resend or removal operation | Its current queue/consumption state was not rechecked in this failed native preflight |
@@ -121,9 +131,8 @@ and Core/00 now distinguish the implemented local harness from blocked native ad
 durable enrollment, TASK-029's notification receipt, and TASK-034's authenticated Game Browser/WebMCP
 remain open. This source is disabled experimental work, not a shipping Adapter.
 
-The highest-leverage next gate is to establish an App-recognized, supported way for the external
-Connector to address the owning Desktop runtime and existing task, including legitimate peer
-identity/custody requirements. If none is exposed, obtain an explicit platform integration decision;
-do not replace the product with fresh Agents or polling disguised as event wake. Reopen the live
-probe only after that admission boundary is resolved and its route is reviewed. Binding-store,
-notification-receipt, and Game integration implementation do not resolve this blocker by themselves.
+The corrected next gate is a complete launcher, caller, and custody comparison against MVP 1,
+followed by review of a legitimate owning-runtime admission route. If the necessary authority is
+not available, obtain an explicit owner/platform integration decision. Do not rerun a launcher,
+switch executables to force admission, or replace the product with fresh Agents or polling.
+Binding and notification-receipt design may proceed, but cannot prove runtime admission.

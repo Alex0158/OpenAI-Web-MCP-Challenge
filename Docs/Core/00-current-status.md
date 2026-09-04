@@ -24,9 +24,11 @@ probe is historical preview evidence, not the prerequisite for the selected exis
 
 ADR-0047's separate, default-disabled experimental Desktop client is implemented under
 [CLOUD-027](../Development/CLOUD-027-experimental-desktop-bridge-probe.md). The current App rejected
-its local process identity before catalog/task readback; no new wake input was submitted. Frozen
-MVP 1's earlier same-task success remains build-specific. The supported product Adapter and durable
-enrollment remain open, and no Game/deployment change is included.
+the ordinary-Node client's process identity before catalog/task readback; no new wake input was
+submitted. That test did not reproduce MVP 1's App-bundled runtime launcher. CLOUD-028 corrects the
+earlier platform-only gate: establish launcher/caller equivalence and legitimate admission before
+a new runtime claim. Frozen MVP 1's success remains build-specific, not disproved by that test.
+The supported product Adapter and durable enrollment remain open; no Game/deployment change is included.
 
 The project has implemented and locally verified the application-neutral Re-entry Core at the
 scope accepted by ADR-0006 through ADR-0014. RECORE-001 through RECORE-004, RECORE-006, and the
@@ -402,10 +404,12 @@ Experiments, and frozen evidence rather than this status file.
 
 1. Finish [TASK-001](../Tasks/TASK-001-select-host-application.md) exact documentation and remote
    closure without absorbing owner-held Game or RightSpot work.
-2. Resolve TASK-035's legitimate external-client admission into the owning Desktop runtime after
-   CLOUD-027's peer rejection, before another live probe. Trusted enrollment/private binding and
-   TASK-029's notification receipt/recovery specification may progress in parallel, but do not
-   unblock runtime admission. Preserve v0.1/v0.2 compatibility; do not repurpose effect ACKs.
+2. Complete TASK-035's MVP 1 launcher, caller, and custody equivalence review, then establish the
+   legitimate owning-runtime route before another live probe. Ordinary-Node rejection is not a
+   complete reproduction of the successful MVP launcher. Keep the existing Local Connector as
+   the product integration surface. Trusted private binding and TASK-029's proposed notification
+   receipt/recovery contract may progress in parallel; neither is runtime proof. Preserve v0.1/v0.2
+   compatibility and do not repurpose effect ACKs.
 3. Select and verify actual same-task notification/wake and authenticated canonical-Game-page
    access with fresh WebMCP under TASK-034. Do not substitute a fresh session to pass the gate.
 4. Prove signal 1 as queue acceptance, notification handoff, actual task wake, page reads, and

@@ -156,13 +156,17 @@ effect-backed profiles are unchanged.
 
 The [CLOUD-027 experimental Desktop bridge record](CLOUD-027-experimental-desktop-bridge-probe.md)
 owns the separately approved ADR-0047 native-route experiment: isolated client implemented, but
-current-build peer authorization rejected preflight before any new send. CLOUD-026 and frozen MVP
-evidence are preserved; no supported product driver is selected.
+current-build peer authorization rejected the ordinary-Node preflight before any new send.
+This did not reproduce the App-bundled MVP launcher. CLOUD-026 and frozen MVP evidence are preserved;
+no supported product driver is selected.
 
 The [CLOUD-028 Desktop admission route review](CLOUD-028-desktop-admission-route-review.md)
-rules out a flag-only local-daemon restart on the normal installed Desktop launch path and records
-an unsent platform-integration question draft. Existing-task admission remains blocked; no runtime
-configuration or product topology change is authorized by that review.
+rules out a flag-only local-daemon restart on the normal installed Desktop launch path. Its corrected
+next gate is MVP launcher/caller equivalence and legitimate admission, not a mandatory platform
+response based on non-equivalent failed tests. It records the source comparison, read-only bundled
+runtime metadata, and an unsent contingency question draft. Runtime wake and product integration
+remain unverified; no configuration or topology change is authorized. The same reconciliation
+refines TASK-029's Research 27 proposal without accepting a receipt profile or wire version.
 
 ## Verification reports
 

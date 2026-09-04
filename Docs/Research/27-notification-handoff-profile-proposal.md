@@ -12,159 +12,182 @@ It is not an ADR, implementation instruction, deployment claim, or evidence that
 Desktop task can currently be admitted or woken. Existing v0.1 and v0.2 effect-backed acknowledgement
 profiles remain unchanged until an explicit version and migration decision is accepted.
 
-## Recommendation
+## Recommended completion boundary
 
-Add an explicit v0.3 notification-handoff profile. Keep the existing effect acknowledgement route
-and its `effect_token` semantics for retained compatibility callers; do not reinterpret an old
-`acknowledged` row as notification success. A v0.3 delivery may reach terminal `notified` only when
-the paired Connector and its private Agent Adapter have durably accepted one bounded notification for
-the exact bound task. The Receiver must not wait for a later Agent turn, Browser read, Game mutation,
-or business result.
+Settle notification delivery when the runtime owning the bound existing task has reliably admitted
+the correlated notification. A runtime-recognized inbox is eligible only if its contract accepts
+responsibility for task addressing, scheduling and recovery. An arbitrary Connector-local backlog
+does not meet this boundary. The Receiver does not wait for the Agent to start, read the Browser,
+perform a Game action, or finish its work.
 
-The trusted chain is:
+```text
+signed Event -> Receiver pending Delivery -> Connector staging
+             -> owning runtime admits notification for the bound task
+             -> trusted correlated handoff report -> Receiver receipt
 
-```
-signed Event -> Receiver Delivery -> paired Connector -> private Adapter inbox -> bound task
-                                      durable handoff receipt
-```
-
-The Adapter's `accepted` result is sufficient only when the Adapter contract says that it means a
-durable, idempotent enqueue into the bound task's private notification inbox. A generic process
-accept, a Codex exit code, narration, HTTP health, or a scheduled poll is not that receipt.
-
-## Proposed wire profile
-
-The new profile is additive and versioned. The exact route name is still subject to implementation
-review; this proposal uses `POST /v0.3/delivery-handoffs` as a readable placeholder.
-
-Request fields are deliberately opaque and bounded:
-
-```json
-{
-  "connector_token": "private connector credential",
-  "delivery_id": "receiver delivery id",
-  "lease_token": "current delivery lease",
-  "handoff": {
-    "type": "bound_task_notification",
-    "version": "0.3",
-    "handoff_id": "connector-generated idempotency key",
-    "outcome": "bound_task_queued"
-  }
-}
+later Agent turn / Browser / optional Game work: separate evidence, not settlement conditions
 ```
 
-The Connector supplies no raw task locator, account secret, effect credential, or browser authority.
-The Receiver resolves the bound task from its private binding record. `outcome` is restricted to
-`bound_task_queued` and `bound_task_coalesced`; the second value means a notification for the same
-bound task and delivery was already present and is an idempotent success. An Adapter must not report
-success before its durable inbox write (or the equivalent durable coalescing record) commits.
+This is a recommendation under ADR-0046, not evidence of such a runtime capability. A process exit,
+an unqualified Adapter `accepted`, an in-memory native response, a stored CLI queue item without
+an established wake/recovery contract, or Agent narration cannot establish reliable admission.
+The concrete driver must name what commits, who owns recovery, and how a lost response is resolved.
 
-The response contains no secret and is safe to repeat:
+An earlier revision proposed settlement at a private Adapter inbox without clearly naming its
+downstream responsibility. That would transfer unfinished delivery responsibility to the Connector.
+Such a different completion boundary would need an explicit decision and recovery design; it is
+not silently retained here. The owner approved continuing reconciliation, not a particular inbox,
+receipt schema, wire version or migration.
 
-```json
-{
-  "profile": "0.3",
-  "delivery_id": "...",
-  "handoff_id": "...",
-  "notified": true,
-  "duplicate": false
-}
-```
+## Local binding and Receiver authority
 
-`duplicate: true` is still a terminal notification receipt for the exact same correlation. It is
-not permission to acknowledge another delivery or to change a task binding.
+The local Agent Adapter alone resolves the private Grant-to-task binding. It verifies the selected
+existing task, owner and unchanged binding generation before dispatch. Raw task locators stay local;
+the Host and Receiver neither store them nor select or independently inspect the task.
 
-## Trust and correlation requirements
+The Receiver verifies its own authenticated Connector, account/device target, Grant, Event, delivery,
+lease and consent scope. It accepts a handoff report only under a named trusted Adapter/Connector
+attestation contract. The Connector credential authenticates the reporter; it does not independently
+prove what the runtime did. This distributed trust assumption must be explicit in the selected
+driver and tests. A report for another task binding, target, Event or delivery is not reusable.
 
-Before accepting a handoff the Receiver must, in one bounded operation:
+The prior wording that the Receiver resolves a private task record is superseded by this local-only
+ownership. The Agent receives event context, not lease/effect credentials or a new user strategy.
 
-1. authenticate the paired Connector identity;
-2. re-read the current delivery lease and require the exact `delivery_id` and `lease_token`;
-3. require the delivery's Grant, Event, target, consent, and binding scope to be current;
-4. require the private Adapter binding to resolve to the same existing task and owner;
-5. verify `handoff.type`, profile version, and `handoff_id` syntax and replay state; and
-6. record the receipt and release the v0.3 delivery slot only after the Adapter's durable acceptance.
+## Stable identity and proposed wire boundary
 
-The Connector identity is necessary but not sufficient: a Connector paired to another task, a stale
-worker, a revoked Grant, a mismatched Event, and a lease from another target must all fail closed.
-The Agent receives only the bounded notification payload and fresh Host entry point defined by the
-binding; it never receives Receiver credentials or an instruction to impersonate user intent.
+One Receiver delivery must map to one durable handoff identity across process restarts and lease
+attempts. Create or recover this mapping before the first runtime call; a new lease is not a new
+notification. Serialize competing workers against that identity and retain the binding generation
+locally so a changed binding cannot silently redirect an in-flight delivery.
 
-## State and transaction boundary
+The runtime must provide idempotent admission or authoritative lookup of that same notification.
+A Connector journal alone cannot resolve a crash after runtime admission but before the journal
+records success. Without a suitable runtime primitive, preserve `unknown` and surface the limitation;
+do not claim exactly-once delivery or start an alternative task.
 
-The v0.3 state machine is isolated from retained effect profiles:
+An additive notification profile remains recommended so retained v0.1/v0.2 effect ACKs keep their
+meaning. `v0.3`, `POST /v0.3/delivery-handoffs`, `handoff_id` and `notified` are candidate names,
+not accepted APIs. Final wire design follows the concrete runtime receipt and the lifetime/version
+decision under TASK-027; two independent proposals must not create incompatible meanings for v0.3.
 
-```
-PENDING -> LEASED -> NOTIFIED
-             |          |
-             +--expiry--+--exact replay returns the same receipt
-```
+The eventual report needs bounded opaque delivery/handoff correlation, reporter authentication,
+evidence sufficient for its admitted boundary, and exact replay/conflict semantics. No raw task ID,
+caller-supplied account authority, Game effect token, or arbitrary success boolean may substitute
+for that contract. Transport authentication and historical receipt lookup remain access controlled.
 
-An implementation should lock or compare-and-set the delivery, re-check lease and revocation inside
-the transaction, look up an existing handoff by `(delivery_id, handoff_id)`, and return the prior
-receipt on an exact replay. A conflicting handoff id, different delivery, or different target is a
-typed denial. The receipt and slot release must be durable together; a crash cannot expose `NOTIFIED`
-without the stored receipt, nor release a slot before the handoff is durable.
+## Historical receipt versus a new handoff
 
-No existing v0.1/v0.2 query, `acknowledged` field, effect token, or retry counter should silently
-change meaning. New rows or a version discriminator are preferred so old consumers cannot claim a
-notification they did not understand.
+These are different operations, even if a future API combines them:
+
+1. **Read an already-recorded receipt.** Authenticate current read authority for the same account
+   and delivery scope. Return the historical result without another runtime call. A now-expired
+   delivery lease or later Grant revocation does not rewrite successful history. A revoked
+   credential is not valid read authority; no anonymous or cross-owner replay is allowed.
+2. **Record previously unrecorded admission evidence.** Reconcile only evidence for the original
+   stable identity and binding. The protocol must define how admission-time authority is proven
+   when the lease has since expired or revocation has occurred. A caller-supplied timestamp alone
+   is insufficient. If the ordering cannot be established, retain a visible unknown outcome;
+   do not turn it into a new send or an invented success.
+3. **Attempt a genuinely new runtime handoff.** Require current valid lease, Grant, target and local
+   binding authority. Only authoritative non-admission or a proven idempotent runtime operation
+   permits the bounded attempt. Lease expiry by itself is not evidence of non-admission.
+
+Runtime admission and Receiver receipt are separate commits in different processes. No Receiver
+database transaction can make both atomic. Runtime deduplication/reconciliation, a durable local
+journal and exact Receiver receipt replay must bridge that window. Receiver receipt persistence
+and notification-slot release can and should be atomic within its own store.
 
 ## Failure and recovery matrix
 
-| Condition | Receiver result | Connector/Adapter action |
-|---|---|---|
-| Connector identity conflict | typed denial; delivery remains recoverable | stop and surface pairing mismatch |
-| Wrong task, Grant, Event, target, or consent | typed denial; no slot release | do not retry unchanged request |
-| Stale or expired lease | typed denial; normal bounded reclaim applies | reacquire only through the normal claim path |
-| Revoked binding or Grant | terminal denial; no notification | stop and require fresh consent/binding |
-| Adapter durable enqueue succeeds, response is lost | retry exact `(delivery_id, handoff_id)` | return the stored receipt; never create a second inbox item |
-| Adapter unavailable before durable enqueue | retryable handoff failure; lease remains bounded | retry within the explicit Connector budget |
-| Adapter returns unknown outcome | do not mark `NOTIFIED` | reconcile by exact handoff id or let lease expiry reclaim |
-| Receiver restarts after durable receipt | stored receipt is returned | Connector retries exact request |
-| Existing v0.2 caller | old route and semantics remain | no automatic profile mixing |
+| Condition | Required behavior |
+|---|---|
+| Wrong account, Connector, target or local task binding | No new handoff; visible denial without another target or fresh task |
+| Only Connector staging has committed | Still pending; do not report task notification as delivered |
+| Runtime admits the notification; its reply is lost | Look up or idempotently reconcile the same notification; without that capability keep unknown |
+| Runtime admission is known; Receiver acknowledgement reply is lost | Replay the same handoff report or read its receipt; never re-notify the task |
+| Connector restarts before/after a runtime call | Recover the original identity and binding generation; never create a new identity to bypass ambiguity |
+| Lease expires or another worker claims the delivery | Fence new calls by current authority and consult the existing journal/runtime identity; expiry does not authorize blind resend |
+| Revocation precedes a new authorized handoff | Deny new work; do not reopen the Grant or rebind to another task |
+| Historical receipt exists, then lease expires or Grant is revoked | Preserve receipt truth; permit only authenticated scoped history read, not renewed execution |
+| Agent is interrupted, does nothing, or produces no Game effect | No redelivery of a successfully handed-off notification |
+| Runtime is conclusively unavailable before admission | Bounded pending/recovery under an accepted retry and backlog policy; keep authorization distinct from availability |
+| Retained v0.1/v0.2 caller | Preserve the old route, rows and effect-backed meaning; no automatic profile mixing |
 
-Retry limits, backoff, and the meaning of an unknown outcome must be accepted with the profile. A
-retry must be bounded and idempotent, not a loop that prevents the Agent from working. Busy-task
-coalescing is part of the Adapter inbox contract; it is separate from Receiver delivery state and
-must not be inferred from an HTTP 2xx alone.
+Retry budgets, time bounds and receipt/journal retention must be set from the selected runtime's
+capabilities. Garbage collection must not make an old ambiguous notification look new. Tests must
+cover the negative cases, not just successful replay inside one process.
 
-## Cross-module ownership
+## Busy tasks, duplicate delivery and event bursts
 
-- **Host/SDK:** creates the user-consented binding request and displays only a safe continuation
-  status; it does not mint a notification receipt.
-- **Receiver:** owns Grant/Event correlation, lease, revocation, receipt, and slot release.
-- **Local Connector:** owns private credential custody, exact handoff retry journal, and no raw
-  secret in logs or Agent input.
-- **Agent Adapter:** owns task lookup and the durable, idempotent private inbox; it reports accepted
-  only after the inbox boundary.
-- **Agent task:** decides whether to act after reading fresh Host state; notification is an input,
-  not proof that work occurred.
-- **Game/Host application:** remains an optional business consumer and is outside delivery settlement.
+Exact delivery replay is not coalescing different Events. The former returns the same admission
+record; it cannot settle an unrelated Event. Cross-Event grouping needs retained member correlation,
+scope boundaries and an accepted rule for which signals may be summarized or must remain distinct.
+
+For the smallest profile, preserve each Event's identity and source while bounding pending work and
+wake frequency. Do not interrupt a busy task indefinitely. A later change must remain eligible for
+a subsequent fresh-state check, including a change that arrives after the Agent's last state read.
+Task/runtime scheduling owns this behavior; the Receiver does not watch Game progress to decide it.
+Exact grouping, wake cadence, limits and overflow behavior remain review decisions, not defaults
+chosen implicitly by the receipt schema. Receiver backpressure must be explicit, not silent loss.
+
+## Revocation and offline boundaries
+
+Known revocation, expired execution authority and stale workers prohibit new handoffs. Already
+admitted notifications cannot be recalled by revoking the Grant. Revocation can race between the
+last distributed authorization check and runtime admission; document the supported cutoff and
+in-flight limitation rather than promising instantaneous cross-process cancellation.
+
+Offline authorization retention remains the approved direction. It does not guarantee runtime
+availability, unlimited backlog or permanent credentials. An offline revocation request is pending
+until the Receiver confirms it; a local execution stop is separate. No device-wide revocation cascade,
+task replacement or automatic credential-renewal policy is selected by this proposal.
+
+## Integration ownership
+
+- **Host/SDK:** authenticated business signals and safe public binding/status; no receipt minting.
+- **Receiver:** Grant/Event/device authority, leases, authenticated handoff reports, receipt and slot
+  persistence; no raw-task lookup or Agent business monitoring.
+- **Existing Local Connector and its Adapter:** legitimate runtime driver, private binding,
+  stable dispatch journal, runtime reconciliation, bounded failure and credential custody.
+- **Owning task runtime:** the selected admission, scheduling and recovery contract; not assumed
+  from the existence of a CLI command or private messaging method.
+- **Agent and Game:** strategy, fresh page/tool decisions and optional independently verified
+  business effects; no obligation to manufacture an effect for Receiver settlement.
+
+Reuse the existing Connector's pairing, credentials, outbound claim and Adapter seam. Compare MVP 1's
+actual launcher/caller assumptions before promoting necessary code. Neither the frozen MVP nor the
+experimental probe becomes a parallel production Connector. TASK-035 owns legitimate runtime and
+binding feasibility; this proposal cannot supply that evidence.
 
 ## Minimum acceptance matrix
 
-Before accepting this proposal and implementing it, prove at least:
+After the semantic and route decision, implementation must prove:
 
-1. one signed Event reaches the exact bound task and returns a durable `notified` receipt;
-2. two Events for one Consent/task remain separately correlated and do not cross scopes;
-3. exact replay after response loss is idempotent and releases only one slot;
-4. stale lease, wrong Connector, wrong task, revoked Grant, and conflicting handoff are denied;
-5. Receiver and Connector restart recovery does not duplicate the private inbox item;
-6. Adapter unavailable and unknown outcomes remain bounded and observable; and
-7. retained v0.1/v0.2 effect acknowledgement and existing delivery queries still pass unchanged.
+1. one signed Event reaches the exact bound task through the named reliable admission boundary;
+2. two Events reuse one Consent and task while retaining separate correlation;
+3. runtime-response loss, Receiver-response loss, restart and cross-lease replay do not blindly
+   produce another notification;
+4. stale/wrong-owner/wrong-binding/revoked cases are denied at their defined authority boundary;
+5. historical receipt reads remain truthful and private after expiry or revocation;
+6. busy-task bursts remain bounded and preserve a later fresh-state check without business polling;
+7. interrupted work and deliberate no-action do not reopen completed delivery;
+8. receipt persistence and slot release converge without pretending to share a transaction with
+   the runtime; and
+9. retained finite/effect-backed profiles and their stored history remain unchanged.
 
-## Decisions still required
+Actual task wake and genuine Browser/WebMCP evidence remain separate acceptance observations under
+TASK-034. Passing receipt fixtures does not prove those capabilities or a hosted deployment.
 
-The owner must accept or revise: the final v0.3 route/profile name, the trusted Adapter inbox
-attestation, `handoff_id` and receipt retention, retry/unknown-outcome budget, busy-task coalescing
-semantics, slot release timing, and storage/migration compatibility. Implementation must not begin by
-silently choosing these values in code.
+## Decisions still required and non-goals
 
-## Non-goals and reopen triggers
+First identify and accept the concrete task-runtime admission, ownership and lost-response contract.
+If only Connector-local durable staging is possible, present the changed responsibility to the owner;
+do not quietly call it task delivery. Then accept the receipt attestation, stable correlation and
+retention, revocation cutoff, busy/overflow policy, and one coordinated wire/storage migration design.
+An approved product direction does not pre-approve all these technical choices.
 
-This proposal does not solve Desktop admission, select a supported Agent runtime, provide a Browser
-transport, publish a package, deploy a Receiver, or monitor business completion. Reopen it if the
-private Adapter cannot prove durable task-scoped enqueue, if a new authority or transport is required,
-if the Receiver must wait for business work, or if compatibility requires changing old effect ACK
-semantics.
+This proposal neither changes code nor selects a supported Desktop API. It does not authorize a
+launcher, listener, native call, new task, App configuration change, publication, deployment or
+business-completion monitoring. Reopen if reliable task admission cannot be established without
+different custody, authority or user-visible semantics.
