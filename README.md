@@ -143,6 +143,8 @@ an integration milestone, not a production-readiness claim.
 For the precise implementation and proof boundaries, see
 [Current Status](Docs/Core/00-current-status.md) and [Validation & Evidence](Docs/Core/05-validation-and-evidence.md).
 The [documentation map](Docs/README.md) is available for deeper technical review.
+For the latest Cloud Receiver integration instructions, see the
+[Eyad/Full-Integration branch](https://github.com/Alex0158/OpenAI-Web-MCP-Challenge/tree/Eyad/Full-Integration#readme).
 
 ---
 

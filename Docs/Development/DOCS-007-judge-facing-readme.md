@@ -42,6 +42,10 @@ implementation task or close TASK-012 or the existing integration tasks.
   continuity means ongoing human-Agent-web collaboration, not unsupervised execution.
 - The video thumbnail and Judge Guide sit above the explanatory sections. The Judge Guide is
   recommended again beside the Game story.
+- A follow-up owner request adds a low-emphasis link beside the README's technical references to
+  the latest Cloud Receiver integration instructions on `Eyad/Full-Integration`. The exact branch
+  spelling and its root README were verified at remote commit `55d43a9a1676ad32ff7cc58105a632849a4f1778`.
+  This is navigation only, not a branch merge, runtime verification, or change to Core authority.
 - Explain one valid standing approval, repeated eligible events, private same-task continuity,
   fresh WebMCP reads, Agent discretion, and human control. Do not imply perpetual authority,
   offline execution, commands hidden in events, or Receiver supervision of business completion.
