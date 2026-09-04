@@ -13,7 +13,7 @@
 - Next gate: The baseline packet is recorded, the exact candidate refs are immutable, and the first red tests fail only because the named handoff route/state transition is not implemented.
 - Dependencies: [ADR-0049](../Decisions/ADR-0049-game-team-standing-integration-and-eyad-release.md); [ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md); [ADR-0045](../Decisions/ADR-0045-adopt-standing-transport-profile-v0.2.md); [ADR-GAME-0039](../../WebApp/Web-Game/Docs/Decisions/ADR-GAME-0039-cp14-bound-task-notification-adoption.md); TASK-029, TASK-033, TASK-034, and TASK-035.
 
-## 1. Bounded objective
+## 1. Problem and objective
 
 Deliver one reviewable, source-pinned implementation candidate that carries an eligible
 Sleepless Kingdom `CargoLostToMonster` signal through the finite standing v0.2 path to the same
@@ -58,7 +58,7 @@ claim.
   handoff receipt.
 - The deployed Receiver, package artifacts, and hosted source identity matching the candidate refs.
 
-## 3. Ownership and allowed paths
+## 3. Scope, ownership, and implementation plan
 
 The current team may edit only the following named surfaces for this task, while preserving any
 pre-existing unrelated changes:
@@ -76,7 +76,7 @@ Do not edit `mvp/`, frozen references, generated artifacts, credentials, mutable
 or unrelated collaborator files. The Game child cannot directly modify shared Core; such edits occur
 under this outer task and are consumed by the Game after review.
 
-## 4. Contract invariants
+### 3.1 Contract invariants
 
 1. **Finite v0.2 profile:** Do not introduce the until-revoked v0.3 wire/migration in this task.
 2. **Additive handoff:** Add `POST /v0.2/delivery-notification-handoffs` as a separately named
@@ -103,7 +103,7 @@ under this outer task and are consumed by the Game after review.
    runtime supplies an idempotent operation or authoritative lookup; otherwise no blind resend or
    success relabeling is allowed.
 
-## 5. Phase plan and definition of done
+### 3.2 Phase plan and definition of done
 
 ### Phase A — Baseline and provenance
 
@@ -166,7 +166,7 @@ Re-read public package metadata, deployed source/build identity, `/healthz`, `/r
 and the hosted trace. **DoD:** hosted claims are raised only from current readback; failed or
 unavailable publication remains an explicit residual gate.
 
-## 6. Minimum acceptance matrix
+### 3.3 Minimum acceptance matrix
 
 | Boundary | Required proof | Failure that stops closure |
 |---|---|---|
@@ -179,7 +179,7 @@ unavailable publication remains an explicit residual gate.
 | UX/authority | Action, no-action, interruption, human decision, and typed rejection remain distinct | Receiver waits for or requires Game effect |
 | Release | Source SHA, package/tarball hash, migration, deployment readback match | Mutable ref, `latest`, or unverified hosted endpoint |
 
-## 7. Verification budget
+### 3.4 Verification budget
 
 Inner-loop checks are the affected Core/Receiver/SDK/Connector/Game tests only. The first aggregate
 is due after the shared handoff schema, Receiver persistence, or Game schema changes. The hosted
@@ -189,7 +189,7 @@ suite after every phase; use the narrowest stable test, then the task aggregate 
 Every closure note records commands, runtime, source identity, passes/skips, intentionally omitted
 checks, claim ceiling, and reopen triggers.
 
-## 8. Non-goals and stop conditions
+## 4. Non-goals
 
 - No new gameplay, combat, economy, shelter, resource, or WebMCP command feature.
 - No until-revoked v0.3 migration, public route alias, or automatic version fallback.
@@ -202,10 +202,17 @@ checks, claim ceiling, and reopen triggers.
   automatic crash recovery until the owning runtime supplies idempotent admission or authoritative
   lookup.
 
-## 9. Closure and reopen
+## 5. Verification and closure
 
 Close only after Phases A–G are locally verified and Phase H has a current hosted readback, or create
 an explicit narrower terminal record if the owner later changes the submission scope. A local green
 test, commit, package build, or Eyad's deployment attempt alone does not close the task. Reopen for
 any source drift, route/schema change, sequence loss, cross-scope acceptance, fresh-task creation,
 false completion, unknown relabelled success, or hosted artifact mismatch.
+
+## 6. Reopen condition
+
+Reopen this task when any closure prerequisite is invalidated: source or package drift, a changed
+route/schema, sequence loss, cross-scope acceptance, fresh-task creation, a false completion claim,
+an `unknown` outcome relabelled as success, or a hosted artifact mismatch. A hosted publication
+failure remains an open release gate rather than evidence that the implementation is complete.
