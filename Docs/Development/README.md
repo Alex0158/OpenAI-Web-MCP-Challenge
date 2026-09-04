@@ -170,6 +170,10 @@ and custom native admission and product Connector integration remain unverified.
 owns the narrow observer-envelope correction and an unsent contingency question draft; no
 configuration or product topology change is authorized. The same reconciliation
 refines TASK-029's Research 27 proposal without accepting a receipt profile or wire version.
+The owner subsequently approved a temporary relay and one C1 notification. CLOUD-028 records the
+current stop before listener/send: the existing Connector adapter seam is available, but a
+host-authorized invocation usable after the initiating turn is not established. C1 remains unused;
+another generic test approval is not the missing input.
 
 ## Verification reports
 

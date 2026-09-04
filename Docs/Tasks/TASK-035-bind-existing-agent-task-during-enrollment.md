@@ -19,9 +19,12 @@
   host-owned task interface when no Agent turn is active, retaining actual caller and approval
   handling. The original task-launched relay is the implementation reference, not a requirement
   to repeat the completed source audit or copy a private pipe into a detached process.
-  The B1 allowance was consumed by the host-mediated control; no additional send or native B1 is
-  authorized automatically. A complete relay replay would also need a reviewed scope change for
-  its listener/Browser operations. A stored task locator or Re-entry Grant does not itself authorize
+  The B1 allowance was consumed by the host-mediated control. The owner subsequently approved
+  ADR-0047's temporary local relay and one new C1 inert notification; C1 is not yet submitted.
+  This scope excludes Browser and still requires legitimate host invocation before listener startup.
+  CLOUD-028 identifies the existing adapter seam but no independently usable host invocation;
+  implementation is stopped at that boundary, not waiting for another generic test approval.
+  A stored task locator or Re-entry Grant does not itself authorize
   App invocation. Name any actual authority change before requesting it; do not presume one from
   missing public documentation. Then specify scope, lifetime, renewal if needed, restart and revocation.
   Platform coordination is a conditional next step, not a proven universal prerequisite.

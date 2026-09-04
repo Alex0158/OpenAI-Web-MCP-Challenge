@@ -30,6 +30,9 @@ input and exact response in a joined turn, not isolated wake or independent Conn
 The allowance is consumed and the native CLI stays held. The original real MVP1 Browser/WebMCP
 success remains valid on its recorded build. Neither the current control nor a deterministic Core
 test is a product Adapter, Grant binding, notification receipt, or relaxation of this contract.
+ADR-0047 now additionally permits a temporary relay and one new C1 notification. The scope is
+approved, but C1 and the listener are unattempted pending a host-authorized Connector invocation;
+approval of the experiment does not create that platform capability.
 
 This module converts one valid delivery lease and private continuation receipt into one bounded,
 credential-free activation attempt against the exact managed Agent context selected by private

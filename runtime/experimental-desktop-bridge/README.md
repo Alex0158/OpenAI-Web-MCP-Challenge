@@ -2,8 +2,8 @@
 
 **Not a product Adapter or published Connector integration.**
 
-[ADR-0047](../../Docs/Decisions/ADR-0047-authorize-local-desktop-bridge-probe.md) authorizes one
-local experimental messaging/wake probe inspired by the frozen MVP 1 native Desktop relay.
+[ADR-0047](../../Docs/Decisions/ADR-0047-authorize-local-desktop-bridge-probe.md) bounds the local
+messaging/wake experiments inspired by the frozen MVP 1 native Desktop relay.
 [CLOUD-027](../../Docs/Development/CLOUD-027-experimental-desktop-bridge-probe.md) owns its exact
 runtime evidence. This module does not import or modify frozen MVP code.
 
@@ -11,7 +11,8 @@ runtime evidence. This module does not import or modify frozen MVP code.
 
 - The operational CLI is held: CLOUD-028 has not established legitimate custom-client invocation.
   ADR-0047's one-shot allowance was consumed by a separately labelled host-mediated control.
-  There is no unlock flag or remaining automatic native-send allowance.
+  A subsequent temporary-relay/C1 experiment is approved, but has not established its host invocation
+  or started a listener/send. There is no native-CLI unlock flag; C1 is not permission to bypass it.
 - Any future reviewed live route must run only inside its approved local Desktop execution
   environment and preserve the App's actual caller and approval policy. Node 24 is the local test
   closure baseline, not a rule to replace a route-specific App runtime.

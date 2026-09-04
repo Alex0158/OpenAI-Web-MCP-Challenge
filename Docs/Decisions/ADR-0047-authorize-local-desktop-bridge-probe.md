@@ -62,6 +62,37 @@ one total input, and do not delete queued messages to simplify evidence.
 
 ## Verification, shutdown, and stop conditions
 
+### Connector-initiated temporary relay extension, 2026-09-04
+
+The owner explicitly approved one temporary local relay and one new inert test notification after
+the B1 control. This is a new C1 allowance, not a reset of B1. Its objective is a notification
+initiated by the existing Local Connector while the exact pre-approved target has no active turn,
+followed by an attributable new turn and exact marker response in that same task.
+
+The permitted implementation uses the existing Connector consumer and a narrow adapter/relay;
+it does not select a production driver or add a second Connector. Before opening the listener,
+establish an App-authorized host invocation with actual caller metadata and preserved approval
+handling. A supplied runtime path, stored task identifier or local relay token is not that
+authority. Do not retry the rejected custom native client through a trusted executable, manufacture
+host request metadata, reuse another task as caller, or weaken the App's policy. If no legitimate
+invocation is available, record the missing capability without starting a listener or sending C1.
+
+The relay may expose only one newly created, owner-private local Unix socket, one fixed target and
+workspace, readback, and one internally fixed marker-only send. No target, prompt, tool, endpoint,
+caller or permission override from the Connector is accepted. Bound request size, connection count
+and lifetime; stop the task-owned relay after this diagnostic or on failure. Preserve any existing
+socket or other process. Do not install a service, open a network listener, access credentials,
+change App configuration, start a new task, open Browser, perform Game work, contact the Receiver,
+publish a package, or deploy.
+
+Reserve C1 before any possible live submission; an uncertain send consumes the allowance and
+permits no retry or transport fallback. Neither a relay acknowledgement nor a Connector result
+proves task wake. Observe exact-target baseline, distinct input, actual input role, new-turn
+attribution, exact response and unexpected tool use. Record source-executor dependence separately:
+another active Agent relaying a tool call is not independent background Connector admission.
+The old native CLI remains held. Broader lifetime, restart, enrollment and notification settlement
+remain subsequent product decisions and tests.
+
 ### Host-mediated control clarification, 2026-09-04
 
 The owner's continued authorization after the MVP provenance review permits using the already

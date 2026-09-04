@@ -39,6 +39,12 @@ boundary is the existing Connector's legitimate use of the host-owned task inter
 response is conditional, not a universal prerequisite. Durable enrollment and product integration
 remain open; no Game or deployment change follows from this control.
 
+The owner has since approved one temporary local relay and a new C1 inert notification. C1 is
+unused: CLOUD-028 identifies the real Connector adapter seam, but no App-authorized background
+invocation is established. No listener or notification was started. Resolve host-provided caller
+and approval handling; another generic user approval or active-Agent-mediated send does not close
+that gate. This is not a new runtime failure or a reversal of MVP1's original proof.
+
 The project has implemented and locally verified the application-neutral Re-entry Core at the
 scope accepted by ADR-0006 through ADR-0014. RECORE-001 through RECORE-004, RECORE-006, and the
 additive ADR-0043 through ADR-0045 RECORE-007 reference are `locally_verified`; RECORE-005 is
@@ -435,8 +441,9 @@ Experiments, and frozen evidence rather than this status file.
    closure without absorbing owner-held Game or RightSpot work.
 2. Use TASK-035's completed launcher comparison and CLOUD-028's current host-mediated response
    evidence to define the smallest legitimate Connector-to-host invocation. Do not repeat the same
-   control or treat missing public documentation as impossibility. The used B1 allowance authorizes
-   no further send; the native CLI remains held. Keep the existing Local Connector as the product
+   control or treat missing public documentation as impossibility. B1 is consumed; the separately
+   approved C1 relay test remains unused pending actual host invocation, and the native CLI remains
+   held. Do not ask for the unchanged test approval again. Keep the existing Local Connector as the product
    integration surface. Private binding and TASK-029's notification receipt/recovery specification
    may progress in parallel; neither proves autonomous admission. Preserve v0.1/v0.2 compatibility
    and do not repurpose effect ACKs.

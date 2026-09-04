@@ -1,7 +1,7 @@
 # CLOUD-028: Desktop Admission Route Review
 
 **Role:** DEVELOPMENT feasibility review, host-mediated control, and unsent platform-question draft  
-**Status:** Static comparison complete; host-mediated same-task response verified; product integration unverified  
+**Status:** Host-mediated response verified; C1 relay approved but not started; host invocation unresolved  
 **Date:** 2026-09-04, Europe/London  
 **Task:** [TASK-035](../Tasks/TASK-035-bind-existing-agent-task-during-enrollment.md)  
 **Authority:** ADR-0046; ADR-0047 permits only its bounded diagnostic and host-mediated clarification
@@ -18,6 +18,78 @@ No App restart, environment/configuration change,
 daemon start, native call, test message, task migration, SDK installation, Receiver claim, deployment,
 signing change, credential retrieval, or external message was performed in the original static-review
 increment. The separately recorded host-mediated control below includes one authorized inert send.
+
+## Current C1 execution gate
+
+The owner approved ADR-0047's temporary local relay and one new inert notification. C1 remains
+**unused**: no listener, App-service process, native connection or notification has been started.
+This approval resolves the experiment's listener/send scope, not the missing host invocation.
+The preceding recommendation overstated readiness by presenting a new test allowance as the
+remaining practical prerequisite. It must not be read as an established executable integration.
+
+The finite current-source review identifies the exact required consumer and remaining input:
+
+- Reuse `runtime/local-connector/src/local-connector.mjs:25-62`: its constructor accepts an
+  `adapter.activate` consumer and `runOnce` performs validated dispatch without automatic ACK.
+  Pairing, stored credentials, Receiver policy and the product CLI need no change for this probe.
+  An isolated local delivery fixture can drive the real Connector class, but is not a live Cloud
+  claim or trusted enrollment. A relay wrapper without a real host consumer cannot prove wake.
+- Installed App Tools `desktop-mcp.json` selects its packaged launcher/server and declares a
+  message-approval policy. `server.mjs:24849-24891` requires caller context from its host interaction
+  or executor request metadata; it rejects calls without that metadata. The wrapper transports
+  the request but does not itself recreate the executor's approval decision. Running it from a
+  Connector and filling `_meta` with a known task ID does not establish delegated invocation.
+- The exposed App task tools are callable in the current Agent executor. The available tool
+  catalog does not expose a background-Connector pairing or invocation-delegation operation.
+  Waiting inside that executor for a local request and then calling the task tool remains active-
+  executor mediation, not proof that the Connector can operate after that executor is gone.
+- The official [App Server page](https://learn.chatgpt.com/docs/app-server) was fetched again.
+  It documents thread/turn primitives, not a demonstrated attachment to this Desktop owner. The
+  installed App is still `26.901.20858`, build `7658`. No configuration or runtime was changed.
+
+No legitimate background invocation was established by these checks. This is a current integration
+blocker, not a new App rejection or a claim that MVP1 never worked. Do not consume C1 through an
+unreviewed substitute, run the held native client with another executable, or add an offline-only
+relay abstraction while describing the real consumer as available.
+
+The actionable unblock input is an App-approved invocation recipe for the existing target:
+who starts the relay, how the host supplies caller and approval context, and whether that context
+remains usable when the initiating turn finishes. A working owner-provided implementation with
+those properties can be selectively adapted. Otherwise the platform question below needs an
+answer for that specific boundary. No new generic user test approval is required while C1 remains
+unused; no message to a contributor or platform was sent by this increment.
+
+### Contributor branch readback
+
+The current fetch advances `origin/Eyad/Full-Integration` from `41aae5d` to `74325c2`. The new commit
+moves fourteen Connector source modules with Git similarity `100%`; its CLI still selects fresh
+exec. Its root README explicitly limits the test app to consent/status and excludes later Events,
+WebMCP and Agent launch. It also reduces the broader repository surface. This is not a same-task
+driver implementation or a patch to merge wholesale into shared `main`. The branch was inspected
+read-only; no checkout, merge, deletion or author-held edit was performed.
+
+### C1 bounded-review closure
+
+Seven owned documents record the new approval, current stop and concrete unblock input. This
+increment is **source-reviewed / runtime not attempted**, not Connector integration. No product
+code, experimental client, fixture, CLI hold, frozen MVP or App file was changed. Existing 110-test
+observer evidence is unchanged historical evidence, not a new test run. No listener, credential,
+socket, test notification, Browser, Receiver request, Agent turn or deployment was created.
+
+Commands: `python3 scripts/test_validators.py` passed 6/6;
+`python3 scripts/test_sensitive_scan.py` passed 3/3;
+`python3 scripts/validate_repository.py --root .` passed with the seven owned files indexed;
+`git diff --check` and staged whitespace checks passed. The owned files have no sensitive-pattern,
+unintended CJK or raw UUID-shaped locator matches. The full
+`python3 scripts/scan_sensitive_patterns.py --root .` still reports 21 findings in seven Game
+documents, each unchanged against HEAD; it is not a clean full-repository scan. No suppression or
+unrelated edit was made. Independent source review confirms the missing post-turn invocation
+boundary and the unchanged fresh-exec consumer in the contributor branch.
+
+Intake source was `128d608` on shared `main`, 57 commits ahead of fetched `origin/main`, none behind.
+Local Git closure includes only these seven documents. No new branch, merge, push or publication is
+included; unrelated dirty and untracked owner-held work is preserved. C1 is still unused and can be
+resumed under its existing scope when a legitimate host invocation is supplied and reviewed.
 
 ## Correction: the failed client was not the complete MVP launcher
 
