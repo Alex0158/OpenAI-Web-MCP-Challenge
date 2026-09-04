@@ -216,3 +216,26 @@ We will pause the Game adapter at the contract boundary if any proposed path req
 The objective is a small, honest, judge-reproducible Re-entry demonstration. We need the narrowest complete standing path with clear evidence, not a larger set of partially compatible surfaces.
 
 Thanks. Please use this report to identify the exact missing artifacts and the smallest compatible implementation path.
+
+## 9. Owner decision update — 2026-09-04
+
+The project owner has now selected a bounded ownership change for the current hackathon increment.
+The prior recommendation in Section 5.7 that Eddy implement the external Core, Host SDK, Local
+Connector, and Receiver surfaces is superseded for this increment only. The current project team is
+authorized to implement the exact named source paths in the outer repository and the nested
+`saas-boilerplate/backend` repository under [ADR-0049](../../../../Docs/Decisions/ADR-0049-game-team-standing-integration-and-eyad-release.md)
+and [TASK-036](../../../../Docs/Tasks/TASK-036-implement-standing-notification-handoff.md).
+
+Eyad remains the release owner. After the implementation passes its focused conformance, security,
+source-identity, and hosted-readiness gates, Eyad will publish the reviewed package versions and
+deploy the exact Receiver commit. We will provide an immutable release packet containing source
+SHAs, package/tarball integrity, migration identity, runtime commands, redacted traces, and
+readback steps. We will not claim a public package, deployed Receiver, or hosted continuity from
+local source presence or an attempted deployment.
+
+This decision does not change the selected product target, finite v0.2 compatibility profile,
+same-task requirement, one-active/backpressure policy, Game authority, or the prohibition on fresh
+task fallback. It also does not authorize secrets, raw task locators, `npm latest`, effect-token
+reuse, or direct edits to the Game's read-only `reentry-core/` and `mvp/` dependency boundary.
+The external implementation and release plan are now actionable; runtime and hosted claims remain
+open until their named evidence exists.

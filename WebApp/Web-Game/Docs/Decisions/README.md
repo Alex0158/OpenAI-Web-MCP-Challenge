@@ -111,3 +111,6 @@ Research, or a Scenario until accepted.
 - [`ADR-GAME-0039-cp14-bound-task-notification-adoption.md`](ADR-GAME-0039-cp14-bound-task-notification-adoption.md)
   — scopes outer ADR-0046 to CP-14: same-task notification continuation, private task binding,
   Agent discretion, notification-handoff settlement, and the exact standing SDK/enrollment gates.
+- [`ADR-GAME-0040-cp14-owner-authorized-cross-stack-implementation.md`](ADR-GAME-0040-cp14-owner-authorized-cross-stack-implementation.md)
+  — authorizes the current project team to implement the coordinated CP-14 external path while
+  preserving the Game boundary and handing final package publication and hosted deployment to Eyad.
