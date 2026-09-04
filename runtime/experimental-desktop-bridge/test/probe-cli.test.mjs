@@ -7,6 +7,7 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const CLI = fileURLToPath(new URL("../scripts/probe-once.mjs", import.meta.url));
+const FIXTURE_RUNNER = fileURLToPath(new URL("./fixtures/probe-runner.mjs", import.meta.url));
 const CALLER = "private-cli-fixture-caller";
 const TARGET = "private-cli-fixture-target";
 const WORKSPACE = "/fixture/private-cli-workspace";
@@ -17,7 +18,73 @@ const CATALOG = { tools: [
   { name: "send_message_to_thread", namespace: "fixture_cli_app" },
 ] };
 
-test("CLI rejects malformed, oversized and unsupported private stdin before connecting", async (t) => {
+test("operational CLI holds every supported mode before native admission", async (t) => {
+  for (const args of [[], ["--inspect"], ["--send-once"]]) {
+    await t.test(args[0] ?? "default", async (caseTest) => {
+      const host = await fakeHost(caseTest);
+      const result = await runCli(host, args, JSON.stringify(INPUT), { entrypoint: CLI });
+      assert.equal(result.code, 1);
+      assert.equal(result.signal, null);
+      assert.deepEqual(result.records, [
+        { phase: "failure", reasonCode: "admission_unverified", submission: "not_sent" },
+        { phase: "shutdown", clientClosed: true, listenerCreated: false, retryAttempted: false },
+      ]);
+      assert.equal(host.connections, 0);
+      assert.equal(host.requests.length, 0);
+      assert.equal(host.sends.length, 0);
+      assertShutdownAndRedaction(result, host);
+    });
+  }
+});
+
+test("operational hold ignores private stdin and purported environment approval without waiting for EOF", async (t) => {
+  const cases = ["{", " ".repeat(4097), JSON.stringify({ ...INPUT, admissionVerified: true })];
+  for (const input of cases) {
+    const host = await fakeHost(t);
+    const result = await runCli(host, ["--send-once"], input, {
+      entrypoint: CLI, leaveInputOpen: true,
+      env: { CODEX_APP_TOOLS_PIPE_PATH: host.pipePath, CODEX_THREAD_ID: CALLER,
+        CODEX_MCP_NODE_PATH: process.execPath, REENTRY_FIXTURE_PIPE_PATH: host.pipePath,
+        REENTRY_ADMISSION_VERIFIED: "true", REENTRY_APPROVED: "true" },
+    });
+    assert.equal(result.code, 1);
+    assert.deepEqual(result.records[0],
+      { phase: "failure", reasonCode: "admission_unverified", submission: "not_sent" });
+    assert.equal(host.connections, 0);
+    assert.equal(host.requests.length, 0);
+    assertShutdownAndRedaction(result, host);
+  }
+});
+
+test("operational CLI rejects unknown or combined modes without native IO", async (t) => {
+  for (const args of [["--approved"], ["--send-once", "--inspect"], ["--admission-verified"]]) {
+    const host = await fakeHost(t);
+    const result = await runCli(host, args, JSON.stringify(INPUT), { entrypoint: CLI });
+    assert.equal(result.code, 1);
+    assert.deepEqual(result.records[0],
+      { phase: "failure", reasonCode: "invalid_mode", submission: "not_sent" });
+    assert.equal(host.connections, 0);
+    assert.equal(host.requests.length, 0);
+    assertShutdownAndRedaction(result, host);
+  }
+});
+
+test("fixture runner cannot use ambient Desktop context as its endpoint or caller", async (t) => {
+  for (const fixturePipe of [undefined, "/private/non-fixture/native.sock"]) {
+    const host = await fakeHost(t);
+    const result = await runCli(host, ["--send-once"], JSON.stringify(INPUT), {
+      leaveInputOpen: true,
+      env: { CODEX_APP_TOOLS_PIPE_PATH: host.pipePath, CODEX_THREAD_ID: CALLER,
+        ...(fixturePipe === undefined ? {} : { REENTRY_FIXTURE_PIPE_PATH: fixturePipe }) },
+    });
+    assert.equal(result.code, 1);
+    assert.equal(host.connections, 0);
+    assert.equal(host.requests.length, 0);
+    assertShutdownAndRedaction(result, host);
+  }
+});
+
+test("fixture runner rejects malformed, oversized and unsupported private stdin before connecting", async (t) => {
   const cases = [
     ["malformed JSON", "{"],
     ["oversized input", " ".repeat(4097)],
@@ -39,7 +106,7 @@ test("CLI rejects malformed, oversized and unsupported private stdin before conn
   }
 });
 
-test("invalid CLI modes fail before any native IO", async (t) => {
+test("invalid fixture-runner modes fail before any native IO", async (t) => {
   for (const args of [["--unknown"], ["--send-once", "--inspect"]]) {
     await t.test(args.join(" "), async (caseTest) => {
       const host = await fakeHost(caseTest);
@@ -53,7 +120,7 @@ test("invalid CLI modes fail before any native IO", async (t) => {
   }
 });
 
-test("default and explicit inspect modes verify the exact target without sending", async (t) => {
+test("fixture runner: default and explicit inspect verify the exact target without sending", async (t) => {
   for (const args of [[], ["--inspect"]]) {
     await t.test(args[0] ?? "default", async (caseTest) => {
       const host = await fakeHost(caseTest);
@@ -73,7 +140,7 @@ test("default and explicit inspect modes verify the exact target without sending
   }
 });
 
-test("inspect rejects a mismatched target or workspace with no mutation", async (t) => {
+test("fixture runner: inspect rejects a mismatched target or workspace with no mutation", async (t) => {
   for (const mismatch of ["target", "workspace"]) {
     await t.test(mismatch, async (caseTest) => {
       const host = await fakeHost(caseTest, { mismatch });
@@ -88,7 +155,7 @@ test("inspect rejects a mismatched target or workspace with no mutation", async 
   }
 });
 
-test("preflight native close exits nonzero, reports only a fixed native code, and sends nothing", async (t) => {
+test("fixture runner: preflight native close exits nonzero with a fixed code and no send", async (t) => {
   for (const args of [["--inspect"], ["--send-once"]]) {
     await t.test(args[0], async (caseTest) => {
       const host = await fakeHost(caseTest, { closeAt: "catalog" });
@@ -105,7 +172,7 @@ test("preflight native close exits nonzero, reports only a fixed native code, an
   }
 });
 
-test("send-once exits zero only after one accepted send and a correlated completed marker response", async (t) => {
+test("fixture runner: send-once exits zero only after a correlated completed marker response", async (t) => {
   const host = await fakeHost(t);
   const result = await runCli(host, ["--send-once"]);
   assert.equal(result.code, 0);
@@ -129,7 +196,7 @@ test("send-once exits zero only after one accepted send and a correlated complet
   assertShutdownAndRedaction(result, host);
 });
 
-test("a completed joined-turn response cannot produce a successful CLI wake verdict", async (t) => {
+test("fixture runner: a completed joined-turn response cannot produce a successful wake verdict", async (t) => {
   const host = await fakeHost(t, { joinedTurn: true });
   const result = await runCli(host, ["--send-once"]);
   assert.equal(result.code, 1);
@@ -141,7 +208,7 @@ test("a completed joined-turn response cannot produce a successful CLI wake verd
   assertShutdownAndRedaction(result, host);
 });
 
-test("a completed input without a marker response remains unsuccessful and is not resent", async (t) => {
+test("fixture runner: completed input without a marker response is unsuccessful and not resent", async (t) => {
   const host = await fakeHost(t, { omitMarkerResponse: true });
   const result = await runCli(host, ["--send-once"]);
   assert.equal(result.code, 1);
@@ -153,7 +220,7 @@ test("a completed input without a marker response remains unsuccessful and is no
   assertShutdownAndRedaction(result, host);
 });
 
-test("lost send response exits unknown with no retry and closes the client", async (t) => {
+test("fixture runner: lost send response exits unknown with no retry and closes the client", async (t) => {
   const host = await fakeHost(t, { closeAt: "send" });
   const result = await runCli(host, ["--send-once"]);
   assert.equal(result.code, 1);
@@ -202,12 +269,18 @@ function assertShutdownAndRedaction(result, host) {
   }
 }
 
-function runCli(host, args = [], input = JSON.stringify(INPUT)) {
+function runCli(host, args = [], input = JSON.stringify(INPUT), options = {}) {
   return new Promise((resolve, reject) => {
     // Deliberately do not inherit the real endpoint, caller, NODE_OPTIONS or other runtime state.
-    const child = spawn(process.execPath, [CLI, ...args], {
+    const entrypoint = options.entrypoint ?? FIXTURE_RUNNER;
+    // The operational CLI must work while endpoint reads, native module imports and child-process
+    // creation are denied. Only its own source is readable under the Node 24 permission model.
+    const nodeArgs = entrypoint === CLI ? ["--permission", `--allow-fs-read=${CLI}`] : [];
+    const child = spawn(process.execPath, [...nodeArgs, entrypoint, ...args], {
       cwd: host.directory,
-      env: { CODEX_APP_TOOLS_PIPE_PATH: host.pipePath, CODEX_THREAD_ID: CALLER },
+      env: options.env ?? (entrypoint === CLI
+        ? { CODEX_APP_TOOLS_PIPE_PATH: host.pipePath, CODEX_THREAD_ID: CALLER }
+        : { REENTRY_FIXTURE_PIPE_PATH: host.pipePath }),
       stdio: ["pipe", "pipe", "pipe"],
     });
     let stdout = "";
@@ -242,7 +315,8 @@ function runCli(host, args = [], input = JSON.stringify(INPUT)) {
         reject(new Error("Fixture CLI emitted non-JSON output"));
       }
     });
-    child.stdin.end(input);
+    if (options.leaveInputOpen) child.stdin.write(input);
+    else child.stdin.end(input);
   });
 }
 

@@ -182,6 +182,10 @@ No evidence here warrants changing that endpoint, detaching a writer, or restart
 
 ## Corrected next gate
 
+CLOUD-027 now records enforcement of this hold in the operational experimental CLI. Default,
+inspect and send modes stop before native IO; retained transport/observer subprocess tests use only
+an isolated fixture runner. This removes an accidental retry path, not the unresolved admission gate.
+
 The static launcher and caller comparison above is complete at its named source boundary. Resolve
 the remaining host-authorized client/caller contract before another live probe, retaining actual
 successful conditions where permitted. Static signature metadata is not permission to borrow

@@ -1,7 +1,7 @@
 # CLOUD-027: Experimental Desktop Bridge Probe
 
 **Role:** DEVELOPMENT implementation and bounded runtime evidence record  
-**Status:** Local client implemented; live admission blocked before submission  
+**Status:** Operational CLI held before native IO; fixture client retained; live admission unresolved  
 **Date:** 2026-09-04  
 **Authority:** [ADR-0047](../Decisions/ADR-0047-authorize-local-desktop-bridge-probe.md)  
 **Task:** [TASK-035](../Tasks/TASK-035-bind-existing-agent-task-during-enrollment.md)
@@ -17,6 +17,29 @@ the corrected equivalence gate and subsequent read-only metadata; no additional 
 has been performed by that correction.
 
 ## Increment and challenge
+
+### Admission-hold enforcement increment
+
+The original CLI accepts ambient caller/pipe context and attempts native preflight even though
+CLOUD-028 has not established legitimate custom-client invocation. Endpoint custody checks and
+an explicit send switch cannot establish that prerequisite. This is an implementation gap against
+the existing operational hold, not a request to change ADR-0047 or reapprove its unused B1 allowance.
+
+The bounded correction makes the operational entrypoint fail with `admission_unverified` before
+reading private stdin, inspecting an endpoint, constructing a native client, or connecting. No flag,
+environment value, runtime path, or self-declared approval unlocks it. Retain prior orchestration
+coverage in a fixture-only runner with fake caller identity and an isolated test endpoint; it must
+not consume ambient App context or become an alternative operator route. Native transport and
+observer libraries remain experimental test machinery, not a permitted live invocation route.
+
+Minimum verification: a Red live-entrypoint regression against a fake socket, all supported modes
+held with zero native requests/sends, invalid modes and attempted overrides rejected, fixed redacted
+output, no stdin wait, retained fixture suites, and repository governance checks. No product source,
+protocol, dependency, private endpoint, runtime configuration, or Game-owned file is in scope.
+Reopen only when a legitimate invocation preserving the actual caller, fixed target and host
+approval policy is established and the operational entrypoint is reviewed against that contract.
+
+### Original experimental implementation
 
 Build a default-disabled one-shot local client with one real disposable-task consumer. Test whether
 the MVP 1 native Desktop task-control route can still admit a correlated input and wake the exact
@@ -48,9 +71,10 @@ Task 026/032, Game and RightSpot changes remain untouched.
 
 ### Implemented boundary
 
-The separate zero-dependency module contains a bounded native client, an exact-target probe/observer,
-and a stdin-only CLI. It does not import frozen MVP code. Default mode only inspects; explicit send
-mode permits one internally constructed inert input. The native client and bridge each fence repeat
+The separate zero-dependency module contains a bounded native client and exact-target probe/observer.
+It does not import frozen MVP code. The original stdin-only CLI default inspected and explicit send
+permitted one internally constructed inert input; that orchestration is now fixture-only and the
+operational CLI is held before native IO. The native client and bridge each fence repeat
 submission. There is no listener, reconnect, automatic retry, alternate endpoint, or production
 integration. Process-local fencing does not provide cross-process idempotency.
 
@@ -99,7 +123,7 @@ route. It cannot close the current-build standalone Connector gate. The supporte
 CLOUD-026 remains separate partial evidence; neither result establishes that all possible supported
 same-task routes are impossible.
 
-### Local checks and Git closure
+### Original local checks and Git closure
 
 The final Node `24.20.0` suite passes **89/89** unit, fake-socket, and subprocess checks. The native
 client contributes 43, the bridge 24, and CLI subprocess coverage 22. These checks use only fixture
@@ -131,8 +155,44 @@ and Core/00 now distinguish the implemented local harness from blocked native ad
 durable enrollment, TASK-029's notification receipt, and TASK-034's authenticated Game Browser/WebMCP
 remain open. This source is disabled experimental work, not a shipping Adapter.
 
-The corrected next gate is a complete launcher, caller, and custody comparison against MVP 1,
-followed by review of a legitimate owning-runtime admission route. If the necessary authority is
+The static launcher, caller, and custody comparison is now recorded in CLOUD-028; the next gate is
+a legitimate owning-runtime admission route, not repetition of that static review. If its authority is
 not available, obtain an explicit owner/platform integration decision. Do not rerun a launcher,
 switch executables to force admission, or replace the product with fresh Agents or polling.
 Binding and notification-receipt design may proceed, but cannot prove runtime admission.
+
+## Admission-hold verification, 2026-09-04
+
+Source baseline: `1f35d09` on shared `main`, 54 commits ahead and zero behind fetched `origin/main`.
+Only this record, CLOUD-028, TASK-035, the experimental README, operational CLI, CLI tests, and new
+fixture runner belong to this increment. Existing TASK-033 reconciliation and all other owner-held
+changes remain outside it. No product source, authority, protocol, or dependency changed; Core/00,
+Mechanism 04 and ADR-0047 already record blocked experimental admission and need no new decision.
+
+The Red regression ran the original CLI against a fresh fake socket: default, inspect and send
+modes all incorrectly exited zero instead of holding (three failing subcases plus their parent).
+After the correction, Node `24.20.0` verification passed:
+
+- `node --test runtime/experimental-desktop-bridge/test/probe-cli.test.mjs`: **29/29** passed.
+- `node --test runtime/experimental-desktop-bridge/test/native-client.test.mjs runtime/experimental-desktop-bridge/test/probe-bridge.test.mjs runtime/experimental-desktop-bridge/test/probe-cli.test.mjs`:
+  **96/96** passed, including all 89 retained transport/observer/orchestration checks and seven
+  new operational-hold/fixture-isolation checks. All native operations used fake endpoints.
+- `node --check` passed for the operational CLI and fixture runner. Operational subprocess tests
+  run with only the CLI source readable and child-process creation denied by Node's permission
+  model; no native module/endpoint access is needed. Open stdin does not hold the process alive.
+- Independent read-only review found no actionable issue; it separately passed the 29-check
+  subprocess suite. These are local fixture results, not real App admission or wake evidence.
+- Repository validator tests passed 6/6; sensitive-scanner tests passed 3/3; indexed repository
+  validation passed. Full-repository sensitive scanning still reports 21 existing matches in seven
+  unchanged Game documents, none in these seven owned paths. No suppression or Game edit was made.
+  Exact staged diff, whitespace and English-only checks are part of this bounded local closure.
+
+Git closure for this seven-file increment is local-only. Publishing the 54 existing shared
+commits is outside this increment, so no push or remote-parity claim is made. TASK-033's earlier
+uncommitted reconciliation and unrelated collaborator work are deliberately preserved.
+
+The single authorized B1 send remains unused. This turn made no custom native connection, App
+configuration change, external platform inquiry, Receiver/Game operation, deployment, or publication.
+An ordinary in-App coordination message requested a documentation scope from the existing Game
+task; no usable scoped response was available at this readback and no Game file was edited. That
+message is not autonomous Connector evidence. The platform-question draft remains unsent.

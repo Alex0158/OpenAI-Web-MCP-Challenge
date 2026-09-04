@@ -12,6 +12,8 @@
 - Current increment: CLOUD-028 completes the static MVP/installed-launcher comparison. The App
   configures its bundled MCP service with executor caller metadata and a message-approval policy;
   this does not establish custom-client or independently running Connector admission.
+  The experimental CLI now enforces that hold before native IO; transport and observer coverage
+  is fixture-only (96/96 local checks). This is not a new admission mechanism or B1 attempt.
 - Next gate: Establish legitimate invocation for ADR-0047's current-executor custom diagnostic,
   preserving actual caller, fixed target and App approval policy. No new B1 submission has occurred.
   The subsequent product gate must establish how the existing Connector invokes the exact task

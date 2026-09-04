@@ -9,7 +9,10 @@ runtime evidence. This module does not import or modify frozen MVP code.
 
 ## Scope and prerequisites
 
-- Run only inside the explicitly approved local Desktop execution environment on Node 24.
+- The operational CLI is held: CLOUD-028 has not established legitimate custom-client invocation.
+  The unused ADR-0047 one-shot approval does not remove that prerequisite. There is no unlock flag.
+- Any future reviewed live route must run only inside its approved local Desktop execution
+  environment on Node 24 and preserve the App's actual caller and approval policy.
 - The app must supply `CODEX_APP_TOOLS_PIPE_PATH`; the executor must supply its actual
   `CODEX_THREAD_ID`. These are private runtime context, not user-editable destination overrides.
 - The app-owned socket must pass restrictive endpoint and parent checks. Never chmod, replace,
@@ -26,14 +29,27 @@ a `userMessage` is recorded as such, not relabelled as `functionCallOutput`.
 
 ## Operator interface
 
-The one-shot CLI reads at most 4096 bytes of private JSON from stdin, then stdin must close. Its
-allowed fields are `targetId`, `expectedCwd`, `marker`, and optional `priorMarker`. Do not put raw
-locators in command arguments, environment files, prompts, shell history, logs, or tracked evidence.
-Supply this input through the approved local operator; no private configuration file is generated.
+The operational `scripts/probe-once.mjs` exits nonzero with `admission_unverified` and
+`submission:not_sent` for default, `--inspect`, and `--send-once`. Unsupported or combined modes
+return `invalid_mode`, also without sending. It does not read private stdin or runtime context,
+import native code, inspect/connect an endpoint, or wait for stdin to close. It creates no listener
+and performs no retry. Do not provide private locators to this held entrypoint.
 
-`node runtime/experimental-desktop-bridge/scripts/probe-once.mjs --inspect` performs only preflight.
-Omitting the mode also selects read-only preflight. `--send-once` is a separate explicit operation
-and requires the authorized one-shot input; it is never used as a fallback for another route.
+Only a reviewed implementation of an established legitimate invocation contract may replace this
+hold. A caller value, signed executable path, environment flag, marker, or purported approval field
+cannot unlock it. This local guard is not an App authenticator and does not prove runtime admission.
+
+## Retained fixture-only orchestration
+
+The earlier CLI orchestration is retained in `test/fixtures/probe-runner.mjs` solely for subprocess
+regressions. It uses a hardcoded fake caller and a fixture-specific temporary socket path supplied
+by the test harness, never the ambient App pipe/caller variables. Launching without that fixture
+context fails before native activity. This runner is not an alternative operator entrypoint, and
+the operational CLI neither imports nor delegates to it.
+
+Fixture input is bounded to 4096 bytes and fields `targetId`, `expectedCwd`, `marker`, and optional
+`priorMarker`. Fixture default/inspect mode exercises preflight; fixture send mode exercises one
+internally constructed inert message. These are fake-process checks, not instructions for a live run.
 
 The allowed new marker begins with `REENTRY_BRIDGE_` and contains only bounded uppercase letters,
 digits, and underscores. It is correlation, not authentication. A retained older marker is observed
@@ -46,8 +62,8 @@ and shutdown. Native failures expose only a fixed allowlisted code, never native
 content. Submission acceptance is not a
 trusted delivery receipt, actual wake, Browser capability, or business completion.
 
-The CLI exits nonzero for failed preflight or an unproven clean correlated completed turn. Exit zero
-in inspect mode means only exact-task preflight passed; in send mode it means the bounded observer
+The fixture runner exits nonzero for failed preflight or an unproven clean correlated completed turn.
+Exit zero in fixture inspect mode means only exact-task preflight passed; in send mode the observer
 saw the new input start a completed turn with its exact marker response and no observed tool or
 unknown item types. Even that result is experimental messaging evidence, not a delivery receipt.
 
@@ -61,4 +77,6 @@ connection: no listener or daemon remains, but already submitted input cannot be
 Run `node --test runtime/experimental-desktop-bridge/test/*.test.mjs` from the repository root.
 These tests use injected clients or fresh local fake sockets, never the app's real pipe or real
 tasks. They verify the bounded client, not enrollment, cross-process idempotency, Browser/WebMCP,
-or production support. The runtime probe is a separately authorized, manually controlled check.
+or production support. Operational hold tests additionally deny filesystem reads except the CLI's
+own source and deny child-process creation using the Node 24 permission model. The authorized real
+probe remains unattempted pending legitimate admission; fixture passes cannot close that gate.
