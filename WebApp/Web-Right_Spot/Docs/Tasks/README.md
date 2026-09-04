@@ -198,10 +198,12 @@ and `RIGHTSPOT-002` is closed.
 **Current post-MVP gates:** `RIGHTSPOT-006` and `RIGHTSPOT-012` remain pending (credential and
 read-only audit gates); `RIGHTSPOT-046` is closed through accepted `ADR-RS-0017` as the Operations
 WebMCP contract decision. `RIGHTSPOT-047` is the source implementation gate after its T0 baseline
-recapture and Builder dispatch; its original five-path candidate passed deterministic checks and Main
-browser smoke, but its independent browser gate is paused pending the shared lifecycle repair in
-`RIGHTSPOT-048` and must be re-baselined before verification resumes. `RIGHTSPOT-048` is the newly
-registered bounded shared role-page session lifecycle repair. Its serial Builder Work Order returned
+recapture and Builder dispatch. Its original five-path candidate passed deterministic checks and Main
+browser smoke; after the reviewed shared-lifecycle decision in `RIGHTSPOT-048`, the disjoint
+`RS-WO-047-03` registration-observability repair was integrated at `ac67285`. The fresh independent
+`RS-WO-047-02` browser attempt returned `INCOMPLETE_EVIDENCE` after a bounded Main interruption, so
+047 remains open and any continuation requires a new explicitly bounded evidence-completion decision.
+`RIGHTSPOT-048` is the bounded shared role-page session lifecycle repair. Its serial Builder Work Order returned
 `READY_FOR_INDEPENDENT_VERIFICATION`, and Main integrated the exact eight-path candidate at `218935c`
 after focused `35/35`, complete `215/215`, typecheck, build, repository, sensitive-scan, and diff
 gates. Its independent browser Work Order ended at `BLOCKED_HARNESS` after the corrected retry

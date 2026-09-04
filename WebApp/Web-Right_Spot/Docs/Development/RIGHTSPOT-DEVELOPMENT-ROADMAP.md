@@ -315,18 +315,17 @@ remains the non-blocking audit lane. `RIGHTSPOT-045` is `CLOSED_VERIFIED` for `F
 manual Operations consumer boundary; `RS-WO-045-01` is integrated at `3582ba4`, with Main-controlled
 race evidence and the explicit independent-browser harness limitation recorded. `RIGHTSPOT-046` is
 closed through accepted `ADR-RS-0017` for one bounded Agent-only `read_listing_pipeline` contract;
-the separate implementation Task `RIGHTSPOT-047` is paused after T0 baseline recapture and Builder
-dispatch because `RIGHTSPOT-048` owns the shared lifecycle gate. Its five-path candidate is frozen
-locally; deterministic checks and Main browser smoke pass, while its independent browser gate remains
-incomplete after one command-level harness block and two bounded partial retries. The 048 candidate is
-integrated at `218935c`, but its independent browser gate ended at `BLOCKED_HARNESS` after the corrected
-retry produced no final report; no further blind retry is authorized. After a reviewed 048 evidence
-decision, 047 must be re-baselined before verification resumes. Other Operations WebMCP capabilities
-remain separately gated.
-`RIGHTSPOT-049` is now the next independent bounded implementation candidate from the continuing
-Search audit. It is a P2 client compatibility repair for F-23, limited to the Search parser and its
-focused tests; it can proceed while 047/048 remain paused or harness-blocked and does not alter the
-server envelope, Search authority, page consumer, or WebMCP registration.
+the separate implementation Task `RIGHTSPOT-047` remains open after its T0 baseline, Builder handoff,
+and the disjoint `RS-WO-047-03` registration-observability repair integrated at `ac67285`. Its
+deterministic checks and Main browser smoke pass, while the fresh independent `RS-WO-047-02` browser
+attempt returned `INCOMPLETE_EVIDENCE` after a bounded Main interruption. `RIGHTSPOT-048` owns the
+shared lifecycle gate; its candidate is integrated at `218935c` and its independent browser gate ended
+at `BLOCKED_HARNESS`. No blind retry is authorized, and any further 047/048 browser evidence requires
+a new explicitly bounded evidence-completion decision. Other Operations WebMCP capabilities remain
+separately gated.
+`RIGHTSPOT-049` is already `CLOSED_VERIFIED` within its P2 Search-parser compatibility boundary. The
+current route is the non-blocking `RIGHTSPOT-012` audit lane plus source or evidence increments that are
+separately admitted; no new implementation candidate is implied by the closed 049 record.
 
 The accepted local MVP and the bounded `RIGHTSPOT-020` Favourite/listing-interest increment are complete.
 The page-entry audit registered `RIGHTSPOT-021` as a bounded implementation route: restore a
@@ -645,9 +644,10 @@ repair. Its original implementation Work Order completed its Builder handoff: `R
 completed bounded repair is `RS-WO-049-03`. The original
 `RIGHTSPOT-047` candidate's
 deterministic checks and Main-controlled browser smoke pass, but its independent gate remains open after
-one command-level harness block and two bounded partial retries; the Agent registration-observability
-repair is now integrated at `ac67285`, and its independent browser evidence is the next gate. No push
-or closure claim is authorized. The 048 independent gate
+one command-level harness block, two bounded partial retries, and a fresh post-repair attempt that
+returned `INCOMPLETE_EVIDENCE`; the Agent registration-observability repair is integrated at `ac67285`.
+No push or closure claim is authorized, and any further 047 browser run requires a new explicitly bounded
+evidence-completion decision. The 048 independent gate
 ended at `BLOCKED_HARNESS` after its corrected retry produced no final report; no further blind
 agent-browser retry is authorized. This does not reopen
 the accepted MVP closure or authorize external authentication, Cloud Receiver,
