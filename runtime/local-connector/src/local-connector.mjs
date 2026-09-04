@@ -317,6 +317,9 @@ function isUnknownHandoffError(error) {
     "connector_request_timeout",
     "connector_network_error",
     "connector_redirect_rejected",
+    "connector_http_error",
+    "connector_response_invalid",
+    "connector_response_too_large",
   ].includes(error?.code);
 }
 
