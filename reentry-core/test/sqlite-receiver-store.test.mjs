@@ -79,7 +79,7 @@ test("file store persists schema version, uses WAL, and rejects unknown database
 
   const store = new SqliteReceiverStore({ filename: validPath });
   const probe = new DatabaseSync(validPath);
-  assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 6);
+  assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 7);
   assert.equal(probe.prepare("PRAGMA journal_mode").get().journal_mode, "wal");
   probe.close();
   store.close();
@@ -101,7 +101,7 @@ test("file store persists schema version, uses WAL, and rejects unknown database
   );
 });
 
-test("schema version 1 migrates pending deliveries, instructions, and standing tables atomically to version 6", async (t) => {
+test("schema version 1 migrates pending deliveries, instructions, and standing tables atomically to version 7", async (t) => {
   const directory = await mkdtemp(join(tmpdir(), "webmcp-sqlite-migration-"));
   const filename = join(directory, "receiver.sqlite");
   let store;
@@ -178,7 +178,7 @@ test("schema version 1 migrates pending deliveries, instructions, and standing t
   );
 
   const probe = new DatabaseSync(filename);
-  assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 6);
+  assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 7);
   assert.equal(
     probe.prepare("SELECT count(*) AS count FROM receiver_delivery_states").get().count,
     1,
@@ -190,7 +190,7 @@ test("schema version 1 migrates pending deliveries, instructions, and standing t
   probe.close();
 });
 
-test("schema version 2 derives the immutable instruction and migrates to version 6", async (t) => {
+test("schema version 2 derives the immutable instruction and migrates to version 7", async (t) => {
   const directory = await mkdtemp(join(tmpdir(), "webmcp-sqlite-instruction-migration-"));
   const filename = join(directory, "receiver.sqlite");
   let store;
@@ -244,11 +244,11 @@ test("schema version 2 derives the immutable instruction and migrates to version
   );
 
   const probe = new DatabaseSync(filename);
-  assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 6);
+  assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 7);
   probe.close();
 });
 
-test("schema version 3 adds standing authorization tables and migrates to version 6", async (t) => {
+test("schema version 3 adds standing authorization tables and migrates to version 7", async (t) => {
   const directory = await mkdtemp(join(tmpdir(), "webmcp-sqlite-standing-migration-"));
   const filename = join(directory, "receiver.sqlite");
   let store;
@@ -271,7 +271,7 @@ test("schema version 3 adds standing authorization tables and migrates to versio
 
   store = new SqliteReceiverStore({ filename });
   const probe = new DatabaseSync(filename);
-  assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 6);
+  assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 7);
   assert.deepEqual(
     probe.prepare(`
       SELECT name
@@ -301,7 +301,7 @@ test("SQLite standing store persists the consented key ID and public-key fingerp
 });
 
 for (const version of [4, 5]) {
-  test(`schema version ${version} preserves standing history and revokes unpinned Grants in version 6`, async (t) => {
+  test(`schema version ${version} preserves standing history and revokes unpinned Grants in version 7`, async (t) => {
     const fixture = await databaseFixture(t, `standing-v${version}-migration`);
     const prior = createLegacyDatabase(fixture.filename, version);
     const active = standingGrant(`v${version}_active`, { last_event_sequence: 1 });
@@ -333,7 +333,7 @@ for (const version of [4, 5]) {
       });
     }
     const probe = fixture.openProbe();
-    assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 6);
+    assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 7);
     assert.deepEqual(snapshotRows(probe), preserved);
     assert.equal(
       probe.prepare("SELECT count(*) AS count FROM receiver_standing_grants").get().count,
@@ -436,6 +436,29 @@ test("fresh and migrated standing schemas reject missing or invalid pins and for
   }
 });
 
+test("schema version 6 adds notification handoff columns without changing standing history", async (t) => {
+  const fixture = await databaseFixture(t, "standing-v6-handoff-migration");
+  const prior = createLegacyDatabase(fixture.filename, 6);
+  const grant = standingGrant("v6_handoff", { last_event_sequence: 1 });
+  seedLegacyStandingHistory(prior, grant, 6);
+  prior.close();
+
+  const store = fixture.openStore();
+  const delivery = store.getStandingDeliveryById("standing_delivery_v6_handoff");
+  assert.equal(delivery.handoff_id, null);
+  assert.equal(delivery.runtime_admission_json, null);
+  assert.equal(delivery.handoff_receipt_json, null);
+  assert.equal(delivery.handoff_accepted_at, null);
+  const probe = fixture.openProbe();
+  assert.equal(probe.prepare("PRAGMA user_version").get().user_version, 7);
+  assert.deepEqual(
+    probe.prepare("PRAGMA table_info('receiver_standing_deliveries')").all()
+      .map((column) => column.name).slice(-4),
+    ["handoff_id", "runtime_admission_json", "handoff_receipt_json", "handoff_accepted_at"],
+  );
+  store.close();
+});
+
 function standingChallenge(suffix) {
   return {
     challenge_id: `standing_challenge_${suffix}`,
@@ -483,12 +506,28 @@ function standingGrant(suffix, overrides = {}) {
 
 function createLegacyDatabase(filename, version) {
   const database = new DatabaseSync(filename);
-  let schema = SCHEMA_SQL.replace(STANDING_KEY_PIN_TRIGGERS_SQL, "")
-    .replace(`  issuer_key_fingerprint TEXT NOT NULL DEFAULT '${STANDING_LEGACY_KEY_FINGERPRINT}',\n`, "");
+  let schema = SCHEMA_SQL.replace(STANDING_KEY_PIN_TRIGGERS_SQL, "");
+  if (version < 6) {
+    schema = schema.replace(
+      `  issuer_key_fingerprint TEXT NOT NULL DEFAULT '${STANDING_LEGACY_KEY_FINGERPRINT}',\n`,
+      "",
+    );
+  }
   const keyDefinition = `  issuer_key_id TEXT NOT NULL DEFAULT '${LEGACY_KEY_ID}',\n`;
   assert.ok(schema.includes(keyDefinition));
   schema = schema.replace(keyDefinition, version === 4 ? "" : "  issuer_key_id TEXT NOT NULL,\n");
   database.exec(schema);
+  if (version < 7) {
+    database.exec("DROP INDEX receiver_standing_deliveries_handoff_id");
+    for (const column of [
+      "handoff_id",
+      "runtime_admission_json",
+      "handoff_receipt_json",
+      "handoff_accepted_at",
+    ]) {
+      database.exec(`ALTER TABLE receiver_standing_deliveries DROP COLUMN ${column}`);
+    }
+  }
   database.exec(`PRAGMA user_version = ${version}`);
   return database;
 }
@@ -525,7 +564,19 @@ function snapshotRows(database) {
     "receiver_standing_challenges",
     "receiver_standing_events",
     "receiver_standing_deliveries",
-  ].map((table) => [table, database.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all()]));
+  ].map((table) => [
+    table,
+    database.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all().map((row) => {
+      const copy = { ...row };
+      if (table === "receiver_standing_deliveries") {
+        delete copy.handoff_id;
+        delete copy.runtime_admission_json;
+        delete copy.handoff_receipt_json;
+        delete copy.handoff_accepted_at;
+      }
+      return copy;
+    }),
+  ]));
 }
 
 function rawInsert(database, table, record) {

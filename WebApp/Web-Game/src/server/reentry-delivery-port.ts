@@ -10,7 +10,7 @@ import type {
  * serialization and delivery; the game owns the durable outcome transition.
  */
 export type ReentryTransportOutcome =
-  | { readonly kind: "accepted" }
+  | { readonly kind: "accepted"; readonly boundary?: "transport_accepted" | "receiver_queue_accepted" }
   | { readonly kind: "retryable"; readonly code: string }
   | { readonly kind: "terminal"; readonly code: string };
 
@@ -102,7 +102,11 @@ function parseTransportOutcome(value: unknown): ReentryTransportOutcome {
   }
   const candidate = value as { kind?: unknown; code?: unknown };
   if (candidate.kind === "accepted") {
-    return { kind: "accepted" };
+    const boundary = (value as { boundary?: unknown }).boundary;
+    if (boundary !== undefined && boundary !== "transport_accepted" && boundary !== "receiver_queue_accepted") {
+      throw new PersistenceError("INVALID_INPUT");
+    }
+    return { kind: "accepted", ...(boundary === undefined ? {} : { boundary }) };
   }
   if (candidate.kind === "retryable" || candidate.kind === "terminal") {
     assertOutcomeCode(candidate.code);
@@ -211,6 +215,7 @@ export class ReentryDeliveryPort {
         signalId: claimed.signalId,
         leaseId: input.leaseId,
         nowWallTimeMs: input.nowWallTimeMs,
+        ...(outcome.boundary === undefined ? {} : { deliveryBoundary: outcome.boundary }),
       });
       return { kind: "accepted", signalId: claimed.signalId, envelope, outcome: "ACCEPTED", delivery };
     }

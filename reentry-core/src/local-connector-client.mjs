@@ -20,6 +20,10 @@ import {
   RECEIVER_HTTP_ROUTES,
   STANDING_RECEIVER_HTTP_ROUTES,
 } from "./receiver-http-contract.mjs";
+import {
+  validateNotificationHandoffReceipt,
+  validateRuntimeAdmissionAttestation,
+} from "./notification-handoff.mjs";
 
 const CLIENT_OPTION_FIELDS = Object.freeze([
   "baseUrl",
@@ -37,6 +41,13 @@ const ACKNOWLEDGEMENT_INPUT_FIELDS = Object.freeze([
   "deliveryId",
   "leaseToken",
   "effectToken",
+]);
+const NOTIFICATION_HANDOFF_INPUT_FIELDS = Object.freeze([
+  "deliveryId",
+  "eventId",
+  "leaseToken",
+  "handoffId",
+  "runtimeAdmissionAttestation",
 ]);
 const CLAIM_RESULT_FIELDS = Object.freeze(["duplicate", "lease"]);
 const LEASE_FIELDS = Object.freeze([
@@ -140,6 +151,10 @@ export class LocalConnectorClient {
     );
   }
 
+  get protocolVersion() {
+    return this.#protocolProfile.protocolVersion;
+  }
+
   async claimDelivery(input) {
     requireClientInput(input, CLAIM_INPUT_FIELDS, "Delivery claim input");
     const claimToken = requireClaimToken(input.claimToken, "Delivery claim token");
@@ -182,6 +197,71 @@ export class LocalConnectorClient {
     }
     const value = await parseCanonicalJsonResponse(response);
     return normalizeAcknowledgement(value, deliveryId, this.#protocolProfile);
+  }
+
+  async handoffNotification(input) {
+    requireClientInput(
+      input,
+      NOTIFICATION_HANDOFF_INPUT_FIELDS,
+      "Notification handoff input",
+    );
+    if (this.#protocolProfile.protocolVersion !== STANDING_PROTOCOL_VERSION) {
+      throw clientFailure(
+        "connector_protocol_version_unsupported",
+        "Notification handoff requires standing protocol v0.2",
+      );
+    }
+    const deliveryId = requireIdentifier(
+      input.deliveryId,
+      "deliveryId",
+      "connector_input_invalid",
+    );
+    const eventId = requireIdentifier(
+      input.eventId,
+      "eventId",
+      "connector_input_invalid",
+    );
+    const leaseToken = requireClaimToken(input.leaseToken, "Delivery lease token");
+    const handoffId = requireIdentifier(
+      input.handoffId,
+      "handoffId",
+      "connector_input_invalid",
+    );
+    let runtimeAdmissionAttestation;
+    try {
+      runtimeAdmissionAttestation = validateRuntimeAdmissionAttestation(
+        input.runtimeAdmissionAttestation,
+        { deliveryId, eventId, handoffId },
+      );
+    } catch (error) {
+      throw clientFailure(
+        "connector_input_invalid",
+        "Runtime admission attestation is invalid",
+        undefined,
+        error,
+      );
+    }
+    const response = await this.#post(this.#protocolProfile.routes.handoff, {
+      connector_token: this.#connectorToken,
+      delivery_id: deliveryId,
+      lease_token: leaseToken,
+      handoff_id: handoffId,
+      runtime_admission_attestation: runtimeAdmissionAttestation,
+    });
+    if (response.status !== 200) {
+      throw await parseHttpFailure(response, this.#protocolProfile);
+    }
+    const value = await parseCanonicalJsonResponse(response);
+    try {
+      return validateNotificationHandoffReceipt(value, {
+        deliveryId,
+        eventId,
+        handoffId,
+      });
+    } catch (error) {
+      if (error instanceof ConnectorTransportError) throw error;
+      throw invalidResponse(error);
+    }
   }
 
   async #post(path, body) {

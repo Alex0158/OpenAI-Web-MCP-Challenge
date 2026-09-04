@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 6;
+export const SCHEMA_VERSION = 7;
 // Legacy rows cannot recover consented public-key bytes from a mutable key resolver.
 export const STANDING_LEGACY_KEY_FINGERPRINT = "__legacy_unpinned__";
 
@@ -264,6 +264,10 @@ CREATE TABLE IF NOT EXISTS receiver_standing_deliveries (
   effect_attestation_json TEXT,
   acknowledged_at TEXT,
   terminal_reason TEXT,
+  handoff_id TEXT,
+  runtime_admission_json TEXT,
+  handoff_receipt_json TEXT,
+  handoff_accepted_at TEXT,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   CHECK (
@@ -293,6 +297,10 @@ CREATE UNIQUE INDEX IF NOT EXISTS receiver_standing_deliveries_one_open
 CREATE INDEX IF NOT EXISTS receiver_standing_deliveries_target_pending
   ON receiver_standing_deliveries(delivery_target_id, status, created_at, delivery_id);
 
+CREATE UNIQUE INDEX IF NOT EXISTS receiver_standing_deliveries_handoff_id
+  ON receiver_standing_deliveries(handoff_id)
+  WHERE handoff_id IS NOT NULL;
+
 ${STANDING_KEY_PIN_TRIGGERS_SQL}
 `;
 
@@ -320,6 +328,24 @@ ALTER TABLE receiver_standing_grants
 UPDATE receiver_standing_grants
 SET revoked_at = created_at
 WHERE revoked_at IS NULL;
+`;
+
+export const STANDING_NOTIFICATION_HANDOFF_SCHEMA_SQL = `
+ALTER TABLE receiver_standing_deliveries
+  ADD COLUMN handoff_id TEXT;
+
+ALTER TABLE receiver_standing_deliveries
+  ADD COLUMN runtime_admission_json TEXT;
+
+ALTER TABLE receiver_standing_deliveries
+  ADD COLUMN handoff_receipt_json TEXT;
+
+ALTER TABLE receiver_standing_deliveries
+  ADD COLUMN handoff_accepted_at TEXT;
+
+CREATE UNIQUE INDEX IF NOT EXISTS receiver_standing_deliveries_handoff_id
+  ON receiver_standing_deliveries(handoff_id)
+  WHERE handoff_id IS NOT NULL;
 `;
 
 export const SCHEMA_SQL = `${BASE_SCHEMA_SQL}\n${DELIVERY_STATE_SCHEMA_SQL}\n${STANDING_AUTHORIZATION_SCHEMA_SQL}`;
@@ -378,6 +404,10 @@ export const STANDING_DELIVERY_DETAIL_SELECT = `
     d.effect_attestation_json,
     d.acknowledged_at,
     d.terminal_reason,
+    d.handoff_id,
+    d.runtime_admission_json,
+    d.handoff_receipt_json,
+    d.handoff_accepted_at,
     d.created_at,
     d.updated_at,
     g.subject_id,

@@ -49,6 +49,8 @@ import {
   type IdempotencyInput,
   type IdempotencyRecord,
   type OutboxDeliveryRecord,
+  type ReentryEventContext,
+  type ReentryEventContextInput,
   type PersistedDomainEvent,
   type PersistenceStoreOptions,
   type PlayerRecord,
@@ -161,6 +163,8 @@ const REQUIRED_TABLE_COLUMNS: Record<string, readonly string[]> = {
   idempotency_record: ["world_id", "idempotency_key", "binding", "request_fingerprint", "contract_version", "outcome", "result_json", "event_ids_json"],
   agent_signal_slot: ["world_id", "shelter_id", "opaque_binding", "signal_id", "grant_id", "bounded_action", "status", "cursor_start", "cursor_end", "eligible_event_count", "event_types_json", "severity", "latest_event_id", "latest_event_type", "latest_world_time", "deferred_cursor_start", "deferred_cursor_end", "deferred_eligible_event_count", "deferred_event_types_json", "deferred_severity", "deferred_latest_event_id", "deferred_latest_event_type", "deferred_latest_world_time", "cooldown_until_world_time", "lease_id", "lease_expires_at_wall_ms", "attempt_count", "last_error_code"],
   outbox_delivery: ["delivery_id", "world_id", "shelter_id", "opaque_binding", "signal_id", "status", "attempt_count", "lease_id", "lease_expires_at_wall_ms", "last_outcome"],
+  reentry_binding_sequence: ["world_id", "opaque_binding", "next_event_sequence", "created_at", "updated_at"],
+  reentry_event_context: ["world_id", "signal_id", "opaque_binding", "event_sequence", "occurred_at", "state_version", "created_at"],
   schema_meta: ["schema_meta_id", "schema_version", "contract_version", "supported_event_version", "supported_snapshot_version", "migration_id"],
 };
 const RECORDABLE_COMMAND_REJECTIONS = new Set<PersistenceErrorCode>([
@@ -760,6 +764,22 @@ function assertNonEmpty(value: string, code: "INVALID_INPUT" | "WORLD_NOT_FOUND"
   }
 }
 
+function assertNonNegativeSafeInteger(value: number): void {
+  if (!Number.isSafeInteger(value) || value < 0) {
+    throw new PersistenceError("INVALID_INPUT");
+  }
+}
+
+function assertCanonicalIsoTimestamp(value: string): void {
+  try {
+    if (typeof value !== "string" || value !== new Date(value).toISOString()) {
+      throw new Error("timestamp is not canonical");
+    }
+  } catch {
+    throw new PersistenceError("INVALID_INPUT");
+  }
+}
+
 function withTransaction<T>(database: DatabaseSync, run: () => T): T {
   try {
     database.exec("BEGIN IMMEDIATE");
@@ -928,6 +948,34 @@ export class PersistenceStore {
         database.exec("CREATE UNIQUE INDEX IF NOT EXISTS encounter_active_soldier_idx ON encounter(world_id, soldier_id) WHERE state IN ('LOCKED', 'RESOLVING')");
         database.exec("CREATE UNIQUE INDEX IF NOT EXISTS encounter_active_monster_idx ON encounter(world_id, monster_id) WHERE state IN ('LOCKED', 'RESOLVING')");
         database.exec("CREATE UNIQUE INDEX IF NOT EXISTS encounter_attempt_monster_idx ON encounter(world_id, mission_attempt_id, monster_id)");
+        database.exec(`
+          CREATE TABLE IF NOT EXISTS reentry_binding_sequence (
+            world_id TEXT NOT NULL,
+            opaque_binding TEXT NOT NULL,
+            next_event_sequence INTEGER NOT NULL DEFAULT 1,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (world_id, opaque_binding),
+            FOREIGN KEY (world_id) REFERENCES world(world_id),
+            CHECK (next_event_sequence >= 1)
+          );
+          CREATE TABLE IF NOT EXISTS reentry_event_context (
+            world_id TEXT NOT NULL,
+            signal_id TEXT NOT NULL,
+            opaque_binding TEXT NOT NULL,
+            event_sequence INTEGER NOT NULL,
+            occurred_at TEXT NOT NULL,
+            state_version INTEGER NOT NULL,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (world_id, signal_id),
+            UNIQUE (world_id, opaque_binding, event_sequence),
+            FOREIGN KEY (world_id) REFERENCES world(world_id),
+            CHECK (event_sequence >= 1),
+            CHECK (state_version >= 0)
+          );
+          CREATE INDEX IF NOT EXISTS reentry_event_context_binding_idx
+            ON reentry_event_context(world_id, opaque_binding, event_sequence);
+        `);
         database.prepare("UPDATE schema_meta SET schema_version = ?, migration_id = ?, updated_at = CURRENT_TIMESTAMP WHERE schema_meta_id = 'singleton'").run(CURRENT_SCHEMA_VERSION, CURRENT_MIGRATION_ID);
       });
     } catch (error) {
@@ -2197,6 +2245,95 @@ export class PersistenceStore {
     this.requireWorld(worldId);
     const rows = this.db().prepare("SELECT event_id, event_version, contract_version, event_type, world_id, world_event_cursor, world_time, causation_id, idempotency_key, aggregate_type, aggregate_id, aggregate_revision, visibility_scope_json, typed_payload_json, affected_entity_revisions_json FROM domain_event WHERE world_id = ? ORDER BY world_event_cursor ASC").all(worldId) as Row[];
     return rows.map((row) => this.parseEventRow(row));
+  }
+
+  /** Return the authoritative world cursor for one persisted event identity. */
+  eventCursor(worldId: string, eventId: string): number | null {
+    assertNonEmpty(worldId);
+    assertNonEmpty(eventId);
+    this.requireWorld(worldId);
+    const row = rowOf(this.db().prepare(
+      "SELECT world_event_cursor FROM domain_event WHERE world_id = ? AND event_id = ?",
+    ).get(worldId, eventId));
+    return row ? requiredInteger(row, "world_event_cursor") : null;
+  }
+
+  reentryEventContext(worldId: string, signalId: string): ReentryEventContext | null {
+    assertNonEmpty(worldId);
+    assertNonEmpty(signalId);
+    this.requireWorld(worldId);
+    const row = rowOf(this.db().prepare(
+      "SELECT world_id, signal_id, opaque_binding, event_sequence, occurred_at, state_version FROM reentry_event_context WHERE world_id = ? AND signal_id = ?",
+    ).get(worldId, signalId));
+    return row ? this.parseReentryEventContext(row) : null;
+  }
+
+  /**
+   * Allocate or replay the external sequence for one Game signal. The caller
+   * supplies the durable signal identity and occurrence snapshot; this method
+   * owns the only transaction that advances a binding's sequence.
+   */
+  prepareReentryEventContext(input: ReentryEventContextInput): ReentryEventContext {
+    assertNonEmpty(input.worldId);
+    assertNonEmpty(input.signalId);
+    assertNonEmpty(input.opaqueBinding);
+    assertCanonicalIsoTimestamp(input.occurredAt);
+    assertNonNegativeSafeInteger(input.stateVersion);
+
+    return withTransaction(this.db(), () => {
+      this.requireWorld(input.worldId);
+      const existingRow = rowOf(this.db().prepare(
+        "SELECT world_id, signal_id, opaque_binding, event_sequence, occurred_at, state_version FROM reentry_event_context WHERE world_id = ? AND signal_id = ?",
+      ).get(input.worldId, input.signalId));
+      if (existingRow) {
+        const existing = this.parseReentryEventContext(existingRow);
+        if (existing.opaqueBinding !== input.opaqueBinding
+          || existing.occurredAt !== input.occurredAt
+          || existing.stateVersion !== input.stateVersion) {
+          throw new PersistenceError("EVENT_CONFLICT");
+        }
+        return existing;
+      }
+
+      this.db().prepare(
+        "INSERT OR IGNORE INTO reentry_binding_sequence (world_id, opaque_binding, next_event_sequence) VALUES (?, ?, 1)",
+      ).run(input.worldId, input.opaqueBinding);
+      const sequenceRow = rowOf(this.db().prepare(
+        "SELECT next_event_sequence FROM reentry_binding_sequence WHERE world_id = ? AND opaque_binding = ?",
+      ).get(input.worldId, input.opaqueBinding));
+      if (!sequenceRow) {
+        throw new PersistenceError("RECOVERY_REQUIRED");
+      }
+      const eventSequence = requiredInteger(sequenceRow, "next_event_sequence");
+      if (eventSequence < 1) {
+        throw new PersistenceError("RECOVERY_REQUIRED");
+      }
+      const nextSequence = eventSequence + 1;
+      if (!Number.isSafeInteger(nextSequence)) {
+        throw new PersistenceError("RECOVERY_REQUIRED");
+      }
+      const advanced = this.db().prepare(
+        "UPDATE reentry_binding_sequence SET next_event_sequence = ?, updated_at = CURRENT_TIMESTAMP WHERE world_id = ? AND opaque_binding = ? AND next_event_sequence = ?",
+      ).run(nextSequence, input.worldId, input.opaqueBinding, eventSequence);
+      if (advanced.changes !== 1) {
+        throw new PersistenceError("RECOVERY_REQUIRED");
+      }
+      try {
+        this.db().prepare(
+          "INSERT INTO reentry_event_context (world_id, signal_id, opaque_binding, event_sequence, occurred_at, state_version) VALUES (?, ?, ?, ?, ?, ?)",
+        ).run(input.worldId, input.signalId, input.opaqueBinding, eventSequence, input.occurredAt, input.stateVersion);
+      } catch (error) {
+        throw new PersistenceError("EVENT_CONFLICT", { cause: error });
+      }
+      return {
+        worldId: input.worldId,
+        signalId: input.signalId,
+        opaqueBinding: input.opaqueBinding,
+        eventSequence,
+        occurredAt: input.occurredAt,
+        stateVersion: input.stateVersion,
+      };
+    });
   }
 
   idempotency(worldId: string, key: string): IdempotencyRecord | null {
@@ -4284,6 +4421,11 @@ export class PersistenceStore {
 
   acknowledgeDelivery(input: DeliveryAckInput): DeliveryResult {
     this.assertDeliveryInput(input);
+    if (input.deliveryBoundary !== undefined
+      && input.deliveryBoundary !== "transport_accepted"
+      && input.deliveryBoundary !== "receiver_queue_accepted") {
+      throw new PersistenceError("INVALID_INPUT");
+    }
     return withTransaction(this.db(), () => {
       const row = rowOf(this.db().prepare("SELECT delivery_id, world_id, shelter_id, opaque_binding, signal_id, status, attempt_count, lease_id, lease_expires_at_wall_ms, last_outcome FROM outbox_delivery WHERE world_id = ? AND signal_id = ?").get(input.worldId, input.signalId));
       if (!row) {
@@ -4317,7 +4459,12 @@ export class PersistenceStore {
         aggregateId: slot.shelterId,
         aggregateRevision: this.getShelter(input.worldId, slot.shelterId)?.revision ?? null,
         visibilityScope: { kind: "shelter", shelterId: slot.shelterId },
-        typedPayload: { signalId: input.signalId, cursorStart: slot.cursorStart, cursorEnd: slot.cursorEnd },
+        typedPayload: {
+          signalId: input.signalId,
+          cursorStart: slot.cursorStart,
+          cursorEnd: slot.cursorEnd,
+          deliveryBoundary: input.deliveryBoundary ?? "transport_accepted",
+        },
       }, {}, null);
       this.db().prepare("UPDATE outbox_delivery SET status = 'acknowledged', lease_id = NULL, lease_expires_at_wall_ms = NULL, last_outcome = ?, updated_at = CURRENT_TIMESTAMP WHERE world_id = ? AND signal_id = ?").run(eventId, input.worldId, input.signalId);
       this.db().prepare("UPDATE agent_signal_slot SET status = 'acknowledged', lease_id = NULL, lease_expires_at_wall_ms = NULL, updated_at = CURRENT_TIMESTAMP WHERE world_id = ? AND signal_id = ?").run(input.worldId, input.signalId);
@@ -4895,6 +5042,28 @@ export class PersistenceStore {
     );
     database.prepare("INSERT INTO outbox_delivery (delivery_id, world_id, shelter_id, opaque_binding, signal_id, status) VALUES (?, ?, ?, ?, ?, 'pending')").run(signalId, worldId, eligibility.shelterId, eligibility.opaqueBinding, signalId);
     return signalId;
+  }
+
+  private parseReentryEventContext(row: Row): ReentryEventContext {
+    const occurredAt = requiredString(row, "occurred_at");
+    try {
+      assertCanonicalIsoTimestamp(occurredAt);
+    } catch {
+      throw new PersistenceError("RECOVERY_REQUIRED");
+    }
+    const eventSequence = requiredInteger(row, "event_sequence");
+    const stateVersion = requiredInteger(row, "state_version");
+    if (eventSequence < 1 || stateVersion < 0) {
+      throw new PersistenceError("RECOVERY_REQUIRED");
+    }
+    return {
+      worldId: requiredString(row, "world_id"),
+      signalId: requiredString(row, "signal_id"),
+      opaqueBinding: requiredString(row, "opaque_binding"),
+      eventSequence,
+      occurredAt,
+      stateVersion,
+    };
   }
 
   private eventVisibleToShelter(database: DatabaseSync, worldId: string, event: PersistedDomainEvent, shelterId: string): boolean {

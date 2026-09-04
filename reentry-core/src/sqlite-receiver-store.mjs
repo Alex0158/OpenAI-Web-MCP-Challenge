@@ -11,6 +11,7 @@ import {
   STANDING_ISSUER_KEY_SCHEMA_SQL,
   STANDING_KEY_FINGERPRINT_SCHEMA_SQL,
   STANDING_KEY_PIN_TRIGGERS_SQL,
+  STANDING_NOTIFICATION_HANDOFF_SCHEMA_SQL,
 } from "./sqlite-receiver-schema.mjs";
 
 const STORE_OPTION_FIELDS = Object.freeze(["filename"]);
@@ -431,6 +432,11 @@ export class SqliteReceiverStore {
     return plainRow(this.#statements.standingDeliveryById.get(deliveryId));
   }
 
+  getStandingDeliveryByHandoffId(handoffId) {
+    this.#assertOpen();
+    return plainRow(this.#statements.standingDeliveryByHandoffId.get(handoffId));
+  }
+
   getStandingDeliveryByEffectId(effectId) {
     this.#assertOpen();
     return plainRow(this.#statements.standingDeliveryByEffectId.get(effectId));
@@ -484,6 +490,22 @@ export class SqliteReceiverStore {
       acknowledgement.connector_id,
       acknowledgement.lease_token_digest,
       acknowledgement.lease_expires_at,
+    );
+    return result.changes === 1;
+  }
+
+  handoffStandingDelivery(handoff) {
+    this.#assertWriteTransaction();
+    const result = this.#statements.handoffStandingDelivery.run(
+      handoff.handoff_id,
+      handoff.runtime_admission_json,
+      handoff.handoff_receipt_json,
+      handoff.handoff_accepted_at,
+      handoff.updated_at,
+      handoff.delivery_id,
+      handoff.connector_id,
+      handoff.lease_token_digest,
+      handoff.lease_expires_at,
     );
     return result.changes === 1;
   }
@@ -556,6 +578,7 @@ export class SqliteReceiverStore {
         this.#database.exec(STANDING_ISSUER_KEY_SCHEMA_SQL);
         this.#database.exec(STANDING_KEY_FINGERPRINT_SCHEMA_SQL);
         this.#database.exec(STANDING_KEY_PIN_TRIGGERS_SQL);
+        this.#database.exec(STANDING_NOTIFICATION_HANDOFF_SCHEMA_SQL);
       });
       return;
     }
@@ -563,6 +586,13 @@ export class SqliteReceiverStore {
       this.#schemaTransaction("migration", () => {
         this.#database.exec(STANDING_KEY_FINGERPRINT_SCHEMA_SQL);
         this.#database.exec(STANDING_KEY_PIN_TRIGGERS_SQL);
+        this.#database.exec(STANDING_NOTIFICATION_HANDOFF_SCHEMA_SQL);
+      });
+      return;
+    }
+    if (version === 6) {
+      this.#schemaTransaction("migration", () => {
+        this.#database.exec(STANDING_NOTIFICATION_HANDOFF_SCHEMA_SQL);
       });
       return;
     }
@@ -805,6 +835,10 @@ export class SqliteReceiverStore {
         ${STANDING_DELIVERY_DETAIL_SELECT}
         WHERE d.delivery_id = ?
       `),
+      standingDeliveryByHandoffId: this.#database.prepare(`
+        ${STANDING_DELIVERY_DETAIL_SELECT}
+        WHERE d.handoff_id = ?
+      `),
       standingDeliveryByEffectId: this.#database.prepare(`
         ${STANDING_DELIVERY_DETAIL_SELECT}
         WHERE d.effect_id = ?
@@ -837,6 +871,15 @@ export class SqliteReceiverStore {
             acknowledged_at = ?, updated_at = ?
         WHERE delivery_id = ? AND status = 'leased' AND connector_id = ?
           AND lease_token_digest = ? AND lease_expires_at = ?
+      `),
+      handoffStandingDelivery: this.#database.prepare(`
+        UPDATE receiver_standing_deliveries
+        SET status = 'terminal', terminal_reason = 'notification_handoff',
+            handoff_id = ?, runtime_admission_json = ?, handoff_receipt_json = ?,
+            handoff_accepted_at = ?, updated_at = ?
+        WHERE delivery_id = ? AND status = 'leased' AND connector_id = ?
+          AND lease_token_digest = ? AND lease_expires_at = ?
+          AND handoff_id IS NULL
       `),
     };
   }

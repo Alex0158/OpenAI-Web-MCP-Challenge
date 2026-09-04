@@ -1,7 +1,7 @@
 import type { PersistenceErrorCode } from "./errors";
 
-export const CURRENT_SCHEMA_VERSION = 8;
-export const CURRENT_MIGRATION_ID = "cp06-004";
+export const CURRENT_SCHEMA_VERSION = 9;
+export const CURRENT_MIGRATION_ID = "cp14-001";
 export const CURRENT_EVENT_VERSION = 1;
 export const CURRENT_SNAPSHOT_VERSION = 1;
 export const DEFAULT_CONTRACT_VERSION = "SK-MVP-0.2";
@@ -372,6 +372,23 @@ export interface OutboxDeliveryRecord {
   leaseId: string | null;
   leaseExpiresAtWallMs: number | null;
   lastOutcome: string | null;
+}
+
+export interface ReentryEventContext {
+  worldId: string;
+  signalId: string;
+  opaqueBinding: string;
+  eventSequence: number;
+  occurredAt: string;
+  stateVersion: number;
+}
+
+export interface ReentryEventContextInput {
+  worldId: string;
+  signalId: string;
+  opaqueBinding: string;
+  occurredAt: string;
+  stateVersion: number;
 }
 
 export interface CommitTransitionInput {
@@ -810,6 +827,7 @@ export interface DeliveryAckInput {
   signalId: string;
   leaseId: string;
   nowWallTimeMs: number;
+  deliveryBoundary?: "transport_accepted" | "receiver_queue_accepted";
 }
 
 export interface DeliveryResult {

@@ -14,6 +14,10 @@ import {
   ReceiverConflictError,
 } from "../src/receiver-core.mjs";
 import {
+  NOTIFICATION_HANDOFF_RECEIPT_TYPE,
+  RUNTIME_ADMISSION_ATTESTATION_TYPE,
+} from "../src/notification-handoff.mjs";
+import {
   ProtocolValidationError,
   canonicalJson,
 } from "../src/protocol.mjs";
@@ -33,6 +37,21 @@ function createReceiver(overrides = {}) {
     acknowledgeDelivery(input) {
       calls.push({ method: "acknowledgeDelivery", value: input });
       return { acknowledged: true, delivery_id: input.deliveryId };
+    },
+    handoffNotification(input) {
+      calls.push({ method: "handoffNotification", value: input });
+      return {
+        type: NOTIFICATION_HANDOFF_RECEIPT_TYPE,
+        protocol_version: "0.2",
+        delivery_id: input.deliveryId,
+        event_id: "event_1",
+        handoff_id: input.handoffId,
+        correlation_id: "correlation_1",
+        workflow_id: "workflow_1",
+        status: "handed_off",
+        duplicate: false,
+        runtime_admission_ref: input.runtimeAdmissionAttestation.admission_id,
+      };
     },
     ...overrides,
   };
@@ -229,6 +248,56 @@ test("standing HTTP maps exact v0.2 routes without widening v0.1 routing", async
       value: { connectorToken: "connector_secret", claimToken: "claim_secret" },
     },
   ]);
+});
+
+test("standing HTTP maps the additive notification handoff route with exact fields", async (t) => {
+  const receiver = createReceiver();
+  const origin = await startAdapter(t, receiver, createStandingCloudReceiverHttpHandler);
+  const value = {
+    connector_token: "connector_secret",
+    delivery_id: "delivery_1",
+    lease_token: "claim_secret",
+    handoff_id: "handoff_1",
+    runtime_admission_attestation: {
+      type: RUNTIME_ADMISSION_ATTESTATION_TYPE,
+      protocol_version: "0.2",
+      admission_id: "admission_1",
+      adapter_id: "codex_desktop_v1",
+      binding_generation: "a".repeat(64),
+      delivery_id: "delivery_1",
+      event_id: "event_1",
+      handoff_id: "handoff_1",
+      accepted_at: "2026-09-04T12:00:00.000Z",
+    },
+  };
+  const response = await post(origin, STANDING_RECEIVER_HTTP_ROUTES.handoff, value, {
+    rawBody: canonicalJson(value),
+  });
+  assert.equal(response.status, 200);
+  const body = await readJson(response);
+  assert.equal(body.text, canonicalJson(body.value));
+  assert.deepEqual(body.value, {
+    type: NOTIFICATION_HANDOFF_RECEIPT_TYPE,
+    protocol_version: "0.2",
+    delivery_id: "delivery_1",
+    event_id: "event_1",
+    handoff_id: "handoff_1",
+    correlation_id: "correlation_1",
+    workflow_id: "workflow_1",
+    status: "handed_off",
+    duplicate: false,
+    runtime_admission_ref: "admission_1",
+  });
+  assert.deepEqual(receiver.calls, [{
+    method: "handoffNotification",
+    value: {
+      connectorToken: "connector_secret",
+      deliveryId: "delivery_1",
+      leaseToken: "claim_secret",
+      handoffId: "handoff_1",
+      runtimeAdmissionAttestation: value.runtime_admission_attestation,
+    },
+  }]);
 });
 
 test("standing HTTP exposes only a bounded retryable marker while v0.1 stays exact", async (t) => {

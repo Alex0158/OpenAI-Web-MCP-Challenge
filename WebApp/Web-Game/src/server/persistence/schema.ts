@@ -301,6 +301,38 @@ CREATE TABLE IF NOT EXISTS outbox_delivery (
     REFERENCES agent_signal_slot(world_id, shelter_id, opaque_binding)
 );
 
+-- The Game owns publication identity, while the Receiver owns its binding and
+-- delivery lease. These tables persist only the public mapping needed to
+-- retry one Game signal as the same ordered external Event.
+CREATE TABLE IF NOT EXISTS reentry_binding_sequence (
+  world_id TEXT NOT NULL,
+  opaque_binding TEXT NOT NULL,
+  next_event_sequence INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (world_id, opaque_binding),
+  FOREIGN KEY (world_id) REFERENCES world(world_id),
+  CHECK (next_event_sequence >= 1)
+);
+
+CREATE TABLE IF NOT EXISTS reentry_event_context (
+  world_id TEXT NOT NULL,
+  signal_id TEXT NOT NULL,
+  opaque_binding TEXT NOT NULL,
+  event_sequence INTEGER NOT NULL,
+  occurred_at TEXT NOT NULL,
+  state_version INTEGER NOT NULL,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (world_id, signal_id),
+  UNIQUE (world_id, opaque_binding, event_sequence),
+  FOREIGN KEY (world_id) REFERENCES world(world_id),
+  CHECK (event_sequence >= 1),
+  CHECK (state_version >= 0)
+);
+
+CREATE INDEX IF NOT EXISTS reentry_event_context_binding_idx
+  ON reentry_event_context(world_id, opaque_binding, event_sequence);
+
 CREATE TABLE IF NOT EXISTS schema_meta (
   schema_meta_id TEXT PRIMARY KEY,
   schema_version INTEGER NOT NULL,

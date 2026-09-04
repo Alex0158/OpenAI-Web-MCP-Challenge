@@ -306,6 +306,152 @@ test("one Consent authorizes two sequential signals, applies backpressure, survi
   assert.equal(consentVerificationCount, 3);
 });
 
+test("notification handoff persists one trusted admission and replays after revocation", (t) => {
+  let admissionCalls = 0;
+  const harness = createApprovedHarness(t, {
+    runtimeAdmissionAuthority: {
+      verifyAdmission({ attestation, expected }) {
+        admissionCalls += 1;
+        assert.equal(attestation.delivery_id, expected.delivery_id);
+        assert.equal(attestation.event_id, expected.event_id);
+        assert.equal(attestation.handoff_id, "handoff_notification_001");
+        return attestation;
+      },
+    },
+  });
+  const signal = signedSignal(
+    harness.keys,
+    harness.approval.binding,
+    1,
+    "event_notification_handoff_001",
+    1,
+  );
+  harness.core.acceptEvent(signal.envelope);
+  const leaseToken = claimToken(9);
+  const lease = harness.core.claimDelivery({
+    connectorToken: "connector_token",
+    claimToken: leaseToken,
+  }).lease;
+  const runtimeAdmissionAttestation = {
+    type: "webmcp.runtime_admission_attestation",
+    protocol_version: STANDING_PROTOCOL_VERSION,
+    admission_id: "admission_notification_001",
+    adapter_id: "codex_desktop_v1",
+    binding_generation: "b".repeat(64),
+    delivery_id: lease.delivery_id,
+    event_id: lease.event_id,
+    handoff_id: "handoff_notification_001",
+    accepted_at: FIXED_NOW.toISOString(),
+  };
+  const result = harness.core.handoffNotification({
+    connectorToken: "connector_token",
+    deliveryId: lease.delivery_id,
+    leaseToken,
+    handoffId: "handoff_notification_001",
+    runtimeAdmissionAttestation,
+  });
+  assert.equal(result.status, "handed_off");
+  assert.equal(result.duplicate, false);
+  assert.equal(admissionCalls, 1);
+  assert.equal(harness.store.getStandingDeliveryById(lease.delivery_id).status, "terminal");
+  assert.equal(
+    harness.store.getStandingDeliveryById(lease.delivery_id).terminal_reason,
+    "notification_handoff",
+  );
+
+  harness.clockRef.value = new Date(FIXED_NOW.getTime() + 1_000);
+  harness.core.revokeGrant({
+    bindingId: harness.approval.binding.binding_id,
+    controlToken: "revoke_once",
+  });
+  const replay = harness.core.handoffNotification({
+    connectorToken: "connector_token",
+    deliveryId: lease.delivery_id,
+    leaseToken,
+    handoffId: "handoff_notification_001",
+    runtimeAdmissionAttestation,
+  });
+  assert.equal(replay.duplicate, true);
+  assert.deepEqual({ ...replay, duplicate: false }, result);
+  assert.equal(admissionCalls, 1);
+});
+
+test("notification handoff replay rejects inconsistent persisted admission evidence", (t) => {
+  const harness = createApprovedHarness(t, {
+    runtimeAdmissionAuthority: {
+      verifyAdmission({ attestation }) {
+        return attestation;
+      },
+    },
+  });
+  const signal = signedSignal(
+    harness.keys,
+    harness.approval.binding,
+    1,
+    "event_notification_handoff_private_state_001",
+    1,
+  );
+  harness.core.acceptEvent(signal.envelope);
+  const leaseToken = claimToken(10);
+  const lease = harness.core.claimDelivery({
+    connectorToken: "connector_token",
+    claimToken: leaseToken,
+  }).lease;
+  const runtimeAdmissionAttestation = {
+    type: "webmcp.runtime_admission_attestation",
+    protocol_version: STANDING_PROTOCOL_VERSION,
+    admission_id: "admission_notification_private_state_001",
+    adapter_id: "codex_desktop_v1",
+    binding_generation: "c".repeat(64),
+    delivery_id: lease.delivery_id,
+    event_id: lease.event_id,
+    handoff_id: "handoff_notification_private_state_001",
+    accepted_at: FIXED_NOW.toISOString(),
+  };
+  harness.core.handoffNotification({
+    connectorToken: "connector_token",
+    deliveryId: lease.delivery_id,
+    leaseToken,
+    handoffId: runtimeAdmissionAttestation.handoff_id,
+    runtimeAdmissionAttestation,
+  });
+
+  const persisted = harness.store.getStandingDeliveryById(lease.delivery_id);
+  const receipt = JSON.parse(persisted.handoff_receipt_json);
+  const corruptions = [
+    {
+      ...persisted,
+      runtime_admission_json: `${persisted.runtime_admission_json} `,
+    },
+    {
+      ...persisted,
+      handoff_receipt_json: JSON.stringify({
+        ...receipt,
+        runtime_admission_ref: "admission_notification_other_001",
+      }),
+    },
+  ];
+
+  for (const corrupted of corruptions) {
+    const corruptedStore = overrideStoreMethod(
+      harness.store,
+      "getStandingDeliveryByHandoffId",
+      () => corrupted,
+    );
+    const corruptedCore = harness.createCore(corruptedStore);
+    assert.throws(
+      () => corruptedCore.handoffNotification({
+        connectorToken: "connector_token",
+        deliveryId: lease.delivery_id,
+        leaseToken,
+        handoffId: runtimeAdmissionAttestation.handoff_id,
+        runtimeAdmissionAttestation,
+      }),
+      { code: "delivery_private_state_invalid", statusCode: 500 },
+    );
+  }
+});
+
 test("standing Event rejects a future occurrence with stable validation metadata", () => {
   const keys = createTestKeys();
   const event = createStandingContinuationEvent({
@@ -759,9 +905,11 @@ function createApprovedHarness(t, {
   manifestInput = manifestValue(),
   keys = createTestKeys(),
   decisionOverrides = {},
+  runtimeAdmissionAuthority,
 } = {}) {
   const store = new SqliteReceiverStore({ filename: ":memory:" });
   t.after(() => store.close());
+  const clockRef = { value: new Date(FIXED_NOW) };
   let challengeId;
   const createCore = (selectedStore) => new StandingAuthorizationCore({
     store: selectedStore,
@@ -784,9 +932,10 @@ function createApprovedHarness(t, {
         throw new Error("Effect verification is not used in this harness");
       },
     },
+    runtimeAdmissionAuthority,
     maximumGrantLifetimeMs: 90 * 24 * 60 * 60 * 1_000,
     leaseDurationMs: 60 * 1_000,
-    clock: () => FIXED_NOW,
+    clock: () => clockRef.value,
     createId: deterministicIdSource(),
   });
   const core = createCore(store);
@@ -800,7 +949,7 @@ function createApprovedHarness(t, {
     challengeId,
     decisionToken: "approve_once",
   });
-  return { store, core, keys, approval, createCore };
+  return { store, core, keys, approval, createCore, clockRef };
 }
 
 function connectorIdentity() {

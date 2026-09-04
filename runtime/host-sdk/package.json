@@ -12,6 +12,7 @@
   ],
   "exports": {
     "./server": "./src/server.mjs",
+    "./standing-server": "./src/standing-server.mjs",
     "./client": "./src/client.mjs",
     "./next": "./src/next.mjs"
   },

@@ -6,6 +6,7 @@ import {
 } from "@webmcp-challenge/reentry-core/agent-adapter";
 import { createManagedContextAdapter } from "@webmcp-challenge/reentry-core/managed-context-adapter";
 import { PROTOCOL_VERSION } from "@webmcp-challenge/reentry-core/protocol";
+import { RuntimeAdmissionUnavailableError } from "@webmcp-challenge/reentry-core/runtime-admission";
 
 export const CODEX_QUEUE_ADAPTER_ID = "codex_queue_local";
 export const DEFAULT_CODEX_EXECUTABLE = "/Applications/ChatGPT.app/Contents/Resources/codex";
@@ -17,10 +18,20 @@ const OPTION_FIELDS = Object.freeze([
   "clock",
   "spawnCommand",
 ]);
+const STANDING_OPTION_FIELDS = Object.freeze([
+  "bindingStore",
+  "executable",
+  "commandTimeoutMs",
+  "clock",
+  "spawnCommand",
+  "createAdmissionAttestation",
+]);
 const MIN_COMMAND_TIMEOUT_MS = 100;
 const MAX_COMMAND_TIMEOUT_MS = 60_000;
 const MAX_REFERENCE_BYTES = 4 * 1_024;
 const CONTROL_CHARACTER_PATTERN = /[\u0000-\u001f\u007f]/;
+const TASK_IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$/;
+const BINDING_GENERATION_PATTERN = /^[0-9a-f]{64}$/;
 
 /**
  * Create the Codex adapter that lives inside the Local Connector process.
@@ -101,11 +112,116 @@ export function createCodexQueueAdapter(options) {
   });
 }
 
+/**
+ * Create the standing v0.2 Codex adapter. It resolves the exact Grant-scoped task from the
+ * restart-safe local binding store. A runtime-owned attestation factory is intentionally required
+ * before the adapter exposes `admitNotification`; a successful `codex queue` process alone is not
+ * a qualified handoff receipt.
+ */
+export function createCodexStandingQueueAdapter(options) {
+  requireExactRecord(
+    options,
+    STANDING_OPTION_FIELDS,
+    ["bindingStore"],
+    "Codex standing queue adapter options",
+  );
+  const bindingStore = requireBindingStore(options.bindingStore);
+  const executable = requireReference(
+    options.executable ?? DEFAULT_CODEX_EXECUTABLE,
+    "Codex executable",
+  );
+  const commandTimeoutMs = requireTimeout(options.commandTimeoutMs ?? 5_000);
+  const clock = options.clock ?? (() => new Date());
+  const spawnCommand = options.spawnCommand ?? spawn;
+  if (typeof clock !== "function") throw new TypeError("Codex standing queue adapter clock must be a function");
+  if (typeof spawnCommand !== "function") {
+    throw new TypeError("Codex standing queue adapter spawnCommand must be a function");
+  }
+  if (
+    options.createAdmissionAttestation !== undefined &&
+    typeof options.createAdmissionAttestation !== "function"
+  ) {
+    throw new TypeError("Codex standing queue adapter admission attestation factory must be a function");
+  }
+
+  const adapter = {
+    async activate(rawActivation) {
+      const activation = validateAgentActivation(rawActivation);
+      return activationResult(
+        activation,
+        "unsupported",
+        "required_capability_unavailable",
+        "same_task_notification_admission",
+      );
+    },
+  };
+
+  if (options.createAdmissionAttestation !== undefined) {
+    adapter.admitNotification = async ({ activation: rawActivation, handoffId, now }) => {
+      const activation = validateAgentActivation(rawActivation);
+      if (activation.protocol_version !== "0.2") {
+        throw new RuntimeAdmissionUnavailableError(
+          "Codex standing queue adapter requires protocol 0.2",
+        );
+      }
+      const admissionTime = requireDate(now, "Runtime admission clock");
+      const binding = await bindingStore.resolve({
+        grantId: activation.receipt.grant_id,
+        adapterId: CODEX_QUEUE_ADAPTER_ID,
+      });
+      if (binding === null) {
+        throw new RuntimeAdmissionUnavailableError(
+          "No active local task binding exists for this Grant",
+        );
+      }
+      validateStandingBinding(binding, activation);
+      await queueCodexMessage({
+        executable,
+        threadId: binding.binding_ref,
+        message: buildStandingNotificationMessage(activation),
+        timeoutMs: commandTimeoutMs,
+        spawnCommand,
+      });
+      try {
+        return await options.createAdmissionAttestation({
+          activation,
+          handoffId,
+          now: admissionTime,
+          binding,
+        });
+      } catch (error) {
+        // The queue operation has already crossed the runtime boundary. A provider failure is
+        // therefore ambiguous even if it happens to use the pre-admission capability error code.
+        if (error?.code === "runtime_admission_unavailable") {
+          throw new Error("Runtime admission attestation was unavailable after queue acceptance");
+        }
+        throw error;
+      }
+    };
+  }
+
+  return Object.freeze(adapter);
+}
+
 function buildContinuationMessage(activation) {
   return [
     "Re-entry continuation is ready.",
     "Open the exact canonical page below, read its current state, and continue the existing task.",
     "Use only the page's current WebMCP tools and stop before the human decision boundary.",
+    `Canonical page: ${activation.continuation.canonical_url}`,
+  ].join("\n");
+}
+
+function buildStandingNotificationMessage(activation) {
+  return [
+    "An approved Re-entry business event is ready for this existing task.",
+    "This is notification context, not a new strategy or a forced action.",
+    "Open the exact canonical page below, read its current authenticated state, and decide according to the strategy already established in this task.",
+    "Use only the page's currently available WebMCP tools and stop at the human decision boundary.",
+    `Workflow: ${activation.continuation.workflow_id}`,
+    `Business event: ${activation.continuation.event_type}`,
+    `Event sequence: ${activation.continuation.event_sequence}`,
+    `State version: ${activation.continuation.state_version}`,
     `Canonical page: ${activation.continuation.canonical_url}`,
   ].join("\n");
 }
@@ -178,6 +294,41 @@ function readClock(clock) {
     throw new TypeError("Codex queue adapter clock must return a valid Date");
   }
   return new Date(value.getTime());
+}
+
+function requireDate(value, label) {
+  if (!(value instanceof Date) || !Number.isFinite(value.getTime())) {
+    throw new TypeError(`${label} must be a valid Date`);
+  }
+  return new Date(value.getTime());
+}
+
+function requireBindingStore(value) {
+  if (!value || typeof value !== "object" || typeof value.resolve !== "function") {
+    throw new TypeError("Codex standing queue adapter bindingStore must implement resolve");
+  }
+  return value;
+}
+
+function validateStandingBinding(value, activation) {
+  if (
+    !value ||
+    typeof value !== "object" ||
+    value.type !== "webmcp.local_task_binding" ||
+    value.protocol_version !== "0.2" ||
+    value.grant_id !== activation.receipt.grant_id ||
+    value.adapter_id !== CODEX_QUEUE_ADAPTER_ID ||
+    value.status !== "active" ||
+    typeof value.bound_at !== "string" ||
+    !Number.isFinite(Date.parse(value.bound_at)) ||
+    new Date(Date.parse(value.bound_at)).toISOString() !== value.bound_at ||
+    typeof value.binding_generation !== "string" ||
+    !BINDING_GENERATION_PATTERN.test(value.binding_generation) ||
+    typeof value.binding_ref !== "string" ||
+    !TASK_IDENTIFIER_PATTERN.test(value.binding_ref)
+  ) {
+    throw new Error("Local task binding is invalid or outside the activation scope");
+  }
 }
 
 function requireTimeout(value) {

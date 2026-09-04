@@ -8,6 +8,7 @@ export const STANDING_RECEIVER_HTTP_ROUTES = Object.freeze({
   event: "/v0.2/events",
   claim: "/v0.2/delivery-claims",
   acknowledgement: "/v0.2/delivery-acknowledgements",
+  handoff: "/v0.2/delivery-notification-handoffs",
 });
 
 export const RECEIVER_HTTP_LIMITS = Object.freeze({
@@ -27,4 +28,12 @@ export const ACKNOWLEDGEMENT_REQUEST_FIELDS = Object.freeze([
   "delivery_id",
   "lease_token",
   "effect_token",
+]);
+
+export const NOTIFICATION_HANDOFF_REQUEST_FIELDS = Object.freeze([
+  "connector_token",
+  "delivery_id",
+  "lease_token",
+  "handoff_id",
+  "runtime_admission_attestation",
 ]);

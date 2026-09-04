@@ -72,11 +72,11 @@ test("schema-v8 adds a nullable server-time anchor and migrates schema-v7 safely
   try {
     store.open();
     assert.deepEqual(store.metadata(), {
-      schemaVersion: 8,
+      schemaVersion: 9,
       contractVersion: CONTRACT_VERSION,
       supportedEventVersion: 1,
       supportedSnapshotVersion: 1,
-      migrationId: "cp06-004",
+      migrationId: "cp14-001",
     });
     assert.equal(store.createWorld({ worldId: WORLD_ID, worldTime: 0 }).serverTimeAnchorMs, null);
     const database = new DatabaseSync(dbPath);
@@ -91,8 +91,8 @@ test("schema-v8 adds a nullable server-time anchor and migrates schema-v7 safely
     legacy.close();
 
     store.open();
-    assert.equal(store.metadata().schemaVersion, 8);
-    assert.equal(store.metadata().migrationId, "cp06-004");
+    assert.equal(store.metadata().schemaVersion, 9);
+    assert.equal(store.metadata().migrationId, "cp14-001");
     assert.equal(store.getWorld(WORLD_ID)?.serverTimeAnchorMs, null);
   } finally {
     store.close();

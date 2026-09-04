@@ -51,6 +51,21 @@ test("LaunchAgent rendering escapes paths instead of creating shell commands", (
   assert.equal(plist.includes("sh -c"), false);
 });
 
+test("LaunchAgent persists the selected standing protocol and private binding store path", () => {
+  const plist = renderLaunchAgent({
+    nodeExecutable: "/path/node",
+    entrypoint: "/path/main.mjs",
+    workingDirectory: "/tmp/project",
+    credentialFile: "/tmp/credentials.json",
+    protocolVersion: "0.2",
+    taskBindingFile: "/tmp/task-bindings.json",
+    stdoutPath: "/tmp/out.log",
+    stderrPath: "/tmp/err.log",
+  });
+  assert.match(plist, /<string>--protocol-version<\/string>\n      <string>0\.2<\/string>/);
+  assert.match(plist, /<string>--task-binding-file<\/string>\n      <string>\/tmp\/task-bindings\.json<\/string>/);
+});
+
 test("macOS installation replaces an old job and status reads the loaded job", async () => {
   const directory = await mkdtemp(join(tmpdir(), "reentry-launch-agent-status-"));
   const launchAgentsDirectory = join(directory, "LaunchAgents");

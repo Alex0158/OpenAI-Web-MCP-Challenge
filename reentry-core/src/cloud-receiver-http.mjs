@@ -19,6 +19,7 @@ import {
   RECEIVER_HTTP_CONTENT_TYPE,
   RECEIVER_HTTP_LIMITS,
   RECEIVER_HTTP_ROUTES,
+  NOTIFICATION_HANDOFF_REQUEST_FIELDS,
   STANDING_RECEIVER_HTTP_ROUTES,
 } from "./receiver-http-contract.mjs";
 
@@ -33,6 +34,10 @@ const RECEIVER_METHODS = Object.freeze([
   "acceptEvent",
   "claimDelivery",
   "acknowledgeDelivery",
+]);
+const STANDING_RECEIVER_METHODS = Object.freeze([
+  ...RECEIVER_METHODS,
+  "handoffNotification",
 ]);
 const CORE_ERROR_TYPES = Object.freeze([
   ReceiverValidationError,
@@ -53,6 +58,7 @@ const CONTENT_TYPE_PATTERN = /^application\/json(?:\s*;\s*charset=utf-8)?$/i;
 export function createCloudReceiverHttpHandler(options) {
   return createVersionedCloudReceiverHttpHandler(options, {
     routes: RECEIVER_HTTP_ROUTES,
+    methods: RECEIVER_METHODS,
     exposeRetryable: false,
     errorTypes: CORE_ERROR_TYPES,
   });
@@ -61,6 +67,7 @@ export function createCloudReceiverHttpHandler(options) {
 export function createStandingCloudReceiverHttpHandler(options) {
   return createVersionedCloudReceiverHttpHandler(options, {
     routes: STANDING_RECEIVER_HTTP_ROUTES,
+    methods: STANDING_RECEIVER_METHODS,
     exposeRetryable: true,
     errorTypes: STANDING_ERROR_TYPES,
   });
@@ -68,7 +75,7 @@ export function createStandingCloudReceiverHttpHandler(options) {
 
 function createVersionedCloudReceiverHttpHandler(options, profile) {
   requireExactRecord(options, HANDLER_OPTION_FIELDS, "Cloud Receiver HTTP options");
-  requireReceiver(options.receiver);
+  requireReceiver(options.receiver, profile.methods);
   const routePaths = new Set(Object.values(profile.routes));
 
   return function cloudReceiverHttpHandler(request, response) {
@@ -118,6 +125,19 @@ async function handleRequest(receiver, request, response, routes, routePaths) {
       writeNoContent(response);
       return;
     }
+    writeJson(response, 200, result);
+    return;
+  }
+
+  if (route === routes.handoff) {
+    requireExactRecord(body, NOTIFICATION_HANDOFF_REQUEST_FIELDS, "Notification handoff request");
+    const result = requireSynchronousResult(receiver.handoffNotification({
+      connectorToken: body.connector_token,
+      deliveryId: body.delivery_id,
+      leaseToken: body.lease_token,
+      handoffId: body.handoff_id,
+      runtimeAdmissionAttestation: body.runtime_admission_attestation,
+    }));
     writeJson(response, 200, result);
     return;
   }
@@ -293,11 +313,11 @@ class CloudReceiverHttpError extends Error {
   }
 }
 
-function requireReceiver(receiver) {
+function requireReceiver(receiver, methods) {
   if (!receiver || typeof receiver !== "object") {
     throw new TypeError("Cloud Receiver HTTP adapter requires a Receiver Core");
   }
-  for (const method of RECEIVER_METHODS) {
+  for (const method of methods) {
     if (typeof receiver[method] !== "function") {
       throw new TypeError(`Cloud Receiver HTTP adapter Receiver is missing ${method}`);
     }

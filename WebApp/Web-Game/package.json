@@ -39,6 +39,8 @@
     "test:cp13-page-tools": "tsx --test tests/cp13-page-tools.test.ts",
     "test:cp13-recall": "tsx --test tests/cp13-recall-transition.test.ts",
     "test:cp14-causal": "tsx --test tests/cp14-causal-event-to-local-stub-trace.test.ts",
+    "test:cp14-cloud": "tsx --test tests/cp14-standing-reentry-transport.test.ts",
+    "test:cp14-runner": "tsx --test tests/cp14-reentry-delivery-runner.test.ts",
     "test:cp16-page-recall": "tsx --test tests/cp16-local-causal-page-recall.test.ts",
     "test:cp16-restart-recall": "tsx --test tests/cp16-local-causal-restart-recall.test.ts",
     "test:cp16-burst-page-context": "tsx --test tests/cp16-real-event-burst-page-context.test.ts",

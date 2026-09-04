@@ -20,6 +20,8 @@
     "./local-connector-client": "./src/local-connector-client.mjs",
     "./receiver-http-contract": "./src/receiver-http-contract.mjs",
     "./agent-adapter": "./src/agent-adapter.mjs",
+    "./notification-handoff": "./src/notification-handoff.mjs",
+    "./runtime-admission": "./src/runtime-admission.mjs",
     "./managed-context-adapter": "./src/managed-context-adapter.mjs",
     "./sqlite-receiver-store": "./src/sqlite-receiver-store.mjs"
   },

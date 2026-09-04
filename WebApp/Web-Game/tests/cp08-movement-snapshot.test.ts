@@ -153,8 +153,8 @@ test("schema version 1 player rows migrate transactionally to the current CP-09 
     database.close();
 
     store.open();
-    assert.equal(store.metadata().schemaVersion, 8);
-    assert.equal(store.metadata().migrationId, "cp06-004");
+    assert.equal(store.metadata().schemaVersion, 9);
+    assert.equal(store.metadata().migrationId, "cp14-001");
     assert.deepEqual(store.getPlayer("legacy-world", "legacy-player")?.position, { x: 0, y: 0 });
     assert.deepEqual(store.getPlayer("legacy-world", "legacy-player")?.exploredCells, []);
   } finally {

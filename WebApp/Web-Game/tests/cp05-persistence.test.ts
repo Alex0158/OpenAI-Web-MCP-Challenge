@@ -133,11 +133,11 @@ function commitEvent(
 test("file-backed store bootstraps WAL, foreign keys, versions, and generation metadata", () => {
   withStore((store) => {
     const metadata = store.metadata();
-    assert.equal(metadata.schemaVersion, 8);
+    assert.equal(metadata.schemaVersion, 9);
     assert.equal(metadata.contractVersion, CONTRACT_VERSION);
     assert.equal(metadata.supportedEventVersion, 1);
     assert.equal(metadata.supportedSnapshotVersion, 1);
-    assert.equal(metadata.migrationId, "cp06-004");
+    assert.equal(metadata.migrationId, "cp14-001");
     assert.equal(store.pragmas().journalMode, "wal");
     assert.equal(store.pragmas().foreignKeys, 1);
 

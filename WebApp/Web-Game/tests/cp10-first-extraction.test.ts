@@ -408,8 +408,8 @@ test("schema 3 cargo rows migrate to provenance columns transactionally", async 
   const store = createPersistenceStore({ dbPath, contractVersion: CONTRACT_VERSION });
   try {
     store.open();
-    assert.equal(store.metadata().schemaVersion, 8);
-    assert.equal(store.metadata().migrationId, "cp06-004");
+    assert.equal(store.metadata().schemaVersion, 9);
+    assert.equal(store.metadata().migrationId, "cp14-001");
     const migrated = new DatabaseSync(dbPath);
     const columns = new Set((migrated.prepare("PRAGMA table_info(cargo)").all() as Array<{ name?: unknown }>).map((row) => row.name));
     assert.equal(["mission_attempt_id", "source_node_id", "acquired_world_time", "capacity_used"].every((column) => columns.has(column)), true);

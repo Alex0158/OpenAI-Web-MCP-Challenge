@@ -19,8 +19,11 @@
     "./connector": "./src/local-connector.mjs",
     "./codex-discovery": "./src/codex-discovery.mjs",
     "./codex-exec-adapter": "./src/codex-exec-adapter.mjs",
+    "./codex-queue-adapter": "./src/codex-queue-adapter.mjs",
     "./pairing": "./src/pairing-client.mjs",
     "./credentials": "./src/credentials.mjs",
+    "./handoff-journal": "./src/handoff-journal.mjs",
+    "./task-binding": "./src/task-binding.mjs",
     "./macos-service": "./src/macos-service.mjs"
   },
   "dependencies": {

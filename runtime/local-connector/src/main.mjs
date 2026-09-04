@@ -3,7 +3,7 @@
 import { homedir, hostname } from "node:os";
 import { createInterface } from "node:readline/promises";
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomBytes } from "node:crypto";
 import process from "node:process";
@@ -16,6 +16,10 @@ import {
   MAX_CODEX_PROMPT_TIMEOUT_MS,
   runCodexPrompt,
 } from "./codex-exec-adapter.mjs";
+import {
+  CODEX_QUEUE_ADAPTER_ID,
+  createCodexStandingQueueAdapter,
+} from "./codex-queue-adapter.mjs";
 import {
   discoverCodexExecutable,
   requireSupportedNode,
@@ -30,6 +34,11 @@ import {
   hasConnectorReauthorizationRequired,
   markConnectorReauthorizationRequired,
 } from "./credentials.mjs";
+import {
+  captureCurrentCodexTaskBinding,
+  LocalTaskBindingStore,
+} from "./task-binding.mjs";
+import { LocalHandoffJournalStore } from "./handoff-journal.mjs";
 import { LocalConnectorPairingClient, openBrowser } from "./pairing-client.mjs";
 import { chooseWorkspaceDirectory } from "./workspace-picker.mjs";
 import {
@@ -45,6 +54,7 @@ import { createTerminalUi } from "./terminal-ui.mjs";
 // authoritative, and REENTRY_RECEIVER_ORIGIN can override this built-in preview default.
 const BUILT_IN_RECEIVER_ORIGIN = "https://cloud-receiver-delta.vercel.app";
 const DEFAULT_RECEIVER_ORIGIN = process.env.REENTRY_RECEIVER_ORIGIN?.trim() || BUILT_IN_RECEIVER_ORIGIN;
+const DEFAULT_PROTOCOL_VERSION = process.env.REENTRY_PROTOCOL_VERSION?.trim() || "0.1";
 const DEFAULT_POLL_INTERVAL_MS = 5_000;
 const DEFAULT_MAX_CONSECUTIVE_ERRORS = 5;
 const DEFAULT_PAIRING_REQUEST_TIMEOUT_MS = 20_000;
@@ -69,7 +79,7 @@ async function main() {
     ui = createTerminalUi({ interactive: flags.json !== true && process.stdout.isTTY === true });
     requireSupportedNode();
     if (command === "doctor") {
-      doctor(flags, ui);
+      await doctor(flags, ui);
       return;
     }
     if (command === "pair") {
@@ -78,6 +88,10 @@ async function main() {
     }
     if (command === "connect") {
       await connect(flags, ui);
+      return;
+    }
+    if (command === "bind-task") {
+      await bindTask(flags, ui);
       return;
     }
     if (command === "status") {
@@ -157,6 +171,7 @@ Commands:
   disconnect   Revoke Cloud access and clear this Mac's saved connection
   uninstall    Stop the Connector and remove its local service data
   connect      Open Re-entry, redeem a dashboard pairing ID and code, and connect this Mac
+  bind-task    Bind this exact trusted Codex task to an approved Grant
   start        Poll for approved work until stopped
   doctor       Check Node.js, Codex, and the optional project directory
   claim-once   Check once for approved work
@@ -164,8 +179,12 @@ Commands:
 
 Common options:
   --receiver <url>       Accepted Receiver origin (overrides the preview default)
+  --protocol-version <v> Protocol profile (0.1 preview or standing 0.2)
   --codex-cd <path>      Workspace for Codex; interactive mode offers a folder picker if omitted
   --codex-binary <path>  Explicit Codex executable
+  --task-binding-file <path>
+                         Private local file for Grant-to-task bindings
+  --grant-id <id>        Approved Grant to bind (bind-task only)
   --pairing-id <id>      Pairing ID shown beside the one-time code
   --pairing-code <code>  One-time code shown in the Re-entry dashboard
   --activation-timeout <ms>
@@ -288,15 +307,23 @@ function readConnectorVersion() {
   return packageJson.version;
 }
 
-function doctor(flags, ui) {
+async function doctor(flags, ui) {
   if (ui.interactive) {
     ui.begin("Local CLI preflight", "Check local CLI prerequisites only; this does not verify same-task continuation.");
     ui.section("CHECK", "Requirements");
   }
   const readiness = inspectReadiness(flags);
+  const bindingStore = new LocalTaskBindingStore({
+    filename: flags["task-binding-file"] ?? defaultTaskBindingFile(),
+  });
+  const bindingState = await bindingStore.load();
+  const activeBindingCount = bindingState.bindings.filter((binding) => binding.status === "active").length;
   showReadiness(readiness, ui, { detailed: true });
   if (ui.interactive) {
-    ui.warning("Activation route", "Fresh-session preview; existing-task binding is not implemented.");
+    ui.info("Task binding", activeBindingCount > 0
+      ? `${activeBindingCount} private Grant binding(s) captured; same-task admission is still gated.`
+      : "trusted capture is available; no private Grant binding is captured yet.");
+    ui.warning("Activation route", "v0.1 is fresh-session preview; standing v0.2 requires runtime admission authority.");
     ui.warning("Verification limits", "Same-task wake is not verified; Browser/WebMCP is not checked.");
   } else {
     process.stdout.write(`${JSON.stringify({
@@ -307,7 +334,8 @@ function doctor(flags, ui) {
       codex_working_directory: readiness.workingDirectory,
       readiness_scope: "local_cli_prerequisites",
       default_activation_route: "fresh_session_preview",
-      existing_task_binding: "not_implemented",
+      existing_task_binding: "capture_available_not_verified",
+      active_task_bindings: activeBindingCount,
       same_task_wake: "not_verified",
       browser_webmcp: "not_checked",
     })}\n`);
@@ -493,6 +521,37 @@ async function connect(flags, ui, options = {}) {
   return saved;
 }
 
+async function bindTask(flags, ui) {
+  const grantId = requireFlag(flags, "grant-id");
+  const filename = flags["task-binding-file"] ?? defaultTaskBindingFile();
+  const store = new LocalTaskBindingStore({ filename });
+  const binding = await captureCurrentCodexTaskBinding({
+    store,
+    grantId,
+    adapterId: CODEX_QUEUE_ADAPTER_ID,
+    environment: process.env,
+  });
+  const output = {
+    event: "local_task_binding_captured",
+    grant_id: binding.grant_id,
+    adapter_id: binding.adapter_id,
+    binding_generation: binding.binding_generation,
+    bound_at: binding.bound_at,
+    status: binding.status,
+  };
+  if (ui.interactive) {
+    ui.complete(
+      "Existing task bound",
+      "This trusted Codex task is now the only local target for the approved Grant.",
+    );
+    ui.info("Grant", binding.grant_id);
+    ui.info("Adapter", binding.adapter_id);
+    ui.info("Binding", binding.binding_generation);
+  } else {
+    process.stdout.write(`${JSON.stringify(output)}\n`);
+  }
+}
+
 async function status(flags, ui) {
   if (ui.interactive) ui.begin("Status", "A quick check of this Mac and Re-entry.");
   const credentialFile = flags["credential-file"] ?? defaultCredentialFile();
@@ -661,6 +720,13 @@ function reportLiveActivity(event, ui) {
       accepted ? "a fresh Codex session was started" : String(event.outcome ?? "unknown"),
       accepted ? "success" : "warning",
     );
+  } else if (event.event === "connector_notification_handoff_result") {
+    const handedOff = event.outcome === "handed_off";
+    ui.stopWait(
+      handedOff ? "Existing task notified" : "Notification handoff stopped",
+      handedOff ? "the bound task accepted the Re-entry signal" : String(event.code ?? event.outcome ?? "unknown"),
+      handedOff ? "success" : "warning",
+    );
   } else if (event.event === "connector_reauthorization_required" || event.code === "connector_identity_invalid") {
     ui.stopWait("Reconnect required", "the Cloud Receiver rejected this Mac's saved connection", "warning");
     ui.next(cliCommand("disconnect"), "Clear this Mac's saved connection, then run install again.");
@@ -701,6 +767,7 @@ async function disconnect(flags, ui) {
     ui.begin("Disconnect Re-entry", "Revoke Cloud access and clear this Mac's saved connection");
   }
   const credentialFile = flags["credential-file"] ?? defaultCredentialFile();
+  const taskBindingFile = flags["task-binding-file"] ?? defaultTaskBindingFile();
   const credentials = await new LocalConnectorCredentialStore({ filename: credentialFile }).load();
   const lifecycle = await disconnectConnectorLifecycle({
     credentials,
@@ -712,7 +779,9 @@ async function disconnect(flags, ui) {
       return client.disconnectConnector({ connectorToken: saved.connector_token });
     },
     async clearLocal() {
-      return disconnectMacConnectorService({ credentialFile });
+      const retiredTaskBindings = await new LocalTaskBindingStore({ filename: taskBindingFile }).retireAll();
+      const local = await disconnectMacConnectorService({ credentialFile });
+      return { ...local, retiredTaskBindings };
     },
   });
   const result = lifecycle.local;
@@ -723,7 +792,7 @@ async function disconnect(flags, ui) {
     if (!result.supported) {
       ui.warning("Platform", "connection lifecycle control currently supports macOS only");
     } else if (result.disconnected) {
-      ui.complete("This Mac is disconnected", "Cloud access, the LaunchAgent, and the local credential are cleared.");
+      ui.complete("This Mac is disconnected", "Cloud access, the LaunchAgent, local credentials, and active task bindings are cleared.");
     } else {
       ui.info("Already disconnected", "No saved local connection or background service was found.");
     }
@@ -735,6 +804,7 @@ async function disconnect(flags, ui) {
       disconnected: result.disconnected,
       remote_disconnected: lifecycle.remote?.status === "disconnected",
       remote_duplicate: lifecycle.remote?.duplicate ?? null,
+      retired_task_bindings: result.retiredTaskBindings ?? 0,
       removed_paths: result.removedPaths,
     })}\n`);
   }
@@ -743,21 +813,24 @@ async function disconnect(flags, ui) {
 async function uninstall(flags, ui) {
   if (ui.interactive) {
     ui.begin("Uninstall Re-entry", "Stop the Connector and remove only its local service data");
-    ui.warning("This removes", "the LaunchAgent, saved Connector credential, and Connector logs");
+    ui.warning("This removes", "the LaunchAgent, saved Connector credential, and Connector logs; active task bindings are retired");
     await askForUninstallConfirmation();
   } else if (flags.yes !== true) {
     throw cliFailure("connector_uninstall_confirmation_required");
   }
+  const taskBindingFile = flags["task-binding-file"] ?? defaultTaskBindingFile();
+  const retiredTaskBindings = await new LocalTaskBindingStore({ filename: taskBindingFile }).retireAll();
   const result = await uninstallMacConnectorService({
     credentialFile: flags["credential-file"] ?? defaultCredentialFile(),
   });
   if (ui.interactive) {
-    ui.complete("Removed from this Mac", "The local service, connection, and logs are gone.");
+    ui.complete("Removed from this Mac", "The local service, connection, and logs are gone; active task bindings are retired.");
     ui.next(cliCommand("install"), "Connect this Mac again whenever you are ready.");
   } else {
     process.stdout.write(`${JSON.stringify({
       event: "connector_uninstalled",
       supported: result.supported,
+      retired_task_bindings: retiredTaskBindings,
       removed_paths: result.removedPaths,
     })}\n`);
   }
@@ -781,6 +854,8 @@ async function install(flags, ui) {
     entrypoint: fileURLToPath(import.meta.url),
     workingDirectory: readiness.workingDirectory,
     credentialFile: flags["credential-file"] ?? defaultCredentialFile(),
+    protocolVersion: protocolVersionForFlags(flags),
+    taskBindingFile: flags["task-binding-file"] ?? defaultTaskBindingFile(),
   });
   if (ui.interactive) {
     ui.stopWait("Background", "running at login");
@@ -836,7 +911,7 @@ async function start(flags, ui) {
     throw cliFailure("connector_credentials_expired");
   }
 
-  const connector = createRuntimeConnector(runtimeFlags, credentials, readiness);
+  const connector = await createRuntimeConnector(runtimeFlags, credentials, readiness);
   const pollIntervalMs = readBoundedNumber(
     flags["poll-interval"] ?? DEFAULT_POLL_INTERVAL_MS,
     1_000,
@@ -859,8 +934,8 @@ async function start(flags, ui) {
       try {
         const result = await connector.runOnce();
         consecutiveErrors = 0;
-        if (result.status === "activation_result") {
-          reportActivation(result, ui);
+        if (result.status === "activation_result" || result.status === "handoff_result") {
+          reportResult(result, ui);
           if (ui.interactive) ui.wait("Connected. Waiting for approved work…");
         }
       } catch (error) {
@@ -929,6 +1004,7 @@ async function claimOnce(flags, ui, options = {}) {
     baseUrl: credentials.receiver_origin,
     connectorToken: credentials.connector_token,
     requestTimeoutMs: Number(flags.timeout ?? 5_000),
+    protocolVersion: protocolVersionForFlags(flags),
   });
   const codexDirectory = flags["codex-cd"];
   if (flags["codex-thread"] !== undefined) {
@@ -942,7 +1018,7 @@ async function claimOnce(flags, ui, options = {}) {
   if (ui.interactive && !workingDirectory) {
     ui.warning("Codex", "no Host project was selected; this check will report activation as unsupported");
   }
-  const connector = createRuntimeConnector(flags, credentials, readiness, client);
+  const connector = await createRuntimeConnector(flags, credentials, readiness, client);
   if (ui.interactive) ui.wait("Checking the Receiver and starting Codex if work is ready…");
   const result = await connector.runOnce();
   if (result.status === "idle") {
@@ -954,35 +1030,63 @@ async function claimOnce(flags, ui, options = {}) {
     return;
   }
   if (ui.interactive) {
-    reportActivation(result, ui);
+    reportResult(result, ui);
   } else {
-    reportActivation(result, ui);
+    reportResult(result, ui);
   }
 }
 
-function createRuntimeConnector(flags, credentials, readiness, existingClient = undefined) {
+async function createRuntimeConnector(flags, credentials, readiness, existingClient = undefined) {
   const client = existingClient ?? new LocalConnectorClient({
     baseUrl: credentials.receiver_origin,
     connectorToken: credentials.connector_token,
     requestTimeoutMs: Number(flags.timeout ?? 5_000),
+    protocolVersion: protocolVersionForFlags(flags),
   });
-  const codexDirectory = flags["codex-cd"];
   const workingDirectory = readiness?.workingDirectory;
   const executable = readiness?.installation.executable;
   const activationTimeoutMs = Number(flags["activation-timeout"] ?? 60_000);
-  return new LocalConnector({
-    client,
-    adapter: codexDirectory === undefined
+  const protocolVersion = protocolVersionForFlags(flags);
+  let adapter;
+  let handoffJournal;
+  if (protocolVersion === "0.2") {
+    const taskBindingFile = flags["task-binding-file"] ?? defaultTaskBindingFile();
+    const bindingStore = new LocalTaskBindingStore({
+      filename: taskBindingFile,
+    });
+    adapter = createCodexStandingQueueAdapter({
+      bindingStore,
+      executable,
+      commandTimeoutMs: activationTimeoutMs,
+    });
+    handoffJournal = new LocalHandoffJournalStore({
+      filename: defaultHandoffJournalFile(taskBindingFile),
+    });
+  } else {
+    adapter = workingDirectory === undefined
       ? unsupportedAdapter
       : createCodexExecAdapter({
         workingDirectory,
         executable,
         commandTimeoutMs: activationTimeoutMs,
-      }),
+      });
+  }
+  return new LocalConnector({
+    client,
+    adapter,
     clock: () => new Date(),
     activationTimeoutMs,
     createClaimToken: () => randomBytes(32).toString("base64url"),
+    handoffJournal,
   });
+}
+
+function reportResult(result, ui) {
+  if (result.status === "handoff_result") {
+    reportHandoff(result, ui);
+    return;
+  }
+  reportActivation(result, ui);
 }
 
 function reportActivation(result, ui) {
@@ -1002,6 +1106,36 @@ function reportActivation(result, ui) {
     event_id: result.event_id,
     outcome: result.result.outcome,
     code: result.result.code,
+  })}\n`);
+}
+
+function reportHandoff(result, ui) {
+  const outcome = result.receipt?.status === "handed_off"
+    ? "handed_off"
+    : result.admission?.outcome === "admitted"
+      ? result.handoff_error?.outcome ?? "outcome_unknown"
+      : result.admission?.outcome ?? "outcome_unknown";
+  const code = result.receipt?.status === "handed_off"
+    ? "notification_handoff_accepted"
+    : result.handoff_error?.code ?? result.admission?.code ?? "notification_handoff_unknown";
+  if (ui.interactive) {
+    ui.stopWait(
+      outcome === "handed_off" ? "Existing task notified" : "Notification handoff stopped",
+      outcome === "handed_off" ? "the existing bound task accepted the Re-entry signal" : code,
+      outcome === "handed_off" ? "success" : "warning",
+    );
+    ui.info("Delivery", `${result.delivery_id} · ${outcome}`);
+    return;
+  }
+  process.stdout.write(`${JSON.stringify({
+    event: "connector_notification_handoff_result",
+    delivery_id: result.delivery_id,
+    event_id: result.event_id,
+    handoff_id: result.handoff_id,
+    outcome,
+    code,
+    admission_outcome: result.admission?.outcome ?? null,
+    receipt_status: result.receipt?.status ?? null,
   })}\n`);
 }
 
@@ -1055,15 +1189,16 @@ function parseArguments(argumentsList) {
 
 function validateCommandFlags(command, flags, positionals) {
   const allowedByCommand = {
-    doctor: new Set(["codex-binary", "codex-cd", "json"]),
+    doctor: new Set(["codex-binary", "codex-cd", "task-binding-file", "json"]),
     pair: new Set(["receiver", "code", "credential-file", "json"]),
     connect: new Set(["receiver", "device-name", "credential-file", "pairing-id", "pairing-code", "json"]),
+    "bind-task": new Set(["grant-id", "task-binding-file", "json"]),
     status: new Set(["credential-file", "codex-cd", "codex-binary", "json"]),
     listen: new Set(["json"]),
     test: new Set(["codex-cd", "codex-binary", "activation-timeout", "json"]),
     stop: new Set(["json"]),
-    disconnect: new Set(["credential-file", "json"]),
-    uninstall: new Set(["credential-file", "yes", "json"]),
+    disconnect: new Set(["credential-file", "task-binding-file", "json"]),
+    uninstall: new Set(["credential-file", "task-binding-file", "yes", "json"]),
     install: new Set([
       "receiver",
       "device-name",
@@ -1072,6 +1207,8 @@ function validateCommandFlags(command, flags, positionals) {
       "codex-binary",
       "pairing-id",
       "pairing-code",
+      "protocol-version",
+      "task-binding-file",
       "json",
     ]),
     "claim-once": new Set([
@@ -1081,6 +1218,8 @@ function validateCommandFlags(command, flags, positionals) {
       "codex-binary",
       "codex-thread",
       "activation-timeout",
+      "protocol-version",
+      "task-binding-file",
       "json",
     ]),
     start: new Set([
@@ -1094,6 +1233,8 @@ function validateCommandFlags(command, flags, positionals) {
       "activation-timeout",
       "poll-interval",
       "max-errors",
+      "protocol-version",
+      "task-binding-file",
       "json",
     ]),
   };
@@ -1107,6 +1248,12 @@ function validateCommandFlags(command, flags, positionals) {
   }
 }
 
+function protocolVersionForFlags(flags) {
+  const value = flags["protocol-version"] ?? DEFAULT_PROTOCOL_VERSION;
+  if (value !== "0.1" && value !== "0.2") throw cliFailure("connector_protocol_version_invalid");
+  return value;
+}
+
 function requireFlag(flags, name) {
   const value = flags[name];
   if (typeof value !== "string" || value.length === 0) throw cliFailure(`connector_${name.replaceAll("-", "_")}_missing`);
@@ -1115,6 +1262,14 @@ function requireFlag(flags, name) {
 
 function defaultCredentialFile() {
   return join(homedir(), ".webmcp-connector", "credentials.json");
+}
+
+function defaultTaskBindingFile() {
+  return join(homedir(), ".webmcp-connector", "task-bindings.json");
+}
+
+function defaultHandoffJournalFile(taskBindingFile = defaultTaskBindingFile()) {
+  return join(dirname(taskBindingFile), "handoff-journal.json");
 }
 
 function defaultConnectorLogFiles() {
@@ -1247,6 +1402,7 @@ function errorHint(error) {
     connector_codex_unusable: `open Codex, complete login if needed, then run \`${cliCommand("doctor")}\` again`,
     connector_node_unsupported: "use Node.js 24 or newer, then run the command again",
     connector_receiver_missing: "pass --receiver <replacement-receiver-origin> or set REENTRY_RECEIVER_ORIGIN",
+    connector_protocol_version_invalid: "use --protocol-version 0.1 or --protocol-version 0.2",
     connector_credentials_missing: `connect this Mac once with \`${cliCommand("connect")}\``,
     connector_credentials_expired: `run \`${cliCommand("disconnect")}\`, then \`${cliCommand("install")}\` to authorize this Mac again`,
     connector_credentials_already_exists: "use the existing Connector credential or ask for a new pairing ID and code",
@@ -1278,6 +1434,12 @@ function errorHint(error) {
     connector_test_prompt_invalid: "use one short, single-line prompt inside quotes",
     connector_test_timeout_invalid: "use a test timeout between 100 and 3600000 milliseconds",
     connector_activation_timeout_invalid: "use an activation timeout between 100 and 60000 milliseconds",
+    connector_grant_id_missing: "pass the approved opaque Grant ID with --grant-id",
+    local_task_binding_runtime_unavailable: "run bind-task from the exact existing Codex task so CODEX_SESSION_ID is available",
+    local_task_binding_conflict: "the Grant is already bound; use an explicit trusted rebinding operation after retiring the old binding",
+    local_task_binding_unreadable: "inspect the private task-binding file permissions or choose --task-binding-file",
+    local_task_binding_unwritable: "choose a writable private path for --task-binding-file",
+    local_task_binding_path_invalid: "use an absolute path for --task-binding-file",
   };
   return hints[error?.code] ?? "check the command output and try again";
 }

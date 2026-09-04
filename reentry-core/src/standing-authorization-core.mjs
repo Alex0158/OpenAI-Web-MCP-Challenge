@@ -33,6 +33,11 @@ import {
   requireTimestamp,
   scope,
 } from "./receiver-support.mjs";
+import {
+  createNotificationHandoffReceipt,
+  validateNotificationHandoffReceipt,
+  validateRuntimeAdmissionAttestation,
+} from "./notification-handoff.mjs";
 
 export const STANDING_CONSENT_DECISION_TYPE = "webmcp.receiver_consent_decision";
 export const STANDING_GRANT_CONTROL_AUTHORIZATION_TYPE =
@@ -50,13 +55,14 @@ const OPTION_FIELDS = Object.freeze([
   "grantControlAuthority",
   "connectorAuthority",
   "effectAuthority",
+  "runtimeAdmissionAuthority",
   "maximumGrantLifetimeMs",
   "leaseDurationMs",
   "clock",
   "createId",
 ]);
 const REQUIRED_OPTION_FIELDS = Object.freeze(OPTION_FIELDS.filter(
-  (field) => !["clock", "createId"].includes(field),
+  (field) => !["clock", "createId", "runtimeAdmissionAuthority"].includes(field),
 ));
 const CREATE_CHALLENGE_FIELDS = Object.freeze(["manifest", "expectedOrigin"]);
 const DECIDE_CONSENT_FIELDS = Object.freeze(["challengeId", "decisionToken"]);
@@ -68,6 +74,13 @@ const ACKNOWLEDGE_FIELDS = Object.freeze([
   "deliveryId",
   "leaseToken",
   "effectToken",
+]);
+const NOTIFICATION_HANDOFF_FIELDS = Object.freeze([
+  "connectorToken",
+  "deliveryId",
+  "leaseToken",
+  "handoffId",
+  "runtimeAdmissionAttestation",
 ]);
 const APPROVAL_FIELDS = Object.freeze([
   "type",
@@ -126,12 +139,14 @@ const STORE_METHODS = Object.freeze([
   "insertStandingEvent",
   "getOpenStandingDeliveryByGrantId",
   "getStandingDeliveryById",
+  "getStandingDeliveryByHandoffId",
   "getStandingDeliveryByEffectId",
   "getStandingDeliveryByLeaseTokenDigest",
   "getNextStandingDeliveryByTarget",
   "insertStandingDelivery",
   "claimStandingDelivery",
   "acknowledgeStandingDelivery",
+  "handoffStandingDelivery",
 ]);
 const AUTHORITY_FUTURE_SKEW_MS = 60 * 1_000;
 const CLAIM_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
@@ -144,6 +159,7 @@ export class StandingAuthorizationCore {
   #grantControlAuthority;
   #connectorAuthority;
   #effectAuthority;
+  #runtimeAdmissionAuthority;
   #maximumGrantLifetimeMs;
   #leaseDurationMs;
   #clock;
@@ -169,6 +185,7 @@ export class StandingAuthorizationCore {
     this.#grantControlAuthority = options.grantControlAuthority;
     this.#connectorAuthority = options.connectorAuthority;
     this.#effectAuthority = options.effectAuthority;
+    this.#runtimeAdmissionAuthority = options.runtimeAdmissionAuthority;
     this.#maximumGrantLifetimeMs = options.maximumGrantLifetimeMs;
     this.#leaseDurationMs = options.leaseDurationMs;
     this.#clock = options.clock ?? (() => new Date());
@@ -551,6 +568,165 @@ export class StandingAuthorizationCore {
         throw conflict("delivery_acknowledgement_race", "Standing acknowledgement was lost");
       }
       return acknowledgementResponse(current, effect.effect_id, false);
+    });
+  }
+
+  handoffNotification(input) {
+    requireExactInput(
+      input,
+      NOTIFICATION_HANDOFF_FIELDS,
+      NOTIFICATION_HANDOFF_FIELDS,
+      "Standing notification handoff input",
+    );
+    const connectorToken = requireOpaqueToken(
+      input.connectorToken,
+      "Connector token",
+      "connector_token_invalid",
+    );
+    const deliveryId = requireIdentifier(input.deliveryId, "deliveryId");
+    const leaseToken = requireClaimToken(input.leaseToken, "Delivery lease token");
+    const handoffId = requireIdentifier(input.handoffId, "handoffId");
+    const leaseTokenDigest = digestToken(leaseToken);
+    return this.#store.transaction((transaction) => {
+      const now = this.#readClock();
+      const identity = this.#verifyConnector(connectorToken, now);
+      const existing = transaction.getStandingDeliveryByHandoffId(handoffId);
+      if (existing) {
+        if (existing.delivery_id !== deliveryId) {
+          throw conflict(
+            "notification_handoff_identity_conflict",
+            "Standing handoff identity belongs to another Delivery",
+          );
+        }
+        assertConnectorScope(identity, existing);
+        if (
+          existing.status !== "terminal" ||
+          existing.terminal_reason !== "notification_handoff" ||
+          !existing.runtime_admission_json ||
+          !existing.handoff_receipt_json
+        ) {
+          throw invariant(
+            "delivery_private_state_invalid",
+            "Standing notification handoff state is inconsistent",
+          );
+        }
+        const supplied = normalizeHandoffAttestation(
+          input.runtimeAdmissionAttestation,
+          { deliveryId, eventId: existing.event_id, handoffId, now },
+        );
+        let stored;
+        let receipt;
+        try {
+          stored = validateRuntimeAdmissionAttestation(
+            JSON.parse(existing.runtime_admission_json),
+            { deliveryId, eventId: existing.event_id, handoffId, now },
+          );
+          receipt = validateNotificationHandoffReceipt(
+            JSON.parse(existing.handoff_receipt_json),
+            { deliveryId, eventId: existing.event_id, handoffId },
+          );
+          if (
+            canonicalJson(stored) !== existing.runtime_admission_json ||
+            receipt.runtime_admission_ref !== stored.admission_id
+          ) {
+            throw new Error("Stored standing notification handoff evidence is inconsistent");
+          }
+        } catch {
+          throw invariant(
+            "delivery_private_state_invalid",
+            "Stored standing notification handoff state is invalid",
+          );
+        }
+        if (canonicalJson(stored) !== canonicalJson(supplied)) {
+          throw conflict(
+            "notification_handoff_identity_conflict",
+            "Standing handoff identity is attached to different runtime admission",
+          );
+        }
+        return deepFreeze({ ...receipt, duplicate: true });
+      }
+
+      const delivery = transaction.getStandingDeliveryById(deliveryId);
+      if (!delivery) throw notFound("delivery_not_found", "Standing Delivery was not found");
+      assertNotificationHandoffLease(identity, delivery, leaseTokenDigest, now);
+      const supplied = normalizeHandoffAttestation(
+        input.runtimeAdmissionAttestation,
+        { deliveryId, eventId: delivery.event_id, handoffId, now },
+      );
+      if (!this.#runtimeAdmissionAuthority?.verifyAdmission) {
+        const error = invariant(
+          "runtime_admission_authority_unavailable",
+          "Standing notification handoff requires the runtime admission authority",
+        );
+        error.statusCode = 501;
+        throw error;
+      }
+      const expected = {
+        delivery_id: delivery.delivery_id,
+        event_id: delivery.event_id,
+        grant_id: delivery.grant_id,
+        connector_id: identity.connector_id,
+        delivery_target_id: delivery.delivery_target_id,
+        correlation_id: delivery.correlation_id,
+        workflow_id: delivery.workflow_id,
+      };
+      let verified;
+      try {
+        verified = this.#runtimeAdmissionAuthority.verifyAdmission({
+          attestation: supplied,
+          expected,
+        });
+        if (verified && typeof verified.then === "function") {
+          throw new TypeError("Standing Core runtime admission authority must be synchronous");
+        }
+        verified = validateRuntimeAdmissionAttestation(verified, {
+          deliveryId,
+          eventId: delivery.event_id,
+          handoffId,
+          now,
+        });
+      } catch (error) {
+        if (error?.code === "runtime_admission_authority_unavailable") throw error;
+        throw authorization(
+          "runtime_admission_invalid",
+          "Standing runtime admission could not be verified",
+        );
+      }
+      if (canonicalJson(verified) !== canonicalJson(supplied)) {
+        throw authorization(
+          "runtime_admission_invalid",
+          "Standing runtime admission did not match the supplied proof",
+        );
+      }
+      assertNotificationHandoffWindow(verified, delivery, now);
+      const runtimeAdmissionJson = canonicalJson(verified);
+      const receipt = createNotificationHandoffReceipt({
+        type: "webmcp.notification_handoff_receipt",
+        protocol_version: STANDING_PROTOCOL_VERSION,
+        delivery_id: delivery.delivery_id,
+        event_id: delivery.event_id,
+        handoff_id: handoffId,
+        correlation_id: delivery.correlation_id,
+        workflow_id: delivery.workflow_id,
+        status: "handed_off",
+        duplicate: false,
+        runtime_admission_ref: verified.admission_id,
+      });
+      const receiptJson = canonicalJson(receipt);
+      if (!transaction.handoffStandingDelivery({
+        delivery_id: delivery.delivery_id,
+        connector_id: identity.connector_id,
+        lease_token_digest: leaseTokenDigest,
+        lease_expires_at: delivery.lease_expires_at,
+        handoff_id: handoffId,
+        runtime_admission_json: runtimeAdmissionJson,
+        handoff_receipt_json: receiptJson,
+        handoff_accepted_at: now.toISOString(),
+        updated_at: now.toISOString(),
+      })) {
+        throw conflict("notification_handoff_race", "Standing notification handoff was lost");
+      }
+      return receipt;
     });
   }
 
@@ -1005,6 +1181,64 @@ function assertCurrentLease(identity, delivery, leaseTokenDigest) {
     delivery.lease_token_digest !== leaseTokenDigest
   ) {
     throw authorization("delivery_lease_invalid", "Standing Delivery lease is invalid or stale");
+  }
+}
+
+function normalizeHandoffAttestation(value, expected) {
+  try {
+    return validateRuntimeAdmissionAttestation(value, expected);
+  } catch {
+    throw authorization(
+      "runtime_admission_invalid",
+      "Standing runtime admission attestation is invalid",
+    );
+  }
+}
+
+function assertNotificationHandoffLease(identity, delivery, leaseTokenDigest, now) {
+  assertConnectorScope(identity, delivery);
+  if (delivery.status !== "leased") {
+    throw conflict("delivery_not_handoffable", "Standing Delivery is not leased");
+  }
+  if (
+    delivery.connector_id !== identity.connector_id ||
+    delivery.lease_token_digest !== leaseTokenDigest
+  ) {
+    throw authorization("delivery_lease_invalid", "Standing Delivery lease is invalid or stale");
+  }
+  if (!delivery.leased_at || !delivery.lease_expires_at) {
+    throw invariant("delivery_private_state_invalid", "Standing Delivery lease state is invalid");
+  }
+  if (Date.parse(delivery.lease_expires_at) <= now.getTime()) {
+    throw conflict("delivery_lease_expired", "Standing Delivery lease has expired");
+  }
+  if (delivery.grant_revoked_at !== null) {
+    throw scope("grant_revoked", "Standing Grant is revoked", 410);
+  }
+  if (Date.parse(delivery.grant_expires_at) <= now.getTime()) {
+    throw scope("grant_expired", "Standing Grant is expired", 410);
+  }
+}
+
+function assertNotificationHandoffWindow(attestation, delivery, now) {
+  if (!delivery.leased_at || !delivery.lease_expires_at) {
+    throw invariant("delivery_private_state_invalid", "Standing Delivery lease window is invalid");
+  }
+  const acceptedAt = Date.parse(attestation.accepted_at);
+  const revokedAt = delivery.grant_revoked_at === null
+    ? null
+    : Date.parse(delivery.grant_revoked_at);
+  if (
+    acceptedAt < Date.parse(delivery.leased_at) ||
+    acceptedAt >= Date.parse(delivery.lease_expires_at) ||
+    acceptedAt >= Date.parse(delivery.grant_expires_at) ||
+    acceptedAt > now.getTime() + AUTHORITY_FUTURE_SKEW_MS ||
+    (revokedAt !== null && acceptedAt >= revokedAt)
+  ) {
+    throw authorization(
+      "runtime_admission_time_invalid",
+      "Standing runtime admission is outside its valid window",
+    );
   }
 }
 

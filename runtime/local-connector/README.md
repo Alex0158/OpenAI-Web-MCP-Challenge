@@ -2,10 +2,11 @@
 
 > **Selected-product gap:** [ADR-0046](../../Docs/Decisions/ADR-0046-restore-bound-task-notification-continuation.md)
 > requires persistent binding and notification of the user's existing task, without waiting for
-> Game completion. This checkout still uses fresh exec and retained effect-backed delivery contracts.
-> Installation below is preview setup, not implementation of the restored target. TASK-035 owns
-> binding, TASK-029 notification settlement, and TASK-034 actual same-task/Browser proof. Do not
-> turn process acceptance into an old effect ACK or silently fall back to a new session.
+> Game completion. This checkout now contains the local binding-capture and standing-adapter seam,
+> but the selected v0.2 route remains gated on a runtime-owned admission attestation. The default
+> v0.1 path is still a fresh-session preview; no path silently falls back to a new session. TASK-035
+> owns binding, TASK-029 notification settlement, and TASK-034 actual same-task/Browser proof. Do
+> not turn process acceptance into an old effect ACK.
 
 > **Cloud Receiver dependency notice — 2026-09-03:** The former
 > `runtime/cloud-receiver/` service is deprecated and must not receive new pairing, credentials, or
@@ -21,11 +22,11 @@ LaunchAgent keeps the outbound Connector running at login.
 > release path is open. Published `@4xeoz/re-entry@0.2.20` reports Git commit `733d77f`, but that
 > commit records package version `0.2.14`, and the tarball's bundled Core client rejects the active
 > instruction-bearing lease with `connector_response_invalid`. TASK-032 owns a new exact-source
-> compatible release. The current checkout starts a fresh `codex exec` process with bounded context;
-> it does not prove Browser/WebMCP attachment or final Host effects. Its default `start` and
-> `claim-once` paths dispatch an adapter attempt but do not obtain Host-effect proof or acknowledge
-> the delivery; an unacknowledged lease can be reclaimed within the accepted three-attempt delivery
-> contract. Do not read successful local dispatch as completed delivery.
+> compatible release. With `--protocol-version 0.1`, the checkout starts a fresh `codex exec` process
+> with bounded context. With `--protocol-version 0.2`, it loads the private Grant-to-task binding and
+> stops at typed `runtime_admission_unavailable` until a qualified runtime attestation provider is
+> configured. Neither route proves Browser/WebMCP attachment or final Host effects. Do not read
+> queue/process acceptance as completed delivery.
 
 ## One-time install
 
@@ -151,6 +152,33 @@ npx --yes @4xeoz/re-entry claim-once --codex-cd /absolute/path/to/project
 npx --yes @4xeoz/re-entry start --codex-cd /absolute/path/to/project
 ```
 
+For the selected standing route, run the binding command from the exact existing Codex task that
+the user approved. The installed task runtime supplies `CODEX_SESSION_ID`; the command does not
+accept a caller-selected `--codex-thread` value and prints only a redacted binding summary:
+
+```sh
+npx --yes @4xeoz/re-entry bind-task \
+  --grant-id <approved-opaque-grant-id> \
+  --task-binding-file "$HOME/.webmcp-connector/task-bindings.json"
+```
+
+The file is separate from Connector credentials, protected with mode 0600 (directory 0700), and
+survives Connector restart. Repeating the same capture is idempotent; a different task for an
+active Grant is rejected until an explicit, trusted rebinding operation exists. Capturing a binding
+does not by itself prove runtime admission or wake; `claim-once`/`start --protocol-version 0.2`
+remain visibly unsupported until the named attestation authority is connected.
+
+For standing v0.2 delivery, the Connector also keeps a private handoff journal beside this file at
+`handoff-journal.json`. It reserves the stable `(delivery_id, event_id)` identity before asking the
+runtime to wake the bound task. A runtime timeout, process crash window, or invalid runtime result
+is recorded as `runtime_unknown` and quarantines that identity; a later poll never blindly queues
+the same business event again. Once a qualified runtime attestation is recorded, only the Receiver
+handoff may be retried with that same attestation after a lost response. A known Receiver receipt
+settles the journal as `handed_off`. The journal contains correlation IDs, attestation, and receipt
+only: it never stores lease/Connector tokens, prompts, canonical page content, or the raw Codex task
+locator. This is a local safety record, not a replacement for Receiver durability or runtime
+attestation authority.
+
 `claim-once` and the background `start` loop stop at adapter dispatch. They do not call the active
 v2 acknowledgement endpoint because this package has no default Host-effect authority or proof
 source. The separately verified end-to-end harness uses a distinct test effect/ack worker; that
@@ -181,13 +209,15 @@ npx --yes @4xeoz/re-entry uninstall
 ```
 
 `stop` pauses the macOS background service and keeps the account connection. `uninstall` requires
-typing `DELETE`, then removes only the LaunchAgent, saved Connector credential, and Connector logs.
-It does not recursively delete folders or uninstall the npm package. To remove a global npm
+typing `DELETE`, then removes only the LaunchAgent, saved Connector credential, and Connector logs;
+it retires active private task bindings in the local binding store. It does not recursively delete
+folders or uninstall the npm package. To remove a global npm
 installation separately, run `npm uninstall --global @4xeoz/re-entry`.
 
 `disconnect` is the account-device sign-out. It uses the saved Connector token to revoke this Mac's
-Cloud access, then stops the LaunchAgent, removes the local credential, and leaves log files in
-place. The dashboard keeps the device row for audit and shows it as **Disconnected**; it is no longer
+Cloud access, retires active local task bindings, then stops the LaunchAgent, removes the local
+credential, and leaves log files in place. The dashboard keeps the device row for audit and shows it
+as **Disconnected**; it is no longer
 eligible for consent or delivery. Exact replay is safe. If the Receiver cannot confirm revocation,
 the command fails visibly and keeps the credential so you can retry without orphaning remote access.
 When no credential exists, it performs only idempotent local cleanup.
@@ -233,6 +263,9 @@ and label active-v2 delivery compatibility unverified.
 - `src/workspace-picker.mjs` — interactive Codex workspace selection.
 - `src/local-connector.mjs` — one claim and activation boundary.
 - `src/codex-exec-adapter.mjs` — fresh local Codex process adapter.
+- `src/codex-queue-adapter.mjs` — legacy v0.1 queue preview and gated standing v0.2 adapter.
+- `src/task-binding.mjs` — private restart-safe Grant-to-task binding custody and trusted capture.
+- `src/handoff-journal.mjs` — private restart-safe handoff boundary, retry, and quarantine record.
 - `src/terminal-ui.mjs` — dependency-free human CLI presentation.
 
 Verify the package with Node 24:
@@ -324,15 +357,17 @@ the `connector_ready` event and its existing fields, with these additive diagnos
 {
   "readiness_scope": "local_cli_prerequisites",
   "default_activation_route": "fresh_session_preview",
-  "existing_task_binding": "not_implemented",
+  "existing_task_binding": "capture_available_not_verified",
+  "active_task_bindings": 0,
   "same_task_wake": "not_verified",
   "browser_webmcp": "not_checked"
 }
 ```
 
 These describe the current Connector implementation and the limits of this check, not a live
-Desktop capability probe. `doctor` does not verify Codex login, task binding, App admission,
-same-task wake, or Browser/WebMCP access, and it does not start an Agent or contact the Receiver.
+Desktop capability probe. `doctor` reads only the local binding metadata; it does not verify Codex
+login, task ownership, App admission, same-task wake, or Browser/WebMCP access, and it does not
+start an Agent or contact the Receiver.
 The activation route and existing failure exit codes are unchanged.
 
 Codex lookup order is:
@@ -505,6 +540,8 @@ operation under a supervisor or scheduler; the current CLI is one-shot.
 - `src/credentials.mjs` — atomic local credential file with restrictive permissions;
 - `src/local-connector.mjs` — one claim and typed adapter dispatch;
 - `src/codex-exec-adapter.mjs` — the fresh-session Codex adapter inside the Connector process;
+- `src/codex-queue-adapter.mjs` — the retained v0.1 queue preview and gated standing v0.2 adapter;
+- `src/task-binding.mjs` — private restart-safe Grant-to-task binding custody and trusted capture;
 - `src/terminal-ui.mjs` — the dependency-free human terminal presentation; and
 - `src/main.mjs` — the small CLI process, guided `start`, and `doctor` command.
 

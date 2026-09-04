@@ -58,8 +58,8 @@ test("a schema-v6 world gains the nullable boundary marker during migration", ()
     const store = createPersistenceStore({ dbPath, contractVersion: CONTRACT_VERSION });
     try {
       store.open();
-      assert.equal(store.metadata().schemaVersion, 8);
-      assert.equal(store.metadata().migrationId, "cp06-004");
+      assert.equal(store.metadata().schemaVersion, 9);
+      assert.equal(store.metadata().migrationId, "cp14-001");
       const database = new DatabaseSync(dbPath);
       const columns = new Set((database.prepare("PRAGMA table_info(world)").all() as Array<{ name?: unknown }>).map((row) => row.name));
       database.close();

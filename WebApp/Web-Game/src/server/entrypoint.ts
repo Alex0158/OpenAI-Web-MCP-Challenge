@@ -52,6 +52,7 @@ import {
   type RealtimeWireAdapterContract,
 } from "./realtime-wire";
 import { WorkerGatewayError } from "./worker-command-gateway";
+import type { ReentryDeliveryRunnerLifecycle } from "./reentry-delivery-runner";
 import type { MonsterCombatSignalEligibilityProvider } from "./monster-combat-service";
 import {
   PAGE_TOOLS_EXECUTE_PATH,
@@ -84,6 +85,8 @@ export interface EntrypointDependencies {
   realtimeSessionResolver?: RealtimeSessionResolver;
   /** Optional injected production resolver for local production-like tests. */
   gameSessionResolver?: GameSessionResolver;
+  /** Optional server-owned driver for the durable Re-entry outbox. */
+  reentryDeliveryRunner?: ReentryDeliveryRunnerLifecycle;
 }
 
 const localFixtureSignalEligibilityProvider: MonsterCombatSignalEligibilityProvider = ({ shelterId }) => {
@@ -520,6 +523,20 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
     ...(fixtureEnabled ? { signalEligibilityProvider: localFixtureSignalEligibilityProvider } : {}),
     ...(productionBootstrap ? { bootstrap: productionBootstrap } : {}),
   });
+  const reentryDeliveryRunner = dependencies.reentryDeliveryRunner ?? null;
+  if (reentryDeliveryRunner && typeof worker.onAdvance !== "function") {
+    throw new Error("REENTRY_DELIVERY_UNAVAILABLE");
+  }
+  if (reentryDeliveryRunner) {
+    worker.onAdvance?.((result) => {
+      // The world clock interpolates every 100 ms, while eligible Re-entry
+      // signals are created at authoritative world boundaries. Do not turn
+      // interpolation ticks into delivery probes or Receiver traffic.
+      if (result.processedBoundaries > 0) {
+        reentryDeliveryRunner.requestWake();
+      }
+    });
+  }
   const registry = new RuntimeRegistry(undefined, worker.instanceId);
   const runtimeStore = fixtureStore ?? (worker.persistence instanceof PersistenceStore ? worker.persistence : null);
   let gameSessionResolver: GameSessionResolver | null = dependencies.gameSessionResolver ?? null;
@@ -1292,6 +1309,7 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
         }
 
         registry.markReady();
+        reentryDeliveryRunner?.start();
         logger.info("runtime_ready");
         return outcome.kind === "already_started"
           ? { kind: "started" as const, status: outcome.status as HealthStatus }
@@ -1353,7 +1371,13 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
             .then(() => ({ errorCode: null as string | null }))
             .catch(() => ({ errorCode: "NEXT_CLOSE_FAILED" }))
         : Promise.resolve({ errorCode: null as string | null });
-      const workerStopPromise = Promise.resolve()
+      const reentryStopPromise = reentryDeliveryRunner
+        ? Promise.resolve()
+            .then(() => reentryDeliveryRunner.stop())
+            .then(() => ({ errorCode: null as string | null }))
+            .catch(() => ({ errorCode: "REENTRY_DELIVERY_STOP_FAILED" }))
+        : Promise.resolve({ errorCode: null as string | null });
+      const workerStopPromise = reentryStopPromise
         .then(() => worker.stop())
         .then(() => {
           if (fixtureStore?.isOpen) {
@@ -1367,6 +1391,7 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
         workerStopPromise,
         realtimeLifecyclePromise,
         nextClosePromise,
+        reentryStopPromise,
       ]);
       let timedOut = false;
       const settled = await Promise.race([
@@ -1379,7 +1404,7 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
 
       if (settled === null) {
         timedOut = true;
-        void allClosePromise.then(([serverResult, workerResult, realtimeResult, nextResult]) => {
+        void allClosePromise.then(([serverResult, workerResult, realtimeResult, nextResult, reentryResult]) => {
           if (serverResult.errorCode) {
             logger.error("http_close_failed", serverResult.errorCode);
           }
@@ -1392,13 +1417,16 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
           if (nextResult.errorCode) {
             logger.error("next_close_failed", nextResult.errorCode);
           }
+          if (reentryResult.errorCode) {
+            logger.error("reentry_delivery_stop_failed", reentryResult.errorCode);
+          }
         });
         registry.markStopped();
         logger.error("shutdown_timeout", "SHUTDOWN_TIMEOUT");
         logger.info("runtime_stopped");
         return { timedOut: true, errorCode: "SHUTDOWN_TIMEOUT" };
       } else {
-        const [serverResult, workerResult, realtimeResult, nextResult] = settled;
+        const [serverResult, workerResult, realtimeResult, nextResult, reentryResult] = settled;
         timedOut = serverResult.timedOut;
         let shutdownErrorCode = serverResult.errorCode;
         if (serverResult.errorCode) {
@@ -1415,6 +1443,10 @@ export function createEntrypoint(dependencies: EntrypointDependencies): Entrypoi
         if (nextResult.errorCode) {
           logger.error("next_close_failed", nextResult.errorCode);
           shutdownErrorCode ??= nextResult.errorCode;
+        }
+        if (reentryResult.errorCode) {
+          logger.error("reentry_delivery_stop_failed", reentryResult.errorCode);
+          shutdownErrorCode ??= reentryResult.errorCode;
         }
         if (timedOut) {
           shutdownErrorCode ??= "SHUTDOWN_TIMEOUT";

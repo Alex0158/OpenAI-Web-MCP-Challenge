@@ -19,6 +19,12 @@ export async function installMacConnectorService(options) {
   const credentialFile = requireAbsolutePath(options.credentialFile, "Credential file");
   const launchAgentsDirectory = options.launchAgentsDirectory ?? join(homedir(), "Library", "LaunchAgents");
   const stateDirectory = options.stateDirectory ?? join(homedir(), ".webmcp-connector");
+  const protocolVersion = options.protocolVersion === undefined
+    ? undefined
+    : requireProtocolVersion(options.protocolVersion);
+  const taskBindingFile = options.taskBindingFile === undefined
+    ? undefined
+    : requireAbsolutePath(options.taskBindingFile, "Task binding file");
   const runCommand = options.runCommand ?? runLaunchctl;
   if (typeof runCommand !== "function") {
     throw new TypeError("Service installer runCommand must be a function");
@@ -31,6 +37,8 @@ export async function installMacConnectorService(options) {
     entrypoint,
     workingDirectory,
     credentialFile,
+    protocolVersion,
+    taskBindingFile,
     stdoutPath,
     stderrPath,
   });
@@ -189,6 +197,12 @@ export function renderLaunchAgent(options) {
     "--codex-cd",
     options.workingDirectory,
   ];
+  if (options.protocolVersion !== undefined) {
+    argumentsList.push("--protocol-version", requireProtocolVersion(options.protocolVersion));
+  }
+  if (options.taskBindingFile !== undefined) {
+    argumentsList.push("--task-binding-file", requireAbsolutePath(options.taskBindingFile, "Task binding file"));
+  }
   const argumentsXml = argumentsList.map((value) => `      <string>${escapeXml(value)}</string>`).join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -274,6 +288,13 @@ function requireAbsolutePath(value, label) {
     value.includes("\0")
   ) {
     throw serviceFailure("connector_service_path_invalid", `${label} is invalid`);
+  }
+  return value;
+}
+
+function requireProtocolVersion(value) {
+  if (value !== "0.1" && value !== "0.2") {
+    throw serviceFailure("connector_protocol_version_invalid", "Connector protocol version is invalid");
   }
   return value;
 }

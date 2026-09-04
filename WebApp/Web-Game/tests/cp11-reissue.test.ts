@@ -277,8 +277,8 @@ test("schema-v5 mission rows migrate to typed reissue fields and survive restart
     try {
       const mission = resumed.runtime.store.getMission(WORLD_ID, dispatched.missionId);
       const attempt = resumed.runtime.store.getMissionAttempt(WORLD_ID, dispatched.missionAttemptId);
-      assert.equal(resumed.runtime.store.metadata().schemaVersion, 8);
-      assert.equal(resumed.runtime.store.metadata().migrationId, "cp06-004");
+      assert.equal(resumed.runtime.store.metadata().schemaVersion, 9);
+      assert.equal(resumed.runtime.store.metadata().migrationId, "cp14-001");
       assert.equal(mission?.monsterReissueBudget, 1);
       assert.equal(mission?.dangerCell, null);
       assert.equal(mission?.waitingReviewReason, null);

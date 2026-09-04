@@ -10,7 +10,8 @@ const entry = fileURLToPath(new URL("../src/main.mjs", import.meta.url));
 const diagnostics = {
   readiness_scope: "local_cli_prerequisites",
   default_activation_route: "fresh_session_preview",
-  existing_task_binding: "not_implemented",
+  existing_task_binding: "capture_available_not_verified",
+  active_task_bindings: 0,
   same_task_wake: "not_verified",
   browser_webmcp: "not_checked",
 };
@@ -95,8 +96,8 @@ test("doctor terminal output warns that CLI preflight does not verify same-task 
   assert.equal(result.stderr, "");
   assert.match(result.stdout, /Local CLI preflight/);
   assert.match(result.stdout, /local CLI prerequisites only/);
-  assert.match(result.stdout, /Fresh-session preview/);
-  assert.match(result.stdout, /existing-task binding is not implemented/);
+  assert.match(result.stdout, /fresh-session preview/);
+  assert.match(result.stdout, /trusted capture is available; no private Grant binding is captured yet/);
   assert.match(result.stdout, /Same-task wake is not verified/);
   assert.match(result.stdout, /Browser\/WebMCP is not checked/);
   assert.doesNotMatch(result.stdout, /Confirm that this Mac is ready for Re-entry/);

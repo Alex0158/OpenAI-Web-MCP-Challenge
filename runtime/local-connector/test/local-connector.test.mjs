@@ -1,12 +1,15 @@
 import assert from "node:assert/strict";
 import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
 import { createContinuationReceipt } from "@webmcp-challenge/reentry-core/protocol";
+import { createStandingContinuationReceipt, STANDING_PROTOCOL_VERSION } from "@webmcp-challenge/reentry-core/standing-protocol";
 import { LocalConnectorClient } from "@webmcp-challenge/reentry-core/local-connector-client";
 import { createCloudReceiverService } from "../../cloud-receiver/src/cloud-receiver-service.mjs";
+import { createStandingCloudReceiverHttpHandler } from "../../../reentry-core/src/cloud-receiver-http.mjs";
 import { createPairingControlPlane } from "../../cloud-receiver/src/pairing-control.mjs";
 import { PairingStore } from "../../cloud-receiver/src/pairing-store.mjs";
 import { LocalConnectorCredentialStore } from "../src/credentials.mjs";
@@ -162,6 +165,77 @@ test("Local Connector claims one lease and invokes the typed adapter without lea
   );
 });
 
+test("Local Connector v0.2 admits the existing task before reporting a notification handoff", async (t) => {
+  const now = new Date();
+  const claimToken = Buffer.alloc(32, 9).toString("base64url");
+  const lease = standingDeliveryLease(claimToken, now);
+  let admissionInput;
+  let handoffInput;
+  const handler = createStandingCloudReceiverHttpHandler({ receiver: {
+      acceptEvent() {
+        return {};
+      },
+      claimDelivery(input) {
+        assert.equal(input.claimToken, claimToken);
+        return { duplicate: false, lease };
+      },
+      handoffNotification(input) {
+        handoffInput = input;
+        return {
+          type: "webmcp.notification_handoff_receipt",
+          protocol_version: STANDING_PROTOCOL_VERSION,
+          delivery_id: lease.delivery_id,
+          event_id: lease.event_id,
+          handoff_id: input.handoffId,
+          correlation_id: lease.continuation.correlation_id,
+          workflow_id: lease.continuation.workflow_id,
+          status: "handed_off",
+          duplicate: false,
+          runtime_admission_ref: input.runtimeAdmissionAttestation.admission_id,
+        };
+      },
+      acknowledgeDelivery() {
+        return {};
+      },
+    } });
+  const server = createServer(handler);
+  await new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", resolve);
+  });
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+  const address = { origin: `http://127.0.0.1:${server.address().port}` };
+  const connectorClient = new LocalConnectorClient({
+    baseUrl: address.origin,
+    connectorToken: "connector-preview-token",
+    requestTimeoutMs: 2_000,
+    protocolVersion: STANDING_PROTOCOL_VERSION,
+  });
+  const connector = new LocalConnector({
+    client: connectorClient,
+    adapter: {
+      admitNotification(input) {
+        admissionInput = input;
+        return runtimeAdmission(lease, input.handoffId, now);
+      },
+    },
+    clock: () => new Date(now),
+    activationTimeoutMs: 2_000,
+    createClaimToken: () => claimToken,
+  });
+
+  const result = await connector.runOnce();
+  assert.equal(result.status, "handoff_result");
+  assert.equal(result.admission.outcome, "admitted");
+  assert.equal(result.receipt.status, "handed_off");
+  assert.equal(result.receipt.handoff_id, result.handoff_id);
+  assert.equal("lease_token" in admissionInput.activation, false);
+  assert.equal("connector_token" in admissionInput, false);
+  assert.equal(handoffInput.connectorToken, "connector-preview-token");
+  assert.equal(handoffInput.leaseToken, claimToken);
+  assert.equal(handoffInput.runtimeAdmissionAttestation.event_id, lease.event_id);
+});
+
 function receiverStub() {
   return {
     acceptEvent() {
@@ -210,6 +284,58 @@ function deliveryLease(leaseToken) {
       instruction: "Review the approved workflow and prepare the next safe step.",
     },
     receipt,
+  };
+}
+
+function standingDeliveryLease(leaseToken, now) {
+  const expiresAt = new Date(now.getTime() + 5 * 60_000).toISOString();
+  return {
+    type: "webmcp.delivery_lease",
+    protocol_version: STANDING_PROTOCOL_VERSION,
+    delivery_id: "delivery_standing_connector_001",
+    event_id: "event_standing_connector_001",
+    attempt: 1,
+    lease_token: leaseToken,
+    lease_expires_at: expiresAt,
+    continuation: {
+      correlation_id: "correlation_standing_connector_001",
+      workflow_id: "workflow_standing_connector_001",
+      event_type: "workflow.ready",
+      event_sequence: 1,
+      state_version: 1,
+      occurred_at: now.toISOString(),
+      canonical_url: "https://host.example/workflows/workflow_standing_connector_001",
+      instruction: "Read the current page and prepare the next safe step.",
+    },
+    receipt: createStandingContinuationReceipt({
+      type: "webmcp.continuation_receipt",
+      protocol_version: STANDING_PROTOCOL_VERSION,
+      grant_id: "grant_standing_connector_001",
+      correlation_id: "correlation_standing_connector_001",
+      issuer_origin: "https://host.example",
+      workflow_id: "workflow_standing_connector_001",
+      event_type: "workflow.ready",
+      canonical_url: "https://host.example/workflows/workflow_standing_connector_001",
+      expires_at: expiresAt,
+      human_boundary: "explicit_receiver_consent",
+      authorization_mode: "standing",
+      max_active_activations: 1,
+      continuation_mode: "open_canonical_page_read_current_state",
+    }),
+  };
+}
+
+function runtimeAdmission(lease, handoffId, now) {
+  return {
+    type: "webmcp.runtime_admission_attestation",
+    protocol_version: STANDING_PROTOCOL_VERSION,
+    admission_id: "admission_standing_connector_001",
+    adapter_id: "codex_desktop_v1",
+    binding_generation: "c".repeat(64),
+    delivery_id: lease.delivery_id,
+    event_id: lease.event_id,
+    handoff_id: handoffId,
+    accepted_at: now.toISOString(),
   };
 }
 

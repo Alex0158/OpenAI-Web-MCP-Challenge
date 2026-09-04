@@ -423,8 +423,8 @@ test("schema 2 databases migrate to the CP-09 mission columns atomically", async
   const store = createPersistenceStore({ dbPath, contractVersion: CONTRACT_VERSION });
   try {
     store.open();
-    assert.equal(store.metadata().schemaVersion, 8);
-    assert.equal(store.metadata().migrationId, "cp06-004");
+    assert.equal(store.metadata().schemaVersion, 9);
+    assert.equal(store.metadata().migrationId, "cp14-001");
     const migrated = new DatabaseSync(dbPath);
     const missionColumns = new Set((migrated.prepare("PRAGMA table_info(mission)").all() as Array<{ name?: unknown }>).map((row) => row.name));
     const attemptColumns = new Set((migrated.prepare("PRAGMA table_info(mission_attempt)").all() as Array<{ name?: unknown }>).map((row) => row.name));

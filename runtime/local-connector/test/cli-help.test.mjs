@@ -22,6 +22,7 @@ test("CLI help presents the account-first install path", () => {
   assert.match(result.stdout, /interactive mode offers a folder picker if omitted/);
   assert.match(result.stdout, /stop         Stop the background Connector/);
   assert.match(result.stdout, /disconnect   Revoke Cloud access and clear this Mac's saved connection/);
+  assert.match(result.stdout, /bind-task    Bind this exact trusted Codex task to an approved Grant/);
   assert.match(result.stdout, /uninstall    Stop the Connector/);
   assert.match(result.stdout, /listen       Watch the background Connector/);
   assert.match(result.stdout, /test         Start one fresh local Codex session/);
@@ -30,6 +31,7 @@ test("CLI help presents the account-first install path", () => {
   assert.match(result.stdout, /opens no inbound port/);
   assert.match(result.stdout, /Temporary npx: npx --yes @4xeoz\/re-entry <command>/);
   assert.match(result.stdout, /--activation-timeout <ms>/);
+  assert.match(result.stdout, /--task-binding-file <path>/);
   assert.match(result.stdout, /Global install: npm install --global @4xeoz\/re-entry, then re-entry <command>/);
   assert.match(result.stdout, /Default Receiver:\n  https:\/\/cloud-receiver-delta\.vercel\.app/);
 });
