@@ -21,7 +21,11 @@ TASK-029 must define exact authenticated receipt correlation, deduplication, slo
 response-loss recovery, and unknown outcomes before implementation. Existing adapter acceptance
 and process exit are insufficient by themselves. The effect-backed lease/ACK rules below still
 apply to unchanged v0.1/v0.2 profiles; do not send a fabricated effect token or silently change an
-existing ACK route. The default CLI remains an implementation gap, not a restored product path.
+existing ACK route. The current v0.2 Connector reserves a stable handoff identity in a private,
+mode-0600 journal before runtime invocation. A runtime-pending/unknown result is quarantined and
+never blindly requeued; once a qualified attestation exists, only the Receiver handoff may retry
+with that stored attestation. The default CLI remains an implementation gap, not a restored product
+path.
 
 ## Responsibility
 
@@ -112,6 +116,7 @@ silently reconciled.
 | Receiver facade and authority integration | `reentry-core/src/receiver-core.mjs` | `reentry-core/test/receiver-core.test.mjs` |
 | HTTP route mapping | `reentry-core/src/cloud-receiver-http.mjs` | `reentry-core/test/cloud-receiver-http.test.mjs` |
 | Outbound Connector client | `reentry-core/src/local-connector-client.mjs` | `reentry-core/test/local-connector-client.test.mjs` |
+| Standing handoff journal and restart quarantine | `runtime/local-connector/src/handoff-journal.mjs` and `local-connector.mjs` | `runtime/local-connector/test/handoff-journal.test.mjs`, `local-connector-journal-integration.test.mjs` |
 | Standing Connector-to-Adapter reference trace | `reentry-core/conformance/standing-v0.2/scenario.mjs`, `agent-adapter.mjs`, and current-checkout Codex result seam | `reentry-core/test/standing-cross-layer.test.mjs`, `agent-adapter.test.mjs`, and `runtime/local-connector/test/codex-exec-adapter.test.mjs` |
 | Process and restart composition | conformance and process fixtures | separate-process and fault-matrix tests |
 | Stage 1 Cloud Receiver process shell and local pairing preview | `runtime/cloud-receiver/src/` | `runtime/cloud-receiver/test/` |
