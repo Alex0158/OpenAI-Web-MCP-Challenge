@@ -238,7 +238,7 @@ customer, cross-layer standing-mode adoption, and final market/distribution mode
 | Consent-session and Host SDK handoff preview | **CLOUD RECEIVER PREVIEW DEPRECATED; SDK CONTRACT RETAINED AS EVIDENCE** | ADR-0022, CLOUD-005, paired Host subject, signed Manifest, public challenge, opaque token, approval/decline fencing, public binding, restart, and no raw-token persistence |
 | Shared Host UI/WebMCP consent action | **LOCALLY VERIFIED WITH BOUNDED BROWSER RUNTIME EVIDENCE** | TASK-010, HOST-002, Host SDK v0.3 tests/build, and live `request_codex_reentry` discovery plus bounded invocation |
 | Simple subject/prompt/URL SDK and v2 developer flow | **SEPARATE-PROCESS VERIFIED; REGISTRY PATH OPEN** | ADR-0041, TASK-025, SDK-006, TASK-031, and TASK-032; 81 Core, 25 SDK, 56 Receiver, 49 executed Connector tests (12 opt-in active-v2 tests skipped) plus separate-process acknowledgement/restart replay and independent browser personas used current checkouts; published SDK `0.3.1` predates the facade and Connector `0.2.20` rejects its instruction-bearing lease |
-| Active v2 contract reconciliation | **LOCAL SOURCE, UPGRADE, MINIMUM PINNED TRACE, AND BOUNDED RECOVERY VECTORS VERIFIED; RELEASE AND POLICY WORK OPEN** | ADR-0044, CLOUD-023, and TASK-028; the Express standing trace passes against committed Core and Receiver source, the exact-commit additive upgrade preserves old rows/catalog on disposable PostgreSQL, and named Core/Receiver fresh-process and transaction-interruption fixtures pass. Full conformance, remaining recovery, release enforcement, public controls, hosted pairing abuse Gate B2, lifetime policy, and production effect acknowledgement remain open |
+| Active v2 contract reconciliation | **LOCAL SOURCE, UPGRADE, MINIMUM PINNED TRACE, BOUNDED RECOVERY VECTORS, AND HOSTED PAIRING PREVIEW READBACK VERIFIED; RELEASE AND POLICY WORK OPEN** | ADR-0044, CLOUD-023, TASK-028, and TASK-026; the Express standing trace passes against committed Core and Receiver source, the exact-commit additive upgrade preserves old rows/catalog on disposable PostgreSQL, named Core/Receiver fresh-process and transaction-interruption fixtures pass, and the exact `Re-Entry` Preview proves the pairing source bucket across separate Vercel executions. Full conformance, remaining recovery, release enforcement, public controls, production promotion, lifetime policy, and production effect acknowledgement remain open |
 | Re-entry Cloud console preview | **DEPRECATED, HISTORICAL LOOPBACK EVIDENCE** | CLOUD-004 and `runtime/cloud-receiver/`; retired by ADR-0032 |
 | Complete generic reference flow | **LOCALLY VERIFIED, EVIDENCE-ONLY AGENT** | CLOUD-006 and `runtime/reference-system/` |
 | Application-review sample Host | **LOCALLY VERIFIED, SAMPLE ONLY** | ADR-0023, HOST-001, and `runtime/application-demo/` |
@@ -252,11 +252,11 @@ customer, cross-layer standing-mode adoption, and final market/distribution mode
 | Account-first consent and background Connector path | **CLOUD RECEIVER RUNTIME DEPRECATED; SDK/CONNECTOR SEAMS RETAINED AS PREVIEW EVIDENCE** | ADR-0028, TASK-009, CLOUD-010, and `runtime/{cloud-receiver,host-sdk,local-connector}/` |
 | Concrete supported Agent adapter | **UNSELECTED / UNVERIFIED** | ADR-0046 requires existing-task notification. TASK-035/TASK-034 own trusted binding, actual wake, and authenticated Game/WebMCP proof; CLOUD-024's fresh-child zero-tabs observation remains preview evidence, not the selected-route prerequisite |
 | Cloud Receiver deployment | **DEPRECATED SOURCE; HOSTED ALIAS NOT ARCHIVED** | ADR-0032, TASK-013, and `runtime/cloud-receiver/api/index.mjs`; the former alias may remain reachable until a separately authorized Vercel action |
-| Active Cloud Receiver v2 and web deployment | **CONSENT OPENER FIX DEPLOYED; LIVE ROUTE, DATABASE, DASHBOARD, AND CONNECTOR SMOKES GREEN; FULL DEPLOYED POPUP AND EXACT GIT CLOSURE OPEN** | Active `saas-boilerplate/`; `cloud-receiver-delta.vercel.app` resolves to READY preview-target Receiver deployment `dpl_AVGD8hA7bNwhcEykUQ8BMDbEX2sd`, and `re-entry-weld.vercel.app` resolves to frontend `dpl_8Wy1bUScjdps4ZVscbHeH93f5sFq`. `/consent` now emits `Cross-Origin-Opener-Policy: unsafe-none` while unrelated routes retain `same-origin`; health, database readiness, frontend CORS, authenticated paired-device listing, and active Connector polling passed. No exact commit contains the deployed working-tree snapshot, and a complete deployed Host consent/popup/status/Event run remains open. CLOUD-022 records the bounded evidence and residuals. |
+| Active Cloud Receiver v2 and web deployment | **EXACT RE-ENTRY PREVIEW READY; HOSTED PAIRING RATE-FENCE READBACK GREEN; PRODUCTION PROMOTION AND FULL DEPLOYED POPUP/EVENT RUN OPEN** | Active `saas-boilerplate/`; isolated Vercel Preview deployment `EpcQLku5oinjQ2matmtVwvgZsYeA` serves exact `Re-Entry` commit `0195a9846024c4f65c62d3922069970ad1b96b92` at `cloud-receiver-fknoq31l9-eyads-projects-b54e035a.vercel.app`, while the existing `cloud-receiver-delta.vercel.app` alias remains untouched. Preview HMAC configuration, health/readiness, frontend CORS, strict claim rejection, 31 distinct execution IDs, durable `request_count=31`, and bounded `429` readback passed. The remote migration ledger is not updated and no production secret or alias was changed; complete deployed Host consent/popup/status/Event and production promotion remain open. CLOUD-014 and TASK-026 record the evidence. |
 | Product value and judge reproducibility | **UNKNOWN** | selected-app evidence required |
 | Submission | **NOT SUBMITTED** | live Devpost readback required |
 
-The 2026-09-04 hosted pairing readback adds a sharper limit to the active deployment claim: the
+An earlier 2026-09-04 hosted pairing readback adds a sharper limit to the then-active deployment claim: the
 Preview alias answered health/readiness and CORS preflight, but rejected both an empty claim body
 and a syntactically valid Amendment A three-field body with `400 http_body_invalid`. Thirty bounded
 follow-up invalid requests, each on a distinct Vercel execution, produced no `429` or
@@ -267,11 +267,22 @@ or Connector effect was attempted. A same-day read-only Vercel CLI preflight fou
 clean nested Receiver checkout has no `.vercel` linkage. No project, environment, deployment, or
 alias mutation was made; hosted ownership remains an explicit Gate B2 prerequisite.
 
-A subsequent owner-authenticated Browser readback identified Eyad's `cloud-receiver` Vercel project
+A preceding owner-authenticated Browser readback identified Eyad's `cloud-receiver` Vercel project
 and its `cloud-receiver-delta.vercel.app` alias, but its visible Preview variables lack the new
 source-HMAC secret. The paired Supabase `re-entry` project reports `Unhealthy` and its migration
 ledger stops before `20260904000000_pairing_claim_rate_limit`; no production migration or deployment
-mutation was made.
+mutation was made at that earlier point.
+
+The latest owner-session closure on 2026-09-04 created a separate Ready Preview deployment from the
+exact pushed `Re-Entry` commit and added `CLOUD_RECEIVER_PAIRING_SOURCE_HMAC_SECRET` only to the
+Preview environment. The existing production alias was not promoted, redeployed, or reassigned.
+The existing Supabase `re-entry` project recovered to Healthy; two disposable-project creation
+attempts failed during a provider Partial System Outage, so the exact reviewed rate-bucket table
+and expiry index were applied manually to the existing project. Table Editor shows one durable test
+bucket row with `request_count=31`; the `_prisma_migrations` ledger remains unchanged. The new
+Preview's minimum hosted pairing readback is verified, while managed migration procedure,
+production credentials, promotion, and the complete Host consent/popup/status/Event chain remain
+separate open gates.
 
 ## 4. Current implementation map
 
