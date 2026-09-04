@@ -288,6 +288,26 @@ read, and no deployment or alias mutation was made. Gate B2 remains open pending
 reviewed Vercel project/ownership path (or an equivalent disposable host) for the exact commit and
 migration above.
 
+### Owner-session hosted topology readback — 2026-09-04
+
+The owner-authenticated Codex Browser session was then checked read-only. It shows Eyad's Vercel
+team `eyads-projects-b54e035a` with project `cloud-receiver` (`prj_K44Eugi56I3Gr8xXNIIapAslwAGR`),
+the `cloud-receiver-delta.vercel.app` alias, and a Preview deployment surface. The project is not
+connected to a Git repository; its configured root is `backend`, and its build command is
+`npm run build`. The visible Preview environment-variable names are
+`RECEIVER_PUBLIC_URL`, `FRONTEND_URL`, `CLOUD_RECEIVER_RUNTIME_DATABASE_URL`, and `JWT_SECRET`.
+The current reviewed source-HMAC variable is not present in this visible Preview set.
+
+The same session shows Supabase organization `iyad.socials@gmail.com's Org`, project `re-entry`
+(`vycutuvanimbndxykiih`) on its `main` Production branch. Supabase reports the project as
+`Unhealthy`, no backups are listed, and the migration ledger ends at
+`20260902050000_delivery_acknowledgement`; the reviewed
+`20260904000000_pairing_claim_rate_limit` migration is absent. These observations establish the
+owner-controlled deployment path but do not authorize a production migration, secret change, or
+deployment. Gate B2 remains open pending a healthy reviewed database target, the required
+production-shaped Preview variables including the source-HMAC secret, and an exact reviewed
+deployment followed by the bounded readback.
+
 ## 6. Reopen condition
 
 Reopen for changed code entropy, request identity, attempt semantics, rate-limit scope, replay,

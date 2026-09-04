@@ -250,6 +250,12 @@ or Connector effect was attempted. A same-day read-only Vercel CLI preflight fou
 clean nested Receiver checkout has no `.vercel` linkage. No project, environment, deployment, or
 alias mutation was made; hosted ownership remains an explicit Gate B2 prerequisite.
 
+A subsequent owner-authenticated Browser readback identified Eyad's `cloud-receiver` Vercel project
+and its `cloud-receiver-delta.vercel.app` alias, but its visible Preview variables lack the new
+source-HMAC secret. The paired Supabase `re-entry` project reports `Unhealthy` and its migration
+ledger stops before `20260904000000_pairing_claim_rate_limit`; no production migration or deployment
+mutation was made.
+
 ## 4. Current implementation map
 
 The current reusable contract source is `reentry-core/`. Its stable contracts are routed through the

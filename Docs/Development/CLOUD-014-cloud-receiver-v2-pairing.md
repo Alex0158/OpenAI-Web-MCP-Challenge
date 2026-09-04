@@ -125,6 +125,25 @@ has no `.vercel` project or repository linkage. This was a read-only preflight: 
 environment value, deployment, or alias was created or changed. A reviewed Vercel ownership path
 or an equivalent disposable host is still required before Gate B2 can be rerun.
 
+### Owner-session hosted topology readback — 2026-09-04
+
+The owner-authenticated Codex Browser session confirms the previously observed aliases are owned by
+Eyad's Vercel team: project `cloud-receiver` (`prj_K44Eugi56I3Gr8xXNIIapAslwAGR`) serves
+`cloud-receiver-delta.vercel.app`, while the paired frontend project serves
+`re-entry-weld.vercel.app`. The Receiver project is manually deployed (no Git repository is
+connected), uses `backend` as its root and `npm run build` as its build command, and exposes the
+following visible Preview variable names: `RECEIVER_PUBLIC_URL`, `FRONTEND_URL`,
+`CLOUD_RECEIVER_RUNTIME_DATABASE_URL`, and `JWT_SECRET`. The current source-HMAC variable is not
+visible in that Preview set.
+
+The owner-authenticated Supabase session confirms project `re-entry`
+(`vycutuvanimbndxykiih`) in `iyad.socials@gmail.com's Org`. Its dashboard reports `Unhealthy`, no
+backups, and a migration ledger ending at `20260902050000_delivery_acknowledgement`; the reviewed
+`20260904000000_pairing_claim_rate_limit` migration is absent. No production migration, secret
+change, deployment, or alias mutation was made. The owner project is now identified, but Gate B2
+still requires a healthy reviewed database target, the source-HMAC configuration, and an exact
+reviewed deployment before readback.
+
 ## Current closure boundary
 
 The baseline pairing gate is locally verified and Pairing Feature 1 is closed. Amendment A is
