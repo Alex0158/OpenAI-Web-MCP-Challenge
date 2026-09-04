@@ -202,6 +202,7 @@ not claim that the game is built or balanced.
 
 - [101-cp14-host-sdk-package-provenance-readback.md](101-cp14-host-sdk-package-provenance-readback.md) — static package/protocol compatibility readback: public Host SDK v0.1 surface, private standing v0.2 reference signer, Receiver v0.2 route boundary, and the remaining reviewed-artifact/enrollment gate.
 - [102-cp14-receiver-standing-source-pin-readback.md](102-cp14-receiver-standing-source-pin-readback.md) — exact Receiver ref/Core pin readback and 16-vector source-drift fence; release conformance, standing Host SDK, enrollment, and Game adapter gates remain open.
+- [103-cp14-bound-task-notification-adoption-readback.md](103-cp14-bound-task-notification-adoption-readback.md) — cross-functional reconciliation of ADR-0046 into CP-14: same-task notification, private binding, Agent discretion, receipt separation, and unchanged Game eligibility.
 
 ## Current concept checks
 

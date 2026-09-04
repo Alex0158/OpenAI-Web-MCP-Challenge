@@ -404,13 +404,14 @@ Agent/Re-entry delivery, and external Receiver/Connector behavior remain separat
   page, WebMCP, Re-entry, hosted, or judge gates.
   The next live-integration preparation is [`SK-TASK-076`](../Tasks/SK-TASK-076-cp14-cloud-receiver-v2-game-adaptation.md)
   under [`Validation/89`](../Validation/89-cp14-cloud-receiver-v2-adaptation-cross-functional-audit.md).
-  It treats the Game as a Host publisher and, following outer ADR-0043/RECORE-007, targets repeated
-  ordered `CargoLostToMonster` signals under one protocol-v0.2 standing Consent with one-active
-  backpressure. Cloud queue acceptance remains separate from Connector claim, fresh activation,
-  page action, effect acknowledgement, and the next signal. The outer `CLOUD-023` source-level
-  closure now supplies a locally committed Receiver and exact-commit upgrade result, but the Game task remains pending until the server-side adapter, exact endpoint/source/config
-  readback, and v0.2 runtime trace are verified with the binding, timestamp, canonical URL, session,
-  standing Grant, sequence, and effect-authority mapping; no direct Connector claim or deprecated
+  It treats the Game as a Host publisher and, following outer ADR-0043/0046 and RECORE-007, targets
+  repeated ordered `CargoLostToMonster` notifications under one protocol-v0.2 standing Consent with
+  one-active backpressure and the same enrolled Agent task. Cloud queue acceptance remains separate
+  from trusted notification handoff, same-task Agent wake, page action, optional Game action, and any
+  resulting effect. The outer `CLOUD-023` source-level closure supplies a locally committed Receiver
+  and exact-commit upgrade result, but the Game task remains pending until the server-side adapter,
+  exact endpoint/source/config readback, v0.2 runtime trace, private task binding, and notification
+  receipt contract are verified; no direct Connector claim, fresh-task fallback, or deprecated
   Receiver fallback is permitted.
 
 ## Phase 5 — local verification and demo closure

@@ -61,6 +61,7 @@ The CP-13 local dynamic continuation refresh is recorded in [SK-EVID-074](SK-EVI
 
 The CP-14 Host SDK package/provenance readback is recorded in [SK-EVID-075](SK-EVID-075-cp14-host-sdk-package-provenance-readback.md); the public NPM package is v0.1-only for the reviewed server surface, so the standing v0.2 Host SDK and enrollment gate remain open.
 The CP-14 Receiver standing source-pin readback is recorded in [SK-EVID-076](SK-EVID-076-cp14-receiver-standing-source-pin-readback.md); the selected external candidate verifies one exact Core source and rejects drift, while release, enrollment, and Host SDK gates remain open.
+The CP-14 bound-task notification adoption readback is recorded in [SK-EVID-077](SK-EVID-077-cp14-bound-task-notification-adoption-readback.md); ADR-0046 is scoped into the Game while gameplay, publication, notification handoff, Agent wake, and optional effect remain separate claims.
 
 ## 2. Identity
 

@@ -108,3 +108,6 @@ Research, or a Scenario until accepted.
 - [`ADR-GAME-0038-cp14-merged-source-and-runtime-adaptation-boundary.md`](ADR-GAME-0038-cp14-merged-source-and-runtime-adaptation-boundary.md)
   — records that Eddy's Game-facing Re-entry source is already in outer `main`; CP-14 now owns the
   Game adapter and cross-runtime verification against the separate Receiver backend deployment.
+- [`ADR-GAME-0039-cp14-bound-task-notification-adoption.md`](ADR-GAME-0039-cp14-bound-task-notification-adoption.md)
+  — scopes outer ADR-0046 to CP-14: same-task notification continuation, private task binding,
+  Agent discretion, notification-handoff settlement, and the exact standing SDK/enrollment gates.
