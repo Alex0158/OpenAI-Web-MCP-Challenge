@@ -14,7 +14,7 @@
 > accepted active-v2 preview Receiver `https://cloud-receiver-delta.vercel.app`; pass `--receiver`
 > for another accepted Receiver. This preview default is not a production deployment.
 
-Install it once on the Mac where Codex should open; after one dashboard pairing code, a macOS
+Install it once on the Mac where Codex should open; after one dashboard pairing ID and code, a macOS
 LaunchAgent keeps the outbound Connector running at login.
 
 > Current boundary: this is a verified macOS Connector preview from the current checkout; the npm
@@ -105,7 +105,7 @@ choose Desktop, the current folder, or another Codex workspace
   -> open the dedicated Re-entry user account page in the default browser
   -> sign in or create a user account
   -> land on the user dashboard and click Pair this Mac
-  -> enter the short pairing code in the CLI
+  -> enter the pairing ID and short code in the CLI
   -> save the device credential with mode 0600
   -> install and start a per-user macOS LaunchAgent
 ```
@@ -216,7 +216,7 @@ or newer and locate the Connector executable. Until TASK-032 closes, use the cur
 instruction-bearing active-v2 verification by installing
 `/absolute/path/to/OpenAI-Web-MCP-Challenge/runtime/local-connector`; do not use registry
 `@4xeoz/re-entry@0.2.20` as simple-flow evidence. Let the human create or sign in to a Re-entry
-account, click Pair this Mac, and enter the code in the CLI; never copy browser cookies, organization
+account, click Pair this Mac, and enter the pairing ID and code in the CLI; never copy browser cookies, organization
 keys, Connector tokens, or private keys into chat, logs, source files, or git. Finish by running
 `re-entry status` and report the bounded results without claiming Browser/WebMCP or production
 deployment. If only the registry artifact is available, limit the report to setup/status behavior
@@ -226,7 +226,7 @@ and label active-v2 delivery compatibility unverified.
 ## Package map
 
 - `src/main.mjs` — `re-entry` CLI and long-running poll loop.
-- `src/pairing-client.mjs` — account pairing-code redemption and legacy pairing compatibility.
+- `src/pairing-client.mjs` — account pairing-ID/code redemption and legacy pairing compatibility.
 - `src/disconnect-lifecycle.mjs` — remote-before-local Connector disconnection ordering.
 - `src/credentials.mjs` — atomic local credential storage.
 - `src/macos-service.mjs` — per-user LaunchAgent install, stop, uninstall, and status.
@@ -350,7 +350,7 @@ npm start -- \
 
 On the first run, the Connector checks the Mac, opens the dedicated Re-entry user account page,
 waits for you to create or sign in to an account, lands on the user dashboard, and asks for the
-pairing code. It then stores the credential. On later runs it reuses the saved credential and
+pairing ID and code. It then stores the credential. On later runs it reuses the saved credential and
 skips pairing:
 
 ```sh
@@ -474,7 +474,9 @@ operation under a supervisor or scheduler; the current CLI is one-shot.
 | `connector_codex_cd_missing` | The Host directory does not exist | Correct `--codex-cd` |
 | `connector_codex_cd_unusable` | The Host directory is not readable and writable | Fix local permissions |
 | `connector_credentials_missing` | Pairing has not been completed for this credential file | Run `pair` |
-| `connector_pairing_code_missing` | Guided start needs a one-time code | Ask the Host backend for a code, then enter it or pass `--code` |
+| `connector_pairing_id_missing` | Guided account pairing needs the public pairing ID | Copy the pairing ID shown beside the code in the Re-entry dashboard |
+| `connector_pairing_code_missing` | Guided account pairing needs a one-time code | Ask the Host backend for a new pairing ID and code, then run `connect` again |
+| `account_pairing_code_invalid` | The entered account code is invalid | Use the eight-character code shown in the Re-entry dashboard |
 | `pairing_code_invalid` | The entered code is not the expected 16-character Host code | Use a code like `ABCD-EFGH-IJKL-MNOP` from the Host backend |
 | `pairing_request_timeout` | Receiver did not answer in time | Check the Receiver origin and network |
 | `pairing_expired` | The one-time pairing window expired | Ask the Host backend for a new code |

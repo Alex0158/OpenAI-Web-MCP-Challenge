@@ -346,7 +346,12 @@ async function createHarness() {
   const claim = await request(app)
     .post("/v0.1/account/pairing-sessions/claim")
     .set("Content-Type", "application/json")
-    .send({ pairing_code: pairing.body.pairing_code, device_name: "SDK Contract Connector" });
+    .set("x-vercel-forwarded-for", "198.51.100.31")
+    .send({
+      pairing_id: pairing.body.pairing_id,
+      pairing_code: pairing.body.pairing_code,
+      device_name: "SDK Contract Connector",
+    });
   assert.equal(claim.status, 200);
 
   const connector = await prisma.connector.findUnique({

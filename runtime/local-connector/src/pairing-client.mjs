@@ -17,7 +17,7 @@ export async function openBrowser(url) {
 const OPTION_FIELDS = Object.freeze(["baseUrl", "requestTimeoutMs", "openBrowser", "sleep"]);
 const PAIR_INPUT_FIELDS = Object.freeze(["userCode"]);
 const CONNECT_INPUT_FIELDS = Object.freeze(["deviceName"]);
-const ACCOUNT_PAIRING_INPUT_FIELDS = Object.freeze(["pairingCode", "deviceName"]);
+const ACCOUNT_PAIRING_INPUT_FIELDS = Object.freeze(["pairingId", "pairingCode", "deviceName"]);
 const DISCONNECT_INPUT_FIELDS = Object.freeze(["connectorToken"]);
 const DEVICE_AUTHORIZATION_FIELDS = Object.freeze([
   "type",
@@ -227,9 +227,11 @@ export class LocalConnectorPairingClient {
       ACCOUNT_PAIRING_INPUT_FIELDS,
       "Account pairing input",
     );
+    const pairingId = normalizeAccountPairingId(input.pairingId);
     const pairingCode = normalizeAccountPairingCode(input.pairingCode);
     const deviceName = requireDeviceName(input.deviceName);
     const response = await this.#post(PAIRING_CLIENT_ROUTES.accountPairingClaim, {
+      pairing_id: pairingId,
       pairing_code: pairingCode,
       device_name: deviceName,
     });
@@ -455,6 +457,22 @@ function normalizeAccountPairingCode(value) {
   const normalized = value.replaceAll("-", "").trim().toUpperCase();
   if (!ACCOUNT_PAIRING_CODE_PATTERN.test(normalized)) {
     throw pairingFailure("account_pairing_code_invalid", "Pairing code is invalid");
+  }
+  return normalized;
+}
+
+function normalizeAccountPairingId(value) {
+  if (typeof value !== "string") {
+    throw pairingFailure("pairing_id_invalid", "Pairing ID is invalid");
+  }
+  const normalized = value.trim();
+  if (
+    normalized.length < 1 ||
+    normalized.length > 128 ||
+    /[\u0000-\u001f\u007f]/.test(normalized) ||
+    !IDENTIFIER_PATTERN.test(normalized)
+  ) {
+    throw pairingFailure("pairing_id_invalid", "Pairing ID is invalid");
   }
   return normalized;
 }

@@ -511,7 +511,12 @@ async function createConnector(label) {
   const claimed = await harness.receiverRequest(harness.app)
     .post("/v0.1/account/pairing-sessions/claim")
     .set("Content-Type", "application/json")
-    .send({ pairing_code: pairing.body.pairing_code, device_name: `Ack Connector ${label}` });
+    .set("x-vercel-forwarded-for", "198.51.100.42")
+    .send({
+      pairing_id: pairing.body.pairing_id,
+      pairing_code: pairing.body.pairing_code,
+      device_name: `Ack Connector ${label}`,
+    });
   assert.equal(claimed.status, 200);
 
   const connector = await harness.prisma.connector.findUnique({

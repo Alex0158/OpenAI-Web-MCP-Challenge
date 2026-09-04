@@ -137,6 +137,7 @@ async function createHarness() {
       requestTimeoutMs: 5_000,
     });
     const credentials = await pairingClient.connectWithPairingCode({
+      pairingId: pairing.body.pairing_id,
       pairingCode: pairing.body.pairing_code,
       deviceName: "Disconnect Contract Mac",
     });

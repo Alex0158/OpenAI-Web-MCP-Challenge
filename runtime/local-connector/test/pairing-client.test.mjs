@@ -28,6 +28,7 @@ test("account pairing accepts the first response shape and sends the normalized 
 
   const client = new LocalConnectorPairingClient({ baseUrl: BASE_URL });
   const credentials = await client.connectWithPairingCode({
+    pairingId: "pairing_123",
     pairingCode: "abcd-ef12",
     deviceName: "My Mac",
   });
@@ -38,6 +39,7 @@ test("account pairing accepts the first response shape and sends the normalized 
   assert.equal(requests.length, 1);
   assert.equal(requests[0].url, `${BASE_URL}/v0.1/account/pairing-sessions/claim`);
   assert.deepEqual(JSON.parse(requests[0].init.body), {
+    pairing_id: "pairing_123",
     pairing_code: "ABCDEF12",
     device_name: "My Mac",
   });
@@ -60,7 +62,7 @@ test("account pairing treats a tokenless duplicate as an already-existing creden
 
   const client = new LocalConnectorPairingClient({ baseUrl: BASE_URL });
   await assert.rejects(
-    client.connectWithPairingCode({ pairingCode: "ABCDEF12", deviceName: "Renamed Mac" }),
+    client.connectWithPairingCode({ pairingId: "pairing_123", pairingCode: "ABCDEF12", deviceName: "Renamed Mac" }),
     (error) => {
       assert.equal(error.code, "connector_credentials_already_exists");
       assert.equal(error.statusCode, 200);
@@ -100,7 +102,7 @@ test("account pairing rejects the wrong tokenless-replay shapes", async (t) => {
   for (const body of invalidResponses) {
     globalThis.fetch = async () => jsonResponse(body);
     await assert.rejects(
-      client.connectWithPairingCode({ pairingCode: "ABCDEF12", deviceName: "My Mac" }),
+      client.connectWithPairingCode({ pairingId: "pairing_123", pairingCode: "ABCDEF12", deviceName: "My Mac" }),
       (error) => error.code === "pairing_response_invalid",
     );
   }

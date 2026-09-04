@@ -172,8 +172,8 @@ to a canonical route and must not become a second documented user journey.
 | `GET /user-login` | End user | Sign in for Mac pairing or consent | `/user-dashboard`, or exact validated consent return |
 | `GET /user-register` | End user | Create a user account for Mac pairing | `/user-dashboard` |
 | `GET /dashboard` | End user | Account overview | User account overview |
-| `GET /user-dashboard` | End user | Create a one-time pairing code and view connected Macs | Code is entered in the Local Connector |
-| `GET /dashboard/devices` or `/user-dashboard/devices` | End user | View the device-pairing surface | Pairing code or connected-device list |
+| `GET /user-dashboard` | End user | Create a one-time pairing ID/code and view connected Macs | Pairing ID and code are entered in the Local Connector |
+| `GET /dashboard/devices` or `/user-dashboard/devices` | End user | View the device-pairing surface | Pairing ID/code or connected-device list |
 | `GET /dashboard/contracts` or `/user-dashboard/contracts` | End user | View the current placeholder contracts surface | Preview-only account content |
 | `GET /developer-register` | Developer | Create a developer account for Host setup | `/developer-dashboard` |
 | `GET /developer-login` | Developer | Sign in to the developer portal | `/developer-dashboard` |
@@ -250,8 +250,8 @@ API key, Host signing key, or Host account.
 | B2 | Local terminal | Connector opens `RECEIVER_ORIGIN/user-register?next=/user-dashboard` | No browser credential copied to CLI | Browser opens the user portal | Show URL if automatic browser opening fails |
 | B3 | User registration or login | Submit to `POST /v1/auth/users/register` or `POST /v1/auth/users/login` | Typed user-session cookie | `/user-dashboard` | Stay on user auth page and show an error |
 | B4 | User dashboard | Load `GET /v0.1/account/connectors` | Read account-owned devices | Show connected Macs | Require user session |
-| B5 | User dashboard | Click **Create pairing code**; call `POST /v0.1/account/pairing-sessions` | Store only pairing-code digest and pending connector identity | Display raw short-lived code once | Show a visible request error; do not silently retry |
-| B6 | Local terminal | User types the displayed code; Connector calls `POST /v0.1/account/pairing-sessions/claim` | Atomically consume code and create account-linked Connector | Return one delivery-only credential | Reject expired, consumed, or invalid code |
+| B5 | User dashboard | Click **Create pairing code**; call `POST /v0.1/account/pairing-sessions` | Store only pairing-code digest and pending connector identity | Display the public pairing ID and raw short-lived code once | Show a visible request error; do not silently retry |
+| B6 | Local terminal | User types the displayed pairing ID and code; Connector calls `POST /v0.1/account/pairing-sessions/claim` | Atomically consume code and create account-linked Connector | Return one delivery-only credential | Reject expired, consumed, terminal, or invalid code |
 | B7 | Local Connector | Save credential in the local restricted store; install and start a per-user macOS LaunchAgent | Local credential file, service profile, local logs | Connector runs at login and polls outbound | Tell user to reconnect or repair local service |
 | B8 | Local Connector | Poll `/v0.1/delivery-claims` using Connector credential | Receiver delivery lease when work exists | Claim one delivery | Empty poll is not business success and does not mutate Host state |
 | B9 | Local terminal | Run `re-entry disconnect`; CLI posts its saved token to `/v0.1/connectors/disconnect` before local cleanup | Receiver stamps `revoked_at`; Connector row remains; local credential and service are removed after confirmation | Dashboard shows the Mac as disconnected; future consent and claims exclude it | Remote failure preserves the local credential so the user can retry; browser session remains signed in |
@@ -432,19 +432,19 @@ retired v1 relational layout and must not be used as the active v2 schema author
 documentation lifecycle. A finding records evidence and disposition; it does not authorize its own
 code, migration, deployment, or architecture change.
 
-### AUDIT-V2-001 — Pairing claim abuse fence is not enforceable as documented
+### AUDIT-V2-001 — Pairing claim abuse fence requires hosted closure
 
 | Field | Record |
 |---|---|
 | Severity | **P0** |
-| Status and confidence | `decision_required`; high confidence; **CONFLICTED** |
+| Status and confidence | `implementation_verified_locally`; high confidence; **OPEN — hosted Gate B2** |
 | Affected component / flow / contract | Active v2 anonymous pairing claim; pairing-code confidentiality and account-to-Connector authorization |
-| Current behavior | The service generates an eight-hex-character code, looks up its digest, checks `failedAttempts >= 5`, and consumes a matching live row. No path increments `failedAttempts`, and the anonymous claim route has no rate limiter. A wrong code cannot be associated with a pairing row because the request carries no separate pairing identifier. |
+| Current behavior | The active local v2 service requires `{ pairing_id, pairing_code, device_name }`, resolves by `pairing_id`, atomically increments wrong well-formed attempts, and applies a durable PostgreSQL source budget. The direct Vercel adapter accepts one valid `x-vercel-forwarded-for` value and fails closed for missing, repeated, comma-separated, invalid, weak-secret, or limiter-store cases. The reviewed hosted preview has not yet received this increment. |
 | Intended / documented behavior | ADR-0033 says the code permits at most five failed claims and the sixth returns `410 pairing_expired`. |
-| Exact evidence | `saas-boilerplate/backend/src/modules/connectors/pairing.service.ts:6-9,65-66,167-225`; `pairing.routes.ts:39-43`; `middleware/rateLimiter.ts:9-16`; `prisma/schema.prisma:36-49`; ADR-0033 Sections 2 and 3; `PAIR-001` through `PAIR-006` contain no failed-attempt case. |
-| Risk and impact | The accepted abuse boundary is absent. Repeated anonymous guesses are bounded only by 32-bit code entropy and deployment-layer controls not evidenced here; the documented terminal response cannot occur for a wrong code. |
-| Drift class | **D** — the decision and implementation do not form a complete enforceable contract. |
-| Recommended disposition | Before production or wider preview use, choose one coherent abuse-control contract: a correlatable challenge plus atomic attempt budget, or a separately specified anonymous rate-limit/entropy design. Preserve tokenless exact duplicate replay. |
+| Exact evidence | `saas-boilerplate/backend/src/modules/connectors/{pairing.service.ts,pairing.routes.ts,pairing.schemas.ts,pairing-source.ts,pairing-rate-limit.ts}`; `prisma/schema.prisma`; migration `20260904000000_pairing_claim_rate_limit`; `backend/src/modules/connectors/test/{pairing-abuse.test.ts,pairing-source.test.ts}`; TASK-026 local implementation result. |
+| Risk and impact | Local enforcement is verified, but the hosted deployment still needs the production HMAC secret, migration, provider-header readback, and durable cross-execution rate-limit evidence before anonymous claims can be enabled. The 30-per-window key can still be shared by legitimate clients behind one public address. |
+| Drift class | **F** — local decision and implementation agree; hosted evidence remains open. |
+| Recommended disposition | Deploy only through the reviewed direct Vercel path, run the disposable hosted Gate B2 readback, and preserve tokenless exact duplicate replay. Keep the claim path fail-closed until that evidence passes. |
 | Documentation owner | Core/04, Mechanism 03, this register, and [TASK-026](../Tasks/TASK-026-reconcile-pairing-claim-abuse-fence.md). |
 | Change gates | Code: **yes**. ADR/owner decision: **yes**. Migration: conditional on chosen identity/counter design. Tests: **yes**, including concurrency, restart, terminal response, and no secret leakage. |
 
@@ -603,7 +603,7 @@ code, migration, deployment, or architecture change.
 | Intended / documented behavior | A copied install command and immediately following import must resolve to one exact published package surface; unpublished working-tree APIs must be labeled and tested locally only. |
 | Exact evidence | Read-only `npm view @4xeoz/re-entry-sdk@0.3.1 version gitHead dist.integrity`; `git show 9864ba0:runtime/host-sdk/src/server.mjs`; current `runtime/host-sdk/src/server.mjs:231`; `saas-boilerplate/frontend/components/developer/SdkDocumentation.tsx:40,54-56`; pre-reconciliation Host SDK README Install/Quickstart sections. |
 | Risk and impact | A new developer following the active portal installs a package that cannot satisfy the documented import, so the normal integration fails before consent creation. |
-| Drift class | **A/F** — documentation and the versioned release remain out of sync; the facade is merged into the main branches, but clean-consumer and publication evidence are still missing. |
+| Drift class | **A/F** — documentation and the versioned release remain out of sync; the facade is merged into the main branches, and the current checkout tarball imports in a clean consumer, but registry clean-consumer and publication evidence are still missing. |
 | Recommended disposition | Keep the README's checkout-only warning, then use TASK-031 to isolate the intended SDK source, assign a new version, verify the tarball and clean consumer, publish only with authorization, and update the portal to the exact available API/version. |
 | Documentation owner | Host SDK README, active developer portal, this register, and [TASK-031](../Tasks/TASK-031-release-simple-sdk-facade.md). |
 | Change gates | Code: **yes** for portal/release integration. ADR: no new behavior decision currently needed. Migration: no. Package/example tests: **yes**. Owner authorization: **yes** for commit/push/publication. |
@@ -619,7 +619,7 @@ code, migration, deployment, or architecture change.
 | Intended / documented behavior | The normal `npx --yes @4xeoz/re-entry` path must resolve to an exact-source artifact whose bundled client accepts, validates, preserves, and safely frames the active Receiver's immutable consented instruction. Package metadata, source version, tarball, install guide, and tested integration must identify the same release. |
 | Exact evidence | Read-only `npm view @4xeoz/re-entry@0.2.20 version gitHead dist.integrity dist.shasum time`; immutable registry tarball; `git show 733d77f:runtime/local-connector/package.json`; tarball bundled `reentry-core/src/local-connector-client.mjs` exact-field list; current `reentry-core/src/local-connector-client.mjs`; active-v2 `delivery.service.ts:235-305`; Node `v24.20.0` representative claim probe returning `connector_response_invalid`; SDK-006 local-run boundary. |
 | Risk and impact | A user following the documented registry install can pair or run local commands but cannot consume the current simple-flow delivery. The package's reported `gitHead` cannot reproduce its versioned content, so local-checkout success and package availability cannot support an exact-release or working end-to-end claim. |
-| Drift class | **D/F** — the released consumer and active wire contract conflict, and exact-source release evidence is incomplete. |
+| Drift class | **D/F** — the released consumer and active wire contract conflict; the current checkout tarball passes a clean-consumer instruction probe, but exact-source registry release evidence remains incomplete. |
 | Recommended disposition | Keep the current registry incompatibility visible. Under TASK-032, isolate the exact Connector plus bundled Core source, assign a new immutable version, verify the packed tarball and clean install against active v2 on Node 24, and publish only with separate authorization. Do not fold TASK-029's absent product effect authority into this release repair. |
 | Documentation owner | Core/05, Mechanism 03, Local Connector README, SDK-006, this register, and [TASK-032](../Tasks/TASK-032-release-compatible-local-connector.md). |
 | Change gates | Code/package: **yes**. ADR: no new decision if this only restores ADR-0041 compatibility; required if the wire or instruction authority changes. Migration: no. Package/contract/full-chain tests: **yes**. Owner authorization: **yes** for commit/push/publication. |
@@ -646,7 +646,7 @@ AUDIT-V2-007 and TASK-022 through TASK-024. No retired file was deleted or treat
 | Business or contract block | Active implementation | Normative owner | Current evidence | Documentation disposition |
 |---|---|---|---|---|
 | User/developer identity and developer control plane | `saas-boilerplate/backend/src/modules/{authentication,users,developers,developer-portal}/`, frontend auth and developer dashboard | ADR-0033 and ADR-0041; production identity still open | **VERIFIED** locally by auth, `DEVELOPER-001`–`003`, browser personas; no production identity proof | **UPDATED** here; release boundary in Core/04–05 |
-| Pairing, Connector identity, listing, and disconnect | active v2 pairing routes/service/schema; frontend pairing client; Local Connector pairing/disconnect lifecycle | ADR-0033 and ADR-0040 | **CONFLICTED** abuse fence (AUDIT-V2-001); other PAIR/DISCONNECT and restart cases verified | Mechanism 03 plus TASK-026; retired v1 kept historical |
+| Pairing, Connector identity, listing, and disconnect | active v2 pairing routes/service/schema; frontend pairing client; Local Connector pairing/disconnect lifecycle | ADR-0033 and ADR-0040 | **LOCALLY VERIFIED** amended abuse fence, PAIR/DISCONNECT and restart cases; hosted Gate B2 remains open | Mechanism 03 plus TASK-026; retired v1 kept historical |
 | Host issuance and browser handoff | `reentry-core` protocol/Host kernel; `runtime/host-sdk/src/{server,client,next}.mjs` | ADR-0007, ADR-0022 historical handoff, ADR-0041 simple facade | **VERIFIED** local SDK 25/25 and bounded browser personas; published package lacks the simple facade and external supported Browser join remains open | Mechanisms 01 and 05; SDK guide updated; active portal/package mismatch in TASK-031 |
 | Consent, target binding, and Grant creation | active v2 consent routes/service/page and Prisma models | ADR-0007, ADR-0008, ADR-0035, ADR-0041 | **CONFLICTED** expiry policy (AUDIT-V2-002); remaining CONSENT/TARGET/revocation cases locally verified | Mechanisms 01–02 plus TASK-027 |
 | Signed Event acceptance and one-run reservation | active v2 event routes/service and Event/Grant/Delivery transaction | ADR-0007, ADR-0008, ADR-0036 | **VERIFIED** by `EVENT-001`–`004`; `202` means accepted/queued only | Mechanism 02; current claim limited to local v2 |
@@ -669,7 +669,7 @@ implementation normative merely because it exists.
 | Core/00 | **UPDATED / CURRENT** | Separates active v2, retired v1, bounded evidence, the four material contract gaps, and the SDK/Connector release gaps. |
 | Core/01 and Core/02 | **UPDATED / CURRENT TARGET** | Product boundary remains application-neutral; Sleepless Kingdom specialization is selected while its external implementation evidence remains bounded. |
 | Core/03 | **UPDATED / ARCHITECTURE DECIDED; VERIFICATION PENDING** | ADR-0044 accepts independent active-v2 implementation behind one normative model; the shared black-box suite, exact-source migration, and release enforcement remain open under AUDIT-V2-004 and TASK-028. |
-| Core/04 | **UPDATED / CURRENT WITH OPEN RISKS** | Trust model remains normative; pairing abuse, expiry visibility, logout origin, production identity, custody, recovery, and SLO evidence remain open. |
+| Core/04 | **UPDATED / CURRENT WITH OPEN RISKS** | Trust model remains normative; pairing abuse hosted Gate B2, expiry visibility, logout origin, production identity, custody, recovery, and SLO evidence remain open. |
 | Core/05 | **UPDATED / CURRENT EVIDENCE** | Local, separate-process, hosted-preview, and external claims are separated; default effect acknowledgement and release gates remain open. |
 | Core/06 | **UPDATED / APP SELECTED** | ADR-0042 closes the application choice; continuation, hosted, product, and judge gates remain open. |
 | Core/07 | **CURRENT FROZEN VERDICT** | Preserves the bounded P0 technical-validation contract and does not control active-v2 implementation. |
@@ -708,7 +708,7 @@ This document is useful now, but it does not close these gates:
 1. integrate the selected Sleepless Kingdom Host through trusted existing-task enrollment, signed
    Event, notification settlement, actual same-task wake, authenticated WebMCP return, and
    strategy-consistent action/no-command decisions under ADR-0046;
-2. resolve AUDIT-V2-001's pairing abuse-control contract before wider preview or production use;
+2. complete AUDIT-V2-001's hosted pairing abuse Gate B2 before wider preview or production use;
 3. decide AUDIT-V2-002's separate Consent/Grant lifetime and displayed-expiry policy;
 4. complete AUDIT-V2-004/ADR-0044 pinned conformance, committed-source standing migration
    verification, and release enforcement;

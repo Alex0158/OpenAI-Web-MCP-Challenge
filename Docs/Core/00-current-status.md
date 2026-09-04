@@ -100,8 +100,9 @@ compatible Connector release; the approved local composition used the current ch
 registry artifact.
 
 The 2026-09-03 TASK-012 reconciliation found four material active-v2 gaps that the green local
-suites do not close. **CONFLICTED:** ADR-0033's five-failed-claim pairing fence is not enforceable by
-the current anonymous request and is not implemented; TASK-026 owns the decision. **CONFLICTED:**
+suites do not close. **LOCALLY VERIFIED / HOSTED OPEN:** ADR-0033's five-failed-claim pairing fence
+is now implemented for the amended local request and direct Vercel adapter, while hosted Gate B2
+remains open; TASK-026 owns the gate. **CONFLICTED:**
 the SDK requests separate five-minute offer and thirty-minute Grant windows, while v2 copies the
 shorter Consent-session expiry into the Grant without displaying it; TASK-027 owns the policy.
 ADR-0044 resolves the implementation-identity decision: active v2 may remain independently
@@ -221,7 +222,7 @@ customer, cross-layer standing-mode adoption, and final market/distribution mode
 | Consent-session and Host SDK handoff preview | **CLOUD RECEIVER PREVIEW DEPRECATED; SDK CONTRACT RETAINED AS EVIDENCE** | ADR-0022, CLOUD-005, paired Host subject, signed Manifest, public challenge, opaque token, approval/decline fencing, public binding, restart, and no raw-token persistence |
 | Shared Host UI/WebMCP consent action | **LOCALLY VERIFIED WITH BOUNDED BROWSER RUNTIME EVIDENCE** | TASK-010, HOST-002, Host SDK v0.3 tests/build, and live `request_codex_reentry` discovery plus bounded invocation |
 | Simple subject/prompt/URL SDK and v2 developer flow | **SEPARATE-PROCESS VERIFIED; REGISTRY PATH OPEN** | ADR-0041, TASK-025, SDK-006, TASK-031, and TASK-032; 81 Core, 25 SDK, 56 Receiver, 49 executed Connector tests (12 opt-in active-v2 tests skipped) plus separate-process acknowledgement/restart replay and independent browser personas used current checkouts; published SDK `0.3.1` predates the facade and Connector `0.2.20` rejects its instruction-bearing lease |
-| Active v2 contract reconciliation | **LOCAL SOURCE, UPGRADE, MINIMUM PINNED TRACE, AND BOUNDED RECOVERY VECTORS VERIFIED; RELEASE AND POLICY WORK OPEN** | ADR-0044, CLOUD-023, and TASK-028; the Express standing trace passes against committed Core and Receiver source, the exact-commit additive upgrade preserves old rows/catalog on disposable PostgreSQL, and named Core/Receiver fresh-process and transaction-interruption fixtures pass. Full conformance, remaining recovery, release enforcement, public controls, pairing abuse fence, lifetime policy, and production effect acknowledgement remain open |
+| Active v2 contract reconciliation | **LOCAL SOURCE, UPGRADE, MINIMUM PINNED TRACE, AND BOUNDED RECOVERY VECTORS VERIFIED; RELEASE AND POLICY WORK OPEN** | ADR-0044, CLOUD-023, and TASK-028; the Express standing trace passes against committed Core and Receiver source, the exact-commit additive upgrade preserves old rows/catalog on disposable PostgreSQL, and named Core/Receiver fresh-process and transaction-interruption fixtures pass. Full conformance, remaining recovery, release enforcement, public controls, hosted pairing abuse Gate B2, lifetime policy, and production effect acknowledgement remain open |
 | Re-entry Cloud console preview | **DEPRECATED, HISTORICAL LOOPBACK EVIDENCE** | CLOUD-004 and `runtime/cloud-receiver/`; retired by ADR-0032 |
 | Complete generic reference flow | **LOCALLY VERIFIED, EVIDENCE-ONLY AGENT** | CLOUD-006 and `runtime/reference-system/` |
 | Application-review sample Host | **LOCALLY VERIFIED, SAMPLE ONLY** | ADR-0023, HOST-001, and `runtime/application-demo/` |
@@ -349,7 +350,7 @@ Current evidence supports these bounded claims:
   controlled control-store reopen, submits one signed Host Manifest through a paired consent
   session, returns one Receiver-owned public binding after approval, fences decline and replay, and
   exposes the resulting Event delivery to the authorized Connector;
-- the account-first product path creates one dashboard-issued pairing code and approves one
+- the account-first product path creates one dashboard-issued pairing ID/code and approves one
   account-linked Mac without a Host-generated pairing code, reuses the restrictive local credential, uses a dashboard-issued organization key for
   Host control calls, keeps the approval on the Re-entry origin, targets an eligible device, and
   produces one claimable delivery through bounded background polling;

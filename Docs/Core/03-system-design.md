@@ -226,7 +226,7 @@ historical ADR-0020 pairing control plane, ADR-0021 Host-key
 registration, historical ADR-0022 consent handoff, ADR-0028 account authorization, and current
 ADR-0030 dashboard-issued pairing around those unchanged contracts. It is now deprecated by ADR-0032;
 its source and tests are historical evidence only. `runtime/local-connector/`
-implements the dashboard pairing-code client, restrictive local credential store, bounded background claim/adapter
+implements the dashboard pairing-ID/code client, restrictive local credential store, bounded background claim/adapter
 handoff, generated macOS user service, and an opt-in local Codex fresh-session adapter. Tests cover
 account and device approval, credential reuse, Host-key registration, consent approval and decline,
 target selection, controlled store reopen, Connector identity resolution, credential-file

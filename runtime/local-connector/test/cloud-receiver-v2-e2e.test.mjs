@@ -303,7 +303,9 @@ async function createHarness() {
     });
     assert.equal(pairing.status, 201);
     const claimed = await sendJson(state.receiver.origin, "/v0.1/account/pairing-sessions/claim", {
+      headers: { "x-vercel-forwarded-for": "198.51.100.43" },
       body: {
+        pairing_id: pairing.body.pairing_id,
         pairing_code: pairing.body.pairing_code,
         device_name: "Connector E2E Worker",
       },

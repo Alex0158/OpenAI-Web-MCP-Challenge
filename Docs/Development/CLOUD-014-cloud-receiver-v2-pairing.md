@@ -1,7 +1,7 @@
 # CLOUD-014: Cloud Receiver v2 Pairing — Feature 1
 
 **Role:** IMPLEMENTATION AND VERIFICATION RECORD  
-**Status:** `locally_verified` — Pairing Feature 1 closed; `PAIR-001`–`PAIR-005` and restart/replay pass  
+**Status:** `locally_verified` — baseline Pairing Feature 1 and Amendment A local enforcement pass; hosted Gate B2 remains open  
 **Opened:** 2026-09-02  
 **Task:** [TASK-014](../Tasks/TASK-014-build-cloud-receiver-v2-pairing.md)  
 **Decision:** [ADR-0033](../Decisions/ADR-0033-adopt-cloud-receiver-v2-pairing-increment.md)
@@ -23,9 +23,10 @@ delivery boundary.
 - disposable PostgreSQL test setup used to execute the existing backend handler; and
 - the exact pairing contract recorded in ADR-0033.
 
-Explicitly unaffected: Consent and later v2 features, frontend pages, `reentry-core/`,
-`runtime/cloud-receiver/`, frozen `mvp/`, and the Local Connector source. The Local Connector
-compatibility dependency is consumed as a separate clean commit, not modified here.
+The baseline increment explicitly left Consent and later v2 features, frontend pages,
+`reentry-core/`, `runtime/cloud-receiver/`, frozen `mvp/`, and the Local Connector source
+untouched. TASK-026 Amendment A subsequently updates the project-controlled Dashboard and active
+Local Connector pairing input; it does not rewrite delivery or Agent behavior.
 
 ## Falsifiers
 
@@ -84,9 +85,29 @@ The completed tokenless replay support was verified before the server run:
 The server now returns `connector_token` only for `duplicate: false`; a duplicate replay omits the
 field entirely. It never returns an empty, fake, or digest token.
 
+## TASK-026 Amendment A evidence
+
+The pairing abuse fence is implemented in the active `saas-boilerplate/` boundary under
+[ADR-0033 Amendment A](../Decisions/ADR-0033-adopt-cloud-receiver-v2-pairing-increment.md#21-amendment-a--pairing-claim-abuse-fence):
+
+- the route requires exactly `pairing_id`, `pairing_code`, and `device_name` and rejects the old
+  two-field body;
+- wrong attempts are durably atomic (five generic failures, terminal sixth), exact consumed-code
+  replay remains tokenless, and the Dashboard displays the public pairing ID beside the code;
+- the direct Vercel provider adapter HMACs one valid `x-vercel-forwarded-for` value, while a
+  PostgreSQL bucket enforces 30 requests per ten-minute source window and bounded `Retry-After`;
+- missing, repeated, comma-separated, invalid, weak-secret, and limiter-store cases fail closed;
+  the retired runtime remains unchanged; and
+- local evidence passes 39 focused backend tests across pairing and downstream consumers plus 49
+  Local Connector tests (12 opt-in hosted suites remain skipped).
+
+This is local implementation evidence only. The reviewed hosted preview has not been mutated; the
+production HMAC secret, migration, and disposable hosted readback remain TASK-026 Gate B2 work.
+
 ## Current closure boundary
 
-The pairing gate is locally verified and Pairing Feature 1 is closed. ADR-0013 and proposed
+The baseline pairing gate is locally verified and Pairing Feature 1 is closed. Amendment A is
+locally verified but remains open for hosted Gate B2. ADR-0013 and proposed
 [ADR-0034](../Decisions/ADR-0034-propose-organization-grant-control-amendment.md) are separate from
 Pairing and do not block TASK-014/CLOUD-014 closure; they must be handled before later
 Grant-revocation work. Consent and later v2 work remain paused. No Grant route was implemented or
@@ -97,4 +118,5 @@ given a final status by this increment.
 - `PAIR-004` requires a disposable persistence fixture and must remain an internal test arrangement,
   not a new public identity field.
 - Reopen if the implementation proposes delegated Grant control, raw-token persistence, target reuse,
-  retired-database migration, or any scope expansion beyond pairing.
+  retired-database migration, a weaker claim fallback, or any scope expansion beyond the accepted
+  pairing amendment.

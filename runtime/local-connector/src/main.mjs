@@ -156,7 +156,7 @@ Commands:
   stop         Stop the background Connector without removing its credential
   disconnect   Revoke Cloud access and clear this Mac's saved connection
   uninstall    Stop the Connector and remove its local service data
-  connect      Open Re-entry, redeem a dashboard pairing code, and connect this Mac
+  connect      Open Re-entry, redeem a dashboard pairing ID and code, and connect this Mac
   start        Poll for approved work until stopped
   doctor       Check Node.js, Codex, and the optional project directory
   claim-once   Check once for approved work
@@ -166,6 +166,8 @@ Common options:
   --receiver <url>       Accepted Receiver origin (overrides the preview default)
   --codex-cd <path>      Workspace for Codex; interactive mode offers a folder picker if omitted
   --codex-binary <path>  Explicit Codex executable
+  --pairing-id <id>      Pairing ID shown beside the one-time code
+  --pairing-code <code>  One-time code shown in the Re-entry dashboard
   --activation-timeout <ms>
                          Codex limit; test defaults to 1 hour, background start to 60 seconds
   --json                 Machine-readable output
@@ -435,19 +437,25 @@ async function connect(flags, ui, options = {}) {
   if (ui.interactive) {
     ui.stopWait("Secure link", "ready");
     ui.info("Re-entry", portalUrl);
-    ui.info("Next", "Create or sign in, click Pair this Mac, then return here with the code.");
+    ui.info("Next", "Create or sign in, click Pair this Mac, then return here with the pairing ID and code.");
     if (!(await openBrowser(portalUrl))) {
       ui.warning("Browser", "could not open automatically; use the URL above");
     }
   } else {
     process.stdout.write(`${JSON.stringify({ event: "connector_account_pairing", portal_url: portalUrl })}\n`);
   }
+  const pairingId = flags["pairing-id"] ?? await askForPairingId(
+    ui,
+    "  Enter the pairing ID shown beside the code: ",
+  );
+  if (ui.interactive) ui.step("Pairing ID", "received");
   const pairingCode = flags["pairing-code"] ?? await askForPairingCode(
     ui,
     "  Enter the pairing code shown in your Re-entry dashboard (XXXX-XXXX): ",
   );
   if (ui.interactive) ui.step("Pairing code", "received");
   const credentials = await client.connectWithPairingCode({
+    pairingId,
     pairingCode,
     deviceName: flags["device-name"] ?? defaultDeviceName(),
   });
@@ -1041,7 +1049,7 @@ function validateCommandFlags(command, flags, positionals) {
   const allowedByCommand = {
     doctor: new Set(["codex-binary", "codex-cd", "json"]),
     pair: new Set(["receiver", "code", "credential-file", "json"]),
-    connect: new Set(["receiver", "device-name", "credential-file", "pairing-code", "json"]),
+    connect: new Set(["receiver", "device-name", "credential-file", "pairing-id", "pairing-code", "json"]),
     status: new Set(["credential-file", "codex-cd", "codex-binary", "json"]),
     listen: new Set(["json"]),
     test: new Set(["codex-cd", "codex-binary", "activation-timeout", "json"]),
@@ -1054,6 +1062,7 @@ function validateCommandFlags(command, flags, positionals) {
       "credential-file",
       "codex-cd",
       "codex-binary",
+      "pairing-id",
       "pairing-code",
       "json",
     ]),
@@ -1190,9 +1199,17 @@ function safeErrorMessage(error) {
     : error.message;
 }
 
+async function askForPairingId(ui, prompt = "  Enter the pairing ID: ") {
+  return askForPairingValue(ui, prompt, "connector_pairing_id_missing");
+}
+
 async function askForPairingCode(ui, prompt = "  Enter the pairing code: ") {
+  return askForPairingValue(ui, prompt, "connector_pairing_code_missing");
+}
+
+async function askForPairingValue(ui, prompt, missingCode) {
   if (!ui.interactive || process.stdin.isTTY !== true) {
-    throw cliFailure("connector_pairing_code_missing");
+    throw cliFailure(missingCode);
   }
   const readline = createInterface({ input: process.stdin, output: process.stdout });
   try {
@@ -1224,14 +1241,16 @@ function errorHint(error) {
     connector_receiver_missing: "pass --receiver <replacement-receiver-origin> or set REENTRY_RECEIVER_ORIGIN",
     connector_credentials_missing: `connect this Mac once with \`${cliCommand("connect")}\``,
     connector_credentials_expired: `run \`${cliCommand("disconnect")}\`, then \`${cliCommand("install")}\` to authorize this Mac again`,
-    connector_credentials_already_exists: "use the existing Connector credential or ask for a new pairing code",
+    connector_credentials_already_exists: "use the existing Connector credential or ask for a new pairing ID and code",
     connector_account_already_connected: `run \`${cliCommand("disconnect")}\` before connecting a different account or Receiver`,
     connector_identity_invalid: `run \`${cliCommand("disconnect")}\`, then \`${cliCommand("install")}\` and approve this Mac again`,
     connector_reauthorization_required: `run \`${cliCommand("disconnect")}\`, then \`${cliCommand("install")}\` and approve this Mac again`,
-    connector_pairing_code_missing: `ask the Host backend for a new pairing code, then run \`${cliCommand("pair")}\` in a terminal`,
+    connector_pairing_id_missing: "copy the pairing ID shown beside the one-time code in the Re-entry dashboard",
+    connector_pairing_code_missing: `ask the Host backend for a new pairing ID and code, then run \`${cliCommand("connect")}\` again`,
+    account_pairing_code_invalid: "use the eight-character code shown in the Re-entry dashboard",
     pairing_code_invalid: "use the 16-character code returned by the Host, for example ABCD-EFGH-IJKL-MNOP",
     host_subject_already_paired: "use the existing Connector credential or revoke/reset the preview pairing",
-    pairing_expired: "ask the Host backend for a new pairing code",
+    pairing_expired: "ask the Host backend for a new pairing ID and code",
     pairing_request_timeout: "the Receiver took too long to answer; check your connection and run the command again",
     pairing_network_error: "check your internet connection and the Receiver address, then try again",
     connector_codex_exec_timeout: "Codex did not finish in time; run the same codex exec command directly to inspect its output",
