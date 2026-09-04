@@ -1,0 +1,10 @@
+#!/bin/sh
+# Fake runtime for launcher tests only: never load or execute the supplied module.
+if [ "$#" -ne 1 ] || [ "$1" != "$BASELINE_EXPECTED_RELAY" ]; then
+  exit 86
+fi
+if [ "${CODEX_SESSION_ID+x}" = x ] || [ "${CODEX_THREAD_ID+x}" = x ] \
+  || [ "${CODEX_APP_TOOLS_PIPE_PATH+x}" = x ]; then
+  exit 87
+fi
+printf '%s\n' 'fake_runtime_received_original_relay'

@@ -22,7 +22,7 @@ increment. The separately recorded host-mediated control below includes one auth
 ## Current C1 execution gate
 
 The owner approved ADR-0047's temporary local relay and one new inert notification. C1 remains
-**unused**: no listener, App-service process, native connection or notification has been started.
+**unused**: no live relay listener, App-service process, native connection or notification has been started.
 This approval resolves the experiment's listener/send scope, not the missing host invocation.
 The preceding recommendation overstated readiness by presenting a new test allowance as the
 remaining practical prerequisite. It must not be read as an established executable integration.
@@ -60,6 +60,79 @@ corrects that distinction. A working implementation with those properties can be
 adapted. Otherwise the platform question below needs an answer for client admission and approval,
 not a presumed missing ability to start an idle task. No new generic user test approval is required
 while C1 remains unused; no message to a contributor or platform was sent by this increment.
+
+## Original-method baseline and reproduction limits
+
+The owner requested returning to the correct MVP method. The first experiment's `f237fea` record
+documents an unqualified `node` resolving to `26.5.0`, but records no technical necessity for
+replacing the MVP's App-provided runtime. A separate one-shot probe protected frozen source and
+reduced side effects; it did not justify treating different process identities as equivalent.
+This was a reproduction-method omission, not a demonstrated platform regression or a user request
+to change runtime. The original launcher and actual task-launched context remain required inputs
+to any equivalence assessment, not automatic permission to borrow a trusted executable's identity.
+
+The original source also establishes why the complete frozen relay is not an unchanged C1 runner:
+
+- `mvp/src/relay/codex-app-tools-relay.mjs:264` derives its fixed task from `CODEX_SESSION_ID`;
+  `read_task` and `send_followup` use that value as both caller and destination. C1's previously
+  approved destination is distinct from the current source executor. Substituting its ID into the
+  source environment would misrepresent identity, not restore the original conditions.
+- `validatePrompt` accepts only enrollment/event messages with fixed authority-claim prefixes.
+  An inert marker does not satisfy that contract. Do not invent an approved Grant or accepted
+  business event merely to make a probe pass validation.
+- The old relay includes Browser operations and lacks C1's relay-wide one-submission allowance
+  and total lifetime/connection limits. Selective adaptation must explicitly retain the real
+  consumer and satisfy the narrower approved contract; a literal replay is not that adaptation.
+
+`runtime/experimental-desktop-bridge/test/mvp-method-baseline.test.mjs` adds test-only checks for
+the omitted launch preconditions and these message/target differences. It uses a clearly fake
+runtime, explicit child environments, an injected fake native client and fresh fixture sockets;
+it never invokes the App runtime or pipe. These are regression checks on the original method,
+not a new production relay or evidence that the real launcher is now executable/admitted.
+
+The installed official App Tools service remains an executor-owned MCP stdio process. Its actual
+executor can call the exposed task tool with host-supplied identity and policy, but this review
+has not found an independent Connector ingress into that service. Manually launching its wrapper
+and supplying metadata does not establish preservation of the executor's approval handling.
+The official [SDK](https://learn.chatgpt.com/docs/codex-sdk) and
+[App Server](https://learn.chatgpt.com/docs/app-server) pages describe programmable thread APIs;
+they do not establish this existing Desktop-owner join. No alternate runtime was started.
+
+**Current disposition:** baseline-method regression work may close locally; the real original-
+route reproduction and Connector integration remain open. C1 is unspent and the live CLI hold
+remains unchanged. No new native attempt failed in this increment. The next actionable input is
+a legitimate host invocation for the scoped relay, not another generic test consent, a synthetic
+caller, or a green fixture suite. No new platform token requirement is inferred.
+
+### Baseline regression verification
+
+On Node `24.20.0`, the unchanged frozen relay/adapter checks passed 13/13 via
+`node --test mvp/test/codex-app-tools-relay.test.mjs mvp/test/desktop-task-adapter.test.mjs`.
+The new method-baseline suite passed 6/6 within the aggregate, and
+`node --test runtime/experimental-desktop-bridge/test/*.test.mjs` passed 116/116, including the
+unchanged operational-hold tests. All App clients were fake/injected; only fixture sockets and a
+fake runtime process were created. Frozen source, product runtime, App configuration and C1 were
+untouched. This closes regression coverage, not real-route reproduction or Connector integration.
+
+Independent review found that the new test request helper could remain pending if its fixture
+peer closed before a complete response. The added premature-close regression first timed out at
+three seconds. A single settlement path now clears the overall deadline and destroys the fixture
+connection on success, error, timeout or early close; the aggregate above passed after that fix.
+This was a test-helper defect, not a Desktop or Connector runtime failure.
+
+Repository closure: `python3 scripts/test_validators.py` passed 6/6,
+`python3 scripts/test_sensitive_scan.py` passed 3/3, and
+`python3 scripts/validate_repository.py --root .` passed. Whitespace and changed-artifact CJK/private
+identifier checks were clear. `python3 scripts/scan_sensitive_patterns.py --root .` still reported
+21 existing matches across seven unchanged Game documents; this is not a whole-repository scan
+pass. Those paths are unchanged against HEAD and none belongs to this increment.
+
+The source baseline is shared `main` at `251b07a`. The five documentation paths and two new test
+paths are owned; only the same-task hunk in Core/00 belongs here. Its concurrent pairing hunk and
+all other owner-held changes are excluded. Core/00 and TASK-035 record the evidence ceiling;
+ADR-0047 clarifies original-method assessment without changing App authority or the live hold.
+Mechanism 04 and ADR-0046 remain aligned: the exact-task product target and open runtime gate do
+not change. No Receiver, SDK, Game, deployment, new branch or external message is included.
 
 ## Receiving-side correction: idle caller is not the demonstrated blocker
 

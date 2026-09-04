@@ -48,6 +48,10 @@ Receiving-side source inspection now finds no active-caller-turn gate in the MCP
 and confirms target resume/start/steer paths. This is source-level idle compatibility, not current
 Connector execution proof. The unresolved boundary is client admission and upstream App approval;
 an active-turn requirement or new background delegation token must not be inferred from it.
+The ordinary-Node probe omitted the original launcher's runtime-identity requirement; reducing
+test scope did not establish equivalence. TASK-035 now preserves that baseline with fixture-only
+regressions and records the frozen relay's caller/target and message-contract differences. The
+real original-route reproduction remains unattempted; no new native failure or C1 send is claimed.
 
 The project has implemented and locally verified the application-neutral Re-entry Core at the
 scope accepted by ADR-0006 through ADR-0014. RECORE-001 through RECORE-004, RECORE-006, and the

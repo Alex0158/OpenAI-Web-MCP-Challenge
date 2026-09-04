@@ -18,6 +18,10 @@
   now finds no active-caller-turn gate in MCP messaging, including its deduplication and tool-routing
   checks. The target has resume/start/steer paths. This supports idle compatibility at source level,
   not independent runtime admission. Core summaries are reconciled.
+  The owner then requested restoration of the original method. Test-only baseline checks now
+  cover the required launcher/runtime and the frozen relay's target/message constraints; they do
+  not execute the App runtime, establish admission or consume C1. CLOUD-028 records the original
+  reproduction omission and why the frozen relay cannot be used unchanged for the narrower C1.
 - Next gate: Define the smallest legitimate invocation from the existing Connector into the
   host-owned task interface when no Agent turn is active, retaining actual caller and approval
   handling. The original task-launched relay is the implementation reference, not a requirement

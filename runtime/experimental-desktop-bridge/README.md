@@ -5,7 +5,8 @@
 [ADR-0047](../../Docs/Decisions/ADR-0047-authorize-local-desktop-bridge-probe.md) bounds the local
 messaging/wake experiments inspired by the frozen MVP 1 native Desktop relay.
 [CLOUD-027](../../Docs/Development/CLOUD-027-experimental-desktop-bridge-probe.md) owns its exact
-runtime evidence. This module does not import or modify frozen MVP code.
+runtime evidence. Runtime modules do not import or modify frozen MVP code. The baseline regression
+test alone imports the unchanged relay with an injected fake native client.
 
 ## Scope and prerequisites
 
@@ -93,6 +94,12 @@ tool activity, observation failure, or the deadline. No send is retried. Exiting
 connection: no listener or daemon remains, but already submitted input cannot be retracted.
 
 ## Local verification
+
+`test/mvp-method-baseline.test.mjs` exercises the original launcher with a clearly fake runtime,
+never the App-provided executable, and explicit child environments without ambient caller/pipe
+context. It also proves that the frozen relay rejects inert-marker and target-override requests
+before any fake native tool call. These checks preserve original-method distinctions; they do
+not unlock the CLI, establish live admission, or reproduce a current Desktop wake.
 
 Run `node --test runtime/experimental-desktop-bridge/test/*.test.mjs` from the repository root.
 These tests use injected clients or fresh local fake sockets, never the app's real pipe or real

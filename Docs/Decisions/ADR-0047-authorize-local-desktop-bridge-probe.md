@@ -62,6 +62,21 @@ one total input, and do not delete queued messages to simplify evidence.
 
 ## Verification, shutdown, and stop conditions
 
+### Original-method baseline clarification
+
+The owner requested restoration of the successful MVP method and prompt correction of misleading
+Core statements. Reproduction must account for its launcher, route-specific runtime, real source
+task context, caller/target relationship, allowed operations and message contract. A one-shot
+scope reduction does not establish that a different process identity is equivalent. Node 24 is
+the fixture-test baseline, not a requirement to replace an integration-specific runtime.
+
+Test-only checks may exercise the frozen launcher using a clearly fake runtime and the frozen
+relay using an injected fake native client, with no ambient App context. Frozen source remains
+unchanged. These checks do not connect to Desktop or consume C1. Do not reinterpret this request
+as permission to bypass peer authorization, run the rejected native client through a trusted
+executable, or overwrite a source task identifier to equal the approved destination. The existing
+live invocation prerequisite and one-shot scope below remain unchanged.
+
 ### Connector-initiated temporary relay extension, 2026-09-04
 
 The owner explicitly approved one temporary local relay and one new inert test notification after
