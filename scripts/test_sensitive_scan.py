@@ -34,6 +34,20 @@ class SensitivePatternScannerTests(unittest.TestCase):
             findings = scan(root)
             self.assertEqual([finding.path for finding in findings], ["external.txt"])
 
+    def test_ignores_repository_task_and_evidence_identifiers(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "records.md").write_text(
+                "\n".join(
+                    (
+                        "`sk-task-066-cp12-canvas-mission-fresh.sqlite`",
+                        "`sk-evid-053-cp12-canvas-mission-state-readback-runtime-verification`",
+                    )
+                ),
+                encoding="utf-8",
+            )
+            self.assertEqual(scan(root), [])
+
     def test_distinguishes_a_pem_header_from_a_complete_private_key_block(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

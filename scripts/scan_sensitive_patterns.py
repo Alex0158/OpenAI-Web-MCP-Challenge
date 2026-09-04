@@ -22,7 +22,13 @@ PATTERNS = (
     ),
     ("AWS_ACCESS_KEY", re.compile(r"\bAKIA[0-9A-Z]{16}\b")),
     ("GITHUB_TOKEN", re.compile(r"\bgh[pousr]_[A-Za-z0-9_]{20,}\b")),
-    ("OPENAI_KEY", re.compile(r"\bsk-[A-Za-z0-9_-]{20,}\b")),
+    # Repository task/evidence identifiers use the same ``sk-`` prefix as the
+    # legacy key heuristic. Keep the exception exact (kind + three-digit
+    # sequence) so every other long ``sk-`` token remains a finding.
+    (
+        "OPENAI_KEY",
+        re.compile(r"\bsk-(?!(?:task|evid)-[0-9]{3}(?:-|$))[A-Za-z0-9_-]{20,}\b"),
+    ),
     ("SLACK_TOKEN", re.compile(r"\bxox[baprs]-[A-Za-z0-9-]{20,}\b")),
     ("GOOGLE_API_KEY", re.compile(r"\bAIza[0-9A-Za-z_-]{30,}\b")),
 )
