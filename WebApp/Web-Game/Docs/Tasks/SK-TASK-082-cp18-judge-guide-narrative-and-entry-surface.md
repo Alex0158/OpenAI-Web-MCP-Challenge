@@ -48,7 +48,7 @@ Give a judge a clear, light, and self-contained route from Local Connector insta
 
 - Verified: The existing judge-guide route is static and has the accepted page-tool names.
 - Verified: The supplied YouTube URL returns the intended video page; the supplied SDK Playground URL and its current image resource return `200 OK` during this increment.
-- Verified: Railway production deployment `78526b02-4986-463f-9d0e-f2214610a585` for the existing `game` service completed with `SUCCESS`; the custom Game origin served the revised routes and project-owned preview with `200 OK` readback.
+- Verified: Railway production deployment `165641ed-9d01-45fc-bb8b-97bdfbca1e11` for the existing `game` service completed with `SUCCESS`; the custom Game origin served the revised routes and project-owned preview with `200 OK` readback.
 - Inferred: A separate static gameplay route reduces judge-guide cognitive load while keeping the complete game/Agent instructions one click away.
 - Unknown: Final package compatibility, genuine browser WebMCP discovery/invocation, external Receiver/Connector delivery, Agent wake, and final judge reproduction.
 
