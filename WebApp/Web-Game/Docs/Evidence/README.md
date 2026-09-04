@@ -60,6 +60,7 @@ The CP-17 disposable read-restore compatibility rehearsal is recorded in [SK-EVI
 The CP-13 local dynamic continuation refresh is recorded in [SK-EVID-074](SK-EVID-074-cp13-dynamic-continuation-refresh-runtime-verification.md); one page-generation recall registration follows the newest ordered server continuation and rejects superseded signals, while hosted WebMCP, Agent, and Re-entry delivery remain open.
 
 The CP-14 Host SDK package/provenance readback is recorded in [SK-EVID-075](SK-EVID-075-cp14-host-sdk-package-provenance-readback.md); the public NPM package is v0.1-only for the reviewed server surface, so the standing v0.2 Host SDK and enrollment gate remain open.
+The CP-14 Receiver standing source-pin readback is recorded in [SK-EVID-076](SK-EVID-076-cp14-receiver-standing-source-pin-readback.md); the selected external candidate verifies one exact Core source and rejects drift, while release, enrollment, and Host SDK gates remain open.
 
 ## 2. Identity
 

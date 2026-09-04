@@ -64,6 +64,12 @@ The executed package/provenance readback and its claim limits are recorded in
 [`SK-EVID-075`](../Evidence/SK-EVID-075-cp14-host-sdk-package-provenance-readback.md) and
 [`Validation/101`](../Validation/101-cp14-host-sdk-package-provenance-readback.md).
 
+The selected Receiver candidate's exact ref and Core source-pin readback are recorded in
+[`SK-EVID-076`](../Evidence/SK-EVID-076-cp14-receiver-standing-source-pin-readback.md) and
+[`Validation/102`](../Validation/102-cp14-receiver-standing-source-pin-readback.md). This closes
+source-integrity evidence only; it does not designate a production handoff or close the SDK,
+enrollment, or Game-adapter gate.
+
 ## Consequences
 
 - Current status and roadmap wording must say “merged source; runtime integration open” instead of
