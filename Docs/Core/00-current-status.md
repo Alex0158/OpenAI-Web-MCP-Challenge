@@ -32,6 +32,11 @@ MVP 1 genuinely verified same-task continuation, preserved prior context, canoni
 and fresh genuine WebMCP invocation on its recorded build. The current product Connector has not
 adopted that Desktop bridge; Core/Cloud composition tests use deterministic Agent seams. This is
 an integration gap, not evidence that the original success did not happen or has been disproved.
+The original clean-run and post-fix rehearsal invocation timelines now show that goal auto-
+continuation had already started the target turn before each Event arrived. They therefore prove
+notification into the existing task and subsequent Browser work, not Event-caused wake from idle.
+The original launch recipe is available; the missing evidence is a permitted Connector invocation
+and an isolated idle-target wake trace, not an assumed lost implementation or a model regression.
 
 [CLOUD-027](../Development/CLOUD-027-experimental-desktop-bridge-probe.md) records rejection of an
 ordinary-Node custom client before task readback, not a complete reproduction of MVP 1's launcher.

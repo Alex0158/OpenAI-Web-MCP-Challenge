@@ -63,6 +63,59 @@ while C1 remains unused; no message to a contributor or platform was sent by thi
 
 ## Original-method baseline and reproduction limits
 
+### Original invocation and wake-causality readback, 2026-09-04
+
+New evidence comes from the original 2026-08-30 execution record, not another App archive/source
+inspection. The primary investigator independently checked event timestamps, tool-call metadata,
+goal-continuation markers and the absence of intervening task completion. Private task locators,
+relay variables and conversation contents remain local and are not copied into this record.
+
+At `05:52:01.537Z`, an active Agent called `functions.exec` -> `tools.exec_command` in the MVP
+directory and executed `exec ./scripts/launch-codex-app-tools-relay`, after setting its private
+relay environment. The command used `tty: false` and `yield_time_ms: 1000`; the next output reported
+ready and a continuing process session. The original recipe is present and matches `mvp/RUNBOOK.md`.
+Finding that recipe does not establish permission to launch a current detached Connector client.
+
+| Recorded run | Target execution before the Event | Consequence for the wake claim |
+|---|---|---|
+| P0 correlated clean run | Stage A completes at `11:04:05.170Z`; another turn starts at `11:04:05.178Z` with a goal-continuation input. That Agent invokes `npm run trigger` at `11:04:15.814Z`; authenticated Event delegation is recorded at `11:05:27.342Z`, without an intervening task completion. | The target was already running before the trigger. Same-task notification/continuation is real, but this is not an isolated Event-caused idle wake. |
+| Accepted post-fix rehearsal | A turn completes at `11:33:45.908Z`; a goal-continuation turn starts at `11:33:45.916Z`. Authenticated Event delegation arrives at `11:50:32.149Z`, without a task completion in between. | The independent rehearsal repeats the same causality limitation; a PASS for the frozen composition does not close idle wake. |
+
+Both rows use UTC on 2026-08-30. The public anchors remain
+`mvp/evidence/p0-correlated-clean-run-2026-08-30-verdict.md` and
+`mvp/evidence/runbook-rehearsal-post-fix-2026-08-30-verdict.md`. Their exact-task, Browser and genuine
+WebMCP observations remain valid. This correction neither declares all MVP1 evidence invalid nor
+claims the current App cannot wake an idle task. It removes the inference that the standalone
+Connector's missing capability must be a regression of an already isolated successful test.
+
+The actionable input is now precise: a permitted current client invocation preserving caller and
+App approval, or an original-integrator run showing a genuinely idle target before an independent
+Event. Repeating the existing launch recipe, borrowing the App runtime identity, changing models,
+or adding an automatic goal/heartbeat cannot supply that missing causality evidence. Do not disable
+another task's goal, consume C1, start a listener or change App configuration on this readback's
+authority. The original bounded C1 gate still applies.
+
+This Standard evidence-only increment updates Core/00, Core/05, Mechanism 04 and TASK-035 alongside
+this record. ADR-0046/0047 product intent, diagnostic permission and executable behavior are unchanged;
+no new ADR or frozen-file modification is needed. It makes the remaining evidence request concrete,
+not a new supported-driver or deployment claim.
+
+In parallel, a read-only review of the concurrent TASK-036 working tree found an accidental
+`eventId` requirement in retained effect ACK and missing Event correlation on notification receipts.
+The source owner corrected both. The primary investigator verified Node `24.20.0` focused Core
+client/handoff tests 9/9 and a separate canonical wrong-Event receipt rejection with one mocked
+fetch and zero network. This is mutable working-tree review evidence, not aggregate Core closure,
+an accepted runtime attestation, or real notification delivery. The implementation owner retains
+source, persistent regression and release responsibility.
+
+Verification for this evidence increment: validator unit tests passed 6/6, scanner unit tests
+passed 3/3, and repository validation passed. The full sensitive-pattern scan still reports the
+21 pre-existing findings in seven unchanged Game files, with none in the five owned documents.
+The focused component command was `node --test test/local-connector-client.test.mjs
+test/notification-handoff.test.mjs` from `reentry-core/`, using Node `24.20.0`; it is not an
+aggregate or deployment claim. Frozen MVP code/evidence and all concurrent implementation paths
+remain untouched by this task. Only the named evidence-summary hunks belong to this increment.
+
 The owner requested returning to the correct MVP method. The first experiment's `f237fea` record
 documents an unqualified `node` resolving to `26.5.0`, but records no technical necessity for
 replacing the MVP's App-provided runtime. A separate one-shot probe protected frozen source and

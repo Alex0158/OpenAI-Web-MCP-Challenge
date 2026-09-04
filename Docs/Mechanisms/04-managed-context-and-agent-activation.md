@@ -39,6 +39,10 @@ input and exact response in a joined turn, not isolated wake or independent Conn
 The allowance is consumed and the native CLI stays held. The original real MVP1 Browser/WebMCP
 success remains valid on its recorded build. Neither the current control nor a deterministic Core
 test is a product Adapter, Grant binding, notification receipt, or relaxation of this contract.
+Original-run timeline readback in CLOUD-028 additionally shows goal auto-continuation before Event
+arrival in both the clean run and post-fix rehearsal. Preserve their exact-task/Browser evidence,
+but do not use either run as proof of Event-caused wake from an idle task. An idle-wake verification
+must distinguish an independently initiated notification from an already running goal turn.
 ADR-0047 now additionally permits a temporary relay and one new C1 notification. The scope is
 approved, but C1 and the listener are unattempted pending a host-authorized Connector invocation;
 approval of the experiment is not proof of client admission. The inspected receiving-side MCP

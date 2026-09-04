@@ -9,7 +9,12 @@
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Local Connector/Agent Adapter owner, with Receiver and Host SDK owners.
-- Current increment: The static MVP/installed-launcher comparison is complete. CLOUD-028 now
+- Current increment: Original invocation-history readback now distinguishes MVP1's real exact-task
+  delivery from idle-wake causality. The original launcher was started by an Agent executor; both
+  accepted clean/rehearsal runs had an automatic goal turn running before Event arrival. CLOUD-028
+  records the verified timeline and corrected Core/Mechanism claims. The recipe is already located;
+  do not keep asking for its source or treat these runs as independent idle-wake proof.
+  The static MVP/installed-launcher comparison is complete. CLOUD-028 now
   verifies current host-mediated same-task input and exact response: B1 appeared as tool data in
   a new completed turn after the older Q1 input. This is a joined-turn response, not isolated B1
   wake or autonomous Connector admission. Its untruncated object envelope exposed an observer
@@ -42,8 +47,12 @@
   not a result that must already be proved before testing. Neither an active-turn restriction nor
   a need for a new delegation token has been demonstrated.
   The readable-source trace is complete at the named compiled-executor boundary. Obtain its
-  invocation contract or original integrator recipe for caller context and upstream approval;
-  do not repeat that trace without new source or runtime input.
+  permitted invocation contract for caller context and upstream approval, or original-integrator
+  evidence of a genuinely independent idle-target run. The original active-executor launch recipe
+  has been found and is not the missing source. Do not repeat that trace without new input.
+  The new verification must rule out automatic goal continuation, a user wake message or another
+  scheduler before the Event. Do not turn those mechanisms off in another task without authority;
+  use a confirmed idle target within the approved diagnostic scope. C1 remains unused.
   Do not repeat wrapper metadata inspection as evidence for those unsupported requirements.
   A stored task locator or Re-entry Grant does not itself authorize
   App invocation. Name any actual authority change before requesting it; do not presume one from
