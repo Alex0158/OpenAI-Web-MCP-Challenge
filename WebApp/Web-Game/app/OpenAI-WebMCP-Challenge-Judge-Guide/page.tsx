@@ -369,38 +369,13 @@ export default function OpenAIWebMCPChallengeJudgeGuidePage() {
       <section className={`${styles.contentSection} ${styles.miniAppsSection}`} id="mini-apps" aria-labelledby="mini-apps-title">
         <div className={styles.sectionIntro}>
           <p className={styles.sectionIndex}>MORE RE-ENTRY SURFACES</p>
-          <h2 id="mini-apps-title">Open another small workflow.</h2>
+          <h2 id="mini-apps-title">Explore the SDK Playground.</h2>
           <p>
-            These entries let a judge see that Re-entry is a reusable continuity pattern, not a
-            game-only trick. Click the image to enter each surface.
+            This small surface lets a judge see that Re-entry is a reusable continuity pattern,
+            not a game-only trick. Click the image to enter the playground.
           </p>
         </div>
         <div className={styles.miniAppsGrid}>
-          <article className={styles.miniAppCard}>
-            <a
-              className={styles.miniAppImageLink}
-              href="https://github.com/Alex0158/OpenAI-Web-MCP-Challenge/tree/main/WebApp/Web-Right_Spot"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Open the RightSpot project entry"
-            >
-              <Image
-                className={styles.miniAppImage}
-                src="/mini-apps/rightspot-primary.v1.webp"
-                alt="Bright living room preview from the RightSpot rental workflow"
-                width={1536}
-                height={1024}
-              />
-              <span className={styles.miniAppImageOverlay}><span>OPEN PROJECT ENTRY</span><strong>↗</strong></span>
-            </a>
-            <div className={styles.miniAppBody}>
-              <div className={styles.miniAppMeta}><span>RIGHTSPOT / RENTAL WORKFLOW</span><span>LOCAL MVP</span></div>
-              <h3>RightSpot</h3>
-              <p>A tenant request moves from listing discovery to an agent decision across a second product surface.</p>
-              <a className={styles.inlineLink} href="https://github.com/Alex0158/OpenAI-Web-MCP-Challenge/tree/main/WebApp/Web-Right_Spot" target="_blank" rel="noreferrer">View source and runbook ↗</a>
-            </div>
-          </article>
-
           <article className={styles.miniAppCard}>
             <a
               className={styles.miniAppImageLink}
@@ -426,7 +401,7 @@ export default function OpenAIWebMCPChallengeJudgeGuidePage() {
             </div>
           </article>
         </div>
-        <p className={styles.miniAppsNote}>RightSpot is a local project entry; the SDK Playground is the linked hosted surface.</p>
+        <p className={styles.miniAppsNote}>A focused external surface for testing the Re-entry loop.</p>
       </section>
 
       <section className={`${styles.contentSection} ${styles.toolsSection}`} id="tools" aria-labelledby="tools-title">
