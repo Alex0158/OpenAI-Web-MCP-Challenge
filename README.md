@@ -1,5 +1,19 @@
 # Re-entry SDK Test Workspace
 
+<a href="https://youtu.be/lovFAAftKeU">
+  <img src="https://img.youtube.com/vi/lovFAAftKeU/maxresdefault.jpg" alt="Watch the Re-entry demo on YouTube" width="100%" />
+</a>
+
+## What is Re-entry?
+
+Re-entry complements WebMCP by helping an agent come back to a website after a person has approved
+the next step. WebMCP gives agents a structured way to work with the web; Re-entry adds the small
+return path that helps close the loop between agents and the internet.
+
+The goal is modest: keep the website in control, keep the human in the loop, and stop the agent from
+waiting by the browser door forever. It is still an early project, so expect useful code, a few sharp
+edges, and probably at least one TODO pretending to be architecture.
+
 This branch is intentionally reduced to the smallest local test surface for the Re-entry SDK
 consent flow. It contains the test consumer, the Host SDK source, the Local Connector source, and
 the shared protocol package they use.
