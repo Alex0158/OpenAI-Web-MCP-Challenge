@@ -315,8 +315,25 @@ npm run doctor -- \
 ```
 
 `doctor` checks Node.js, finds Codex, runs `codex --version`, and checks that the Host directory
-exists and is readable and writable. In a terminal it shows each check; with `--json` or piped
-stdout it prints a bounded `connector_ready` JSON event when ready.
+exists and is readable and writable when `--codex-cd` is supplied. Exit code zero means only that
+these local CLI prerequisites passed, not that the selected existing-task route is ready. In a
+terminal it shows each check and the route limitations; with `--json` or piped stdout it retains
+the `connector_ready` event and its existing fields, with these additive diagnostics:
+
+```json
+{
+  "readiness_scope": "local_cli_prerequisites",
+  "default_activation_route": "fresh_session_preview",
+  "existing_task_binding": "not_implemented",
+  "same_task_wake": "not_verified",
+  "browser_webmcp": "not_checked"
+}
+```
+
+These describe the current Connector implementation and the limits of this check, not a live
+Desktop capability probe. `doctor` does not verify Codex login, task binding, App admission,
+same-task wake, or Browser/WebMCP access, and it does not start an Agent or contact the Receiver.
+The activation route and existing failure exit codes are unchanged.
 
 Codex lookup order is:
 

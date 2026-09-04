@@ -290,18 +290,26 @@ function readConnectorVersion() {
 
 function doctor(flags, ui) {
   if (ui.interactive) {
-    ui.begin("System check", "Confirm that this Mac is ready for Re-entry.");
+    ui.begin("Local CLI preflight", "Check local CLI prerequisites only; this does not verify same-task continuation.");
     ui.section("CHECK", "Requirements");
   }
   const readiness = inspectReadiness(flags);
   showReadiness(readiness, ui, { detailed: true });
-  if (!ui.interactive) {
+  if (ui.interactive) {
+    ui.warning("Activation route", "Fresh-session preview; existing-task binding is not implemented.");
+    ui.warning("Verification limits", "Same-task wake is not verified; Browser/WebMCP is not checked.");
+  } else {
     process.stdout.write(`${JSON.stringify({
       event: "connector_ready",
       node_version: process.versions.node,
       codex_binary: readiness.installation.executable,
       codex_version: readiness.installation.version,
       codex_working_directory: readiness.workingDirectory,
+      readiness_scope: "local_cli_prerequisites",
+      default_activation_route: "fresh_session_preview",
+      existing_task_binding: "not_implemented",
+      same_task_wake: "not_verified",
+      browser_webmcp: "not_checked",
     })}\n`);
   }
   return readiness;

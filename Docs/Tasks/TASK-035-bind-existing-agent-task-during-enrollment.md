@@ -22,6 +22,12 @@
   cover the required launcher/runtime and the frozen relay's target/message constraints; they do
   not execute the App runtime, establish admission or consume C1. CLOUD-028 records the original
   reproduction omission and why the frozen relay cannot be used unchanged for the narrower C1.
+  The locally verified bounded increment makes the existing Connector `doctor` distinguish executable
+  prerequisites from the fresh-session preview and unimplemented/unverified same-task capabilities.
+  It preserves dispatch, credentials, the native hold and C1; the Connector aggregate passed 55
+  with 12 opt-in integration skips. The separate upstream source trace found App-owned tool-call
+  and approval-response paths, but not the executor's permission evaluator or a detached client
+  invocation contract. This is not an exhaustive rejection of every possible legitimate route.
 - Next gate: Define the smallest legitimate invocation from the existing Connector into the
   host-owned task interface when no Agent turn is active, retaining actual caller and approval
   handling. The original task-launched relay is the implementation reference, not a requirement
@@ -31,8 +37,13 @@
   This scope excludes Browser and still requires legitimate host invocation before listener startup.
   CLOUD-028 identifies the existing adapter seam but no independently usable host invocation;
   implementation is stopped at that boundary, not waiting for another generic test approval.
-  The missing evidence is legitimate native client admission and preservation of upstream App
-  approval, not a demonstrated active-turn restriction or need for a new delegation token.
+  The pre-execution prerequisite is a permitted client invocation contract that preserves upstream
+  App approval. Successful runtime admission is then an observation of the authorized experiment,
+  not a result that must already be proved before testing. Neither an active-turn restriction nor
+  a need for a new delegation token has been demonstrated.
+  The readable-source trace is complete at the named compiled-executor boundary. Obtain its
+  invocation contract or original integrator recipe for caller context and upstream approval;
+  do not repeat that trace without new source or runtime input.
   Do not repeat wrapper metadata inspection as evidence for those unsupported requirements.
   A stored task locator or Re-entry Grant does not itself authorize
   App invocation. Name any actual authority change before requesting it; do not presume one from

@@ -134,6 +134,80 @@ ADR-0047 clarifies original-method assessment without changing App authority or 
 Mechanism 04 and ADR-0046 remain aligned: the exact-task product target and open runtime gate do
 not change. No Receiver, SDK, Game, deployment, new branch or external message is included.
 
+## Connector preflight claim correction
+
+An independent boundary review distinguishes the permitted invocation contract from successful
+runtime admission: the former governs whether an experiment may run, while the latter is an
+experimental result. Requiring prior success would be circular. The completed source comparison
+does not establish that every possible legitimate route is exhausted. The upstream trace below
+names the remaining executor boundary. No native policy or C1 scope is relaxed.
+
+The owner authorized leading the entrypoint investigation and bounded remediation. This
+`Standard` increment uses the existing Connector `doctor` consumer; it does not add a new
+diagnostic command, relay, dependency or runtime integration. On the source baseline `5d472ef`,
+`doctor --json --codex-cd <current-workspace>` exited zero with `event: connector_ready` and
+`codex-cli 0.144.1`, but no statement of its readiness scope or selected activation route. That
+check only discovers a CLI, executes its `--version`, and optionally validates a directory.
+Its name and unqualified terminal wording can be mistaken for same-task integration readiness.
+
+The bounded correction retains the JSON event, existing fields, lookup order and exit semantics,
+while adding explicit local-prerequisite scope and fresh-session-preview classification. It names
+task binding as unimplemented, same-task wake as unverified, and Browser/WebMCP as unchecked.
+Terminal output must carry the same limitation. These are current implementation/verification
+statuses, not an App capability probe or a new permission gate. Doctor must not read App task
+identity, inspect native endpoints, claim a delivery, load Connector credentials, start an Agent,
+or install a service.
+
+Verification must exercise the real CLI with a version-only fake executable, exact invocation
+arguments, JSON and terminal output, optional workspace, and unchanged explicit-path failure.
+A live version-only readback may validate the diagnostic output, not task admission or wake.
+The new suite first reported three passing and three failing cases against the old implementation;
+all six passed after correction. On Node `24.20.0`, the Connector aggregate
+`CLOUD_RECEIVER_V2_E2E=0 node --test test/*.test.mjs` passed 55, failed zero and skipped 12 opt-in
+Receiver/database integration cases. `node scripts/check-syntax.mjs` passed for 37 modules.
+Independent final code review found no actionable issue. Version-only live readbacks passed for
+both current-shell CLI `0.144.1` and the owning Desktop's bundled CLI `0.153.0-alpha.5`; both
+reported the five bounded diagnostic fields. Neither run started a task or contacted the Receiver.
+The installed standard LaunchAgent was absent at the prior readback; that observation does not
+exclude a manually started Connector. Current-shell CLI discovery is not a running-service audit.
+
+ADR-0026's retained preview and ADR-0046's selected target remain unchanged, as do Core/00 and
+Mechanism 04's open integration claims. No authority, protocol, binding, delivery, lifecycle or
+deployment decision changes; no new ADR or canonical capability claim follows from additive
+diagnostic fields. TASK-035 and the package README own the affected operational status. All
+concurrent lifetime, Receiver, SDK/package and Game changes remain outside this increment.
+
+Repository checks for this increment: validator tests passed 6/6, scanner tests passed 3/3,
+and `python3 scripts/validate_repository.py --root .` passed with exactly the five owned paths
+indexed. Working and staged whitespace checks passed. The whole-repository sensitive-pattern
+scan still reports 21 findings in seven Game documents, all unchanged against HEAD; it is not a
+whole-repository scan pass. No suppression or unrelated correction was made.
+
+### Upstream App-owned tool-call and approval trace
+
+The follow-on read-only inspection covered the same installed Desktop `26.901.20858`, build
+`7658`. The table records UTF-8 byte offsets inside archive members, not public Connector APIs.
+
+| Boundary | Archive member and offset | Verified behavior and limit |
+|---|---|---|
+| App-owned MCP call | `webview/assets/app-initial-7a6c8787453d.js`, `callMcpTool`, 3058402 | Sends `mcpServer/tool/call` and adds thread metadata from the owning App client context. This is not an independently exposed Connector service. |
+| UI/widget consumer | `webview/assets/app-primary-7416b1a268c4.js`, `f6t`, 2268792; `h6t`, 2270240 | Resolves server/catalog and trusted tool scope before calling the App client using its conversation context. This supplies another App-owned consumer, not a detached invocation recipe. |
+| Incoming server request | `.vite/build/src-BXVxNf6C.js`, 1083570 | Handles or broadcasts an already received server request to App windows. This does not show when the executor decides to request approval. |
+| Approval response | Initial member above, `B9t`, 2723494; build member above, `handleClientResponse`, 1051756 | Finds an existing elicitation request, validates/routes its response, and returns it through the owning App-server transport. It does not expose the complete per-tool permission evaluator. |
+
+The primary agent checked the decisive snippets independently. No archive module, packaged MCP
+server or native client was executed. The executor is a compiled Mach-O binary; its implementation
+source was not available in the inspected App resources. The remaining unknowns are where that
+executor evaluates `approval_mode`, how it supplies legitimate MCP caller context, and whether it
+offers a permitted task-owned invocation usable after the initiating turn ends. Readable UI code
+does not answer those questions or authorize synthesizing its metadata.
+
+This closes this bounded readable-source trace, not all possible entry routes. The next useful
+input is the owning runtime's invocation contract or original integrator's implementation recipe
+covering those properties. If it is unavailable locally, request that specific input instead of
+repeating the same archive/wrapper inspection or requesting generic consent again. A permissioned
+invocation still requires the unused C1 runtime check; no successful admission is presumed.
+
 ## Receiving-side correction: idle caller is not the demonstrated blocker
 
 The follow-on review traced the receiving App main process and renderer, rather than inferring
