@@ -21,21 +21,25 @@
 
 ## 🌐 What is REENTRY?
 
-WebMCP helps AI agents understand and use the web. REENTRY explores what happens next: how an
-agent can safely return when a website changes, a person approves something, or work is ready to
-continue.
+A website changes after the agent leaves. Then what?
 
-The vision is a web where useful agent workflows do not disappear the moment a browser session
-ends. Websites stay in control, people stay in the loop, and agents get a clear path back instead
-of staring patiently into the digital void.
+WebMCP gives AI agents a structured way to understand and use websites. REENTRY explores the next
+part of that journey: how a website can bring an agent back when a person approves something, a
+process finishes, or new work is ready.
 
-REENTRY is still early and deliberately small. It is not trying to replace WebMCP; it is a
-companion layer intended to help close the loop between MCP-enabled websites, AI agents, and the
-real events that happen in between.
+We are not building another product that simply uses WebMCP. We are building for developers
+working with WebMCP — a return path they can add to the experiences they already own.
+
+The idea is simple: the website keeps control, the person stays in the loop, and the agent gets a
+clear reason to return. Less "agent magic," more useful continuity.
+
+REENTRY is still early, and that is part of the point. This repository is a working exploration of
+how MCP-enabled websites, AI agents, and real-world events might stay connected after the first
+interaction ends. The interesting part is how the pieces connect.
 
 ## 🧭 Repository map
 
-This branch brings the complete REENTRY test path into one workspace:
+One loop needs a few distinct pieces. This branch brings them into one workspace:
 
 ### ☁️ `reentry-cloud-app/`
 
