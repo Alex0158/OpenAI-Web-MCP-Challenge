@@ -3,16 +3,18 @@
 This is a deliberately isolated, test-only Next.js consumer for checking the published
 `@4xeoz/re-entry-sdk` consent flow against a Re-entry Cloud Receiver.
 
-It intentionally stops after:
+It intentionally stays small while covering the complete playground path:
 
 ```text
-button -> signed Manifest + consent session -> Re-entry consent -> Host status confirmation
-       -> approved opaque continuation retained in the test server's memory
+button or WebMCP tool -> signed Manifest + consent session -> Re-entry consent
+       -> Host status confirmation -> approved opaque continuation retained in memory
+       -> human-only business update -> signed Event -> Re-entry delivery queue
 ```
 
-It does not register a WebMCP tool, send a later Event, update application workflow state, launch
-an Agent, or provide a fallback path. The in-memory store is only a placeholder for a real Host
-database and is cleared when the Next.js process restarts.
+The WebMCP surface is intentionally limited to two tools per mini-app: a read-only status tool and
+a consent tool. It does not expose the developer switch or the later business-update control. The
+in-memory store is only a placeholder for a real Host database and is cleared when the Next.js
+process restarts.
 
 ## Run locally
 
@@ -30,7 +32,8 @@ lines.
 
 Open [http://localhost:3000](http://localhost:3000) and select **Sign a test contract**. The SDK
 opens the Receiver consent page in a popup. After approval, the Host status route confirms the
-Receiver state and stores the opaque continuation in memory. No later action is sent.
+Receiver state and stores the opaque continuation in memory. Use the customer view for consent,
+then use the clearly labelled developer view to simulate the later business update.
 
 ## Verify
 
@@ -58,8 +61,8 @@ Each mini-app has two visible sides:
 2. **Developer side** — a clearly labelled human-only control that simulates the business update.
 
 The developer control has `data-webmcp-excluded="true"` and is not registered as a WebMCP tool. The
-attribute is only a local marker for this playground; the real protection is that WebMCP
-registration is paused and no tool is exposed yet.
+WebMCP tools are registered only while a selected mini-app is on its customer view. Each tool is
+also guarded so it refuses to act when that mini-app is not active.
 
 The intended demo path is:
 
@@ -67,10 +70,11 @@ The intended demo path is:
 User asks for permission
   -> Re-entry consent
   -> Host confirms approval
-  -> Developer control changes the demo status
+  -> Human-only developer control changes the demo status
   -> reentry.trigger()
   -> Re-entry accepts one Event
   -> Local Connector can claim the queued delivery
+  -> Agent opens the canonical page and reads current state
 ```
 
 The mini-app business state is deliberately in memory. This keeps the playground easy to reset and
@@ -104,9 +108,8 @@ the Receiver checks it. The current protocol intentionally has no arbitrary `dat
 business payload. For this playground, the simple useful values are the workflow ID, event type,
 state version, and canonical page URL. The business status itself stays in the Host app.
 
-Open question for later: do we need a small, bounded `data` field for scenario-specific values, or
-is the workflow ID plus the Host page reading its current state enough? The recommended starting
-answer is to keep the Event as-is and let the reopened page read current state.
+The Event stays small. The mini-app's read-only status route supplies the scenario-specific record
+context after the page is reopened, so the Event does not need an arbitrary nested `data` field.
 
 ## What does the Local Connector receive?
 
@@ -161,19 +164,42 @@ The Connector validates the lease and continuation, then its Codex adapter build
 message: open the exact page, read its current state, and continue only up to the human boundary.
 The Connector does not receive the Host private key or Organization API key.
 
-Open questions for later:
+The status route returns a small, flat context object:
 
-- Should the Connector ever receive more than a URL and short instruction? Recommended answer: no,
-  unless a real workflow proves that one extra bounded field is necessary.
-- Should the page fetch current business state after reopening? Recommended answer: yes. That keeps
-  the Event small and avoids stale nested data.
-- When should WebMCP be added? After the ordinary button and Connector path are stable; the future
-  WebMCP tool should call the same consent action rather than create a second path.
+```json
+{
+  "scenario_id": "invoice",
+  "workflow_id": "ledgerly-invoice-1042",
+  "workflow_type": "invoice_approval",
+  "record_id": "INV-1042",
+  "status": "queued",
+  "state_version": 1,
+  "event_id": "event_...",
+  "canonical_url": "https://your-host.example/?scenario=invoice",
+  "agent_instruction": "Read invoice INV-1042 and prepare the next safe review step. Do not approve or pay it.",
+  "human_boundary": "explicit_receiver_consent"
+}
+```
+
+The agent-facing WebMCP tools are:
+
+- a read-only tool that fetches this current state;
+- a consent tool that uses the same Host consent action as the visible customer button.
+
+The developer switch and `/api/reentry/playground/advance` remain human-only and are never exposed
+as WebMCP tools.
+
+Remaining limitations:
+
+- WebMCP availability depends on the browser exposing `document.modelContext.registerTool`; the
+  ordinary customer button remains available when it does not.
+- The in-memory state store is suitable for this local playground but can split across Vercel
+  serverless instances. A durable Host store is still needed for production-like multi-instance
+  testing.
 
 ## Next playground increments
 
-1. Verify the invoice demo from consent through Event acceptance.
+1. Verify each mini-app from consent through Event acceptance.
 2. Connect a paired Local Connector and verify that it claims one delivery.
-3. Add a small current-state readout after a page is reopened.
-4. Add WebMCP registration later, using the same action as the human button.
-5. Add durable storage only if hosted multi-instance testing needs state to survive requests.
+3. Reopen each canonical page and verify its WebMCP status tool reads current state.
+4. Add durable storage only if hosted multi-instance testing needs state to survive requests.

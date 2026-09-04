@@ -5,6 +5,7 @@ import test from "node:test";
 import { POST as createConsent } from "../app/api/reentry/consent/route.js";
 import { POST as confirmConsent } from "../app/api/reentry/consent/status/route.js";
 import { POST as advancePlayground } from "../app/api/reentry/playground/advance/route.js";
+import { GET as readPlaygroundState } from "../app/api/reentry/playground/state/route.js";
 import {
   getApprovedContinuation,
 } from "../app/_lib/reentry-test.mjs";
@@ -66,6 +67,26 @@ test("the test button path signs consent, confirms approval, and stores only an 
   assert.equal(stored.workflow.canonicalUrl, `${HOST_ORIGIN}/?scenario=${DEFAULT_SCENARIO_ID}`);
   assert.equal(JSON.stringify(stored).includes(ORGANIZATION_API_KEY), false);
   assert.equal(calls.some((call) => call.path === "/v0.1/events"), false);
+
+  const stateResponse = await readPlaygroundState(new Request(
+    `${HOST_ORIGIN}/api/reentry/playground/state?scenario_id=${DEFAULT_SCENARIO_ID}`,
+  ));
+  assert.equal(stateResponse.status, 200);
+  assert.deepEqual(await stateResponse.json(), {
+    scenario_id: DEFAULT_SCENARIO_ID,
+    app_name: scenario.brand,
+    industry: scenario.category,
+    workflow_id: scenario.workflowId,
+    workflow_type: scenario.workflowType,
+    record_id: scenario.recordId,
+    event_type: "workflow.ready",
+    status: "permission_ready",
+    state_version: 0,
+    event_id: null,
+    canonical_url: `${HOST_ORIGIN}/?scenario=${DEFAULT_SCENARIO_ID}`,
+    agent_instruction: scenario.agentInstruction,
+    human_boundary: "explicit_receiver_consent",
+  });
 });
 
 test("the developer control triggers one simple event after approval", async () => {
@@ -95,6 +116,26 @@ test("the developer control triggers one simple event after approval", async () 
   const event = JSON.parse(eventEnvelope.body);
   assert.equal(event.event_type, "workflow.ready");
   assert.equal(event.canonical_url, `${HOST_ORIGIN}/?scenario=pickup`);
+
+  const stateResponse = await readPlaygroundState(new Request(
+    `${HOST_ORIGIN}/api/reentry/playground/state?scenario_id=pickup`,
+  ));
+  assert.deepEqual((await stateResponse.json()).status, "queued");
+});
+
+test("each mini-app exposes its own small WebMCP context", async () => {
+  for (const scenario of ["invoice", "pickup", "support", "proposal"]) {
+    const response = await readPlaygroundState(new Request(
+      `${HOST_ORIGIN}/api/reentry/playground/state?scenario_id=${scenario}`,
+    ));
+    assert.equal(response.status, 200);
+    const context = await response.json();
+    assert.equal(context.scenario_id, scenario);
+    assert.match(context.workflow_id, new RegExp(`^${scenario === "invoice" ? "ledgerly-invoice-1042" : scenario === "pickup" ? "parcelly-order-7819" : scenario === "support" ? "kindline-ticket-3308" : "morrow-proposal-208"}$`));
+    assert.equal(typeof context.record_id, "string");
+    assert.equal(typeof context.agent_instruction, "string");
+    assert.equal(context.human_boundary, "explicit_receiver_consent");
+  }
 });
 
 test("pending consent is visible and does not store a continuation", async () => {

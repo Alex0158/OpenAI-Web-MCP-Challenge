@@ -36,6 +36,7 @@
     "doctor": "node src/main.mjs doctor",
     "check:syntax": "node scripts/check-syntax.mjs",
     "test:codex": "node --test test/codex-exec-adapter.test.mjs",
+    "test:cloud:codex": "REENTRY_REAL_CODEX_E2E=1 node --test test/cloud-receiver-real-codex.test.mjs",
     "test": "node --test test/*.test.mjs",
     "verify": "npm run check:syntax && npm test"
   },

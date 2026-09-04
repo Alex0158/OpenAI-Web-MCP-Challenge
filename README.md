@@ -12,12 +12,20 @@
 </a>
 
 <p align="center">
+  <a href="https://re-entry-weld.vercel.app"><strong>Open the live REENTRY app</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://cloud-receiver-delta.vercel.app/health"><strong>Cloud Receiver health</strong></a>
+  &nbsp;·&nbsp;
   <a href="https://www.npmjs.com/package/@4xeoz/re-entry-sdk"><strong>Host SDK on npm</strong></a>
   &nbsp;·&nbsp;
   <a href="https://www.npmjs.com/package/@4xeoz/re-entry"><strong>Local Connector on npm</strong></a>
   &nbsp;·&nbsp;
   <a href="https://youtu.be/lovFAAftKeU"><strong>Watch the demo</strong></a>
 </p>
+
+> 🚀 **Judges:** The quickest path is the [live REENTRY app](https://re-entry-weld.vercel.app),
+> followed by the [complete Judge Guide](https://game.sleepless-kingdom.com/OpenAI-WebMCP-Challenge-Judge-Guide)
+> for the full consent, event, Connector, and agent-return walkthrough.
 
 ## 🌐 What is REENTRY?
 

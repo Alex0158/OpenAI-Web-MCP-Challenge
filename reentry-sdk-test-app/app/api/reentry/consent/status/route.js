@@ -6,6 +6,8 @@ import {
   testErrorResponse,
   testJson,
 } from "../../../../_lib/reentry-test.mjs";
+import { getPlaygroundScenario } from "../../../../_lib/playground-config.mjs";
+import { markPlaygroundPermissionReady } from "../../../../_lib/playground-state.mjs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -25,6 +27,8 @@ export async function POST(request) {
       body.consent_session_id,
       confirmation,
     );
+    const scenarioId = new URL(requestHandle.workflow.canonicalUrl).searchParams.get("scenario");
+    if (getPlaygroundScenario(scenarioId)) markPlaygroundPermissionReady(scenarioId);
     return testJson(200, {
       status: "approved",
       continuation_id: continuationId,

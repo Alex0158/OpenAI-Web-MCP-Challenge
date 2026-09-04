@@ -162,6 +162,20 @@ underlying direct `codex exec` command. It does not create a Grant, claim Receiv
 Desktop UI thread, browser, or WebMCP return path. If it times out, run the equivalent direct
 `codex exec` command to inspect Codex's own output; the test does not contact the Receiver.
 
+Test the Cloud-to-Connector claim seam with a real local Codex process:
+
+```sh
+npm run test:cloud:codex
+```
+
+This opt-in test starts a loopback-only fake Receiver, returns one contract-valid delivery lease,
+runs the real `LocalConnector` and Codex exec adapter, and streams the real Codex output. It uses
+synthetic Connector and claim tokens and does not contact an account, deployed Cloud Receiver, or
+production data. Its canonical URL is intentionally non-routable, so a browser-permission denial
+is expected; the test proves that the lease reached Codex and that the process completed, not that
+Browser/WebMCP tools or a Host effect were available. The test is not included in the default
+package suite unless `REENTRY_REAL_CODEX_E2E=1` is explicitly set.
+
 The one-shot test allows up to one hour by default. Override it with
 `--activation-timeout <milliseconds>` when needed. Background delivery keeps its separate
 60-second adapter bound.
