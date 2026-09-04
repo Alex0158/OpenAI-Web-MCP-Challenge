@@ -82,8 +82,10 @@ The following paths are in the current local candidate and have focused green ev
   key registration, Consent session creation/status, and signed Event publication.
 - `runtime/local-connector/src/local-connector.mjs` derives stable handoff identity, asks a private
   Adapter for same-task admission, reports `admitted`/`unsupported`/`outcome_unknown`, and calls
-  the additive Receiver handoff route. The existing fresh `codex exec` Adapter remains compatibility
-  preview only and is not a fallback.
+  the additive Receiver handoff route. `runtime/local-connector/src/handoff-journal.mjs` reserves
+  each identity before runtime invocation, quarantines runtime-pending/unknown outcomes, and
+  retries only a previously attested Receiver handoff. The existing fresh `codex exec` Adapter
+  remains compatibility preview only and is not a fallback.
 - `saas-boilerplate/backend/` contains the additive handoff migration, strict v0.2 control routes,
   same-user consent/revocation controls, private-state replay validation, an explicit
   `createApp({ standingRuntimeAdmissionAuthority })` server-side composition seam, and focused
@@ -124,8 +126,9 @@ recall `1/1`, CP-05 `26/26`, and CP-08 `4/4`.
 ### Core, Host SDK, and Connector
 
 Run the focused Node 24 selections recorded in TASK-036. The current result is Core `174/174`,
-standing Host SDK `27/27`, and Connector `72` passed with `12` explicit opt-in v0.2 checks skipped
-because no hosted Receiver was supplied. A skipped opt-in check is not a hosted pass.
+standing Host SDK `27/27`, and Connector `81` passed with `12` explicit opt-in v0.2 checks skipped
+because no hosted Receiver was supplied; Connector syntax covers `43` modules. A skipped opt-in
+check is not a hosted pass.
 
 ### Receiver
 

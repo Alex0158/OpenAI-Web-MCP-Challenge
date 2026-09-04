@@ -210,13 +210,15 @@ npx --yes @4xeoz/re-entry uninstall
 
 `stop` pauses the macOS background service and keeps the account connection. `uninstall` requires
 typing `DELETE`, then removes only the LaunchAgent, saved Connector credential, and Connector logs;
-it retires active private task bindings in the local binding store. It does not recursively delete
+it retires active private task bindings but deliberately retains the handoff journal so an
+ambiguous runtime outcome cannot be erased into a blind resend. It does not recursively delete
 folders or uninstall the npm package. To remove a global npm
 installation separately, run `npm uninstall --global @4xeoz/re-entry`.
 
 `disconnect` is the account-device sign-out. It uses the saved Connector token to revoke this Mac's
 Cloud access, retires active local task bindings, then stops the LaunchAgent, removes the local
-credential, and leaves log files in place. The dashboard keeps the device row for audit and shows it
+credential, and leaves log files and the handoff journal in place for audit/replay safety. The
+dashboard keeps the device row for audit and shows it
 as **Disconnected**; it is no longer
 eligible for consent or delivery. Exact replay is safe. If the Receiver cannot confirm revocation,
 the command fails visibly and keeps the credential so you can retry without orphaning remote access.
@@ -541,6 +543,7 @@ operation under a supervisor or scheduler; the current CLI is one-shot.
 - `src/local-connector.mjs` — one claim and typed adapter dispatch;
 - `src/codex-exec-adapter.mjs` — the fresh-session Codex adapter inside the Connector process;
 - `src/codex-queue-adapter.mjs` — the retained v0.1 queue preview and gated standing v0.2 adapter;
+- `src/handoff-journal.mjs` — the private restart-safe handoff, retry, and quarantine journal;
 - `src/task-binding.mjs` — private restart-safe Grant-to-task binding custody and trusted capture;
 - `src/terminal-ui.mjs` — the dependency-free human terminal presentation; and
 - `src/main.mjs` — the small CLI process, guided `start`, and `doctor` command.

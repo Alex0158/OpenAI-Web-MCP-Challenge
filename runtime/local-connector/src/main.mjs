@@ -792,7 +792,7 @@ async function disconnect(flags, ui) {
     if (!result.supported) {
       ui.warning("Platform", "connection lifecycle control currently supports macOS only");
     } else if (result.disconnected) {
-      ui.complete("This Mac is disconnected", "Cloud access, the LaunchAgent, local credentials, and active task bindings are cleared.");
+      ui.complete("This Mac is disconnected", "Cloud access, the LaunchAgent, local credentials, and active task bindings are cleared; the handoff journal remains for replay safety.");
     } else {
       ui.info("Already disconnected", "No saved local connection or background service was found.");
     }
@@ -813,7 +813,7 @@ async function disconnect(flags, ui) {
 async function uninstall(flags, ui) {
   if (ui.interactive) {
     ui.begin("Uninstall Re-entry", "Stop the Connector and remove only its local service data");
-    ui.warning("This removes", "the LaunchAgent, saved Connector credential, and Connector logs; active task bindings are retired");
+    ui.warning("This removes", "the LaunchAgent, saved Connector credential, and Connector logs; active task bindings are retired, while the handoff journal is retained for unknown-outcome safety");
     await askForUninstallConfirmation();
   } else if (flags.yes !== true) {
     throw cliFailure("connector_uninstall_confirmation_required");
@@ -824,7 +824,7 @@ async function uninstall(flags, ui) {
     credentialFile: flags["credential-file"] ?? defaultCredentialFile(),
   });
   if (ui.interactive) {
-    ui.complete("Removed from this Mac", "The local service, connection, and logs are gone; active task bindings are retired.");
+    ui.complete("Removed from this Mac", "The local service, connection, and logs are gone; active task bindings are retired and the handoff journal is retained for audit safety.");
     ui.next(cliCommand("install"), "Connect this Mac again whenever you are ready.");
   } else {
     process.stdout.write(`${JSON.stringify({
