@@ -35,6 +35,8 @@ This task is not closed or fixed merely because its target is corrected.
   effect-backed acknowledgement in retained compatibility profiles.
 - ADR-0037 owns lease expiry and bounded reclaim.
 - Mechanisms 03–05 own the Connector, effect, Host, and human-boundary separation.
+- [Research 27](../Research/27-notification-handoff-profile-proposal.md) is the unaccepted
+  decision-ready notification-handoff profile proposal; it does not change the owning contract.
 - `CONNECTOR-V2-ACK-001` and `CONNECTOR-V2-E2E-001` prove the current split and test-only completion
   path.
 
@@ -44,7 +46,8 @@ Specify trusted handoff identity and attestation, exact target/Grant/Event corre
 response loss, restart, duplicate notification, stale worker, revocation, pending-slot release, and
 unknown outcomes. Keep task busy scheduling separate from Receiver delivery state. Select an
 explicit protocol transition before changing routes, schemas, or stored rows; no effect token may
-be fabricated or renamed to avoid that gate. Integrate one real bound-task consumer.
+be fabricated or renamed to avoid that gate. Use Research 27 only as a review aid until the owner
+accepts or revises its profile. Integrate one real bound-task consumer.
 
 ## 4. Non-goals
 

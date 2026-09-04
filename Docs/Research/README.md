@@ -1,7 +1,7 @@
 # Research Index
 
 **Role:** SUPPORTING research and bounded evidence index  
-**Status:** Current tracked index through Research 25  
+**Status:** Current tracked index through Research 27  
 **Last updated:** 2026-09-03
 
 Research can change a decision or verification plan, but it does not control current product truth
@@ -47,6 +47,9 @@ proof claims belong in `Docs/Core/00-current-status.md` and
 - [Research 26](26-pairing-claim-abuse-fence-proposal.md): proposed pairing identity, durable
   per-pair/source abuse controls, terminal failure, replay, concurrency, and rollout boundary;
   not an accepted contract.
+- [Research 27](27-notification-handoff-profile-proposal.md): proposed additive notification-handoff
+  profile, trusted private task inbox, exact receipt/replay semantics, and cross-module acceptance
+  matrix; not an accepted contract.
 
 ## Maintenance rules
 
