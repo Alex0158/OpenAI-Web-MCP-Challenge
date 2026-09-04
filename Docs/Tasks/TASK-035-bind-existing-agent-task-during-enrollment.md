@@ -14,7 +14,10 @@
   a new completed turn after the older Q1 input. This is a joined-turn response, not isolated B1
   wake or autonomous Connector admission. Its untruncated object envelope exposed an observer
   parsing gap, now corrected with explicit role, attribution and rejection tests. The native CLI
-  remains held; its fixed local result is not a new App rejection. Core summaries are reconciled.
+  remains held; its fixed local result is not a new App rejection. A receiving-side source trace
+  now finds no active-caller-turn gate in MCP messaging, including its deduplication and tool-routing
+  checks. The target has resume/start/steer paths. This supports idle compatibility at source level,
+  not independent runtime admission. Core summaries are reconciled.
 - Next gate: Define the smallest legitimate invocation from the existing Connector into the
   host-owned task interface when no Agent turn is active, retaining actual caller and approval
   handling. The original task-launched relay is the implementation reference, not a requirement
@@ -24,6 +27,9 @@
   This scope excludes Browser and still requires legitimate host invocation before listener startup.
   CLOUD-028 identifies the existing adapter seam but no independently usable host invocation;
   implementation is stopped at that boundary, not waiting for another generic test approval.
+  The missing evidence is legitimate native client admission and preservation of upstream App
+  approval, not a demonstrated active-turn restriction or need for a new delegation token.
+  Do not repeat wrapper metadata inspection as evidence for those unsupported requirements.
   A stored task locator or Re-entry Grant does not itself authorize
   App invocation. Name any actual authority change before requesting it; do not presume one from
   missing public documentation. Then specify scope, lifetime, renewal if needed, restart and revocation.

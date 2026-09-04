@@ -44,6 +44,10 @@ unused: CLOUD-028 identifies the real Connector adapter seam, but no App-authori
 invocation is established. No listener or notification was started. Resolve host-provided caller
 and approval handling; another generic user approval or active-Agent-mediated send does not close
 that gate. This is not a new runtime failure or a reversal of MVP1's original proof.
+Receiving-side source inspection now finds no active-caller-turn gate in the MCP messaging path
+and confirms target resume/start/steer paths. This is source-level idle compatibility, not current
+Connector execution proof. The unresolved boundary is client admission and upstream App approval;
+an active-turn requirement or new background delegation token must not be inferred from it.
 
 The project has implemented and locally verified the application-neutral Re-entry Core at the
 scope accepted by ADR-0006 through ADR-0014. RECORE-001 through RECORE-004, RECORE-006, and the
@@ -454,7 +458,9 @@ Experiments, and frozen evidence rather than this status file.
    evidence to define the smallest legitimate Connector-to-host invocation. Do not repeat the same
    control or treat missing public documentation as impossibility. B1 is consumed; the separately
    approved C1 relay test remains unused pending actual host invocation, and the native CLI remains
-   held. Do not ask for the unchanged test approval again. Keep the existing Local Connector as the product
+   held. Receiving-side source supports idle compatibility; focus on legitimate client admission
+   and upstream approval, not an assumed active-turn restriction or invented delegation mechanism.
+   Do not ask for the unchanged test approval again. Keep the existing Local Connector as the product
    integration surface. Private binding and TASK-029's notification receipt/recovery specification
    may progress in parallel; neither proves autonomous admission. Preserve v0.1/v0.2 compatibility
    and do not repurpose effect ACKs.

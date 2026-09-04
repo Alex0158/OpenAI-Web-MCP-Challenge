@@ -13,6 +13,10 @@ runtime evidence. This module does not import or modify frozen MVP code.
   ADR-0047's one-shot allowance was consumed by a separately labelled host-mediated control.
   A subsequent temporary-relay/C1 experiment is approved, but has not established its host invocation
   or started a listener/send. There is no native-CLI unlock flag; C1 is not permission to bypass it.
+- The receiving-side source review found no active-caller-turn gate for MCP messaging and found
+  target resume/start/steer paths. This is source compatibility only: legitimate native client
+  admission and preservation of upstream App approval remain unproved. Do not infer a required
+  background delegation token or an idle-task rejection from missing wrapper metadata.
 - Any future reviewed live route must run only inside its approved local Desktop execution
   environment and preserve the App's actual caller and approval policy. Node 24 is the local test
   closure baseline, not a rule to replace a route-specific App runtime.

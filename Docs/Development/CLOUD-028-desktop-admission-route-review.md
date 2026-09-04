@@ -1,7 +1,7 @@
 # CLOUD-028: Desktop Admission Route Review
 
 **Role:** DEVELOPMENT feasibility review, host-mediated control, and unsent platform-question draft  
-**Status:** Host-mediated response verified; C1 relay approved but not started; host invocation unresolved  
+**Status:** Host-mediated response verified; receiving-side idle compatibility source-reviewed; C1 unused; client admission unresolved  
 **Date:** 2026-09-04, Europe/London  
 **Task:** [TASK-035](../Tasks/TASK-035-bind-existing-agent-task-during-enrollment.md)  
 **Authority:** ADR-0046; ADR-0047 permits only its bounded diagnostic and host-mediated clarification
@@ -53,20 +53,86 @@ unreviewed substitute, run the held native client with another executable, or ad
 relay abstraction while describing the real consumer as available.
 
 The actionable unblock input is an App-approved invocation recipe for the existing target:
-who starts the relay, how the host supplies caller and approval context, and whether that context
-remains usable when the initiating turn finishes. A working owner-provided implementation with
-those properties can be selectively adapted. Otherwise the platform question below needs an
-answer for that specific boundary. No new generic user test approval is required while C1 remains
-unused; no message to a contributor or platform was sent by this increment.
+who starts the client and how it preserves legitimate caller identity and App approval policy.
+Post-turn operation remains a runtime verification requirement, not an established active-turn
+restriction or a requirement to invent a new delegation token. The receiving-side review below
+corrects that distinction. A working implementation with those properties can be selectively
+adapted. Otherwise the platform question below needs an answer for client admission and approval,
+not a presumed missing ability to start an idle task. No new generic user test approval is required
+while C1 remains unused; no message to a contributor or platform was sent by this increment.
+
+## Receiving-side correction: idle caller is not the demonstrated blocker
+
+The follow-on review traced the receiving App main process and renderer, rather than inferring
+their behavior from the bundled MCP wrapper's metadata requirements. In the inspected native-to-
+renderer MCP `send_message_to_thread` path, no check requires the caller turn to be active.
+This narrows the earlier reasoning: missing executor metadata in one wrapper is not evidence that
+the App requires an active source turn or a new background-invocation token. It does not establish
+permission to supply another caller, bypass peer admission, or omit upstream approval handling.
+
+Read-only source: installed Desktop `26.901.20858`, build `7658`, `app.asar`. Offsets below are
+UTF-8 byte offsets inside the named archive member, not character offsets or public API contracts.
+
+| Boundary | Member and offset | Verified source behavior |
+|---|---|---|
+| Native peer admission | `.vite/build/main-b_QrpbvH.js`, `Tf`, 261071 | Passes socket descriptor and packaged/dev mode to the native authorizer, not task or turn metadata. The native signing acceptance policy remains unresolved. |
+| Parsed request and window selection | Same member, `gie`, 263835; `callDynamicAppTool`, 2626873 | Validates the request, handles cancellation, and selects a ready App window through renderer capability/dispatch calls. |
+| Caller availability | `webview/assets/app-initial-7a6c8787453d.js`, `ESa`, 6997079 | For messaging, requires the caller conversation to exist or be readable; the special interactive-onboarding branch is not this tool. |
+| MCP dispatch | Same renderer member, `DSa`, 6997319; `dSa`, 6982431 | Selects `transport: mcp`. The inspected client/turn/owner checks guarded by `transport: dynamic` do not apply. Namespace and cancellation checks still apply. |
+| Additional reachable checks | Main member, `tryClaimExecution`, 1172006; renderer, `hZi`, 6033714 | The claim is a bounded 1024-key in-memory deduplicator, not validation of an active turn. `hZi` handles three voice/screen tools and returns no result for messaging. |
+| Same-task follow-up | Renderer, `uXi`, 6017932; `eJi`, 5968725; `Qqi`, 5968054; `Gln`, 2940665 | Validates message arguments, resolves the destination host, resumes the target, and supplies start/steer operations to the turn coordinator. The inactive realtime-state check occurs after sending and only affects ancillary recording. |
+
+The main member is 3,075,013 bytes with SHA-256
+`b11f9b574b8cbc6ab809c8c89c48dff1b4eb179a6394ac6d4fca10e732897855`;
+the renderer member is 10,285,987 bytes with SHA-256
+`3d4825a32d3bfbcc5dc3ad55793c12bda52614d2bf3227f79cb074a3c970947a`.
+These hashes identify the static inspection only. No App module or native addon was executed.
+
+The inspected send path does not itself reproduce the bundled MCP executor's approval prompt.
+The manifest's `approval_mode: prompt` remains an upstream policy declaration; its actual executor
+evaluation was not traced here. Thus neither mandatory approval on every notification nor safe
+omission of approval is proved. A standing Re-entry Grant cannot override App policy.
+
+**Implication:** the original MVP relay's post-turn design is compatible with the inspected send
+implementation; current independent execution is still unverified. The ordinary-Node rejection
+was a peer-identity failure before these handlers, not an idle-task failure. The remaining gate is
+the legitimate client entry point and preservation of upstream approval, not a demonstrated need
+to build a new App, change the Game, or invent a new platform delegation mechanism. The existing
+Connector's `adapter.activate` remains the product seam; ADR-0047's hold and C1 scope are unchanged.
+
+This Assured evidence correction changes no product behavior or authority. Core/00, Mechanism 04,
+TASK-035, the Development index, and the experimental README carry the narrowed finding. Static
+inspection used Node `24.20.0`; independent reviews covered native identity and receiving-side
+dispatch, and the primary agent checked the decisive source snippets. No listener, native call,
+notification, new Agent turn, credential access, App configuration, Game/Receiver traffic, package
+change or deployment occurred. C1 remains unused.
+
+Receiving-side correction closure: validator unit tests passed 6/6; sensitive-scanner unit tests
+passed 3/3; indexed repository validation passed with exactly these six owned documents; working
+and staged whitespace checks passed. The six documents have no scanner findings, unintended CJK
+or raw UUID-shaped locators. The whole-repository scanner still reports 21 existing findings in
+seven Game documents, each unchanged against HEAD; no suppression or unrelated fix was made.
+Independent final review found no actionable issue with the source claims, offsets, hashes or
+ADR-0047 boundaries. No executable suite was reopened for this evidence-only change. The Git
+baseline is shared `main` at `5f6227a`, equal to fetched `origin/main`; earlier ahead-only snapshots
+below are historical, not the current delivery gate. Concurrent owner-held SDK, Connector, Game,
+RightSpot and documentation work remains outside this six-file scope.
 
 ### Contributor branch readback
 
-The current fetch advances `origin/Eyad/Full-Integration` from `41aae5d` to `74325c2`. The new commit
+The earlier fetch advanced `origin/Eyad/Full-Integration` from `41aae5d` to `74325c2`. That commit
 moves fourteen Connector source modules with Git similarity `100%`; its CLI still selects fresh
 exec. Its root README explicitly limits the test app to consent/status and excludes later Events,
 WebMCP and Agent launch. It also reduces the broader repository surface. This is not a same-task
 driver implementation or a patch to merge wholesale into shared `main`. The branch was inspected
 read-only; no checkout, merge, deletion or author-held edit was performed.
+
+The receiving-side review's final fetch now resolves that branch to `75b1339`. Its delta from
+`74325c2` adds Cloud frontend/backend code and groups it under `reentry-cloud-app/`; it does not
+change `reentry-local-connector/`, the SDK, Core or test app. The Connector factory still selects
+`createCodexExecAdapter`, and no same-task relay or invocation recipe was found in the added Cloud
+source/docs. Cloud code is now present in that branch, but this is not new same-task integration
+evidence. These commits were inspected without checkout, execution, merge or publication.
 
 ### C1 bounded-review closure
 
@@ -377,7 +443,9 @@ On ChatGPT Desktop 26.901.20858 (build 7658), bundled CLI 0.153.0-alpha.5:
   observation window.
 - The private app-tools pipe rejected our read-only client for missing code-signing identity. We
   used ordinary Node, not the complete App-bundled launcher from our earlier successful MVP. That
-  launcher comparison remains open. We have not bypassed peer authorization or altered the App.
+  launcher has not been reproduced on the current build. Receiving-side source inspection found
+  no active-caller-turn gate in the MCP messaging path; this is not a runtime admission proof.
+  We have not bypassed peer authorization or altered the App.
 - The local Desktop launcher uses stdio. Its conditional shared-daemon branch is excluded by the
   App-tool configuration supplied on the normal local path.
 - A later control through the exposed App task tools received an exact response in the same
@@ -388,10 +456,11 @@ Could you confirm:
 
 1. Is there a supported third-party enrollment and notification entry point for an existing
    Desktop-owned task, rather than creating a new task or independently resuming its stored history?
-2. How does an independently running Local Connector acquire an App-authorized exact-task
-   interaction capability when no Agent turn is active, without fabricating executor metadata?
-   What client authentication, signing, pairing, approval, lifetime, renewal and revocation
-   contract applies? Are any documented Remote Control extension points intended for this use?
+2. What is the intended client entry point for an independently running Local Connector, and
+   how should it preserve caller identity and upstream App approval? Is the original task-launched
+   relay topology permitted, including after that source turn finishes? Please identify any actual
+   signing, lifecycle or registration requirements; we are not assuming a new delegation token is
+   needed. Are any documented Remote Control extension points intended for this use?
 3. Can input be delivered as typed event/tool data, without impersonating a new user strategy,
    while preserving the task's Desktop Browser, genuine Site Tools, and approval routing?
 4. What proves durable notification admission, and what are the supported idempotency,

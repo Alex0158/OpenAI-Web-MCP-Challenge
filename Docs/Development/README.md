@@ -174,6 +174,9 @@ The owner subsequently approved a temporary relay and one C1 notification. CLOUD
 current stop before listener/send: the existing Connector adapter seam is available, but a
 host-authorized invocation usable after the initiating turn is not established. C1 remains unused;
 another generic test approval is not the missing input.
+Its receiving-side follow-up finds no active-caller-turn gate in the MCP send path and confirms
+target resume/start/steer source compatibility. Native client admission and upstream approval
+remain unresolved; neither a mandatory active turn nor a new delegation token is established.
 
 ## Verification reports
 
