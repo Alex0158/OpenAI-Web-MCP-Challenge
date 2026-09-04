@@ -2,7 +2,7 @@
 
 **Role:** SUPPORTING research and bounded evidence index  
 **Status:** Current tracked index through Research 27  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-04
 
 Research can change a decision or verification plan, but it does not control current product truth
 or select an application. Accepted durable choices belong in `Docs/Decisions/`; current status and
