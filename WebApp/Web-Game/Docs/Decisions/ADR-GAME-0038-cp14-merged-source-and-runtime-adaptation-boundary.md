@@ -37,6 +37,33 @@ into the Game repository.
    and the strongest available external trace are verified; record any unavailable Agent/session or
    effect boundary explicitly rather than simulating it.
 
+## Package and protocol readback
+
+The 2026-09-04 package readback resolves an otherwise ambiguous term in this decision:
+
+- The public registry package `@4xeoz/re-entry-sdk` currently resolves `latest` to `0.3.2` at
+  GitHub `gitHead=928debcbe6ed8fda9d165ac17318fd30a57f0361`. Its public server exports are
+  `createHostSdk`, `createReentry`, and the v0.1 control/event surface; it has no standing-v0.2
+  server export.
+- The merged checkout at [`runtime/host-sdk`](../../../runtime/host-sdk/package.json) currently
+  identifies as `0.3.1` and exposes the same v0.1 Host SDK entrypoints. Its source is the exact
+  Game-facing baseline, but its package version does not by itself prove registry equivalence.
+- The private [`reentry-core`](../../../reentry-core/package.json) checkout exports
+  `StandingReentryHostSdk` as a reference signer, while the active Receiver exposes v0.2 Event,
+  claim, and acknowledgement routes. Receiver-owned standing Consent enrollment is not a public
+  route yet.
+
+Therefore the Game adapter must pin an exact reviewed Host SDK artifact when it enters code. It may
+use the Core standing reference for contract evidence, but it must not silently direct-import that
+reference or treat the registry `latest` package as standing-capable. A versioned standing-capable
+Host SDK release plus the Receiver's accepted enrollment contract remains the CP-14 implementation
+gate. The NPM package is a discoverable release surface, not proof that the recurring v0.2 path is
+available.
+
+The executed package/provenance readback and its claim limits are recorded in
+[`SK-EVID-075`](../Evidence/SK-EVID-075-cp14-host-sdk-package-provenance-readback.md) and
+[`Validation/101`](../Validation/101-cp14-host-sdk-package-provenance-readback.md).
+
 ## Consequences
 
 - Current status and roadmap wording must say “merged source; runtime integration open” instead of

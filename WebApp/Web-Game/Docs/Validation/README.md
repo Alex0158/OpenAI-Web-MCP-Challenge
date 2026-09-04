@@ -200,6 +200,8 @@ not claim that the game is built or balanced.
 
 - [100-cp13-dynamic-continuation-refresh-cross-functional-audit.md](100-cp13-dynamic-continuation-refresh-cross-functional-audit.md) — local one-generation WebMCP recall binding refresh, ordered stale-read protection, generation cleanup, unchanged server authority, and the remaining hosted Agent/Re-entry gate.
 
+- [101-cp14-host-sdk-package-provenance-readback.md](101-cp14-host-sdk-package-provenance-readback.md) — static package/protocol compatibility readback: public Host SDK v0.1 surface, private standing v0.2 reference signer, Receiver v0.2 route boundary, and the remaining reviewed-artifact/enrollment gate.
+
 ## Current concept checks
 
 - The world clock continues independently of browser presence.
