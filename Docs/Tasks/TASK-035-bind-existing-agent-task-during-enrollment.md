@@ -9,7 +9,16 @@
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Local Connector/Agent Adapter owner, with Receiver and Host SDK owners.
-- Current increment: D1 attempted one separately authorized App-mediated inert send to the existing
+- Current increment: The owner-approved D2 clean-state control created one dedicated projectless
+  diagnostic task, completed its inert initial turn, verified idle/no-goal/no-queue/no-automation,
+  then sent one fixed App-tool notification. A distinct turn in that same task returned the exact
+  marker and completed with zero tool calls. Both turns used the configured default without
+  model/effort override. App logs confirm successful warm-state `turn/start`, so neither idle
+  state nor warm ownership alone prohibits this route. D2 is consumed with no retry. This is
+  runtime-verified App-mediated idle wake, not independent background Connector admission or an
+  App fix. CLOUD-028 owns the exact timeline and limits; the old-target pending-state cause is
+  still inferred. No development task was targeted and C1 remains unused.
+  D1 attempted one separately authorized App-mediated inert send to the existing
   disposable MVP task, not a development task. Idle/empty-queue/no-goal preflight passed, but the
   send timed out waiting for an active turn ID; no input or new target turn was observed. CLOUD-028
   correlates the failure with the App coordinator's pending/start/steer handling. D1 is consumed,
@@ -44,12 +53,11 @@
   with 12 opt-in integration skips. The separate upstream source trace found App-owned tool-call
   and approval-response paths, but not the executor's permission evaluator or a detached client
   invocation contract. This is not an exhaustive rejection of every possible legitimate route.
-- Next gate: Obtain a separate owner decision for one new dedicated test task and one inert App
-  notification after its initial turn has completed and idle/no-goal/no-queue/no-scheduler state
-  is verified. This clean-state control discriminates B1's candidate orphan state from a broader
-  idle-start failure; it is not a product fresh-session fallback. No new task/send is authorized
-  by the source/model result. Preserve the old target, App state, development tasks and D1's spent
-  allowance; keep this diagnosis separate from C1's background-client admission gate.
+- Next gate: D2 closes the clean App-mediated idle-wake discriminator; do not request or perform
+  another generic idle test. Preserve the old target and its unresolved pending-state failure,
+  the idle D2 fixture, App state, development tasks and spent B1/D1/D2 allowances. No additional
+  send or App mutation is authorized. Repeated-handoff reliability still needs overlap/state-
+  reconciliation evidence; D2 does not prove the old task repaired or automatic retries safe.
   Define the smallest legitimate invocation from the existing Connector into the
   host-owned task interface when no Agent turn is active, retaining actual caller and approval
   handling. The original task-launched relay is the implementation reference, not a requirement

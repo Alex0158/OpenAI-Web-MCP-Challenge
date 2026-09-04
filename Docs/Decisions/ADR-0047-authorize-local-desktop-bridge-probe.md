@@ -150,6 +150,33 @@ This control can establish App-mediated wake of an idle existing task on the rec
 not a production driver, independent Connector access, trusted enrollment, notification receipt,
 standing-Grant replay or genuine WebMCP. Source-executor mediation must remain explicit.
 
+### Dedicated clean-task idle control D2, 2026-09-04
+
+The owner explicitly accepted the proposed clean-state discriminator after the D1 warm-cache
+investigation. Authorize one new, projectless diagnostic task, one inert initialization turn,
+and one subsequent App-tool notification after that exact task is confirmed idle. This narrow
+exception permits task creation through the exposed App tool only; it does not change the native
+probe or C1 relay restrictions, authorize a new Git branch, or select a fresh-task product fallback.
+No development task or the previous MVP target may be substituted as the D2 destination.
+
+Reserve creation before invoking it; an uncertain result permits read-only reconciliation, not
+another creation. Omit model and reasoning overrides. The initial prompt requests exactly
+`REENTRY_CLEAN_IDLE_READY_20260904_D2`, no tools or other work, then completion. Retain the returned
+private task locator locally and verify its actual workspace and completed turn through App
+readback. Verify no goal, queue item or associated automation; do not remove conflicting state.
+
+Reserve the single follow-up separately, after preflight and before dispatch. Recheck idle state
+immediately before sending the fixed inert marker `REENTRY_APP_CLEAN_IDLE_CONTROL_20260904_D2`.
+An attempted, failed or uncertain send consumes D2 with no resend or transport fallback. Observe
+actual input role, attributable new turn, exact response and unexpected tools. Creation failure,
+conflicting state or unexpected activity stops the test without broadening its scope.
+
+This tests clean idle wake mediated by an active source executor on the recorded App build. It
+does not prove independent Connector admission, repair the old target's state, establish repeated
+handoff reliability, or implement enrollment or delivery settlement. B1 and D1 remain consumed;
+C1 remains separate. No App restart/patch/configuration change, Browser, Game, Receiver, SDK,
+service, deployment or credential operation is authorized by this extension.
+
 ### Required observations
 
 Unit and local socket tests must cover disabled mode, malformed/override input, exact-target and

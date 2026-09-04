@@ -55,9 +55,12 @@ and its existing heartbeat paused. The App tool timed out waiting for an active 
 input, turn or marker response was observed. Follow-on logs confirm D1 reused warm App state;
 earlier B1/Q1 overlap and response-selection code identify a candidate orphaned optimistic start.
 CLOUD-028's disconnected model reproduces that pending-state path, not the actual renderer cache
-or an App fix. A separately approved clean-task control is the next discriminator. D1 is consumed
-and was not retried; no development task was targeted. This does not establish a model defect,
-a universal idle restriction or independent Connector access.
+or an App fix. The separately approved D2 control now verifies one clean idle-task wake: after
+initialization completed, one App notification started a distinct turn in the same diagnostic
+task, returned the exact marker and completed without tools. It also used warm App state, ruling
+out a universal idle or warm-state prohibition. The old-target fault remains unresolved; D2 is
+not a controlled model comparison or independent Connector access. B1/D1/D2 are consumed with
+no retries, no development task was targeted, and the existing Connector invocation is the next gate.
 
 Separately, the owner approved one temporary local relay and a C1 inert notification. C1 is
 unused: CLOUD-028 identifies the real Connector adapter seam, but no App-authorized background

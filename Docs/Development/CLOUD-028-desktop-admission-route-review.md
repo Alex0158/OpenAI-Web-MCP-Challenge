@@ -1,7 +1,7 @@
 # CLOUD-028: Desktop Admission Route Review
 
 **Role:** DEVELOPMENT feasibility review, host-mediated control, and unsent platform-question draft  
-**Status:** B1 joined-turn response verified; D1 isolated idle control failed at active-turn wait; C1 unused; client admission unresolved  
+**Status:** D2 clean idle App-mediated wake runtime-verified; D1 old-target fault unresolved; C1 unused; independent client admission unresolved  
 **Date:** 2026-09-04, Europe/London  
 **Task:** [TASK-035](../Tasks/TASK-035-bind-existing-agent-task-during-enrollment.md)  
 **Authority:** ADR-0046; ADR-0047 permits only its bounded diagnostic and host-mediated clarification
@@ -18,6 +18,89 @@ No App restart, environment/configuration change,
 daemon start, native call, test message, task migration, SDK installation, Receiver claim, deployment,
 signing change, credential retrieval, or external message was performed in the original static-review
 increment. The separately recorded host-mediated control below includes one authorized inert send.
+
+## Dedicated clean-task idle control D2
+
+**Reservation and result:** The single projectless creation and single follow-up allowances were
+reserved separately before their respective App tool calls, then consumed on 2026-09-04.
+The exact returned task completed initialization before the follow-up. D2 then started a distinct
+turn in that same idle task, returned its exact marker and completed without tool calls. No retry
+was performed or is authorized. B1/D1 remain consumed and C1 remains unused. No development task
+or previous MVP target was a D2 destination. ADR-0047 records the owner's explicit approval.
+
+This Assured, runtime-diagnostic increment tests whether a clean task can finish its inert
+initial turn and then be awakened from verified idle through the exposed App messaging tool.
+The hypothesis is target-specific stale App state in D1; failure on a clean target would weaken
+that explanation as sufficient for the broader route. Success would establish this narrow
+App-mediated path, not the inferred old-cache cause or independent Connector admission.
+The initialization marker is `REENTRY_CLEAN_IDLE_READY_20260904_D2`; the one follow-up marker is
+`REENTRY_APP_CLEAN_IDLE_CONTROL_20260904_D2`. No model or reasoning override is supplied.
+
+Scope is this record, ADR-0047, TASK-035 and the existing Core/00 and Core/05 evidence paragraphs.
+All product code, frozen MVP, App-owned state and concurrent contributor work remain untouched.
+The created task is a diagnostic fixture, not a replacement for an existing product task.
+Stop on uncertain creation, unexpected work, conflicting goal/queue/automation state, or failed
+submission. Read-only observation may resolve an uncertain result; no retry is permitted.
+
+### Executed evidence and limits
+
+The exposed App creation tool returned the new task titled `Re-entry clean idle control D2` and
+its projectless workspace. Its private locator and rollout remain local; no raw identifiers or
+App logs are copied into tracked evidence. App readback and the private rollout agree on exactly
+two completed turns: initialization and the later D2 response. Both inputs were delivered as
+`functionCallOutput`, not user messages. There were zero target tool calls and no intervening
+user message, goal turn or third turn. The calling investigator remained the active source
+executor; no detached Connector was involved.
+
+| UTC time, 2026-09-04 | Observed boundary | Evidence |
+|---|---|---|
+| `05:01:53.215` to `05:02:00.174` | Initialization starts and completes with its exact marker. | App readback and target rollout; no tool calls. |
+| Before `05:02:30` | Follow-up preflight and immediate recheck show idle, unchanged completed turn, zero goal rows and zero queued items; no associated automation was found. | Exposed task tools plus read-only target-scoped local stores. No state was removed or disabled. |
+| `05:02:39.031` | App submission reuses `previousResumeState=resumed` and `previousStreamRole=owner`. | Owning App log: the clean control is warm too, not a cold-resume workaround. |
+| `05:02:39.073` / `.074` | New target turn starts; App routes a successful `turn/start` response. | Rollout lifecycle plus App log; no active-turn-ID timeout. |
+| `05:02:39.168` | The new turn receives the D2 marker in `send_message_to_thread` tool output. | Target rollout and full App item readback. |
+| `05:02:41.599` | Exact D2 response completes the new turn; target returns idle. | App wait/readback and rollout; goal/queue counts remain zero and no automation matches. |
+
+The App bundle is still ChatGPT Desktop `26.901.20858`, build `7658`. D2 used the configured
+default `gpt-5.6-luna` / `max`, confirmed in both turn contexts; neither tool call supplied an
+override. This is not a controlled model comparison: target identity, workspace and history also
+differ from D1. D1 failed at an App-side wait before an observed backend turn submission, so these
+results do not establish model inference as its cause.
+
+**RUNTIME-VERIFIED:** one clean, idle existing task was awakened through the exposed App tool and
+completed an attributable marker response. This falsifies a universal inability of this build to
+wake idle tasks. Warm state alone is also insufficient to explain D1, because D2 reused warm
+owner state and successfully started. **INFERRED:** the earlier target's accumulated pending
+state, rather than a blanket idle restriction, remains the stronger candidate. The precise
+B1-created orphan is still source/model-supported, not captured live renderer state or a fix.
+
+The current gate is the permitted invocation from the existing Connector, preserving actual
+caller and upstream App approval. Do not repeat the completed clean-idle question or treat this
+active-executor control as independent background admission. Keep the old-target defect and
+overlap reconciliation as a separate reliability risk before repeated handoff. Enrollment,
+notification-only settlement, two-event standing-Grant proof and Game/WebMCP return remain open.
+The diagnostic task is left idle, with no goal, queue or automation created by the test. No
+additional send, archive, deletion, App restart or installed-code change follows from success.
+
+### Reconciliation and verification
+
+ADR-0047 adds the explicitly approved creation/one-send exception; TASK-035 and Core/00/Core/05
+now distinguish D2's idle-wake proof from D1's fault and C1's independent-admission gap.
+ADR-0046, Mechanism 04 and product runtime contracts remain aligned and unchanged: an inert
+App-mediated control is not a production driver or receipt implementation. No runtime code,
+package, dependency, test harness or retained profile changed in this increment, so the prior
+Node `24.20.0` experimental aggregate (122/122) is not reopened or represented as rerun.
+Current target/log readback uses explicit Node `24.20.0`. With exactly the five owned documentation
+paths staged, validator tests passed 6/6, sensitive-scanner tests passed 3/3 and repository
+validation passed. Staged whitespace, CJK and raw-identifier checks passed. The full sensitive
+scan reports the same 21 findings in seven Game files, each byte-identical in HEAD, index and
+worktree; no whole-repository scan pass is claimed. Unrelated Game and cross-layer work is excluded.
+
+The shared `main` baseline remains ahead of `origin/main` by the separate Game judge-guide commit
+and the prior source/model evidence commit. This increment may be committed locally, but it must
+not publish the other owner's unpushed Game commit without established publication authority.
+No branch, history rewrite, owner notification, push, CI or deployment follows automatically from
+the runtime result. Remote delivery remains explicitly separate from local diagnostic closure.
 
 ## Isolated App-mediated idle control D1
 
@@ -165,11 +248,12 @@ candidate defect with discriminating evidence, not a verified App fix or a blank
 
 ### Next controlled discriminator and implementation boundary
 
-The most useful next live control is a new, dedicated test task: finish its initial inert turn,
+The source/model increment proposed a new, dedicated test task: finish its initial inert turn,
 verify idle/no goal/no queue/no scheduler, then send one fixed notification through the exposed
 App tool and observe that same task. This avoids reusing B1's potentially contaminated local state.
 It would test clean idle start, not prove the old target repaired or the Connector admitted.
-Creation and that one send require a new explicit owner decision; neither is performed here.
+At that increment's close, creation and that one send required a new explicit owner decision;
+neither had been performed. The later approved and completed D2 control above supersedes that gate.
 No production fresh-session fallback is proposed, and no development task is a test destination.
 
 If the clean control succeeds, keep the old-target fault separate and require state reconciliation
