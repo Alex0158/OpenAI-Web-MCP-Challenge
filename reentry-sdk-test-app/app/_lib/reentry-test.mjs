@@ -21,8 +21,8 @@ export function createTestContext() {
   };
 }
 
-export function testWorkflowUrl(origin) {
-  return new URL("/", origin).href;
+export function testWorkflowUrl(origin, path = "/") {
+  return new URL(path, origin).href;
 }
 
 export function retainRequestHandle(handle) {

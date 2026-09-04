@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Re-entry SDK Test App",
-  description: "Test-only Re-entry consent integration.",
+  title: "Re-entry SDK Playground",
+  description: "A test-only playground for Re-entry SDK workflows.",
 };
 
 export default function RootLayout({ children }) {
