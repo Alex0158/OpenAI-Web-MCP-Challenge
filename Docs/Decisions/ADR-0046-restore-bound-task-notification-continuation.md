@@ -65,6 +65,33 @@ product's delivery-completion boundary. It is not evidence that either change is
    success nor permission for blind resend. Revocation fences subsequent authorized delivery; it
    cannot retract a notification already handed over or undo an Agent's completed work.
 
+## Accepted first-version assurance amendment, 2026-09-04
+
+The project owner explicitly accepted **qualified runtime acceptance**, not crash-recoverable
+runtime admission, as the first competition version's delivery boundary. The owning App/runtime
+must explicitly accept the correlated notification for the exact bound existing task through a
+permitted invocation and a named Adapter attestation contract. A generic success value, process
+start/exit, or Connector-local staging is still insufficient. The qualification describes what the
+runtime response proves; it does not require that a turn has started or that a Game action succeeds.
+
+After that acceptance, the Receiver does not resend because the Agent has not finished or because
+the App crashes. An accepted notification may be lost before a turn starts if the App has not
+preserved it. This is an accepted first-version limitation, including when it is the last Event;
+a later Event is not a guaranteed remedy. Do not describe this assurance as crash-durable delivery,
+guaranteed wake, or exactly-once processing.
+
+A lost or ambiguous runtime reply is different from known acceptance: retain a durable unknown
+outcome and do not blindly resend. Runtime idempotency or authoritative lookup is required for
+automatic reconciliation of such an uncertain submission, not for recognizing an unambiguous
+qualified acceptance. Replaying a known acceptance report to recover a lost Receiver response
+must not notify the task again. Connector journal and Receiver receipt durability remain necessary;
+the accepted App-crash risk is not permission to forget local attempt identity or successful history.
+
+This amendment does not revoke a Grant on disconnect, unknown outcome, or App failure. It does not
+choose whether an unknown delivery pauses its lane or releases a slot for newer Events, and does
+not select an App entry point, receipt schema, wire version, migration, or different task. Those
+implementation and compatibility gates remain owned by TASK-029 and TASK-035.
+
 ## Scope of supersession and compatibility
 
 This decision supersedes the **selected-product target** that requires Host-effect-backed delivery
@@ -109,7 +136,9 @@ CLI process cannot satisfy this selected-product gate.
 ## Alternatives and trade-offs
 
 - **Selected:** existing-task notification continuation preserves the strategy conversation and
-  keeps the Receiver application-neutral; it requires real private binding and handoff recovery.
+  keeps the Receiver application-neutral; it requires real private binding, qualified runtime
+  acceptance, and explicit handling of unknown outcomes. The first-version amendment accepts the
+  stated post-acceptance App-crash loss risk rather than requiring runtime crash recovery.
 - **Retained preview only:** fresh sessions simplify process startup but do not demonstrate the
   approved conversation-continuity target.
 - **Rejected product direction:** waiting for Game effects makes the Receiver a business-work

@@ -22,6 +22,12 @@ binding, explicit notification-protocol transition, supported runtime proof, and
 The evidence below remains valid only for its named unchanged profiles. The fresh-child Browser
 probe is historical preview evidence, not the prerequisite for the selected existing-task route.
 
+ADR-0046's accepted first-version assurance settles delivery at qualified App/runtime acceptance
+for the bound task, without promising recovery after an App crash or waiting for Agent/Game work.
+Lost or ambiguous runtime replies remain unknown, with no blind resend. This closes the assurance
+choice, not the runtime integration: the permitted ingress, concrete receipt contract, private
+binding and unknown-slot policy remain open. Grant retention is unchanged.
+
 MVP 1 genuinely verified same-task continuation, preserved prior context, canonical Browser return
 and fresh genuine WebMCP invocation on its recorded build. The current product Connector has not
 adopted that Desktop bridge; Core/Cloud composition tests use deterministic Agent seams. This is

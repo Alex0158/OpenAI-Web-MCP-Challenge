@@ -208,6 +208,48 @@ covering those properties. If it is unavailable locally, request that specific i
 repeating the same archive/wrapper inspection or requesting generic consent again. A permissioned
 invocation still requires the unused C1 runtime check; no successful admission is presumed.
 
+## Accepted first-version assurance reconciliation, 2026-09-04
+
+The owner explicitly accepted qualified App/runtime acceptance for the exact bound existing task
+as delivery, without requiring recovery after an App crash. ADR-0046 records the accepted risk:
+an accepted notice may be lost before a turn starts, including the last Event; Receiver does not
+resend on that basis or wait for Agent/Game completion. A lost or ambiguous runtime reply remains
+durable unknown with no blind resend. Grant retention is unchanged; unknown-slot disposition is
+still open. Idempotency or authoritative lookup gates automatic uncertain-send reconciliation,
+not the first unambiguous qualified acceptance.
+
+This Assured decision-only increment reconciles ADR-0046, Mechanism 04, Core/00's same-task status,
+TASK-029 and Research 27. It removes the proposal's unconditional runtime-crash-recovery prerequisite
+without removing durable Connector attempt identity, qualified acceptance evidence or Receiver
+receipt replay. Its falsifier is a remaining selected-product requirement to wait for Agent work,
+recover an accepted notice after App crash, or classify an ambiguous response as successful delivery.
+The retained executable v0.1/v0.2 contracts, frozen MVP, runtime source and tests remain unchanged.
+
+The concurrent Game implementation task has recorded ADR-0049/TASK-036's additive finite-v0.2
+target. Research 27 now routes to that contract-freeze gate instead of offering a competing v0.3
+route. The tasks were notified of the accepted assurance and the six-file documentation ownership
+boundary. No runtime source ownership or qualified runtime attestation is assumed from that message.
+A runtime-issued proof and a trusted Adapter report of a qualified runtime response are not the
+same trust design; the concrete contract must name which evidence is available and verified.
+
+Independent source review found no coherent standalone runtime change before those contracts:
+the existing activation result has no admission evidence, the ACK client still requires an effect
+token, and private binding resolution is v0.1-only. No new abstraction, receipt field, runtime API,
+or speculative regression was added to imply that integration was underway. TASK-029 coordinates
+the receipt contract with TASK-036; TASK-035 still owns permitted ingress and enrollment. C1 remains
+unused and this amendment neither performs a native call nor reopens the completed static audit.
+
+Verification: `python3 scripts/test_validators.py` passed 6/6 and
+`python3 scripts/test_sensitive_scan.py` passed 3/3. Repository validation initially found three
+TASK-036 heading-shape errors in the concurrent owner's new commit; that owner corrected the task,
+and `python3 scripts/validate_repository.py --root .` then passed. The full sensitive-pattern scan
+still reports 21 existing findings in seven Game files unchanged against HEAD; none is in this
+increment. Owned-file CJK/private-identifier and whitespace checks were clear. No executable source
+changed, so Core/Connector runtime suites were not reopened or claimed as new evidence. Core/03,
+Core/04 and Core/05 remain aligned at their abstract handoff and separate-evidence boundaries;
+the detailed assurance is owned by ADR-0046 and Mechanism 04. This increment closes the assurance
+decision only, not Connector integration, live wake, package release or deployment.
+
 ## Connector architecture remediation review
 
 The owner approved investigation and optimization of the three connected gaps: trusted existing-

@@ -1,7 +1,7 @@
 # Research 27: Notification-Handoff Profile Proposal
 
 **Role:** SUPPORTING protocol proposal for TASK-029
-**Status:** Proposed; not accepted and not implemented
+**Status:** Concrete profile proposed and not implemented; first-version assurance accepted in ADR-0046
 **Date:** 2026-09-04, Europe/London
 **Owner:** Receiver, Local Connector, and Agent Adapter owners
 
@@ -12,13 +12,13 @@ It is not an ADR, implementation instruction, deployment claim, or evidence that
 Desktop task can currently be admitted or woken. Existing v0.1 and v0.2 effect-backed acknowledgement
 profiles remain unchanged until an explicit version and migration decision is accepted.
 
-## Recommended completion boundary
+## Accepted assurance and proposed concrete completion contract
 
-Settle notification delivery when the runtime owning the bound existing task has reliably admitted
-the correlated notification. A runtime-recognized inbox is eligible only if its contract accepts
-responsibility for task addressing, scheduling and recovery. An arbitrary Connector-local backlog
-does not meet this boundary. The Receiver does not wait for the Agent to start, read the Browser,
-perform a Game action, or finish its work.
+ADR-0046's 2026-09-04 amendment accepts qualified, correlated acceptance by the App/runtime owning
+the bound existing task as first-version delivery. Its concrete invocation and attestation contract
+must establish exact-task notification acceptance, not just Connector-local staging. Runtime crash
+recovery is not a prerequisite for this first-version assurance. The Receiver does not wait for the
+Agent to start, read the Browser, perform a Game action, or finish its work.
 
 ```text
 signed Event -> Receiver pending Delivery -> Connector staging
@@ -28,16 +28,17 @@ signed Event -> Receiver pending Delivery -> Connector staging
 later Agent turn / Browser / optional Game work: separate evidence, not settlement conditions
 ```
 
-This is a recommendation under ADR-0046, not evidence of such a runtime capability. A process exit,
-an unqualified Adapter `accepted`, an in-memory native response, a stored CLI queue item without
-an established wake/recovery contract, or Agent narration cannot establish reliable admission.
-The concrete driver must name what commits, who owns recovery, and how a lost response is resolved.
+This is an accepted assurance, not evidence of such a runtime capability or acceptance of this
+proposal's wire/storage details. A process exit, unqualified Adapter `accepted`, arbitrary native
+response, stored CLI queue item, or Agent narration does not establish exact-task acceptance.
+The concrete driver must name what its response proves, the scheduling boundary and response-loss
+behavior. A qualified response need not promise App-crash durability; see the accepted limit below.
 
 An earlier revision proposed settlement at a private Adapter inbox without clearly naming its
 downstream responsibility. That would transfer unfinished delivery responsibility to the Connector.
 Such a different completion boundary would need an explicit decision and recovery design; it is
-not silently retained here. The owner approved continuing reconciliation, not a particular inbox,
-receipt schema, wire version or migration.
+not silently retained here. The accepted runtime-acceptance assurance does not select a particular
+inbox, receipt schema, wire version or migration.
 
 ## Local binding and Receiver authority
 
@@ -69,10 +70,12 @@ no runtime reconciliation primitive exists. A Connector journal cannot prove wha
 between admission and the local success record; do not claim exactly-once delivery or start another
 task. The unknown delivery's slot disposition remains an explicit decision below.
 
-An additive notification profile remains recommended so retained v0.1/v0.2 effect ACKs keep their
-meaning. `v0.3`, `POST /v0.3/delivery-handoffs`, `handoff_id` and `notified` are candidate names,
-not accepted APIs. Final wire design follows the concrete runtime receipt and the lifetime/version
-decision under TASK-027; two independent proposals must not create incompatible meanings for v0.3.
+An additive notification profile preserves retained v0.1/v0.2 effect ACK meanings. This proposal's
+earlier `v0.3`, `POST /v0.3/delivery-handoffs` and `notified` examples were never accepted APIs.
+[ADR-0049](../Decisions/ADR-0049-game-team-standing-integration-and-eyad-release.md) now owns the
+bounded finite-v0.2 implementation target under TASK-036. Follow that coordinated contract-freeze
+gate; this research must not establish a competing route or collide with TASK-027's lifetime profile.
+The accepted assurance alone does not prove a runtime receipt or make the target route implemented.
 
 The eventual report needs bounded opaque delivery/handoff correlation, reporter authentication,
 evidence sufficient for its admitted boundary, and exact replay/conflict semantics. No raw task ID,
@@ -97,9 +100,12 @@ These are different operations, even if a future API combines them:
    permits the bounded attempt. Lease expiry by itself is not evidence of non-admission.
 
 Runtime admission and Receiver receipt are separate commits in different processes. No Receiver
-database transaction can make both atomic. Runtime deduplication/reconciliation, a durable local
-journal and exact Receiver receipt replay must bridge that window. Receiver receipt persistence
-and notification-slot release can and should be atomic within its own store.
+database transaction can make both atomic. Where runtime deduplication or authoritative lookup
+exists, it may resolve an uncertain submission; otherwise the durable local journal preserves
+unknown and forbids blind resend. Exact Receiver receipt replay recovers a lost response after a
+known acceptance report without another runtime call. Receiver receipt persistence and notification-
+slot release can and should be atomic within its own store. This does not make App acceptance
+crash-durable.
 
 ## Failure and recovery matrix
 
@@ -114,6 +120,7 @@ and notification-slot release can and should be atomic within its own store.
 | Revocation precedes a new authorized handoff | Deny new work; do not reopen the Grant or rebind to another task |
 | Historical receipt exists, then lease expires or Grant is revoked | Preserve receipt truth; permit only authenticated scoped history read, not renewed execution |
 | Agent is interrupted, does nothing, or produces no Game effect | No redelivery of a successfully handed-off notification |
+| Qualified acceptance is known, then the App crashes before preserving the notification or starting a turn | No Receiver resend on that basis; accepted first-version loss risk, not guaranteed wake |
 | Runtime is conclusively unavailable before admission | Bounded pending/recovery under an accepted retry and backlog policy; keep authorization distinct from availability |
 | Retained v0.1/v0.2 caller | Preserve the old route, rows and effect-backed meaning; no automatic profile mixing |
 
@@ -179,34 +186,33 @@ TASK-034's actual wake/Browser evidence closes the product trace; it is not a pr
 specifying these semantics. TASK-035's permitted runtime invocation remains a prerequisite to any
 live call. Neither a fixture nor agreement with this plan creates that invocation capability.
 
-### First-version reliability decision, not yet accepted
+### First-version assurance accepted; unknown-slot disposition still open
 
-The stronger recommendation above assumes a runtime contract covering admitted work's scheduling
-and recovery. A smaller alternative can settle on qualified exact-task acceptance without promising
-recovery after an App crash. This keeps notification-only semantics, but an accepted notification
-could be lost before a turn starts; the Receiver would not resend it. A later Event is not a
-guaranteed remedy, especially when the lost Event is the last one. This narrower assurance must be
-accepted explicitly and labelled runtime acceptance, never crash-durable delivery or guaranteed wake.
+The owner accepted the narrower assurance in ADR-0046: qualified exact-task runtime acceptance,
+without a promise of recovery after an App crash. An accepted notification may be lost before a turn
+starts; the Receiver does not resend on that basis. A later Event is not a guaranteed remedy,
+especially when the lost Event is the last one. Label this runtime acceptance, never crash-durable
+delivery or guaranteed wake. Stronger runtime-backed crash recovery is not a first-version prerequisite.
 
-Both alternatives preserve unknown after a lost reply and prohibit blind resend. Unknown handling
-does not revoke the Grant. Its queue consequence is a separate decision: pause the affected lane
-pending resolution, or retain the unknown record while explicitly releasing the slot for newer
+The accepted assurance preserves unknown after a lost reply and prohibits blind resend. Unknown
+handling does not revoke the Grant. Its queue consequence remains a separate decision: pause the
+affected lane pending resolution, or retain the unknown record while explicitly releasing the slot for newer
 Events. The former can delay later reminders; the latter accepts an unresolved earlier reminder and
 needs bounded scheduling. Neither behavior, a new receipt API, wire version or migration is selected
-by the owner's approval to investigate and optimize the architecture.
+by the owner's acceptance of this first-version assurance.
 
 ## Minimum acceptance matrix
 
 After the semantic and route decision, implementation must prove:
 
-1. one signed Event reaches the exact bound task through the named reliable admission boundary;
+1. one signed Event reaches the exact bound task through the named qualified acceptance boundary;
 2. two Events reuse one Consent and task while retaining separate correlation;
 3. runtime-response loss, Receiver-response loss, restart and cross-lease replay do not blindly
    produce another notification;
 4. stale/wrong-owner/wrong-binding/revoked cases are denied at their defined authority boundary;
 5. historical receipt reads remain truthful and private after expiry or revocation;
 6. busy-task bursts remain bounded and preserve a later fresh-state check without business polling;
-7. interrupted work and deliberate no-action do not reopen completed delivery;
+7. interrupted work, deliberate no-action and post-acceptance App crash do not reopen completed delivery;
 8. receipt persistence and slot release converge without pretending to share a transaction with
    the runtime; and
 9. retained finite/effect-backed profiles and their stored history remain unchanged.
@@ -224,5 +230,5 @@ An approved product direction does not pre-approve all these technical choices.
 
 This proposal neither changes code nor selects a supported Desktop API. It does not authorize a
 launcher, listener, native call, new task, App configuration change, publication, deployment or
-business-completion monitoring. Reopen if reliable task admission cannot be established without
+business-completion monitoring. Reopen if qualified task acceptance cannot be established without
 different custody, authority or user-visible semantics.

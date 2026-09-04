@@ -19,6 +19,15 @@ settlement is separate from business work; TASK-029 must specify it without rein
 retained v0.1/v0.2 result or effect-ACK contracts below. Busy-task scheduling/coalescing must be
 bounded and explicit, without monitoring Game completion or promising unlimited model memory.
 
+ADR-0046's 2026-09-04 amendment accepts qualified App/runtime acceptance for the exact bound task
+as first-version delivery. It does not promise recovery if the App subsequently crashes before
+preserving the notification or starting a turn; that failure does not cause Receiver redelivery.
+A lost or ambiguous runtime reply remains durable unknown, never success or permission for blind
+resend. Runtime idempotency/lookup gates automatic unknown reconciliation, not recognition of a
+known qualified acceptance. Durable local attempt identity and Receiver receipt replay remain
+required. This assurance does not select a runtime entry point, wire profile, unknown-slot policy,
+or different Grant lifetime, and does not change the retained executable contracts below.
+
 ## Responsibility
 
 [ADR-0047](../Decisions/ADR-0047-authorize-local-desktop-bridge-probe.md) separately authorizes a
@@ -129,7 +138,8 @@ supported-runtime or Browser/WebMCP claim boundary.
 ## Adapter integration obligations
 
 A selected adapter must define supported context identity, capture and retirement, secret custody,
-idempotency or outcome reconciliation, process ownership, Browser acquisition, canonical-page
+explicit unknown handling (and idempotency or authoritative lookup for automatic reconciliation),
+process ownership, Browser acquisition, canonical-page
 navigation, WebMCP availability, and evidence. These require a route-specific ADR and runtime
 verification; they cannot be inferred from the deterministic adapter.
 

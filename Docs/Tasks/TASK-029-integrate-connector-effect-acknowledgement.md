@@ -9,19 +9,20 @@
 - Lifecycle: `in_progress`
 - Priority: `P1`
 - Owner: Receiver, Local Connector, and Agent Adapter owners.
-- Current increment: Architecture review separates exact-task binding, notification handoff and
-  settlement from the retained process-runner preview. Research 27 now distinguishes runtime
-  reconciliation needed for automatic recovery from a bounded single-attempt/unknown profile;
-  it records the coordinated remediation and unaccepted first-version crash-recovery trade-off.
-  CLOUD-028 owns the lease-timeout/late-child regression evidence. No runtime or ACK behavior changes.
+- Current increment: The owner accepted qualified exact-task App/runtime acceptance as first-version
+  delivery, without promising post-acceptance App-crash recovery. ADR-0046 records that assurance;
+  Mechanism 04 and Research 27 distinguish known acceptance from a lost/ambiguous runtime reply,
+  which remains durable unknown without blind resend. Grant retention is unchanged. CLOUD-028 owns
+  reconciliation and the earlier lease-timeout/late-child regression. No runtime or ACK behavior changes.
 - Next gate: Accept the concrete runtime admission/attestation contract, stable delivery correlation,
-  bounded unknown-outcome recovery, busy-task policy, and version/migration compatibility; then prove
+  explicit unknown-outcome handling, busy-task policy, and version/migration compatibility; then prove
   convergence without waiting for Agent completion or a Game effect. Generic agreement with the
-  product direction does not select the proposed v0.3 route, storage, or receipt fields.
-  First decide whether the first version requires runtime crash recovery or accepts qualified
-  exact-task acceptance with a documented post-acceptance loss risk. Then specify unknown-slot
-  disposition without revoking the Grant. Actual wake evidence does not block specification;
-  legitimate invocation still gates live execution.
+  product direction does not freeze storage or receipt fields. ADR-0049/TASK-036 now owns the
+  coordinated finite-v0.2 implementation target; Research 27's former v0.3 examples are not an API.
+  The first-version assurance choice is closed by ADR-0046; do not reopen it as an implementation
+  prerequisite. Specify unknown-slot disposition without revoking the Grant and reconcile the
+  concrete cross-stack profile with its implementation owner. Actual wake evidence does not block
+  specification; legitimate invocation still gates live execution.
 - Dependencies: ADR-0046; retained ADR-0009/0037/0038/0045 compatibility contracts; TASK-035 binding;
   TASK-034 runtime evidence; TASK-033 standing adoption; AUDIT-V2-003 in Core/09.
 
@@ -43,8 +44,8 @@ This task is not closed or fixed merely because its target is corrected.
   effect-backed acknowledgement in retained compatibility profiles.
 - ADR-0037 owns lease expiry and bounded reclaim.
 - Mechanisms 03–05 own the Connector, effect, Host, and human-boundary separation.
-- [Research 27](../Research/27-notification-handoff-profile-proposal.md) is the unaccepted
-  decision-ready notification-handoff profile proposal; it does not change the owning contract.
+- [Research 27](../Research/27-notification-handoff-profile-proposal.md) carries the accepted
+  ADR-0046 assurance into a still-proposed concrete handoff profile; it cannot itself change authority.
 - `CONNECTOR-V2-ACK-001` and `CONNECTOR-V2-E2E-001` prove the current split and test-only completion
   path.
 
@@ -70,7 +71,9 @@ accepts or revises its profile. Integrate one real bound-task consumer.
 Close only with a real composition separating notification handoff, actual wake, and optional
 business work; prove replay, response loss, restart, stale/wrong-target denial, and explicit unknown
 outcomes. After successful handoff, interruption and deliberate no-command behavior must not cause
-redelivery. Preserve retained profile regressions and record the exact local/deployed evidence level.
+redelivery. Qualified acceptance followed by App failure must not be reclassified as failed delivery
+or trigger resend; a lost acceptance reply must remain unknown. Preserve retained profile regressions
+and record the exact local/deployed evidence level.
 
 ## 6. Reopen condition
 
