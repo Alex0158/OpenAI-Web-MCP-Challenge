@@ -1,0 +1,1123 @@
+:global(body) {
+  margin: 0;
+  background: #06100c;
+}
+
+.guidePage {
+  --ink: #e8f0df;
+  --muted: #9bb2a2;
+  --dim: #6f8a7b;
+  --forest: #06100c;
+  --panel: #0a1d16;
+  --panel-raised: #0e281e;
+  --line: rgba(150, 202, 172, 0.19);
+  --line-strong: rgba(150, 202, 172, 0.35);
+  --gold: #f1bb46;
+  --gold-soft: #f8df91;
+  --mint: #9ed9b8;
+  --blue: #86b8d0;
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 79% 7%, rgba(74, 142, 107, 0.18), transparent 27rem),
+    radial-gradient(circle at 13% 37%, rgba(241, 187, 70, 0.055), transparent 25rem),
+    var(--forest);
+  font-family: "Avenir Next", "Trebuchet MS", system-ui, sans-serif;
+}
+
+.grain {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+}
+
+.nav,
+.hero,
+.proofStrip,
+.contentSection,
+.footer {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100% - 48px));
+  margin-inline: auto;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 82px;
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.brand span,
+.footerBrand div {
+  display: grid;
+  gap: 3px;
+}
+
+.brand small,
+.footerBrand span,
+.kicker,
+.sectionIndex,
+.visualTopline,
+.signalHeader,
+.signalFooter,
+.flowNode small,
+.toolBoardHeader,
+.toolBoardFooter,
+.promptBar,
+.navStatus {
+  color: var(--dim);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.brand small {
+  color: var(--gold);
+  font-size: 0.58rem;
+}
+
+.brand strong {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.navLinks a,
+.footerLinks a {
+  color: var(--muted);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 0.67rem;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.navLinks a:hover,
+.navLinks a:focus-visible,
+.footerLinks a:hover,
+.footerLinks a:focus-visible {
+  color: var(--gold-soft);
+}
+
+.navStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  letter-spacing: 0.07em;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mint);
+  box-shadow: 0 0 12px rgba(158, 217, 184, 0.8);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(420px, 0.92fr);
+  align-items: center;
+  gap: 72px;
+  min-height: 590px;
+  padding: 68px 0 76px;
+}
+
+.heroCopy {
+  max-width: 620px;
+}
+
+.kicker,
+.sectionIndex {
+  margin: 0 0 18px;
+  color: var(--gold);
+}
+
+.hero h1 {
+  max-width: 650px;
+  margin: 0;
+  font-size: clamp(3.25rem, 6vw, 5.7rem);
+  font-weight: 600;
+  letter-spacing: -0.075em;
+  line-height: 0.98;
+}
+
+.hero h1 em {
+  color: var(--gold-soft);
+  font-style: normal;
+}
+
+.heroLead {
+  max-width: 510px;
+  margin: 27px 0 0;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.55;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 34px;
+}
+
+.primaryButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 8px;
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.primaryButton {
+  color: #102016;
+  background: var(--gold);
+}
+
+.primaryButton:hover,
+.primaryButton:focus-visible,
+.secondaryButton:hover,
+.secondaryButton:focus-visible {
+  transform: translateY(-2px);
+}
+
+.primaryButton:hover,
+.primaryButton:focus-visible {
+  background: #f8d56f;
+}
+
+.secondaryButton {
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  background: rgba(8, 27, 20, 0.65);
+}
+
+.secondaryButton:hover,
+.secondaryButton:focus-visible {
+  border-color: var(--gold);
+  background: var(--panel-raised);
+}
+
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible,
+.navLinks a:focus-visible,
+.brand:focus-visible,
+.footerLinks a:focus-visible {
+  outline: 2px solid var(--gold-soft);
+  outline-offset: 4px;
+}
+
+.heroNote {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  max-width: 460px;
+  margin-top: 45px;
+  color: var(--dim);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 0.67rem;
+  line-height: 1.5;
+}
+
+.heroNoteMark {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  color: var(--gold);
+  font-size: 0.6rem;
+}
+
+.heroVisual {
+  position: relative;
+  min-height: 438px;
+  padding: 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(17, 48, 35, 0.88), rgba(6, 19, 14, 0.92));
+  box-shadow: 0 35px 90px rgba(0, 0, 0, 0.22);
+  transform: rotate(1.3deg);
+}
+
+.visualTopline {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 3px 16px;
+  font-size: 0.58rem;
+}
+
+.mapField {
+  position: relative;
+  min-height: 280px;
+  overflow: hidden;
+  border: 1px solid rgba(134, 184, 208, 0.22);
+  border-radius: 10px;
+  background: #08202a;
+}
+
+.mapGrid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.52;
+  background-image:
+    linear-gradient(rgba(113, 194, 195, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(113, 194, 195, 0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+  transform: perspective(360px) rotateX(48deg) scale(1.25) translateY(24px);
+  transform-origin: bottom;
+}
+
+.mapNode {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  gap: 5px;
+  min-width: 74px;
+  padding: 8px 9px;
+  border: 1px solid rgba(234, 244, 239, 0.32);
+  border-radius: 7px;
+  background: rgba(9, 33, 27, 0.92);
+  color: var(--ink);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.nodeIcon {
+  color: var(--gold);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.shelterNode {
+  top: 88px;
+  left: 53px;
+  border-color: rgba(241, 187, 70, 0.7);
+}
+
+.soldierNode {
+  top: 160px;
+  left: 205px;
+  border-color: rgba(158, 217, 184, 0.68);
+}
+
+.monsterNode {
+  top: 75px;
+  right: 50px;
+  border-color: rgba(211, 124, 96, 0.68);
+}
+
+.monsterNode .nodeIcon {
+  color: #e28d6b;
+}
+
+.routeLine {
+  position: absolute;
+  z-index: 1;
+  top: 139px;
+  left: 117px;
+  width: 145px;
+  border-top: 1px dashed rgba(158, 217, 184, 0.75);
+  transform: rotate(20deg);
+  transform-origin: left;
+}
+
+.eventPulse {
+  position: absolute;
+  z-index: 3;
+  top: 114px;
+  right: 112px;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #e28d6b;
+  border-radius: 50%;
+  box-shadow: 0 0 0 9px rgba(226, 141, 107, 0.1), 0 0 25px rgba(226, 141, 107, 0.75);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+.cargoLoss {
+  position: absolute;
+  right: 22px;
+  bottom: 20px;
+  padding: 6px 8px;
+  border: 1px solid rgba(226, 141, 107, 0.45);
+  border-radius: 4px;
+  color: #e5a083;
+  background: rgba(43, 25, 22, 0.78);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+}
+
+.signalCard {
+  position: relative;
+  z-index: 4;
+  width: min(320px, calc(100% - 38px));
+  margin: -30px auto 0;
+  padding: 15px 17px 14px;
+  border: 1px solid rgba(241, 187, 70, 0.62);
+  border-radius: 9px;
+  background: #102b1f;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.3);
+}
+
+.signalHeader,
+.signalFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.55rem;
+}
+
+.signalLive {
+  color: var(--mint);
+}
+
+.signalCard strong {
+  display: block;
+  margin-top: 12px;
+  color: var(--gold-soft);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 0.87rem;
+  font-weight: 500;
+}
+
+.signalCard p {
+  margin: 8px 0 17px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.signalFooter {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  color: var(--gold-soft);
+}
+
+.proofStrip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.proofStrip span {
+  padding: 19px 14px;
+  color: var(--muted);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 0.65rem;
+  text-align: center;
+}
+
+.proofStrip span + span {
+  border-left: 1px solid var(--line);
+}
+
+.proofStrip b {
+  margin-right: 8px;
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.contentSection {
+  padding: 122px 0 0;
+}
+
+.sectionIntro {
+  max-width: 680px;
+}
+
+.sectionIndex {
+  margin-bottom: 14px;
+  font-size: 0.6rem;
+}
+
+.sectionIntro h2,
+.toolsIntro h2,
+.tryCopy h2 {
+  max-width: 750px;
+  margin: 0;
+  font-size: clamp(2.2rem, 4vw, 3.8rem);
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 1.04;
+}
+
+.sectionIntro > p:last-child,
+.toolsIntro > p:last-child,
+.tryCopy > p:last-child {
+  max-width: 590px;
+  margin: 21px 0 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.journeyList {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0;
+  margin: 54px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line-strong);
+}
+
+.journeyItem {
+  position: relative;
+  min-height: 210px;
+  padding: 21px 19px 17px 0;
+}
+
+.journeyItem + .journeyItem {
+  padding-left: 19px;
+  border-left: 1px solid var(--line);
+}
+
+.stepNumber {
+  display: inline-block;
+  margin-bottom: 42px;
+  color: var(--gold);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 0.7rem;
+}
+
+.stepHeading {
+  display: grid;
+  gap: 8px;
+}
+
+.stepHeading h3 {
+  margin: 0;
+  font-size: 1.03rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.stepHeading span {
+  width: fit-content;
+  padding: 5px 7px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--dim);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.stepBody p {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.flowSection {
+  padding-top: 152px;
+}
+
+.flowRail {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  margin-top: 56px;
+}
+
+.flowNode {
+  display: grid;
+  flex: 1 1 0;
+  align-content: start;
+  min-height: 132px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(10, 29, 22, 0.75);
+}
+
+.flowNodeAccent {
+  border-color: rgba(241, 187, 70, 0.58);
+  background: rgba(62, 48, 20, 0.35);
+}
+
+.flowNodeFinal {
+  border-color: rgba(134, 184, 208, 0.55);
+  background: rgba(24, 47, 55, 0.45);
+}
+
+.flowNumber {
+  margin-bottom: 29px;
+  color: var(--gold);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 0.62rem;
+}
+
+.flowNode strong {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.flowNode small {
+  margin-top: 7px;
+  font-size: 0.54rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.flowArrow {
+  align-self: center;
+  color: var(--gold);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 1.1rem;
+}
+
+.vocabulary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 33px;
+  border-top: 1px solid var(--line);
+}
+
+.vocabulary > div {
+  padding: 19px 20px 0 0;
+}
+
+.vocabulary > div + div {
+  padding-left: 20px;
+  border-left: 1px solid var(--line);
+}
+
+.vocabulary span {
+  color: var(--gold-soft);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 0.72rem;
+}
+
+.vocabulary p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.toolsSection {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 70px;
+  padding-top: 152px;
+}
+
+.toolsIntro {
+  max-width: 420px;
+}
+
+.toolBoard {
+  border: 1px solid var(--line-strong);
+  border-radius: 11px;
+  background: rgba(10, 29, 22, 0.77);
+  overflow: hidden;
+}
+
+.toolBoardHeader,
+.toolBoardFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 17px;
+  font-size: 0.57rem;
+}
+
+.toolBoardHeader {
+  border-bottom: 1px solid var(--line);
+}
+
+.toolBoardBadge {
+  color: var(--mint);
+}
+
+.toolList {
+  padding: 4px 17px;
+}
+
+.toolRow {
+  display: grid;
+  grid-template-columns: minmax(170px, 0.9fr) max-content minmax(0, 1.2fr);
+  align-items: center;
+  gap: 14px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.toolRow:last-child {
+  border-bottom: 0;
+}
+
+.toolRow code {
+  color: var(--ink);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 0.68rem;
+  word-break: break-word;
+}
+
+.readTag,
+.actionTag {
+  width: fit-content;
+  padding: 5px 7px;
+  border: 1px solid rgba(158, 217, 184, 0.38);
+  border-radius: 4px;
+  color: var(--mint);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+}
+
+.actionTag {
+  border-color: rgba(241, 187, 70, 0.48);
+  color: var(--gold-soft);
+}
+
+.toolRow p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.toolBoardFooter {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--line);
+  color: var(--dim);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.boundarySection {
+  padding-top: 152px;
+}
+
+.boundaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 13px;
+  margin-top: 55px;
+}
+
+.boundaryCard {
+  min-height: 205px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--panel);
+}
+
+.boundaryCard.green {
+  border-top: 3px solid var(--mint);
+}
+
+.boundaryCard.gold {
+  border-top: 3px solid var(--gold);
+  background: rgba(43, 35, 17, 0.45);
+}
+
+.boundaryCard.blue {
+  border-top: 3px solid var(--blue);
+  background: rgba(23, 40, 48, 0.46);
+}
+
+.boundaryNumber {
+  color: var(--dim);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", "Courier New", monospace;
+  font-size: 0.62rem;
+}
+
+.boundaryCard h3 {
+  margin: 55px 0 0;
+  font-size: 1.12rem;
+  font-weight: 500;
+}
+
+.boundaryCard p {
+  margin: 11px 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.trySection {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+  align-items: center;
+  gap: 70px;
+  padding-top: 152px;
+  padding-bottom: 145px;
+}
+
+.tryCopy {
+  max-width: 430px;
+}
+
+.promptCard {
+  padding: 22px 24px 25px;
+  border: 1px solid rgba(241, 187, 70, 0.55);
+  border-radius: 12px;
+  background: #10281e;
+  box-shadow: 16px 18px 0 rgba(241, 187, 70, 0.08);
+}
+
+.promptBar {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(241, 187, 70, 0.22);
+  color: var(--gold-soft);
+  font-size: 0.57rem;
+}
+
+.promptCard p {
+  margin: 19px 0 0;
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 25px 0 33px;
+  border-top: 1px solid var(--line);
+}
+
+.footerBrand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footerBrand strong {
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.footerBrand span {
+  font-size: 0.53rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.footerLinks {
+  display: flex;
+  gap: 20px;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(0.85);
+    opacity: 0.75;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 980px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 42px;
+    padding-top: 54px;
+  }
+
+  .heroCopy {
+    max-width: 750px;
+  }
+
+  .heroVisual {
+    width: min(670px, 100%);
+    margin-inline: auto;
+    transform: rotate(0.6deg);
+  }
+
+  .journeyList {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .journeyItem:nth-child(4) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .journeyItem:nth-child(4),
+  .journeyItem:nth-child(5) {
+    margin-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+
+  .toolsSection,
+  .trySection {
+    grid-template-columns: 1fr;
+    gap: 38px;
+  }
+
+  .toolsIntro,
+  .tryCopy {
+    max-width: 670px;
+  }
+}
+
+@media (max-width: 760px) {
+  .nav,
+  .hero,
+  .proofStrip,
+  .contentSection,
+  .footer {
+    width: min(100% - 32px, 620px);
+  }
+
+  .nav {
+    min-height: 74px;
+  }
+
+  .navLinks {
+    display: none;
+  }
+
+  .navStatus {
+    padding: 7px 9px;
+    font-size: 0.56rem;
+  }
+
+  .hero {
+    min-height: 0;
+    padding: 56px 0 64px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 13vw, 4.7rem);
+  }
+
+  .heroLead {
+    font-size: 1rem;
+  }
+
+  .heroVisual {
+    min-height: 400px;
+    padding: 12px;
+  }
+
+  .mapField {
+    min-height: 255px;
+  }
+
+  .shelterNode {
+    left: 20px;
+  }
+
+  .soldierNode {
+    left: 43%;
+  }
+
+  .monsterNode {
+    right: 20px;
+  }
+
+  .routeLine {
+    left: 77px;
+    width: 112px;
+  }
+
+  .eventPulse {
+    right: 92px;
+  }
+
+  .proofStrip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .proofStrip span:nth-child(3) {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .proofStrip span:nth-child(4) {
+    border-top: 1px solid var(--line);
+  }
+
+  .contentSection,
+  .flowSection,
+  .toolsSection,
+  .boundarySection,
+  .trySection {
+    padding-top: 92px;
+  }
+
+  .sectionIntro h2,
+  .toolsIntro h2,
+  .tryCopy h2 {
+    font-size: clamp(2rem, 10vw, 3.25rem);
+  }
+
+  .journeyList {
+    grid-template-columns: 1fr;
+    margin-top: 40px;
+  }
+
+  .journeyItem,
+  .journeyItem + .journeyItem,
+  .journeyItem:nth-child(4),
+  .journeyItem:nth-child(5) {
+    min-height: 0;
+    margin-top: 0;
+    padding: 19px 0;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .journeyItem:first-child {
+    border-top: 0;
+  }
+
+  .stepNumber {
+    margin-bottom: 18px;
+  }
+
+  .flowRail {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 39px;
+  }
+
+  .flowNode {
+    min-height: 0;
+  }
+
+  .flowNumber {
+    margin-bottom: 17px;
+  }
+
+  .flowArrow {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .vocabulary,
+  .boundaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .vocabulary > div,
+  .vocabulary > div + div {
+    padding: 16px 0;
+    border-left: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .vocabulary > div:last-child {
+    border-bottom: 0;
+  }
+
+  .toolRow {
+    grid-template-columns: 1fr max-content;
+    gap: 8px 12px;
+  }
+
+  .toolRow p {
+    grid-column: 1 / -1;
+  }
+
+  .boundaryGrid {
+    gap: 10px;
+    margin-top: 39px;
+  }
+
+  .boundaryCard {
+    min-height: 0;
+  }
+
+  .boundaryCard h3 {
+    margin-top: 34px;
+  }
+
+  .trySection {
+    padding-bottom: 94px;
+  }
+
+  .promptCard {
+    padding: 18px;
+    box-shadow: 9px 11px 0 rgba(241, 187, 70, 0.08);
+  }
+
+  .promptBar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .promptCard p {
+    font-size: 0.92rem;
+  }
+
+  .footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-bottom: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eventPulse,
+  .primaryButton,
+  .secondaryButton {
+    animation: none;
+    transition: none;
+  }
+}
