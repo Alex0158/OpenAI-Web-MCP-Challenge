@@ -6,7 +6,7 @@
 ## Task Control
 
 - Type: `implementation`
-- Lifecycle: `pending`
+- Lifecycle: `in_progress`
 - Priority: `P1`
 - Owner: Receiver, Local Connector, and Agent Adapter owners.
 - Current increment: Specify ADR-0046's trusted notification-handoff receipt and explicit protocol
