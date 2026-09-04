@@ -6,14 +6,15 @@
 ## Task Control
 
 - Type: `decision`
-- Lifecycle: `pending`
+- Lifecycle: `in_progress`
 - Priority: `P1`
 - Owner: Project team, Re-entry Core, Host SDK, and Cloud Receiver v2 owners.
-- Current increment: Decide separate Consent-session and effective-Grant lifetime semantics for the
-  simple facade and define what expiry the user must see; assess the user's until-revoked standing
-  direction through an explicit version/storage/invalidation decision, not an implicit extension.
-- Next gate: An accepted decision fixes the intended windows, existing-row policy, public projection,
-  and boundary tests without silently widening authority.
+- Current increment: The until-revoked proposal has a read-only consumer inventory: Core, active
+  Receiver, SDK, Connector, registry artifacts, and hosted evidence do not share one proven
+  v0.2 provenance. Research 25 therefore recommends an additive v0.3 profile while retaining
+  finite v0.2; exact lifetime, storage, invalidation, and target-decommission decisions remain open.
+- Next gate: Accept or revise the version recommendation and fix the intended windows, existing-row
+  policy, public projection, invalidation scope, and boundary tests without silently widening authority.
 - Dependencies: ADR-0007, ADR-0035, ADR-0041, AUDIT-V2-002 in Core/09, and TASK-012.
 
 ## 1. Problem and objective

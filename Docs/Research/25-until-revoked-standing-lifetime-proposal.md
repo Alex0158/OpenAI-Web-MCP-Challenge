@@ -2,7 +2,7 @@
 
 **Role:** SUPPORTING implementation and decision proposal  
 **Status:** Proposed, not an accepted protocol or authorization to change existing Grants  
-**Date:** 2026-09-03  
+**Date:** 2026-09-04  
 **Owner:** [TASK-027](../Tasks/TASK-027-reconcile-consent-and-grant-expiry.md)
 
 ## 1. Objective and current authority
@@ -202,3 +202,25 @@ Until-revoked approval alone does not approve all candidate public routes. TASK-
 one-shot five-minute/thirty-minute discrepancy also remains separate; this proposal does not
 silently close or change it. No new Event type, automatic soldier dispatch, parallel activation,
 same-thread Agent promise, production migration, or release is included.
+
+## 8. Consumer inventory snapshot — 2026-09-04
+
+The version decision prerequisite is not satisfied by local source alone. The following read-only
+inventory was checked against the parent repository and the nested active Receiver checkout:
+
+| Consumer or artifact | Current identity | Compatibility implication |
+| --- | --- | --- |
+| Re-entry Core standing reference | Parent `main` at `fed5c05`; standing source introduced at `58d8d71`; finite `grant_expires_at` remains required | Local v0.2 behavior is committed and must remain unchanged until a new accepted profile exists |
+| Host SDK checkout | Local package `0.3.1`; facade and bundled standing source are present | Checkout is ahead of the published artifact and cannot be treated as the registry consumer |
+| Host SDK registry artifact | Published `0.3.1`, `gitHead=9864ba09b79a76641d8662502ccf918cd3fd4b3b` (SDK-006 readback) | The immutable registry package predates `createReentry()`; a v0.2 revision would not reach every caller |
+| Local Connector checkout | Local package `0.2.20` | Current source is a separate release candidate and has its own exact-source gate |
+| Local Connector registry artifact | Published `0.2.20`, reported `gitHead=733d77f` while source records `0.2.14`; its bundled parser rejects the active instruction-bearing lease (SDK-006) | Existing published consumers are not a reliable v0.2 standing baseline |
+| Active Receiver | Nested checkout `Re-Entry` at `5a2117b`; standing implementation source last committed at `9156e68`; branch has no upstream and has uncommitted pairing changes | A working tree and a remote merge are distinct source identities; no until-revoked release provenance is established |
+| Hosted Receiver/frontend evidence | CLOUD-022 records Vercel deployments from a working-tree snapshot without exact Git attestation | Hosted evidence cannot prove that a particular v0.2 binary or schema is the only consumer |
+
+This inventory is provenance evidence, not a claim that every listed artifact is currently serving
+standing traffic. It does establish that the condition for silently revising unreleased v0.2 — a
+complete, jointly controlled, unpublished consumer set — has not been proven. The safer recommendation
+is therefore an additive, explicitly versioned v0.3 until-revoked profile, retaining finite v0.2 and
+requiring exact source pins for every new artifact. This recommendation remains subject to owner
+acceptance, deployment-owner confirmation, and the target decommission decision.
