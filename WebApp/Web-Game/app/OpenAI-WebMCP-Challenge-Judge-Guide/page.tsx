@@ -68,6 +68,29 @@ const boundaries = [
   },
 ];
 
+const connectorSteps = [
+  {
+    number: "01",
+    title: "Install the bridge",
+    copy: "Download the preview Local Connector on the Mac where your Agent should be able to return to work.",
+  },
+  {
+    number: "02",
+    title: "Pair this Mac",
+    copy: "Sign in to Re-entry, choose Pair this Mac, and enter the short pairing code shown by the Connector.",
+  },
+  {
+    number: "03",
+    title: "Set the strategy",
+    copy: "Tell the Agent to read the current game state and mission history before it chooses a bounded response.",
+  },
+  {
+    number: "04",
+    title: "Leave the world running",
+    copy: "The Connector stays ready in the background. A meaningful event can bring the same Agent task back to context.",
+  },
+];
+
 export default function OpenAIWebMCPChallengeJudgeGuidePage() {
   return (
     <main className={styles.guidePage}>
@@ -84,6 +107,8 @@ export default function OpenAIWebMCPChallengeJudgeGuidePage() {
         <nav className={styles.navLinks} aria-label="Guide sections">
           <a href="#judge-path">Judge path</a>
           <a href="#flow">The flow</a>
+          <a href="#connector">Connector</a>
+          <a href="#mini-apps">Mini apps</a>
           <a href="#tools">Page tools</a>
           <a href="#boundaries">Trust boundary</a>
         </nav>
@@ -248,6 +273,123 @@ export default function OpenAIWebMCPChallengeJudgeGuidePage() {
         </div>
       </section>
 
+      <section className={`${styles.contentSection} ${styles.connectorSection}`} id="connector" aria-labelledby="connector-title">
+        <div className={styles.connectorIntro}>
+          <p className={styles.sectionIndex}>STRATEGY → AGENT SETUP</p>
+          <h2 id="connector-title">How to set up your Local Connector.</h2>
+          <p>
+            Your strategy lives in the Agent. The Local Connector keeps the approved return path
+            close by, so the Agent can pick up the right context when the world gives it a reason.
+          </p>
+          <div className={styles.connectorSteps}>
+            {connectorSteps.map((step) => (
+              <div className={styles.connectorStep} key={step.number}>
+                <span className={styles.connectorStepNumber}>{step.number}</span>
+                <div>
+                  <h3>{step.title}</h3>
+                  <p>{step.copy}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className={styles.connectorDownload}>
+          <div className={styles.connectorDownloadHeader}>
+            <span>LOCAL CONNECTOR / PREVIEW</span>
+            <span className={styles.connectorDownloadStatus}>READY TO DOWNLOAD</span>
+          </div>
+          <div className={styles.connectorGlyph} aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+          <h3>Let your Agent return to the work it already understands.</h3>
+          <p>
+            Install the small outbound bridge, pair one Mac, and keep the game page available for
+            fresh reads. The Connector does not replace the server or make decisions for the Agent.
+          </p>
+          <code className={styles.installCommand}>npm install --global @4xeoz/re-entry</code>
+          <div className={styles.connectorLinks}>
+            <a
+              className={styles.primaryButton}
+              href="https://www.npmjs.com/package/@4xeoz/re-entry"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Download package
+              <span aria-hidden="true">↗</span>
+            </a>
+            <a
+              className={styles.connectorGuideLink}
+              href="https://github.com/Alex0158/OpenAI-Web-MCP-Challenge/blob/main/runtime/local-connector/README.md"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Read setup guide ↗
+            </a>
+          </div>
+          <p className={styles.connectorNote}>
+            Preview setup: the package README carries the current Receiver and compatibility boundary.
+          </p>
+        </div>
+      </section>
+
+      <section className={`${styles.contentSection} ${styles.miniAppsSection}`} id="mini-apps" aria-labelledby="mini-apps-title">
+        <div className={styles.sectionIntro}>
+          <p className={styles.sectionIndex}>MORE RE-ENTRY SURFACES</p>
+          <h2 id="mini-apps-title">Other mini applications to test our Re-entry.</h2>
+          <p>
+            Re-entry is a reusable continuity pattern. Open another small product surface, follow
+            one real workflow, and see how the same idea carries context beyond the Kingdom.
+          </p>
+        </div>
+        <div className={styles.miniAppsGrid}>
+          <article className={styles.miniAppCard}>
+            <a
+              className={styles.miniAppImageLink}
+              href="https://github.com/Alex0158/OpenAI-Web-MCP-Challenge/tree/main/WebApp/Web-Right_Spot"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Open the RightSpot project entry"
+            >
+              <Image
+                className={styles.miniAppImage}
+                src="/mini-apps/rightspot-primary.v1.webp"
+                alt="Bright living room preview from the RightSpot rental workflow"
+                width={1536}
+                height={1024}
+              />
+              <span className={styles.miniAppImageOverlay}>
+                <span>OPEN PROJECT ENTRY</span>
+                <strong>↗</strong>
+              </span>
+            </a>
+            <div className={styles.miniAppBody}>
+              <div className={styles.miniAppMeta}>
+                <span>RIGHTSPOT / RENTAL WORKFLOW</span>
+                <span>LOCAL MVP</span>
+              </div>
+              <h3>RightSpot</h3>
+              <p>
+                A tenant request moves from listing discovery to an agent decision. It is a second
+                product surface for exploring how continuity can follow a business workflow.
+              </p>
+              <a
+                className={styles.miniAppLink}
+                href="https://github.com/Alex0158/OpenAI-Web-MCP-Challenge/tree/main/WebApp/Web-Right_Spot"
+                target="_blank"
+                rel="noreferrer"
+              >
+                View source and local runbook ↗
+              </a>
+            </div>
+          </article>
+        </div>
+        <p className={styles.miniAppsNote}>
+          RightSpot is currently presented as a local project entry; no hosted URL is claimed here.
+        </p>
+      </section>
+
       <section className={`${styles.contentSection} ${styles.toolsSection}`} id="tools" aria-labelledby="tools-title">
         <div className={styles.toolsIntro}>
           <p className={styles.sectionIndex}>THE PAGE SURFACE</p>
@@ -331,7 +473,7 @@ export default function OpenAIWebMCPChallengeJudgeGuidePage() {
         </div>
         <div className={styles.footerLinks}>
           <Link href="/">Game home</Link>
-          <a href="https://github.com/Alex0158/OpenAI-WebMCP-Challenge" target="_blank" rel="noreferrer">
+          <a href="https://github.com/Alex0158/OpenAI-Web-MCP-Challenge" target="_blank" rel="noreferrer">
             Source repository ↗
           </a>
         </div>
