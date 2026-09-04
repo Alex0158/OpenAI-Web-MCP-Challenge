@@ -128,6 +128,28 @@ This is a diagnostic-method clarification, not production Adapter selection or p
 the complete MVP relay. That replay includes a task-launched listener and Browser operations outside
 the current experiment. No such scope expansion is authorized here.
 
+### Isolated App-mediated idle control, 2026-09-04
+
+After the original MVP timeline review and the proposal for a separate idle-target control, the
+owner authorized the investigator to proceed, then explicitly requested avoiding the main Game
+development task. Authorize one new D1 send through the already exposed App task tool to the same
+pre-existing disposable MVP test task only. No new task is created and no development task is a
+test destination. D1 is separate from consumed B1 and unused C1; it cannot establish independent
+background Connector admission or consume the C1 relay allowance.
+
+Before reserving D1, verify the exact target/workspace, idle state, absence of a target goal and
+queued input, and paused or absent target automation. Use read-only checks; do not clear input,
+disable a goal, alter automation or change configuration. Recheck target state immediately before
+dispatch. Any conflicting state stops the test without sending. Reserve D1 durably before the
+single tool invocation; an attempted or uncertain send consumes it with no resend or fallback.
+The fixed inert marker requests one exact response and no tools, Browser, files, network, Game
+work, settings changes or new tasks. Observe actual input role, new-turn causality, response and
+unexpected tools through bounded readback. No model or reasoning override is permitted.
+
+This control can establish App-mediated wake of an idle existing task on the recorded build,
+not a production driver, independent Connector access, trusted enrollment, notification receipt,
+standing-Grant replay or genuine WebMCP. Source-executor mediation must remain explicit.
+
 ### Required observations
 
 Unit and local socket tests must cover disabled mode, malformed/override input, exact-target and

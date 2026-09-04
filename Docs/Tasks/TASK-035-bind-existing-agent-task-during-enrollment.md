@@ -9,7 +9,13 @@
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Local Connector/Agent Adapter owner, with Receiver and Host SDK owners.
-- Current increment: Original invocation-history readback now distinguishes MVP1's real exact-task
+- Current increment: D1 attempted one separately authorized App-mediated inert send to the existing
+  disposable MVP task, not a development task. Idle/empty-queue/no-goal preflight passed, but the
+  send timed out waiting for an active turn ID; no input or new target turn was observed. CLOUD-028
+  correlates the failure with the App coordinator's pending/start/steer handling. D1 is consumed,
+  no resend is allowed, and C1 remains unused. This is a narrower failure boundary, not proof of
+  its underlying stale-state/race cause or a platform-wide idle prohibition.
+  Original invocation-history readback now distinguishes MVP1's real exact-task
   delivery from idle-wake causality. The original launcher was started by an Agent executor; both
   accepted clean/rehearsal runs had an automatic goal turn running before Event arrival. CLOUD-028
   records the verified timeline and corrected Core/Mechanism claims. The recipe is already located;
@@ -33,7 +39,11 @@
   with 12 opt-in integration skips. The separate upstream source trace found App-owned tool-call
   and approval-response paths, but not the executor's permission evaluator or a detached client
   invocation contract. This is not an exhaustive rejection of every possible legitimate route.
-- Next gate: Define the smallest legitimate invocation from the existing Connector into the
+- Next gate: First trace why D1's idle target entered the App-side active-turn wait despite no
+  queued input or goal. Use read-only resume/history/pending-state evidence; do not clear state,
+  restart the App, change the target, alter a development task or send another live probe without
+  a separate allowance. Keep this diagnosis separate from C1's background-client admission gate.
+  Define the smallest legitimate invocation from the existing Connector into the
   host-owned task interface when no Agent turn is active, retaining actual caller and approval
   handling. The original task-launched relay is the implementation reference, not a requirement
   to repeat the completed source audit or copy a private pipe into a detached process.

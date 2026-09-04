@@ -1,7 +1,7 @@
 # CLOUD-028: Desktop Admission Route Review
 
 **Role:** DEVELOPMENT feasibility review, host-mediated control, and unsent platform-question draft  
-**Status:** Host-mediated response verified; receiving-side idle compatibility source-reviewed; C1 unused; client admission unresolved  
+**Status:** B1 joined-turn response verified; D1 isolated idle control failed at active-turn wait; C1 unused; client admission unresolved  
 **Date:** 2026-09-04, Europe/London  
 **Task:** [TASK-035](../Tasks/TASK-035-bind-existing-agent-task-during-enrollment.md)  
 **Authority:** ADR-0046; ADR-0047 permits only its bounded diagnostic and host-mediated clarification
@@ -18,6 +18,85 @@ No App restart, environment/configuration change,
 daemon start, native call, test message, task migration, SDK installation, Receiver claim, deployment,
 signing change, credential retrieval, or external message was performed in the original static-review
 increment. The separately recorded host-mediated control below includes one authorized inert send.
+
+## Isolated App-mediated idle control D1
+
+**Reservation:** D1 reserved before dispatch on 2026-09-04, then consumed by one App task-tool
+invocation at `04:30:16Z`. The tool returned an error after approximately 30 seconds. No retry is
+authorized or performed.
+B1 remains consumed and C1 remains unused. ADR-0047 records the owner's bounded approval and
+explicit exclusion of the main Game development task. The existing disposable MVP target is
+unchanged; its private locator is not copied into project artifacts.
+
+This Assured diagnostic has no implementation or product-authority change. Its question is
+whether one exposed App task-tool notification, without queued-input or automatic-continuation
+interference, starts an attributable turn in an idle existing task. The fixed non-secret marker
+is `REENTRY_APP_IDLE_CONTROL_20260904_D1`. A new turn without that marker, an already active
+baseline, an intervening cause or unexpected tool use prevents an unqualified clean result.
+The conservative alternative is to retain B1's joined-turn evidence; a standalone Connector
+experiment remains the separately gated C1, not an automatic fallback.
+
+Read-only preflight confirmed the exact MVP workspace and idle target, no target row in the local
+goal store, zero target queued items, and one associated heartbeat already paused. The previous
+target turn completed at `01:56:13.354Z` on 2026-09-04 with no newer recorded lifecycle event.
+No queue, goal, heartbeat, configuration or target setting was changed. Only this disposable
+target was selected for the inert send; no development task, Browser or Game operation was in scope.
+Immediate pre-dispatch readback again showed idle with the same completed turn, zero goals and
+zero queued items. App tool delivery is mediated by this active source executor, not by an
+independent Local Connector.
+
+The exposed `send_message_to_thread` returned a redacted failure stating that steering required
+an active turn identifier. Readback still showed the same idle target and previous completed turn;
+the private target rollout had no new lifecycle/input record or D1 marker. The queue and goal
+counts remained zero. This is a failed isolated idle-wake control on this target, not a clean
+wake, a receipt, or an independently admitted Connector call. No development task was addressed.
+The observed failure narrows investigation to idle-target start/steer handling; it does not prove
+an intentional platform-wide active-turn requirement or a model, Receiver or Game defect.
+
+### Source-correlated failure boundary
+
+The running owner is ChatGPT Desktop `26.901.20858`, build `7658`, verified from its process bundle,
+not the separately installed older Codex application. Read-only inspection of the owning bundle's
+`webview/assets/app-initial-7a6c8787453d.js` found the same 10,285,987-byte member and SHA-256
+`3d4825a32d3bfbcc5dc3ad55793c12bda52614d2bf3227f79cb074a3c970947a` as the prior source review.
+No installed module was executed or changed. The following offsets are UTF-8 bytes in that member.
+
+| Boundary | Source anchor | Result and limit |
+|---|---|---|
+| Prepared-message routing | Coordinator `#n`, 2998513 | Chooses steer for an active turn or a pending start; otherwise it has a start path. Source still does not establish a blanket prohibition on idle wake. |
+| Pending-state definition | `submissionHost`, 3007930 | Treats an in-progress local turn with no turn ID, or an unconfirmed submission, as pending. This is an App-side state decision, not the exposed task status alone. |
+| Observed error origin | `lun`, 2951402; `pun`, 2955147 | The steering path awaits an active turn ID. Its approximately 30-second timeout has the exact redacted error shape returned by D1. |
+| Submission ordering and error handling | `fun`, 2954696; `canStartAfterSteerError` in the submission host | The wait precedes this path's tool-output `turn/start` request. The returned generic timeout is not the typed inactive-turn or `NoActiveTurn` error used for start-after-steer recovery. |
+
+**VERIFIED:** the exposed control failed, its error maps to the active-turn wait, and no target
+input, new turn or marker response was observed. **INFERRED:** an App-side pending/in-progress
+representation disagreed with the idle runtime readback and selected or remained in the steering
+path. Its origin is not established: stale renderer state, history/resume reconstruction and a
+pending-start race remain hypotheses. This diagnostic does not inspect live renderer memory or
+prove which one occurred. A clean result on a different target also would not by itself repair
+this target's lifecycle handling.
+
+The next bounded investigation is the exact resume/pending-state reconciliation leading to this
+wait, using read-only evidence. Do not patch the installed App, clear target state, restart it,
+change models, inject a user wake, create a new task or resend D1 as a workaround. Another live
+test or target requires its own reviewed allowance. C1's independent Connector invocation gate
+is separate and unchanged. The runtime/control failure is not a product-Connector test failure.
+
+This increment updates ADR-0047's diagnostic allowance, TASK-035's next gate, and Core/00 and
+Core/05's evidence limits. Mechanism 04 and the Development index retain their accurately scoped
+B1/source observations; stable product semantics and their routing do not change. All frozen MVP
+files, product implementation, deployment and concurrent owner-held work remain untouched.
+
+Bounded observation closed at `04:36:19Z`: the target remained idle, with no D1 record or new
+lifecycle event, and the existing heartbeat remained paused. This is the observation window, not
+a promise that arbitrary delayed execution can never occur. No further send is authorized.
+Verification: `python3 scripts/test_validators.py` passed 6/6,
+`python3 scripts/test_sensitive_scan.py` passed 3/3, and
+`python3 scripts/validate_repository.py --root .` passed. Owned-file CJK/private-identifier and
+whitespace checks were clear. `python3 scripts/scan_sensitive_patterns.py --root .` still reports
+21 existing findings in seven Game files, each unchanged against HEAD; it is not a full scan pass.
+Read-only source/artifact inspection used Node `26.5.0`; no product runtime suite, deployed flow
+or new App/client implementation is claimed by this diagnostic.
 
 ## Current C1 execution gate
 

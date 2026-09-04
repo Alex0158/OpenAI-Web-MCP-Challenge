@@ -50,7 +50,14 @@ boundary is the existing Connector's legitimate use of the host-owned task inter
 response is conditional, not a universal prerequisite. Durable enrollment and product integration
 remain open; no Game or deployment change follows from this control.
 
-The owner has since approved one temporary local relay and a new C1 inert notification. C1 is
+A separate D1 control used the already idle disposable MVP task, with no goal, no queued input
+and its existing heartbeat paused. The App tool timed out waiting for an active turn ID; no new
+input, turn or marker response was observed. CLOUD-028 maps this failure to App-side pending/start/
+steer handling, while its underlying state inconsistency remains unresolved. D1 is consumed and
+was not retried. No development task was targeted. This narrows the idle-wake investigation; it
+does not establish a model defect, a universal idle restriction or independent Connector access.
+
+Separately, the owner approved one temporary local relay and a C1 inert notification. C1 is
 unused: CLOUD-028 identifies the real Connector adapter seam, but no App-authorized background
 invocation is established. No listener or notification was started. Resolve host-provided caller
 and approval handling; another generic user approval or active-Agent-mediated send does not close
