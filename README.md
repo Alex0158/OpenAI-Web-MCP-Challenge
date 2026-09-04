@@ -8,7 +8,7 @@
 <h3 align="center">▶️ Watch the REENTRY demo on YouTube</h3>
 
 <a href="https://youtu.be/lovFAAftKeU">
-  <img src="https://img.youtube.com/vi/lovFAAftKeU/maxresdefault.jpg?v=20260904-2" alt="Watch the REENTRY demo on YouTube" width="100%" />
+  <img src="https://img.youtube.com/vi/lovFAAftKeU/maxresdefault.jpg?v=20260904-3" alt="Watch the REENTRY demo on YouTube" width="100%" />
 </a>
 
 <p align="center">
