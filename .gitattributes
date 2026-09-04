@@ -1,5 +1,0 @@
-* text=auto eol=lf
-*.md whitespace=-trailing-space,-blank-at-eof
-*.jpg binary
-*.jpeg binary
-*.png binary

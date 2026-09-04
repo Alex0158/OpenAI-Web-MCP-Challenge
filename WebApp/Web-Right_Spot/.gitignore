@@ -1,7 +1,0 @@
-node_modules/
-.next/
-*.tsbuildinfo
-var/rightspot.sqlite*
-var/test/
-.env*
-!.env.example

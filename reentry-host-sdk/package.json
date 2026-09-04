@@ -1,0 +1,32 @@
+{
+  "name": "@4xeoz/re-entry-sdk",
+  "version": "0.3.2",
+  "type": "module",
+  "description": "Small Next.js-compatible Host SDK for the application-neutral Re-entry protocol.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    "src"
+  ],
+  "exports": {
+    "./server": "./src/server.mjs",
+    "./client": "./src/client.mjs",
+    "./next": "./src/next.mjs"
+  },
+  "dependencies": {
+    "@webmcp-challenge/reentry-core": "file:../reentry-core"
+  },
+  "bundleDependencies": [
+    "@webmcp-challenge/reentry-core"
+  ],
+  "scripts": {
+    "check:syntax": "node scripts/check-syntax.mjs",
+    "test": "node --test test/*.test.mjs",
+    "verify": "npm run check:syntax && npm test"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
