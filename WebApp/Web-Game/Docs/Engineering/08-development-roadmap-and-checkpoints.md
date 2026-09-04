@@ -350,22 +350,24 @@ Agent/Re-entry delivery, and external Receiver/Connector behavior remain separat
   Thread, return to the canonical page, reread current state, and execute the bounded recall action
   under the existing grant when the live revision permits it.
 - **Depends on:** CP-05, CP-11, and CP-13.
-- **External ownership boundary:** The Cloud Receiver and Local Connector are external dependencies
-  for this checkpoint. Eddy owns their implementation and changes in a separate branch. The
-  Sleepless Kingdom game branch must not implement, modify, refactor, or redeploy either component.
-  The agreed Re-entry Core contracts remain the integration baseline unless a new cross-boundary
-  decision is explicitly accepted.
+- **External ownership boundary:** The Cloud Receiver backend and Local Connector runtime remain
+  separate dependencies for this checkpoint. Eddy's Game-facing Core, Host SDK, and Local Connector
+  source is already present in the outer main history; no additional Eddy branch merge is pending.
+  The Receiver backend remains the separate saas-boilerplate deployment boundary. The Sleepless
+  Kingdom game branch must not implement, modify, refactor, or redeploy the external Receiver or
+  Connector.
 - **Game-side responsibility:** This checkpoint owns only the game application's outbox and
   adapter boundary: selecting eligible signals, preserving their identity and coalescing rules,
   handing them to the interfaces Eddy delivers, and recording acknowledgement or typed failure.
   A fixture or contract stub may prove this mapping before the handoff, but it is not live Receiver
   or Connector integration evidence.
-- **External handoff gate:** Live integration and CP-14 runtime closure wait for Eddy's Cloud Receiver
-  and Local Connector implementation to be completed and verified, with a versioned interface,
-  transport/endpoint details, acknowledgement and retry semantics, binding/idempotency behavior,
-  and a testable handoff environment. If the delivered contract differs from the agreed baseline,
-  stop and record the cross-boundary decision before adapting the game adapter; do not silently
-  change either external service or the game's event contract.
+- **Runtime compatibility gate:** Live integration and CP-14 runtime closure require a recorded
+  compatibility packet for the merged source and selected Receiver deployment: exact source commits,
+  package exports and versions, endpoint/origin, database and migration state, acknowledgement and
+  retry semantics, binding/idempotency behavior, and a testable environment. This is a runtime
+  verification and configuration gate, not a pending branch merge. If the observed behavior differs
+  from the accepted baseline, stop and record the cross-boundary decision before adapting the Game;
+  do not silently change either external service or the Game event contract.
 - **Acceptance:** Delivery is at-least-once but Domain Event and command effects are exactly-once; the
   signal contains causal cursor/count context without prompts or credentials; a running Thread receives
   no per-event message; Agent context cannot replace page state; human review remains required for
@@ -388,8 +390,8 @@ Agent/Re-entry delivery, and external Receiver/Connector behavior remain separat
   and [`Validation/76`](../Validation/76-cp14-game-side-local-stub-delivery-port-runtime-cross-functional-audit.md)
   now verify the bounded game-side port against a labelled local stub. CP-14 also consumes the proposed
   CP-13 tool contract in [`SK-TASK-053`](../Tasks/SK-TASK-053-cp13-page-tool-contract-preparation.md),
-  but no **live external-integration** task is admitted until that package is accepted and the
-  Receiver/Connector handoff is resolved. A bounded game-side `ReentryDeliveryPort`/`pumpOnce`
+  but live integration now proceeds against the merged source and selected Receiver Preview; the
+  remaining gate is runtime compatibility and evidence. A bounded game-side `ReentryDeliveryPort`/`pumpOnce`
   implementation against a labelled local contract stub may proceed now; it must preserve the
   existing durable slot/lease authority and cannot claim live Receiver, Connector, Agent, hosted,
   or Re-entry delivery. The adapter capability itself is no longer the blocker.
@@ -406,10 +408,10 @@ Agent/Re-entry delivery, and external Receiver/Connector behavior remain separat
   ordered `CargoLostToMonster` signals under one protocol-v0.2 standing Consent with one-active
   backpressure. Cloud queue acceptance remains separate from Connector claim, fresh activation,
   page action, effect acknowledgement, and the next signal. The outer `CLOUD-023` source-level
-  closure now supplies a locally committed Receiver and exact-commit upgrade result, but the Game
-  task remains pending until an owner-declared installable v0.2 package or endpoint/test handoff is
-  accepted with the binding, timestamp, canonical URL, session, standing Grant, sequence, and
-  effect-authority mapping; no direct Connector claim or deprecated Receiver fallback is permitted.
+  closure now supplies a locally committed Receiver and exact-commit upgrade result, but the Game task remains pending until the server-side adapter, exact endpoint/source/config
+  readback, and v0.2 runtime trace are verified with the binding, timestamp, canonical URL, session,
+  standing Grant, sequence, and effect-authority mapping; no direct Connector claim or deprecated
+  Receiver fallback is permitted.
 
 ## Phase 5 — local verification and demo closure
 

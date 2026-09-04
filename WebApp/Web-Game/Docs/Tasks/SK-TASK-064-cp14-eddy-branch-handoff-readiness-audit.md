@@ -9,6 +9,10 @@
 - Current increment: The fetched Eddy Re-entry Core branch was reviewed and classified as a partial Stage-1 contribution; the audit is deliberately deferred from merge work until the owner explicitly reopens it after Eddy's handoff is ready.
 - Next gate: After the owner confirms Eddy's handoff is ready, perform a clean pre-merge review against the exact remote tip; until then, do not merge, fast-forward the local branch pointer, or claim live delivery.
 
+## Historical supersession note
+
+This record is a pre-merge snapshot from 2026-09-03. Its pending-merge disposition was correct for the refs observed at that time, but it is not the current branch instruction. Eddy's Game-facing source was subsequently integrated into the outer main history; current CP-14 work is Game adapter implementation and runtime compatibility verification against the separate Receiver deployment. Keep this task as historical evidence rather than reopening its old merge gate.
+
 ## Identity
 
 - Task ID: `SK-TASK-064`

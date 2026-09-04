@@ -105,3 +105,6 @@ Research, or a Scenario until accepted.
   — accepts one Railway service, one replica, one persistent Volume-backed SQLite writer, and Clerk
   fixed-player admission for the first hosted MVP; the resource provisioning preflight is recorded,
   while source deployment, Clerk admission, and hosted proof remain open.
+- [`ADR-GAME-0038-cp14-merged-source-and-runtime-adaptation-boundary.md`](ADR-GAME-0038-cp14-merged-source-and-runtime-adaptation-boundary.md)
+  — records that Eddy's Game-facing Re-entry source is already in outer `main`; CP-14 now owns the
+  Game adapter and cross-runtime verification against the separate Receiver backend deployment.

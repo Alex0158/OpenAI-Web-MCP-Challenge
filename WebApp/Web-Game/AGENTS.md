@@ -76,7 +76,7 @@ the explicit non-production fixture session/initial-frame composition is runtime
 Implementation work is authorized under the locked G1/G2 route. **CP-04 durable code was created only
 under the registered child task `SK-TASK-004`, and CP-05 persistence code under `SK-TASK-005`;** the disposable probe harness remains evidence only
 and is described in
-[`Docs/Engineering/08-development-roadmap-and-checkpoints.md`](Docs/Engineering/08-development-roadmap-and-checkpoints.md). The external Re-entry Receiver and Local Connector handoff remains a separate gate before CP-14; no silent fallback is permitted.
+[`Docs/Engineering/08-development-roadmap-and-checkpoints.md`](Docs/Engineering/08-development-roadmap-and-checkpoints.md). Eddy's Game-facing `reentry-core`, Host SDK, Local Connector, and Cloud web frontend source is already present in the outer `main` history; no additional Eddy branch merge is pending. The Cloud Receiver backend remains a separate `saas-boilerplate` deployment boundary. CP-14 is therefore a Game adapter and cross-runtime verification gate, with no silent fallback permitted. See [`ADR-GAME-0038`](Docs/Decisions/ADR-GAME-0038-cp14-merged-source-and-runtime-adaptation-boundary.md).
 
 A described feature is never implementation evidence. Do not infer that a documented mechanism is
 built, deployed, or judge-verified.
