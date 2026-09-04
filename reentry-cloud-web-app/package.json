@@ -1,0 +1,31 @@
+{
+  "name": "reentry-cloud-web-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Test copy of the Re-entry Cloud web frontend for full-integration work.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "next": "^16.2.10",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-icons": "^5.5.0",
+    "@saas/shared": "file:./shared"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "baseline-browser-mapping": "^2.10.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

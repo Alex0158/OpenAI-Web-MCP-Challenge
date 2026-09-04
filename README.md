@@ -8,6 +8,7 @@ the shared protocol package they use.
 
 ```text
 reentry-sdk-test-app/   Next.js test consumer; stops after approved consent
+reentry-cloud-web-app/  Cloud web frontend copied for full-integration testing
 reentry-host-sdk/       @4xeoz/re-entry-sdk Host package source and tests
 reentry-local-connector/ Local Connector package source and tests
 reentry-core/           Shared protocol and contract kernel dependency
@@ -17,10 +18,10 @@ The app intentionally does not register a WebMCP tool, send a later Event, updat
 launch an Agent, or provide a follow-up path. It only requests consent, confirms approval, and
 keeps an opaque continuation in the test server's in-memory placeholder.
 
-The Cloud Receiver implementation and the broader SaaS boilerplate are intentionally excluded from
-this testing branch. Use the separately checked-out/deployed Cloud Receiver v2 when running tests
-that require a Receiver implementation. Keep `.env.local`, dependency folders, build output, and
-other machine state untracked.
+The Cloud Receiver backend implementation and the broader SaaS boilerplate repository are
+intentionally excluded from this branch. `reentry-cloud-web-app/` is frontend code only and must
+point at a separately checked-out or deployed Cloud Receiver backend. Keep `.env.local`, dependency
+folders, build output, and other machine state untracked.
 
 ## Quick verification
 
