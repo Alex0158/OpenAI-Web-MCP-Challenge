@@ -125,6 +125,8 @@ and [`Validation/100`](../Validation/100-cp13-dynamic-continuation-refresh-cross
 One registered recall action follows the newest server-issued continuation within a page generation;
 hosted WebMCP, Agent, and Re-entry delivery remain separate gates.
 
+[`SK-TASK-082`](SK-TASK-082-cp18-judge-guide-narrative-and-entry-surface.md) is `verified` with `integrated` closure for the CP-18 judge-guide narrative and entry-surface refresh. It adds a judge-first Connector/Manifest path, Re-entry vision and video preview, a linked SDK Playground card, and a separate static gameplay tutorial route. It remains presentation-only; hosted WebMCP, Agent wake, external delivery, and final judge reproduction remain separate gates.
+
 The CP-17 production-like WebMCP page-tool admission slice is runtime-verified under
 [`SK-EVID-071`](../Evidence/SK-EVID-071-cp17-production-webmcp-page-tool-admission-runtime-verification.md)
 and [`Validation/97`](../Validation/97-cp17-production-webmcp-page-tool-admission-runtime-cross-functional-audit.md):

@@ -1,0 +1,96 @@
+:global(*) { box-sizing: border-box; }
+:global(body) { margin: 0; background: #f7f8f3; }
+
+.page {
+  --paper: #f7f8f3;
+  --surface: #fff;
+  --soft: #eef7e8;
+  --ink: #0e0f0c;
+  --forest: #163300;
+  --muted: #526150;
+  --dim: #788378;
+  --line: rgba(22, 51, 0, .15);
+  --green: #4b9b42;
+  --lime: #b9f57b;
+  position: relative;
+  min-height: 100vh;
+  padding: 0 max(16px, calc((100vw - 1240px) / 2));
+  color: var(--ink);
+  background: radial-gradient(circle at 90% 5%, rgba(185,245,123,.22), transparent 25rem), var(--paper);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.nav { display: flex; align-items: center; justify-content: space-between; min-height: 82px; border-bottom: 1px solid var(--line); }
+.brand { display: inline-flex; align-items: center; gap: 11px; color: var(--ink); text-decoration: none; }
+.brand span { display: grid; gap: 3px; }
+.brand small, .kicker, .sectionIndex, .backLink, .footer, .roleTopline, .promptCard > span { color: var(--dim); font: 700 .62rem/1.2 "SFMono-Regular", Consolas, monospace; letter-spacing: .12em; text-transform: uppercase; }
+.brand small { color: var(--green); font-size: .57rem; }
+.brand strong { font-size: 1rem; }
+.backLink { color: var(--forest); text-decoration: none; transition: color 180ms ease; }
+.backLink:hover, .backLink:focus-visible, .footer a:hover, .footer a:focus-visible { color: var(--green); }
+
+.hero { max-width: 880px; padding: 102px 0 126px; }
+.kicker, .sectionIndex { margin: 0 0 16px; color: var(--green); }
+.hero h1, .section h2 { margin: 0; font-size: clamp(3.1rem, 7vw, 6.7rem); font-weight: 700; letter-spacing: -.085em; line-height: .93; }
+.hero h1 em { color: var(--green); font-style: normal; }
+.lead { max-width: 620px; margin: 30px 0 0; color: var(--muted); font-size: 1.12rem; line-height: 1.65; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
+.primaryButton, .secondaryButton { display: inline-flex; align-items: center; gap: 11px; min-height: 45px; padding: 0 18px; border-radius: 999px; font: 700 .68rem "SFMono-Regular", Consolas, monospace; text-decoration: none; transition: transform 180ms ease, background 180ms ease, border-color 180ms ease; }
+.primaryButton { color: var(--forest); background: var(--lime); }
+.secondaryButton { border: 1px solid var(--line); color: var(--forest); background: rgba(255,255,255,.75); }
+.primaryButton:hover, .primaryButton:focus-visible, .secondaryButton:hover, .secondaryButton:focus-visible { transform: translateY(-2px); }
+.secondaryButton:hover, .secondaryButton:focus-visible { border-color: var(--green); background: var(--soft); }
+.primaryButton:focus-visible, .secondaryButton:focus-visible, .backLink:focus-visible, .footer a:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
+
+.section { padding: 100px 0 0; }
+.section h2 { max-width: 800px; font-size: clamp(2.4rem, 5vw, 4.6rem); color: var(--forest); }
+.loopGrid, .roleGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 52px; border-top: 1px solid var(--line); }
+.loopGrid article { min-height: 205px; padding: 20px 21px 10px 0; }
+.loopGrid article + article { padding-left: 21px; border-left: 1px solid var(--line); }
+.loopGrid span { color: var(--green); font: 700 .68rem "SFMono-Regular", Consolas, monospace; }
+.loopGrid h3 { margin: 45px 0 0; font-size: 1.2rem; }
+.loopGrid p, .roleCard p, .sectionLead, .agentList p { margin: 9px 0 0; color: var(--muted); font-size: .86rem; line-height: 1.55; }
+.rolesSection { padding-top: 128px; }
+.roleGrid { grid-template-columns: repeat(2, 1fr); gap: 13px; border-top: 0; }
+.roleCard { padding: 21px 22px 23px; border: 1px solid var(--line); border-radius: 13px; background: var(--surface); }
+.roleCard:nth-child(2) { background: var(--soft); }
+.roleCard:nth-child(3) { background: #fff8df; }
+.roleCard:nth-child(4) { background: #edf9f6; }
+.roleTopline { display: flex; justify-content: space-between; gap: 12px; color: var(--green); }
+.roleTopline b { color: var(--dim); font-weight: 700; }
+.roleCard p { max-width: 470px; margin-top: 38px; }
+.agentSection { display: grid; grid-template-columns: .8fr 1.2fr; gap: 74px; align-items: start; padding-top: 128px; }
+.sectionLead { max-width: 430px; margin-top: 20px; font-size: 1rem; }
+.agentList { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+.agentList li { display: grid; grid-template-columns: 40px 1fr; gap: 15px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.agentList li > span { color: var(--green); font: 700 .68rem "SFMono-Regular", Consolas, monospace; }
+.agentList h3 { margin: 0; font-size: 1rem; }
+.agentList p { margin-top: 6px; }
+.promptSection { padding-top: 128px; padding-bottom: 120px; }
+.promptCard { max-width: 800px; margin-top: 42px; padding: 23px 25px 25px; border: 1px solid rgba(75,155,66,.38); border-radius: 14px; background: var(--soft); box-shadow: 14px 16px 0 rgba(185,245,123,.43); }
+.promptCard > span { color: var(--green); }
+.promptCard p { margin: 18px 0 0; color: var(--forest); font-size: 1rem; line-height: 1.65; }
+.footer { display: flex; justify-content: space-between; gap: 20px; padding: 23px 0 32px; border-top: 1px solid var(--line); font-size: .57rem; }
+.footer a { color: var(--forest); text-decoration: none; }
+
+@media (max-width: 840px) {
+  .hero { padding-top: 74px; }
+  .loopGrid { grid-template-columns: repeat(2, 1fr); }
+  .loopGrid article:nth-child(3) { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
+  .loopGrid article:nth-child(4) { border-top: 1px solid var(--line); }
+  .agentSection { grid-template-columns: 1fr; gap: 38px; }
+}
+@media (max-width: 600px) {
+  .nav { min-height: 72px; }
+  .backLink { font-size: .55rem; }
+  .hero { padding: 59px 0 84px; }
+  .hero h1 { font-size: clamp(2.8rem, 14vw, 4.6rem); }
+  .lead { font-size: 1rem; }
+  .section, .rolesSection, .agentSection, .promptSection { padding-top: 88px; }
+  .loopGrid, .roleGrid { grid-template-columns: 1fr; margin-top: 38px; }
+  .loopGrid article, .loopGrid article + article, .loopGrid article:nth-child(3), .loopGrid article:nth-child(4) { min-height: 0; padding: 18px 0; border-left: 0; border-top: 1px solid var(--line); }
+  .loopGrid article:first-child { border-top: 0; }
+  .loopGrid h3 { margin-top: 23px; }
+  .footer { align-items: flex-start; flex-direction: column; }
+}
