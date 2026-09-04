@@ -15,6 +15,11 @@
   correlates the failure with the App coordinator's pending/start/steer handling. D1 is consumed,
   no resend is allowed, and C1 remains unused. This is a narrower failure boundary, not proof of
   its underlying stale-state/race cause or a platform-wide idle prohibition.
+  Follow-on App logs now confirm D1 reused a warm owner state; B1's earlier cold start overlapped
+  Q1's real turn. The response resolver prefers an existing turn over its optimistic null-ID
+  record. A disconnected six-case state model reproduces the resulting pending wait; the full
+  experimental suite passes 122/122 on Node 24. This is a source-correlated candidate defect,
+  not a captured renderer-state root cause, an App fix or a new runtime pass.
   Original invocation-history readback now distinguishes MVP1's real exact-task
   delivery from idle-wake causality. The original launcher was started by an Agent executor; both
   accepted clean/rehearsal runs had an automatic goal turn running before Event arrival. CLOUD-028
@@ -39,10 +44,12 @@
   with 12 opt-in integration skips. The separate upstream source trace found App-owned tool-call
   and approval-response paths, but not the executor's permission evaluator or a detached client
   invocation contract. This is not an exhaustive rejection of every possible legitimate route.
-- Next gate: First trace why D1's idle target entered the App-side active-turn wait despite no
-  queued input or goal. Use read-only resume/history/pending-state evidence; do not clear state,
-  restart the App, change the target, alter a development task or send another live probe without
-  a separate allowance. Keep this diagnosis separate from C1's background-client admission gate.
+- Next gate: Obtain a separate owner decision for one new dedicated test task and one inert App
+  notification after its initial turn has completed and idle/no-goal/no-queue/no-scheduler state
+  is verified. This clean-state control discriminates B1's candidate orphan state from a broader
+  idle-start failure; it is not a product fresh-session fallback. No new task/send is authorized
+  by the source/model result. Preserve the old target, App state, development tasks and D1's spent
+  allowance; keep this diagnosis separate from C1's background-client admission gate.
   Define the smallest legitimate invocation from the existing Connector into the
   host-owned task interface when no Agent turn is active, retaining actual caller and approval
   handling. The original task-launched relay is the implementation reference, not a requirement

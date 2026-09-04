@@ -52,10 +52,12 @@ remain open; no Game or deployment change follows from this control.
 
 A separate D1 control used the already idle disposable MVP task, with no goal, no queued input
 and its existing heartbeat paused. The App tool timed out waiting for an active turn ID; no new
-input, turn or marker response was observed. CLOUD-028 maps this failure to App-side pending/start/
-steer handling, while its underlying state inconsistency remains unresolved. D1 is consumed and
-was not retried. No development task was targeted. This narrows the idle-wake investigation; it
-does not establish a model defect, a universal idle restriction or independent Connector access.
+input, turn or marker response was observed. Follow-on logs confirm D1 reused warm App state;
+earlier B1/Q1 overlap and response-selection code identify a candidate orphaned optimistic start.
+CLOUD-028's disconnected model reproduces that pending-state path, not the actual renderer cache
+or an App fix. A separately approved clean-task control is the next discriminator. D1 is consumed
+and was not retried; no development task was targeted. This does not establish a model defect,
+a universal idle restriction or independent Connector access.
 
 Separately, the owner approved one temporary local relay and a C1 inert notification. C1 is
 unused: CLOUD-028 identifies the real Connector adapter seam, but no App-authorized background

@@ -95,8 +95,106 @@ Verification: `python3 scripts/test_validators.py` passed 6/6,
 `python3 scripts/validate_repository.py --root .` passed. Owned-file CJK/private-identifier and
 whitespace checks were clear. `python3 scripts/scan_sensitive_patterns.py --root .` still reports
 21 existing findings in seven Game files, each unchanged against HEAD; it is not a full scan pass.
-Read-only source/artifact inspection used Node `26.5.0`; no product runtime suite, deployed flow
-or new App/client implementation is claimed by this diagnostic.
+Read-only artifact checks used Node `26.5.0`; the source-inspection interpreter was not separately
+captured in that increment. No product runtime suite, deployed flow or new App/client
+implementation is claimed by this diagnostic.
+
+## D1 follow-on: warm-cache and overlapping-start investigation
+
+This Standard increment uses read-only App logs/source and a disconnected test-only state model.
+TASK-035 owns the outcome; ADR-0047's spent D1 and unused C1 allowances do not change. Only the
+new model test and this record, TASK-035, Core/00 and Core/05 evidence hunks are in scope. No App
+module, product code, target state, service, queue, goal, automation or new live send is modified.
+
+**Hypothesis:** B1 overlapped Q1's existing turn, leaving an optimistic App-side start record
+without a turn ID. The existing-turn response and completion updated the real Q1 turn but did
+not settle that extra record. D1 reused the warm owner state, selected the pending-start branch
+and waited for a turn ID that would never arrive. A disconnected reproduction can establish the
+source-derived edge case, not the exact contents or origin of the live renderer cache.
+The falsifier is evidence that B1's pending record was actually bound/removed, or that D1 took a
+fresh hydration/another start path. Controls must cover a clean idle state, a new-turn response,
+a genuinely active turn, terminal completion and snapshot merging. No automatic retry, cache
+clearing, installed-App patch or wider runtime authority follows from a passing model.
+
+### New observations and causal limits
+
+The current owner's Desktop log and the approved target's original rollout provide these UTC
+anchors. Only redacted event metadata is recorded here, not raw task IDs, log paths or contents.
+
+| Time on 2026-09-04 | Verified observation | Consequence |
+|---|---|---|
+| `01:56:06.803Z` | B1 begins with no cached resume state or stream owner; real read/resume follows. | B1 used a cold acquisition path, unlike D1. |
+| `01:56:07.028Z` | The target's Q1-bearing turn starts before the App finishes its resume sequence. | A real turn can become active during B1's asynchronous preparation. |
+| `01:56:07.097Z` to `01:56:07.259Z` | App resume logs a completed latest turn, then logs turn-start preparation and a successful `turn/start` response. | The App selected the start path while a separately initiated turn already existed. |
+| `01:56:11.726Z` to `01:56:13.354Z` | B1 appears as tool output in that same Q1 turn; the turn returns the B1 marker and completes. | There is no separate B1 turn in the target rollout. |
+| `04:30:16.565Z` | D1 begins with `previousResumeState=resumed` and `previousStreamRole=owner` in the visible primary window. | This is not an inactive-window denial or a new cold resume. |
+| `04:30:46.572Z` | The same window logs the active-turn-ID wait error. No target `thread/resume`, `turn/start` or `turn/steer` response appears between these D1 anchors. | The 30,007 ms failure is in the warm App-side path, before an observed new backend turn submission. |
+
+Read-only inspection used the same pinned renderer member as D1. `Mln` at byte 2917447 returns
+ready early for an existing owner/resumed state, before its metadata/read/resume path. This removes
+fresh history reconstruction during D1 itself as the leading explanation; earlier reconstruction
+or an earlier pending record can still matter. The pre-submit guard rejects an already unconfirmed
+submission with a different error, so that condition alone does not explain the observed timeout.
+
+The source exposes a specific conditional orphan path:
+
+1. `tun` at 2944967 appends an optimistic `inProgress` turn with a null ID before its start RPC.
+   `JS` at 2631542 appends a separate tail entry, including in canonical history.
+2. Response resolver `Xln` at 2943612 chooses an existing matching real turn before the optimistic
+   entry matched by request ID. If the response joins an already represented turn, only that
+   selected record is updated; this success path does not separately settle the optimistic entry.
+3. `turn/started` at 2817559 also prefers the existing real ID. `turn/completed` at 2818796 and
+   `i8t` at 2631971 update the identified real turn, not a separate null-ID tail.
+4. The warm coordinator still sees the null-ID tail as pending and enters the already traced
+   active-turn-ID wait. Even ordinary snapshot merge `xS` at 2552724 retains such entries; its
+   empty-placeholder exclusion `R2t` applies to a different, completed placeholder shape.
+
+The new `desktop-pending-turn-model.test.mjs` is an independently written, disconnected model of
+these selected transitions. Six cases cover clean idle, ordinary new-turn acceptance/completion,
+actual active steering, the overlapping existing-turn response, warm-state reuse, and completed
+snapshot merge versus a clean history. It uses fabricated IDs and imports only Node test/assert;
+it reads no App bundle or private history and performs no I/O, timers or live tool calls.
+
+**VERIFIED:** the D1 warm path, the B1/Q1 overlap timeline and the named source selection rules.
+**MODEL-VERIFIED:** under the explicit overlap ordering, the extra pending record survives and
+the next message selects the same wait condition. **INFERRED:** that is the origin of this target's
+actual pending record. No renderer-memory snapshot or captured optimistic-request association is
+available to establish that last link conclusively. The local history-projection database had no
+row for this target and was excluded as an authority on its actual turns. This is a concrete
+candidate defect with discriminating evidence, not a verified App fix or a blanket idle-wake failure.
+
+### Next controlled discriminator and implementation boundary
+
+The most useful next live control is a new, dedicated test task: finish its initial inert turn,
+verify idle/no goal/no queue/no scheduler, then send one fixed notification through the exposed
+App tool and observe that same task. This avoids reusing B1's potentially contaminated local state.
+It would test clean idle start, not prove the old target repaired or the Connector admitted.
+Creation and that one send require a new explicit owner decision; neither is performed here.
+No production fresh-session fallback is proposed, and no development task is a test destination.
+
+If the clean control succeeds, keep the old-target fault separate and require state reconciliation
+coverage before relying on repeated handoff. If it fails in the same way, expand the upstream App
+case with the independent trace. A potential App-owned correction must reconcile the exact
+request's optimistic record when a response joins an existing turn, without discarding other
+pending work or blindly sending again. Editing installed App code, restarting the user's App or
+working around its approval/identity boundary is not an authorized project fix.
+
+Verification on Node `24.20.0`: the focused model command passed 6/6 and
+`node --test runtime/experimental-desktop-bridge/test/*.test.mjs` passed 122/122. The latter includes
+the existing fake-client/socket fixtures and operational native-CLI hold. It contains no real
+Desktop send, Connector admission, Game/WebMCP or notification-receipt verification. No product
+runtime suite was rerun because no product implementation changed. ADR-0046/0047, Mechanism 04
+and the Development index retain their existing authority and bounded observations; the new
+cause hypothesis and next discriminator belong here and in TASK-035, with current evidence in Core.
+
+Repository verification: validator tests passed 6/6, sensitive-scanner tests passed 3/3 and
+repository validation passed with exactly the five owned paths staged. Staged whitespace,
+CJK/private-identifier and ownership checks passed. The full sensitive scan retains 21 existing
+findings in seven Game documents, each unchanged against HEAD; no whole-repository scan pass is
+claimed. The current workspace shell resolves Node `24.13.1` for source/log readback, while the
+repository shell resolves Node `26.5.0` for artifact guards. The model and aggregate explicitly
+selected Node `24.20.0`; shell-default discovery is not the fixture-test baseline.
+Concurrent Game implementation and pairing-status hunks are excluded from this increment.
 
 ## Current C1 execution gate
 
