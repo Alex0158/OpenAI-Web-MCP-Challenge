@@ -79,6 +79,66 @@ stdio owner. The earlier same-date read-only check found three Desktop-descended
 processes explicitly using stdio, and `daemon version` reported a missing default control socket.
 No new listener or replacement runtime was started for this review.
 
+## Current intended-client and caller contract
+
+The follow-on source-only review narrows the missing integration contract. The installed App
+supplies a runtime, but its intended bundled service is not an arbitrary script using that runtime:
+
+- Packaged `main-b_QrpbvH.js`, `ek` near offset 1148582, loads the selected plugin's
+  `desktop-mcp.json`, injects the App pipe and bundled runtime, and returns the App Tools MCP
+  configuration. `src-BXVxNf6C.js`, `fU` near offset 892270, also puts the runtime path into the
+  local executor environment. Environment availability is therefore not a private-client permit.
+- The installed `openai-bundled/codex-app-tools/0.1.3/desktop-mcp.json` selects its own launcher
+  and `server.mjs`. Hash comparison confirmed that all three inspected files match their packaged
+  App copies. It declares `send_message_to_thread` with `approval_mode: prompt`. This is
+  source-level default policy, not evidence that every actual call displays a prompt or that
+  no authorized override exists. A custom client must not silently discard the host's approval
+  boundary or treat a Re-entry Grant as an App-policy override.
+- That launcher prefers the App-provided runtime and has additional fallback candidates. Those
+  fallbacks belong to the installed service, not our probe. Its configured consumer is the
+  bundled MCP server; no launcher or server was executed or modified during this review.
+- `server.mjs:24849-24891` obtains caller identity from a host-supplied interaction argument or
+  executor request metadata, including `x-codex-turn-metadata.thread_id`. It rejects calls with
+  no caller metadata. It does not derive the caller from `CODEX_SESSION_ID` or `CODEX_THREAD_ID`.
+  Synthetic call/turn labels are only fallback correlation, not proof of a delegated identity.
+- `server.mjs:24902-24910` chooses catalog scope from its interaction context. The experimental
+  client always asks for `default`. This is another non-equivalence, but it cannot explain a
+  socket rejected before any catalog response.
+
+The frozen identity test deliberately supplies different root-session and child-task identifiers,
+then requires capture of the root session. Its relay uses that captured task as caller and target.
+The hardened probe instead keeps the executor's caller separate from the approved test destination.
+A values-redacted check found both environment identifiers present and equal in this root executor;
+that observation does not make the variable names interchangeable in child or future executors.
+Neither client's initial `tools/list` frame contains caller/target fields, so changing those fields
+cannot repair the observed pre-catalog peer rejection.
+
+The current runtime-to-service configuration is **VERIFIED static source**. Legitimate use of the
+custom probe, and background Connector access when no Agent turn is active, remain **UNKNOWN**.
+An available in-task App tool is not evidence of an independent Connector's admission. Conversely,
+this missing contract is not proof that a supported or explicitly permitted route cannot exist.
+The historical MVP success remains bounded evidence, not erased by the current policy question.
+
+There are two distinct gates, in the approved order:
+
+1. **Current-executor diagnostic:** establish a legitimate invocation for this bounded custom
+   client, actual caller and fixed target while preserving App approval policy. The installed
+   service's source alone does not establish that invocation. Do not require a complete background
+   product lifecycle before this separately authorized diagnostic.
+2. **Subsequent product integration:** establish an App-authorized invocation mechanism usable by
+   the existing Connector when no Agent turn is active, without fabricating executor metadata.
+   Specify exact-task scope, lifetime, renewal if needed, restart and revocation for that mechanism.
+   No token, delegation protocol, or App-owned mediation design is selected here.
+
+A durable private destination binding says where to deliver; it is not the authority to invoke
+the runtime or act as that task. Persistent Re-entry authorization and App invocation authority are
+separate. Ordinary disconnection must not be misreported as user revocation of the former.
+
+The owner already approved the bounded private diagnostic in ADR-0047, and its one B1 submission
+has not been consumed. Do not ask for that unchanged approval again. The open gate is the intended
+client/caller and host-approval contract, not the number of sends remaining. No custom native
+preflight or bundled-runtime substitution follows from this source review alone.
+
 ## Route disposition
 
 | Route | Evidence | Disposition |
@@ -122,8 +182,9 @@ No evidence here warrants changing that endpoint, detaching a writer, or restart
 
 ## Corrected next gate
 
-First complete the launcher/caller/custody comparison and legitimate-use review, retaining the
-actual successful conditions where permitted. Static signature metadata is not permission to borrow
+The static launcher and caller comparison above is complete at its named source boundary. Resolve
+the remaining host-authorized client/caller contract before another live probe, retaining actual
+successful conditions where permitted. Static signature metadata is not permission to borrow
 a trusted executable's identity. If the route requires a listener, different caller authority,
 runtime/configuration change, or other authority outside ADR-0047, present that exact difference to
 the owner before action. If no permitted route can be established, platform coordination remains a
@@ -158,9 +219,10 @@ Could you confirm:
 
 1. Is there a supported third-party enrollment and notification entry point for an existing
    Desktop-owned task, rather than creating a new task or independently resuming its stored history?
-2. What client authentication, signing, user pairing, task ownership, and revocation contract must
-   an external local Connector implement? Are any documented Remote Control extension points
-   intended for this use?
+2. How does an independently running Local Connector acquire an App-authorized exact-task
+   interaction capability when no Agent turn is active, without fabricating executor metadata?
+   What client authentication, signing, pairing, approval, lifetime, renewal and revocation
+   contract applies? Are any documented Remote Control extension points intended for this use?
 3. Can input be delivered as typed event/tool data, without impersonating a new user strategy,
    while preserving the task's Desktop Browser, genuine Site Tools, and approval routing?
 4. What proves durable notification admission, and what are the supported idempotency,
@@ -226,3 +288,33 @@ Correction closure checks:
 - Shared `main` was already 50 commits ahead of the fetched `origin/main`, with none behind.
   This bounded correction does not authorize publishing that unrelated history; remote delivery
   remains separate from local documentation closure.
+
+## Follow-on intended-client review closure
+
+Scope: this record and TASK-035 only. This is an Assured admission review with no new product
+behavior, authority, or product-runtime execution. Core/00 and Mechanism 04 already keep legitimate
+admission and product adoption unverified, so their claim ceilings remain current. Concurrent
+Core, pairing, SDK, Connector, Game and RightSpot edits remain owner-held and outside this scope.
+
+The official App Server page was fetched again; its transport and thread primitives still do not
+establish the required Desktop-owned join. Installed launcher/plugin sources were read without
+loading their modules. No signing addon, bundled runtime, listener, native IPC, test message,
+Receiver request, credential, App setting or deployment was used or changed. A bounded related-task
+lookup produced no additional verifiable admission result; missing turn items are unavailable
+evidence, not proof that another task has no implementation.
+
+`/opt/homebrew/opt/node@24/bin/node --test mvp/test/desktop-task-adapter.test.mjs` passed 4/4
+unchanged frozen tests using an in-memory database and an injected fake client. This verifies the
+root-versus-child capture assertion and fixture behavior only, not actual caller legitimacy or
+App wake. No product aggregate was reopened by these source/document-only changes.
+
+Repository validator unit tests passed 6/6; scanner unit tests passed 3/3; indexed repository
+validation passed. The two owned documents have no sensitive-pattern, CJK, or raw UUID-shaped
+locator matches. The whole-repository scanner still reports 21 pre-existing findings in seven
+Game documents, all unchanged against HEAD and outside this increment. That is not a green
+whole-repository scan. Independent review kept the diagnostic gate separate from the background
+product lifecycle and avoided preselecting an invocation-token model.
+
+The intake branch was shared
+`main`, 51 commits ahead of fetched `origin/main`, none behind, with an empty index. No new branch,
+external coordination message or push is included.

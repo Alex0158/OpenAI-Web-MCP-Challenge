@@ -9,11 +9,16 @@
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Local Connector/Agent Adapter owner, with Receiver and Host SDK owners.
-- Current increment: Reconcile the existing Connector with MVP 1's successful launcher and private
-  task route. CLOUD-028 corrects the platform-only blocker: CLOUD-027 tested ordinary Node, not the
-  complete App-bundled launcher. Static metadata is available; admission equivalence is unverified.
-- Next gate: Complete executable/caller/custody equivalence and legitimate-use review before any
-  new live probe; resolve any changed authority with the owner rather than force admission.
+- Current increment: CLOUD-028 completes the static MVP/installed-launcher comparison. The App
+  configures its bundled MCP service with executor caller metadata and a message-approval policy;
+  this does not establish custom-client or independently running Connector admission.
+- Next gate: Establish legitimate invocation for ADR-0047's current-executor custom diagnostic,
+  preserving actual caller, fixed target and App approval policy. No new B1 submission has occurred.
+  The subsequent product gate must establish how the existing Connector invokes the exact task
+  when no Agent turn is active, including scope, lifetime, renewal if needed, restart and revocation.
+  This does not select a credential/token model or require that complete product lifecycle before
+  the bounded diagnostic. A stored task locator or Re-entry Grant does not itself authorize App
+  invocation. Resolve changed authority with the owner rather than force admission.
   Platform coordination is a conditional next step, not a proven universal prerequisite.
   Keep product integration in the existing Connector. No supported production Adapter is selected.
   The binding contract must then name trusted task selection,
@@ -43,9 +48,10 @@ owns activation, while TASK-029 separately owns notification settlement and prot
 
 This is `Assured`: task ownership, private locator custody, persistence, and cross-layer identity
 are affected. The conservative option is to retain previews while keeping selected-product claims
-blocked. The immediate next gate compares the complete successful MVP launcher/caller conditions
-with the failed ordinary-Node probe before interpreting the admission failure. Narrow binding and
-receipt specification may proceed in parallel, but cannot prove native access. No automatic launcher
+blocked. The completed static comparison distinguishes the successful MVP launcher, the installed
+App Tools service, and the failed ordinary-Node probe. Intended-client/caller admission remains open.
+Narrow binding and receipt specification may proceed in parallel, but cannot prove native access.
+No automatic launcher
 rerun, executable substitution, credential use, or peer-policy bypass follows from this correction.
 A generic multi-Agent registry or cloud-owned raw task database is out of scope.
 
