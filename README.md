@@ -12,7 +12,9 @@
 </a>
 
 <p align="center">
-  <a href="https://re-entry-weld.vercel.app"><strong>Open the live REENTRY app</strong></a>
+  <a href="https://reentry-sdk-playground.vercel.app"><strong>Try the live SDK playground</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://re-entry-weld.vercel.app"><strong>Open the REENTRY Cloud app</strong></a>
   &nbsp;·&nbsp;
   <a href="https://cloud-receiver-delta.vercel.app/health"><strong>Cloud Receiver health</strong></a>
   &nbsp;·&nbsp;
@@ -23,7 +25,7 @@
   <a href="https://youtu.be/lovFAAftKeU"><strong>Watch the demo</strong></a>
 </p>
 
-> 🚀 **Judges:** The quickest path is the [live REENTRY app](https://re-entry-weld.vercel.app),
+> 🚀 **Judges:** The quickest path is the [live SDK playground](https://reentry-sdk-playground.vercel.app),
 > followed by the [complete Judge Guide](https://game.sleepless-kingdom.com/OpenAI-WebMCP-Challenge-Judge-Guide)
 > for the full consent, event, Connector, and agent-return walkthrough.
 
