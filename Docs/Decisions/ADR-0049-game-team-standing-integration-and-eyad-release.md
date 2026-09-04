@@ -100,6 +100,31 @@ scope, delivery, lease, and the attestation before atomically recording the hand
 its one-active slot. The attestation and `runtime_admission_ref` are opaque and contain no raw task
 locator. `effect_token` is not accepted on this route.
 
+For this implementation increment, the attestation has one strict, transport-safe envelope so each
+layer can validate the same correlations without pretending to understand a private task locator:
+
+```text
+runtime_admission_attestation:
+  type: webmcp.runtime_admission_attestation
+  protocol_version: 0.2
+  admission_id: opaque runtime-owned identifier
+  adapter_id: stable trusted Adapter identifier
+  binding_generation: opaque private-binding generation digest
+  delivery_id: Receiver delivery identifier
+  event_id: Receiver Event identifier
+  handoff_id: stable Connector handoff identifier
+  accepted_at: canonical ISO timestamp
+```
+
+The Receiver validates the exact shape and delivery correlations, then delegates trust validation to
+an explicitly injected `StandingRuntimeAdmissionAuthority.verifyAdmission` owned by the selected
+runtime/Adapter integration. A missing authority fails closed with a typed capability error; the
+Receiver must never treat a valid Connector token, a process exit, or a caller-supplied boolean as
+the authority. The authority may verify a runtime-issued proof or a qualified Adapter assertion,
+but that choice must be documented by the deployment and must not add a raw task locator to the
+wire. The first-version route only records a verified known acceptance; it does not promise
+reconciliation after a lost or ambiguous runtime reply.
+
 An exact replay whose handoff receipt is already stored returns that historical receipt with
 `duplicate=true` even if the original lease has expired or the Grant has subsequently been revoked;
 history is not rewritten and the stale lease never authorizes a new handoff. A new `handoff_id` or an

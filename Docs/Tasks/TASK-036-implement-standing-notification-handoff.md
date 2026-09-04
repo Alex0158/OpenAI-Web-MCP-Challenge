@@ -88,8 +88,12 @@ under this outer task and are consumed by the Game after review.
    task notification. A new/unrecorded handoff still requires a current lease.
 4. **Authority:** Receiver verifies Connector credential, target, Grant, Event, delivery, current
    lease, and a runtime-owned admission attestation. Connector authentication and `handoff_id` alone
-   do not prove task-runtime acceptance. Local Adapter verifies private task binding, owner, binding
-   generation, and legitimate host admission. No client-selected task, player, or shelter is trusted.
+   do not prove task-runtime acceptance. The attestation is a strict opaque envelope containing
+   `admission_id`, `adapter_id`, `binding_generation`, `delivery_id`, `event_id`, `handoff_id`, and
+   `accepted_at`; Receiver trust is delegated to an injected
+   `StandingRuntimeAdmissionAuthority.verifyAdmission` and fails closed when that authority is
+   unavailable. Local Adapter verifies private task binding, owner, binding generation, and
+   legitimate host admission. No client-selected task, player, or shelter is trusted.
 5. **One-active/backpressure:** At most one handoff may be open for a standing Grant/task. Game
    cooldown/coalescing remains authoritative; a busy or retryable result is visible and does not
    consume a new sequence or flood the task.
