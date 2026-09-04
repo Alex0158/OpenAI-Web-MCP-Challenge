@@ -6,16 +6,17 @@
 ## Task Control
 
 - Type: `decision`
-- Lifecycle: `in_progress`
+- Lifecycle: `closed`
 - Priority: `P0`
 - Owner: Project team and Cloud Receiver v2 security owner.
-- Current increment: Gate A and Gate B1 are verified, and Amendment A to ADR-0033 is accepted for the
-  project-supported client set and direct Vercel platform path. The post-implementation Gate B2
-  hosted adapter/readback remains open. The local provider adapter, durable limiter, strict claim
-  shape, Dashboard display, Local Connector input, migration, and focused tests are implemented and
-  locally verified; no hosted claim path has been enabled.
-- Next gate: Run the minimum disposable hosted readback against the reviewed deployment, record
-  deployment/migration evidence, and only then decide whether the anonymous claim path can be enabled.
+- Current increment: Gate A, Gate B1, and the minimum disposable Gate B2 hosted Preview readback are
+  verified for Amendment A on the exact `Re-Entry` deployment. The local provider adapter, durable
+  limiter, strict claim shape, Dashboard display, Local Connector input, migration, and focused tests
+  are implemented and verified. Production promotion, production secret custody, and the managed
+  migration procedure remain separate open gates and are not authorized by this task.
+- Next gate: No further work is required under TASK-026 unless the accepted contract or deployment
+  evidence changes. Any Production promotion or managed migration must be separately reviewed and
+  verified; reopen this task if the implementation or provider boundary changes.
 - Dependencies: ADR-0033, AUDIT-V2-001 in Core/09, TASK-012, and the Primary Development Runbook.
 - Coordination: TASK-032 must consume the accepted pairing contract before its compatible Connector
   release can be closed.
@@ -98,9 +99,9 @@ implementation boundary; it does not by itself authorize deployment or publicati
 
 The request shape/version, 30-per-10-minute rate window, trusted-ingress configuration, terminal and
 rate-limit errors, and consumer, migration, and rollback inventory are now normative through
-ADR-0033 Amendment A. The local implementation uses the amended shape; the reviewed hosted preview
-has not yet received this increment, so no hosted claim-path enablement or release claim follows
-from the local green tests alone.
+ADR-0033 Amendment A. The local implementation and minimum disposable hosted Preview readback use
+the amended shape and are verified; this still does not authorize Production promotion, managed
+migration, publication, or a claim about the complete deployed Host flow.
 
 ## 5.1 Required gates
 
@@ -248,9 +249,9 @@ npm test  # runtime/local-connector
 The migration reported no pending work after applying the new table, backend/frontend type checks
 passed, the focused backend suites passed (39 tests across pairing and downstream consumers), and
 the Local Connector suite passed (49 tests, 12 opt-in hosted suites skipped). A production
-configuration probe exits non-zero when the source HMAC secret is absent. Gate B2 remains open: the
-current hosted preview still needs a reviewed deployment with the production HMAC secret and a
-disposable hosted readback; no hosted mutation was made by this local increment.
+configuration probe exits non-zero when the source HMAC secret is absent. At this local-only
+checkpoint, Gate B2 remained open; the reviewed hosted Preview deployment and readback recorded
+below subsequently close it. No hosted mutation was made by this local increment.
 
 An exact-commit recheck on 2026-09-04 used the clean `saas-boilerplate` `Re-Entry` tree at
 `0195a9846024c4f65c62d3922069970ad1b96b92` with Node `v26.5.0` and a fresh disposable PostgreSQL
@@ -337,6 +338,23 @@ response was `429 pairing_rate_limited` with `Retry-After: 558`. No real pairing
 or credential was used. Gate B2 is therefore verified for the minimum disposable hosted Preview
 readback when combined with the existing local atomicity/concurrency/restart evidence. Production
 promotion remains open pending a separately reviewed production secret and migration procedure.
+
+### Clean reset-window confirmation — 2026-09-04
+
+After the fixed UTC source window advanced at `02:40 UTC`, a fresh sentinel claim request against the
+same exact Preview and source returned `404 pairing_not_found`, rather than the prior window's
+rate-limit response. Requests two through thirty in that window also returned the same bounded
+`404`; request thirty-one returned `429 pairing_rate_limited` with `Retry-After: 494` seconds until
+the `02:50 UTC` window boundary. Separate Vercel execution IDs were observed for sampled requests
+including 2, 15, 30, and 31, and each response was a cache miss. Supabase readback showed the durable
+source bucket at the expected thirty-one requests.
+
+Every claim used a syntactically valid but nonexistent pairing ID and code; no real pairing, token,
+Connector, or credential was supplied or consumed. This clean reset-window run confirms that the
+hosted source bucket resets on the fixed window boundary and remains enforced across separate
+executions. Together with the local atomicity, concurrency, restart, header, and limiter-outage
+evidence, it completes the minimum disposable hosted Preview Gate B2. Production aliases, secrets,
+and migration-ledger state were not changed.
 
 ## 6. Reopen condition
 

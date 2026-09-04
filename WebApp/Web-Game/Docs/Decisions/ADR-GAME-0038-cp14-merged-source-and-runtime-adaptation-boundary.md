@@ -64,6 +64,13 @@ The executed package/provenance readback and its claim limits are recorded in
 [`SK-EVID-075`](../Evidence/SK-EVID-075-cp14-host-sdk-package-provenance-readback.md) and
 [`Validation/101`](../Validation/101-cp14-host-sdk-package-provenance-readback.md).
 
+The package readback above is historical. Under the later owner decision in
+[`ADR-GAME-0040`](ADR-GAME-0040-cp14-owner-authorized-cross-stack-implementation.md) and outer
+[`ADR-0049`](../../../../Docs/Decisions/ADR-0049-game-team-standing-integration-and-eyad-release.md),
+the team has since implemented a local standing Host SDK export and additive Receiver handoff
+contract. Those local changes do not make the public package or hosted runtime standing-capable;
+the exact source-pinned release and hosted readback gates remain open.
+
 The selected Receiver candidate's exact ref and Core source-pin readback are recorded in
 [`SK-EVID-076`](../Evidence/SK-EVID-076-cp14-receiver-standing-source-pin-readback.md) and
 [`Validation/102`](../Validation/102-cp14-receiver-standing-source-pin-readback.md). This closes

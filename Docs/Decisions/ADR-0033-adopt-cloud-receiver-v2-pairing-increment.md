@@ -201,9 +201,9 @@ after applying the new table. Backend and frontend type checks passed; the focus
 passed 39 tests across pairing, restart, delivery, consent, event, and acknowledgement consumers;
 the Local Connector suite passed 49 tests with 12 opt-in hosted suites skipped. These results are
 local evidence only. A production configuration probe also exits non-zero when the source HMAC
-secret is absent. Gate B2 remains open until a reviewed deployment with the production HMAC secret
-passes the disposable hosted readback; this amendment did not enable or mutate the hosted claim
-path.
+secret is absent. At this local-only checkpoint, Gate B2 remained open; the reviewed hosted Preview
+deployment and readback recorded below subsequently close it. This amendment did not enable or
+mutate the hosted claim path at that checkpoint.
 
 ### 3.3 Hosted Preview Gate B2 readback — 2026-09-04
 
@@ -238,6 +238,17 @@ Connector token, or credential was supplied or consumed. Combined with the local
 restart, header, and limiter-outage suites, this verifies the minimum disposable hosted Preview
 readback for Amendment A. Production promotion remains a separate decision because the production
 secret and migration-ledger/deployment procedure are intentionally not configured by this increment.
+
+#### Clean reset-window confirmation
+
+After the fixed UTC source window advanced at `02:40 UTC`, a fresh sentinel claim request against the
+same Preview returned `404 pairing_not_found`. Requests two through thirty in that window returned
+the same bounded `404`, while request thirty-one returned `429 pairing_rate_limited` with
+`Retry-After: 494` seconds until `02:50 UTC`. Separate Vercel execution IDs were observed for sampled
+requests including 2, 15, 30, and 31, all with cache misses, and Supabase readback showed the durable
+bucket at `request_count=31`. The identifiers were syntactically valid but nonexistent, so no real
+pairing or Connector credential was touched. This confirms the fixed-window reset and hosted
+cross-execution source fence; Production promotion and managed migration remain outside this ADR.
 
 ### 4. Explicitly rejected or deferred authority
 

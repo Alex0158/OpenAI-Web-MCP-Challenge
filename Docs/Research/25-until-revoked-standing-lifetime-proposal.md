@@ -1,17 +1,18 @@
 # Research 25: Until-Revoked Standing Lifetime Proposal
 
-**Role:** SUPPORTING implementation and decision proposal  
-**Status:** Proposed, not an accepted protocol or authorization to change existing Grants  
+**Role:** SUPPORTING lifetime and compatibility design for TASK-027 and ADR-0048  
+**Status:** Semantic direction accepted by ADR-0048; exact wire/storage implementation remains open  
 **Date:** 2026-09-04  
 **Owner:** [TASK-027](../Tasks/TASK-027-reconcile-consent-and-grant-expiry.md)
 
 ## 1. Objective and current authority
 
-The user endorses one Consent establishing ongoing website-Agent coordination, with no scheduled
-Grant expiry and no per-Event renewal. Translate that intent into an explicit contract before
+The user endorsed one Consent establishing ongoing website-Agent coordination, with no scheduled
+Grant expiry and no per-Event renewal. ADR-0048 accepts that semantic direction while retaining
+finite v0.2 compatibility. Translate the direction into an explicit executable contract before
 changing signed protocol objects, stored authority, or public enrollment. ADR-0043 currently
 accepts non-consumable authorization, while ADR-0045 and current v0.2 code still require finite
-expiry. This proposal does not silently override either decision.
+expiry; those existing profiles remain unchanged.
 
 The intended user-visible rule is: authorization continues until explicit revocation, security
 invalidation, or a material scope change. Browser closure, ordinary Events, process restarts,
@@ -105,18 +106,18 @@ and the Receiver still verifies current authority. Test these predicates explici
 
 ## 4. Version and storage decision
 
-Two independently reviewed alternatives are viable; neither is selected by this document.
+Two independently reviewed alternatives were considered. The current consumer inventory selects the
+additive boundary below; exact route and migration details remain implementation gates.
 
 | Alternative | Benefit | Required proof / cost |
 | --- | --- | --- |
 | Explicitly revise unreleased v0.2 with a new exact Core/spec pin and matching artifacts | Smallest maintained protocol surface | Prove no independently retained/deployed consumer depends on the old exact v0.2 shape; preserve old finite objects and forbid incompatible binaries on the upgraded store |
 | Add an explicit v0.3 until-revoked profile; retain finite v0.2 | Clear compatibility boundary without assuming every consumer can move together | Another version through signing, routes, receipts, adapters and conformance; old binaries must still be isolated from new rows |
 
-**Recommendation:** first confirm the complete v0.2 consumer/deployment inventory with the source
-owners. If its consumers are only the jointly controlled unpublished reference and Receiver,
-prefer an explicitly accepted v0.2 revision with a new pin and package identities. Local-only
-evidence is not proof that this condition holds elsewhere. If it cannot be established, use a
-new protocol version. Do not silently broaden current strict v0.2 or claim old binaries support it.
+**Accepted direction under ADR-0048:** use an explicitly versioned additive v0.3 until-revoked
+profile and retain finite v0.2. The inventory shows published SDK/Connector artifacts and hosted
+snapshots with divergent provenance, so the condition for silently revising v0.2 is not proven.
+Do not broaden current strict v0.2 or claim old binaries support the new lifetime.
 
 Storage topology is a separate decision, not automatically five new tables per wire version.
 Prefer reuse of the standing table family only if an additive migration can preserve every old
@@ -167,8 +168,8 @@ Stronger cancellation needs a separately accepted Host pre-effect authorization 
 
 ## 6. Implementation order and acceptance tests
 
-1. Accept version, lifetime/clock, existing-row, invalidation and binary-compatibility decisions;
-   reconcile TASK-027, ADR-0043/0045 and owning Mechanisms before executable changes.
+1. Reconcile the accepted ADR-0048 version/lifetime boundary with ADR-0043/0045, TASK-027, TASK-029,
+   TASK-033, and the owning Mechanisms before executable changes.
 2. Add strict parser/signature fixtures and one real reference consumer; preserve all finite-mode
    regressions and historical canonical object replay.
 3. Add the durable reference migration and authority transitions; prove one Consent, two bounded
@@ -189,12 +190,13 @@ wrong scope/key/target; no mutation on rejected Events; response loss and proces
 offline-to-online recovery without re-consent or duplicate effects; no implicit revoke from process
 exit; selected-Grant versus device-wide scope fencing; offline revoke never falsely reported complete.
 
-## 7. Approval package and remaining boundaries
+## 7. Accepted package and remaining boundaries
 
-The next decision should cover one coherent package: explicit until-revoked authority, short
+ADR-0048 accepts one coherent semantic package: explicit until-revoked authority, short
 Consent/page clocks, unchanged existing Grants, retained finite execution/authentication limits,
-and the measured version/storage/invalidation strategy. Source owners first supply the consumer
-inventory and target-decommission policy needed to make that choice concrete.
+and an additive v0.3 compatibility boundary. The remaining implementation gates are the exact
+wire namespace, storage/migration topology, same-user control routes, target decommission policy,
+issuer/device invalidation cutoff, and the coordinated TASK-029 notification-handoff profile.
 
 The existing [public control-plane proposal](../../saas-boilerplate/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md)
 still requires exact route, identity, token, CSRF, login, retry and abuse-control acceptance.
@@ -219,8 +221,8 @@ inventory was checked against the parent repository and the nested active Receiv
 | Hosted Receiver/frontend evidence | CLOUD-022 records Vercel deployments from a working-tree snapshot without exact Git attestation | Hosted evidence cannot prove that a particular v0.2 binary or schema is the only consumer |
 
 This inventory is provenance evidence, not a claim that every listed artifact is currently serving
-standing traffic. It does establish that the condition for silently revising unreleased v0.2 — a
-complete, jointly controlled, unpublished consumer set — has not been proven. The safer recommendation
-is therefore an additive, explicitly versioned v0.3 until-revoked profile, retaining finite v0.2 and
-requiring exact source pins for every new artifact. This recommendation remains subject to owner
-acceptance, deployment-owner confirmation, and the target decommission decision.
+standing traffic. It establishes that the condition for silently revising unreleased v0.2 — a
+complete, jointly controlled, unpublished consumer set — has not been proven. ADR-0048 therefore
+accepts an additive, explicitly versioned v0.3 until-revoked profile, retaining finite v0.2 and
+requiring exact source pins for every new artifact. Deployment-owner confirmation, target
+decommission semantics, and the exact executable transition remain open gates.

@@ -61,15 +61,33 @@
   with 12 opt-in integration skips. The separate upstream source trace found App-owned tool-call
   and approval-response paths, but not the executor's permission evaluator or a detached client
   invocation contract. This is not an exhaustive rejection of every possible legitimate route.
-- Next gate: D2 closes the clean App-mediated idle-wake discriminator; do not request or perform
-  another generic idle test. Preserve the old target and its unresolved pending-state failure,
-  the idle D2 fixture, App state, development tasks and spent B1/D1/D2 allowances. No additional
-  send or App mutation is authorized. Repeated-handoff reliability still needs overlap/state-
-  reconciliation evidence; D2 does not prove the old task repaired or automatic retries safe.
+- Current implementation increment (2026-09-04): The project team is implementing the named
+  Core/Host SDK/Connector/Receiver/Game contract under [`ADR-0049`](../Decisions/ADR-0049-game-team-standing-integration-and-eyad-release.md)
+  and [`TASK-036`](TASK-036-implement-standing-notification-handoff.md). The local standing
+  transport and Receiver handoff are focused-green, but a legitimate detached same-task Adapter,
+  durable private binding enrollment, and hosted readback remain explicit gates. The current
+  `codex exec`/fresh-session preview is not a fallback. The source-pinned handoff procedure is in
+  [`CP-14 release packet`](../../WebApp/Web-Game/Docs/Engineering/CP-14-eyad-release-packet-2026-09-04.md).
+- Local Connector binding increment (2026-09-04): `runtime/local-connector/src/task-binding.mjs`
+  now provides restart-safe, mode-0600 private Grant-to-Adapter custody with exact scope lookup,
+  idempotent same-task capture, conflict-safe rebinding, explicit retirement, and a redacted status
+  projection. `bind-task` captures only the current trusted runtime's `CODEX_SESSION_ID`; it does
+  not accept a caller-selected `--codex-thread`. The standing queue Adapter resolves this store and
+  emits event-only context when a runtime-owned attestation factory is supplied. Without that
+  authority, v0.2 remains typed `runtime_admission_unavailable` and never queues or falls back to
+  `codex exec`. Focused Local Connector/Core tests are green; this increment does not prove the App
+  admission, Browser/WebMCP wake, hosted route, or qualified attestation itself.
+- Next gate: Under the owner-approved [ADR-0049](../Decisions/ADR-0049-game-team-standing-integration-and-eyad-release.md)
+  and [`TASK-036`](TASK-036-implement-standing-notification-handoff.md) ownership change, implement
+  and verify the legitimate same-task Adapter and restart-safe private binding against the exact
+  CP-14 release packet. Then run TASK-034's authenticated page/WebMCP proof. D2 remains the narrow
+  App-mediated control recorded below; it does not authorize another generic idle test, an
+  independent Connector claim, or a fresh-task fallback.
   Start with the now-positive Q2 public queue primitive and retained Connector adapter, while
-  coordinating the owner-held TASK-036 surfaces. Define the loaded-state support boundary,
-  trusted enrollment/private binding, fixed event-only message and qualified admission under
-  ADR-0049. The unchanged v0.1 adapter is not ready for promotion: it binds in process memory,
+  coordinating the owner-held TASK-036 surfaces. The trusted enrollment/private binding and fixed
+  event-only message now have a local implementation; the remaining gate is a named qualified
+  admission authority for the selected runtime, followed by actual wake/page/WebMCP proof under
+  TASK-034. The unchanged v0.1 adapter is not ready for promotion: it binds in process memory,
   sends a Browser/action prompt, and reports command acceptance rather than a qualified v0.2
   attestation. Do not silently wire it into the standing consumer or relabel queue success.
   Q2's `userMessage` role must be reviewed against notification-only semantics, not hidden as

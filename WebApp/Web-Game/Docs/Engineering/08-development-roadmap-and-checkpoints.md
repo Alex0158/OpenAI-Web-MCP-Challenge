@@ -343,7 +343,7 @@ the existing recall registration refreshes to a newer server signal, rejects a s
 ignores an older late read without changing the page or server contract. Hosted dynamic recall,
 Agent/Re-entry delivery, and external Receiver/Connector behavior remain separate gates.
 
-### CP-14 — outbox to Re-entry Core (`PLANNED; COMPETITION GATE`)
+### CP-14 — outbox to Re-entry Core (`IN PROGRESS; LOCAL IMPLEMENTATION GREEN; HOSTED HANDOFF OPEN`)
 
 - **Scope:** Map `CargoLostToMonster` to one typed coalesced Agent Signal, preserve the opaque binding,
   deliver through the existing Receiver boundary, keep at most one pending or in-flight wake per bound
@@ -351,16 +351,16 @@ Agent/Re-entry delivery, and external Receiver/Connector behavior remain separat
   under the existing grant when the live revision permits it.
 - **Depends on:** CP-05, CP-11, and CP-13.
 - **External ownership boundary:** The Cloud Receiver backend and Local Connector runtime remain
-  separate dependencies for this checkpoint. Eddy's Game-facing Core, Host SDK, and Local Connector
-  source is already present in the outer main history; no additional Eddy branch merge is pending.
-  The Receiver backend remains the separate saas-boilerplate deployment boundary. The Sleepless
-  Kingdom game branch must not implement, modify, refactor, or redeploy the external Receiver or
-  Connector.
-- **Game-side responsibility:** This checkpoint owns only the game application's outbox and
-  adapter boundary: selecting eligible signals, preserving their identity and coalescing rules,
-  handing them to the interfaces Eddy delivers, and recording acknowledgement or typed failure.
-  A fixture or contract stub may prove this mapping before the handoff, but it is not live Receiver
-  or Connector integration evidence.
+  separate repository/deployment boundaries, but the project team is authorized by
+  [`ADR-0049`](../../../../Docs/Decisions/ADR-0049-game-team-standing-integration-and-eyad-release.md)
+  to implement the reviewed v0.2 contract across those source surfaces. Eyad retains package
+  publication and hosted deployment ownership; no branch merge is pending.
+- **Game-side responsibility:** This checkpoint owns the game application's outbox, server-only
+  binding resolver, standing Event mapper, transport configuration boundary, and worker-owned
+  delivery runner: selecting eligible signals, preserving identity and coalescing rules, handing
+  exact inputs to the reviewed Host SDK, driving the existing port with one in-flight pump, and
+  recording only publication/queue acceptance or a typed failure. A fixture or contract stub may
+  prove the mapping, but it is not live Receiver, Connector, or same-task evidence.
 - **Runtime compatibility gate:** Live integration and CP-14 runtime closure require a recorded
   compatibility packet for the merged source and selected Receiver deployment: exact source commits,
   package exports and versions, endpoint/origin, database and migration state, acknowledgement and
@@ -369,10 +369,11 @@ Agent/Re-entry delivery, and external Receiver/Connector behavior remain separat
   from the accepted baseline, stop and record the cross-boundary decision before adapting the Game;
   do not silently change either external service or the Game event contract.
 - **Acceptance:** Delivery is at-least-once but Domain Event and command effects are exactly-once; the
-  signal contains causal cursor/count context without prompts or credentials; a running Thread receives
-  no per-event message; Agent context cannot replace page state; human review remains required for
-  migration, siege, and destructive actions. The game adapter conforms to the delivered external
-  contracts without changing Cloud Receiver or Local Connector behavior.
+  signal contains causal cursor/count context without prompts or credentials; a running existing task
+  receives no per-event flood; Agent context cannot replace page state; human review remains required
+  for migration, siege, and destructive actions. The Game adapter conforms to the reviewed standing
+  contract; Receiver/Connector implementation and hosted behavior are raised only from exact source
+  and deployment readback.
 - **Verify:** Outbox-to-Receiver delivery, duplicate signal delivery, burst coalescing, active-Thread
   backpressure, delayed page return, missing capability, stale revision, late action, and a visible
   committed or typed-rejected command result. Before the external handoff, report only game-side
@@ -391,10 +392,14 @@ Agent/Re-entry delivery, and external Receiver/Connector behavior remain separat
   now verify the bounded game-side port against a labelled local stub. CP-14 also consumes the proposed
   CP-13 tool contract in [`SK-TASK-053`](../Tasks/SK-TASK-053-cp13-page-tool-contract-preparation.md),
   but live integration now proceeds against the merged source and selected Receiver Preview; the
-  remaining gate is runtime compatibility and evidence. A bounded game-side `ReentryDeliveryPort`/`pumpOnce`
-  implementation against a labelled local contract stub may proceed now; it must preserve the
-  existing durable slot/lease authority and cannot claim live Receiver, Connector, Agent, hosted,
-  or Re-entry delivery. The adapter capability itself is no longer the blocker.
+  remaining gate is runtime compatibility and evidence. The project team may now implement the
+  reviewed external v0.2 source seams under [`ADR-0049`](../../../../Docs/Decisions/ADR-0049-game-team-standing-integration-and-eyad-release.md).
+  The additive standing transport, Receiver controls/handoff, SDK wrapper, Connector dispatch,
+  schema-9 Game mapper, and worker delivery runner are locally verified; the remaining gates are
+  exact source-pinned conformance, production binding/provider/publisher construction, a bounded
+  remote wake policy, a qualified same-task runtime Adapter, hosted publication/deployment, and
+  readback. Queue acceptance cannot claim live Connector, Agent, hosted, page, WebMCP, or Re-entry
+  completion.
   The follow-on [`SK-TASK-068`](../Tasks/SK-TASK-068-cp14-causal-event-to-local-stub-trace.md) is
   runtime-verified under [`SK-EVID-055`](../Evidence/SK-EVID-055-cp14-causal-event-to-local-stub-trace-runtime-verification.md)
   and [`Validation/81`](../Validation/81-cp14-causal-event-to-local-stub-trace-runtime-cross-functional-audit.md):
@@ -409,10 +414,12 @@ Agent/Re-entry delivery, and external Receiver/Connector behavior remain separat
   one-active backpressure and the same enrolled Agent task. Cloud queue acceptance remains separate
   from trusted notification handoff, same-task Agent wake, page action, optional Game action, and any
   resulting effect. The outer `CLOUD-023` source-level closure supplies a locally committed Receiver
-  and exact-commit upgrade result, but the Game task remains pending until the server-side adapter,
-  exact endpoint/source/config readback, v0.2 runtime trace, private task binding, and notification
-  receipt contract are verified; no direct Connector claim, fresh-task fallback, or deprecated
-  Receiver fallback is permitted.
+  and exact-commit upgrade result. The current implementation candidate is recorded in
+  [`TASK-036`](../../../../Docs/Tasks/TASK-036-implement-standing-notification-handoff.md) and the
+  [`CP-14 release packet`](CP-14-eyad-release-packet-2026-09-04.md); the task remains open until
+  source-pinned conformance, private task binding, qualified notification receipt, hosted
+  deployment/readback, and same-task/page evidence are verified. No direct Connector claim,
+  fresh-task fallback, or deprecated Receiver fallback is permitted.
 
 ## Phase 5 — local verification and demo closure
 

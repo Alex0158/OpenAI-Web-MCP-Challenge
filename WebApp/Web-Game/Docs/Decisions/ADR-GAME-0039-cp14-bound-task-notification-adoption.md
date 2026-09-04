@@ -95,6 +95,17 @@ simulation independent of Agent latency. It adds private task enrollment and a t
 receipt to the cross-team work. Those additions must be implemented in their owning Connector/Adapter
 and protocol tasks rather than hidden inside the Game or inferred from a queue response.
 
+## Current owner amendment — 2026-09-04
+
+The original implementation gate above required an external handoff before any Game adapter Red
+run. [`ADR-GAME-0040`](ADR-GAME-0040-cp14-owner-authorized-cross-stack-implementation.md) now
+supersedes that prerequisite only for implementation ownership: the current project team may
+implement the exact shared Core, Host SDK, Local Connector, Receiver, and Game integration under
+[`TASK-036`](../../../../Docs/Tasks/TASK-036-implement-standing-notification-handoff.md). The
+accepted same-task, strict v0.2, authority, no-fallback, and evidence boundaries remain unchanged.
+The release owner still must receive source-pinned artifacts, a qualified runtime Adapter, and
+hosted readback before the implementation can be called a complete or hosted Re-entry path.
+
 ## Reopen triggers
 
 Reopen this scoped adoption if the supported runtime cannot preserve the bound-task identity, if

@@ -2,7 +2,7 @@
 
 **Role:** CANONICAL task-lifecycle authority  
 **Status:** Active  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-04
 
 ## 1. Responsibility
 
@@ -131,9 +131,6 @@ or perform a destructive action.
 - [TASK-001 — Select the Host application](TASK-001-select-host-application.md) — ADR-0042 selects
   Sleepless Kingdom; documentation is committed locally, while remote closure remains pending.
 
-- [TASK-026](TASK-026-reconcile-pairing-claim-abuse-fence.md) — Select an enforceable anonymous
-  pairing-claim abuse fence.
-
 - [TASK-027](TASK-027-reconcile-consent-and-grant-expiry.md) — Select separate Consent-session and
   effective-Grant lifetime and display rules.
 
@@ -165,6 +162,10 @@ or perform a destructive action.
 
 - [TASK-035](TASK-035-bind-existing-agent-task-during-enrollment.md) — Establish trusted private
   enrollment of the selected existing task and restart-safe binding, with no fresh-session fallback.
+
+- [TASK-036](TASK-036-implement-standing-notification-handoff.md) — Implement the source-pinned
+  standing Game-to-existing-task notification path; Eyad owns final package publication and hosted
+  deployment after the release gates pass.
 
 Discover all task records with:
 

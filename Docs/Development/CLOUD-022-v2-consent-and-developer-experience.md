@@ -173,6 +173,21 @@ work.
   working-tree snapshot. CI, a complete deployed popup decision, and production-readiness are not
   claimed by this record.
 
+## Read-only hosted alias recheck: 2026-09-04
+
+The stable aliases were rechecked without credentials or state-changing requests. The Receiver
+returned `200 {"status":"ok"}` from `/healthz` and `200 {"status":"ready"}` from `/readyz`. An
+invalid consent token returned the expected typed `404 {"error":{"code":"consent_token_invalid"}}`;
+that response retained `Cross-Origin-Opener-Policy: unsafe-none`, while `/healthz` retained the
+default `same-origin` policy. A frontend-origin `OPTIONS` preflight for
+`/v1/auth/users/logout` returned `204` with the configured `https://re-entry-weld.vercel.app`
+origin and credentials enabled. The frontend alias root returned `200` and the expected Next.js
+HTML shell.
+
+These are current public route/header smokes only. They do not prove exact Git attestation, a
+credentialed popup decision, Host-server confirmation, later Event delivery, database mutation,
+Connector completion, or production environment configuration.
+
 ## Residual verification gate
 
 The target-origin contract mismatch is resolved: the Receiver sends only to the exact signed Host

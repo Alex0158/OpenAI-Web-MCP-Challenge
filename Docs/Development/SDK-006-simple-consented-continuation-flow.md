@@ -94,8 +94,10 @@ TASK-031 own the release and clean-consumer gate.
 
 ## Release-readiness audit: 2026-09-04
 
-The current `runtime/host-sdk/` checkout is clean at the parent repository's local source state.
-On Node `v26.5.0` with npm `11.17.0`, `npm run verify` passed syntax checks and `25/25` SDK tests.
+The current `runtime/host-sdk/` source is at the parent repository's local release-candidate state.
+Its package manifest and lockfile now both identify version `0.3.1`; `npm ci --ignore-scripts
+--dry-run` confirmed the metadata is internally consistent. On Node `v26.5.0` with npm `11.17.0`,
+`npm run verify` passed syntax checks and `25/25` SDK tests.
 `npm pack --dry-run --json` also passed for the unchanged checkout version `0.3.1`; the candidate
 shape contains `24` files, including the `createReentry()` server export and the bundled standing
 Core source. The dry-run is an inspection only and does not create a registry artifact.
@@ -107,6 +109,30 @@ commit, publication, portal change, deployment, or clean-consumer registry check
 TASK-031 remains open for an explicitly approved new version, exact provenance, portal alignment,
 and post-publication verification. The earlier Node 24 dry-run count of `21` selected files remains
 historical evidence for that earlier checkout state.
+
+### Local tarball clean-consumer probe: 2026-09-04
+
+The current checkout was packed to a temporary directory with `npm pack --json` and installed into
+a fresh `npm init -y` consumer on Node `v26.5.0` with npm `11.17.0`. The generated
+`@4xeoz/re-entry-sdk@0.3.1` tarball contained `24` files, including the bundled Core source; the
+consumer installed it successfully and imported the public `@4xeoz/re-entry-sdk/server` entrypoint.
+The probe observed `createReentry` as a function and the installed package version as `0.3.1`.
+Temporary package and consumer directories were outside the repository and no registry or
+production state was changed.
+
+This proves the current checkout's tarball/export shape and does not prove that the registry's
+immutable `0.3.1` artifact contains the facade, nor does it close version provenance, publication,
+portal alignment, deployment, or external-runtime gates. A first probe also attempted the private
+`./package.json` subpath and failed with Node `ERR_PACKAGE_PATH_NOT_EXPORTED`; that was a test-script
+mistake, not a package failure, and the corrected public-entrypoint probe passed.
+
+The same SDK clean-consumer import was rerun on the required Node `v24.18.0` baseline with npm
+`11.16.0` and passed for `@4xeoz/re-entry-sdk@0.3.1` (`createReentry` exported as a function). The
+Connector tarball probe was also rerun on that baseline: `@4xeoz/re-entry@0.2.20` installed into a
+fresh consumer, its bundled Core client accepted a canonical delivery lease with a non-empty
+`continuation.instruction`, and the instruction was preserved in the normalized result. These are
+checkout-tarball compatibility results; the published registry artifacts and exact-source release
+identity remain unverified.
 
 The Connector package has a separate release boundary. Registry `@4xeoz/re-entry@0.2.20` reports
 root `gitHead` `733d77f`, but that commit records package version `0.2.14`. Its immutable tarball
@@ -128,6 +154,21 @@ This is current-checkout release-candidate evidence only. It does not prove a ne
 registry compatibility, active-v2 Claim/full-chain execution, publication, deployment, or the
 selected-product notification handoff. The registry `0.2.20` mismatch and its `instruction` rejection
 remain the release defect owned by TASK-032; no package file or version was changed in this audit.
+
+### Connector local tarball clean-consumer probe: 2026-09-04
+
+The current Connector checkout was packed to a temporary directory with `npm pack --json` and
+installed into a fresh `npm init -y` consumer on Node `v26.5.0` with npm `11.17.0`. The generated
+`@4xeoz/re-entry@0.2.20` tarball contained `35` files and bundled `@webmcp-challenge/reentry-core`.
+Using the bundled Core client, the clean consumer accepted a canonical v0.1 delivery lease carrying
+the active `continuation.instruction`, preserved that field, sent the expected credential-free claim
+request shape, and rejected an empty instruction with `connector_response_invalid`.
+
+This proves the current checkout's package bundle and instruction validation in a clean consumer. It
+does not prove that registry `0.2.20` contains the same source, nor does it close exact provenance,
+version assignment, pairing-contract migration, active-v2 Claim/full-chain execution, publication,
+deployment, or the selected-product notification handoff. Temporary package and consumer directories
+were outside the repository and no registry or production state was changed.
 
 The first Acknowledgement aggregate run produced one noncanonical transport response in ACK-003
 and finished `4/5`. The isolated case passed immediately, followed by three complete `5/5` runs.

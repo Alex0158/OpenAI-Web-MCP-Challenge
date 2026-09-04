@@ -63,6 +63,9 @@ The CP-14 Host SDK package/provenance readback is recorded in [SK-EVID-075](SK-E
 The CP-14 Receiver standing source-pin readback is recorded in [SK-EVID-076](SK-EVID-076-cp14-receiver-standing-source-pin-readback.md); the selected external candidate verifies one exact Core source and rejects drift, while release, enrollment, and Host SDK gates remain open.
 The CP-14 bound-task notification adoption readback is recorded in [SK-EVID-077](SK-EVID-077-cp14-bound-task-notification-adoption-readback.md); ADR-0046 is scoped into the Game while gameplay, publication, notification handoff, Agent wake, and optional effect remain separate claims.
 
+The CP-14 standing Event transport runtime verification is recorded in [SK-EVID-078](SK-EVID-078-cp14-standing-event-transport-runtime-verification.md); schema-9 mapping, durable sequence/context, queue-acceptance boundaries, and focused local checks are green while hosted Receiver, same-task admission, Browser/WebMCP, and effect claims remain open.
+The CP-14 server-owned delivery runner lifecycle and worker wake coalescing result is recorded in [SK-EVID-079](SK-EVID-079-cp14-reentry-delivery-runner-runtime-verification.md); one in-flight `pumpOnce`, startup/authoritative-boundary wake wiring, interpolation-tick suppression, failure visibility, and shutdown ordering are locally verified while production transport construction, same-task admission, hosted delivery, Browser/WebMCP, and effect claims remain open.
+
 ## 2. Identity
 
 Evidence IDs use `SK-EVID-NNN`, beginning at `001` and increasing monotonically. Never renumber or

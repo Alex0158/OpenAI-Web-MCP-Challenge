@@ -150,18 +150,20 @@ Hosted implementation/admission remains under [`SK-TASK-078`](SK-TASK-078-cp17-p
 hosted cross-scope denial remains under [`SK-TASK-079`](SK-TASK-079-cp17-authenticated-cross-scope-denial-rehearsal.md),
 and no hosted gameplay or continuity claim follows from this task; its audit is [`Validation/90`](../Validation/90-cp17-host-decision-and-deployment-preflight-cross-functional-audit.md).
 
-[`SK-TASK-076`](SK-TASK-076-cp14-cloud-receiver-v2-game-adaptation.md) is `pending` for the CP-14
-Game-side adaptation to Eddy's exact Cloud Receiver v2 Host Event ingress. Its cross-functional audit
-is [`Validation/89`](../Validation/89-cp14-cloud-receiver-v2-adaptation-cross-functional-audit.md).
-The task preserves the verified local `ReentryDeliveryPort`, treats Cloud `202` as queue acceptance
-only, and keeps Connector claim, fresh Agent activation, page action, and effect acknowledgement as
-separate boundaries. Outer ADR-0043 and RECORE-007 replace the former one-shot recommendation with
-one standing Consent, ordered repeatable signals, and one-active backpressure at Core reference
-scope. The outer [`CLOUD-023`](../../../../Docs/Development/CLOUD-023-standing-receiver-source-gate.md)
-now records a locally committed Receiver source and exact-commit upgrade proof, but that source-level
-result is not an installable or hosted Game handoff. Game implementation remains gated on an
-owner-declared exact protocol-v0.2 Receiver/SDK/Core/Connector package or endpoint/test environment,
-Consent/binding/session/sequence mapping, and effect-authority boundary.
+[`SK-TASK-076`](SK-TASK-076-cp14-cloud-receiver-v2-game-adaptation.md) is `in_progress` for the CP-14
+Game-side adaptation to the accepted protocol-v0.2 standing path. Its cross-functional audit is
+[`Validation/89`](../Validation/89-cp14-cloud-receiver-v2-adaptation-cross-functional-audit.md).
+The local standing transport now persists schema-9 Event context, maps a `signalId` to one durable
+ordered Event, and records Cloud `202` only as `receiver_queue_accepted`; the worker-owned delivery
+runner drives that existing port from startup and completed world boundaries with one in-flight pump,
+coalesced wakes, interpolation-tick suppression, and shutdown drain.
+Connector claim, same-task notification handoff, Agent wake, page action, and effect acknowledgement
+remain separate boundaries. Outer ADR-0043, ADR-0049, and RECORE-007 govern the standing profile and
+team-owned implementation. The outer [`TASK-036`](../../../../Docs/Tasks/TASK-036-implement-standing-notification-handoff.md)
+records the Core/SDK/Connector/Receiver increment and focused local evidence, including
+[`SK-EVID-079`](../Evidence/SK-EVID-079-cp14-reentry-delivery-runner-runtime-verification.md). Public
+package publication, hosted deployment/readback, production binding/provider/publisher construction,
+same-task runtime admission, and remote wake policy remain open for Eyad's release gate.
 
 [`SK-TASK-075`](SK-TASK-075-cp12-shelter-economy-summary-cards.md) is `verified` with `integrated`
 closure for the bounded CP-12 shelter economy summary cards under [`SK-EVID-062`](../Evidence/SK-EVID-062-cp12-shelter-economy-summary-card-runtime-verification.md)
@@ -228,10 +230,13 @@ the server, snapshot, session, WebMCP, Re-entry, or external handoff boundaries.
 [`SK-TASK-065`](SK-TASK-065-cp12-canvas-actor-world-visual-surface.md) is verified for the named
 deterministic Canvas actor/world presentation under [`SK-EVID-052`](../Evidence/SK-EVID-052-cp12-canvas-actor-world-visual-surface-runtime-verification.md)
 and [`Validation/78`](../Validation/78-cp12-canvas-actor-world-visual-surface-runtime-cross-functional-audit.md).
-[`SK-TASK-062`](SK-TASK-062-cp14-game-side-local-stub-delivery-port.md) remains the latest verified CP-14 game-side increment. It proves the local `ReentryDeliveryPort`/`pumpOnce`
-mapping against a labelled transport stub and must not claim live Receiver, Connector, Agent, hosted,
-or Re-entry delivery. The next CP-14 live-integration increment remains separately admitted only after
-Eddy's versioned Receiver/Local Connector handoff.
+[`SK-TASK-062`](SK-TASK-062-cp14-game-side-local-stub-delivery-port.md) remains the baseline local
+port evidence. The additive standing transport and worker delivery runner are recorded under
+[`SK-TASK-076`](SK-TASK-076-cp14-cloud-receiver-v2-game-adaptation.md),
+[`SK-EVID-078`](../Evidence/SK-EVID-078-cp14-standing-event-transport-runtime-verification.md), and
+[`SK-EVID-079`](../Evidence/SK-EVID-079-cp14-reentry-delivery-runner-runtime-verification.md). They
+must not claim live Receiver, Connector, Agent, hosted, or Re-entry delivery until the exact release
+packet, production composition, and same-task adapter pass their gates.
 
 [`SK-TASK-057`](SK-TASK-057-cp12-server-owned-continuous-intent.md) is terminal at its named local
 server-owned continuous-intent runtime scope under [`SK-EVID-043`](../Evidence/SK-EVID-043-cp12-server-owned-continuous-intent-runtime-verification.md)

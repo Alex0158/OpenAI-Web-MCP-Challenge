@@ -4,8 +4,8 @@
 **Status:** Protocol-v0.1 Core, active v2, and current-checkout Local Connector contracts locally
 verified at bounded scopes; additive v0.2 two-delivery Connector/Agent-Adapter reference locally
 verified, with an active-v2 standing kernel and upgrade locally verified from committed source; pinned release,
-public controls, and product version selection remain open; pairing abuse fence is locally verified
-with hosted Gate B2 open; registry compatibility, default effect acknowledgement, production
+public controls, and product version selection remain open; the pairing abuse fence is locally and
+hosted Preview verified; registry compatibility, default effect acknowledgement, Production
 identity/deployment, and supported Agent runtime remain open; former receiver historical  
 **Controls:** ADR-0009, ADR-0010, ADR-0013, historical ADR-0019 through ADR-0032, and active
 ADR-0033, ADR-0037 through ADR-0041, and ADR-0043 through ADR-0045
@@ -137,9 +137,10 @@ discovery, version preflight, Node-version gating, and Host-directory validation
 additionally verifies Connector-initiated account authorization, credential reuse, authenticated
 device selection, bounded idle polling, graceful stop, and generated macOS LaunchAgent lifecycle.
 Active v2 additionally has local Claim/ACK contract coverage and one separate-Connector-process,
-separate-test-effect-worker acknowledgement/restart flow. **LOCALLY VERIFIED:** its amended
-pairing claim fence now has strict ID/code shape, atomic failed-attempt accounting, trusted-source
-adaptation, and durable source limiting; hosted Gate B2 remains open (TASK-026). **VERIFIED OPEN:** the default
+separate-test-effect-worker acknowledgement/restart flow. **LOCALLY AND HOSTED PREVIEW VERIFIED:** its
+amended pairing claim fence has strict ID/code shape, atomic failed-attempt accounting, trusted-source
+adaptation, durable source limiting, and fixed-window reset evidence on the exact Re-Entry Preview.
+Production secret custody, managed migration, and promotion remain open (TASK-026). **VERIFIED OPEN:** the default
 Connector `start`/`claim-once` path dispatches but never obtains effect proof or acknowledges, so the
 lease can be reclaimed within the accepted three-attempt bound (TASK-029). **CONFLICTED RELEASE:**
 registry Connector `0.2.20` bundles a pre-instruction Core client and rejects active v2's current

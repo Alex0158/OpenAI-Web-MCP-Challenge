@@ -9,8 +9,8 @@
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Current project team for implementation; Eyad for final package publication and hosted deployment.
-- Current increment: Freeze exact source ownership and protocol baselines, register the additive finite-v0.2 notification-handoff contract, and write the first failing Receiver/persistence tests before wiring any consumer.
-- Next gate: The baseline packet is recorded, the exact candidate refs are immutable, and the first red tests fail only because the named handoff route/state transition is not implemented.
+- Current increment: Implement and locally verify the additive finite-v0.2 notification-handoff path across Core, Host SDK, Connector, Receiver, and the Game's server-side standing Event mapper plus its worker-owned delivery runner; keep the exact hosted/public release gate open for Eyad.
+- Next gate: Run cross-stack conformance against the exact source-pinned Receiver and package artifacts, then construct the production Game binding/provider/publisher composition, prove a legitimate same-task runtime admission, and wire it to the hosted Game without changing the Game's authority boundaries.
 - Dependencies: [ADR-0049](../Decisions/ADR-0049-game-team-standing-integration-and-eyad-release.md); [ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md); [ADR-0045](../Decisions/ADR-0045-adopt-standing-transport-profile-v0.2.md); [ADR-GAME-0039](../../WebApp/Web-Game/Docs/Decisions/ADR-GAME-0039-cp14-bound-task-notification-adoption.md); TASK-029, TASK-033, TASK-034, and TASK-035.
 
 ## 1. Problem and objective
@@ -33,8 +33,9 @@ claim.
 - `reentry-core/`, `runtime/host-sdk/`, and `runtime/local-connector/` source are present in the
   outer `main` history; no pending Eddy branch merge is required.
 - The candidate Receiver is the nested `saas-boilerplate` repository and is a separate deployment
-  boundary. Its current public v0.2 transport exposes Event, claim, and effect-backed acknowledgement
-  routes; consent/control services and notification handoff are not yet a complete public path.
+  boundary. Its current hosted/public preview still exposes only the previously deployed Event,
+  claim, and effect-backed acknowledgement routes; the local working tree now adds the reviewed
+  consent/control and notification-handoff path, which has not yet been published or deployed.
 - The Game already owns authoritative events, signal coalescing, publication outbox, page state,
   identity, and command ownership. `CargoLostToMonster` is the selected first signal.
 - The current Game and external source trees contain collaborator-owned dirty work. Baseline and
@@ -58,6 +59,52 @@ claim.
   handoff receipt.
 - The deployed Receiver, package artifacts, and hosted source identity matching the candidate refs.
 
+### 2.1 Local implementation increment (2026-09-04)
+
+The team has implemented the smallest additive contract needed to reach the selected same-task
+notification boundary. The result is a local working-tree increment, not a hosted or published
+release:
+
+- Core now exports strict notification-handoff and runtime-admission value validators and the v0.2
+  handoff route/field contract. Full Node 24 Core tests pass `174/174`.
+- The Host SDK now exposes a server-only standing wrapper for Host-key registration, Consent-session
+  creation/status, and signed standing Event publication. Its focused standing suite passes `27/27`.
+- The Local Connector now derives a stable handoff identity, asks a private Adapter for a qualified
+  same-task admission attestation, reports typed `admitted`, `unsupported`, and `outcome_unknown`
+  states, and calls the additive Receiver handoff route. Its mode-0600 handoff journal reserves the
+  identity before runtime invocation, quarantines runtime-pending/unknown outcomes, and retries only
+  a previously attested Receiver handoff after response loss. Full Connector verification passes
+  `81` with `12` explicitly opt-in v0.2 checks skipped because no live hosted environment was
+  supplied; syntax covers `43` modules.
+- The separate `saas-boilerplate` Receiver working tree now contains the additive handoff migration,
+  strict v0.2 control routes, same-user consent/revocation controls, an explicit
+  `createApp({ standingRuntimeAdmissionAuthority })` server-side composition seam, and focused
+  handoff tests. The default app remains fail-closed when no authority is injected. The task-owned
+  disposable PostgreSQL run passes `5` suites / `53` tests after the two named migrations; the
+  HTTP composition seam passes `21/21` focused tests.
+- The Game now persists schema version `9` / migration `cp14-001`, allocates a durable per-binding
+  Event sequence, stores canonical occurrence and causal state versions, maps `signalId` to the
+  external Event identity, records `receiver_queue_accepted` separately from downstream claims, and
+  drives the existing port from one worker-owned, single-flight delivery runner with coalesced wakes
+  and shutdown drain. Game typecheck, CP-14 transport (`5/5`), runner (`4/4`), causal trace (`1/1`),
+  page recall (`1/1`), CP-05 (`26/26`), and CP-08 (`4/4`) focused checks pass on Node 24.
+
+The claim ceiling is local contract/runtime composition only. There is still no verified public
+package release, hosted Receiver deployment/readback, production binding/provider/publisher
+construction, legitimate same-task runtime adapter, Connector process-to-Game wiring, Browser/WebMCP
+trace, Host effect, or ACK proof.
+The current local Connector fresh-`codex exec` adapter remains compatibility preview evidence and
+is not a fallback for the selected same-task path.
+
+**Public readback correction (2026-09-04):** The recorded Receiver Preview is healthy (`/health`
+HTTP 200 with database up; `/readyz` HTTP 200 ready), but a preflight supplied with the hosted Game
+origin is answered for the old frontend origin, and read-only probes of the named v0.2 paths return
+the Preview's 404 route response. The npm registry likewise still exposes the old Connector
+`0.2.20` export surface and SDK `0.3.2` without `./standing-server`; those bytes are not the local
+candidate. This confirms the hosted/package gate is real and must be resolved before a Game Event
+or Consent/Grant trace is attempted. Details and exact claim limits are in the [CP-14 release
+packet](../../WebApp/Web-Game/Docs/Engineering/CP-14-eyad-release-packet-2026-09-04.md).
+
 ## 3. Scope, ownership, and implementation plan
 
 The current team may edit only the following named surfaces for this task, while preserving any
@@ -70,7 +117,7 @@ pre-existing unrelated changes:
 | Local Connector | `runtime/local-connector/src/`, focused tests, package metadata only when required | Durable private binding and v0.2 handoff dispatch; no fresh task |
 | Receiver | `saas-boilerplate/backend/src/`, Prisma schema/migrations, focused tests/docs | Additive route/state transition and conformance evidence |
 | Game | `WebApp/Web-Game/src/`, focused tests, and CP-14 task/evidence/validation/docs | Server-side mapping and persistence only; preserve gameplay semantics |
-| Release packet | Untracked local redacted manifest outside tracked source, then reviewed handoff note | Exact SHAs, package hashes, migration, commands, and readback results |
+| Release packet | [`CP-14 release packet`](../../WebApp/Web-Game/Docs/Engineering/CP-14-eyad-release-packet-2026-09-04.md) plus a final redacted freeze record | Exact SHAs, package hashes, migration, commands, and readback results |
 
 Do not edit `mvp/`, frozen references, generated artifacts, credentials, mutable runtime databases,
 or unrelated collaborator files. The Game child cannot directly modify shared Core; such edits occur
@@ -119,11 +166,14 @@ explicitly marked unknown; no `latest` dependency is used.
 ### Phase B — Receiver contract and persistence
 
 Write red tests for strict request/receipt validation, current-lease/scope checks, qualified
-runtime-attestation requirement, duplicate replay, historical receipt replay after lease
+ runtime-attestation requirement, duplicate replay, historical receipt replay after lease
 expiry/revocation, response-loss identity, one-active release, expiry/revocation, wrong-scope denial,
 and migration compatibility. Implement the smallest additive Receiver migration, service transition,
-route, middleware allowlist, typed failures, idempotent response replay, and focused tests. **DoD:**
-the handoff tests are green and all retained v0.1/v0.2 route tests remain green.
+route, middleware allowlist, typed failures, idempotent response replay, and focused tests. Expose
+the runtime admission authority only through an explicit server-side `createApp` option; a default
+or serverless app with no option must remain fail-closed. **DoD:** the handoff tests are green, all
+retained v0.1/v0.2 route tests remain green, and the release composition supplies a real authority
+before any handoff can settle.
 
 ### Phase C — Public standing enrollment/control
 
@@ -142,6 +192,18 @@ existing task or stops with a typed unsupported capability; it never starts a fr
 idempotency/lookup is unavailable, record the unknown crash window and stop only the stronger
 automatic recovery claim rather than inventing one.
 
+**Current implementation note (2026-09-04):** Core's runtime-admission seam now distinguishes an
+explicit Adapter capability miss (`unsupported`) from an invocation/response failure
+(`outcome_unknown`). The Local Connector has a mode-0600 restart-safe Grant-to-task store,
+`bind-task` trusted capture from `CODEX_SESSION_ID`, LaunchAgent persistence for protocol/store
+selection, and a standing Codex queue Adapter that sends only bounded event context. Its separate
+mode-0600 handoff journal reserves each stable delivery identity before runtime invocation,
+quarantines a runtime-pending/unknown crash window, and permits only a stored-attestation Receiver
+retry; it never blindly requeues the task. The Adapter exposes `admitNotification` only when a
+runtime-owned attestation factory is supplied; a plain `codex queue` exit is intentionally not
+treated as handoff proof. The remaining Phase D gate is the actual selected-runtime authority and
+its live same-task wake evidence.
+
 ### Phase E — Game mapping and persistence
 
 Add only the minimal schema/versioned mapping for Receiver binding, workflow, event sequence, and
@@ -149,6 +211,18 @@ stable ISO occurrence time. Keep Receiver secrets and leases out of Game. Map `s
 `event_id`, use a durable external sequence, use the accepted causal page version for
 `state_version`, and preserve Game publication lease/coalescing. **DoD:** two eligible ordered
 signals use one Consent/Grant/task and retry the same identity after an unknown outcome.
+
+### Phase E.1 — Game delivery driver composition
+
+Attach the existing Game `ReentryDeliveryPort` to the already-running worker through one
+process-owned runner. Worker startup and completed authoritative world boundaries may request a wake;
+100 ms interpolation ticks do not. Repeated boundary wakes while a pump is active collapse into one
+pending wake. The runner must not own durable state, add a timer or queue, interpret a remote result,
+or acknowledge a delivery. Stop the runner before closing the worker/store and preserve a pending or
+unknown outbox record for the port's normal lease/retry path. **DoD:** the runner lifecycle and
+shutdown ordering are focused-tested; production construction is enabled only when a server-only
+binding resolver, standing Host publisher, exact package/source identity, and explicit boundary-wake
+policy are available.
 
 ### Phase F — Cross-functional local trace
 
@@ -161,11 +235,16 @@ forbidden fallback or cross-player mutation occurs.
 
 Run focused aggregate checks against the exact source, generate package tarballs and SHA-256 hashes,
 record migration and environment key names (never values), and prepare a redacted trace and rollback
-notes. **DoD:** a reviewer can reproduce the candidate without credentials or mutable local state.
+notes using the [`CP-14 release packet`](../../WebApp/Web-Game/Docs/Engineering/CP-14-eyad-release-packet-2026-09-04.md).
+**DoD:** a reviewer can reproduce the candidate without credentials or mutable local state.
 
 ### Phase H — Eyad publication/deployment and readback
 
-Give Eyad the packet. Eyad publishes the exact package versions and deploys the exact Receiver commit.
+Give Eyad the [`CP-14 release packet`](../../WebApp/Web-Game/Docs/Engineering/CP-14-eyad-release-packet-2026-09-04.md).
+Eyad publishes the exact package versions and deploys the exact Receiver commit. The deployment
+composition must call `createApp({ standingRuntimeAdmissionAuthority })` with the reviewed,
+server-side runtime authority; leaving the option absent is an intentional fail-closed deployment,
+not a successful handoff configuration.
 Re-read public package metadata, deployed source/build identity, `/healthz`, `/readyz`, migrations,
 and the hosted trace. **DoD:** hosted claims are raised only from current readback; failed or
 unavailable publication remains an explicit residual gate.

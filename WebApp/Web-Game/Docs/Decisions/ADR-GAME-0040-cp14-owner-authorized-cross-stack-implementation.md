@@ -1,6 +1,6 @@
 # ADR-GAME-0040: Authorize Cross-Stack CP-14 Implementation with Eyad Release Handoff
 
-**Status:** Accepted owner decision; implementation open  
+**Status:** Accepted owner decision; local implementation increment verified; production/hosted gates open  
 **Date:** 2026-09-04  
 **Scope:** Sleepless Kingdom CP-14 adapter and its coordinated outer Re-entry implementation
 

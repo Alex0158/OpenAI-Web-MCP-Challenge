@@ -11,8 +11,9 @@
 - Owner: Principal architecture owner and Cloud Receiver v2 owner.
 - Current increment: Core and Receiver sources are committed locally; the pinned standing trace now
   covers out-of-order rejection/no mutation, duplicate convergence, the distinct-Event same-sequence
-  conflict, same-ID/different-body identity conflict, and one-shot post-write transaction rollback
-  with exact-envelope retry, while a standing Core/SQLite pending-Delivery recovery trace now
+  conflict, same-ID/different-body identity conflict, alternate same-origin key denial, same-ID
+  key-material rebinding denial with no mutation, and one-shot post-write transaction rollback with
+  exact-envelope retry, while a standing Core/SQLite pending-Delivery recovery trace now
   survives SIGKILL and fresh-process claim/ack/replay, and the active Receiver/PostgreSQL
   implementation now passes both fresh-process recovery and a forced transaction-interruption
   rollback trace; the Core/SQLite reference now passes the corresponding transaction-interruption

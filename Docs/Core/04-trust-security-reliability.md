@@ -3,8 +3,8 @@
 **Role:** CANONICAL cross-cutting trust, security, and reliability policy  
 **Status:** Protocol-v0.1 controls, bounded active-v2 authorization/Consent/delivery paths, and the
 additive standing-v0.2 application-neutral transport reference and active-Receiver working-tree
-kernel locally verified; public controls, pinned release, product v0.2 adoption, pairing abuse
-hosted Gate B2, effective expiry, default effect acknowledgement,
+kernel locally verified; the minimum disposable hosted Preview pairing abuse Gate B2 is verified;
+public controls, pinned release, product v0.2 adoption, effective expiry, default effect acknowledgement,
 production identity, custody, services, and runtime evidence remain open  
 **Authority:** ADR-0006 through ADR-0015, historical ADR-0019 through ADR-0032, and active v2
 ADR-0033 through ADR-0045
@@ -123,7 +123,7 @@ integration.
 | Hidden fallback | explicit unsupported/unknown states and no automatic retry or alternate adapter | local tests |
 | Accidental Stage 1 public exposure | literal loopback bind, absolute trusted composition, fail-closed startup | local shell and child-process tests; no TLS or public-profile evidence |
 | Device-authorization or Connector-token leakage | short-lived device secret, one-time credential issue, digest-only control state, no token logs or browser display, restrictive local credential file | local preview tests; no production browser session, rotation, or recovery evidence |
-| Pairing-code guessing | bounded entropy plus an enforceable attempt/rate fence and secret-free terminal behavior | **LOCALLY VERIFIED:** active v2 now requires pairing ID/code, atomically counts wrong attempts, and applies a durable source budget; hosted Gate B2 remains open under TASK-026 |
+| Pairing-code guessing | bounded entropy plus an enforceable attempt/rate fence and secret-free terminal behavior | **LOCALLY AND HOSTED PREVIEW VERIFIED:** active v2 requires pairing ID/code, atomically counts wrong attempts, and applies a durable source budget across the exact Re-Entry Preview; Production secret custody, managed migration, and promotion remain open under TASK-026 |
 | Consent/Grant lifetime misunderstanding | distinct windows, explicit Receiver narrowing, and user-visible effective expiry | **CONFLICTED:** the retained active-v2 v0.1 path copies the shorter session expiry into the Grant without displaying it. The standing kernel stores separate deadlines, but product lifetime and display policy remain open under TASK-027 |
 | Cross-site session termination | matching session plus origin/content-type protection on state-changing browser requests | **LOCALLY VERIFIED:** both logout routes use the configured same-origin JSON guard, preserve the other account cookie, and passed a local split-origin browser flow; hosted release readback remains under TASK-030 |
 | Consent replay, wrong-account approval, or Host-selected device | account session, organization authentication, challenge/action binding, eligible-device selection, digest-only storage, exact decision fencing | local preview tests; no production session or CSRF evidence |

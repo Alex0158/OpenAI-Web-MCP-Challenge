@@ -41,9 +41,9 @@ proof claims belong in `Docs/Core/00-current-status.md` and
   the current Sleepless Kingdom and Rental Marketplace Relay shortlist.
 - [Research 24](24-cloud-receiver-2-saas-boilerplate-study.md): static review of the cloned SaaS
   boilerplate and the open Cloud Receiver 2 adaptation boundary.
-- [Research 25](25-until-revoked-standing-lifetime-proposal.md): proposed explicit no-scheduled-expiry
-  authority, clock separation, version/storage alternatives, invalidation and implementation gates;
-  not an accepted contract.
+- [Research 25](25-until-revoked-standing-lifetime-proposal.md): supporting design for the accepted
+  ADR-0048 explicit no-scheduled-expiry authority, clock separation, version/storage boundary,
+  invalidation and implementation gates; exact executable contract remains open.
 - [Research 26](26-pairing-claim-abuse-fence-proposal.md): proposed pairing identity, durable
   per-pair/source abuse controls, terminal failure, replay, concurrency, and rollout boundary;
   not an accepted contract.

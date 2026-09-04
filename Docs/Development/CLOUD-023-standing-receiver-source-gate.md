@@ -639,3 +639,49 @@ changes no production behavior. This closes the bounded Core/SQLite
 transaction-interruption vector only. Production durability, supervision,
 distributed ownership, release enforcement, public controls, lifetime,
 deployment, and the remaining cross-implementation matrix remain open.
+
+## Shared key-scope and key-material rebinding increment: 2026-09-04
+
+The pinned standing-v0.2 scenario was rerun through both the Core reference and the active Receiver
+HTTP adapter with the negative issuer-key vectors enabled. An alternate key trusted for the same
+origin was rejected with non-retryable `401 event_key_scope_invalid`; replacing the public material
+behind the consented key ID was rejected with non-retryable `401 event_key_material_scope_invalid`.
+Both denials left the Grant sequence at zero and created no Delivery, and the fixture restored the
+consented material before the scenario continued.
+
+An initial run pointed at the parent repository `HEAD` and was correctly refused with
+`conformance_source_commit_mismatch`; the passing rerun used a detached checkout of the exact Core
+commit named by the Receiver pin. No pin or source-preflight rule was weakened.
+
+Exact evidence:
+
+- Core targeted scenario/contract tests: `30/30` passed with
+  `node --test test/standing-scenario-contract.test.mjs test/standing-cross-layer.test.mjs`;
+- pinned active Receiver shared scenario: `1/1` passed with
+  `NODE_ENV=test STANDING_MIGRATION_TEST_DATABASE_URL=<task-owned-loopback-db>
+  REENTRY_CONFORMANCE_ROOT=<exact-Core-checkout> node --test backend/conformance/standing-v0.2/receiver.test.mjs`;
+- Core commit: `1446d73aa3e66533547471728ad8fa5344d51f9e`;
+- selected Core/spec SHA-256: `6210d7724417e0533c77d5989e8ffdd3c404af4063ac9d70d70db9b622f73d45`;
+- active Receiver commit: `5a2117b61aac991045aff0a877dac6990f98f6bd`;
+- runtime: Node `v26.5.0`; and
+- evidence result: `source_identity_verified: true`, `release_conformance_verified: false`.
+
+The Receiver run used the existing task-owned disposable PostgreSQL container and current local
+Receiver checkout; one logged `500 receiver_internal_error` was the scenario's intentional
+transaction-rollback fault. No production database, deployment, publication, or source pin was
+changed. This closes the shared key-scope/rebinding vector only; full v0.1/v0.2 matrix coverage,
+release enforcement, public controls, lifetime, deployment, and production effect authority remain
+open.
+
+## Pairing commit standing-trace recheck: 2026-09-04
+
+After the pairing-claim abuse-fence commit, the exact pinned standing-v0.2 Receiver trace was rerun
+against a fresh disposable PostgreSQL 16 database. The migration set (including
+`20260904000000_pairing_claim_rate_limit`) applied successfully, and the shared Express/PostgreSQL
+scenario passed `1/1` through Receiver commit `0195a9846024c4f65c62d3922069970ad1b96b92` with Core
+pin `1446d73aa3e66533547471728ad8fa5344d51f9e`, selected Core/spec SHA-256
+`6210d7724417e0533c77d5989e8ffdd3c404af4063ac9d70d70db9b622f73d45`, and Node `v26.5.0`.
+The trace reported `source_identity_verified: true` and `release_conformance_verified: false`;
+the single logged `500 receiver_internal_error` remained the scenario's intentional transaction
+rollback fault. This recheck confirms no standing-contract regression from the pairing increment,
+but it does not close the mandatory full matrix or release/hosted gates.

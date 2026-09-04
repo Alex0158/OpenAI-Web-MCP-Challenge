@@ -238,7 +238,8 @@ developer accounts, pairing and Connector rows, organizations and API keys, Host
 sessions, subject bindings, Grants, Events, Deliveries, and Delivery Attempts in PostgreSQL. Its
 frontend owns the user and developer portals; the Receiver backend serves the consent document.
 AUDIT-V2-001 through AUDIT-V2-004 in Core/09 record the current pairing-abuse, expiry, default
-acknowledgement, and pinned-conformance gaps. The active Receiver working tree now adds separate
+acknowledgement, and pinned-conformance gates. The minimum hosted Preview portion of the pairing
+abuse gate is now verified; Production promotion and the other gates remain open. The active Receiver working tree now adds separate
 standing tables and v0.2 Event/claim/ACK routes. ADR-0044 resolves the architecture choice, but its
 committed-source migration and pinned release gates are not resolved by the green local suites.
 

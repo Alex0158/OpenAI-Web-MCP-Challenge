@@ -437,14 +437,14 @@ code, migration, deployment, or architecture change.
 | Field | Record |
 |---|---|
 | Severity | **P0** |
-| Status and confidence | `implementation_verified_locally`; high confidence; **OPEN — hosted Gate B2** |
+| Status and confidence | `implementation_and_hosted_preview_verified`; high confidence; **Production promotion and managed migration remain open** |
 | Affected component / flow / contract | Active v2 anonymous pairing claim; pairing-code confidentiality and account-to-Connector authorization |
-| Current behavior | The active local v2 service requires `{ pairing_id, pairing_code, device_name }`, resolves by `pairing_id`, atomically increments wrong well-formed attempts, and applies a durable PostgreSQL source budget. The direct Vercel adapter accepts one valid `x-vercel-forwarded-for` value and fails closed for missing, repeated, comma-separated, invalid, weak-secret, or limiter-store cases. The reviewed hosted preview has not yet received this increment. |
+| Current behavior | The active v2 service requires `{ pairing_id, pairing_code, device_name }`, resolves by `pairing_id`, atomically increments wrong well-formed attempts, and applies a durable PostgreSQL source budget. The direct Vercel adapter accepts one valid `x-vercel-forwarded-for` value and fails closed for missing, repeated, comma-separated, invalid, weak-secret, or limiter-store cases. The exact `Re-Entry` Preview served the increment, reset the fixed source window, and returned the bounded rate response across separate Vercel executions. |
 | Intended / documented behavior | ADR-0033 says the code permits at most five failed claims and the sixth returns `410 pairing_expired`. |
-| Exact evidence | `saas-boilerplate/backend/src/modules/connectors/{pairing.service.ts,pairing.routes.ts,pairing.schemas.ts,pairing-source.ts,pairing-rate-limit.ts}`; `prisma/schema.prisma`; migration `20260904000000_pairing_claim_rate_limit`; `backend/src/modules/connectors/test/{pairing-abuse.test.ts,pairing-source.test.ts}`; TASK-026 local implementation result. |
-| Risk and impact | Local enforcement is verified, but the hosted deployment still needs the production HMAC secret, migration, provider-header readback, and durable cross-execution rate-limit evidence before anonymous claims can be enabled. The 30-per-window key can still be shared by legitimate clients behind one public address. |
-| Drift class | **F** — local decision and implementation agree; hosted evidence remains open. |
-| Recommended disposition | Deploy only through the reviewed direct Vercel path, run the disposable hosted Gate B2 readback, and preserve tokenless exact duplicate replay. Keep the claim path fail-closed until that evidence passes. |
+| Exact evidence | `saas-boilerplate/backend/src/modules/connectors/{pairing.service.ts,pairing.routes.ts,pairing.schemas.ts,pairing-source.ts,pairing-rate-limit.ts}`; `prisma/schema.prisma`; migration `20260904000000_pairing_claim_rate_limit`; `backend/src/modules/connectors/test/{pairing-abuse.test.ts,pairing-source.test.ts}`; exact Preview deployment and clean reset-window readback in [TASK-026](../Tasks/TASK-026-reconcile-pairing-claim-abuse-fence.md) and [CLOUD-014](../Development/CLOUD-014-cloud-receiver-v2-pairing.md). |
+| Risk and impact | The minimum hosted Preview fence is verified, but Production still needs separately reviewed secret custody, managed migration, promotion, and full deployed-flow evidence. The 30-per-window key can still be shared by legitimate clients behind one public address. |
+| Drift class | **F** — local decision and reviewed hosted Preview implementation agree; Production evidence remains open. |
+| Recommended disposition | Preserve the strict claim path and tokenless exact duplicate replay. Treat the Preview readback as verification evidence only; promote to Production only after the separate identity, migration, and deployment gates pass. |
 | Documentation owner | Core/04, Mechanism 03, this register, and [TASK-026](../Tasks/TASK-026-reconcile-pairing-claim-abuse-fence.md). |
 | Change gates | Code: **yes**. ADR/owner decision: **yes**. Migration: conditional on chosen identity/counter design. Tests: **yes**, including concurrency, restart, terminal response, and no secret leakage. |
 
@@ -646,7 +646,7 @@ AUDIT-V2-007 and TASK-022 through TASK-024. No retired file was deleted or treat
 | Business or contract block | Active implementation | Normative owner | Current evidence | Documentation disposition |
 |---|---|---|---|---|
 | User/developer identity and developer control plane | `saas-boilerplate/backend/src/modules/{authentication,users,developers,developer-portal}/`, frontend auth and developer dashboard | ADR-0033 and ADR-0041; production identity still open | **VERIFIED** locally by auth, `DEVELOPER-001`–`003`, browser personas; no production identity proof | **UPDATED** here; release boundary in Core/04–05 |
-| Pairing, Connector identity, listing, and disconnect | active v2 pairing routes/service/schema; frontend pairing client; Local Connector pairing/disconnect lifecycle | ADR-0033 and ADR-0040 | **LOCALLY VERIFIED** amended abuse fence, PAIR/DISCONNECT and restart cases; hosted Gate B2 remains open | Mechanism 03 plus TASK-026; retired v1 kept historical |
+| Pairing, Connector identity, listing, and disconnect | active v2 pairing routes/service/schema; frontend pairing client; Local Connector pairing/disconnect lifecycle | ADR-0033 and ADR-0040 | **LOCALLY AND HOSTED PREVIEW VERIFIED** amended abuse fence, PAIR/DISCONNECT and restart cases; Production release remains open | Mechanism 03 plus TASK-026; retired v1 kept historical |
 | Host issuance and browser handoff | `reentry-core` protocol/Host kernel; `runtime/host-sdk/src/{server,client,next}.mjs` | ADR-0007, ADR-0022 historical handoff, ADR-0041 simple facade | **VERIFIED** local SDK 25/25 and bounded browser personas; published package lacks the simple facade and external supported Browser join remains open | Mechanisms 01 and 05; SDK guide updated; active portal/package mismatch in TASK-031 |
 | Consent, target binding, and Grant creation | active v2 consent routes/service/page and Prisma models | ADR-0007, ADR-0008, ADR-0035, ADR-0041 | **CONFLICTED** expiry policy (AUDIT-V2-002); remaining CONSENT/TARGET/revocation cases locally verified | Mechanisms 01–02 plus TASK-027 |
 | Signed Event acceptance and one-run reservation | active v2 event routes/service and Event/Grant/Delivery transaction | ADR-0007, ADR-0008, ADR-0036 | **VERIFIED** by `EVENT-001`–`004`; `202` means accepted/queued only | Mechanism 02; current claim limited to local v2 |
@@ -669,7 +669,7 @@ implementation normative merely because it exists.
 | Core/00 | **UPDATED / CURRENT** | Separates active v2, retired v1, bounded evidence, the four material contract gaps, and the SDK/Connector release gaps. |
 | Core/01 and Core/02 | **UPDATED / CURRENT TARGET** | Product boundary remains application-neutral; Sleepless Kingdom specialization is selected while its external implementation evidence remains bounded. |
 | Core/03 | **UPDATED / ARCHITECTURE DECIDED; VERIFICATION PENDING** | ADR-0044 accepts independent active-v2 implementation behind one normative model; the shared black-box suite, exact-source migration, and release enforcement remain open under AUDIT-V2-004 and TASK-028. |
-| Core/04 | **UPDATED / CURRENT WITH OPEN RISKS** | Trust model remains normative; pairing abuse hosted Gate B2, expiry visibility, logout origin, production identity, custody, recovery, and SLO evidence remain open. |
+| Core/04 | **UPDATED / CURRENT WITH OPEN RISKS** | Trust model remains normative; the minimum hosted Preview pairing abuse Gate B2 is verified, while expiry visibility, logout origin, production identity, custody, recovery, and SLO evidence remain open. |
 | Core/05 | **UPDATED / CURRENT EVIDENCE** | Local, separate-process, hosted-preview, and external claims are separated; default effect acknowledgement and release gates remain open. |
 | Core/06 | **UPDATED / APP SELECTED** | ADR-0042 closes the application choice; continuation, hosted, product, and judge gates remain open. |
 | Core/07 | **CURRENT FROZEN VERDICT** | Preserves the bounded P0 technical-validation contract and does not control active-v2 implementation. |
@@ -708,7 +708,7 @@ This document is useful now, but it does not close these gates:
 1. integrate the selected Sleepless Kingdom Host through trusted existing-task enrollment, signed
    Event, notification settlement, actual same-task wake, authenticated WebMCP return, and
    strategy-consistent action/no-command decisions under ADR-0046;
-2. complete AUDIT-V2-001's hosted pairing abuse Gate B2 before wider preview or production use;
+2. complete the separately reviewed Production secret custody, managed migration, and promotion procedure for the pairing fence; the minimum hosted Preview Gate B2 is already verified;
 3. decide AUDIT-V2-002's separate Consent/Grant lifetime and displayed-expiry policy;
 4. complete AUDIT-V2-004/ADR-0044 pinned conformance, committed-source standing migration
    verification, and release enforcement;

@@ -3,11 +3,17 @@
 - Evidence ID: `SK-EVID-075`
 - Evidence class: `static`
 - Date: 2026-09-04
+- Status: Historical package readback; current local implementation is tracked by `TASK-036` and
+  `SK-EVID-078`/`SK-EVID-079`.
 - Task: [`SK-TASK-076`](../Tasks/SK-TASK-076-cp14-cloud-receiver-v2-game-adaptation.md)
 - Decision: [`ADR-GAME-0038`](../Decisions/ADR-GAME-0038-cp14-merged-source-and-runtime-adaptation-boundary.md)
 - Audit: [`Validation/101`](../Validation/101-cp14-host-sdk-package-provenance-readback.md)
 
 ## Question
+
+This record preserves the package state observed at the time of the probe. It must not be used to
+describe the later team-owned standing implementation increment; the observations and claim limits
+below remain valid only for the exact source/package identities named here.
 
 Identify the SDK artifact the Game can consume and determine whether its public package surface
 supports the accepted recurring protocol-v0.2 standing path.

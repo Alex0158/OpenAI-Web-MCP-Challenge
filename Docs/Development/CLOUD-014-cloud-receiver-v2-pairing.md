@@ -1,7 +1,7 @@
 # CLOUD-014: Cloud Receiver v2 Pairing — Feature 1
 
 **Role:** IMPLEMENTATION AND VERIFICATION RECORD  
-**Status:** `locally_verified` — baseline Pairing Feature 1 and Amendment A local enforcement pass; hosted Gate B2 remains open  
+**Status:** `locally_verified` — baseline Pairing Feature 1 and Amendment A local enforcement plus minimum hosted Preview Gate B2 readback verified; Production promotion and managed migration remain open  
 **Opened:** 2026-09-02  
 **Task:** [TASK-014](../Tasks/TASK-014-build-cloud-receiver-v2-pairing.md)  
 **Decision:** [ADR-0033](../Decisions/ADR-0033-adopt-cloud-receiver-v2-pairing-increment.md)
@@ -101,8 +101,9 @@ The pairing abuse fence is implemented in the active `saas-boilerplate/` boundar
 - local evidence passes 39 focused backend tests across pairing and downstream consumers plus 49
   Local Connector tests (12 opt-in hosted suites remain skipped).
 
-This is local implementation evidence only. The reviewed hosted preview has not been mutated; the
-production HMAC secret, migration, and disposable hosted readback remain TASK-026 Gate B2 work.
+This paragraph records the pre-hosted local implementation state. The subsequent hosted Preview
+sections record the exact deployment and readback; the Production HMAC secret, managed migration,
+and Production promotion remain outside this increment.
 
 ### Hosted Gate B2 readback attempt — 2026-09-04
 
@@ -170,6 +171,17 @@ Supabase showed one durable bucket row at `request_count=31`, and the over-budge
 used. The minimum disposable hosted Preview readback is verified when combined with the local
 atomicity, concurrency, restart, header, and outage suites. Production promotion and managed
 migration closure remain separate and open.
+
+### Clean reset-window confirmation — 2026-09-04
+
+After the fixed UTC source window advanced at `02:40 UTC`, a fresh sentinel claim request against the
+same Preview returned `404 pairing_not_found`; requests two through thirty returned the same bounded
+`404`, and request thirty-one returned `429 pairing_rate_limited` with `Retry-After: 494` seconds
+until `02:50 UTC`. Separate Vercel execution IDs were observed for sampled requests including 2, 15,
+30, and 31, all with cache misses. Supabase readback showed the durable bucket at
+`request_count=31`. The identifiers were syntactically valid but nonexistent, so no real pairing,
+token, Connector, or credential was used. This confirms the fixed-window reset and hosted
+cross-execution source fence; Production promotion and managed migration remain open.
 
 ## Current closure boundary
 

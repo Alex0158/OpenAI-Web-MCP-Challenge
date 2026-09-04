@@ -1,6 +1,6 @@
 # ADR-0049: Authorize Project-Team Standing Integration with Eyad Release Ownership
 
-**Status:** Accepted owner decision; implementation and hosted release open  
+**Status:** Accepted owner decision; local implementation increment verified; hosted release open  
 **Date:** 2026-09-04  
 **Decision owner:** Project owner  
 **Implementation owner:** Current project team  
@@ -30,9 +30,11 @@ Receiver settles at trusted notification handoff, not at an Agent turn, WebMCP c
 The Game-facing Core, Host SDK, and Local Connector source is already present in the outer `main`
 history, while the candidate Receiver lives in the separate `saas-boilerplate` repository. Source
 presence is not proof that the standing route is compatible, publicly released, or deployed. The
-current public packages and Connector preview remain partly v0.1-shaped, and the candidate Receiver
-exposes only the three existing v0.2 effect-backed transport routes. The earlier handoff report
-therefore assigned external implementation to Eyad. The project owner has now explicitly selected
+current public packages and Connector preview remain partly v0.1-shaped, and the hosted Receiver
+preview still exposes only the three previously deployed v0.2 effect-backed transport routes. The
+separate Receiver working tree now contains the additive standing controls and notification-handoff
+implementation, but that work is not yet public or deployed. The earlier handoff report therefore
+assigned external implementation to Eyad. The project owner has now explicitly selected
 the faster controlled path: this team implements against the reviewed source, then hands an exact
 release packet to Eyad for publication and deployment.
 
@@ -160,9 +162,9 @@ The full implementation follows the single task [TASK-036](../Tasks/TASK-036-imp
 7. **Vertical trace:** run two ordered eligible Game signals under one Consent/Grant/task, including
    restart, duplicate, response-loss, busy burst, revocation, wrong-scope denial, deliberate
    no-action, and optional action branches.
-8. **Release and hosted readback:** create the immutable packet; Eyad publishes/deploys; then read
-   back package metadata, deployed source identity, health/readiness, migration, and the redacted
-   trace. Only the readback may raise the claim above local verification.
+8. **Release and hosted readback:** create the [`CP-14 release packet`](../../WebApp/Web-Game/Docs/Engineering/CP-14-eyad-release-packet-2026-09-04.md);
+   Eyad publishes/deploys; then read back package metadata, deployed source identity, health/readiness,
+   migration, and the redacted trace. Only the readback may raise the claim above local verification.
 
 ## Verification and stop conditions
 

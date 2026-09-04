@@ -324,7 +324,7 @@ The minimum event types for G2 are `PlayerMoved`, `MissionDispatched`, `MissionW
 One database transaction writes the authoritative state mutation, its Domain Event, and any eligible
 delivery record. `world_snapshot` rows include `snapshot_version`, `contract_version`, `world_time`,
 and entity revisions. Schema, `world_snapshot`, `client_snapshot`, and event versions are checked on
-load; the current local persistence schema is version 8 (`cp06-004`). It migrates the CP-05 version 1
+load; the current local persistence schema is version 9 (`cp14-001`). It migrates the CP-05 version 1
 player shape, CP-08 version 2 mission shape, CP-09 version 3 due-work shape, CP-10 cargo provenance
 shape, and CP-11 encounter/linkage shape transactionally, and adds the nullable
 `world.in_progress_world_time` boundary marker plus nullable `world.server_time_anchor_ms` restart
@@ -372,9 +372,11 @@ deferred Signal window and is not folded into a later Signal created after coold
 must use the canonical page history when it needs the complete event sequence; a Signal count and
 cursor range are a bounded notification summary, not a complete cooldown-period report.
 
-`ContinuationDelivered` records acceptance of an Agent Signal delivery and its signal identity and
-`world_event_cursor` range; it does not claim that the Agent has completed a command. A later command
-still requires a fresh page read and live entity revisions.
+`ContinuationDelivered` records acceptance at the configured Game delivery boundary and its signal
+identity and `world_event_cursor` range. Its typed payload must name either `transport_accepted` or
+`receiver_queue_accepted`; neither value claims Connector lease, notification handoff, Agent wake,
+page/WebMCP read, command completion, Host effect, or Cloud ACK. A later command still requires a
+fresh page read and live entity revisions.
 
 An Agent Signal contains only an opaque binding, signal identity, causal `world_event_cursor` range,
 eligible event count/types/severity, latest world time, relevant entity versions, and a bounded

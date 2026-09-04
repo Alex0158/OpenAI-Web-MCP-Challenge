@@ -4,21 +4,23 @@
 **As of:** 2026-09-04, Europe/London  
 **Selected direction:** Re-entry Core with Sleepless Kingdom as the first Host application  
 **Host application:** Sleepless Kingdom, selected by ADR-0042  
-**Agent continuation adapter:** Unselected  
+**Agent continuation adapter:** Same-task target selected; runtime adapter unverified
 **Phase:** Application-neutral Core remains current; the former `runtime/cloud-receiver/` account-
-first runtime is deprecated historical evidence; active `saas-boilerplate/` Cloud Receiver v2,
-macOS Connector/Host SDK previews, selected Game integration, active-v2 standing-authorization
-adoption, production controls, and supported Agent selection remain separately bounded work
+first runtime is deprecated historical evidence; a team-owned local standing integration increment
+now spans the active Receiver working tree, Host SDK, Local Connector, and Game transport, while
+same-task runtime admission, hosted release, production controls, and supported Agent selection
+remain separately bounded work
 
 ## 1. Executive status
 
 [ADR-0046](../Decisions/ADR-0046-restore-bound-task-notification-continuation.md) restores the
 selected product target: one standing Consent, trusted private binding to an existing Agent task,
 and later notification of that same task. The Agent uses prior user strategy and fresh Host state;
-Receiver delivery does not wait for business completion or Game effects. **ACCEPTED TARGET, NOT
-IMPLEMENTED:** the CLI still selects fresh exec, enrollment does not persist a task binding, and
-retained v0.1/v0.2 ACK profiles remain effect-backed. TASK-035, TASK-029, TASK-034, and TASK-033 own
-binding, explicit notification-protocol transition, supported runtime proof, and product adoption.
+Receiver delivery does not wait for business completion or Game effects. **ACCEPTED TARGET; LOCAL
+CONTRACT INCREMENT IMPLEMENTED, RUNTIME AND HOSTED PATH OPEN:** the compatibility CLI still selects
+fresh exec, the legitimate same-task enrollment/adapter is not wired, and retained v0.1/v0.2 ACK
+profiles remain effect-backed. TASK-035, TASK-029, TASK-034, and TASK-033 own binding, explicit
+notification-protocol transition, supported runtime proof, and product adoption.
 The evidence below remains valid only for its named unchanged profiles. The fresh-child Browser
 probe is historical preview evidence, not the prerequisite for the selected existing-task route.
 
@@ -27,6 +29,16 @@ for the bound task, without promising recovery after an App crash or waiting for
 Lost or ambiguous runtime replies remain unknown, with no blind resend. This closes the assurance
 choice, not the runtime integration: the permitted ingress, concrete receipt contract, private
 binding and unknown-slot policy remain open. Grant retention is unchanged.
+
+Under [`ADR-0049`](../Decisions/ADR-0049-game-team-standing-integration-and-eyad-release.md) and
+[`TASK-036`](../Tasks/TASK-036-implement-standing-notification-handoff.md), the team has now added
+strict local notification-handoff/runtime-admission contracts, Receiver control and handoff routes,
+an explicit server-side Receiver `createApp({ standingRuntimeAdmissionAuthority })` composition
+seam (with a fail-closed default), a server-only Host SDK standing export, Connector handoff
+dispatch, Game schema-9 Event context, and a worker-owned single-flight delivery runner that wakes
+only at startup and completed authoritative world boundaries. The focused local checks are green,
+but no real runtime authority, public package, hosted deployment, same-task runtime admission,
+Browser/WebMCP trace, Host effect, or ACK claim follows from this increment.
 
 MVP 1 genuinely verified same-task continuation, preserved prior context, canonical Browser return
 and fresh genuine WebMCP invocation on its recorded build. The current product Connector has not
@@ -68,10 +80,11 @@ fixture started a distinct turn, delivered the fixed notification as `userMessag
 the exact marker with zero tools. Passive rollout observation confirmed completion before any
 post-send App task read; no App-message rescue or new task was used. This is externally invoked
 same-task wake for the recorded condition, not `LocalConnector.runOnce()` integration, a qualified
-receipt, unloaded/restart reliability or Browser proof. Q2 is consumed. Its positive result makes
-the existing public queue primitive the next integration candidate; the message role, durable
-private binding and ADR-0049 admission proof still need explicit qualification. The earlier failed
-targets' precise causes remain unresolved; target state is a discriminator, not a controlled sole-cause finding.
+receipt, unloaded/restart reliability or Browser proof. Q2 is consumed as an adapter-qualification
+input. TASK-036 now contains the local standing adapter seam, but the message role, durable private
+binding, runtime-owned attestation, and production admission authority still require explicit
+qualification. The earlier failed targets' precise causes remain unresolved; target state is a
+discriminator, not a controlled sole-cause finding.
 
 Separately, the owner approved one temporary local relay and a C1 inert notification. C1 is
 unused: CLOUD-028 identifies the real Connector adapter seam, but no App-authorized background
@@ -91,10 +104,11 @@ real original-route reproduction remains unattempted; no new native failure or C
 The project has implemented and locally verified the application-neutral Re-entry Core at the
 scope accepted by ADR-0006 through ADR-0014. RECORE-001 through RECORE-004, RECORE-006, and the
 additive ADR-0043 through ADR-0045 RECORE-007 reference are `locally_verified`; RECORE-005 is
-`separate_process_verified`. The latest aggregate Core suite passes 162 of 162 tests on Node
-`v26.5.0`, including the bounded standing transaction-interruption fixture. Node 24 remains the
-reproducible closure baseline; the newest fixture increment was executed on Node `v26.5.0`. The
-package has zero runtime dependencies and 19 selected package files.
+`separate_process_verified`. The prior application-neutral aggregate passed 162 of 162 tests on
+Node `v26.5.0`, including the bounded standing transaction-interruption fixture. The current
+TASK-036 candidate adds the standing handoff/runtime-admission checks and passes 174 of 174 tests
+on Node 24. Node 24 remains the reproducible closure baseline; the package has zero runtime
+dependencies and 19 selected package files.
 
 The completed Core covers strict protocol values, Host issuance, Receiver-owned enrollment and
 Grant authority, signed event acceptance, exact replay, atomic pending delivery, authenticated
@@ -159,9 +173,8 @@ compatible Connector release; the approved local composition used the current ch
 registry artifact.
 
 The 2026-09-03 TASK-012 reconciliation found four material active-v2 gaps that the green local
-suites do not close. **LOCALLY VERIFIED / HOSTED OPEN:** ADR-0033's five-failed-claim pairing fence
-is now implemented for the amended local request and direct Vercel adapter, while hosted Gate B2
-remains open; TASK-026 owns the gate. **CONFLICTED:**
+suites did not close at that baseline. The pairing fence was then closed at the minimum hosted
+Preview Gate B2 boundary by TASK-026; Production promotion remains open. **CONFLICTED:**
 the SDK requests separate five-minute offer and thirty-minute Grant windows, while v2 copies the
 shorter Consent-session expiry into the Grant without displaying it; TASK-027 owns the policy.
 ADR-0044 resolves the implementation-identity decision: active v2 may remain independently
@@ -395,9 +408,11 @@ ingress, delivery lease/acknowledgement, developer self-service, and bounded ope
 import or compose `reentry-core`. ADR-0044 accepts that independent implementation behind one
 normative Receiver authority model and mandatory pinned black-box conformance. TASK-028 remains
 verification-pending for the full pinned shared suite, recovery proof, and release enforcement.
-The standing kernel and exact committed-source PostgreSQL upgrade are locally verified only; its new account control plane
-is proposed, not implemented. Its local and preview-deployment evidence is bounded by Core/05,
-CLOUD-022, SDK-006, and the Receiver standing verification record.
+The standing kernel and exact committed-source PostgreSQL upgrade are locally verified only; the
+team's working tree now also contains the additive standing account control plane and notification
+handoff route, with focused disposable-PostgreSQL evidence. Its local and preview-deployment
+evidence is bounded by Core/05, CLOUD-022, SDK-006, and the Receiver standing verification record;
+public release and hosted conformance remain open.
 
 `runtime/local-connector/` now has a terminal-testable Codex fresh-session preview. It can claim one
 delivery and start one new local Codex session with a fixed prompt containing the validated
@@ -492,26 +507,27 @@ Experiments, and frozen evidence rather than this status file.
 
 ## 7. Current highest-leverage sequence
 
-1. Finish [TASK-001](../Tasks/TASK-001-select-host-application.md) exact documentation and remote
-   closure without absorbing owner-held Game or RightSpot work.
-2. Use TASK-035/CLOUD-028's positive Q2 public-CLI result to qualify the existing Connector queue
-   primitive for the ADR-0049/TASK-036 integration. Do not repeat generic idle tests or claim no
-   independent callable route exists. Define the loaded-state support boundary, trusted private
-   binding, fixed event-only input and qualified runtime admission before wiring the standing
-   consumer. A queue exit code is not a receipt; `userMessage` is not typed tool data. Preserve
-   unknown without blind resend and do not repurpose effect ACKs. Coordinate dirty-file ownership
-   with TASK-036. B1/D1/D2/Q2 are consumed; private C1 remains a separate held alternative, not a
-   prerequisite to the public candidate. Keep one existing Connector and no fresh-task fallback.
-3. Select and verify actual same-task notification/wake and authenticated canonical-Game-page
-   access with fresh WebMCP under TASK-034. Do not substitute a fresh session to pass the gate.
-4. Prove signal 1 as queue acceptance, notification handoff, actual task wake, page reads, and
-   strategy-consistent action or no command. Any Game effect is independently verified, not an
-   obligation to settle Receiver delivery.
-5. Under the same Consent and task, prove a second notification, restart-safe binding, bounded
-   busy-task handling, no redelivery for interrupted/no-action work, and explicit revocation.
-   TASK-033 and the Game owner reconcile the selected integration before the final demo claim.
-6. Complete hosted identity/reset, product/Agent-value, transport-cost, clean-judge, deployment, and
-   submission evidence.
+1. Finish the local TASK-036 freeze gate: commit only the reviewed Core/Host SDK/Connector/Receiver/
+   Game paths, preserve collaborator-owned changes, record exact source/package/migration identities,
+   and rerun the affected focused checks from that frozen source.
+2. Close the production composition gap in `WebApp/Web-Game` and the Receiver deployment entrypoint:
+   provide a server-only binding resolver, standing Host publisher, signal-eligibility provider, the
+   existing runner/port composition, and a real `standingRuntimeAdmissionAuthority` passed to
+   `createApp`. Missing composition must fail closed. Do not put a task locator, Connector token,
+   signing key, or fixture binding in Game state, and do not make a 100 ms interpolation tick a
+   remote poll.
+3. Qualify the same-task runtime Adapter and Receiver admission authority using the Q2 public queue
+   result only as a capability input. It must use the durable private binding, return the strict
+   runtime attestation, and never create a fresh task. A queue process exit is not a handoff receipt;
+   an ambiguous response remains `unknown` without blind resend.
+4. Run the source-pinned cross-stack matrix: two ordered `CargoLostToMonster` signals under one
+   Consent/Grant/task, one-active backpressure, duplicate/replay, lease expiry, revoke, wrong scope,
+   busy, response loss, restart, private-state corruption, and separate page/WebMCP/action evidence.
+5. Hand the immutable CP-14 release packet to Eyad. Eyad publishes the exact package artifacts and
+   deploys the exact Receiver migrations/configuration; the team does not claim hosted continuity
+   until source, package, health/readiness, migration, handoff, page, and effect readback match.
+6. Complete only the remaining CP-17 hosted identity/denial and challenge submission gates after the
+   standing trace is reproducible on the chosen public origins.
 
 Closed RECORE records are not reopened merely because application work begins.
 

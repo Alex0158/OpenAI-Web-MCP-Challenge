@@ -9,13 +9,16 @@
 - Lifecycle: `in_progress`
 - Priority: `P1`
 - Owner: Project team, Re-entry Core, Host SDK, and Cloud Receiver v2 owners.
-- Current increment: The until-revoked proposal has a read-only consumer inventory: Core, active
-  Receiver, SDK, Connector, registry artifacts, and hosted evidence do not share one proven
-  v0.2 provenance. Research 25 therefore recommends an additive v0.3 profile while retaining
-  finite v0.2; exact lifetime, storage, invalidation, and target-decommission decisions remain open.
-- Next gate: Accept or revise the version recommendation and fix the intended windows, existing-row
-  policy, public projection, invalidation scope, and boundary tests without silently widening authority.
-- Dependencies: ADR-0007, ADR-0035, ADR-0041, AUDIT-V2-002 in Core/09, and TASK-012.
+- Current increment: The project owner accepted the semantic rollout boundary in ADR-0048: retain
+  finite standing v0.2 for the current compatibility/demo slice and add an explicitly versioned
+  v0.3 until-revoked profile for the long-lived standing product. The consumer inventory shows
+  that Core, active Receiver, SDK, Connector, registry artifacts, and hosted evidence do not share
+  one proven v0.2 provenance, so v0.2 must not be silently revised in place.
+- Next gate: Reconcile ADR-0048 with ADR-0043/0045 and TASK-029/TASK-033, then select the exact
+  v0.3 wire namespace, storage/migration boundary, public control surface, invalidation semantics,
+  and focused tests without widening authority or changing retained v0.2 behavior.
+- Dependencies: ADR-0007, ADR-0035, ADR-0041, ADR-0043, ADR-0045, ADR-0048, AUDIT-V2-002 in Core/09,
+  TASK-012, TASK-029, and TASK-033.
 
 ## 1. Problem and objective
 
@@ -34,13 +37,32 @@ may substitute for an accepted lifetime decision. The
 [standing control-plane proposal](../../saas-boilerplate/backend/src/modules/standing/CONTROL-PLANE-PROPOSAL.md)
 records the public-shell implications without choosing a duration or changing existing v0.1 rows.
 
-[Research 25](../Research/25-until-revoked-standing-lifetime-proposal.md) now records a source-backed
-implementation proposal for no scheduled expiry. It separates short Consent/page clocks from
-Grant authority and bounded execution, retains all existing finite Grants, and compares an explicit
-unreleased-v0.2 revision against a new protocol profile. Complete consumer inventory and target/key
-invalidation semantics are decision prerequisites. The user endorsed the direction, not an exact
-wire version, migration topology, public route contract, or automatic credential renewal. This
-proposal does not close the older simple-facade expiry discrepancy or authorize schema changes.
+[Research 25](../Research/25-until-revoked-standing-lifetime-proposal.md) records the source-backed
+design basis for ADR-0048. It separates short Consent/page clocks from Grant authority and bounded
+execution, retains all existing finite Grants, and selects an additive v0.3 compatibility boundary
+because the current v0.2 consumer set is not proven to be jointly controlled. The semantic policy
+is accepted; exact wire names, migration topology, public route contract, and executable behavior
+remain implementation gates. This decision does not close the older simple-facade expiry
+discrepancy or authorize an unreviewed schema change.
+
+## Accepted decision package — 2026-09-04
+
+The accepted policy has two deliberately separate layers:
+
+1. **Current v0.2 compatibility/demo slice:** retain finite `grant_expires_at`, existing routes,
+   rows, validators, and package behavior. It may support repeated signals during its explicit
+   finite lifetime and remains the active integration target for the current Game/Receiver/Connector
+   work.
+2. **Future v0.3 standing profile:** use an explicit signed `until_revoked` lifetime discriminator,
+   preserve finite Consent/page, Event, Connector, lease, and control-session clocks, and require
+   explicit revocation or security invalidation. It uses a version-selected wire/storage namespace
+   and never rewrites an existing v0.2 Grant.
+
+The v0.3 transport route and notification-handoff receipt are one coordinated protocol decision;
+TASK-027 must not define a route that conflicts with TASK-029 or Research 27. The selected product
+continues to use the ADR-0046 notification-handoff boundary: lifetime does not wait for Game effect
+or Agent completion. One-active activation, ordered durable signals, exact replay, and bounded
+backpressure remain required.
 
 The user explicitly confirmed offline authorization retention and intentional user revocation on
 2026-09-03. Local Connector is the intended revocation entry, with Game Settings a possible future

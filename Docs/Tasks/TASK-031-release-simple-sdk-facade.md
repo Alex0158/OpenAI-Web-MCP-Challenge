@@ -9,9 +9,11 @@
 - Lifecycle: `in_progress`
 - Priority: `P1`
 - Owner: Host SDK release owner with the Cloud Receiver v2 developer-experience owner.
-- Current increment: The checkout-only facade has passed a release-readiness audit, while the
-  published `0.3.1` artifact still predates `createReentry()`. The exact-source version, portal
-  instruction, and clean-consumer release gate remain open under [SDK-006](../Development/SDK-006-simple-consented-continuation-flow.md#release-readiness-audit-2026-09-04).
+- Current increment: The checkout-only facade has passed a release-readiness audit and a temporary
+  tarball clean-consumer import, and its package manifest/lockfile now agree on checkout version
+  `0.3.1`; the published `0.3.1` artifact still predates `createReentry()`. The exact-source
+  version, portal instruction, and registry clean-consumer release gate remain open under
+  [SDK-006](../Development/SDK-006-simple-consented-continuation-flow.md#local-tarball-clean-consumer-probe-2026-09-04).
 - Next gate: Approve an exact-source release increment that isolates the intended SDK changes,
   assigns a new immutable version, verifies package contents, and corrects the portal instruction
   before publication.
@@ -59,6 +61,22 @@ Close only when the new registry version resolves to the exact reviewed commit, 
 `createReentry`, a clean consumer installs and executes the documented facade, the portal names the
 same version/API, Node 24 SDK and package checks pass, and provenance plus residual deployment limits
 are recorded. Historical `0.3.1` remains described only at its actual API boundary.
+
+## 5.1 Current checkout artifact recheck — 2026-09-04
+
+The current checkout was packed and installed into a clean temporary consumer without publishing or
+changing the package version. The tarball was `4xeoz-re-entry-sdk-0.3.1.tgz`; the consumer reported
+`@4xeoz/re-entry-sdk@0.3.1`. Its bundled `@webmcp-challenge/reentry-core` was present and included
+the instruction-bearing Local Connector client. The three public entrypoints loaded successfully:
+server exports `createReentry`, client exports the shared consent action and WebMCP registration,
+and Next exports the consent/event route adapters. `cd runtime/host-sdk && npm run verify` passed
+all 25 tests with no failures.
+
+This confirms the checkout can produce a self-contained facade artifact. It does not repair the
+immutable registry `0.3.1` API/provenance mismatch or close the portal/version gate, because the
+checkout still uses that historical version and no publish, commit, push, deployment, or portal
+mutation was performed. The next gate remains an approved new immutable version from the exact
+reviewed source, followed by portal correction and post-publication provenance/readback.
 
 ## 6. Reopen condition
 

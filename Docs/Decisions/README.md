@@ -1,7 +1,7 @@
 # Decision Register
 
 **Role:** DECISION index  
-**Status:** Accepted decisions current through ADR-0047; ADR-0034 remains pending approval
+**Status:** Accepted decisions current through ADR-0049; ADR-0034 remains pending approval
 **Last updated:** 2026-09-04
 
 This directory records accepted durable choices and their consequences. A decision record owns
@@ -15,6 +15,12 @@ ADR-0046 controls selected-product existing-task notification behavior. The reta
 profiles in ADR-0009/0038/0043/0045 remain normative for their unchanged code and compatibility tests;
 their product-completion requirement and ADR-0043's fresh-session sufficiency are superseded.
 ADR-0026 remains a separately labelled preview, not the selected product route.
+ADR-0048 controls the accepted until-revoked lifetime semantics and v0.2/v0.3 compatibility boundary;
+its exact wire, storage, and executable transition remain open under TASK-027 and the coordinated
+TASK-029/TASK-033 work.
+ADR-0049 controls the current implementation ownership transfer for the selected Game integration:
+the project team implements the exact cross-stack candidate, while Eyad retains package-publication
+and hosted-deployment authority. It does not make source, package, or hosted behavior verified.
 
 | ID | Status | Decision surface |
 |---|---|---|
@@ -64,6 +70,8 @@ ADR-0026 remains a separately labelled preview, not the selected product route.
 | [ADR-0045](ADR-0045-adopt-standing-transport-profile-v0.2.md) | Accepted | Add explicit v0.2 Host, HTTP, Connector, and Agent Adapter dispatch without changing or downgrading v0.1 |
 | [ADR-0046](ADR-0046-restore-bound-task-notification-continuation.md) | Accepted product target; implementation/transition open | Restore existing-task continuity and notification-only settlement; preserve exact retained effect-backed profiles until explicit transition |
 | [ADR-0047](ADR-0047-authorize-local-desktop-bridge-probe.md) | Accepted bounded experiment only | Authorize one local, disableable native Desktop messaging/wake probe without selecting a production Adapter |
+| [ADR-0048](ADR-0048-adopt-until-revoked-standing-lifetime-v0.3.md) | Accepted semantic profile; implementation/transition open | Adopt explicit v0.3 until-revoked standing lifetime while retaining finite v0.2 compatibility and separating operational clocks |
+| [ADR-0049](ADR-0049-game-team-standing-integration-and-eyad-release.md) | Accepted owner decision; implementation and hosted release open | Authorize the project team to implement the standing Game path; Eyad publishes packages and deploys the exact reviewed Receiver |
 
 ## Pending approval
 

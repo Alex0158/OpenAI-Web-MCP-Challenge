@@ -21,6 +21,9 @@ proposed services, runtime, transport, or WebMCP tools exist.
 - [`10-cp13-cp18-implementation-seam-map.md`](10-cp13-cp18-implementation-seam-map.md) — file-level
   implementation routing, predecessor gates, focused proofs, hosted handoff, and claim boundaries
   for CP-13 through CP-18.
+- [`CP-14-eyad-release-packet-2026-09-04.md`](CP-14-eyad-release-packet-2026-09-04.md) — source-pinned
+  publication/deployment handoff, hosted readback matrix, rollback boundary, and residual claim gates
+  for the standing v0.2 Game integration.
 - The CP-04 process boundary is accepted in
   [`../Decisions/ADR-GAME-0011-cp04-local-runtime-boundary-and-health-contract.md`](../Decisions/ADR-GAME-0011-cp04-local-runtime-boundary-and-health-contract.md);
   its local process behavior is recorded in `SK-EVID-007`; hosted/world behavior remains unverified.

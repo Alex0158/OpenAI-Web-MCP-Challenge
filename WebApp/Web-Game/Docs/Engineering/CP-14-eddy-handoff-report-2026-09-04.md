@@ -1,9 +1,9 @@
-# CP-14 Eddy Handoff Report: Standing v0.2 and Bound-Task Re-entry
+# CP-14 Eyad Handoff Report: Standing v0.2 and Bound-Task Re-entry
 
 **Date:** 2026-09-04  
-**Purpose:** Copy/paste handoff for the Re-entry Core, Host SDK, Local Connector, and Cloud Receiver owner  
+**Purpose:** Copy/paste release handoff for the Re-entry Core, Host SDK, Local Connector, and Cloud Receiver release owner  
 **Scope:** Sleepless Kingdom Game integration for the hackathon prototype  
-**Status:** Request for exact compatibility analysis and implementation artifacts; this document does not claim that the external path is released or hosted-verified.
+**Status:** Local implementation candidate is ready for source-pinned conformance; Eyad publication, deployment, and hosted readback remain open.
 
 ## Message to Eddy
 
@@ -61,8 +61,12 @@ These are the facts we have read from the current repository and candidate Recei
 - The candidate Receiver is the nested `saas-boilerplate` repository on branch `Re-Entry`, currently observed at commit `0195a9846024c4f65c62d3922069970ad1b96b92`.
 - Its fixed Core source pin is commit `1446d73aa3e66533547471728ad8fa5344d51f9e`, with source hash `6210d7724417e0533c77d5989e8ffdd3c404af4063ac9d70d70db9b622f73d45`.
 - The source-pin test passes `16/16` and proves source identity and drift fencing only. It does not prove release conformance, production deployment, or the Game trace.
-- The candidate Receiver exposes v0.2-looking routes for `/v0.2/events`, `/v0.2/delivery-claims`, and `/v0.2/delivery-acknowledgements`.
-- Standing Consent enrollment is currently described as service-only rather than a verified public Host SDK route.
+- The candidate Receiver exposes the additive v0.2 routes for `/v0.2/events`, `/v0.2/delivery-claims`,
+  `/v0.2/delivery-acknowledgements`, and `/v0.2/delivery-notification-handoffs`, plus the reviewed
+  account-first Consent/Grant control routes.
+- Receiver app composition now has an explicit server-side
+  `createApp({ standingRuntimeAdmissionAuthority })` seam. The default app remains fail-closed when
+  no real runtime authority is supplied; this seam is not itself runtime admission evidence.
 - The Receiver's own readback currently reports release conformance as false. The candidate must therefore be treated as a source-pinned integration candidate, not as an already accepted production contract.
 
 ### Published packages
@@ -174,25 +178,43 @@ Please provide commands and redacted evidence for at least:
 
 For each row, include expected outcome, observed outcome, event/sequence/correlation IDs, source/runtime identity, and the exact claim limit. Do not use raw credentials or platform task locators in the evidence.
 
-### 5.7 Ownership recommendation
+### 5.7 Ownership recommendation (superseded by the owner decision below)
 
-- Source code exists in the current `main` history and in the Receiver candidate, but the standing v0.2 path is not yet a verified public release. Do not treat source presence as release or compatibility evidence.
-- Eddy should own the Core, Host SDK, Local Connector, Receiver protocol closure, package/version identity, release artifact, and Receiver deployment. Those surfaces carry shared authority, signing, task-binding, lease, and public-contract decisions.
-- The Game team should own only the Game adapter, event mapping, Game-side persistence boundary, and CP-14 integration evidence. We should not fork or republish Eddy's packages under the same identity, import the private Core signer as a shortcut, or silently change the Receiver contract from the Game tree.
-- Public NPM publication is optional for the first hackathon handoff. An immutable reviewed Git ref or tarball, exact integrity, a matching hosted Receiver deployment, and reproducible conformance evidence are sufficient to begin integration. Eddy can publish the public package after that release gate passes.
-- If Eddy wants the Game team to implement a missing external component, the ownership transfer must be explicit: identify the exact repository/path, accepted contract owner, signing/deployment authority, release version, and review gate before we modify it.
+- Source code exists in the current `main` history and in the Receiver candidate, but the standing
+  v0.2 path is not yet a verified public release. Do not treat source presence as release or
+  compatibility evidence.
+- For this hackathon increment, the project team owns implementation of the reviewed Core, Host SDK,
+  Local Connector, Receiver, and Game adaptation paths under `ADR-0049` and `TASK-036`.
+- Eyad remains the release owner: after the local freeze and exact conformance gates, Eyad publishes
+  uniquely versioned packages, deploys the exact Receiver commit and migrations, supplies the real
+  runtime admission authority through the server-side app-composition seam, and returns hosted
+  readback. This does not transfer namespace, signing, deployment, or permanent maintenance
+  authority.
+- We will not fork an unrelated package, import a private Core signer into the Game, use `latest`,
+  create a fresh-task fallback, or silently change the Receiver contract. An immutable reviewed Git
+  ref or tarball remains acceptable only when its identity matches the deployed Receiver and the
+  source-pinned conformance evidence.
 
-## 6. What our Game team will do after the handoff
+## 6. What the project team has implemented and will do next
 
-Once the external contract is supplied and reviewed, we will:
+The owner has authorized the project team to implement the exact named source paths under
+`TASK-036` and `ADR-0049`. The current local increment is complete for its named contract scope;
+the remaining work is to freeze provenance, obtain a legitimate same-task runtime adapter, and
+prepare the hosted handoff. The team has:
 
 - Reconcile `SK-TASK-076`, Validation/89, current status wording, the seam map, and any stale fresh-session/effect-ACK language with `ADR-0046` and `ADR-GAME-0039`.
 - Add a server-only, typed mapping behind the existing `ReentryDeliveryPort`.
+- Add the one process-owned Game delivery runner and the explicit Receiver runtime-authority
+  composition seam; keep both fail-closed until a real production authority is supplied.
 - Preserve Game-owned event identity, sequence, scope, idempotency, and publication lease.
 - Write focused Red tests for accepted, duplicate, unknown, wrong-scope, revoked, expired, out-of-order, and one-active outcomes using the exact external contract.
 - Keep Game publication, Cloud queue, notification handoff, Agent wake, page read, optional action, and effect evidence separate.
 - Run only the smallest affected verification first, then the cross-functional matrix required by CP-14. We will not add a second queue, hidden retry loop, credential transport, fresh-task fallback, or Game-side Cloud lease.
 - Update the owning Game ADR, task, evidence, and validation records before closing the increment.
+
+The exact file-level implementation and release/readback sequence is recorded in
+[`CP-14 release packet`](CP-14-eyad-release-packet-2026-09-04.md). The packet is the handoff
+artifact for Eyad; it does not claim that publication or hosted continuity has already happened.
 
 ## 7. Specific questions for Eddy
 

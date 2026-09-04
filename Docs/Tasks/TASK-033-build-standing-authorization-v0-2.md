@@ -10,13 +10,15 @@
 - Priority: `P0`
 - Owner: Re-entry Core, Host SDK, Cloud Receiver v2, Local Connector, and Sleepless Kingdom
   integration owners.
-- Current increment: The application-neutral chain and additive active Receiver kernel are locally
-  verified; TASK-028 now owns the committed-source pin gate, while this task prepares the exact
-  same-user Consent/inspection/revocation contract without exposing unaccepted routes.
-- Next gate: Accept the exact same-user Consent/inspection/revocation route, session, and CSRF
-  contract and TASK-027 lifetime policy before exposing standing enrollment. Preserve the minimum
-  Core-pinned trace and local Receiver source/upgrade proof; TASK-028 separately owns full release
-  conformance and enforcement.
+- Current increment: Reconcile ADR-0046 adoption across the existing Connector, pending Receiver
+  controls, and Game-scoped integration authorities. The application-neutral chain and additive
+  Receiver kernel remain locally verified reference evidence; this reconciliation does not expose
+  public routes, select a runtime, or change a compatibility profile.
+- Next gate: Obtain one consistent selected-Game adoption contract covering the scoped Game
+  amendment, TASK-035 binding, TASK-029 notification receipt, and TASK-027 lifetime policy. Before
+  exposing standing enrollment, accept the exact same-user Consent/inspection/revocation route,
+  session, and CSRF contract. Preserve the minimum Core-pinned trace and local Receiver
+  source/upgrade proof; TASK-028 separately owns full release conformance and enforcement.
 - Dependencies: ADR-0042 through ADR-0046; TASK-027 for effective lifetime and display policy;
   TASK-028 for active-v2 independent-Receiver conformance; TASK-029 for notification settlement and
   explicit protocol transition; TASK-035/TASK-034 for private binding and same-task runtime proof;
@@ -36,6 +38,87 @@ Acceptance requires two notifications under one Consent and the same task, resta
 busy-task handling, revocation, strategy-consistent lawful action and deliberate no-command
 branches, with no resend because work was interrupted or produced no Game effect. No Game-owned
 file or deployment is changed by this root documentation increment.
+
+### Cross-workstream reconciliation and handoff
+
+**Evidence boundary:** 2026-09-04 read-only source and task-record review. Final root readback is
+`1f35d09`; its only change from reviewed runtime baseline `6f7924e` is the other workstream's
+three-document hosted-pairing preflight record. Game integration and release files still contain
+other-owner uncommitted work. Reported runtime tests and hosted checks were not rerun here. This
+is an adoption disposition under this existing task, not another architecture register or an
+accepted Game contract. Revalidate affected rows after their owner changes the source.
+
+| Boundary | Disposition and evidence | Required owner action |
+|---|---|---|
+| Product intent | `aligned`: ADR-0046 requires repeated in-scope notifications to the same enrolled task, offline authorization retention, Agent discretion, and no business-completion ACK. | Retain the accepted direction; do not ask the owner to choose fresh sessions or mandatory effects again merely because preview code uses them. |
+| Game integration target | `open`: [SK-TASK-076](../../WebApp/Web-Game/Docs/Tasks/SK-TASK-076-cp14-cloud-receiver-v2-game-adaptation.md) still recommends fresh sessions; [Validation/89](../../WebApp/Web-Game/Docs/Validation/89-cp14-cloud-receiver-v2-adaptation-cross-functional-audit.md) still makes effect ACK the next-signal condition. No scoped ADR adopting ADR-0046 was found. | The Game owner records scoped adoption and reconciles CP-14, its task, audit, status, contract, and indices. Retain old v0.2 behavior as explicitly labelled compatibility evidence, not the selected-product recommendation. |
+| Agent discretion | `open`: the Game [contract](../../WebApp/Web-Game/Docs/Engineering/09-mvp-contract-sheet.md), [C08](../../WebApp/Web-Game/Docs/Mechanics/Chains/08-event-to-reentry-action.md), and [M19](../../WebApp/Web-Game/Docs/Mechanics/detail-19-reentry-event-hook.md) still prescribe a recall attempt/action after fresh reads. | The same scoped adoption must include a normal deliberate no-command branch. Preserve the existing recall capability, server checks, typed rejection, and human boundary; do not invent a successful command when none was called. |
+| Pairing and task enrollment | `implementation_gap`: [Connector pairing](../../runtime/local-connector/src/main.mjs) saves device credentials; the CLI still selects fresh exec. [Private resolution](../../reentry-core/src/managed-context-adapter.mjs) is not a trusted durable enrollment writer. | TASK-035 adds legitimate same-task invocation and private restart-safe binding in the existing Connector/Adapter. Account/device pairing, approved Consent, and successful local task binding must remain separate readiness facts. Partial enrollment must not silently dispatch to a fresh task. |
+| Notification settlement | `implementation_gap`: [runOnce](../../runtime/local-connector/src/local-connector.mjs) claims and dispatches; the ACK client remains separate. Existing effect ACK semantics are not notification receipts. | TASK-029 specifies trusted handoff, stable correlation, lost-response recovery, and bounded busy handling. Actual wake and Browser/WebMCP proof remain TASK-034; neither no action nor interrupted work reopens a completed notification. |
+| Lifetime and public controls | `open`: [TASK-027](TASK-027-reconcile-consent-and-grant-expiry.md) and [Research 25](../Research/25-until-revoked-standing-lifetime-proposal.md) distinguish accepted offline retention from the unaccepted no-expiry representation and migration. | Coordinate lifetime and [Research 27](../Research/27-notification-handoff-profile-proposal.md) under one version/compatibility decision. Existing finite Grants keep their authority limits; proposed v0.3 names are not accepted APIs. This task owns the later same-user control-shell adoption. |
+| Packages, source and deployment | `unverified` for selected-product closure: [TASK-031](TASK-031-release-simple-sdk-facade.md) and [TASK-032](TASK-032-release-compatible-local-connector.md) describe local artifact work; [TASK-026](TASK-026-reconcile-pairing-claim-abuse-fence.md) retains hosted pairing Gate B2. | Package owners supply exact immutable artifact/source identity; Receiver owners supply conformance and actual deployed-contract evidence. A pairing fix, clean tarball, health response, or old two-effect trace does not close same-task notification integration. |
+
+### Game semantics that must not change incidentally
+
+- Preserve `CargoLostToMonster`, Game state/event/outbox atomicity, the Game publication lease,
+  and the existing command identity, ownership, live-revision, idempotency, and human checks.
+- Preserve [ADR-GAME-0009](../../WebApp/Web-Game/Docs/Decisions/ADR-GAME-0009-reentry-delivery-and-thread-backpressure.md):
+  the 60-world-second cooldown and history-only suppression when no delivery slot is active are
+  accepted Game policy. Research 27's proposed later-check guarantee cannot silently turn those
+  intentionally unsignalled Domain Events into notifications. Revisit only if that product policy
+  is explicitly changed; two-signal acceptance must respect current eligibility and cooldown.
+- Game publication acceptance, Receiver queue acceptance, runtime notification handoff, actual
+  Agent wake, and optional Game effect are separate observations. The Game owner's external
+  mapping for `ContinuationDelivered` remains open; a Cloud `202` must not acquire a stronger
+  meaning. Do not make the Game claim Connector leases or mint Receiver notification receipts.
+- Game `opaqueBinding`, fixture eligibility `grantId`, Receiver public binding/private standing
+  Grant, and Adapter private task binding are different identities. The
+  [fixture eligibility provider](../../WebApp/Web-Game/src/server/entrypoint.ts) is not evidence of
+  live Cloud enrollment. Notification-only settlement removes the Receiver's dependence on Game
+  effects, not the Game's session, ownership, provenance, or revision checks. Revoking future
+  notifications does not by itself revoke the authenticated Game session or recall an already
+  admitted notification. Any stronger Game-action revocation linkage needs its own explicit policy.
+  No new credential or raw task locator may enter the browser, Host-visible binding, signed Event,
+  or Agent prompt through this reconciliation.
+- The current [Game port](../../WebApp/Web-Game/src/server/reentry-delivery-port.ts) acknowledges
+  publication when its configured transport returns `accepted`; Agent action, no action, and
+  interruption do not drive that settlement. The
+  [store](../../WebApp/Web-Game/src/server/persistence/store.ts) folds deferred events into a new
+  signal on a later eligible event after cooldown; publication ACK alone does not flush them.
+  Preserve this implementation fact and let the Game owner resolve its external receipt mapping
+  and any stronger eventual-notification requirement. Do not add an Agent-completion callback.
+
+### Bounded sequence and decisions
+
+1. **Reconcile without behavior changes.** Use SK-TASK-076 for the Game-owned scoped amendment;
+   record same-task notification continuation and optional action without changing gameplay or
+   importing outer authority silently. Version the Game contract as its own rules require, and
+   keep current code/tests labelled at their actual existing contract level.
+2. **Establish the actual ingress.** TASK-035 continues the legitimate existing-task invocation gate
+   described by [CLOUD-028](../Development/CLOUD-028-desktop-admission-route-review.md). Reuse the
+   existing pairing, credential store, outbound claim loop, and Adapter seam; no replacement
+   Connector, new session fallback, or automatic native probe follows from this review.
+3. **Bind and settle.** Specify trusted local enrollment and runtime-backed handoff together with
+   TASK-029. Resolve the concrete runtime's admission, replay, response-loss, and busy semantics
+   before accepting receipt fields or claiming reliable completion. Combine notification and
+   lifetime protocol decisions instead of independently assigning two meanings to v0.3.
+4. **Integrate exact consumers.** Only after those contracts and source/artifact gates are satisfied,
+   compose the selected Receiver, SDK, Connector, authenticated canonical Game page, and genuine
+   WebMCP. Prove two eligible events reuse one Consent and task, plus restart, revocation,
+   wrong-owner denial, response loss, and action/no-command/interruption branches.
+
+The accepted product principles above need no repeat decision. Return to the owner only for a
+material new choice: a runtime requiring different custody or admission authority, a changed
+handoff guarantee, an expiry/migration/control policy, altered cooldown or event eligibility, or a
+broader Game command/human boundary. Exact technical proposals remain proposals until their owning
+decision gate is satisfied. Game implementation, live probes, publication, deployment, branch
+creation, and other-owner file changes are outside this reconciliation increment.
+
+**Local documentation verification:** validator self-tests `6/6`, sensitive-scanner self-tests
+`3/3`, repository validation, and the task-scoped whitespace check passed. The whole-repository
+sensitive scan reported 21 findings in other Game records and none in this task; no whole-repository
+secret-scan pass is claimed. No runtime or hosted suite was run. The product target, Core/Mechanism
+contracts, and accepted ADRs are unchanged; this task records dispositions and next gates only.
 
 ## 1. Problem and objective
 
