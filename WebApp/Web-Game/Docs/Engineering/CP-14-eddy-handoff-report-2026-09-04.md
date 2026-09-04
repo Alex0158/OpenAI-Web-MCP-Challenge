@@ -56,6 +56,8 @@ These are the facts we have read from the current repository and candidate Recei
 
 ### Re-entry Core and Receiver candidate
 
+- Eddy's Game-facing Core, Host SDK, and Local Connector source is already present in the outer `main` history; this handoff is a compatibility/release-contract request, not a request to merge a pending Eddy branch.
+- The Cloud Receiver backend remains a separate `saas-boilerplate` deployment boundary. The Game tree intentionally contains no Receiver runtime, and the Game team will not duplicate or silently replace that service.
 - The candidate Receiver is the nested `saas-boilerplate` repository on branch `Re-Entry`, currently observed at commit `0195a9846024c4f65c62d3922069970ad1b96b92`.
 - Its fixed Core source pin is commit `1446d73aa3e66533547471728ad8fa5344d51f9e`, with source hash `6210d7724417e0533c77d5989e8ffdd3c404af4063ac9d70d70db9b622f73d45`.
 - The source-pin test passes `16/16` and proves source identity and drift fencing only. It does not prove release conformance, production deployment, or the Game trace.
@@ -206,4 +208,3 @@ We will pause the Game adapter at the contract boundary if any proposed path req
 The objective is a small, honest, judge-reproducible Re-entry demonstration. We need the narrowest complete standing path with clear evidence, not a larger set of partially compatible surfaces.
 
 Thanks. Please use this report to identify the exact missing artifacts and the smallest compatible implementation path.
-
