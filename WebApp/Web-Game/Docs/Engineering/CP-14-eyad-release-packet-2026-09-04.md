@@ -54,7 +54,7 @@ unrelated deployment.
 
 | Artifact | Required immutable identity | Current observation | Freeze value |
 |---|---|---|---|
-| Outer repository | Git commit containing the reviewed Game/Core/SDK/Connector changes | `main` at `217df3d` with implementation files still in the working tree | `TBD` |
+| Outer repository | Git commit containing the reviewed Game/Core/SDK/Connector changes | `main` at `1ea8402`; CP-14 implementation commits are local, while unrelated collaborator work and the nested Receiver remain unfrozen | `TBD` |
 | Game | Outer commit plus `WebApp/Web-Game` path and schema migration | schema `9`, migration `cp14-001` | `TBD` |
 | Core | Git commit, package manifest, and source integrity | `@webmcp-challenge/reentry-core@0.1.0`, private local package | `TBD` |
 | Host SDK | Git commit, package version, tarball SHA-256, export map | local candidate `@4xeoz/re-entry-sdk@0.3.1`, includes `./standing-server` | `TBD` |
