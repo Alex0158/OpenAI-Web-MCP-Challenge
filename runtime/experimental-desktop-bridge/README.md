@@ -10,11 +10,14 @@ runtime evidence. This module does not import or modify frozen MVP code.
 ## Scope and prerequisites
 
 - The operational CLI is held: CLOUD-028 has not established legitimate custom-client invocation.
-  The unused ADR-0047 one-shot approval does not remove that prerequisite. There is no unlock flag.
+  ADR-0047's one-shot allowance was consumed by a separately labelled host-mediated control.
+  There is no unlock flag or remaining automatic native-send allowance.
 - Any future reviewed live route must run only inside its approved local Desktop execution
-  environment on Node 24 and preserve the App's actual caller and approval policy.
-- The app must supply `CODEX_APP_TOOLS_PIPE_PATH`; the executor must supply its actual
-  `CODEX_THREAD_ID`. These are private runtime context, not user-editable destination overrides.
+  environment and preserve the App's actual caller and approval policy. Node 24 is the local test
+  closure baseline, not a rule to replace a route-specific App runtime.
+- A custom native route must use only its own App-provided endpoint. Caller provenance must come
+  from that route's host/executor contract; possession of a task-ID environment value or signed
+  executable path does not establish caller authority. No destination-as-caller substitution.
 - The app-owned socket must pass restrictive endpoint and parent checks. Never chmod, replace,
   remove, discover another pipe, or repair its configuration to make the check pass.
 - The operator privately selects one existing disposable task and its expected workspace. This is
@@ -34,10 +37,22 @@ The operational `scripts/probe-once.mjs` exits nonzero with `admission_unverifie
 return `invalid_mode`, also without sending. It does not read private stdin or runtime context,
 import native code, inspect/connect an endpoint, or wait for stdin to close. It creates no listener
 and performs no retry. Do not provide private locators to this held entrypoint.
+`admission_unverified` is a fixed local guard result, not an App response or a new native failure.
 
 Only a reviewed implementation of an established legitimate invocation contract may replace this
 hold. A caller value, signed executable path, environment flag, marker, or purported approval field
 cannot unlock it. This local guard is not an App authenticator and does not prove runtime admission.
+
+## Current host-mediated control
+
+CLOUD-028 records one current App-tool control on the already approved existing task. The readback
+contains old Q1 input/response, then B1 as an untruncated named `functionCallOutput` object and its
+exact marker response in the same new completed turn. No tool invocation was observed. This proves
+same-task input/response, not isolated B1 wake, background Connector access, Browser or notification
+receipt. The observer now recognizes that exact object shape, preserves its tool-data role, rejects
+truncated/foreign envelopes, and keeps joined-turn attribution separate. This parser is not an
+authenticator. The control used the single allowance; neither it nor native B1 may be resent without
+a new explicit allowance.
 
 ## Retained fixture-only orchestration
 
@@ -78,5 +93,6 @@ Run `node --test runtime/experimental-desktop-bridge/test/*.test.mjs` from the r
 These tests use injected clients or fresh local fake sockets, never the app's real pipe or real
 tasks. They verify the bounded client, not enrollment, cross-process idempotency, Browser/WebMCP,
 or production support. Operational hold tests additionally deny filesystem reads except the CLI's
-own source and deny child-process creation using the Node 24 permission model. The authorized real
-probe remains unattempted pending legitimate admission; fixture passes cannot close that gate.
+own source and deny child-process creation using the Node 24 permission model. No native B1 send
+was performed; the distinct host-mediated control consumed the allowance. Fixture passes cannot
+establish legitimate native admission or reopen that allowance.

@@ -6,6 +6,15 @@
 **Authority:** [ADR-0047](../Decisions/ADR-0047-authorize-local-desktop-bridge-probe.md)  
 **Task:** [TASK-035](../Tasks/TASK-035-bind-existing-agent-task-during-enrollment.md)
 
+## Current cross-record disposition
+
+The native results below remain historical observations of the ordinary-Node client. The CLI's
+later `admission_unverified` is a fixed local hold, not an App error or another connection attempt.
+CLOUD-028 now records a distinct current host-mediated control: same-task B1 tool-data input and
+exact response after old Q1 in a new completed turn. It does not prove isolated B1 wake or native
+admission. That control consumed the single allowance; the historical unused-allowance statements
+below describe their event-time state and do not authorize a new send.
+
 ## Evidence correction after provenance review
 
 The recorded ordinary-Node rejection remains valid, but it is not a complete reproduction of
@@ -191,7 +200,7 @@ Git closure for this seven-file increment is local-only. Publishing the 54 exist
 commits is outside this increment, so no push or remote-parity claim is made. TASK-033's earlier
 uncommitted reconciliation and unrelated collaborator work are deliberately preserved.
 
-The single authorized B1 send remains unused. This turn made no custom native connection, App
+At this increment's closure, the single authorized B1 send was unused. It made no custom native connection, App
 configuration change, external platform inquiry, Receiver/Game operation, deployment, or publication.
 An ordinary in-App coordination message requested a documentation scope from the existing Game
 task; no usable scoped response was available at this readback and no Game file was edited. That

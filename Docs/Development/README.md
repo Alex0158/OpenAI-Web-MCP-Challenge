@@ -163,9 +163,12 @@ no supported product driver is selected.
 The [CLOUD-028 Desktop admission route review](CLOUD-028-desktop-admission-route-review.md)
 rules out a flag-only local-daemon restart on the normal installed Desktop launch path. Its corrected
 next gate is MVP launcher/caller equivalence and legitimate admission, not a mandatory platform
-response based on non-equivalent failed tests. It records the source comparison, read-only bundled
-runtime metadata, and an unsent contingency question draft. Runtime wake and product integration
-remain unverified; no configuration or topology change is authorized. The same reconciliation
+response based on non-equivalent failed tests. The static comparison is complete. A later one-shot
+host-mediated control verified current same-task input and exact response in a joined turn;
+earlier queued input prevents isolated wake attribution. The shared B1 allowance is consumed,
+and custom native admission and product Connector integration remain unverified. The record also
+owns the narrow observer-envelope correction and an unsent contingency question draft; no
+configuration or product topology change is authorized. The same reconciliation
 refines TASK-029's Research 27 proposal without accepting a receipt profile or wire version.
 
 ## Verification reports

@@ -1,10 +1,10 @@
 # CLOUD-028: Desktop Admission Route Review
 
-**Role:** DEVELOPMENT feasibility review and unsent platform-question draft  
-**Status:** Admission review corrected; MVP launcher equivalence and runtime proof remain open  
+**Role:** DEVELOPMENT feasibility review, host-mediated control, and unsent platform-question draft  
+**Status:** Static comparison complete; host-mediated same-task response verified; product integration unverified  
 **Date:** 2026-09-04, Europe/London  
 **Task:** [TASK-035](../Tasks/TASK-035-bind-existing-agent-task-during-enrollment.md)  
-**Authority:** ADR-0046; ADR-0047 permits only its separately bounded native probe
+**Authority:** ADR-0046; ADR-0047 permits only its bounded diagnostic and host-mediated clarification
 
 ## Approved order and scope
 
@@ -16,7 +16,8 @@ This review does not authorize a new runtime topology. The original review owned
 record, the Development index, and TASK-035's next gate; the correction scope is recorded below.
 No App restart, environment/configuration change,
 daemon start, native call, test message, task migration, SDK installation, Receiver claim, deployment,
-signing change, credential retrieval, or external message was performed in this increment.
+signing change, credential retrieval, or external message was performed in the original static-review
+increment. The separately recorded host-mediated control below includes one authorized inert send.
 
 ## Correction: the failed client was not the complete MVP launcher
 
@@ -134,10 +135,11 @@ A durable private destination binding says where to deliver; it is not the autho
 the runtime or act as that task. Persistent Re-entry authorization and App invocation authority are
 separate. Ordinary disconnection must not be misreported as user revocation of the former.
 
-The owner already approved the bounded private diagnostic in ADR-0047, and its one B1 submission
-has not been consumed. Do not ask for that unchanged approval again. The open gate is the intended
-client/caller and host-approval contract, not the number of sends remaining. No custom native
-preflight or bundled-runtime substitution follows from this source review alone.
+The owner had already approved the bounded private diagnostic in ADR-0047. Its previously unused
+B1 allowance has since been consumed by the explicitly labelled host-mediated control below; no
+native B1 was sent. The remaining custom-client gate concerns intended caller and host approval,
+not a claim that current same-task messaging is impossible. A later submission requires a new
+explicit allowance. No native preflight or bundled-runtime substitution follows from this review.
 
 ## Route disposition
 
@@ -145,6 +147,7 @@ preflight or bundled-runtime substitution follows from this source review alone.
 |---|---|---|
 | Public CLI queue | CLOUD-026 persisted one Q1 input without a new observed turn | Retain partial evidence; do not resend it |
 | Ordinary-Node private app-tools client | CLOUD-027 logs report `missing-code-signing-identity` before catalog readback | This tested route was rejected; it is not a complete MVP-launcher reproduction |
+| Exposed App task tool, one-shot control | Later B1 input and exact response in the existing task's new turn, after Q1 | Current host-mediated response verified; isolated wake and autonomous Connector admission unverified; allowance consumed |
 | MVP App-bundled launcher | Original successful route; current supplied runtime metadata exists | Caller, topology and permitted-use equivalence remain open; no automatic rerun or signing-policy bypass |
 | Separate App Server | Historical Research/19 found cold exact resume without `iab`, and a warm supplied task rejected by an active writer | Do not repeat without a materially different reviewed ownership/Browser contract |
 | Local-daemon launcher branch | Present in the installed bundle, but the normal local launcher supplies nonempty overrides and cannot satisfy its no-overrides condition | A flag plus restart is not a viable recommendation for this normal path |
@@ -182,6 +185,13 @@ No evidence here warrants changing that endpoint, detaching a writer, or restart
 
 ## Corrected next gate
 
+Use the completed comparison and the executed host-mediated control below; do not repeat either
+without a materially new question and the necessary scope. The control used the provided App task
+tools and consumed B1 without changing process identity or App policy. It proves current same-task
+input/response in a joined turn, not isolated wake, custom native admission or the real Connector
+consumer. The native-only gate below applies to a subsequent custom-client test; it must not be
+used to erase this control or MVP1's original Browser/WebMCP success.
+
 CLOUD-027 now records enforcement of this hold in the operational experimental CLI. Default,
 inspect and send modes stop before native IO; retained transport/observer subprocess tests use only
 an isolated fixture runner. This removes an accidental retry path, not the unresolved admission gate.
@@ -201,6 +211,86 @@ a second product path. No new Agent, fabricated history, scheduled-poll substitu
 App restart or alternate endpoint follows from this correction. Binding and receipt specification
 can progress independently, but cannot prove actual runtime admission or wake.
 
+## Host-mediated control record, 2026-09-04
+
+### Pre-dispatch reservation
+
+Authority: ADR-0047's host-mediated diagnostic clarification and the owner's authorization to
+continue after the MVP provenance review. The one remaining B1 allowance is reserved for this
+control before any send. No second/native send is allowed automatically if the result fails or is
+unknown. This is not autonomous delivery and does not rescue the earlier Q1 queue result.
+
+The existing Stage-A disposable task was resolved through the App's task list and exact readback;
+it is a local Codex task in the expected MVP workspace, with `notLoaded` status and only completed
+baseline turns. No new task was created. The observer retains baseline turn identifiers privately;
+no raw locator or task content is written here. Marker: `REENTRY_BRIDGE_HOST_CONTROL_20260904_B1`.
+The fixed input asks only for that exact response and no tools, Browser, business work or settings
+changes. Observe new-turn attribution, actual input role, exact response and unexpected tool use.
+
+### Executed result
+
+On the installed ChatGPT Desktop `26.901.20858`, build `7658`, exactly one exposed App
+`send_message_to_thread` call used the fixed target and prompt with no model, permission, or caller
+override. The one B1 allowance is now consumed across all diagnostic routes. The tool returned the
+target identifier; that return alone was not treated as delivery evidence. A bounded wait and
+exact-task readback observed a new completed turn at `2026-09-04 01:56:07` through `01:56:13` UTC.
+
+The baseline was `notLoaded` with completed historical turns; the readback was `idle` with the same
+target/workspace and this ordered new-turn content:
+
+1. The older Q1 input appeared as `userMessage`.
+2. The Agent returned Q1's marker.
+3. The new B1 control appeared as `functionCallOutput`, named `send_message_to_thread` in namespace
+   `codex_app`, with an untruncated `{ text, truncated: false }` output containing a delegation
+   wrapper and the exact new prompt.
+4. The Agent returned exactly `REENTRY_BRIDGE_HOST_CONTROL_20260904_B1`.
+
+No tool invocation was observed in that turn. No new task, Browser, native client, listener,
+runtime/configuration change, Receiver operation, or Game work was performed. Raw target/turn
+identifiers and delegation metadata remain private.
+
+**VERIFIED:** current host-mediated same-task input and exact response, classified as
+`response_in_joined_turn_observed`. **UNVERIFIED:** B1 independently starting a new turn; Q1 was
+processed first, so it confounds exclusive wake attribution. Its later consumption does not prove
+that the earlier CLI queue independently woke the task. The observed input role is specific to
+this control, not a universal promise about all task messages or a trusted delivery receipt.
+
+Do not repeat this control or send a native B1 automatically. A later submission needs a new
+explicit allowance. The remaining product gap is an invocation usable by the existing Connector
+outside an active Agent turn, with legitimate host caller/approval handling, followed by private
+binding and notification settlement. No platform alteration is proven necessary by this result.
+
+### Observer correction
+
+The previous observer read a `functionCallOutput` only when `output` was a string. The real control
+returned an object, so the same shape was missed by that parser. A Red equivalent-shape fixture
+returned `not_observed` instead of `response_in_joined_turn_observed`. The narrow correction now
+recognizes the observed untruncated named/namespaced envelope, retains exact prompt and role
+matching, rejects truncated/malformed/foreign envelopes, and preserves joined-turn attribution.
+The fixtures use fake identities and the harness's fixed prompt, not copied private task content.
+No extra live call, production Adapter or native-CLI enablement was added.
+
+### Core reconciliation and integration boundary
+
+Core/00, Core/05, Mechanism 04 and TASK-035 now distinguish original real MVP1 Browser/WebMCP proof,
+Core/Cloud composition with deterministic Agent seams, current host-mediated joined-turn response,
+and the unintegrated product Connector. Remove the already completed static review from the next
+action list. The README no longer promotes the old probe's Node/caller environment assumptions to
+a universal live-route contract. Node 24 remains the reproducible local test baseline.
+
+This turn's fetch also discovered `origin/Eyad/Full-Integration` at `41aae5d`. A read-only diff and
+its new test-app README show an isolated SDK consent/status consumer that explicitly stops before
+later Events, WebMCP registration or Agent launch. No branch was created, switched or merged; this
+is not contrary evidence of an already integrated product wake driver.
+
+The next code-bearing product increment must specify the actual invocation available to the
+existing Connector outside an Agent turn, including host-mediated caller/approval handling. The
+MVP task-launched relay is the known working reference, but copying its pipe into a detached
+Connector is not equivalent. Full relay reproduction would add listener/Browser authority beyond
+ADR-0047 and therefore needs a concrete scoped decision. Do not solve this boundary by another
+fake full-chain test, fresh Agent, caller impersonation, permission override or a new product
+Connector. Private binding and notification settlement follow the selected invocation contract.
+
 ## Draft for platform review — not sent
 
 We are building a WebMCP re-entry integration with a domain-neutral Cloud Receiver and an outbound
@@ -218,6 +308,9 @@ On ChatGPT Desktop 26.901.20858 (build 7658), bundled CLI 0.153.0-alpha.5:
   launcher comparison remains open. We have not bypassed peer authorization or altered the App.
 - The local Desktop launcher uses stdio. Its conditional shared-daemon branch is excluded by the
   App-tool configuration supplied on the normal local path.
+- A later control through the exposed App task tools received an exact response in the same
+  existing task. Its input was `functionCallOutput` after an older queued input in the new turn;
+  isolated wake attribution and independent Connector invocation were not established.
 
 Could you confirm:
 
@@ -322,3 +415,54 @@ product lifecycle and avoided preselecting an invocation-token model.
 The intake branch was shared
 `main`, 51 commits ahead of fetched `origin/main`, none behind, with an empty index. No new branch,
 external coordination message or push is included.
+
+## Host-mediated control and observer correction closure
+
+This increment covers nine documents and the experimental observer source/test pair, eleven files
+in total. It records the executed control above, corrects current Core/Mechanism/index/task claims,
+and adds only the observed untruncated tool-output envelope to the local parser. ADR-0047 clarifies
+the method within the same disposable target and one-send allowance; ADR-0046's selected product
+behavior, durable authorization, and notification-only settlement are unchanged.
+
+Verification on Node `24.20.0`:
+
+```sh
+/opt/homebrew/opt/node@24/bin/node --test --test-name-pattern='host-mediated output envelope' runtime/experimental-desktop-bridge/test/probe-bridge.test.mjs
+/opt/homebrew/opt/node@24/bin/node --test runtime/experimental-desktop-bridge/test/probe-bridge.test.mjs
+/opt/homebrew/opt/node@24/bin/node --test runtime/experimental-desktop-bridge/test/native-client.test.mjs runtime/experimental-desktop-bridge/test/probe-bridge.test.mjs runtime/experimental-desktop-bridge/test/probe-cli.test.mjs
+/opt/homebrew/opt/node@24/bin/node --check runtime/experimental-desktop-bridge/src/probe-bridge.mjs
+python3 scripts/test_validators.py
+python3 scripts/test_sensitive_scan.py
+python3 scripts/validate_repository.py --root .
+python3 scripts/scan_sensitive_patterns.py --root .
+```
+
+- The first command was Red before the fix: the equivalent object envelope yielded `not_observed`
+  instead of `response_in_joined_turn_observed`. The complete observer suite then passed 38/38;
+  the experimental aggregate passed 110/110, including the native-client and fail-closed CLI suites.
+  Syntax validation passed. These are injected-client/local-fake-socket regression tests, not
+  additional App submissions, native admission or Receiver/SDK/Game verification.
+- Repository validator unit tests passed 6/6 and sensitive-scanner unit tests passed 3/3.
+  Repository validation passed with exactly the eleven owned files in the index. Whitespace checks
+  passed, and the owned files have no sensitive-pattern, unintended CJK or raw UUID-shaped locator
+  matches. No raw task/turn/caller identifiers or live task content were persisted.
+- The whole-repository sensitive scanner still reports 21 existing findings in seven Game documents
+  outside this increment. All seven are unchanged against HEAD. No suppression or unrelated edit
+  was made; this is not a green whole-repository scan.
+- Independent read-only review found no remaining blocking parser or claim-boundary issue after
+  correcting allowance, execution-state and role wording. It preserves the earlier-Q1 confound and
+  does not equate a recognized tool-output shape with authenticated notification settlement.
+
+The runtime closure is **host-mediated same-task input/response verified, joined-turn attribution
+only**. The observer correction is **locally verified**. Product Connector invocation, durable
+binding, trustworthy notification settlement, isolated wake, and current Browser/WebMCP integration
+remain open. The single allowance is consumed; no further control/native send is authorized by
+these tests or by local Git closure.
+
+Git delivery is local-only on shared `main`. Intake was `1e05485`; the concurrent owner topology
+commit `79749cd` was preserved before reviewing and staging this increment. The branch was 56
+commits ahead of fetched `origin/main`, none behind, before this commit. Publishing that unrelated
+history is outside this increment. No branch creation, switching, merge, push, deployment or package
+publication is included. Concurrent Receiver/SDK/Connector, TASK-033, Game, RightSpot and untracked
+work remain outside the eleven-file staging scope. The new remote test-app branch was inspected
+read-only; no adoption or integrated Agent claim follows from its existence.

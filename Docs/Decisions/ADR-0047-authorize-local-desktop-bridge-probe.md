@@ -49,16 +49,40 @@ This experiment permits at most one new live submission. A timeout, ambiguous ou
 restart does not authorize another submission; a second live attempt requires a separate explicit
 owner decision. The process-local latch is not cross-process idempotency.
 
-This route may insert a `userMessage`, as the current task-messaging primitive does. Its use is
-authorized as a diagnostic input, not as ADR-0046 notification-only product delivery or a new user
-strategy. Observe and report its actual role. A future structured `toolOutput` route requires its
-own reviewed admission test; do not silently substitute it inside this probe.
+The original native probe permits a `userMessage` diagnostic input; it does not prescribe the
+role returned by every task-messaging surface. Observe the actual role without relabelling it.
+The host-mediated control below observed `functionCallOutput` through the exposed task tool, not
+through a substituted `turn/start.toolOutput` API. Neither role alone proves ADR-0046 notification
+delivery or a new user strategy. Deliberately selecting another input API still requires its own
+reviewed admission test; do not silently substitute one inside this probe.
 
 CLOUD-026's older Q1 input may still be queued. Preserve it, use a distinct marker, and separate
 its eventual consumption from the new bridge-correlated turn. Do not claim the task receives only
 one total input, and do not delete queued messages to simplify evidence.
 
 ## Verification, shutdown, and stop conditions
+
+### Host-mediated control clarification, 2026-09-04
+
+The owner's continued authorization after the MVP provenance review permits using the already
+exposed App task tools for one explicitly labelled positive control against the same approved
+disposable target. Use the existing unused B1 allowance, not an additional send. The App handles
+its own caller metadata and approval policy; do not construct another caller, override approval,
+connect a custom native client, or start the frozen relay. Verify exact target/workspace and a non-running
+baseline, send one internally fixed inert marker, then observe through read-only task tools.
+
+Reserve the allowance before dispatch and treat an unknown outcome as consumed. Preserve any
+older queued input and record its consumption separately. This control is not a retry or rescue of
+the Q1 queue experiment and cannot turn that experiment's negative result into success. It proves
+only current host-mediated task behavior, not custom-client admission, autonomous Connector wake,
+Browser/WebMCP, private enrollment, or production notification semantics. The native CLI hold stays
+in place. A later native submission requires a separate allowance even if this control fails.
+
+This is a diagnostic-method clarification, not production Adapter selection or permission to replay
+the complete MVP relay. That replay includes a task-launched listener and Browser operations outside
+the current experiment. No such scope expansion is authorized here.
+
+### Required observations
 
 Unit and local socket tests must cover disabled mode, malformed/override input, exact-target and
 workspace mismatch, unsafe endpoint, bounded framing/timeouts, repeated/concurrent submission,

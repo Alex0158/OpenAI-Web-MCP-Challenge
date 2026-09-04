@@ -40,6 +40,14 @@ function inputText(item) {
       .map((part) => part.text).join("\n");
   }
   if (item?.type === "functionCallOutput" && typeof item.output === "string") return item.output;
+  // Current App readback can wrap delivered tool data in an untruncated text envelope.
+  // This recognizes an observed shape, not authenticated provenance or a delivery receipt.
+  const output = item?.output;
+  if (item?.type === "functionCallOutput" && item.name === "send_message_to_thread"
+      && item.namespace === "codex_app" && output && typeof output === "object"
+      && !Array.isArray(output) && Object.keys(output).length === 2
+      && Object.hasOwn(output, "text") && Object.hasOwn(output, "truncated")
+      && output.truncated === false && typeof output.text === "string") return output.text;
   return "";
 }
 

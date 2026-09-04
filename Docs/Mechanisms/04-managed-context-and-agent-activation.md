@@ -25,8 +25,11 @@ bounded and explicit, without monitoring Game completion or promising unlimited 
 default-disabled native Desktop messaging/wake experiment. CLOUD-027 implements the isolated client,
 but current-build peer authorization rejected its ordinary-Node preflight before any new send.
 It did not reproduce MVP 1's App-bundled launcher; CLOUD-028 owns that evidence correction and the
-remaining equivalence review. It is not a product Adapter, Grant binding, notification receipt,
-or relaxation of the selected contract above.
+completed static comparison. Its later host-mediated control verifies current same-task tool-data
+input and exact response in a joined turn, not isolated wake or independent Connector access.
+The allowance is consumed and the native CLI stays held. The original real MVP1 Browser/WebMCP
+success remains valid on its recorded build. Neither the current control nor a deterministic Core
+test is a product Adapter, Grant binding, notification receipt, or relaxation of this contract.
 
 This module converts one valid delivery lease and private continuation receipt into one bounded,
 credential-free activation attempt against the exact managed Agent context selected by private

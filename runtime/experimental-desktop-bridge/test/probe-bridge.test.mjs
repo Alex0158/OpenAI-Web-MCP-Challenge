@@ -221,6 +221,63 @@ test("native delegation wrapping is recognized without forwarding caller metadat
   assert.doesNotMatch(JSON.stringify(result), /private-caller/);
 });
 
+test("host-mediated output envelope preserves tool-data role and joined-turn attribution", async () => {
+  const f = fixture(); const b = f.bridge({ priorMarker: "REENTRY_WAKE_OLD" });
+  await b.probeOnce({ marker: MARKER });
+  f.value.turns.unshift({ id: "control-turn", status: "completed", items: [
+    { type: "userMessage", content: [{ type: "text", text: "REENTRY_WAKE_OLD" }] },
+    { type: "agentMessage", text: "REENTRY_WAKE_OLD" },
+    { type: "functionCallOutput", name: "send_message_to_thread", namespace: "codex_app",
+      output: { text: `<codex_delegation>\n<source_thread_id>private-caller</source_thread_id>\n<input>${f.sends()[0][2]}</input>\n</codex_delegation>`, truncated: false } },
+    { type: "agentMessage", text: MARKER },
+  ] });
+  const result = await b.observe();
+  assert.equal(result.observation, "response_in_joined_turn_observed");
+  assert.equal(result.inputRole, "functionCallOutput");
+  assert.equal(result.inputStartedObservedTurn, false);
+  assert.equal(result.markerResponseObserved, true);
+  assert.equal(result.priorQueueMarkerObserved, true);
+  assert.equal(result.unexpectedToolUseObserved, false);
+  assert.equal(result.unexpectedItemTypeObserved, false);
+  assert.equal(result.turnCompleted, true);
+  assert.equal(result.browser, "not_attempted");
+  assert.equal(result.receiverAcknowledgement, "not_attempted");
+  assert.doesNotMatch(JSON.stringify(result), /private-caller|private-target|private-workspace/);
+});
+
+test("truncated, malformed, foreign or merely quoted output envelopes cannot prove receipt", async (t) => {
+  const mutations = {
+    truncated: (item) => { item.output.truncated = true; },
+    missingTruncation: (item) => { delete item.output.truncated; },
+    nonBooleanTruncation: (item) => { item.output.truncated = "false"; },
+    missingText: (item) => { delete item.output.text; },
+    nonText: (item) => { item.output.text = { text: MARKER }; },
+    nullOutput: (item) => { item.output = null; },
+    arrayOutput: (item) => { item.output = [item.output]; },
+    unknownField: (item) => { item.output.unrecognized = true; },
+    foreignTool: (item) => { item.name = "read_thread"; },
+    foreignNamespace: (item) => { item.namespace = "another_app"; },
+    missingNamespace: (item) => { delete item.namespace; },
+    quotedPrompt: (item) => { item.output.text = `Unrelated quoted text: ${item.output.text}`; },
+  };
+  for (const [name, mutate] of Object.entries(mutations)) {
+    await t.test(name, async () => {
+      const f = fixture(); const b = f.bridge();
+      await b.probeOnce({ marker: MARKER });
+      const item = { type: "functionCallOutput", name: "send_message_to_thread", namespace: "codex_app",
+        output: { text: f.sends()[0][2], truncated: false } };
+      mutate(item);
+      f.value.turns.unshift({ id: "unverified-output", status: "completed", items: [
+        item, { type: "agentMessage", text: MARKER },
+      ] });
+      const result = await b.observe();
+      assert.equal(result.observation, "not_observed");
+      assert.equal(result.inputObserved, false);
+      assert.equal(f.sends().length, 1);
+    });
+  }
+});
+
 test("non-MCP tools and future unknown items cannot pass the no-tools observation", async () => {
   for (const type of ["webSearch", "futureAction"]) {
     const f = fixture(); const b = f.bridge();

@@ -9,18 +9,21 @@
 - Lifecycle: `in_progress`
 - Priority: `P0`
 - Owner: Local Connector/Agent Adapter owner, with Receiver and Host SDK owners.
-- Current increment: CLOUD-028 completes the static MVP/installed-launcher comparison. The App
-  configures its bundled MCP service with executor caller metadata and a message-approval policy;
-  this does not establish custom-client or independently running Connector admission.
-  The experimental CLI now enforces that hold before native IO; transport and observer coverage
-  is fixture-only (96/96 local checks). This is not a new admission mechanism or B1 attempt.
-- Next gate: Establish legitimate invocation for ADR-0047's current-executor custom diagnostic,
-  preserving actual caller, fixed target and App approval policy. No new B1 submission has occurred.
-  The subsequent product gate must establish how the existing Connector invokes the exact task
-  when no Agent turn is active, including scope, lifetime, renewal if needed, restart and revocation.
-  This does not select a credential/token model or require that complete product lifecycle before
-  the bounded diagnostic. A stored task locator or Re-entry Grant does not itself authorize App
-  invocation. Resolve changed authority with the owner rather than force admission.
+- Current increment: The static MVP/installed-launcher comparison is complete. CLOUD-028 now
+  verifies current host-mediated same-task input and exact response: B1 appeared as tool data in
+  a new completed turn after the older Q1 input. This is a joined-turn response, not isolated B1
+  wake or autonomous Connector admission. Its untruncated object envelope exposed an observer
+  parsing gap, now corrected with explicit role, attribution and rejection tests. The native CLI
+  remains held; its fixed local result is not a new App rejection. Core summaries are reconciled.
+- Next gate: Define the smallest legitimate invocation from the existing Connector into the
+  host-owned task interface when no Agent turn is active, retaining actual caller and approval
+  handling. The original task-launched relay is the implementation reference, not a requirement
+  to repeat the completed source audit or copy a private pipe into a detached process.
+  The B1 allowance was consumed by the host-mediated control; no additional send or native B1 is
+  authorized automatically. A complete relay replay would also need a reviewed scope change for
+  its listener/Browser operations. A stored task locator or Re-entry Grant does not itself authorize
+  App invocation. Name any actual authority change before requesting it; do not presume one from
+  missing public documentation. Then specify scope, lifetime, renewal if needed, restart and revocation.
   Platform coordination is a conditional next step, not a proven universal prerequisite.
   Keep product integration in the existing Connector. No supported production Adapter is selected.
   The binding contract must then name trusted task selection,

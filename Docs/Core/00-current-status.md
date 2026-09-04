@@ -22,13 +22,22 @@ binding, explicit notification-protocol transition, supported runtime proof, and
 The evidence below remains valid only for its named unchanged profiles. The fresh-child Browser
 probe is historical preview evidence, not the prerequisite for the selected existing-task route.
 
-ADR-0047's separate, default-disabled experimental Desktop client is implemented under
-[CLOUD-027](../Development/CLOUD-027-experimental-desktop-bridge-probe.md). The current App rejected
-the ordinary-Node client's process identity before catalog/task readback; no new wake input was
-submitted. That test did not reproduce MVP 1's App-bundled runtime launcher. CLOUD-028 corrects the
-earlier platform-only gate: establish launcher/caller equivalence and legitimate admission before
-a new runtime claim. Frozen MVP 1's success remains build-specific, not disproved by that test.
-The supported product Adapter and durable enrollment remain open; no Game/deployment change is included.
+MVP 1 genuinely verified same-task continuation, preserved prior context, canonical Browser return
+and fresh genuine WebMCP invocation on its recorded build. The current product Connector has not
+adopted that Desktop bridge; Core/Cloud composition tests use deterministic Agent seams. This is
+an integration gap, not evidence that the original success did not happen or has been disproved.
+
+[CLOUD-027](../Development/CLOUD-027-experimental-desktop-bridge-probe.md) records rejection of an
+ordinary-Node custom client before task readback, not a complete reproduction of MVP 1's launcher.
+The static comparison is complete. [CLOUD-028](../Development/CLOUD-028-desktop-admission-route-review.md)
+now verifies current host-mediated same-task input and exact response: the approved control arrived
+as `functionCallOutput` after the older Q1 input in a new completed turn, with no observed tools.
+This proves a joined-turn response, not isolated control-caused wake, independent Connector access,
+Browser or notification receipt. Its one-shot allowance is consumed. The custom CLI's
+`admission_unverified` is our fixed local hold, not a new platform failure. The next implementation
+boundary is the existing Connector's legitimate use of the host-owned task interface; a platform
+response is conditional, not a universal prerequisite. Durable enrollment and product integration
+remain open; no Game or deployment change follows from this control.
 
 The project has implemented and locally verified the application-neutral Re-entry Core at the
 scope accepted by ADR-0006 through ADR-0014. RECORE-001 through RECORE-004, RECORE-006, and the
@@ -83,8 +92,9 @@ an authenticated subject, bounded prompt, and canonical URL; `createReentry()` d
 Manifest and later Event fields. The v2 developer portal supplies owned organization creation,
 one-time API-key reveal with digest-only storage, an interactive simple SDK guide, and redacted
 Event/delivery history. One Node 24 disposable composition passed through the real Host SDK,
-PostgreSQL Receiver, separately spawned Local Connector worker, independent Host-effect authority,
-acknowledgement, and restart replay. Separate developer and end-user browser personas passed after
+PostgreSQL Receiver and separately spawned Local Connector worker, with an injected deterministic
+Agent adapter and separate test Host-effect/acknowledgement worker, through restart replay.
+Separate developer and end-user browser personas passed after
 queued-state and plain-language usability corrections. This increment is
 `separate_process_verified`; the Re-entry integration candidate is committed at
 `4713024a027a8834745ecccaf88ee85f93cf2885` on `codex/reentry-main-candidate-preview`, and the
@@ -226,7 +236,8 @@ customer, cross-layer standing-mode adoption, and final market/distribution mode
 | Re-entry Cloud console preview | **DEPRECATED, HISTORICAL LOOPBACK EVIDENCE** | CLOUD-004 and `runtime/cloud-receiver/`; retired by ADR-0032 |
 | Complete generic reference flow | **LOCALLY VERIFIED, EVIDENCE-ONLY AGENT** | CLOUD-006 and `runtime/reference-system/` |
 | Application-review sample Host | **LOCALLY VERIFIED, SAMPLE ONLY** | ADR-0023, HOST-001, and `runtime/application-demo/` |
-| Frozen MVP1 mechanism proof | **VERIFIED, BOUNDED REFERENCE** | `mvp/` and its evidence index |
+| Frozen MVP1 mechanism proof | **REAL SAME-TASK / BROWSER / WEBMCP VERIFIED ON RECORDED BUILD** | `mvp/` P0 Stage-B and rehearsal evidence; original conversation/artifact continued, not a deterministic Agent substitute or current product integration |
+| Current host-mediated task control | **SAME-TASK INPUT/RESPONSE VERIFIED; ISOLATED WAKE UNPROVED** | CLOUD-028: B1 tool-data input and exact response after old Q1 in a new completed turn; no new task or observed tools, no independent Connector or Browser claim |
 | Standalone App Server/Desktop Browser joins | **FAILED FOR BOTH TESTED ROUTES** | Research 19 and frozen probe artifacts |
 | Current in-app Browser and page-bound WebMCP | **RUNTIME VERIFIED MANUALLY; CONNECTOR JOIN OPEN** | HOST-001 fresh DRAFT and resumed inventories plus exact resumed-stage invocation |
 | Host application and first user/workflow | **SELECTED; PARTIALLY IMPLEMENTED** | ADR-0042; Sleepless Kingdom under `WebApp/Web-Game/`; external vertical slice remains open |
@@ -422,12 +433,13 @@ Experiments, and frozen evidence rather than this status file.
 
 1. Finish [TASK-001](../Tasks/TASK-001-select-host-application.md) exact documentation and remote
    closure without absorbing owner-held Game or RightSpot work.
-2. Complete TASK-035's MVP 1 launcher, caller, and custody equivalence review, then establish the
-   legitimate owning-runtime route before another live probe. Ordinary-Node rejection is not a
-   complete reproduction of the successful MVP launcher. Keep the existing Local Connector as
-   the product integration surface. Trusted private binding and TASK-029's proposed notification
-   receipt/recovery contract may progress in parallel; neither is runtime proof. Preserve v0.1/v0.2
-   compatibility and do not repurpose effect ACKs.
+2. Use TASK-035's completed launcher comparison and CLOUD-028's current host-mediated response
+   evidence to define the smallest legitimate Connector-to-host invocation. Do not repeat the same
+   control or treat missing public documentation as impossibility. The used B1 allowance authorizes
+   no further send; the native CLI remains held. Keep the existing Local Connector as the product
+   integration surface. Private binding and TASK-029's notification receipt/recovery specification
+   may progress in parallel; neither proves autonomous admission. Preserve v0.1/v0.2 compatibility
+   and do not repurpose effect ACKs.
 3. Select and verify actual same-task notification/wake and authenticated canonical-Game-page
    access with fresh WebMCP under TASK-034. Do not substitute a fresh session to pass the gate.
 4. Prove signal 1 as queue acceptance, notification handoff, actual task wake, page reads, and
