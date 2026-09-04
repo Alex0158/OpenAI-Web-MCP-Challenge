@@ -6,11 +6,12 @@
 ## Task Control
 
 - Type: `operations`
-- Lifecycle: `pending`
+- Lifecycle: `in_progress`
 - Priority: `P1`
 - Owner: Host SDK release owner with the Cloud Receiver v2 developer-experience owner.
-- Current increment: Reconcile the checkout-only simple facade and active developer-portal install
-  guide with the published SDK package surface.
+- Current increment: The checkout-only facade has passed a release-readiness audit, while the
+  published `0.3.1` artifact still predates `createReentry()`. The exact-source version, portal
+  instruction, and clean-consumer release gate remain open under [SDK-006](../Development/SDK-006-simple-consented-continuation-flow.md#release-readiness-audit-2026-09-04).
 - Next gate: Approve an exact-source release increment that isolates the intended SDK changes,
   assigns a new immutable version, verifies package contents, and corrects the portal instruction
   before publication.
